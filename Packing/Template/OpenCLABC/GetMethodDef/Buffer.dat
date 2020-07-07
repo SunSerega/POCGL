@@ -5,9 +5,9 @@
 !ResultType
 IntPtr
 !Enqueue
-var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size)));
+var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); !set_res!(res);
 //ToDo А что если результат уже получен и освобождёт сдедующей .ThenConvert
-// - Вообще .WhenError тут - говнокод. Надо 
+// - Вообще .WhenError тут (и в +1 месте) - говнокод
 tsk.WhenError((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
@@ -15,14 +15,13 @@ cl.EnqueueReadBuffer(
   res,
   !evs!
 );
-qr.SetRes(res);
 
 # GetData
 offset, len: CommandQueue<integer>
 !ResultType
 IntPtr
 !Enqueue
-res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size)));
+var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); !set_res!(res);
 tsk.WhenError((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
@@ -44,13 +43,10 @@ offset: CommandQueue<integer>
 !ResultType
 TRecord
 !Enqueue
-var res_ptr := Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>);
-tsk.WhenError((tsk,err)->Marshal.FreeHGlobal(res_ptr));
-res := pointer(res_ptr);
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
-  res_ptr,
+  new IntPtr(!res_ptr!),
   !evs!
 ).RaiseIfError;
 !ForcePtrQr

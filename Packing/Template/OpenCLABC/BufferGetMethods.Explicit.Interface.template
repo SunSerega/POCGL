@@ -3,13 +3,13 @@
     
     {$region Get}
     
-    public function AddGetData: BufferCommandQueue;
+    public function AddGetData: CommandQueue<IntPtr>;
     
-    public function AddGetData(offset, len: CommandQueue<integer>): BufferCommandQueue;
+    public function AddGetData(offset, len: CommandQueue<integer>): CommandQueue<IntPtr>;
     
-    public function AddGetValue<TRecord>: BufferCommandQueue; where TRecord: record;
+    public function AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
     
-    public function AddGetValue<TRecord>(offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
+    public function AddGetValue<TRecord>(offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
     
     {$endregion Get}
     

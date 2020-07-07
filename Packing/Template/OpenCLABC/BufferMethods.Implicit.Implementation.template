@@ -31,13 +31,13 @@ function Buffer.WriteValue<TRecord>(val: TRecord): Buffer :=
 WriteValue(val, 0);
 
 function Buffer.WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, offset) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, offset) as CommandQueue<Buffer>);
 
 function Buffer.WriteValue<TRecord>(val: CommandQueue<TRecord>): Buffer :=
 WriteValue(val, 0);
 
 function Buffer.WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, offset) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, offset) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer :=
 WriteArray1(a, 0);
@@ -58,40 +58,40 @@ function Buffer.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buff
 ReadArray3(a, 0,0,0);
 
 function Buffer.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1(a, a_offset) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a, a_offset) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2(a, a_offset1, a_offset2) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2&<TRecord>(a, a_offset1, a_offset2) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3(a, a_offset1, a_offset2, a_offset3) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray1(a, a_offset) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray1&<TRecord>(a, a_offset) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray2(a, a_offset1, a_offset2) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray2&<TRecord>(a, a_offset1, a_offset2) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray3(a, a_offset1, a_offset2, a_offset3) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1(a, a_offset, buff_offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a, a_offset, buff_offset, len) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2(a, a_offset1, a_offset2, buff_offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2&<TRecord>(a, a_offset1, a_offset2, buff_offset, len) as CommandQueue<Buffer>);
 
 function Buffer.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3(a, a_offset1, a_offset2, a_offset3, buff_offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, buff_offset, len) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray1(a, a_offset, buff_offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray1&<TRecord>(a, a_offset, buff_offset, len) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray2(a, a_offset1, a_offset2, buff_offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray2&<TRecord>(a, a_offset1, a_offset2, buff_offset, len) as CommandQueue<Buffer>);
 
 function Buffer.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray3(a, a_offset1, a_offset2, a_offset3, buff_offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, buff_offset, len) as CommandQueue<Buffer>);
 
 {$endregion 1#Write&Read}
 
@@ -104,16 +104,16 @@ function Buffer.FillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: Co
 Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len, offset, len) as CommandQueue<Buffer>);
 
 function Buffer.FillValue<TRecord>(val: TRecord): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val) as CommandQueue<Buffer>);
 
 function Buffer.FillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, offset, len) as CommandQueue<Buffer>);
 
 function Buffer.FillValue<TRecord>(val: CommandQueue<TRecord>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val) as CommandQueue<Buffer>);
 
 function Buffer.FillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): Buffer :=
-Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, offset, len) as CommandQueue<Buffer>);
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, offset, len) as CommandQueue<Buffer>);
 
 {$endregion 2#Fill}
 

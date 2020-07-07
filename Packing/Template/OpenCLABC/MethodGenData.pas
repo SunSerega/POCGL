@@ -6,6 +6,7 @@ uses CodeGenUtils in '..\CodeGenUtils';
 {$string_nullbased+}
 
 type
+  Writer = Writer;
   
   {$region MethodArg}
   
@@ -134,6 +135,9 @@ type
     public args: array of MethodArg := nil;
     public arg_usage := new Dictionary<string, string>;
     
+    public impl_args: List<string> := nil;
+    public impl_args_str: string := nil;
+    
     public def: sequence of string;
     public is_short_def: boolean;
     
@@ -171,6 +175,38 @@ type
       else raise new System.InvalidOperationException(setting_name);
     end;
     
+    protected procedure ProcessSpecialDefVar(sb: StringBuilder; arg_name, usage: string; debug_tn: string); virtual :=
+    case arg_name of
+      
+      'evs':
+      begin
+        if usage<>nil then raise new System.NotSupportedException;
+        sb += 'evs.count, evs.evs, ';
+        sb += need_thread ? 'IntPtr.Zero' : 'res_ev';
+      end;
+      
+      else
+      begin
+        if arg_usage.ContainsKey(arg_name) and (arg_usage[arg_name]<>usage) then
+          raise new System.NotSupportedException($'arg [{arg_name}] in {debug_tn}({args_str}) had usages [{arg_usage[arg_name]}] and [{usage}]');
+        
+        //ToDo #?
+        var arg := args=nil ? nil : args.SingleOrDefault(arg->arg.name=arg_name);
+        if arg=nil then raise new System.InvalidOperationException($'arg [{arg_name}] not found in params of func {debug_tn}({args_str})');
+        
+        arg_usage[arg_name] := usage;
+        
+        sb += arg_name;
+        if usage<>nil then
+        case usage of
+          
+          'ptr': if args.Single(arg->arg.name=arg_name).t.IsCQ then sb += '.GetPtr';
+          
+          else raise new System.InvalidOperationException;
+        end;
+        
+      end;
+    end;
     private function ProcessDefLine(l: string; debug_tn: string): string;
     begin
       var sb := new StringBuilder;
@@ -189,38 +225,7 @@ type
             end;
           end;
           
-          case arg_name of
-            
-            'evs':
-            begin
-              if usage<>nil then raise new System.NotSupportedException();
-              sb += 'evs.count, evs.evs, ';
-              sb += need_thread ? 'IntPtr.Zero' : 'res';
-            end;
-            
-            else
-            begin
-              if arg_usage.ContainsKey(arg_name) and (arg_usage[arg_name]<>usage) then
-                raise new System.NotSupportedException($'arg [{arg_name}] in {debug_tn}({args_str}) had usages [{arg_usage[arg_name]}] and [{usage}]');
-              
-              //ToDo #?
-              var arg := args=nil ? nil : args.SingleOrDefault(arg->arg.name=arg_name);
-              if arg=nil then raise new System.InvalidOperationException($'arg [{arg_name}] not found in params of func {debug_tn}({args_str})');
-              
-              arg_usage[arg_name] := usage;
-              
-              sb += arg_name;
-              if usage<>nil then
-              case usage of
-                
-                'ptr': if args.Single(arg->arg.name=arg_name).t.IsCQ then sb += '.GetPtr';
-                
-                else raise new System.InvalidOperationException;
-              end;
-              
-            end;
-          end;
-          
+          ProcessSpecialDefVar(sb, arg_name, usage, debug_tn);
         end else
           sb += arg_t[1];
       
@@ -230,7 +235,7 @@ type
     protected function GetArgTNames: sequence of string; virtual :=
     args=nil? System.Array.Empty&<string> : args.Select(arg->arg.t.Enmr.Last.org_text);
     
-    public procedure Seal(debug_tn: string); virtual;
+    public procedure Seal(t: string; debug_tn: string); virtual;
     begin
       
       if def=nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
@@ -238,7 +243,13 @@ type
       if implicit_only and need_thread then raise new System.NotSupportedException($'{debug_tn}({args_str})');
       if implicit_only and not is_short_def then raise new System.NotSupportedException($'{debug_tn}({args_str})');
       
-      if args_str<>nil then args := MethodArg.AllFromString(args_str).ToArray;
+      if args_str<>nil then
+      begin
+        impl_args_str := args_str;
+        
+        args := MethodArg.AllFromString(args_str).ToArray;
+        impl_args := args.Select(arg->arg.name).ToList;
+      end;
       
       foreach var arg_t in GetArgTNames do
       begin
@@ -324,9 +335,186 @@ type
     
     {$endregion Global}
     
-    protected procedure WriteCommandBaseTypeName(t: string; settings: TSettings); abstract;
-    protected procedure WriteCommandTypeInvoke(fn: string; max_arg_w: integer; settings: TSettings); abstract;
+    protected procedure WriteInvokeHeader(settings: TSettings); abstract;
+    protected procedure WriteInvokeFHeader; abstract;
+    protected procedure AddGCHandleArgs(args_with_GCHandle: List<string>; settings: TSettings); virtual := exit;
     
+    private procedure WriteCommandTypeInvoke(fn: string; max_arg_w: integer; settings: TSettings);
+    begin
+      WriteInvokeHeader(settings);
+      res_EIm += '    begin'#10;
+      
+      {$region param .Invoke's}
+      
+      if (settings as MethodSettings).args <> nil then
+      begin
+        var first_arg := true;
+        foreach var arg in (settings as MethodSettings).args do
+          if not (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+            Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used') else
+          begin
+            
+            if arg.t.IsCQ then
+            begin
+              res_EIm += '      var ';
+              res_EIm += arg.name.PadLeft(max_arg_w);
+              res_EIm += '_qr := ';
+              
+              var arg_name := arg.name.PadLeft(max_arg_w);
+              for var i := 1 to arg.t.ArrLvl do
+              begin
+                var n_arg_name := $'temp{i}';
+                
+                res_EIm += arg_name;
+                res_EIm += '.ConvertAll(';
+                res_EIm += n_arg_name;
+                res_EIm += '->';
+                
+                arg_name := n_arg_name;
+              end;
+              
+              if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
+              
+              res_EIm += arg_name;
+              res_EIm += '.Invoke';
+              res_EIm += first_arg ? '    ' : 'NewQ';
+              res_EIm += '(tsk, c, main_dvc, ';
+              res_EIm += ((settings as MethodSettings).arg_usage[arg.name]='ptr').ToString.PadLeft(5);
+              res_EIm += ', ';
+              res_EIm += first_arg ? 'cq, ' : arg.t is MethodArgTypeArray ? nil : '    ';
+              res_EIm += 'nil); ';
+              
+              res_EIm += 'evs_l';
+              res_EIm += (settings as MethodSettings).arg_usage[arg.name]='ptr' ? '2' : '1';
+              res_EIm += ' += ';
+              if arg.t is MethodArgTypeArray then
+                res_EIm += 'Result' else
+              begin
+                res_EIm += arg.name.PadLeft(max_arg_w);
+                res_EIm += '_qr';
+              end;
+              res_EIm += '.ev';
+              
+              if arg.t is MethodArgTypeArray then res_EIm += '; end';
+              loop arg.t.ArrLvl do res_EIm += ')';
+              res_EIm += ';'#10;
+              
+              first_arg := false;
+            end;
+            
+          end;
+      end;
+      
+      {$endregion param .Invoke's}
+      
+      res_EIm += '      '#10;
+      
+      res_EIm += '      Result := ';
+      WriteInvokeFHeader;
+      res_EIm += '      begin'#10;
+      
+      {$region param .GetRes's}
+      
+      var args_with_GCHandle := new List<string>;
+      if (settings as MethodSettings).args <> nil then
+        foreach var arg in (settings as MethodSettings).args do
+          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+          begin
+            if not arg.t.IsCQ then continue;
+            
+            res_EIm += '        var ';
+            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += ' := ';
+            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += '_qr';
+            
+            for var i := 1 to arg.t.ArrLvl do
+            begin
+              res_EIm += '.ConvertAll(temp';
+              res_EIm += i.ToString;
+              res_EIm += '->temp';
+              res_EIm += i.ToString;
+            end;
+            
+            var usage := (settings as MethodSettings).arg_usage[arg.name];
+            if usage=nil then
+              res_EIm += '.GetRes' else
+            case usage of
+              
+              'ptr':
+              begin
+                res_EIm += '.ToPtr';
+                if not (settings as MethodSettings).need_thread then args_with_GCHandle += arg.name;
+              end;
+              
+              else raise new System.NotImplementedException;
+            end;
+            
+            loop arg.t.ArrLvl do res_EIm += ')';
+            res_EIm += ';'#10;
+            
+          end;
+      res_EIm += '        '#10;
+      
+      {$endregion param .GetRes's}
+      
+      if not (settings as MethodSettings).need_thread then
+        res_EIm += '        var res_ev: cl_event;'#10;
+      res_EIm += '        '#10;
+      
+      foreach var l in (settings as MethodSettings).def do
+      begin
+        res_EIm += '        ';
+        res_EIm += l;
+        res_EIm += #10;
+      end;
+      
+      res_EIm += '        '#10;
+      
+      {$region GCHandle.Free for PtrRes's}
+      
+      AddGCHandleArgs(args_with_GCHandle, settings);
+      if args_with_GCHandle.Count<>0 then
+      begin
+        
+        var max_awg_w := args_with_GCHandle.Max(arg->arg.Length);
+        foreach var arg in args_with_GCHandle do
+        begin
+          res_EIm += '        var ';
+          res_EIm += arg.PadLeft(max_awg_w);
+          res_EIm += '_hnd := GCHandle.Alloc(';
+          res_EIm += arg.PadLeft(max_awg_w);
+          res_EIm += ');'#10;
+        end;
+        res_EIm += '        '#10;
+        
+        res_EIm += '        EventList.AttachFinallyCallback(res_ev, ()->'#10;
+        res_EIm += '        begin'#10;
+        foreach var arg in args_with_GCHandle do
+        begin
+          res_EIm += '          ';
+          res_EIm += arg.PadLeft(max_awg_w);
+          res_EIm += '_hnd.Free;'#10;
+        end;
+        res_EIm += '        end, tsk);'#10;
+        res_EIm += '        '#10;
+      end;
+      
+      {$endregion GCHandle.Free for PtrRes's}
+      
+      res_EIm += '        Result := ';
+      res_EIm += (settings as MethodSettings).need_thread ? 'cl_event.Zero' : 'res_ev';
+      res_EIm += ';'#10;
+      res_EIm += '      end;'#10;
+      
+      res_EIm += '      '#10;
+      
+      res_EIm += '    end;'#10;
+      
+    end;
+    
+    protected procedure WriteCommandBaseTypeName(t: string; settings: TSettings); abstract;
+    protected procedure WriteCommandTypeInhConstructor; virtual := exit;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin
       res_EIm += '{$region ';
@@ -431,27 +619,29 @@ type
       {$region constructor}
       
       res_EIm += '    public constructor';
-      if (settings as MethodSettings).args_str = nil then
+      if (settings as MethodSettings).impl_args_str = nil then
         res_EIm += ' := exit;'#10 else
       begin
         res_EIm += '(';
-        res_EIm += (settings as MethodSettings).args_str;
+        res_EIm += (settings as MethodSettings).impl_args_str;
         res_EIm += ');'#10;
         res_EIm += '    begin'#10;
-        foreach var arg in (settings as MethodSettings).args do
-        begin
-          res_EIm += '      self.';
-          res_EIm += arg.name.PadLeft(max_arg_w);
-          
-          if arg.name in val_ptr_args then
-            res_EIm += '^' else
-          if val_ptr_args.Count<>0 then
-            res_EIm += ' ';
-          
-          res_EIm += ' := ';
-          res_EIm += arg.name.PadLeft(max_arg_w);
-          res_EIm += ';'#10;
-        end;
+        WriteCommandTypeInhConstructor;
+        if (settings as MethodSettings).args <> nil then
+          foreach var arg in (settings as MethodSettings).args do
+          begin
+            res_EIm += '      self.';
+            res_EIm += arg.name.PadLeft(max_arg_w);
+            
+            if arg.name in val_ptr_args then
+              res_EIm += '^' else
+            if val_ptr_args.Count<>0 then
+              res_EIm += ' ';
+            
+            res_EIm += ' := ';
+            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += ';'#10;
+          end;
         res_EIm += '    end;'#10;
         res_EIm += '    private constructor := raise new System.InvalidOperationException;'#10;
       end;
@@ -510,11 +700,9 @@ type
       res_EIm += #10;
     end;
     
-    protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: TSettings); virtual;
-    begin
-      l_res += t;
-      l_res_E += 'CommandQueue';
-    end;
+    protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: TSettings); abstract;
+    protected procedure WriteMethodEImBody(write_new_ct: Action0; settings: TSettings); abstract;
+    protected function GetIImResT(settings: TSettings): string; virtual := t;
     public procedure WriteMethod(bl: (string, array of string));
     begin
       var name_separator_ind := bl[0].IndexOf('!');
@@ -524,12 +712,14 @@ type
       var settings := new TSettings;
       foreach var setting in FixerUtils.ReadBlocks(bl[1], '!', false) do
         settings.Apply(setting[0], setting[1], tn);
-      settings.Seal(tn);
+      settings.Seal(t, tn);
       
       //ToDo #?
       // - и ещё в куче мест убрать "as MethodSettings"
       if not (settings as MethodSettings).is_short_def then
         WriteCommandType(fn, tn, settings);
+      
+      {$region Header}
       
       begin
         var l_res_EIm := (settings as MethodSettings).implicit_only ? new WriterEmpty  : res_EIm;
@@ -568,6 +758,10 @@ type
         
       end;
       
+      {$endregion Header}
+      
+      {$region Body}
+      
       if (settings as MethodSettings).is_short_def then
       begin
         var l_res_Im  := (settings as MethodSettings).implicit_only ? res_IIm          : res_Im;
@@ -582,6 +776,11 @@ type
         
         res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Add';
         res_IIm += fn;
+        if (settings as MethodSettings).generics_str <> nil then
+        begin
+          res_IIm += '&';
+          res_IIm += (settings as MethodSettings).generics_str;
+        end;
         if (settings as MethodSettings).args<>nil then
         begin
           res_IIm += '(';
@@ -589,23 +788,31 @@ type
           res_IIm += ')';
         end;
         res_IIm += ' as CommandQueue<';
-        res_IIm += t;
+        res_IIm += GetIImResT(settings);
         res_IIm += '>);'#10;
         
-        res_EIm += 'AddCommand(new ';
-        res_EIm += t;
-        res_EIm += 'Command';
-        res_EIm += tn;
-        res_EIm += (settings as MethodSettings).generics_str;
-        if (settings as MethodSettings).args<>nil then
+        //ToDo #2278
+        var temp_res_EIm := res_EIm;
+        var temp_t := t;
+        
+        WriteMethodEImBody(()->
         begin
-          res_EIm += '(';
-          res_EIm += (settings as MethodSettings).args.Select(arg->arg.name).JoinToString(', ');
-          res_EIm += ')';
-        end;
-        res_EIm += ');'#10;
+          temp_res_EIm += 'new ';
+          temp_res_EIm += temp_t;
+          temp_res_EIm += 'Command';
+          temp_res_EIm += tn;
+          temp_res_EIm += (settings as MethodSettings).generics_str;
+          if (settings as MethodSettings).impl_args<>nil then
+          begin
+            temp_res_EIm += '(';
+            temp_res_EIm += (settings as MethodSettings).impl_args.JoinToString(', ');
+            temp_res_EIm += ')';
+          end;
+        end, settings);
         
       end;
+      
+      {$endregion Body}
       
       res_In += '    ';
       res += #10;

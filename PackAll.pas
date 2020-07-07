@@ -284,41 +284,50 @@ begin
         ProcTask(()->
         begin
           var mns := AllModules.Intersect(stages).ToHashSet;
-          if mns.Count=0 then mns := AllModules;
-          System.IO.Directory.CreateDirectory('Release\bin\Lib');
+          if mns.Count=0 then mns := AllModules.ToHashSet;
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
           if not copy_to_pf then Otp($'WARNING: Dir [{pf_dir}] not found, skiping pf release copy');
           
+          foreach var mn in AllLLModules do
+            if mns.Contains(mn+'ABC') then
+              mns += $'Internal\{mn}ABCBase';
+          
           foreach var mn in mns do
           begin
-            var fname := $'Modules.Packed\{mn}.pas';
-            Otp($'Packing {fname}');
+            var org_fname :=      $'Modules.Packed\{mn}.pas';
+            var release_fname :=  $'Release\bin\Lib\{mn}.pas';
+            var pf_fname :=       $'{pf_dir}\LibSource\{mn}.pas';
+            Otp($'Packing {org_fname}');
             
-            System.IO.File.Copy( fname, $'Release\bin\Lib\{mn}.pas' );
+            System.IO.Directory.CreateDirectory(Path.GetDirectoryName(release_fname));
+            System.IO.File.Copy( org_fname, release_fname );
             if copy_to_pf then
             try
-              System.IO.File.Copy( fname, $'{pf_dir}\LibSource\{mn}.pas', true );
+              System.IO.Directory.CreateDirectory(Path.GetDirectoryName(pf_fname));
+              System.IO.File.Copy( org_fname, pf_fname, true );
             except
               on System.UnauthorizedAccessException do
-                Otp($'WARNING: Not enough rights to copy [{fname}] to [{pf_dir}\LibSource]');
+                Otp($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\LibSource]');
             end;
           end;
           
           if copy_to_pf and stages.Contains('Compile') then
             foreach var mn in mns do
             begin
-              var fname := $'Modules.Packed\{mn}.pcu';
+              var org_fname := $'Modules.Packed\{mn}.pcu';
+              var pf_fname := $'{pf_dir}\Lib\{mn}.pcu';
               
-              if FileExists(fname) then
+              if FileExists(org_fname) then
               try
-                System.IO.File.Copy( fname, $'{pf_dir}\Lib\{mn}.pcu', true );
+                System.IO.Directory.CreateDirectory(Path.GetDirectoryName(pf_fname));
+                System.IO.File.Copy( org_fname, pf_fname, true );
               except
                 on System.UnauthorizedAccessException do
-                  Otp($'WARNING: Not enough rights to copy [{fname}] to [{pf_dir}\Lib]');
+                  Otp($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\Lib]');
               end else
-                Otp($'WARNING: {fname} not found!');
+                Otp($'WARNING: {org_fname} not found!');
               
             end;
           
@@ -334,7 +343,7 @@ begin
         ProcTask(()->
         begin
           var c := 0;
-          var AllowedExtensions := HSet('.pas', '.cl');
+          var AllowedExtensions := HSet('.pas', '.cl', '.glsl');
           
           System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
           .Where(fname->Path.GetExtension(fname) in AllowedExtensions)

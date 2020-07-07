@@ -30,7 +30,7 @@ type
         var  sz1 :=  sz1_qr.GetRes;
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
         
-        var res: cl_event;
+        var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
         begin
@@ -43,11 +43,11 @@ type
             nil,
             new UIntPtr[](new UIntPtr(sz1)),
             nil,
-            evs.count, evs.evs, res
+            evs.count, evs.evs, res_ev
           );
         end);
         
-        Result := res;
+        Result := res_ev;
       end;
       
     end;
@@ -96,7 +96,7 @@ type
         var  sz2 :=  sz2_qr.GetRes;
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
         
-        var res: cl_event;
+        var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
         begin
@@ -109,11 +109,11 @@ type
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
             nil,
-            evs.count, evs.evs, res
+            evs.count, evs.evs, res_ev
           );
         end);
         
-        Result := res;
+        Result := res_ev;
       end;
       
     end;
@@ -167,7 +167,7 @@ type
         var  sz3 :=  sz3_qr.GetRes;
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
         
-        var res: cl_event;
+        var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
         begin
@@ -180,11 +180,11 @@ type
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
             nil,
-            evs.count, evs.evs, res
+            evs.count, evs.evs, res_ev
           );
         end);
         
-        Result := res;
+        Result := res_ev;
       end;
       
     end;
@@ -239,7 +239,7 @@ type
         var    local_work_size :=    local_work_size_qr.GetRes;
         var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
         
-        var res: cl_event;
+        var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
         begin
@@ -252,13 +252,13 @@ type
             global_work_offset,
             global_work_size,
             local_work_size,
-            evs.count, evs.evs, res
+            evs.count, evs.evs, res_ev
           );
         end);
         
         
         
-        Result := res;
+        Result := res_ev;
       end;
       
     end;

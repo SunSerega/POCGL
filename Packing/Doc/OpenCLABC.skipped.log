@@ -71,6 +71,10 @@ Buffer.FillValue<TRecord>(CommandQueue<TRecord>; offset, CommandQueue<integer>)
 Buffer.CopyForm(CommandQueue<Buffer>)
 Buffer.CopyTo(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
 Buffer.CopyForm(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
+Buffer.GetData
+Buffer.GetData(offset, CommandQueue<integer>)
+Buffer.GetValue<TRecord>
+Buffer.GetValue<TRecord>(CommandQueue<integer>)
 Kernel.CreateProp
 Kernel.Native
 Kernel.Properties
@@ -167,6 +171,7 @@ CommandQueueBase.ThenWaitForAnyBase(sequence of CommandQueueBase)
 CommandQueueBase.ThenWaitForAllBase(array of CommandQueueBase)
 CommandQueueBase.ThenWaitForAnyBase(array of CommandQueueBase)
 CommandQueueBase.ThenWaitForBase(CommandQueueBase)
+CommandQueue<T>.InvokeImpl(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
 CommandQueue<T>.Invoke(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
 CommandQueue<T>.InvokeBase(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
 CommandQueue<T>.InvokeNewQ(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList)
@@ -183,11 +188,10 @@ CommandQueue<T>.Multiusable
 CommandQueue<T>.MultiusableBase
 CommandQueue<T>.ThenWaitForAllBase(sequence of CommandQueueBase)
 CommandQueue<T>.ThenWaitForAnyBase(sequence of CommandQueueBase)
-ContainerQueue<T>
 HostQueue<TInp,TRes>
 ConstQueue<T>.
 ConstQueue<T>.IConstQueue.GetConstVal
-ConstQueue<T>.Invoke(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
+ConstQueue<T>.InvokeImpl(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
 ConstQueue<T>.RegisterWaitables(CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>)
 ISimpleQueueArray
 SimpleQueueArray<T>
@@ -216,7 +220,6 @@ ConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>
 ConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>
 QueueArrayUtils
 GPUCommand<T>
-EnqueueableGPUCommand<T>
 GPUCommandContainerBody<T>
 GPUCommandContainer<T>
 BufferCommandQueue.InitObj(Buffer; c: Context)
@@ -256,12 +259,18 @@ BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>; offset, CommandQ
 BufferCommandQueue.AddCopyForm(CommandQueue<Buffer>)
 BufferCommandQueue.AddCopyTo(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
 BufferCommandQueue.AddCopyForm(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
+BufferCommandQueue.AddGetData
+BufferCommandQueue.AddGetData(offset, CommandQueue<integer>)
+BufferCommandQueue.AddGetValue<TRecord>
+BufferCommandQueue.AddGetValue<TRecord>(CommandQueue<integer>)
 KernelCommandQueue.AddCommand(GPUCommand<Kernel>)
 KernelCommandQueue.AddProc((Kernel, Context)->())
 KernelCommandQueue.AddExec1(CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
 KernelCommandQueue.AddExec2(sz1, CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
 KernelCommandQueue.AddExec3(sz1, sz2, CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
 KernelCommandQueue.AddExec(global_work_offset, global_work_size, CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>)
+EnqueueableGPUCommand<T>
+EnqueueableGetCommand<TObj, TRes>
 WCQWaiter
 WCQWaiterAll
 WCQWaiterAny

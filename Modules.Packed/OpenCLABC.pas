@@ -264,13 +264,13 @@ new CommandQueueHostProc(p);
 {$region WaitFor}
 
 type
-  CommandQueueWaitFor = sealed class(ContainerQueue<object>)
+  CommandQueueWaitFor = sealed class(CommandQueue<object>)
     public waiter: WCQWaiter;
     
     public constructor(waiter: WCQWaiter) :=
     self.waiter := waiter;
     
-    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
+    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
     begin
       if need_ptr_qr then new System.InvalidOperationException;
       var wait_ev := waiter.GetWaitEv(tsk, c);
