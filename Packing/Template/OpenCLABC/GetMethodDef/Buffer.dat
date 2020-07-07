@@ -52,3 +52,33 @@ cl.EnqueueReadBuffer(
 !ForcePtrQr
 
 
+
+# GetArray1!AutoSize
+!ResultType
+array of TRecord
+!Enqueue
+var len := o.Size64 div Marshal.SizeOf&<TRecord>;
+var res := new TRecord[len]; !set_res!(res);
+cl.EnqueueReadBuffer(
+  cq, o.Native, Bool.BLOCKING,
+  new UIntPtr(0), new UIntPtr(len * Marshal.SizeOf&<TRecord>),
+  res[0],
+  !evs!
+).RaiseIfError;
+!NeedThread
+
+# GetArray[%rank:1,2,3%]
+{%rank? len : len1,len2 : len1,len2,len3 %}: CommandQueue<integer>
+!ResultType
+array{%rank? : [,] : [,,] %} of TRecord
+!Enqueue
+var res := new TRecord[{%rank? !len! : !len1!,!len2! : !len1!,!len2!,!len3! %}]; !set_res!(res);
+cl.EnqueueReadBuffer(
+  cq, o.Native, Bool.BLOCKING,
+  new UIntPtr(0), new UIntPtr({%rank? int64(!len!) : int64(!len1!)*!len2! : int64(!len1!)*!len2!*!len3! %} * Marshal.SizeOf&<TRecord>),
+  res[{%rank? 0 : 0,0 : 0,0,0 %}],
+  !evs!
+).RaiseIfError;
+!NeedThread
+
+

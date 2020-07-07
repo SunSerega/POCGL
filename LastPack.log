@@ -172,7 +172,6 @@ Comments[OpenCLABC]: WARNING: key %Buffer.GetArray<TArray>(CommandQueue<array of
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArrayAt<TArray>(CommandQueue<integer>, array of CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArrayAt<TArray>(CommandQueue<integer>, CommandQueue<array of integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1<TRecord>()% wasn't used!
-Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1<TRecord>(CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1At<TRecord>(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %Buffer.GetArray2At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
@@ -294,7 +293,6 @@ Comments[OpenCLABC]: WARNING: key %b.CopyToL% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetData% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray1A% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetArray1% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray2% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetArray3% wasn't used!
 Comments[OpenCLABC]: WARNING: key %b.GetValue% wasn't used!

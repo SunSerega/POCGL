@@ -601,14 +601,15 @@ type
       var param_count_l2 := 0;
       if (settings as MethodSettings).args<>nil then
         foreach var arg in (settings as MethodSettings).args do
-        begin
-          if not arg.t.IsCQ then continue;
-          
-          if (settings as MethodSettings).arg_usage[arg.name] = 'ptr' then
-            param_count_l2 += 1 else
-            param_count_l1 += 1;
-          
-        end;
+          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+          begin
+            if not arg.t.IsCQ then continue;
+            
+            if (settings as MethodSettings).arg_usage[arg.name] = 'ptr' then
+              param_count_l2 += 1 else
+              param_count_l1 += 1;
+            
+          end;
       res_EIm += $'    protected function ParamCountL1: integer; override := {param_count_l1};'+#10;
       res_EIm += $'    protected function ParamCountL2: integer; override := {param_count_l2};'+#10;
       

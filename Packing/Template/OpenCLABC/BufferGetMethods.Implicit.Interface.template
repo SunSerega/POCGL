@@ -11,6 +11,14 @@
     
     public function GetValue<TRecord>(offset: CommandQueue<integer>): TRecord; where TRecord: record;
     
+    public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
+    
+    public function GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
+    
+    public function GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
+    
+    public function GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
+    
     {$endregion Get}
     
     

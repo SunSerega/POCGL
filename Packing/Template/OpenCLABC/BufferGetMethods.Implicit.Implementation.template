@@ -15,6 +15,18 @@ GetValue&<TRecord>(0);
 function Buffer.GetValue<TRecord>(offset: CommandQueue<integer>): TRecord :=
 Context.Default.SyncInvoke(self.NewQueue.AddGetValue&<TRecord>(offset) as CommandQueue<TRecord>);
 
+function Buffer.GetArray1<TRecord>: array of TRecord :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord> as CommandQueue<array of TRecord>);
+
+function Buffer.GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord>(len) as CommandQueue<array of TRecord>);
+
+function Buffer.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray2&<TRecord>(len1, len2) as CommandQueue<array[,] of TRecord>);
+
+function Buffer.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray3&<TRecord>(len1, len2, len3) as CommandQueue<array[,,] of TRecord>);
+
 {$endregion Get}
 
 

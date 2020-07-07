@@ -75,6 +75,9 @@ Buffer.GetData
 Buffer.GetData(offset, CommandQueue<integer>)
 Buffer.GetValue<TRecord>
 Buffer.GetValue<TRecord>(CommandQueue<integer>)
+Buffer.GetArray1<TRecord>
+Buffer.GetArray2<TRecord>(len1, CommandQueue<integer>)
+Buffer.GetArray3<TRecord>(len1, len2, CommandQueue<integer>)
 Kernel.CreateProp
 Kernel.Native
 Kernel.Properties
@@ -263,6 +266,10 @@ BufferCommandQueue.AddGetData
 BufferCommandQueue.AddGetData(offset, CommandQueue<integer>)
 BufferCommandQueue.AddGetValue<TRecord>
 BufferCommandQueue.AddGetValue<TRecord>(CommandQueue<integer>)
+BufferCommandQueue.AddGetArray1<TRecord>
+BufferCommandQueue.AddGetArray1<TRecord>(CommandQueue<integer>)
+BufferCommandQueue.AddGetArray2<TRecord>(len1, CommandQueue<integer>)
+BufferCommandQueue.AddGetArray3<TRecord>(len1, len2, CommandQueue<integer>)
 KernelCommandQueue.AddCommand(GPUCommand<Kernel>)
 KernelCommandQueue.AddProc((Kernel, Context)->())
 KernelCommandQueue.AddExec1(CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
