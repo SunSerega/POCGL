@@ -8,6 +8,9 @@
   CreateContextCallback = procedure(errinfo: IntPtr; private_info: IntPtr; cb: UInt32; user_data: IntPtr);
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ContextDestructorCallback = procedure(context: cl_context; user_data: IntPtr);
+  
+  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   EnqueueNativeKernelCallback = procedure(args: IntPtr);
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]

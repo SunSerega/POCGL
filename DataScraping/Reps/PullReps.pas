@@ -26,7 +26,7 @@ begin
   p.Start;
   p.BeginErrorReadLine;
   
-  foreach var l in p_otp.Enmr do Otp(l);
+  foreach var l in p_otp do Otp(l);
   Otp($'Done cloning {nick}');
   
 end;
@@ -52,7 +52,7 @@ begin
   p.BeginOutputReadLine;
   p.BeginErrorReadLine;
   
-  foreach var l in p_otp.Enmr do Otp(l);
+  foreach var l in p_otp do Otp(l);
   Otp($'Done pulling {nick}');
 end;
 

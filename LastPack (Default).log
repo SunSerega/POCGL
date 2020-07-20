@@ -16,158 +16,428 @@ Finished runing SpecPacker
 Compiling "Packing\Template\Pack Template.pas"
 Finished compiling: OK
 Runing Template[OpenCL]
-Template[OpenCL]: Runing Template[..\LicenseHeader]
-Template[OpenCL]: Finished runing Template[..\LicenseHeader]
 Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
 Template[OpenCL]: Finished compiling: OK
-Template[OpenCL]: Runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenCL]: Finished runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenCL]: Runing Template[NameRecords]
-Template[OpenCL]: Finished runing Template[NameRecords]
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
 Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
 Template[OpenCL]: Finished compiling: OK
-Template[OpenCL]: Runing TemplateCommand[Pack Most.pas]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: Reading .bin
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: Fixing all
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing records code
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing enums code
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueMigrateMemObjectEXT]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
-Template[OpenCL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
-Template[OpenCL]: Finished runing TemplateCommand[Pack Most.pas]
-Template[OpenCL]: Runing Template[Enums]
-Template[OpenCL]: Finished runing Template[Enums]
-Template[OpenCL]: Runing Template[Static\Delegates]
-Template[OpenCL]: Finished runing Template[Static\Delegates]
-Template[OpenCL]: Runing Template[Records]
-Template[OpenCL]: Finished runing Template[Records]
-Template[OpenCL]: Runing Template[Static\MiscTypes]
-Template[OpenCL]: Finished runing Template[Static\MiscTypes]
-Template[OpenCL]: Runing Template[Funcs]
-Template[OpenCL]: Finished runing Template[Funcs]
-Template[OpenCL]: Runing Template[Static\DebugImpl]
-Template[OpenCL]: Finished runing Template[Static\DebugImpl]
-Template[OpenCL]: Runing Template[Static\MiscImpl]
-Template[OpenCL]: Finished runing Template[Static\MiscImpl]
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing records code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueMigrateMemObjectEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]
 ==================================== OpenCLABC ===================================
+Runing Template[OpenCLABC]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
+Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
+Finished runing Template[OpenCLABC]
+Runing Template[OpenCLABCBase]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\PropGen.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\PropGen.exe]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Context]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Device]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Kernel]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Mem]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Platform]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Program]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\PropGen.exe]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\MethodGen.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\MethodGen.exe]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Buffer]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Kernel]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\MethodGen.exe]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\GetMethodGen.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [Buffer]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\ConvQueueStaticArray.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
+Finished runing Template[OpenCLABCBase]
 Compiling "Packing\Doc\PackComments.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
+Comments[OpenCLABC]: ERROR: key %sub device:split <=0 count% not found!
+Comments[OpenCLABC]: ERROR: key %context:main_dvc not in dvcs% not found!
+Comments[OpenCLABC]: ERROR: key %context:main_dvc not in dvcs% not found!
+Comments[OpenCLABC]: ERROR: key %Buffer:Not inited% not found!
+Comments[OpenCLABC]: ERROR: key %Buffer:MakeSubBuff parent not inited% not found!
+Comments[OpenCLABC]: ERROR: key %Buffer:SubBuffer.Init% not found!
+Comments[OpenCLABC]: ERROR: key %ProgramCode:Build fail% not found!
+Comments[OpenCLABC]: WARNING: key %__NativUtils% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__EventList% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__IQueueRes% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__QueueRes<T>% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__MWEventContainer% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__CLTaskResLess% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__ContainerQueue<T>% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__HostQueue<TInp,TRes>% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommand<T>% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommandContainerBody<T>% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommandContainer<T>% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.Cast<T>()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenConvert<T2>(T->T2)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenConvert<T2>((T,Context)->T2)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.Multiusable()% wasn't used!
 Comments[OpenCLABC]: WARNING: key %CommandQueueBase.Multiusable()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitFor(CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLTaskBase.Wait()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLTaskBase.WaitRes()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLTask<T>.WaitRes()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommandContainer<T>.Equals(object)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommandContainer<T>.ToString()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommandContainer<T>.GetType()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %__GPUCommandContainer<T>.GetHashCode()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddProc((Buffer,Context)->())% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddProc((Kernel,Context)->())% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.(Buffer)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.(CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(CommandQueue<&Array>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(CommandQueue<&Array>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddReadValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(pointer, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(CommandQueue<&Array>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddCopyFrom(CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddCopyFrom(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %BufferCommandQueue.AddCopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.(Kernel)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.(CommandQueue<Kernel>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec(array of integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec(array of CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec(CommandQueue<array of integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec(array of UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec(array of CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec(CommandQueue<array of UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec1(integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec1(CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec1(UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec1(CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec2(integer, integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec2(CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec2(UIntPtr, UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec2(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec3(integer, integer, integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec3(UIntPtr, UIntPtr, UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCommandQueue.AddExec3(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.(UIntPtr)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.(integer)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.(int64)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.(UIntPtr, Context)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.(integer, Context)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.(int64, Context)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.SubBuff(integer, integer)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.Parent% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.NewQueue()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.Dispose()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(CommandQueue<&Array>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(CommandQueue<&Array>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.ReadValue<TRecord>(TRecord, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillData(pointer, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(&Array)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(CommandQueue<&Array>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(&Array, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillArray(CommandQueue<&Array>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.FillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.CopyFrom(CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.CopyFrom(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.CopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetData()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetData(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray<TArray>(array of integer)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray<TArray>(CommandQueue<array of integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArrayAt<TArray>(CommandQueue<integer>, array of CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArrayAt<TArray>(CommandQueue<integer>, CommandQueue<array of integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1<TRecord>()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray1At<TRecord>(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray2At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetArray3At<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetValue<TRecord>()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Buffer.GetValueAt<TRecord>(CommandQueue<integer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.(ProgramCode, string)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.NewQueue()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec(array of integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec(array of CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec(CommandQueue<array of integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec(array of UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec(array of CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec(CommandQueue<array of UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec1(integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec1(CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec1(UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec1(CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec2(integer, integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec2(CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec2(UIntPtr, UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec2(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec3(integer, integer, integer, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec3(UIntPtr, UIntPtr, UIntPtr, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Kernel.Exec3(CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, CommandQueue<UIntPtr>, array of CommandQueue<Buffer>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Context.()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Context.(DeviceType)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Context.(cl_context)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Context.(cl_context, cl_device_id)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.(array of string)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.(Context, array of string)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.GetAllKernels()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.Serialize()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.Deserialize(Context, array of byte)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.DeserializeFrom(Context, System.IO.BinaryReader)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ProgramCode.DeserializeFrom(Context, System.IO.Stream)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ConstQueue<T>.(T)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %IConstQueue.GetConstVal()% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.HFQ<T>(()->T)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.HFQ<T>(Context->T)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.HPQ(()->())% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.HPQ(Context->())% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.WaitFor(CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.WaitForAll(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.WaitForAll(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.WaitForAny(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.WaitForAny(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueueBase(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueueBase(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<T>(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<T>(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<T>(sequence of CommandQueue<T>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<T>(array of CommandQueue<T>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TRes>(Func<array of object, TRes>, sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TRes>(Func<array of object, TRes>, array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TInp,TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TInp,TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TRes>(Func<array of object, Context, TRes>, sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TRes>(Func<array of object, Context, TRes>, array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineSyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueueBase(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueueBase(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<T>(sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<T>(array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<T>(sequence of CommandQueue<T>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<T>(array of CommandQueue<T>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TRes>(Func<array of object, TRes>, sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TRes>(Func<array of object, TRes>, array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TInp,TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TInp,TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TRes>(Func<array of object, Context, TRes>, sequence of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TRes>(Func<array of object, Context, TRes>, array of CommandQueueBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %.CombineAsyncQueue<TInp,TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %hidden% wasn't used!
+Comments[OpenCLABC]: WARNING: key %cq.Cast% wasn't used!
+Comments[OpenCLABC]: WARNING: key %cq.ThenConvert% wasn't used!
+Comments[OpenCLABC]: WARNING: key %cq.ThenConvertC% wasn't used!
+Comments[OpenCLABC]: WARNING: key %cq.Multiusable% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ccq.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %ccq.GetConstVal% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.HFQ% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.HPQ% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.WaitFor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.WaitForAll% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.WaitForAny% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.CombineSyncQueueBase% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.CombineSyncQueue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.CombineSyncQueueF% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.CombineAsyncQueueBase% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.CombineAsyncQueue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %g.CombineAsyncQueueF% wasn't used!
+Comments[OpenCLABC]: WARNING: key %task.Wait% wasn't used!
+Comments[OpenCLABC]: WARNING: key %task.WaitRes% wasn't used!
+Comments[OpenCLABC]: WARNING: key %bcq.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %bcq.ctorQ% wasn't used!
+Comments[OpenCLABC]: WARNING: key %kcq.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %kcq.ctorQ% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b:offset_def% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b:pos_len_def% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.ctorC% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.Dispose% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.SubBuff% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.Parent% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.NewQueue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.WriteArray% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.WriteValue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.ReadArray% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.ReadValue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.FillData% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.FillArray% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.CopyFrom% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.CopyFromL% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.CopyToL% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetData% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetArray% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetArray1A% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetArray2% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetArray3% wasn't used!
+Comments[OpenCLABC]: WARNING: key %b.GetValue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %k.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %k.NewQueue% wasn't used!
+Comments[OpenCLABC]: WARNING: key %k.Exec% wasn't used!
+Comments[OpenCLABC]: WARNING: key %k.Exec1% wasn't used!
+Comments[OpenCLABC]: WARNING: key %k.Exec2% wasn't used!
+Comments[OpenCLABC]: WARNING: key %k.Exec3% wasn't used!
+Comments[OpenCLABC]: WARNING: key %c.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %c.ctorD% wasn't used!
+Comments[OpenCLABC]: WARNING: key %c.ctorNtv% wasn't used!
+Comments[OpenCLABC]: WARNING: key %c.ctorNtvD% wasn't used!
+Comments[OpenCLABC]: WARNING: key %pc.ctor% wasn't used!
+Comments[OpenCLABC]: WARNING: key %pc.ctorC% wasn't used!
+Comments[OpenCLABC]: WARNING: key %pc.GetAllKernels% wasn't used!
+Comments[OpenCLABC]: WARNING: key %pc.Serialize% wasn't used!
+Comments[OpenCLABC]: WARNING: key %pc.Deserialize% wasn't used!
+Comments[OpenCLABC]: WARNING: key %pc.DeserializeFrom% wasn't used!
 Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
-Template[OpenGL]: Runing Template[..\LicenseHeader]
-Template[OpenGL]: Finished runing Template[..\LicenseHeader]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack NameRecords.pas]
-Template[OpenGL]: Runing Template[NameRecords]
-Template[OpenGL]: Finished runing Template[NameRecords]
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack Most.pas]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Reading .bin
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Fixing all
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing records code
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing enums code
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: Constructing funcs code
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glBindBufferBase] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveAttrib]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveUniform]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVarying]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetPerfMonitorCountersAMD]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveUniformARB]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveAttribARB]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVaryingEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesAddressNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glListDrawCommandsStatesClientNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glAsyncCopyBufferSubDataNVX]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [glPointAlongPathNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetProgramResourcefvNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [glGetActiveVaryingNV]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglSetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglAssociateImageBufferEventsI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglQueryFrameTrackingI3D]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
-Template[OpenGL]: TemplateCommand[Pack Most.pas]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
-Template[OpenGL]: Finished runing TemplateCommand[Pack Most.pas]
-Template[OpenGL]: Runing Template[Enums]
-Template[OpenGL]: Finished runing Template[Enums]
-Template[OpenGL]: Runing Template[Static\Delegates]
-Template[OpenGL]: Finished runing Template[Static\Delegates]
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing records code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferBase] was added in versions [3.0] and [3.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveAttrib]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveUniform]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVarying]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetPerfMonitorCountersAMD]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveUniformARB]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveAttribARB]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVaryingEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesAddressNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glListDrawCommandsStatesClientNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyBufferSubDataNVX]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glPointAlongPathNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetProgramResourcefvNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveVaryingNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglSetGammaTableI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglAssociateImageBufferEventsI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglQueryFrameTrackingI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack VecTypes.pas]
-Template[OpenGL]: Runing Template[VecTypes]
-Template[OpenGL]: Finished runing Template[VecTypes]
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack MtrTypes.pas]
-Template[OpenGL]: Runing Template[MtrTypes]
-Template[OpenGL]: Finished runing Template[MtrTypes]
-Template[OpenGL]: Runing Template[Records]
-Template[OpenGL]: Finished runing Template[Records]
-Template[OpenGL]: Runing Template[Static\MiscTypes]
-Template[OpenGL]: Finished runing Template[Static\MiscTypes]
-Template[OpenGL]: Runing Template[Funcs]
-Template[OpenGL]: Finished runing Template[Funcs]
-Template[OpenGL]: Runing Template[Static\GDIIntegration]
-Template[OpenGL]: Finished runing Template[Static\GDIIntegration]
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
 Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[Pack MtrExt.pas]
-Template[OpenGL]: Finished runing TemplateCommand[Pack MtrExt.pas]
-Template[OpenGL]: Runing Template[MtrExt]
-Template[OpenGL]: Finished runing Template[MtrExt]
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
 Finished runing Template[OpenGL]
 ==================================== OpenGLABC ===================================
+Runing Template[OpenGLABC]
+Finished runing Template[OpenGLABC]
+Runing Template[OpenGLABCBase]
+Finished runing Template[OpenGLABCBase]
 Runing Comments[OpenGLABC]
+Comments[OpenGLABC]: WARNING: Skipped [OpenGLABC], because data folder not found
 Finished runing Comments[OpenGLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
@@ -180,26 +450,6 @@ Finished compiling: OK
 Runing Tester
 Tester: Testing selected modules:
 Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#6.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_4#Контейнер для кода (ProgramCode)_2#Создание из бинарного файла.md sample#2.pas"
-Tester: Finished compiling: ERRОR
-Tester: Compiling "Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#3.pas"
-Tester: Finished compiling: ERRОR
-Tester: Compiling "Tests\Comp\Spec Samples\Nativ Interop_2#Делегаты_.md sample#4.pas"
-Tester: Finished compiling: ERRОR
 Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
@@ -229,23 +479,13 @@ Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~CQ\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~Err\0.pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\07 HostExec\~Err\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
 Tester: Finished compiling: OK
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_1#Возвращаемое значение очередей.md sample#1]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#10]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#7]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_2#Очередь [команд] (CommandQueue)_2#Создание очередей.md sample#9]
-Tester: Executing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
-Tester: Done executing Test[Tests\Comp\Spec Samples\CL ABC_5#Kernel_.md sample#1]
 Tester: Executing Test[Samples\OpenCL\MatrMlt]
 Tester: Done executing Test[Samples\OpenCL\MatrMlt]
 Tester: Executing Test[Samples\OpenCL\SimpleAddition]
@@ -277,9 +517,6 @@ Tester: Done executing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
 Tester: Done executing Test[Tests\Exec\GL\Mtr.Translate]
 Tester: Cleanup
-Tester: Error unloading domain of Test[Tests\Exec\CLABC\03 Multiusable\~CQ\0]: System.CannotUnloadAppDomainException: Error while unloading appdomain. (Exception from HRESULT: 0x80131015)
-   at System.AppDomain.Unload(AppDomain domain)
-   at Tester.<>local_variables_class_14.<>lambda3()
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
@@ -287,6 +524,8 @@ Packing Modules.Packed\OpenCL.pas
 Packing Modules.Packed\OpenCLABC.pas
 Packing Modules.Packed\OpenGL.pas
 Packing Modules.Packed\OpenGLABC.pas
+Packing Modules.Packed\Internal\OpenCLABCBase.pas
+Packing Modules.Packed\Internal\OpenGLABCBase.pas
 Done copying release modules
 Packing sample "Samples\OpenCL\MatrMlt.cl"
 Packing sample "Samples\OpenCL\MatrMlt.pas"
@@ -299,8 +538,9 @@ Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAdd
 Packing sample "Samples\OpenCLABC\Wait очереди\1.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
+Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Packed 12 samples
+Packed 13 sample files
 Packing spec [Гайд по использованию OpenGL и OpenCL.html]
 Packing spec [Справка OpenCLABC.html]
 Packing spec [Справка OpenGLABC.html]

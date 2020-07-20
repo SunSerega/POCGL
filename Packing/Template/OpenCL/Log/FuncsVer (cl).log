@@ -676,6 +676,7 @@
 	clEnqueueSVMMigrateMem
 	clSetProgramReleaseCallback
 	clSetProgramSpecializationConstant
+	clSetContextDestructorCallback
 	clCreateBufferWithProperties
 	clCreateImageWithProperties
 

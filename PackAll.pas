@@ -371,7 +371,7 @@ begin
             c += 1;
           end);
           
-          Otp($'Packed {c} samples');
+          Otp($'Packed {c} sample files');
         end)
       ;
       

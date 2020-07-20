@@ -873,6 +873,9 @@
  ErrorCode	| cl_command_queue	| CommandQueueProperties	| Bool	| var CommandQueueProperties	|
  ErrorCode	| cl_command_queue	| CommandQueueProperties	| Bool	| IntPtr	|
 
+# clSetContextDestructorCallback
+ ErrorCode	| cl_context	| ContextDestructorCallback	| IntPtr	|
+
 # clSetDefaultDeviceCommandQueue
  ErrorCode	| cl_context	| cl_device_id	| cl_command_queue	|
 

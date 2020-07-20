@@ -1001,8 +1001,13 @@ type
     private static _DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE          := new DeviceInfo($1067);
     private static _DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT     := new DeviceInfo($1068);
     private static _DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT               := new DeviceInfo($1069);
+    private static _DEVICE_UUID_KHR                                    := new DeviceInfo($106A);
+    private static _DRIVER_UUID_KHR                                    := new DeviceInfo($106B);
+    private static _DEVICE_LUID_VALID_KHR                              := new DeviceInfo($106C);
+    private static _DEVICE_LUID_KHR                                    := new DeviceInfo($106D);
+    private static _DEVICE_NODE_MASK_KHR                               := new DeviceInfo($106E);
     private static _DEVICE_OPENCL_C_FEATURES                           := new DeviceInfo($106F);
-    private static _DEVICE_DEVICE_ENQUEUE_SUPPORT                      := new DeviceInfo($1070);
+    private static _DEVICE_DEVICE_ENQUEUE_CAPABILITIES                 := new DeviceInfo($1070);
     private static _DEVICE_PIPE_SUPPORT                                := new DeviceInfo($1071);
     private static _PROGRAM_IL_KHR                                     := new DeviceInfo($1169);
     private static _DEVICE_TERMINATE_CAPABILITY_KHR                    := new DeviceInfo($2031);
@@ -1164,8 +1169,13 @@ type
     public static property DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE:          DeviceInfo read _DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE;
     public static property DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT:     DeviceInfo read _DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT;
     public static property DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT:               DeviceInfo read _DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT;
+    public static property DEVICE_UUID_KHR:                                    DeviceInfo read _DEVICE_UUID_KHR;
+    public static property DRIVER_UUID_KHR:                                    DeviceInfo read _DRIVER_UUID_KHR;
+    public static property DEVICE_LUID_VALID_KHR:                              DeviceInfo read _DEVICE_LUID_VALID_KHR;
+    public static property DEVICE_LUID_KHR:                                    DeviceInfo read _DEVICE_LUID_KHR;
+    public static property DEVICE_NODE_MASK_KHR:                               DeviceInfo read _DEVICE_NODE_MASK_KHR;
     public static property DEVICE_OPENCL_C_FEATURES:                           DeviceInfo read _DEVICE_OPENCL_C_FEATURES;
-    public static property DEVICE_DEVICE_ENQUEUE_SUPPORT:                      DeviceInfo read _DEVICE_DEVICE_ENQUEUE_SUPPORT;
+    public static property DEVICE_DEVICE_ENQUEUE_CAPABILITIES:                 DeviceInfo read _DEVICE_DEVICE_ENQUEUE_CAPABILITIES;
     public static property DEVICE_PIPE_SUPPORT:                                DeviceInfo read _DEVICE_PIPE_SUPPORT;
     public static property PROGRAM_IL_KHR:                                     DeviceInfo read _PROGRAM_IL_KHR;
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                    DeviceInfo read _DEVICE_TERMINATE_CAPABILITY_KHR;
@@ -1329,8 +1339,13 @@ type
       if self.val = UInt32($1067) then Result := 'DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE' else
       if self.val = UInt32($1068) then Result := 'DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT' else
       if self.val = UInt32($1069) then Result := 'DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT' else
+      if self.val = UInt32($106A) then Result := 'DEVICE_UUID_KHR' else
+      if self.val = UInt32($106B) then Result := 'DRIVER_UUID_KHR' else
+      if self.val = UInt32($106C) then Result := 'DEVICE_LUID_VALID_KHR' else
+      if self.val = UInt32($106D) then Result := 'DEVICE_LUID_KHR' else
+      if self.val = UInt32($106E) then Result := 'DEVICE_NODE_MASK_KHR' else
       if self.val = UInt32($106F) then Result := 'DEVICE_OPENCL_C_FEATURES' else
-      if self.val = UInt32($1070) then Result := 'DEVICE_DEVICE_ENQUEUE_SUPPORT' else
+      if self.val = UInt32($1070) then Result := 'DEVICE_DEVICE_ENQUEUE_CAPABILITIES' else
       if self.val = UInt32($1071) then Result := 'DEVICE_PIPE_SUPPORT' else
       if self.val = UInt32($1169) then Result := 'PROGRAM_IL_KHR' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY_KHR' else
@@ -3045,6 +3060,9 @@ type
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   CreateContextCallback = procedure(errinfo: IntPtr; private_info: IntPtr; cb: UInt32; user_data: IntPtr);
+  
+  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ContextDestructorCallback = procedure(context: cl_context; user_data: IntPtr);
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   EnqueueNativeKernelCallback = procedure(args: IntPtr);
@@ -7879,6 +7897,12 @@ type
     external 'opencl.dll' name 'clSetCommandQueueProperty';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetCommandQueueProperty(command_queue: cl_command_queue; properties: CommandQueueProperties; enable: Bool; old_properties: IntPtr): ErrorCode :=
     z_SetCommandQueueProperty_ovr_2(command_queue, properties, enable, old_properties);
+    
+    // added in cl3.0
+    private static function z_SetContextDestructorCallback_ovr_0(context: cl_context; pfn_notify: ContextDestructorCallback; user_data: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clSetContextDestructorCallback';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetContextDestructorCallback(context: cl_context; pfn_notify: ContextDestructorCallback; user_data: IntPtr): ErrorCode :=
+    z_SetContextDestructorCallback_ovr_0(context, pfn_notify, user_data);
     
     // added in cl2.1
     private static function z_SetDefaultDeviceCommandQueue_ovr_0(context: cl_context; device: cl_device_id; command_queue: cl_command_queue): ErrorCode;

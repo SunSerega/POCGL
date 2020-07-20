@@ -2478,6 +2478,7 @@
     private static _COLOR_ATTACHMENT29 := new FramebufferAttachment($8CFD);
     private static _COLOR_ATTACHMENT30 := new FramebufferAttachment($8CFE);
     private static _COLOR_ATTACHMENT31 := new FramebufferAttachment($8CFF);
+    private static _DEPTH_ATTACHMENT   := new FramebufferAttachment($8D00);
     private static _STENCIL_ATTACHMENT := new FramebufferAttachment($8D20);
     
     public static property COLOR_ATTACHMENT0:  FramebufferAttachment read _COLOR_ATTACHMENT0;
@@ -2512,6 +2513,7 @@
     public static property COLOR_ATTACHMENT29: FramebufferAttachment read _COLOR_ATTACHMENT29;
     public static property COLOR_ATTACHMENT30: FramebufferAttachment read _COLOR_ATTACHMENT30;
     public static property COLOR_ATTACHMENT31: FramebufferAttachment read _COLOR_ATTACHMENT31;
+    public static property DEPTH_ATTACHMENT:   FramebufferAttachment read _DEPTH_ATTACHMENT;
     public static property STENCIL_ATTACHMENT: FramebufferAttachment read _STENCIL_ATTACHMENT;
     
     public function ToString: string; override;
@@ -2548,6 +2550,7 @@
       if self.val = UInt32($8CFD) then Result := 'COLOR_ATTACHMENT29' else
       if self.val = UInt32($8CFE) then Result := 'COLOR_ATTACHMENT30' else
       if self.val = UInt32($8CFF) then Result := 'COLOR_ATTACHMENT31' else
+      if self.val = UInt32($8D00) then Result := 'DEPTH_ATTACHMENT' else
       if self.val = UInt32($8D20) then Result := 'STENCIL_ATTACHMENT' else
         Result := $'FramebufferAttachment[{self.val}]';
     end;

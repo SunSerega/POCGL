@@ -13,6 +13,10 @@ CL_CALLBACK = ProgramCallback
 !repl_par_t
 CL_CALLBACK = CreateContextCallback
 
+# clSetContextDestructorCallback
+!repl_par_t
+CL_CALLBACK = ContextDestructorCallback
+
 # clEnqueueNativeKernel
 !repl_par_t
 CL_CALLBACK = EnqueueNativeKernelCallback

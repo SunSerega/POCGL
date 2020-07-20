@@ -14,6 +14,7 @@ Struct [cl_mem_ion_host_ptr] was skipped
 Struct [cl_mem_android_native_buffer_host_ptr] was skipped
 Struct [cl_name_version] was skipped
 Group [DeviceAtomicCapabilities] was skipped
+Group [DeviceEnqueueCapabilities] was skipped
 Group [QueuePriorityKhr] was skipped
 Group [QueueThrottleKhr] was skipped
 Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was skipped

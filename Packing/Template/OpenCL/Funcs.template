@@ -4744,6 +4744,12 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetCommandQueueProperty(command_queue: cl_command_queue; properties: CommandQueueProperties; enable: Bool; old_properties: IntPtr): ErrorCode :=
     z_SetCommandQueueProperty_ovr_2(command_queue, properties, enable, old_properties);
     
+    // added in cl3.0
+    private static function z_SetContextDestructorCallback_ovr_0(context: cl_context; pfn_notify: ContextDestructorCallback; user_data: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clSetContextDestructorCallback';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetContextDestructorCallback(context: cl_context; pfn_notify: ContextDestructorCallback; user_data: IntPtr): ErrorCode :=
+    z_SetContextDestructorCallback_ovr_0(context, pfn_notify, user_data);
+    
     // added in cl2.1
     private static function z_SetDefaultDeviceCommandQueue_ovr_0(context: cl_context; device: cl_device_id; command_queue: cl_command_queue): ErrorCode;
     external 'opencl.dll' name 'clSetDefaultDeviceCommandQueue';
