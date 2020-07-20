@@ -219,7 +219,7 @@ type
         Result := def;
     end;
     
-    static procedure LoadAll(path: string; exp_mode: string);
+    static procedure LoadAll(path: string; exp_mode: HashSet<string>);
     begin
       if not System.IO.Directory.Exists(path) then exit;
       
@@ -233,17 +233,14 @@ type
         t.LoadSettingsDict;
         
         if t.all_settings.ContainsKey('#SkipTest') then continue;
-        all_loaded += t;
         
         t.req_modules := t.ExtractSettingStr('#ReqModules', nil)?.ToWords('+');
-        if (t.req_modules=nil) or t.req_modules.Any(mn->not allowed_modules.Contains(mn)) then t.FindReqModules;
-        if not t.req_modules.All(m->allowed_modules.Contains(m)) then
-        begin
-          t.req_modules := nil;
-          continue;
-        end;
+        if (t.req_modules=nil) or t.req_modules.Any(mn->not valid_modules.Contains(mn)) then t.FindReqModules;
+        if not t.req_modules.All(m->allowed_modules.Contains(m)) then continue;
         
-        t.test_mode := t.ExtractSettingStr('#TestMode', exp_mode).ToWords('+').ToHashSet;
+        all_loaded += t;
+        
+        t.test_mode := t.ExtractSettingStr('#TestMode', nil)?.ToWords('+').ToHashSet ?? exp_mode;
         
         if t.test_mode.Contains('Comp') then
         begin
@@ -510,9 +507,9 @@ begin
   try
     TestInfo.LoadCLA;
     
-    TestInfo.LoadAll('Tests\Comp',  'Comp');
-    TestInfo.LoadAll('Samples',     'Comp');
-    TestInfo.LoadAll('Tests\Exec',  'Comp+Exec');
+    TestInfo.LoadAll('Tests\Comp',  HSet('Comp'));
+    TestInfo.LoadAll('Samples',     HSet('Comp'));
+    TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
     
     try
       TestInfo.CompAll;

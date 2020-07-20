@@ -112,7 +112,7 @@ begin
   A.Println;
   Writeln;
   
-  cl.EnqueueReadBuffer(command_queue, V2_buf, Bool.NON_BLOCKING, new UIntPtr(0), new UIntPtr(VecByteSize), V1[0], 1,k2_ev,IntPtr.Zero).RaiseIfError;
+  cl.EnqueueReadBuffer(command_queue, V2_buf, Bool.BLOCKING, new UIntPtr(0), new UIntPtr(VecByteSize), V1[0], 1,k2_ev,IntPtr.Zero).RaiseIfError;
   Writeln('Вектор V2 = C*V1:');
   V1.Println;
   

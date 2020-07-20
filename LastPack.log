@@ -3,6 +3,7 @@ OpenCL + OpenCLABC + Compile + Test + Release
 Start packing
 WARNING: Failed to clear file PackAll.pdb
 ===================================== OpenCL =====================================
+WARNING: Killed runing process [Pack Template] to be able to compile .pas file
 Compiling "Packing\Template\Pack Template.pas"
 Finished compiling: OK
 Runing Template[OpenCL]
@@ -390,6 +391,10 @@ Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~Err\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\07 HostExec\~Err\0.pas"
 Tester: Finished compiling: OK
+Tester: Executing Test[Samples\OpenCL\MatrMlt]
+Tester: Done executing Test[Samples\OpenCL\MatrMlt]
+Tester: Executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Done executing Test[Samples\OpenCL\SimpleAddition]
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -413,9 +418,6 @@ Tester: Done executing Test[Tests\Exec\CLABC\03 Multiusable\~Err\0]
 Tester: Executing Test[Tests\Exec\CLABC\07 HostExec\~Err\0]
 Tester: Done executing Test[Tests\Exec\CLABC\07 HostExec\~Err\0]
 Tester: Cleanup
-Tester: WARNING: File "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).td" updated
-Tester: WARNING: File "Tests\Exec\GL\Mtr.Rotate3D.td" updated
-Tester: WARNING: File "Tests\Exec\GL\Mtr.Translate.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
