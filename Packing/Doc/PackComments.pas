@@ -20,9 +20,17 @@ type
       if all.ContainsKey(bl[0]) then
         Otp($'ERROR: key %{bl[0]}% found in "{all[bl[0]].source}" and "{GetRelativePathRTE(fname)}"') else
         all[bl[0]] := new CommentData(GetRelativePathRTE(fname), bl[1].JoinToString(#10).Trim);
-    public static procedure LoadAll(nick: string) :=
-    foreach var fname in System.IO.Directory.EnumerateFiles(GetFullPathRTE(nick), '*.dat', System.IO.SearchOption.AllDirectories) do
-      LoadFile(fname);
+    public static procedure LoadAll(nick: string);
+    begin
+      var path := GetFullPathRTE(nick);
+      if not System.IO.Directory.Exists(path) then
+      begin
+        Otp($'WARNING: Skipped [{nick}], because data folder not found');
+        exit;
+      end;
+      foreach var fname in System.IO.Directory.EnumerateFiles(path, '*.dat', System.IO.SearchOption.AllDirectories) do
+        LoadFile(fname);
+    end;
     
     private static function GetPrintableData(key: string): string;
     begin

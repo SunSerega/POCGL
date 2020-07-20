@@ -15,15 +15,8 @@ begin
   cl.GetPlatformIDs(1, platform, IntPtr.Zero).RaiseIfError;
   
   var device: cl_device_id;
-  cl.GetDeviceIDs(platform, DeviceType.DEVICE_TYPE_DEFAULT, 1,device,IntPtr.Zero).RaiseIfError;
-  
-  // DEVICE_TYPE_DEFAULT это, обычно, GPU
-  // Но, к примеру, в ноутбуке его может не быть
-  // Тогда надо хоть для чего то попытаться инициализировать
-  // DEVICE_TYPE_ALL выберет первое любое устройство, поддерживающее OpenCL
-//  cl.GetDeviceIDs(platform, DeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
-  // Если всё ещё пишет что устройств нет - обновите драйверы,
-  // потому что даже встроенные видеокарты поддерживают OpenCL
+  cl.GetDeviceIDs(platform, DeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
+  // Если пишет что устройств нет - обновите драйверы
   
   var context := cl.CreateContext(nil, 1,device, nil,IntPtr.Zero, ec);
   ec.RaiseIfError;

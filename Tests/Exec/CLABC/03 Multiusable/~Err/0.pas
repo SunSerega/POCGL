@@ -5,7 +5,7 @@ begin
   begin
     Sleep(10);
     raise new Exception('>>> текст ошибки <<<');
-  end).Multiusable;
+  end).MultiusableBase;
   
   Context.Default.SyncInvoke(
     CombineAsyncQueueBase(ArrGen(100, i->qf()))

@@ -116,6 +116,11 @@ function HLModuleTask(mn: string) := not stages.Contains(mn) ? EmptyTask :
 begin
   try
     
+//    stages := AllStages;
+//    module_packed_evs := AllModules.Intersect(stages).ToDictionary(mn->mn,mn->new ManualResetEvent(false));
+//    CompTask('Packing\Template\Pack Template.pas').SyncExec;
+//    exit;
+    
     {$region Load}
     
     Logger.main_log += new FileLogger('LastPack.log');
@@ -143,6 +148,7 @@ begin
         end);
         Otp($'Executing selected stages:');
       end;
+//      stages := HSet(OpenGLABCStr);
       
       Otp(stages.JoinIntoString(' + '));
     end;
@@ -157,7 +163,14 @@ begin
       ProcTask(()->
       begin
         var c := 0;
-        var skip_pcu := AllModules.Except(stages).Select(mn->mn+'.pcu').ToHashSet;
+        var skip_pcu := AllModules.Except(stages).SelectMany(mn->
+          mn.EndsWith('ABC') ? Seq(
+            mn+'Base.pcu',
+            mn+'.pcu'
+          ) : Seq(
+            mn+'.pcu'
+          )
+        ).ToHashSet;
         
         foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
         begin
@@ -284,7 +297,8 @@ begin
         ProcTask(()->
         begin
           var mns := AllModules.Intersect(stages).ToHashSet;
-          if mns.Count=0 then mns := AllModules.ToHashSet;
+          var all_modules := mns.Count=0;
+          if all_modules then mns := AllModules.ToHashSet;
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
@@ -313,7 +327,7 @@ begin
             end;
           end;
           
-          if copy_to_pf and stages.Contains('Compile') then
+          if copy_to_pf and (Compile or all_modules) then
             foreach var mn in mns do
             begin
               var org_fname := $'Modules.Packed\{mn}.pcu';

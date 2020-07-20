@@ -9,7 +9,7 @@ uses System.Threading.Tasks;
 
 type
   StrConsts = static class
-    const OutputPipeId    = 'OutputPipeId';
+    const OutputPipeId = 'OutputPipeId';
   end;
   
 var sec_thrs := new List<Thread>;
@@ -760,7 +760,7 @@ begin
   if not pipe_connection_established then pipe.Close;
 end;
 
-procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->());
+procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); params search_paths: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then
@@ -779,7 +779,10 @@ begin
   
   l_otp($'Compiling "{GetRelativePath(fname)}"');
   
-  var psi := new ProcessStartInfo('C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe', $'"{fname}"');
+  var psi := new ProcessStartInfo(
+    'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe',
+    search_paths.Select(spath->$'/SearchDir:"{spath}"').Append($'"{fname}"').JoinToString
+  );
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
   psi.RedirectStandardInput := true;
@@ -1046,7 +1049,7 @@ try
   if is_secondary_proc then
     Logger.main_log := new ParentStreamLogger else
   begin
-    Console.OutputEncoding := enc;
+//    Console.OutputEncoding := enc;
     //ToDo желательно ещё Console.SetError, чтоб выводить в файл ошибки из финализации дочеренных процессов
     // - но при этом не забыть и про ошибку в финализации текущего процесса
   end;

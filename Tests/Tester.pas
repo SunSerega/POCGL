@@ -66,7 +66,7 @@ begin
   end);
   
   if dom.GetData('fatal_err') is string(var fatal_err) then
-    ErrOtp(new MessageException(fatal_err));
+    raise new MessageException(fatal_err);
   
   otp_l.s := $'Done executing {nick}';
   otp_l.t += int64(dom.GetData('exec_time'));
@@ -97,6 +97,7 @@ type
   
   TestInfo = sealed class
     pas_fname, td_fname: string;
+    stop_test := false;
     
     all_settings := new Dictionary<string, string>;
     used_settings := new List<string>;
@@ -222,17 +223,6 @@ type
     begin
       if not System.IO.Directory.Exists(path) then exit;
       
-      foreach var dir in System.IO.Directory.EnumerateDirectories(path, '*.*', System.IO.SearchOption.AllDirectories).Prepend(path) do
-      begin
-        test_folders += dir;
-        foreach var mn in allowed_modules do
-        begin
-          System.IO.File.Copy($'Modules.Packed\{mn}.pcu', $'{dir}\{mn}.pcu', true);
-          if mn.EndsWith('ABC') then
-            System.IO.File.Copy($'Modules.Packed\Internal\{mn}Base.pcu', $'{dir}\{mn}Base.pcu', true);
-        end;
-      end;
-      
       foreach var pas_fname in System.IO.Directory.EnumerateFiles(path, '*.pas', System.IO.SearchOption.AllDirectories) do
       try
         var t := new TestInfo;
@@ -290,7 +280,7 @@ type
         var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
         
         var comp_err: string := nil;
-        CompilePasFile(t.pas_fname, Otp, err->begin comp_err := err end);
+        CompilePasFile(t.pas_fname, Otp, err->begin comp_err := err end, GetFullPath('Modules.Packed'));
         
         if comp_err<>nil then
         begin
@@ -327,6 +317,7 @@ type
               DialogResult.Cancel: Halt(-1);
             end;
           
+          t.stop_test := true;
         end else
         begin
           
@@ -362,6 +353,12 @@ type
         if (t.req_modules<>nil) and t.test_mode.Contains('Exec') then
         try
           var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
+          
+          if t.stop_test then
+          begin
+            Otp($'WARNING: Test[{fwoe}] wasn''t executed because of prior errors');
+            continue;
+          end;
           
           if not FileExists(fwoe+'.exe') then
           begin
@@ -517,13 +514,14 @@ begin
     TestInfo.LoadAll('Samples',     'Comp');
     TestInfo.LoadAll('Tests\Exec',  'Comp+Exec');
     
-    TestInfo.CompAll;
-    TestInfo.ExecAll;
-    
-    TestInfo.Cleanup;
+    try
+      TestInfo.CompAll;
+      TestInfo.ExecAll;
+    finally
+      TestInfo.Cleanup;
+    end;
     
     Otp('Done testing');
-    
     if not is_secondary_proc then Otp('Press Enter to exit');
   except
     on e: Exception do ErrOtp(e);

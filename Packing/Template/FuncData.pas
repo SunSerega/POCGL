@@ -5,6 +5,7 @@ interface
 uses MiscUtils  in '..\..\Utils\MiscUtils.pas';
 uses Fixers     in '..\..\Utils\Fixers.pas';
 uses PackingUtils;
+{$string_nullbased+}
 
 {$region Log and Misc}
 
@@ -133,7 +134,7 @@ type
       if gr.name.StartsWith('cl_') then
         gr.name := gr.name.ToWords('_').Skip(1).Select(w->
         begin
-          w[1] := w[1].ToUpper;
+          w[0] := w[0].ToUpper;
           Result := w;
         end).JoinToString('');
     
@@ -1603,7 +1604,7 @@ type
       
       display_name := api+display_name.Split('_').Select(w->
       begin
-        if w.Length<>0 then w[1] := w[1].ToUpper;
+        if w.Length<>0 then w[0] := w[0].ToUpper;
         Result := w;
       end).JoinToString('') + ext_group;
       
@@ -1759,17 +1760,18 @@ end;
 function GetExt(s: string): string;
 begin
   
-  var i := s.Length;
+  var i := s.Length-1;
   while s[i].IsUpper or s[i].IsDigit do i -= 1;
-  Result := i=s.Length ? '' : s.Substring(i);
+  
+  Result := s.Remove(0,i+1);
   if allowed_ext_names.Contains(Result) then exit;
   
-  var _Result := Result;
+  var prev_res := Result;
   Result := allowed_ext_names
-    .First(ext->_Result.EndsWith(ext))
+    .First(ext->prev_res.EndsWith(ext))
   ;
-  if LogCache.invalid_ext_names.Add(_Result) and (_Result.Length>1) then
-    log.Otp($'Invalid ext name [{_Result}], replaced with [{Result}]');
+  if LogCache.invalid_ext_names.Add(prev_res) and (prev_res.Length>1) then
+    log.Otp($'Invalid ext name [{prev_res}], replaced with [{Result}]');
   
 end;
 
