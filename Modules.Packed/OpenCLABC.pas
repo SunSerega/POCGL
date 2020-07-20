@@ -35,20 +35,28 @@ uses OpenCLABCBase in 'Internal\OpenCLABCBase';
 
 type
   
+  ///Тип устройства, поддерживающего OpenCL
   DeviceType              = OpenCL.DeviceType;
+  ///Уровень кэша, используемый в Device.SplitByAffinityDomain
+  DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
   
+  ///Представляет платформу OpenCL, объединяющую одно или несколько устройств
   Platform                = OpenCLABCBase.Platform;
+  ///Представляет устройство, поддерживающее OpenCL
   Device                  = OpenCLABCBase.Device;
+  ///Представляет виртуальное устройство, использующее часть ядер другого устройства
+  ///Объекты данного типа обычно создаются методами "Device.Split*"
   SubDevice               = OpenCLABCBase.SubDevice;
   ///Представляет контекст для хранения данных и выполнения команд на GPU
   Context                 = OpenCLABCBase.Context;
   
-  ///Представляет область памяти GPU
+  ///Представляет область памяти устройства OpenCL
   Buffer                  = OpenCLABCBase.Buffer;
+  ///Представляет область памяти внутри другого буфера
   SubBuffer               = OpenCLABCBase.SubBuffer;
-  ///Представляет подпрограмму-kernel, выполняемую на GPU
+  ///Представляет подпрограмму, выполняемую на GPU
   Kernel                  = OpenCLABCBase.Kernel;
-  ///Представляет контейнер для прекомпилированного кода для GPU
+  ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
   ProgramCode             = OpenCLABCBase.ProgramCode;
   
   ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
@@ -56,47 +64,59 @@ type
   ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
   CLTask<T>               = OpenCLABCBase.CLTask<T>;
   
-  ///Базовый тип очереди с неопределённым типом возвращаемого значения
-  ///От этого класса наследуют все типы очередей
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase        = OpenCLABCBase.CommandQueueBase;
-  ///Базовый тип очереди с определённым типом возвращаемого значения "T"
-  ///От этого класса наследуют все типы очередей
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T>         = OpenCLABCBase.CommandQueue<T>;
   
-  ///Интерфейс, который реализован только классом ConstQueue<>
+  ///Интерфейс, который реализован только классом ConstQueue<T>
   ///Позволяет получить значение, из которого была создана константая очередь, не зная его типа
   IConstQueue             = OpenCLABCBase.IConstQueue;
   ///Представляет константную очередь
   ///Константные очереди ничего не выполняют и возвращает заданное при создании значение
   ConstQueue<T>           = OpenCLABCBase.ConstQueue<T>;
   
-  ///Представляет особый тип CommandQueue<Buffer>, напрямую хранящий команды чтения/записи памяти на GPU
+  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Buffer
   BufferCommandQueue      = OpenCLABCBase.BufferCommandQueue;
-  ///Представляет особый тип CommandQueue<Kernel>, напрямую хранящий команды запуска kernel'ов GPU
+  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Kernel
   KernelCommandQueue      = OpenCLABCBase.KernelCommandQueue;
   
+  ///Представляет аргумент, передаваемый в вызов kernel-а
   KernelArg               = OpenCLABCBase.KernelArg;
   
 {$endregion Re:definition's}
 
 {$region HFQ/HPQ}
 
+///Создаёт очередь, выполняющую указанную функцию на CPU
+///И возвращающую результат этой функци
 function HFQ<T>(f: ()->T): CommandQueue<T>;
+///Создаёт очередь, выполняющую указанную функцию на CPU
+///И возвращающую результат этой функци
 function HFQ<T>(f: Context->T): CommandQueue<T>;
 
+///Создаёт очередь, выполняющую указанную процедуру на CPU
+///И возвращающую object(nil)
 function HPQ(p: ()->()): CommandQueueBase;
+///Создаёт очередь, выполняющую указанную процедуру на CPU
+///И возвращающую object(nil)
 function HPQ(p: Context->()): CommandQueueBase;
 
 {$endregion HFQ/HPQ}
 
 {$region Wait}
 
+///Создаёт очередь, ожидающую сигнала выполненности от каждой из указанных очередей
 function WaitForAll(params qs: array of CommandQueueBase): CommandQueueBase;
+///Создаёт очередь, ожидающую сигнала выполненности от каждой из указанных очередей
 function WaitForAll(qs: sequence of CommandQueueBase): CommandQueueBase;
 
+///Создаёт очередь, ожидающую первого сигнала выполненности от любой из указанных очередей
 function WaitForAny(params qs: array of CommandQueueBase): CommandQueueBase;
+///Создаёт очередь, ожидающую первого сигнала выполненности от любой из указанных очередей
 function WaitForAny(qs: sequence of CommandQueueBase): CommandQueueBase;
 
+///Создаёт очередь, ожидающую сигнала выполненности от указанной очереди
 function WaitFor(q: CommandQueueBase): CommandQueueBase;
 
 {$endregion Wait}
@@ -107,13 +127,22 @@ function WaitFor(q: CommandQueueBase): CommandQueueBase;
 
 {$region NonConv}
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
 function CombineSyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
 function CombineSyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
-function CombineSyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
 
 {$endregion NonConv}
@@ -122,34 +151,94 @@ function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
 
 {$region NonContext}
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TRes>(conv: Func<array of object, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
 {$region Context}
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TRes>(conv: Func<array of object, Context, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TRes>(conv: Func<array of object, Context, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion Context}
@@ -162,13 +251,22 @@ function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes
 
 {$region NonConv}
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
 function CombineAsyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
-function CombineAsyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
 
 {$endregion NonConv}
@@ -177,34 +275,94 @@ function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
 
 {$region NonContext}
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TRes>(conv: Func<array of object, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
 {$region Context}
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TRes>(conv: Func<array of object, Context, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TRes>(conv: Func<array of object, Context, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+///И возвращающую результат этой функции
 function CombineAsyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion Context}
@@ -225,7 +383,7 @@ type
     
     private f: TFunc;
     public constructor(f: TFunc) := self.f := f;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override :=
     new QueueResConst<Object>(nil, prev_ev ?? new EventList);
@@ -301,7 +459,6 @@ function WaitFor(q: CommandQueueBase) := WaitForAll(q);
 function CombineSyncQueueBase(params qs: array of CommandQueueBase) := new SimpleSyncQueueArray<object>(QueueArrayUtils.FlattenSyncQueueArray(qs));
 function CombineSyncQueueBase(qs: sequence of CommandQueueBase) := new SimpleSyncQueueArray<object>(QueueArrayUtils.FlattenSyncQueueArray(qs));
 
-function CombineSyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>) := new SimpleSyncQueueArray<T>(QueueArrayUtils.FlattenSyncQueueArray(qs.Append(last as CommandQueueBase)));
 function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := new SimpleSyncQueueArray<T>(QueueArrayUtils.FlattenSyncQueueArray(qs.Append(last as CommandQueueBase)));
 
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := new SimpleSyncQueueArray<T>(QueueArrayUtils.FlattenSyncQueueArray(qs.Cast&<CommandQueueBase>));
@@ -356,7 +513,6 @@ function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase) := new SimpleAsyncQueueArray<object>(QueueArrayUtils.FlattenAsyncQueueArray(qs));
 function CombineAsyncQueueBase(qs: sequence of CommandQueueBase) := new SimpleAsyncQueueArray<object>(QueueArrayUtils.FlattenAsyncQueueArray(qs));
 
-function CombineAsyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(qs.Append(last as CommandQueueBase)));
 function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(qs.Append(last as CommandQueueBase)));
 
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(qs.Cast&<CommandQueueBase>));

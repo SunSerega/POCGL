@@ -11,12 +11,21 @@ begin
     !args![i].SetArg(ntv, i, c);
   
   cl.EnqueueNDRangeKernel(
-    cq, o.ntv, {%dims%},
+    cq, ntv, {%dims%},
     nil,
     new UIntPtr[]({%dims? new UIntPtr(!sz1!) : new UIntPtr(!sz1!),new UIntPtr(!sz2!) : new UIntPtr(!sz1!),new UIntPtr(!sz2!),new UIntPtr(!sz3!) %}),
     nil,
     !evs!
   );
+  
+  cl.RetainKernel(ntv).RaiseIfError;
+  var args_hnd := GCHandle.Alloc(!args!);
+  
+  EventList.AttachFinallyCallback(res_ev, ()->
+  begin
+    cl.ReleaseKernel(ntv).RaiseIfError();
+    args_hnd.Free;
+  end, tsk);
 end);
 
 
@@ -37,6 +46,15 @@ begin
     !local_work_size!,
     !evs!
   );
+  
+  cl.RetainKernel(ntv).RaiseIfError;
+  var args_hnd := GCHandle.Alloc(!args!);
+  
+  EventList.AttachFinallyCallback(res_ev, ()->
+  begin
+    cl.ReleaseKernel(ntv).RaiseIfError();
+    args_hnd.Free;
+  end, tsk);
 end);
 
 

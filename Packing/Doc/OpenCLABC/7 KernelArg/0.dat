@@ -1,0 +1,26 @@
+
+
+
+# KernelArg
+Представляет аргумент, передаваемый в вызов kernel-а
+
+
+
+# KernelArg.FromBuffer(Buffer)
+# KernelArg.FromBufferCQ(CommandQueue<Buffer>)
+Создаёт аргумент kernel-а, представляющий буфер
+
+# KernelArg.FromRecord<TRecord>(TRecord)
+# KernelArg.FromRecordCQ<TRecord>(CommandQueue<TRecord>)
+Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
+
+# KernelArg.FromRecordPtr<TRecord>(^TRecord)
+Создаёт аргумент kernel-а, представляющий адрес размерного значения со стека
+Внимание! Адрес должен ссылаться именно на стек, иначе программа может время от времени падать с ошибками доступа к памяти
+Это значит, что передавать можно только адрес локальной переменной, не захваченной ни одной лямбдой
+
+# KernelArg.FromPtr(IntPtr, UIntPtr)
+# KernelArg.FromPtrCQ(CommandQueue<IntPtr>, CommandQueue<UIntPtr>)
+Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти
+
+

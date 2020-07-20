@@ -47,6 +47,8 @@ begin
     
     var V2 := new Buffer(VecByteSize);
     
+    var W := KernelArg.FromRecord(MatrW);
+    
     // (запись значений в параметры - позже, в очередях)
     
     // Подготовка очередей выполнения
@@ -56,7 +58,7 @@ begin
         A.NewQueue.AddWriteArray2&<real>(A_Matr).ToKernelArg,
         B.NewQueue.AddWriteArray2&<real>(B_Mart).ToKernelArg,
         C,
-        KernelArg.FromRecord(MatrW)
+        W
       ) as CommandQueue<Kernel>;
     
     var Otp_C_Q :=
@@ -74,7 +76,7 @@ begin
         C,
         V1.NewQueue.AddWriteArray1&<real>(V1_Arr).ToKernelArg,
         V2,
-        KernelArg.FromRecord(MatrW)
+        W
       ) as CommandQueue<Kernel>;
     
     var Otp_V2_Q :=

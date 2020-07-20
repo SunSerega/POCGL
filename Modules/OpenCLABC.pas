@@ -26,6 +26,7 @@ uses OpenCLABCBase in 'Internal\OpenCLABCBase';
 type
   
   DeviceType              = OpenCL.DeviceType;
+  DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
   
   Platform                = OpenCLABCBase.Platform;
   Device                  = OpenCLABCBase.Device;
@@ -91,7 +92,7 @@ type
     
     private f: TFunc;
     public constructor(f: TFunc) := self.f := f;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override :=
     new QueueResConst<Object>(nil, prev_ev ?? new EventList);

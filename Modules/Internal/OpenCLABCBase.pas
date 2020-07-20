@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader!!StubForKotov=}{$title 'test title'}{%}
+{%..\LicenseHeader!!StubForKotov= }{$title 'test title'}{ %}
 
 /// Модуль для внутренних типов модуля OpenCLABC
 unit OpenCLABCBase;
@@ -150,7 +150,7 @@ type
   NtvPropertiesBase<TNtv, TInfo> = abstract class
     protected ntv: TNtv;
     public constructor(ntv: TNtv) := self.ntv := ntv;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
     protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
@@ -268,7 +268,7 @@ type
   
   {$region Device}
   
-  DeviceProperties = class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
+  DeviceProperties = sealed class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
     
     private static function clGetSize(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceInfo';
@@ -321,7 +321,7 @@ type
   
   {$region Buffer}
   
-  BufferProperties = class(NtvPropertiesBase<cl_mem, MemInfo>)
+  BufferProperties = sealed class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -398,7 +398,7 @@ type
       if _properties=nil then _properties := CreateProp;
       Result := _properties;
     end;
-    protected function CreateProp: TProp; abstract;
+    private function CreateProp: TProp; abstract;
     
     ///--
     public function Equals(obj: object): boolean; override;
@@ -415,7 +415,7 @@ type
   {$region Platform}
   
   Platform = sealed class(WrapperBase<cl_platform_id, PlatformProperties>)
-    protected function CreateProp: PlatformProperties; override := new PlatformProperties(ntv);
+    private function CreateProp: PlatformProperties; override := new PlatformProperties(ntv);
     
     public property Native: cl_platform_id read ntv;
     public property Properties: PlatformProperties read GetProperties;
@@ -424,20 +424,24 @@ type
     
     public constructor(pl: cl_platform_id) :=
     self.ntv := pl;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
     private static _all: IList<Platform>;
-    static constructor;
+    private static function MakePlatformList: IList<Platform>;
     begin
-      var c: UInt32;
-      cl.GetPlatformIDs(0, IntPtr.Zero, c).RaiseIfError;
-      
-      var all := new cl_platform_id[c];
-      cl.GetPlatformIDs(c, all[0], IntPtr.Zero).RaiseIfError;
-      
-      _all := new ReadOnlyCollection<Platform>(all.ConvertAll(pl->new Platform(pl)));
+      if _all=nil then
+      begin
+        var c: UInt32;
+        cl.GetPlatformIDs(0, IntPtr.Zero, c).RaiseIfError;
+        
+        var all_arr := new cl_platform_id[c];
+        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero).RaiseIfError;
+        
+        _all := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+      end;
+      Result := _all;
     end;
-    public static property All: IList<Platform> read _all;
+    public static property All: IList<Platform> read MakePlatformList;
     
     {$endregion constructor's}
     
@@ -457,8 +461,9 @@ type
   
   {$region Device}
   
+  SubDevice = class;
   Device = class(WrapperBase<cl_device_id, DeviceProperties>)
-    protected function CreateProp: DeviceProperties; override := new DeviceProperties(ntv);
+    private function CreateProp: DeviceProperties; override := new DeviceProperties(ntv);
     
     public property Native: cl_device_id read ntv;
     public property Properties: DeviceProperties read GetProperties;
@@ -469,7 +474,7 @@ type
     
     public constructor(dvc: cl_device_id) :=
     self.ntv := dvc;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
     public static function GetAllFor(pl: Platform; t: DeviceType): array of Device;
     begin
@@ -486,6 +491,44 @@ type
     end;
     public static function GetAllFor(pl: Platform) := GetAllFor(pl, DeviceType.DEVICE_TYPE_GPU);
     
+    private function Split(props: array of DevicePartitionProperty): array of SubDevice;
+    
+    public function SplitEqually(CUCount: integer): array of SubDevice;
+    begin
+      if CUCount <= 0 then raise new ArgumentException($'%Err:Device:SplitCUCount%');
+      Result := Split(
+        new DevicePartitionProperty[](
+          DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
+          DevicePartitionProperty.Create(CUCount),
+          DevicePartitionProperty.Create(0)
+        )
+      );
+    end;
+    
+    
+    public function SplitByCounts(params CUCounts: array of integer): array of SubDevice;
+    begin
+      foreach var CUCount in CUCounts do
+        if CUCount <= 0 then raise new ArgumentException($'%Err:Device:SplitCUCount%');
+      
+      var props := new DevicePartitionProperty[CUCounts.Length+2];
+      props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
+      for var i := 0 to CUCounts.Length-1 do
+        props[i+1] := new DevicePartitionProperty(CUCounts[i]);
+      props[props.Length-1] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
+      
+      Result := Split(props);
+    end;
+    
+    public function SplitByAffinityDomain(affinity_domain: DeviceAffinityDomain) :=
+    Split(
+      new DevicePartitionProperty[](
+        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
+        DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
+        DevicePartitionProperty.Create(0)
+      )
+    );
+    
     {$endregion constructor's}
     
     {$region operator's}
@@ -499,7 +542,7 @@ type
     {$endregion operator's}
     
   end;
-  SubDevice = class(Device)
+  SubDevice = sealed class(Device)
     private _parent: Device;
     public property Parent: Device read _parent;
     
@@ -511,51 +554,6 @@ type
       self._parent := parent;
     end;
     private constructor := inherited;
-    
-    private static function Split(dvc: Device; props: array of DevicePartitionProperty): array of SubDevice;
-    begin
-      
-      var c: UInt32;
-      cl.CreateSubDevices(dvc.Native, props, 0, IntPtr.Zero, c).RaiseIfError;
-      
-      var res := new cl_device_id[int64(c)];
-      cl.CreateSubDevices(dvc.Native, props, c, res[0], IntPtr.Zero).RaiseIfError;
-      
-      Result := res.ConvertAll(sdvc->new SubDevice(sdvc, dvc));
-    end;
-    
-    public static function SplitEqually(dvc: Device; CUCount: integer) :=
-    Split(dvc,
-      new DevicePartitionProperty[3](
-        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
-        DevicePartitionProperty.Create(CUCount),
-        DevicePartitionProperty.Create(0)
-      )
-    );
-    
-    public static function SplitByCounts(dvc: Device; params CUCounts: array of integer): array of SubDevice;
-    begin
-      for var i := 0 to CUCounts.Length-1 do
-        if CUCounts[i]<=0 then
-          raise new ArgumentException($'%sub device:split <=0 count%');
-      
-      var props := new DevicePartitionProperty[CUCounts.Length+2];
-      props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
-      for var i := 0 to CUCounts.Length-1 do
-        props[i+1] := new DevicePartitionProperty(CUCounts[i]);
-      props[props.Length-1] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
-      
-      Result := Split(dvc, props);
-    end;
-    
-    public static function SplitByAffinityDomain(dvc: Device; affinity_domain: DeviceAffinityDomain) :=
-    Split(dvc,
-      new DevicePartitionProperty[3](
-        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
-        DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
-        DevicePartitionProperty.Create(0)
-      )
-    );
     
     protected procedure Finalize; override :=
     cl.ReleaseDevice(ntv).RaiseIfError;
@@ -581,11 +579,11 @@ type
   CommandQueue<T> = class;
   CLTaskBase = class;
   CLTask<T> = class;
-  Context = sealed class(WrapperBase<cl_context, ContextProperties>)
+  Context = sealed class(WrapperBase<cl_context, ContextProperties>, IDisposable)
     private dvcs: IList<Device>;
     private main_dvc: Device;
     
-    protected function CreateProp: ContextProperties; override := new ContextProperties(ntv);
+    private function CreateProp: ContextProperties; override := new ContextProperties(ntv);
     
     public property Native:     cl_context    read ntv;
     public property AllDevices: IList<Device> read dvcs;
@@ -593,35 +591,71 @@ type
     
     public property Properties: ContextProperties read GetProperties;
     
-    public function GetAllNtvDevices: array of cl_device_id;
+    private function GetAllNtvDevices: array of cl_device_id;
     begin
       Result := new cl_device_id[dvcs.Count];
       for var i := 0 to Result.Length-1 do
         Result[i] := dvcs[i].Native;
     end;
     
-    {$region constructor's}
+    {$region Default}
     
-    public static auto property &Default: Context;
-    static constructor;
+    private static default_need_init := true;
+    private static default_init_lock := new object;
+    private static _default: Context;
+    
+    private static function GetDefault: Context;
+    begin
+      
+      if default_need_init then lock default_init_lock do if default_need_init then
+      begin
+        default_need_init := false;
+        _default := MakeNewDefaultContext;
+      end;
+      
+      Result := _default;
+    end;
+    private static procedure SetDefault(new_default: Context);
+    begin
+      default_need_init := false;
+      _default := new_default;
+    end;
+    public static property &Default: Context read GetDefault write SetDefault;
+    
+    private static function MakeNewDefaultContext: Context;
     begin
       var pls := Platform.All;
       if pls=nil then exit;
       
       foreach var pl in pls do
       begin
-        var dvcs := Device.GetAllFor(pl) ?? Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
+        var dvcs := Device.GetAllFor(pl);
         if dvcs=nil then continue;
-        
-        Context.Default := new Context(dvcs);
-        
+        Result := new Context(dvcs);
+        exit;
       end;
       
+      foreach var pl in pls do
+      begin
+        var dvcs := Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
+        if dvcs=nil then continue;
+        Result := new Context(dvcs);
+        exit;
+      end;
+      
+      Result := nil;
     end;
+    
+    {$endregion Default}
+    
+    {$region constructor's}
+    
+    private static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
+    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:Context:WrongMainDvc%');
     
     public constructor(dvcs: IList<Device>; main_dvc: Device);
     begin
-      if not dvcs.Contains(main_dvc) then raise new InvalidOperationException($'%context:main_dvc not in dvcs%');
+      CheckMainDevice(main_dvc, dvcs);
       
       var ntv_dvcs := new cl_device_id[dvcs.Count];
       for var i := 0 to ntv_dvcs.Length-1 do
@@ -648,24 +682,36 @@ type
       
       Result := res.ConvertAll(dvc->new Device(dvc));
     end;
-    private constructor(ntv: cl_context; dvcs: IList<Device>; main_dvc: Device);
+    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<Device>; main_dvc: Device);
     begin
-      if not dvcs.Contains(main_dvc) then raise new InvalidOperationException($'%context:main_dvc not in dvcs%');
+      CheckMainDevice(main_dvc, dvcs);
       cl.RetainContext(ntv).RaiseIfError;
       self.ntv := ntv;
       self.dvcs := new ReadOnlyCollection<Device>(dvcs);
       self.main_dvc := main_dvc;
     end;
-    public constructor(ntv: cl_context; params dvcs: array of Device) := Create(ntv, dvcs, dvcs[0]);
-    public constructor(ntv: cl_context; main_dvc: Device) := Create(ntv, GetContextDevices(ntv), main_dvc);
-    public constructor(ntv: cl_context) := Create(ntv, GetContextDevices(ntv));
+    public constructor(ntv: cl_context; main_dvc: Device) :=
+    InitFromNtv(ntv, GetContextDevices(ntv), main_dvc);
     
-    public function MakeSibling(dvc: Device) := new Context(self.ntv, self.dvcs, dvc);
+    public constructor(ntv: cl_context);
+    begin
+      var dvcs := GetContextDevices(ntv);
+      InitFromNtv(ntv, dvcs, dvcs[0]);
+    end;
     
-    private constructor := raise new System.NotSupportedException;
+    private constructor(c: Context; main_dvc: Device) :=
+    InitFromNtv(c.ntv, c.dvcs, main_dvc);
+    public function MakeSibling(new_main_dvc: Device) := new Context(self, new_main_dvc);
     
-    protected procedure Finalize; override :=
-    cl.ReleaseContext(ntv).RaiseIfError;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    public procedure Dispose :=
+    if ntv<>cl_context.Zero then lock self do
+    begin
+      cl.ReleaseContext(ntv).RaiseIfError;
+      ntv := cl_context.Zero;
+    end;
+    protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
@@ -702,9 +748,9 @@ type
     
     public property Native: cl_mem read ntv;
     
-    protected function CreateProp: BufferProperties; override;
+    private function CreateProp: BufferProperties; override;
     begin
-      if ntv=cl_mem.Zero then raise new InvalidOperationException($'%Buffer:Not inited%');
+      if ntv=cl_mem.Zero then raise new InvalidOperationException($'%Err:Buffer:Empty%');
       Result := new BufferProperties(ntv);
     end;
     public property Properties: BufferProperties read GetProperties;
@@ -729,17 +775,17 @@ type
     public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
     public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
     
-    protected constructor(ntv: cl_mem; sz: UIntPtr; retain: boolean);
+    protected constructor(ntv: cl_mem);
     begin
       cl.RetainMemObject(ntv).RaiseIfError;
       self.ntv := ntv;
-      self.sz := sz;
+      
+      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), self.sz, IntPtr.Zero).RaiseIfError;
+      GC.AddMemoryPressure(Size64);
+      
     end;
-    protected static function GetBuffSize(ntv: cl_mem): UIntPtr;
-    begin cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError; end;
-    public constructor(ntv: cl_mem) := Create(ntv, GetBuffSize(ntv), true);
     
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
     public procedure Init(c: Context); virtual :=
     lock self do
@@ -756,7 +802,7 @@ type
       self.ntv := new_ntv;
     end;
     
-    public procedure InitIfNeed(c: Context) :=
+    public procedure InitIfNeed(c: Context); virtual :=
     if self.ntv=cl_mem.Zero then lock self do
     begin
       if self.ntv<>cl_mem.Zero then exit; // Во время ожидания lock могли инициализировать
@@ -772,6 +818,8 @@ type
     public procedure Dispose :=
     if ntv<>cl_mem.Zero then lock self do
     begin
+      if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
+      self._properties := nil;
       GC.RemoveMemoryPressure(Size64);
       cl.ReleaseMemObject(ntv).RaiseIfError;
       ntv := cl_mem.Zero;
@@ -812,20 +860,18 @@ type
     
     {$region constructor's}
     
-    protected static function MakeSubBuff(parent: Buffer; reg: cl_buffer_region): cl_mem;
-    begin
-      var parent_ntv := parent.Native;
-      if parent_ntv=cl_mem.Zero then raise new InvalidOperationException($'%Buffer:MakeSubBuff parent not inited%');
-      
-      var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(parent_ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
-      ec.RaiseIfError;
-      
-    end;
-    
     protected constructor(parent: Buffer; reg: cl_buffer_region);
     begin
-      inherited Create(MakeSubBuff(parent, reg), reg.size, false);
+      var parent_ntv := parent.Native;
+      if parent_ntv=cl_mem.Zero then raise new InvalidOperationException($'%Err:Buffer:Empty%');
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateSubBuffer(parent_ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      ec.RaiseIfError;
+      
+      self.sz := reg.size;
+      GC.AddMemoryPressure(Size64);
+      
       self._parent := parent;
     end;
     public constructor(parent: Buffer; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
@@ -833,7 +879,10 @@ type
     public constructor(parent: Buffer; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
     public constructor(parent: Buffer; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
     
-    public procedure Init(c: Context); override := raise new NotSupportedException($'%Buffer:SubBuffer.Init%');
+    private procedure InitIgnoreOrErr :=
+    if self.ntv=cl_mem.Zero then raise new NotSupportedException($'%Err:SubBuffer:InitCall%');
+    public procedure Init(c: Context); override := InitIgnoreOrErr;
+    public procedure InitIfNeed(c: Context); override := InitIgnoreOrErr;
     
     {$endregion constructor's}
     
@@ -844,8 +893,8 @@ type
   {$region Kernel}
   
   KernelCommandQueue = class;
-  Kernel = sealed class(WrapperBase<cl_kernel, KernelProperties>)
-    protected function CreateProp: KernelProperties; override := new KernelProperties(ntv);
+  Kernel = sealed class(WrapperBase<cl_kernel, KernelProperties>, IDisposable)
+    private function CreateProp: KernelProperties; override := new KernelProperties(ntv);
     
     public property Native: cl_kernel read ntv;
     public property Properties: KernelProperties read GetProperties;
@@ -873,27 +922,33 @@ type
     
     public constructor(ntv: cl_kernel; retain: boolean := true);
     begin
-      if retain then cl.RetainKernel(ntv).RaiseIfError;
-      self.ntv := ntv;
+      
       cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), self._prog, IntPtr.Zero).RaiseIfError;
       
       var sz: UIntPtr;
-      cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, UIntPtr.Zero, nil, sz).RaiseIfError;
-      
+      cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, nil, sz).RaiseIfError;
       var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
       try
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, sz, str_ptr, IntPtr.Zero).RaiseIfError;
+        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, sz, str_ptr, IntPtr.Zero).RaiseIfError;
         self._name := Marshal.PtrToStringAnsi(str_ptr);
       finally
         Marshal.FreeHGlobal(str_ptr);
       end;
       
+      if retain then cl.RetainKernel(ntv).RaiseIfError;
+      self.ntv := ntv;
     end;
     
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure Finalize; override :=
-    cl.ReleaseKernel(ntv).RaiseIfError;
+    public procedure Dispose :=
+    if ntv<>cl_kernel.Zero then lock self do
+    begin
+      if ntv=cl_kernel.Zero then exit;
+      cl.ReleaseKernel(ntv).RaiseIfError;
+      ntv := cl_kernel.Zero;
+    end;
+    protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
@@ -913,19 +968,27 @@ type
     public procedure UseExclusiveNative(p: cl_kernel->());
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
+      var k: cl_kernel;
       try
-        p( owned ? ntv : MakeNewNtv );
+        k := owned ? ntv : MakeNewNtv;
+        p(k);
       finally
-        if owned then Monitor.Exit(exclusive_ntv_lock);
+        if owned then
+          Monitor.Exit(exclusive_ntv_lock) else
+          cl.ReleaseKernel(k).RaiseIfError;
       end;
     end;
     public function UseExclusiveNative<T>(f: cl_kernel->T): T;
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
+      var k: cl_kernel;
       try
-        Result := f( owned ? ntv : MakeNewNtv );
+        k := owned ? ntv : MakeNewNtv;
+        Result := f(k);
       finally
-        if owned then Monitor.Exit(exclusive_ntv_lock);
+        if owned then
+          Monitor.Exit(exclusive_ntv_lock) else
+          cl.ReleaseKernel(k).RaiseIfError;
       end;
     end;
     
@@ -940,7 +1003,7 @@ type
   {$region ProgramCode}
   
   ProgramCode = sealed class(WrapperBase<cl_program, ProgramProperties>)
-    protected function CreateProp: ProgramProperties; override := new ProgramProperties(ntv);
+    private function CreateProp: ProgramProperties; override := new ProgramProperties(ntv);
     
     public property Native: cl_program read ntv;
     public property Properties: ProgramProperties read GetProperties;
@@ -960,7 +1023,7 @@ type
       ec := cl.BuildProgram(self.ntv, c.dvcs.Count,c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
       if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
       begin
-        var sb := new StringBuilder($'%ProgramCode:Build fail%');
+        var sb := new StringBuilder($'%Err:ProgramCode:BuildFail%');
         
         foreach var dvc in c.AllDevices do
         begin
@@ -972,10 +1035,12 @@ type
           cl.GetProgramBuildInfo(self.ntv, dvc.Native, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz).RaiseIfError;
           
           var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-          cl.GetProgramBuildInfo(self.ntv, dvc.Native, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero).RaiseIfError;
-          
-          sb += Marshal.PtrToStringAnsi(str_ptr);
-          Marshal.FreeHGlobal(str_ptr);
+          try
+            cl.GetProgramBuildInfo(self.ntv, dvc.Native, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero).RaiseIfError;
+            sb += Marshal.PtrToStringAnsi(str_ptr);
+          finally
+            Marshal.FreeHGlobal(str_ptr);
+          end;
           
         end;
         
@@ -986,21 +1051,27 @@ type
       self._c := c;
     end;
     
-    public constructor(ntv: cl_program; retain: boolean := true);
+    public constructor(ntv: cl_program);
     begin
-      if retain then cl.RetainProgram(ntv).RaiseIfError;
-      self.ntv := ntv;
       
       var c: cl_context;
       cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(Marshal.SizeOf&<cl_context>), c, IntPtr.Zero).RaiseIfError;
       self._c := new Context(c);
       
+      cl.RetainProgram(ntv).RaiseIfError;
+      self.ntv := ntv;
     end;
     
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure Finalize; override :=
-    cl.ReleaseProgram(ntv).RaiseIfError;
+    public procedure Dispose :=
+    if ntv<>cl_program.Zero then lock self do
+    begin
+      if ntv=cl_program.Zero then exit;
+      cl.ReleaseProgram(ntv).RaiseIfError;
+      ntv := cl_program.Zero;
+    end;
+    protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
@@ -1142,9 +1213,9 @@ type
   
   {$region Blittable}
   
-  BlittableException = class(Exception)
-    constructor(t, blame: System.Type; source_name: string) :=
-    inherited Create(t=blame ? $'%blittable:main%' : $'%blittable:blame%' );
+  BlittableException = sealed class(Exception)
+    public constructor(t, blame: System.Type; source_name: string) :=
+    inherited Create(t=blame ? $'%Err:Blittable:Main%' : $'%Err:Blittable:Blame%' );
   end;
   BlittableHelper = static class
     
@@ -1367,7 +1438,7 @@ type
       self.uev := cl.CreateUserEvent(c, ec);
       ec.RaiseIfError;
     end;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     static function MakeUserEvent(tsk: CLTaskBase; c: cl_context): UserEvent;
     
     public static function StartBackgroundWork(after: EventList; work: Action; c: cl_context; tsk: CLTaskBase): UserEvent;
@@ -1482,12 +1553,12 @@ type
     private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
     public constructor(val: T) := self.ptr^ := val;
-    private constructor := raise new System.NotSupportedException;
-    
-    public function GetPtr: ^T := ptr;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(new IntPtr(ptr));
+    
+    public function GetPtr: ^T := ptr;
     
   end;
   
@@ -1498,7 +1569,7 @@ type
     
     public constructor(ev: EventList) :=
     self.ev := ev;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     public function TrySetEvBase(new_ev: EventList): QueueResBase; abstract;
     
@@ -1684,7 +1755,7 @@ type
         Result := err_lst.ToArray;
     end;
     
-    public property Error: AggregateException read err_lst.Count=0 ? nil : new AggregateException($'%task:errors%', GetErrArr);
+    public property Error: AggregateException read err_lst.Count=0 ? nil : new AggregateException($'%Err:CLTask:%', GetErrArr);
     
     protected procedure AddErr(e: Exception) :=
     begin
@@ -1919,29 +1990,29 @@ type
     {$region MW}
     
     private waiters_c := 0;
-    protected function IsWaitable := waiters_c<>0;
-    protected procedure MakeWaitable := lock self do waiters_c += 1;
-    protected procedure UnMakeWaitable := lock self do waiters_c -= 1;
+    private function IsWaitable := waiters_c<>0;
+    private procedure MakeWaitable := lock self do waiters_c += 1;
+    private procedure UnMakeWaitable := lock self do waiters_c -= 1;
     
     /// добавляет tsk в качестве ключа для всех ожидаемых очередей
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
     private mw_evs := new Dictionary<CLTaskBase, MWEventContainer>;
-    protected procedure RegisterWaiterTask(tsk: CLTaskBase) :=
+    private procedure RegisterWaiterTask(tsk: CLTaskBase) :=
     lock mw_evs do if not mw_evs.ContainsKey(tsk) then
     begin
       mw_evs[tsk] := new MWEventContainer;
       tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
     end;
     
-    protected procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
+    private procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
     begin
       var cont: MWEventContainer;
       lock mw_evs do cont := mw_evs[tsk];
       cont.AddHandler(handler);
     end;
     
-    protected procedure ExecuteMWHandlers;
+    private procedure ExecuteMWHandlers;
     begin
       var conts: array of MWEventContainer;
       lock mw_evs do conts := mw_evs.Values.ToArray;
@@ -1979,8 +2050,8 @@ type
     
     {$region +/*}
     
-    protected function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -2139,7 +2210,7 @@ type
     
     public constructor(o: T) :=
     self.res := o;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
     public function IConstQueue.GetConstVal: object := self.res;
     public property Val: T read self.res;
@@ -2171,7 +2242,7 @@ type
     protected qs: array of CommandQueueBase;
     
     public constructor(params qs: array of CommandQueueBase) := self.qs := qs;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     public function GetQS: array of CommandQueueBase := qs;
     
@@ -2233,7 +2304,7 @@ type
       self.qs := qs;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     foreach var q in qs do q.RegisterWaitables(tsk, prev_hubs);
@@ -2309,7 +2380,7 @@ type
     public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: ISimpleQueueArray;
     begin
       var enmr := inp.GetEnumerator;
-      if not enmr.MoveNext then raise new InvalidOperationException('%FlattenQueueArray:inp empty%');
+      if not enmr.MoveNext then raise new InvalidOperationException('%Err:FlattenQueueArray:InpEmpty%');
       
       var res := new List<CommandQueueBase>;
       while true do
@@ -2687,7 +2758,7 @@ type
   {$region KernelArg}
   
   KernelArg = abstract class
-    protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); abstract;
+    private procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); abstract;
     
     public static function FromBuffer(b: Buffer): KernelArg;
     public static function FromBufferCQ(bq: CommandQueue<Buffer>) := bq.ThenConvert((b,c)->FromBuffer(b));
@@ -2718,7 +2789,7 @@ type
       foreach var q in waitables do q.MakeWaitable;
       self.waitables := waitables;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     public procedure RegisterWaitables(tsk: CLTaskBase) :=
     foreach var q in waitables do q.RegisterWaiterTask(tsk);
@@ -2780,6 +2851,22 @@ type
 implementation
 
 {$region DelayedImpl}
+
+{$region Device}
+
+function Device.Split(props: array of DevicePartitionProperty): array of SubDevice;
+begin
+  
+  var c: UInt32;
+  cl.CreateSubDevices(self.Native, props, 0, IntPtr.Zero, c).RaiseIfError;
+  
+  var res := new cl_device_id[int64(c)];
+  cl.CreateSubDevices(self.Native, props, c, res[0], IntPtr.Zero).RaiseIfError;
+  
+  Result := res.ConvertAll(sdvc->new SubDevice(sdvc, self));
+end;
+
+{$endregion Device}
 
 {$region Buffer}
 
@@ -3044,7 +3131,7 @@ type
       self.q := q;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
@@ -3079,7 +3166,7 @@ type
   MultiusableCommandQueueHub<T> = sealed class(MultiusableCommandQueueHubBase)
     public q: CommandQueue<T>;
     public constructor(q: CommandQueue<T>) := self.q := q;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     public function OnNodeInvoked(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean): QueueRes<T>;
     begin
@@ -3168,7 +3255,7 @@ type
     public q: CommandQueueBase;
     
     public constructor(q: CommandQueueBase) := self.q := q;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected function InvokeObj  (o: T;                      tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
     protected function InvokeQueue(o_q: ()->CommandQueue<T>;  tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
@@ -3206,7 +3293,7 @@ type
     public p: T->();
     
     public constructor(p: T->()) := self.p := p;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure ExecProc(o: T; c: Context); override := p(o);
     
@@ -3215,7 +3302,7 @@ type
     public p: (T,Context)->();
     
     public constructor(p: (T,Context)->()) := self.p := p;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure ExecProc(o: T; c: Context); override := p(o, c);
     
@@ -3334,7 +3421,7 @@ type
     private b: Buffer;
     
     public constructor(b: Buffer) := self.b := b;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override;
     begin
@@ -3357,13 +3444,16 @@ function ToKernelArg(self: CommandQueue<Buffer>); extensionmethod := KernelArg.F
 type
   KernelArgRecord<TRecord> = sealed class(KernelArg)
   where TRecord: record;
-    private val: TRecord;
+    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
     
-    public constructor(val: TRecord) := self.val := val;
-    private constructor := raise new NotSupportedException;
+    public constructor(val: TRecord) := self.val^ := val;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected procedure Finalize; override :=
+    Marshal.FreeHGlobal(new IntPtr(val));
     
     protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
-    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), self.val).RaiseIfError; 
+    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
     
   end;
   
@@ -3386,7 +3476,7 @@ type
       self.ptr := ptr;
       self.sz := sz;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
     cl.SetKernelArg(k, ind, sz, pointer(ptr)).RaiseIfError; 
@@ -3397,7 +3487,7 @@ static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(
 
 static function KernelArg.FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): CommandQueue<KernelArg>;
 begin
-  {%Static\KernelArg.FromPtrCQ!!Sub=}Result := nil; raise new NotImplementedException;{%}
+  {%Static\KernelArg.FromPtrCQ!!Sub= }Result := nil; raise new NotImplementedException;{ %}
 end;
 
 {$endregion Ptr}

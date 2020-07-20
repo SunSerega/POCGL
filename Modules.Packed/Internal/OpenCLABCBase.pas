@@ -160,7 +160,7 @@ type
   NtvPropertiesBase<TNtv, TInfo> = abstract class
     protected ntv: TNtv;
     public constructor(ntv: TNtv) := self.ntv := ntv;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
     protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
@@ -283,7 +283,7 @@ type
   
   {$region Device}
   
-  DeviceProperties = class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
+  DeviceProperties = sealed class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
     
     private static function clGetSize(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceInfo';
@@ -425,7 +425,7 @@ type
   
   {$region Buffer}
   
-  BufferProperties = class(NtvPropertiesBase<cl_mem, MemInfo>)
+  BufferProperties = sealed class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -520,7 +520,7 @@ type
       if _properties=nil then _properties := CreateProp;
       Result := _properties;
     end;
-    protected function CreateProp: TProp; abstract;
+    private function CreateProp: TProp; abstract;
     
     ///--
     public function Equals(obj: object): boolean; override;
@@ -536,30 +536,40 @@ type
   
   {$region Platform}
   
+  ///Представляет платформу OpenCL, объединяющую одно или несколько устройств
   Platform = sealed class(WrapperBase<cl_platform_id, PlatformProperties>)
-    protected function CreateProp: PlatformProperties; override := new PlatformProperties(ntv);
+    private function CreateProp: PlatformProperties; override := new PlatformProperties(ntv);
     
+    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_platform_id read ntv;
+    ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: PlatformProperties read GetProperties;
     
     {$region constructor's}
     
+    ///Создаёт обёртку для указанного неуправляемого объекта
     public constructor(pl: cl_platform_id) :=
     self.ntv := pl;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     private static _all: IList<Platform>;
-    static constructor;
+    private static function MakePlatformList: IList<Platform>;
     begin
-      var c: UInt32;
-      cl.GetPlatformIDs(0, IntPtr.Zero, c).RaiseIfError;
-      
-      var all := new cl_platform_id[c];
-      cl.GetPlatformIDs(c, all[0], IntPtr.Zero).RaiseIfError;
-      
-      _all := new ReadOnlyCollection<Platform>(all.ConvertAll(pl->new Platform(pl)));
+      if _all=nil then
+      begin
+        var c: UInt32;
+        cl.GetPlatformIDs(0, IntPtr.Zero, c).RaiseIfError;
+        
+        var all_arr := new cl_platform_id[c];
+        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero).RaiseIfError;
+        
+        _all := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+      end;
+      Result := _all;
     end;
-    public static property All: IList<Platform> read _all;
+    ///Возвращает список всех доступных платформ OpenCL
+    ///Данный список создаётся 1 раз, при первом обращении
+    public static property All: IList<Platform> read MakePlatformList;
     
     {$endregion constructor's}
     
@@ -568,6 +578,7 @@ type
     public static function operator=(pl1, pl2: Platform): boolean := pl1.ntv = pl2.ntv;
     public static function operator<>(pl1, pl2: Platform): boolean := pl1.ntv <> pl2.ntv;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}]';
     
@@ -579,20 +590,27 @@ type
   
   {$region Device}
   
+  SubDevice = class;
+  ///Представляет устройство, поддерживающее OpenCL
   Device = class(WrapperBase<cl_device_id, DeviceProperties>)
-    protected function CreateProp: DeviceProperties; override := new DeviceProperties(ntv);
+    private function CreateProp: DeviceProperties; override := new DeviceProperties(ntv);
     
+    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_device_id read ntv;
+    ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: DeviceProperties read GetProperties;
     
+    ///Возвращает платформу данного устройства
     public property BasePlatform: Platform read new Platform(Properties.GetVal&<cl_platform_id>(DeviceInfo.DEVICE_PLATFORM));
     
     {$region constructor's}
     
+    ///Создаёт обёртку для указанного неуправляемого объекта
     public constructor(dvc: cl_device_id) :=
     self.ntv := dvc;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
+    ///Собирает массив устройств указанного типа для указанной платформы
     public static function GetAllFor(pl: Platform; t: DeviceType): array of Device;
     begin
       
@@ -606,7 +624,51 @@ type
       
       Result := all.ConvertAll(dvc->new Device(dvc));
     end;
+    ///Собирает массив устройств GPU для указанной платформы
     public static function GetAllFor(pl: Platform) := GetAllFor(pl, DeviceType.DEVICE_TYPE_GPU);
+    
+    private function Split(props: array of DevicePartitionProperty): array of SubDevice;
+    
+    ///Создаёт максимальное возможное количество виртуальных устройств,
+    ///каждое из которых содержит CUCount ядер данного устройства
+    public function SplitEqually(CUCount: integer): array of SubDevice;
+    begin
+      if CUCount <= 0 then raise new ArgumentException($'Количество ядер должно быть положительным числом, а не {CUCount}');
+      Result := Split(
+        new DevicePartitionProperty[](
+          DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
+          DevicePartitionProperty.Create(CUCount),
+          DevicePartitionProperty.Create(0)
+        )
+      );
+    end;
+    
+    
+    ///Создаёт массив виртуальных устройств, каждое из которых содержит указанное кол-во ядер
+    public function SplitByCounts(params CUCounts: array of integer): array of SubDevice;
+    begin
+      foreach var CUCount in CUCounts do
+        if CUCount <= 0 then raise new ArgumentException($'Количество ядер должно быть положительным числом, а не {CUCount}');
+      
+      var props := new DevicePartitionProperty[CUCounts.Length+2];
+      props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
+      for var i := 0 to CUCounts.Length-1 do
+        props[i+1] := new DevicePartitionProperty(CUCounts[i]);
+      props[props.Length-1] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
+      
+      Result := Split(props);
+    end;
+    
+    ///Разделяет данное устройство на отдельные группы ядер так,
+    ///чтобы у каждой группы ядер был общий кэш указанного уровня
+    public function SplitByAffinityDomain(affinity_domain: DeviceAffinityDomain) :=
+    Split(
+      new DevicePartitionProperty[](
+        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
+        DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
+        DevicePartitionProperty.Create(0)
+      )
+    );
     
     {$endregion constructor's}
     
@@ -615,14 +677,18 @@ type
     public static function operator=(dvc1, dvc2: Device): boolean := dvc1.ntv = dvc2.ntv;
     public static function operator<>(dvc1, dvc2: Device): boolean := dvc1.ntv <> dvc2.ntv;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}]';
     
     {$endregion operator's}
     
   end;
-  SubDevice = class(Device)
+  ///Представляет виртуальное устройство, использующее часть ядер другого устройства
+  ///Объекты данного типа обычно создаются методами "Device.Split*"
+  SubDevice = sealed class(Device)
     private _parent: Device;
+    ///Возвращает родительское устройство, часть ядер которого использует данное устройство
     public property Parent: Device read _parent;
     
     {$region constructor's}
@@ -634,51 +700,6 @@ type
     end;
     private constructor := inherited;
     
-    private static function Split(dvc: Device; props: array of DevicePartitionProperty): array of SubDevice;
-    begin
-      
-      var c: UInt32;
-      cl.CreateSubDevices(dvc.Native, props, 0, IntPtr.Zero, c).RaiseIfError;
-      
-      var res := new cl_device_id[int64(c)];
-      cl.CreateSubDevices(dvc.Native, props, c, res[0], IntPtr.Zero).RaiseIfError;
-      
-      Result := res.ConvertAll(sdvc->new SubDevice(sdvc, dvc));
-    end;
-    
-    public static function SplitEqually(dvc: Device; CUCount: integer) :=
-    Split(dvc,
-      new DevicePartitionProperty[3](
-        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
-        DevicePartitionProperty.Create(CUCount),
-        DevicePartitionProperty.Create(0)
-      )
-    );
-    
-    public static function SplitByCounts(dvc: Device; params CUCounts: array of integer): array of SubDevice;
-    begin
-      for var i := 0 to CUCounts.Length-1 do
-        if CUCounts[i]<=0 then
-          raise new ArgumentException($'');
-      
-      var props := new DevicePartitionProperty[CUCounts.Length+2];
-      props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
-      for var i := 0 to CUCounts.Length-1 do
-        props[i+1] := new DevicePartitionProperty(CUCounts[i]);
-      props[props.Length-1] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
-      
-      Result := Split(dvc, props);
-    end;
-    
-    public static function SplitByAffinityDomain(dvc: Device; affinity_domain: DeviceAffinityDomain) :=
-    Split(dvc,
-      new DevicePartitionProperty[3](
-        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
-        DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
-        DevicePartitionProperty.Create(0)
-      )
-    );
-    
     protected procedure Finalize; override :=
     cl.ReleaseDevice(ntv).RaiseIfError;
     
@@ -688,6 +709,7 @@ type
     
     public static function operator in(sub_dvc: SubDevice; dvc: Device): boolean := sub_dvc.Parent=dvc;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}] of {Parent}';
     
@@ -704,52 +726,94 @@ type
   CLTaskBase = class;
   CLTask<T> = class;
   ///Представляет контекст для хранения данных и выполнения команд на GPU
-  Context = sealed class(WrapperBase<cl_context, ContextProperties>)
+  Context = sealed class(WrapperBase<cl_context, ContextProperties>, IDisposable)
     private dvcs: IList<Device>;
     private main_dvc: Device;
     
-    protected function CreateProp: ContextProperties; override := new ContextProperties(ntv);
+    private function CreateProp: ContextProperties; override := new ContextProperties(ntv);
     
+    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native:     cl_context    read ntv;
+    ///Возвращает список устройств, используемых данным контекстом
     public property AllDevices: IList<Device> read dvcs;
+    ///Возвращает главное устройство контекста, на котором выделяется память под буферы и внутренние объекты очередей
     public property MainDevice: Device        read main_dvc;
     
+    ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: ContextProperties read GetProperties;
     
-    public function GetAllNtvDevices: array of cl_device_id;
+    private function GetAllNtvDevices: array of cl_device_id;
     begin
       Result := new cl_device_id[dvcs.Count];
       for var i := 0 to Result.Length-1 do
         Result[i] := dvcs[i].Native;
     end;
     
-    {$region constructor's}
+    {$region Default}
     
-    ///Один любой GPU, если такой имеется
-    ///Одно любое другое устройство, поддерживающее OpenCL, если GPU отсутствует
+    private static default_need_init := true;
+    private static default_init_lock := new object;
+    private static _default: Context;
+    
+    private static function GetDefault: Context;
+    begin
+      
+      if default_need_init then lock default_init_lock do if default_need_init then
+      begin
+        default_need_init := false;
+        _default := MakeNewDefaultContext;
+      end;
+      
+      Result := _default;
+    end;
+    private static procedure SetDefault(new_default: Context);
+    begin
+      default_need_init := false;
+      _default := new_default;
+    end;
+    ///Возвращает или задаёт главный контекст, используемый там, где контекст не указывается явно (как неявные очереди)
+    ///При первом обращении к данному свойству OpenCLABC пытается создать новый контекст
+    ///При создании главного контекста приоритет отдаётся полноценным GPU, но если таких нет - берётся любое устройство, поддерживающее OpenCL
     ///
-    ///Если устройств поддерживающих OpenCL нет - возвращает nil
-    ///Обычно это свидетельствует об устаревших или неправильно установленных драйверах
-    public static auto property &Default: Context;
-    static constructor;
+    ///Если устройств поддерживающих OpenCL нет, то Context.Default изначально будет nil
+    ///Но это свидетельствует скорее об отсутствии драйверов, чем отстутсвии устройств
+    public static property &Default: Context read GetDefault write SetDefault;
+    
+    private static function MakeNewDefaultContext: Context;
     begin
       var pls := Platform.All;
       if pls=nil then exit;
       
       foreach var pl in pls do
       begin
-        var dvcs := Device.GetAllFor(pl) ?? Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
+        var dvcs := Device.GetAllFor(pl);
         if dvcs=nil then continue;
-        
-        Context.Default := new Context(dvcs);
-        
+        Result := new Context(dvcs);
+        exit;
       end;
       
+      foreach var pl in pls do
+      begin
+        var dvcs := Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
+        if dvcs=nil then continue;
+        Result := new Context(dvcs);
+        exit;
+      end;
+      
+      Result := nil;
     end;
     
+    {$endregion Default}
+    
+    {$region constructor's}
+    
+    private static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
+    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'main_dvc должен быть в списке устройств контекста');
+    
+    ///Создаёт контекст с указанными AllDevices и MainDevice
     public constructor(dvcs: IList<Device>; main_dvc: Device);
     begin
-      if not dvcs.Contains(main_dvc) then raise new InvalidOperationException($'');
+      CheckMainDevice(main_dvc, dvcs);
       
       var ntv_dvcs := new cl_device_id[dvcs.Count];
       for var i := 0 to ntv_dvcs.Length-1 do
@@ -763,6 +827,8 @@ type
       self.dvcs := new ReadOnlyCollection<Device>(dvcs);
       self.main_dvc := main_dvc;
     end;
+    ///Создаёт контекст с указанными AllDevices
+    ///В качестве MainDevice берётся первое устройство из массива
     public constructor(params dvcs: array of Device) := Create(dvcs, dvcs[0]);
     
     private static function GetContextDevices(ntv: cl_context): array of Device;
@@ -776,24 +842,45 @@ type
       
       Result := res.ConvertAll(dvc->new Device(dvc));
     end;
-    private constructor(ntv: cl_context; dvcs: IList<Device>; main_dvc: Device);
+    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<Device>; main_dvc: Device);
     begin
-      if not dvcs.Contains(main_dvc) then raise new InvalidOperationException($'');
+      CheckMainDevice(main_dvc, dvcs);
       cl.RetainContext(ntv).RaiseIfError;
       self.ntv := ntv;
       self.dvcs := new ReadOnlyCollection<Device>(dvcs);
       self.main_dvc := main_dvc;
     end;
-    public constructor(ntv: cl_context; params dvcs: array of Device) := Create(ntv, dvcs, dvcs[0]);
-    public constructor(ntv: cl_context; main_dvc: Device) := Create(ntv, GetContextDevices(ntv), main_dvc);
-    public constructor(ntv: cl_context) := Create(ntv, GetContextDevices(ntv));
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
+    public constructor(ntv: cl_context; main_dvc: Device) :=
+    InitFromNtv(ntv, GetContextDevices(ntv), main_dvc);
     
-    public function MakeSibling(dvc: Device) := new Context(self.ntv, self.dvcs, dvc);
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
+    public constructor(ntv: cl_context);
+    begin
+      var dvcs := GetContextDevices(ntv);
+      InitFromNtv(ntv, dvcs, dvcs[0]);
+    end;
     
-    private constructor := raise new System.NotSupportedException;
+    private constructor(c: Context; main_dvc: Device) :=
+    InitFromNtv(c.ntv, c.dvcs, main_dvc);
+    ///Создаёт совместимый контекст, равный данному с одним отличием - MainDevice заменён на dvc
+    public function MakeSibling(new_main_dvc: Device) := new Context(self, new_main_dvc);
     
-    protected procedure Finalize; override :=
-    cl.ReleaseContext(ntv).RaiseIfError;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    
+    ///Позволяет OpenCL удалить неуправляемый объект
+    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+    public procedure Dispose :=
+    if ntv<>cl_context.Zero then lock self do
+    begin
+      cl.ReleaseContext(ntv).RaiseIfError;
+      ntv := cl_context.Zero;
+    end;
+    protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
@@ -802,6 +889,7 @@ type
     public static function operator=(c1, c2: Context): boolean := c1.ntv = c2.ntv;
     public static function operator<>(c1, c2: Context): boolean := c1.ntv <> c2.ntv;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
     
@@ -833,17 +921,19 @@ type
   
   BufferCommandQueue = class;
   KernelArg = class;
-  ///Представляет область памяти GPU
+  ///Представляет область памяти устройства OpenCL
   Buffer = class(WrapperBase<cl_mem, BufferProperties>, IDisposable)
     private sz: UIntPtr;
     
+    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_mem read ntv;
     
-    protected function CreateProp: BufferProperties; override;
+    private function CreateProp: BufferProperties; override;
     begin
-      if ntv=cl_mem.Zero then raise new InvalidOperationException($'');
+      if ntv=cl_mem.Zero then raise new InvalidOperationException($'Ожидался инициализированный буфер. Используйте .Init, или конструктор принимающий контекст');
       Result := new BufferProperties(ntv);
     end;
+    ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: BufferProperties read GetProperties;
     
     ///Возвращает размер буфера в байтах
@@ -853,36 +943,52 @@ type
     ///Возвращает размер буфера в байтах
     public property Size64: UInt64 read sz.ToUInt64;
     
+    ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному буферу
     public function NewQueue: BufferCommandQueue;
     
     {$region constructor's}
     
+    ///Создаёт буфер указанного в байтах размера
+    ///Память на GPU не выделяется до вызова метода .Init
     public constructor(size: UIntPtr) := self.sz := size;
+    ///Создаёт буфер указанного в байтах размера
+    ///Память на GPU не выделяется до вызова метода .Init
     public constructor(size: integer) := Create(new UIntPtr(size));
+    ///Создаёт буфер указанного в байтах размера
+    ///Память на GPU не выделяется до вызова метода .Init
     public constructor(size: int64)   := Create(new UIntPtr(size));
     
+    ///Создаёт буфер указанного в байтах размера
+    ///Память на GPU выделяется сразу, на явно указанном контексте
     public constructor(size: UIntPtr; c: Context);
     begin
       Create(size);
       Init(c);
     end;
+    ///Создаёт буфер указанного в байтах размера
+    ///Память на GPU выделяется сразу, на явно указанном контексте
     public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
+    ///Создаёт буфер указанного в байтах размера
+    ///Память на GPU выделяется сразу, на явно указанном контексте
     public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
     
-    protected constructor(ntv: cl_mem; sz: UIntPtr; retain: boolean);
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
+    protected constructor(ntv: cl_mem);
     begin
       cl.RetainMemObject(ntv).RaiseIfError;
       self.ntv := ntv;
-      self.sz := sz;
+      
+      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), self.sz, IntPtr.Zero).RaiseIfError;
+      GC.AddMemoryPressure(Size64);
+      
     end;
-    protected static function GetBuffSize(ntv: cl_mem): UIntPtr;
-    begin cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError; end;
-    public constructor(ntv: cl_mem) := Create(ntv, GetBuffSize(ntv), true);
     
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    ///Выделяет память на устройстве, указанном в контексте
-    ///Если память уже была выделена, то она освобождается и выделяется заново
+    ///Выделяет память для данного буфера в указанном контексте
+    ///Если память уже выделена, то она освобождается и выделяется заново
     public procedure Init(c: Context); virtual :=
     lock self do
     begin
@@ -898,7 +1004,9 @@ type
       self.ntv := new_ntv;
     end;
     
-    public procedure InitIfNeed(c: Context) :=
+    ///Выделяет память для данного буфера в указанном контексте
+    ///Если память уже выделена, то данный методы ничего не делает
+    public procedure InitIfNeed(c: Context); virtual :=
     if self.ntv=cl_mem.Zero then lock self do
     begin
       if self.ntv<>cl_mem.Zero then exit; // Во время ожидания lock могли инициализировать
@@ -911,9 +1019,13 @@ type
       self.ntv := new_ntv;
     end;
     
+    ///Освобождает память, выделенную под данный буфер, если она выделена
+    ///Внимание, если снова использовать данный буфер - память выделится заново
     public procedure Dispose :=
     if ntv<>cl_mem.Zero then lock self do
     begin
+      if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
+      self._properties := nil;
       GC.RemoveMemoryPressure(Size64);
       cl.ReleaseMemObject(ntv).RaiseIfError;
       ntv := cl_mem.Zero;
@@ -927,6 +1039,7 @@ type
     public static function operator=(b1, b2: Buffer): boolean := b1.ntv = b2.ntv;
     public static function operator<>(b1, b2: Buffer): boolean := b1.ntv <> b2.ntv;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}] of size {Size}';
     
@@ -936,139 +1049,176 @@ type
     
     {$region 1#Write&Read}
     
-    ///- function WriteData(ptr: IntPtr): Buffer;
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
+    ///
     public function WriteData(ptr: CommandQueue<IntPtr>): Buffer;
     
-    ///- function ReadData(ptr: IntPtr): Buffer;
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    ///
     public function ReadData(ptr: CommandQueue<IntPtr>): Buffer;
     
+    ///
     public function WriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
+    ///
     public function ReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): Buffer;
     
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
+    ///
     public function WriteData(ptr: pointer): Buffer;
     
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    ///
     public function ReadData(ptr: pointer): Buffer;
     
+    ///
     public function WriteData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer;
     
+    ///
     public function ReadData(ptr: pointer; offset, len: CommandQueue<integer>): Buffer;
     
+    ///
     public function WriteValue<TRecord>(val: TRecord): Buffer; where TRecord: record;
     
+    ///
     public function WriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteValue<TRecord>(val: CommandQueue<TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function WriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
+    ///
     public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
+    ///
     public function FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): Buffer;
     
+    ///
     public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): Buffer;
     
-    ///- function FillValue(val: TRecord): Buffer;
-    ///Заполняет буфер копиями значения val
+    ///
     public function FillValue<TRecord>(val: TRecord): Buffer; where TRecord: record;
     
+    ///
     public function FillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
-    ///- function FillValue(val: TRecord): Buffer;
-    ///Заполняет буфер копиями значения val
+    ///
     public function FillValue<TRecord>(val: CommandQueue<TRecord>): Buffer; where TRecord: record;
     
+    ///
     public function FillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): Buffer; where TRecord: record;
     
     {$endregion 2#Fill}
     
     {$region 3#Copy}
     
-    ///- function CopyTo(b: Buffer): Buffer;
-    ///Копирует память из текущего буфера в b
+    ///
     public function CopyTo(b: CommandQueue<Buffer>): Buffer;
     
+    ///
     public function CopyForm(b: CommandQueue<Buffer>): Buffer;
     
+    ///
     public function CopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer;
     
+    ///
     public function CopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): Buffer;
     
     {$endregion 3#Copy}
     
     {$region Get}
     
+    ///
     public function GetData: IntPtr;
     
+    ///
     public function GetData(offset, len: CommandQueue<integer>): IntPtr;
     
+    ///
     public function GetValue<TRecord>: TRecord; where TRecord: record;
     
+    ///
     public function GetValue<TRecord>(offset: CommandQueue<integer>): TRecord; where TRecord: record;
     
+    ///
     public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
     
-    ///- function GetArray1(length: integer): array of TRecord;
-    ///Создаёт новый массив длиной в length элементов и копирует в него содержимое буфера
+    ///
     public function GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
     
+    ///
     public function GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
     
+    ///
     public function GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
     
     {$endregion Get}
     
   end;
+  ///Представляет область памяти внутри другого буфера
   SubBuffer = sealed class(Buffer)
     private _parent: Buffer;
+    ///Возвращает родительский буфер
     public property Parent: Buffer read _parent;
     
     {$region operator's}
     
     public static function operator in(sub_b: SubBuffer; b: Buffer): boolean := sub_b.Parent=b;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}] of size {Size} inside {Parent}';
     
@@ -1076,28 +1226,46 @@ type
     
     {$region constructor's}
     
-    protected static function MakeSubBuff(parent: Buffer; reg: cl_buffer_region): cl_mem;
-    begin
-      var parent_ntv := parent.Native;
-      if parent_ntv=cl_mem.Zero then raise new InvalidOperationException($'');
-      
-      var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(parent_ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
-      ec.RaiseIfError;
-      
-    end;
-    
     protected constructor(parent: Buffer; reg: cl_buffer_region);
     begin
-      inherited Create(MakeSubBuff(parent, reg), reg.size, false);
+      var parent_ntv := parent.Native;
+      if parent_ntv=cl_mem.Zero then raise new InvalidOperationException($'Ожидался инициализированный буфер. Используйте .Init, или конструктор принимающий контекст');
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateSubBuffer(parent_ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      ec.RaiseIfError;
+      
+      self.sz := reg.size;
+      GC.AddMemoryPressure(Size64);
+      
       self._parent := parent;
     end;
+    ///Создаёт буфер из области памяти родительского буфера parent
+    ///origin указывает отступ в байтах от начала parent
+    ///size указывает размер нового буфера
+    ///Память parent должна быть выделена перед вызовом данного конструктора,
+    ///потому что новый буфер будет использовать память parent, вместо создания новой области памяти
     public constructor(parent: Buffer; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
     
+    ///Создаёт буфер из области памяти родительского буфера parent
+    ///origin указывает отступ в байтах от начала parent
+    ///size указывает размер нового буфера
+    ///Память parent должна быть выделена перед вызовом данного конструктора,
+    ///потому что новый буфер будет использовать память parent, вместо создания новой области памяти
     public constructor(parent: Buffer; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    ///Создаёт буфер из области памяти родительского буфера parent
+    ///origin указывает отступ в байтах от начала parent
+    ///size указывает размер нового буфера
+    ///Память parent должна быть выделена перед вызовом данного конструктора,
+    ///потому что новый буфер будет использовать память parent, вместо создания новой области памяти
     public constructor(parent: Buffer; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
     
-    public procedure Init(c: Context); override := raise new NotSupportedException($'');
+    private procedure InitIgnoreOrErr :=
+    if self.ntv=cl_mem.Zero then raise new NotSupportedException($'SubBuffer нельзя инициализировать, потому что он использует память другого буфера');
+    ///--
+    public procedure Init(c: Context); override := InitIgnoreOrErr;
+    ///--
+    public procedure InitIfNeed(c: Context); override := InitIgnoreOrErr;
     
     {$endregion constructor's}
     
@@ -1108,17 +1276,21 @@ type
   {$region Kernel}
   
   KernelCommandQueue = class;
-  ///Представляет подпрограмму-kernel, выполняемую на GPU
-  Kernel = sealed class(WrapperBase<cl_kernel, KernelProperties>)
-    protected function CreateProp: KernelProperties; override := new KernelProperties(ntv);
+  ///Представляет подпрограмму, выполняемую на GPU
+  Kernel = sealed class(WrapperBase<cl_kernel, KernelProperties>, IDisposable)
+    private function CreateProp: KernelProperties; override := new KernelProperties(ntv);
     
+    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_kernel read ntv;
+    ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: KernelProperties read GetProperties;
     
     private _prog: cl_program;
     private _name: string;
+    ///Возвращает имя данной подпрограммы
     public property Name: string read _name;
     
+    ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному kernel-у
     public function NewQueue: KernelCommandQueue;
     
     {$region constructor's}
@@ -1136,29 +1308,40 @@ type
       self.ntv := self.MakeNewNtv;
     end;
     
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
     public constructor(ntv: cl_kernel; retain: boolean := true);
     begin
-      if retain then cl.RetainKernel(ntv).RaiseIfError;
-      self.ntv := ntv;
+      
       cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), self._prog, IntPtr.Zero).RaiseIfError;
       
       var sz: UIntPtr;
-      cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, UIntPtr.Zero, nil, sz).RaiseIfError;
-      
+      cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, nil, sz).RaiseIfError;
       var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
       try
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, sz, str_ptr, IntPtr.Zero).RaiseIfError;
+        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, sz, str_ptr, IntPtr.Zero).RaiseIfError;
         self._name := Marshal.PtrToStringAnsi(str_ptr);
       finally
         Marshal.FreeHGlobal(str_ptr);
       end;
       
+      if retain then cl.RetainKernel(ntv).RaiseIfError;
+      self.ntv := ntv;
     end;
     
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure Finalize; override :=
-    cl.ReleaseKernel(ntv).RaiseIfError;
+    ///Позволяет OpenCL удалить неуправляемый объект
+    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+    public procedure Dispose :=
+    if ntv<>cl_kernel.Zero then lock self do
+    begin
+      if ntv=cl_kernel.Zero then exit;
+      cl.ReleaseKernel(ntv).RaiseIfError;
+      ntv := cl_kernel.Zero;
+    end;
+    protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
@@ -1167,6 +1350,7 @@ type
     public static function operator=(k1, k2: Kernel): boolean := k1.ntv = k2.ntv;
     public static function operator<>(k1, k2: Kernel): boolean := k1.ntv <> k2.ntv;
     
+    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{self.GetType.Name}[{Name}:{ntv.val}]';
     
@@ -1175,22 +1359,36 @@ type
     {$region UseExclusiveNative}
     
     private exclusive_ntv_lock := new object;
+    ///Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно
+    ///Если неуправляемый объект данного kernel-а используется другим потоком - в процедурную переменную передаётся его независимый клон
+    ///Внимание, клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
     public procedure UseExclusiveNative(p: cl_kernel->());
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
+      var k: cl_kernel;
       try
-        p( owned ? ntv : MakeNewNtv );
+        k := owned ? ntv : MakeNewNtv;
+        p(k);
       finally
-        if owned then Monitor.Exit(exclusive_ntv_lock);
+        if owned then
+          Monitor.Exit(exclusive_ntv_lock) else
+          cl.ReleaseKernel(k).RaiseIfError;
       end;
     end;
+    ///Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно
+    ///Если неуправляемый объект данного kernel-а используется другим потоком - в процедурную переменную передаётся его независимый клон
+    ///Внимание, клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
     public function UseExclusiveNative<T>(f: cl_kernel->T): T;
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
+      var k: cl_kernel;
       try
-        Result := f( owned ? ntv : MakeNewNtv );
+        k := owned ? ntv : MakeNewNtv;
+        Result := f(k);
       finally
-        if owned then Monitor.Exit(exclusive_ntv_lock);
+        if owned then
+          Monitor.Exit(exclusive_ntv_lock) else
+          cl.ReleaseKernel(k).RaiseIfError;
       end;
     end;
     
@@ -1198,12 +1396,16 @@ type
     
     {$region 1#Exec}
     
+    ///
     public function Exec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
     
+    ///
     public function Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
     
+    ///
     public function Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
     
+    ///
     public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): Kernel;
     
     {$endregion 1#Exec}
@@ -1214,18 +1416,23 @@ type
   
   {$region ProgramCode}
   
-  ///Представляет контейнер для прекомпилированного кода для GPU
+  ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
   ProgramCode = sealed class(WrapperBase<cl_program, ProgramProperties>)
-    protected function CreateProp: ProgramProperties; override := new ProgramProperties(ntv);
+    private function CreateProp: ProgramProperties; override := new ProgramProperties(ntv);
     
+    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_program read ntv;
+    ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: ProgramProperties read GetProperties;
     
     protected _c: Context;
+    ///Возвращает контекст, на котором компилировали данный код для GPU
     public property BaseContext: Context read _c;
     
     {$region constructor's}
     
+    ///Компилирует указанные тексты программ на указанном контексте
+    ///Внимание! Именно тексты, Не имена файлов
     public constructor(c: Context; params files_texts: array of string);
     begin
       var ec: ErrorCode;
@@ -1236,7 +1443,7 @@ type
       ec := cl.BuildProgram(self.ntv, c.dvcs.Count,c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
       if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
       begin
-        var sb := new StringBuilder($'');
+        var sb := new StringBuilder($'Ошибка компиляции OpenCL программы:');
         
         foreach var dvc in c.AllDevices do
         begin
@@ -1248,10 +1455,12 @@ type
           cl.GetProgramBuildInfo(self.ntv, dvc.Native, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz).RaiseIfError;
           
           var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-          cl.GetProgramBuildInfo(self.ntv, dvc.Native, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero).RaiseIfError;
-          
-          sb += Marshal.PtrToStringAnsi(str_ptr);
-          Marshal.FreeHGlobal(str_ptr);
+          try
+            cl.GetProgramBuildInfo(self.ntv, dvc.Native, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero).RaiseIfError;
+            sb += Marshal.PtrToStringAnsi(str_ptr);
+          finally
+            Marshal.FreeHGlobal(str_ptr);
+          end;
           
         end;
         
@@ -1262,30 +1471,42 @@ type
       self._c := c;
     end;
     
-    public constructor(ntv: cl_program; retain: boolean := true);
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
+    public constructor(ntv: cl_program);
     begin
-      if retain then cl.RetainProgram(ntv).RaiseIfError;
-      self.ntv := ntv;
       
       var c: cl_context;
       cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(Marshal.SizeOf&<cl_context>), c, IntPtr.Zero).RaiseIfError;
       self._c := new Context(c);
       
+      cl.RetainProgram(ntv).RaiseIfError;
+      self.ntv := ntv;
     end;
     
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure Finalize; override :=
-    cl.ReleaseProgram(ntv).RaiseIfError;
+    ///Позволяет OpenCL удалить неуправляемый объект
+    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+    public procedure Dispose :=
+    if ntv<>cl_program.Zero then lock self do
+    begin
+      if ntv=cl_program.Zero then exit;
+      cl.ReleaseProgram(ntv).RaiseIfError;
+      ntv := cl_program.Zero;
+    end;
+    protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
     {$region GetKernel}
     
-    ///Находит в прекомпилированном коде подпрограмму-kernel с указанным именем
-    ///Регистр имени kernel'а важен!
+    ///Находит в коде kernel с указанным именем
+    ///Регистр имени важен!
     public property KernelByName[kname: string]: Kernel read new Kernel(ntv, kname); default;
     
+    ///Создаёт массив из всех kernel-ов данного кода
     public function GetAllKernels: array of Kernel;
     begin
       
@@ -1302,6 +1523,7 @@ type
     
     {$region Serialize}
     
+    ///--
     public function Serialize: array of byte;
     begin
       raise new NotImplementedException;
@@ -1313,18 +1535,14 @@ type
 //      
     end;
     
-    ///Вызывает метод ProgramCode.Serialize
-    ///Затем записывает в поток размер полученного массива как integer
-    ///И затем записывает сам массив
+    ///--
     public procedure SerializeTo(bw: System.IO.BinaryWriter);
     begin
       var bts := Serialize;
       bw.Write(bts.Length);
       bw.Write(bts);
     end;
-    ///Вызывает метод ProgramCode.Serialize
-    ///Затем записывает в поток размер полученного массива как integer
-    ///И затем записывает сам массив
+    ///--
     public procedure SerializeTo(str: System.IO.Stream) :=
     SerializeTo(new System.IO.BinaryWriter(str));
     
@@ -1332,6 +1550,7 @@ type
     
     {$region Deserialize}
     
+    ///--
     public static function Deserialize(c: Context; bin: array of byte): ProgramCode;
     begin
       raise new NotImplementedException;
@@ -1348,6 +1567,7 @@ type
 //      
     end;
     
+    ///--
     public static function DeserializeFrom(c: Context; br: System.IO.BinaryReader): ProgramCode;
     begin
       var bin_len := br.ReadInt32;
@@ -1355,6 +1575,7 @@ type
       if bin_arr.Length<bin_len then raise new System.IO.EndOfStreamException;
       Result := Deserialize(c, bin_arr);
     end;
+    ///--
     public static function DeserializeFrom(c: Context; str: System.IO.Stream) :=
     DeserializeFrom(c, new System.IO.BinaryReader(str));
     
@@ -1426,8 +1647,8 @@ type
   
   {$region Blittable}
   
-  BlittableException = class(Exception)
-    constructor(t, blame: System.Type; source_name: string) :=
+  BlittableException = sealed class(Exception)
+    public constructor(t, blame: System.Type; source_name: string) :=
     inherited Create(t=blame ? $'Тип {t} нельзя использовать в {source_name}' : $'Тип {t} нельзя использовать в {source_name}, потому что он содержит тип {blame}' );
   end;
   BlittableHelper = static class
@@ -1651,7 +1872,7 @@ type
       self.uev := cl.CreateUserEvent(c, ec);
       ec.RaiseIfError;
     end;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     static function MakeUserEvent(tsk: CLTaskBase; c: cl_context): UserEvent;
     
     public static function StartBackgroundWork(after: EventList; work: Action; c: cl_context; tsk: CLTaskBase): UserEvent;
@@ -1766,12 +1987,12 @@ type
     private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
     public constructor(val: T) := self.ptr^ := val;
-    private constructor := raise new System.NotSupportedException;
-    
-    public function GetPtr: ^T := ptr;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(new IntPtr(ptr));
+    
+    public function GetPtr: ^T := ptr;
     
   end;
   
@@ -1782,7 +2003,7 @@ type
     
     public constructor(ev: EventList) :=
     self.ev := ev;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public function TrySetEvBase(new_ev: EventList): QueueResBase; abstract;
     
@@ -1957,7 +2178,7 @@ type
     
     
     private function OrgQueueBase: CommandQueueBase; abstract;
-    ///Возвращает очередь, выполнение которой описывает данный объект
+    ///Возвращает очередь, которую выполняет данный CLTask
     public property OrgQueue: CommandQueueBase read OrgQueueBase;
     
     {$region AddErr}
@@ -1970,6 +2191,8 @@ type
         Result := err_lst.ToArray;
     end;
     
+    ///Возвращает исключение, полученное при выполнении очереди
+    ///Возвращает nil, если исключений не было
     public property Error: AggregateException read err_lst.Count=0 ? nil : new AggregateException($'При выполнении очереди было вызвано {err_lst.Count} исключений. Используйте try чтоб получить больше информации', GetErrArr);
     
     protected procedure AddErr(e: Exception) :=
@@ -2042,6 +2265,8 @@ type
     
     {$region SyncRes}
     
+    ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+    ///Вызывает исключение, если оно было вызвано при выполнении очереди
     public procedure Wait;
     begin
       wh.WaitOne;
@@ -2050,6 +2275,9 @@ type
     end;
     
     protected function WaitResBase: object; abstract;
+    ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+    ///Вызывает исключение, если оно было вызвано при выполнении очереди
+    ///А затем возвращает результат выполнения
     public function WaitRes := WaitResBase;
     
     {$endregion}
@@ -2061,7 +2289,7 @@ type
     protected q: CommandQueue<T>;
     protected q_res: T;
     
-    ///Возвращает очередь, выполнение которой описывает данный объект
+    ///Возвращает очередь, которую выполняет данный CLTask
     public property OrgQueue: CommandQueue<T> read q; reintroduce;
     protected function OrgQueueBase: CommandQueueBase; override;
     
@@ -2172,6 +2400,9 @@ type
       
     end;
     
+    ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+    ///Вызывает исключение, если оно было вызвано при выполнении очереди
+    ///А затем возвращает результат выполнения
     public function WaitRes: T; reintroduce;
     begin
       Wait;
@@ -2189,8 +2420,7 @@ type
   
   {$region Base}
   
-  ///Базовый тип очереди с неопределённым типом возвращаемого значения
-  ///От этого класса наследуют все типы очередей
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract class
     
     {$region Invoke}
@@ -2215,29 +2445,29 @@ type
     {$region MW}
     
     private waiters_c := 0;
-    protected function IsWaitable := waiters_c<>0;
-    protected procedure MakeWaitable := lock self do waiters_c += 1;
-    protected procedure UnMakeWaitable := lock self do waiters_c -= 1;
+    private function IsWaitable := waiters_c<>0;
+    private procedure MakeWaitable := lock self do waiters_c += 1;
+    private procedure UnMakeWaitable := lock self do waiters_c -= 1;
     
     /// добавляет tsk в качестве ключа для всех ожидаемых очередей
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
     private mw_evs := new Dictionary<CLTaskBase, MWEventContainer>;
-    protected procedure RegisterWaiterTask(tsk: CLTaskBase) :=
+    private procedure RegisterWaiterTask(tsk: CLTaskBase) :=
     lock mw_evs do if not mw_evs.ContainsKey(tsk) then
     begin
       mw_evs[tsk] := new MWEventContainer;
       tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
     end;
     
-    protected procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
+    private procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
     begin
       var cont: MWEventContainer;
       lock mw_evs do cont := mw_evs[tsk];
       cont.AddHandler(handler);
     end;
     
-    protected procedure ExecuteMWHandlers;
+    private procedure ExecuteMWHandlers;
     begin
       var conts: array of MWEventContainer;
       lock mw_evs do conts := mw_evs.Values.ToArray;
@@ -2254,6 +2484,8 @@ type
     
     {$region Cast}
     
+    ///Если данная очередь проходит по условию "... is CommandQueue<T>" - возвращает себя же
+    ///Иначе возвращает очередь-обёртку, выполняющую "res := T(res)", где res - результат данной очереди
     public function Cast<T>: CommandQueue<T>;
     
     {$endregion}
@@ -2264,7 +2496,11 @@ type
 //    protected function ThenConvertBase<TOtp>(f: object->TOtp): CommandQueue<TOtp>;
 //    protected function ThenConvertBase<TOtp>(f: (object,Context)->TOtp): CommandQueue<TOtp>;
     
+    ///Создаёт очередь, которая выполнит данную
+    ///А затем выполнит на CPU функцию f, используя результат данной очереди
     public function ThenConvertBase<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
+    ///Создаёт очередь, которая выполнит данную
+    ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
     public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>;
     
     //ToDo
@@ -2275,8 +2511,8 @@ type
     
     {$region +/*}
     
-    protected function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -2288,6 +2524,8 @@ type
     
     {$region Multiusable}
     
+    ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
+    ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
     public function MultiusableBase: ()->CommandQueueBase; abstract;
     
     //ToDo
@@ -2297,11 +2535,16 @@ type
     
     {$region ThenWait}
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
     public function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAllBase(params qs: array of CommandQueueBase): CommandQueueBase := ThenWaitForAllBase(qs.AsEnumerable);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
     public function ThenWaitForAnyBase(params qs: array of CommandQueueBase): CommandQueueBase := ThenWaitForAnyBase(qs.AsEnumerable);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от заданой очереди
     public function ThenWaitForBase(q: CommandQueueBase) := ThenWaitForAllBase(q);
     
     //ToDo
@@ -2316,8 +2559,7 @@ type
     {$endregion ThenWait}
     
   end;
-  ///Базовый тип очереди с определённым типом возвращаемого значения "T"
-  ///От этого класса наследуют все типы очередей
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T> = abstract class(CommandQueueBase)
     
     {$region Invoke}
@@ -2358,7 +2600,11 @@ type
     
     {$region ThenConvert}
     
+    ///Создаёт очередь, которая выполнит данную
+    ///А затем выполнит на CPU функцию f, используя результат данной очереди
     public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
+    ///Создаёт очередь, которая выполнит данную
+    ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
     
     {$endregion ThenConvert}
@@ -2378,6 +2624,8 @@ type
     
     {$region Multiusable}
     
+    ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
+    ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
     public function Multiusable: ()->CommandQueue<T>;
     ///--
     public function MultiusableBase: ()->CommandQueueBase; override := Multiusable as object as Func<CommandQueueBase>; //ToDo #2221
@@ -2393,9 +2641,9 @@ type
     ///--
     public function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
     
-    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от одной из заданных очередей
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
     public function ThenWaitForAny(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAny(qs.AsEnumerable);
-    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от одной из заданных очередей
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
     public function ThenWaitForAny(qs: sequence of CommandQueueBase): CommandQueue<T>;
     ///--
     public function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
@@ -2434,9 +2682,10 @@ type
   
   {$region Const}
   
-  ///Интерфейс, который реализован только классом ConstQueue<>
+  ///Интерфейс, который реализован только классом ConstQueue<T>
   ///Позволяет получить значение, из которого была создана константая очередь, не зная его типа
   IConstQueue = interface
+    ///Возвращает значение из которого была создана данная константная очередь
     function GetConstVal: Object;
   end;
   ///Представляет константную очередь
@@ -2444,9 +2693,10 @@ type
   ConstQueue<T> = sealed class(CommandQueue<T>, IConstQueue)
     private res: T;
     
+    ///Создаёт новую константную очередь из заданного значения
     public constructor(o: T) :=
     self.res := o;
-    private constructor := raise new System.NotSupportedException;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public function IConstQueue.GetConstVal: object := self.res;
     ///Возвращает значение из которого была создана данная константная очередь
@@ -2479,7 +2729,7 @@ type
     protected qs: array of CommandQueueBase;
     
     public constructor(params qs: array of CommandQueueBase) := self.qs := qs;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public function GetQS: array of CommandQueueBase := qs;
     
@@ -2541,7 +2791,7 @@ type
       self.qs := qs;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     foreach var q in qs do q.RegisterWaitables(tsk, prev_hubs);
@@ -2619,7 +2869,7 @@ type
       self.q2 := q2;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -2669,7 +2919,7 @@ type
       self.q3 := q3;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -2724,7 +2974,7 @@ type
       self.q4 := q4;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -2784,7 +3034,7 @@ type
       self.q5 := q5;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -2849,7 +3099,7 @@ type
       self.q6 := q6;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -2919,7 +3169,7 @@ type
       self.q7 := q7;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -2978,7 +3228,7 @@ type
     public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: ISimpleQueueArray;
     begin
       var enmr := inp.GetEnumerator;
-      if not enmr.MoveNext then raise new InvalidOperationException('CombineSyncQueue и CombineAsyncQueue не могут принимать 0 очередей');
+      if not enmr.MoveNext then raise new InvalidOperationException('Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей');
       
       var res := new List<CommandQueueBase>;
       while true do
@@ -3081,7 +3331,7 @@ type
   
   {$region BufferCommandQueue}
   
-  ///Представляет особый тип CommandQueue<Buffer>, напрямую хранящий команды чтения/записи памяти на GPU
+  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Buffer
   BufferCommandQueue = sealed class(GPUCommandContainer<Buffer>)
     
     {$region constructor's}
@@ -3093,7 +3343,10 @@ type
       Result := b;
     end;
     
+    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
     public constructor(b: Buffer) := inherited;
+    ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
+    ///За каждое одно выполнение контейнера - q выполнится ровно один раз
     public constructor(q: CommandQueue<Buffer>) :=
     inherited Create(q.ThenConvert(InitBuffer));
     
@@ -3122,6 +3375,7 @@ type
     
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: Buffer->()): BufferCommandQueue;
+    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: (Buffer, Context)->()): BufferCommandQueue;
     
     {$endregion Proc}
@@ -3147,124 +3401,160 @@ type
     
     {$region 1#Write&Read}
     
-    ///- function AddWriteData(ptr: IntPtr): BufferCommandQueue;
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
+    ///
     public function AddWriteData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
     
-    ///- function AddReadData(ptr: IntPtr): BufferCommandQueue;
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    ///
     public function AddReadData(ptr: CommandQueue<IntPtr>): BufferCommandQueue;
     
+    ///
     public function AddWriteData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
+    ///
     public function AddReadData(ptr: CommandQueue<IntPtr>; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
-    ///Копирует область из оперативной памяти по адресу ptr в память буфера
+    ///
     public function AddWriteData(ptr: pointer): BufferCommandQueue;
     
-    ///Копирует область памяти из буфера в оперативную память по адресу ptr
+    ///
     public function AddReadData(ptr: pointer): BufferCommandQueue;
     
+    ///
     public function AddWriteData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
+    ///
     public function AddReadData(ptr: pointer; offset, len: CommandQueue<integer>): BufferCommandQueue;
     
+    ///
     public function AddWriteValue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteValue<TRecord>(val: TRecord; offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>; offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, buff_offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
+    ///
     public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): BufferCommandQueue;
     
+    ///
     public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, offset, len: CommandQueue<integer>): BufferCommandQueue;
     
-    ///- function AddFillValue(val: TRecord): BufferCommandQueue;
-    ///Заполняет буфер копиями значения val
+    ///
     public function AddFillValue<TRecord>(val: TRecord): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddFillValue<TRecord>(val: TRecord; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
-    ///- function AddFillValue(val: TRecord): BufferCommandQueue;
-    ///Заполняет буфер копиями значения val
+    ///
     public function AddFillValue<TRecord>(val: CommandQueue<TRecord>): BufferCommandQueue; where TRecord: record;
     
+    ///
     public function AddFillValue<TRecord>(val: CommandQueue<TRecord>; offset, len: CommandQueue<integer>): BufferCommandQueue; where TRecord: record;
     
     {$endregion 2#Fill}
     
     {$region 3#Copy}
     
-    ///- function AddCopyTo(b: Buffer): BufferCommandQueue;
-    ///Копирует память из текущего буфера в b
+    ///
     public function AddCopyTo(b: CommandQueue<Buffer>): BufferCommandQueue;
     
+    ///
     public function AddCopyForm(b: CommandQueue<Buffer>): BufferCommandQueue;
     
+    ///
     public function AddCopyTo(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): BufferCommandQueue;
     
+    ///
     public function AddCopyForm(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>): BufferCommandQueue;
     
     {$endregion 3#Copy}
     
     {$region Get}
     
+    ///
     public function AddGetData: CommandQueue<IntPtr>;
     
+    ///
     public function AddGetData(offset, len: CommandQueue<integer>): CommandQueue<IntPtr>;
     
+    ///
     public function AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
     
+    ///
     public function AddGetValue<TRecord>(offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
     
+    ///
     public function AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
     
+    ///
     public function AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
     
+    ///
     public function AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
     
+    ///
     public function AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
     
     {$endregion Get}
@@ -3275,12 +3565,15 @@ type
   
   {$region KernelCommandQueue}
   
-  ///Представляет особый тип CommandQueue<Kernel>, напрямую хранящий команды запуска kernel'ов GPU
+  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Kernel
   KernelCommandQueue = sealed class(GPUCommandContainer<Kernel>)
     
     {$region constructor's}
     
+    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
     public constructor(k: Kernel) := inherited;
+    ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
+    ///За каждое одно выполнение контейнера - q выполнится ровно один раз
     public constructor(q: CommandQueue<Kernel>) := inherited;
     
     {$endregion constructor's}
@@ -3308,6 +3601,7 @@ type
     
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: Kernel->()): KernelCommandQueue;
+    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: (Kernel, Context)->()): KernelCommandQueue;
     
     {$endregion Proc}
@@ -3333,12 +3627,16 @@ type
     
     {$region 1#Exec}
     
+    ///
     public function AddExec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
+    ///
     public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
+    ///
     public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
+    ///
     public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
     {$endregion 1#Exec}
@@ -3501,21 +3799,31 @@ type
   
   {$region KernelArg}
   
+  ///Представляет аргумент, передаваемый в вызов kernel-а
   KernelArg = abstract class
-    protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); abstract;
+    private procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); abstract;
     
+    ///Создаёт аргумент kernel-а, представляющий буфер
     public static function FromBuffer(b: Buffer): KernelArg;
+    ///Создаёт аргумент kernel-а, представляющий буфер
     public static function FromBufferCQ(bq: CommandQueue<Buffer>) := bq.ThenConvert((b,c)->FromBuffer(b));
     public static function operator implicit(b: Buffer): KernelArg := FromBuffer(b);
     
+    ///Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
     public static function FromRecord<TRecord>(val: TRecord): KernelArg; where TRecord: record;
+    ///Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
     public static function FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>): CommandQueue<KernelArg>; where TRecord: record;
     begin Result := valq.ThenConvert&<KernelArg>((val,c)->FromRecord(val)); end;
     public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromRecord(val); end;
     
+    ///Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти
     public static function FromPtr(ptr: IntPtr; sz: UIntPtr): KernelArg;
+    ///Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти
     public static function FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): CommandQueue<KernelArg>;
     
+    ///Создаёт аргумент kernel-а, представляющий адрес размерного значения со стека
+    ///Внимание! Адрес должен ссылаться именно на стек, иначе программа может время от времени падать с ошибками доступа к памяти
+    ///Это значит, что передавать можно только адрес локальной переменной, не захваченной ни одной лямбдой
     public static function FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromPtr(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>)); end;
     public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromRecordPtr(ptr); end;
     
@@ -3533,7 +3841,7 @@ type
       foreach var q in waitables do q.MakeWaitable;
       self.waitables := waitables;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public procedure RegisterWaitables(tsk: CLTaskBase) :=
     foreach var q in waitables do q.RegisterWaiterTask(tsk);
@@ -3595,6 +3903,22 @@ type
 implementation
 
 {$region DelayedImpl}
+
+{$region Device}
+
+function Device.Split(props: array of DevicePartitionProperty): array of SubDevice;
+begin
+  
+  var c: UInt32;
+  cl.CreateSubDevices(self.Native, props, 0, IntPtr.Zero, c).RaiseIfError;
+  
+  var res := new cl_device_id[int64(c)];
+  cl.CreateSubDevices(self.Native, props, c, res[0], IntPtr.Zero).RaiseIfError;
+  
+  Result := res.ConvertAll(sdvc->new SubDevice(sdvc, self));
+end;
+
+{$endregion Device}
 
 {$region Buffer}
 
@@ -3859,7 +4183,7 @@ type
       self.q := q;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
@@ -3894,7 +4218,7 @@ type
   MultiusableCommandQueueHub<T> = sealed class(MultiusableCommandQueueHubBase)
     public q: CommandQueue<T>;
     public constructor(q: CommandQueue<T>) := self.q := q;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public function OnNodeInvoked(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean): QueueRes<T>;
     begin
@@ -3983,7 +4307,7 @@ type
     public q: CommandQueueBase;
     
     public constructor(q: CommandQueueBase) := self.q := q;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected function InvokeObj  (o: T;                      tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
     protected function InvokeQueue(o_q: ()->CommandQueue<T>;  tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
@@ -4021,7 +4345,7 @@ type
     public p: T->();
     
     public constructor(p: T->()) := self.p := p;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure ExecProc(o: T; c: Context); override := p(o);
     
@@ -4030,7 +4354,7 @@ type
     public p: (T,Context)->();
     
     public constructor(p: (T,Context)->()) := self.p := p;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure ExecProc(o: T; c: Context); override := p(o, c);
     
@@ -4149,7 +4473,7 @@ type
     private b: Buffer;
     
     public constructor(b: Buffer) := self.b := b;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override;
     begin
@@ -4172,13 +4496,16 @@ function ToKernelArg(self: CommandQueue<Buffer>); extensionmethod := KernelArg.F
 type
   KernelArgRecord<TRecord> = sealed class(KernelArg)
   where TRecord: record;
-    private val: TRecord;
+    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
     
-    public constructor(val: TRecord) := self.val := val;
-    private constructor := raise new NotSupportedException;
+    public constructor(val: TRecord) := self.val^ := val;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    
+    protected procedure Finalize; override :=
+    Marshal.FreeHGlobal(new IntPtr(val));
     
     protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
-    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), self.val).RaiseIfError; 
+    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
     
   end;
   
@@ -4201,7 +4528,7 @@ type
       self.ptr := ptr;
       self.sz := sz;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
     cl.SetKernelArg(k, ind, sz, pointer(ptr)).RaiseIfError; 
@@ -6584,12 +6911,21 @@ type
             args[i].SetArg(ntv, i, c);
           
           cl.EnqueueNDRangeKernel(
-            cq, o.ntv, 1,
+            cq, ntv, 1,
             nil,
             new UIntPtr[](new UIntPtr(sz1)),
             nil,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         Result := res_ev;
@@ -6650,12 +6986,21 @@ type
             args[i].SetArg(ntv, i, c);
           
           cl.EnqueueNDRangeKernel(
-            cq, o.ntv, 2,
+            cq, ntv, 2,
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
             nil,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         Result := res_ev;
@@ -6721,12 +7066,21 @@ type
             args[i].SetArg(ntv, i, c);
           
           cl.EnqueueNDRangeKernel(
-            cq, o.ntv, 3,
+            cq, ntv, 3,
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
             nil,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         Result := res_ev;
@@ -6799,6 +7153,15 @@ type
             local_work_size,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         

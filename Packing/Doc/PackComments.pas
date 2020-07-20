@@ -46,7 +46,7 @@ type
         cd.used := true;
         Result := Apply(cd.comment, prev);
       end else
-        Otp($'ERROR: key %{key}% not found!');
+        Otp($'ERROR: key %{key}% wasn''t found!');
     end;
     
     static function Apply(l: string; prev: List<string> := nil): string;

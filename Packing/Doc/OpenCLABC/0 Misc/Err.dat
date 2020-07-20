@@ -1,0 +1,48 @@
+
+
+
+# Err:NoParamCtor
+Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC
+
+
+
+# Err:Device:SplitCUCount
+Количество ядер должно быть положительным числом, а не {CUCount}
+
+
+
+# Err:Context:WrongMainDvc
+main_dvc должен быть в списке устройств контекста
+
+
+
+# Err:Buffer:Empty
+Ожидался инициализированный буфер. Используйте .Init, или конструктор принимающий контекст
+
+# Err:SubBuffer:InitCall
+SubBuffer нельзя инициализировать, потому что он использует память другого буфера
+
+
+
+# Err:ProgramCode:BuildFail
+Ошибка компиляции OpenCL программы:
+
+
+
+# Err:Blittable:Main
+Тип {t} нельзя использовать в {source_name}
+
+# Err:Blittable:Blame
+%Err:Blittable:Main%, потому что он содержит тип {blame}
+
+
+
+# Err:CLTask:
+При выполнении очереди было вызвано {err_lst.Count} исключений. Используйте try чтоб получить больше информации
+
+
+
+# Err:FlattenQueueArray:InpEmpty
+Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей
+
+

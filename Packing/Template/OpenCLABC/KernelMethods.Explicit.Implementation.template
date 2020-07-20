@@ -39,12 +39,21 @@ type
             args[i].SetArg(ntv, i, c);
           
           cl.EnqueueNDRangeKernel(
-            cq, o.ntv, 1,
+            cq, ntv, 1,
             nil,
             new UIntPtr[](new UIntPtr(sz1)),
             nil,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         Result := res_ev;
@@ -105,12 +114,21 @@ type
             args[i].SetArg(ntv, i, c);
           
           cl.EnqueueNDRangeKernel(
-            cq, o.ntv, 2,
+            cq, ntv, 2,
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
             nil,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         Result := res_ev;
@@ -176,12 +194,21 @@ type
             args[i].SetArg(ntv, i, c);
           
           cl.EnqueueNDRangeKernel(
-            cq, o.ntv, 3,
+            cq, ntv, 3,
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
             nil,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         Result := res_ev;
@@ -254,6 +281,15 @@ type
             local_work_size,
             evs.count, evs.evs, res_ev
           );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk);
         end);
         
         

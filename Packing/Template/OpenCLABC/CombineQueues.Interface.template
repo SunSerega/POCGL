@@ -8,7 +8,6 @@
 function CombineSyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
 function CombineSyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
-function CombineSyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
@@ -63,7 +62,6 @@ function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
 function CombineAsyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
-function CombineAsyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;

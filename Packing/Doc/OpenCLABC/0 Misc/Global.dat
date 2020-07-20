@@ -1,0 +1,66 @@
+
+
+
+# HFQ<T>(()->T)
+# HFQ<T>(Context->T)
+Создаёт очередь, выполняющую указанную функцию на CPU
+И возвращающую результат этой функци
+
+# HPQ(()->())
+# HPQ(Context->())
+Создаёт очередь, выполняющую указанную процедуру на CPU
+И возвращающую object(nil)
+
+
+
+# :WaitForDef
+Создаёт очередь, ожидающую
+
+# WaitFor(CommandQueueBase)
+%:WaitForDef% сигнала выполненности от указанной очереди
+
+# WaitForAll(array of CommandQueueBase)
+# WaitForAll(sequence of CommandQueueBase)
+%:WaitForDef% сигнала выполненности от каждой из указанных очередей
+
+# WaitForAny(array of CommandQueueBase)
+# WaitForAny(sequence of CommandQueueBase)
+%:WaitForDef% первого сигнала выполненности от любой из указанных очередей
+
+
+
+# Combine[%mode:Sync,Async%]QueueBase(array of CommandQueueBase)
+# Combine[%mode:Sync,Async%]QueueBase(sequence of CommandQueueBase)
+# Combine[%mode:Sync,Async%]Queue<T>(sequence of CommandQueueBase, CommandQueue<T>)
+# Combine[%mode:Sync,Async%]Queue<T>(array of CommandQueue<T>)
+# Combine[%mode:Sync,Async%]Queue<T>(sequence of CommandQueue<T>)
+Создаёт очередь, выполняющую указанные очереди {%mode? одну за другой : одновременно %}
+И возвращающую результат последней очереди
+
+
+
+# Combine[%mode:Sync,Async%]Queue<TRes>(Func<array of object, TRes>, array of CommandQueueBase)
+# Combine[%mode:Sync,Async%]Queue<TRes>(Func<array of object, TRes>, sequence of CommandQueueBase)
+# Combine[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
+# Combine[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
+# Combine[%mode:Sync,Async%]Queue2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+# Combine[%mode:Sync,Async%]Queue3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+# Combine[%mode:Sync,Async%]Queue4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+# Combine[%mode:Sync,Async%]Queue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+# Combine[%mode:Sync,Async%]Queue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+# Combine[%mode:Sync,Async%]Queue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+# Combine[%mode:Sync,Async%]Queue<TRes>(Func<array of object, Context, TRes>, array of CommandQueueBase)
+# Combine[%mode:Sync,Async%]Queue<TRes>(Func<array of object, Context, TRes>, sequence of CommandQueueBase)
+# Combine[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+# Combine[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
+# Combine[%mode:Sync,Async%]Queue2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+# Combine[%mode:Sync,Async%]Queue3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+# Combine[%mode:Sync,Async%]Queue4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+# Combine[%mode:Sync,Async%]Queue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+# Combine[%mode:Sync,Async%]Queue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+# Combine[%mode:Sync,Async%]Queue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+Создаёт очередь, выполняющую указанные очереди {%mode? одну за другой : одновременно %}
+Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
+И возвращающую результат этой функции
+
+

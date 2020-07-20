@@ -58,7 +58,7 @@ begin
         res.WriteLine($'      self.q{i} := q{i};');
       res.WriteLine('      self.f := f;');
       res.WriteLine('    end;');
-      res.WriteLine('    private constructor := raise new NotSupportedException;');
+      res.WriteLine('    private constructor := raise new InvalidOperationException($''%Err:NoParamCtor%'');');
       
       res.WriteLine('    ');
       

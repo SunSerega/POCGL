@@ -1,0 +1,12 @@
+
+
+
+# DeviceType
+Тип устройства, поддерживающего OpenCL
+
+# DeviceAffinityDomain
+Уровень кэша, используемый в Device.SplitByAffinityDomain
+
+
+
+

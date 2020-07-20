@@ -1,0 +1,46 @@
+
+
+
+# [%t:Buffer,Kernel%]CommandQueue
+Представляет очередь-контейнер для команд GPU, применяемых к объекту типа {%t%}
+
+
+
+# BufferCommandQueue.(Buffer)
+# KernelCommandQueue.(Kernel)
+Создаёт контейнер команд, который будет применять команды к указанному объекту
+
+# BufferCommandQueue.(CommandQueue<Buffer>)
+# KernelCommandQueue.(CommandQueue<Kernel>)
+Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
+За каждое одно выполнение контейнера - q выполнится ровно один раз
+
+
+
+# BufferCommandQueue.AddQueue(CommandQueueBase)
+# KernelCommandQueue.AddQueue(CommandQueueBase)
+Добавляет выполнение очереди в список обычных команд для GPU
+
+# BufferCommandQueue.AddProc(Buffer->())
+# KernelCommandQueue.AddProc(Kernel->())
+# BufferCommandQueue.AddProc((Buffer, Context)->())
+# KernelCommandQueue.AddProc((Kernel, Context)->())
+Добавляет выполнение процедуры на CPU в список обычных команд для GPU
+
+# BufferCommandQueue.AddWait(CommandQueueBase)
+# KernelCommandQueue.AddWait(CommandQueueBase)
+Добавляет ожидание сигнала выполненности от заданной очереди
+
+# BufferCommandQueue.AddWaitAll(array of CommandQueueBase)
+# BufferCommandQueue.AddWaitAll(sequence of CommandQueueBase)
+# KernelCommandQueue.AddWaitAll(array of CommandQueueBase)
+# KernelCommandQueue.AddWaitAll(sequence of CommandQueueBase)
+Добавляет ожидание сигнала выполненности от всех заданных очередей
+
+# BufferCommandQueue.AddWaitAny(array of CommandQueueBase)
+# BufferCommandQueue.AddWaitAny(sequence of CommandQueueBase)
+# KernelCommandQueue.AddWaitAny(array of CommandQueueBase)
+# KernelCommandQueue.AddWaitAny(sequence of CommandQueueBase)
+Добавляет ожидание первого сигнала выполненности от одной из заданных очередей
+
+

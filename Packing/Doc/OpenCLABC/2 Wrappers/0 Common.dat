@@ -1,0 +1,57 @@
+
+
+
+# Platform.Native
+# Device.Native
+# Context.Native
+# Buffer.Native
+# Kernel.Native
+# ProgramCode.Native
+Возвращает имя (дескриптор) неуправляемого объекта
+
+
+
+# Platform.(cl_platform_id)
+# Device.(cl_device_id)
+# Wrap:NtvCtor
+Создаёт обёртку для указанного неуправляемого объекта
+
+# Context.(cl_context, Device)
+# Context.(cl_context)
+# Buffer.(cl_mem)
+# Kernel.(cl_kernel, boolean)
+# ProgramCode.(cl_program)
+%Wrap:NtvCtor%
+При успешном создании обёртки вызывается cl.Retain
+А во время вызова .Dispose - cl.Release
+
+
+
+# Context.Dispose
+# Kernel.Dispose
+# ProgramCode.Dispose
+Позволяет OpenCL удалить неуправляемый объект
+Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+
+
+
+# Platform.Properties
+# Device.Properties
+# Context.Properties
+# Buffer.Properties
+# Kernel.Properties
+# ProgramCode.Properties
+Возвращает контейнер свойств неуправляемого объекта
+
+
+
+# Platform.ToString
+# Device.ToString
+# SubDevice.ToString
+# Context.ToString
+# Buffer.ToString
+# SubBuffer.ToString
+# Kernel.ToString
+Возвращает строку с основными данными о данном объекте
+
+

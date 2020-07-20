@@ -1,0 +1,49 @@
+
+
+
+# CLTaskBase
+# CLTask<T>
+Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
+
+
+
+# CLTaskBase.OrgQueue
+# CLTask<T>.OrgQueue
+Возвращает очередь, которую выполняет данный CLTask
+
+
+
+# CLTaskBase.Error
+Возвращает исключение, полученное при выполнении очереди
+Возвращает nil, если исключений не было
+
+
+
+# CLTask:AddEvent
+Добавляет подпрограмму-обработчик, которая будет вызвана
+
+# CLTaskBase.WhenDone(Action<CLTaskBase>)
+# CLTask<T>.WhenDone(Action<CLTask<T>>)
+%CLTask:AddEvent% когда выполнение очереди завершится (успешно или с ошибой)
+
+# CLTaskBase.WhenComplete(Action<CLTaskBase, object>)
+# CLTask<T>.WhenComplete(Action<CLTask<T>, T>)
+%CLTask:AddEvent% когда- и если выполнение очереди завершится успешно
+
+# CLTaskBase.WhenError(Action<CLTaskBase, array of Exception>)
+# CLTask<T>.WhenError(Action<CLTask<T>, array of Exception>)
+%CLTask:AddEvent% когда- и если при выполнении очереди будет вызвано исключение
+
+
+
+# CLTaskBase.Wait
+# CLTask:WaitDef
+Ожидает окончания выполнения очереди (если оно ещё не завершилось)
+Вызывает исключение, если оно было вызвано при выполнении очереди
+
+# CLTaskBase.WaitRes
+# CLTask<T>.WaitRes
+%CLTask:WaitDef%
+А затем возвращает результат выполнения
+
+

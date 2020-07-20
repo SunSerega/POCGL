@@ -29,7 +29,6 @@ begin
           foreach var qs_def in qs_defs do
             res.WriteLine($'function Combine{exec_order}QueueBase({qs_def}CommandQueueBase): CommandQueueBase;');
           res.WriteLine;
-          res.WriteLine($'function Combine{exec_order}Queue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;');
           res.WriteLine($'function Combine{exec_order}Queue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;');
           res.WriteLine;
           foreach var qs_def in qs_defs do
@@ -97,7 +96,6 @@ begin
           foreach var qs_def in qs_defs do
             res.WriteLine($'function Combine{exec_order}QueueBase({qs_def}CommandQueueBase) := new Simple{exec_order}QueueArray<object>(QueueArrayUtils.Flatten{exec_order}QueueArray(qs));');
           res.WriteLine;
-          res.WriteLine($'function Combine{exec_order}Queue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>) := new Simple{exec_order}QueueArray<T>(QueueArrayUtils.Flatten{exec_order}QueueArray(qs.Append(last as CommandQueueBase)));');
           res.WriteLine($'function Combine{exec_order}Queue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := new Simple{exec_order}QueueArray<T>(QueueArrayUtils.Flatten{exec_order}QueueArray(qs.Append(last as CommandQueueBase)));');
           res.WriteLine;
           foreach var qs_def in qs_defs do

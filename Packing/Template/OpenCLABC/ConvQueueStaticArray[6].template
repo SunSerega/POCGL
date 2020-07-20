@@ -20,7 +20,7 @@
       self.q6 := q6;
       self.f := f;
     end;
-    private constructor := raise new NotSupportedException;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin

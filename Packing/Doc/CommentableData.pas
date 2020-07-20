@@ -8,7 +8,7 @@ type
     private _name: string;
     public property Name: string read _name;
     
-    public constructor(name: string) := self._name := name;
+    public constructor(name: string) := self._name := name?.TrimStart('&');
     private constructor := raise new System.NotSupportedException;
     
     public property FullName: string read; abstract;
@@ -203,16 +203,16 @@ begin
   var ind2 := l.SmartIndexOf(end_sym, ind1);
   if ind2=-1 then raise new System.InvalidOperationException(l);
   
-  Result := l.Substring(ind1, ind2-ind1).Split(',').ConvertAll(arg->
+  Result := l.Substring(ind1, ind2-ind1).Split(';').SelectMany(arg->
   begin
     
     var ind := arg.IndexOf(':=');
     if ind<>-1 then arg := arg.Remove(ind);
     
     ind := arg.IndexOf(':');
-    Result := arg.Substring(ind+1).Trim;
+    Result := SeqFill(arg.Take(ind).Count(ch->ch=',')+1, arg.Substring(ind+1).Trim);
     
-  end);
+  end).ToArray;
   
 end;
 
@@ -241,7 +241,7 @@ begin
 end;
 
 static function CommentableMethod.Parse(l: string; t: CommentableType): CommentableMethod;
-const method_keywords: array of string = (' function ', ' procedure ');
+const method_keywords: array of string = ('function ', 'procedure ');
 begin
   var ind := l.IndexOfAny(method_keywords);
   if ind=-1 then exit;
@@ -250,15 +250,18 @@ begin
   var ind2 := l.IndexOfAny(ind, '(', ':', ':=', ';');
   if ind2=-1 then raise new System.InvalidOperationException(l);
   
-  Result := new CommentableMethod(t,
-    l.Substring(ind, ind2-ind).Trim,
+  var name := l.Substring(ind, ind2-ind).Trim;
+  if name.Contains('operator') then exit;
+  if name.Contains('.') then exit; // явные реализации интерфейсов
+  
+  Result := new CommentableMethod(t, name,
     GetArgs(l, ind2, '(', ')')
   );
   
 end;
 
 static function CommentableConstructor.Parse(l: string; t: CommentableType): CommentableConstructor;
-const constructor_keywords: array of string = (' constructor ');
+const constructor_keywords: array of string = (' constructor(');
 begin
   var ind := l.IndexOfAny(constructor_keywords);
   if ind=-1 then exit;
@@ -282,8 +285,10 @@ begin
   var ind2 := l.IndexOfAny(ind, '[', ':');
   if ind2=-1 then raise new System.InvalidOperationException(l);
   
-  Result := new CommentableProp(t,
-    l.Substring(ind, ind2-ind).Trim,
+  var name := l.Substring(ind, ind2-ind).Trim;
+  if name.Contains('.') then exit; // явные реализации интерфейсов
+  
+  Result := new CommentableProp(t, name,
     GetArgs(l, ind2, '[', ']')
   );
   
@@ -372,8 +377,8 @@ begin
         if not enmr.MoveNext then raise new System.InvalidOperationException;
         l := enmr.Current;
         
-        if t.is_sealed and l.Contains(' protected ') then continue;
-        if l.Contains(' private ') then continue;
+        if l.StartsWith('private ') then continue;
+        if t.is_sealed and l.StartsWith('protected ') then continue;
         
         if CommentableProp.Parse(l, t) is CommentableProp(var p) then
           yield p else

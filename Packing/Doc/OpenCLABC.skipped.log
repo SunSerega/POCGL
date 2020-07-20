@@ -1,10 +1,4 @@
-﻿DeviceType
-Platform
-Device
-SubDevice
-SubBuffer
-KernelArg
-NtvPropertiesBase<TNtv, TInfo>
+﻿NtvPropertiesBase<TNtv, TInfo>
 PlatformProperties
 DeviceProperties
 ContextProperties
@@ -12,100 +6,7 @@ BufferProperties
 KernelProperties
 ProgramProperties
 WrapperBase<TNtv, TProp>
-Context.CreateProp
-Context.Native
-Context.AllDevices
-Context.MainDevice
-Context.Properties
-Context.GetAllNtvDevices
-Context.GetContextDevices(cl_context)
-Context.MakeSibling(Device)
-Context.
-Context.Finalize
-Context.operator=(c1, Context)
-Context.operator<>(c1, Context)
-Context.ToString
-Buffer.Native
-Buffer.CreateProp
-Buffer.Properties
-Buffer.NewQueue
-Buffer.GetBuffSize(cl_mem)
-Buffer.
-Buffer.InitIfNeed(Context)
-Buffer.Dispose
 Buffer.Finalize
-Buffer.operator=(b1, Buffer)
-Buffer.operator<>(b1, Buffer)
-Buffer.ToString
-Buffer.operator implicit(Buffer)
-Buffer.WriteData(CommandQueue<IntPtr>; offset, CommandQueue<integer>)
-Buffer.ReadData(CommandQueue<IntPtr>; offset, CommandQueue<integer>)
-Buffer.WriteData(pointer; offset, CommandQueue<integer>)
-Buffer.ReadData(pointer; offset, CommandQueue<integer>)
-Buffer.WriteValue<TRecord>(TRecord)
-Buffer.WriteValue<TRecord>(TRecord; offset: CommandQueue<integer>)
-Buffer.WriteValue<TRecord>(CommandQueue<TRecord>)
-Buffer.WriteValue<TRecord>(CommandQueue<TRecord>; offset: CommandQueue<integer>)
-Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>)
-Buffer.WriteArray2<TRecord>(CommandQueue<array[, ] of TRecord>)
-Buffer.WriteArray3<TRecord>(CommandQueue<array[, , ] of TRecord>)
-Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>)
-Buffer.ReadArray2<TRecord>(CommandQueue<array[, ] of TRecord>)
-Buffer.ReadArray3<TRecord>(CommandQueue<array[, , ] of TRecord>)
-Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>)
-Buffer.WriteArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, CommandQueue<integer>)
-Buffer.WriteArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, CommandQueue<integer>)
-Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>)
-Buffer.ReadArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, CommandQueue<integer>)
-Buffer.ReadArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, CommandQueue<integer>)
-Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>; a_offset, buff_offset, CommandQueue<integer>)
-Buffer.WriteArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, a_offset2, buff_offset, CommandQueue<integer>)
-Buffer.WriteArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, a_offset3, buff_offset, CommandQueue<integer>)
-Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>; a_offset, buff_offset, CommandQueue<integer>)
-Buffer.ReadArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, a_offset2, buff_offset, CommandQueue<integer>)
-Buffer.ReadArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, a_offset3, buff_offset, CommandQueue<integer>)
-Buffer.FillData(CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>)
-Buffer.FillData(CommandQueue<IntPtr>; pattern_len, offset, CommandQueue<integer>)
-Buffer.FillValue<TRecord>(TRecord; offset, CommandQueue<integer>)
-Buffer.FillValue<TRecord>(CommandQueue<TRecord>; offset, CommandQueue<integer>)
-Buffer.CopyForm(CommandQueue<Buffer>)
-Buffer.CopyTo(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
-Buffer.CopyForm(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
-Buffer.GetData
-Buffer.GetData(offset, CommandQueue<integer>)
-Buffer.GetValue<TRecord>
-Buffer.GetValue<TRecord>(CommandQueue<integer>)
-Buffer.GetArray1<TRecord>
-Buffer.GetArray2<TRecord>(len1, CommandQueue<integer>)
-Buffer.GetArray3<TRecord>(len1, len2, CommandQueue<integer>)
-Kernel.CreateProp
-Kernel.Native
-Kernel.Properties
-Kernel.Name
-Kernel.NewQueue
-Kernel.MakeNewNtv
-Kernel.
-Kernel.Finalize
-Kernel.operator=(k1, Kernel)
-Kernel.operator<>(k1, Kernel)
-Kernel.ToString
-Kernel.UseExclusiveNative(cl_kernel->())
-Kernel.UseExclusiveNative<T>(cl_kernel->T)
-Kernel.Exec1(CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
-Kernel.Exec2(sz1, CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
-Kernel.Exec3(sz1, sz2, CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
-Kernel.Exec(global_work_offset, global_work_size, CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>)
-ProgramCode.CreateProp
-ProgramCode.Native
-ProgramCode.Properties
-ProgramCode.BaseContext
-ProgramCode.
-ProgramCode.Finalize
-ProgramCode.GetAllKernels
-ProgramCode.Serialize
-ProgramCode.Deserialize(Context; bin: array of byte)
-ProgramCode.DeserializeFrom(Context; br: System.IO.BinaryReader)
-ProgramCode.DeserializeFrom(Context; str: System.IO.Stream)
 CLTaskExt
 NativeUtils
 BlittableException
@@ -126,9 +27,6 @@ QueueResDelayedObj<T>
 QueueResDelayedPtr<T>
 MWEventContainer
 MultiusableCommandQueueHubBase
-CLTaskBase.OrgQueueBase
-CLTaskBase.GetErrArr
-CLTaskBase.Error
 CLTaskBase.AddErr(Exception)
 CLTaskBase.AddErr(ErrorCode)
 CLTaskBase.AddErr(CommandExecutionStatus)
@@ -136,66 +34,20 @@ CLTaskBase.MakeUserEvent(cl_context)
 CLTaskBase.WhenDoneBase(Action<CLTaskBase>)
 CLTaskBase.WhenCompleteBase(Action<CLTaskBase, object>)
 CLTaskBase.WhenErrorBase(Action<CLTaskBase, array of Exception>)
-CLTaskBase.AddEventHandler<T>(List<T>; cb: T)
-CLTaskBase.Wait
 CLTaskBase.WaitResBase
-CLTaskBase.WaitRes
-CLTask<T>.OrgQueueBase
-CLTask<T>.RegisterWaitables(CommandQueue<T>)
-CLTask<T>.InvokeQueue(CommandQueue<T>; c: Context; var cq: cl_command_queue)
-CLTask<T>.WhenDoneBase(Action<CLTaskBase>)
-CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)
-CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)
-CLTask<T>.OnQDone(QueueRes<T>)
-CLTask<T>.WaitRes
-CLTask<T>.WaitResBase
-CommandQueueBase.InvokeBase(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
-CommandQueueBase.InvokeNewQBase(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList)
-CommandQueueBase.IsWaitable
-CommandQueueBase.MakeWaitable
-CommandQueueBase.UnMakeWaitable
-CommandQueueBase.RegisterWaitables(CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>)
-CommandQueueBase.RegisterWaiterTask(CLTaskBase)
-CommandQueueBase.AddMWHandler(CLTaskBase; handler: ()->boolean)
-CommandQueueBase.ExecuteMWHandlers
-CommandQueueBase.operator implicit(object)
-CommandQueueBase.Cast<T>
-CommandQueueBase.ThenConvertBase<TOtp>(object->TOtp)
-CommandQueueBase.ThenConvertBase<TOtp>((object, Context)->TOtp)
-CommandQueueBase.AfterQueueSyncBase(CommandQueueBase)
-CommandQueueBase.AfterQueueAsyncBase(CommandQueueBase)
-CommandQueueBase.operator+(q1, CommandQueueBase)
-CommandQueueBase.operator*(q1, CommandQueueBase)
-CommandQueueBase.operator+=(CommandQueueBase; q2: CommandQueueBase)
-CommandQueueBase.operator*=(CommandQueueBase; q2: CommandQueueBase)
-CommandQueueBase.MultiusableBase
-CommandQueueBase.ThenWaitForAllBase(sequence of CommandQueueBase)
-CommandQueueBase.ThenWaitForAnyBase(sequence of CommandQueueBase)
-CommandQueueBase.ThenWaitForAllBase(array of CommandQueueBase)
-CommandQueueBase.ThenWaitForAnyBase(array of CommandQueueBase)
-CommandQueueBase.ThenWaitForBase(CommandQueueBase)
-CommandQueue<T>.InvokeImpl(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
-CommandQueue<T>.Invoke(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
-CommandQueue<T>.InvokeBase(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
-CommandQueue<T>.InvokeNewQ(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList)
-CommandQueue<T>.operator implicit(T)
-CommandQueue<T>.ThenConvert<TOtp>(T->TOtp)
-CommandQueue<T>.ThenConvert<TOtp>((T, Context)->TOtp)
-CommandQueue<T>.operator+(CommandQueueBase; q2: CommandQueue<T>)
-CommandQueue<T>.operator*(CommandQueueBase; q2: CommandQueue<T>)
+CommandQueueBase.InvokeBase(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
+CommandQueueBase.InvokeNewQBase(CLTaskBase, Context, cl_device_id, boolean, EventList)
+CommandQueueBase.RegisterWaitables(CLTaskBase, HashSet<MultiusableCommandQueueHubBase>)
+CommandQueue<T>.InvokeImpl(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
+CommandQueue<T>.Invoke(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
+CommandQueue<T>.InvokeBase(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
+CommandQueue<T>.InvokeNewQ(CLTaskBase, Context, cl_device_id, boolean, EventList)
 CommandQueue<T>.AfterQueueSyncBase(CommandQueueBase)
 CommandQueue<T>.AfterQueueAsyncBase(CommandQueueBase)
-CommandQueue<T>.operator+=(CommandQueue<T>; q2: CommandQueue<T>)
-CommandQueue<T>.operator*=(CommandQueue<T>; q2: CommandQueue<T>)
-CommandQueue<T>.Multiusable
 CommandQueue<T>.MultiusableBase
 CommandQueue<T>.ThenWaitForAllBase(sequence of CommandQueueBase)
 CommandQueue<T>.ThenWaitForAnyBase(sequence of CommandQueueBase)
 HostQueue<TInp,TRes>
-ConstQueue<T>.
-ConstQueue<T>.IConstQueue.GetConstVal
-ConstQueue<T>.InvokeImpl(CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList)
-ConstQueue<T>.RegisterWaitables(CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>)
 ISimpleQueueArray
 SimpleQueueArray<T>
 ISimpleSyncQueueArray
@@ -225,57 +77,6 @@ QueueArrayUtils
 GPUCommand<T>
 GPUCommandContainerBody<T>
 GPUCommandContainer<T>
-BufferCommandQueue.InitObj(Buffer; c: Context)
-BufferCommandQueue.InitBuffer(Buffer; c: Context)
-BufferCommandQueue.AddCommand(GPUCommand<Buffer>)
-BufferCommandQueue.AddProc((Buffer, Context)->())
-BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>; offset, CommandQueue<integer>)
-BufferCommandQueue.AddReadData(CommandQueue<IntPtr>; offset, CommandQueue<integer>)
-BufferCommandQueue.AddWriteData(pointer; offset, CommandQueue<integer>)
-BufferCommandQueue.AddReadData(pointer; offset, CommandQueue<integer>)
-BufferCommandQueue.AddWriteValue<TRecord>(TRecord)
-BufferCommandQueue.AddWriteValue<TRecord>(TRecord; offset: CommandQueue<integer>)
-BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>)
-BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>; offset: CommandQueue<integer>)
-BufferCommandQueue.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>)
-BufferCommandQueue.AddWriteArray2<TRecord>(CommandQueue<array[, ] of TRecord>)
-BufferCommandQueue.AddWriteArray3<TRecord>(CommandQueue<array[, , ] of TRecord>)
-BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>)
-BufferCommandQueue.AddReadArray2<TRecord>(CommandQueue<array[, ] of TRecord>)
-BufferCommandQueue.AddReadArray3<TRecord>(CommandQueue<array[, , ] of TRecord>)
-BufferCommandQueue.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>)
-BufferCommandQueue.AddWriteArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, CommandQueue<integer>)
-BufferCommandQueue.AddWriteArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, CommandQueue<integer>)
-BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>; a_offset: CommandQueue<integer>)
-BufferCommandQueue.AddReadArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, CommandQueue<integer>)
-BufferCommandQueue.AddReadArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, CommandQueue<integer>)
-BufferCommandQueue.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>; a_offset, buff_offset, CommandQueue<integer>)
-BufferCommandQueue.AddWriteArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, a_offset2, buff_offset, CommandQueue<integer>)
-BufferCommandQueue.AddWriteArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, a_offset3, buff_offset, CommandQueue<integer>)
-BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>; a_offset, buff_offset, CommandQueue<integer>)
-BufferCommandQueue.AddReadArray2<TRecord>(CommandQueue<array[, ] of TRecord>; a_offset1, a_offset2, buff_offset, CommandQueue<integer>)
-BufferCommandQueue.AddReadArray3<TRecord>(CommandQueue<array[, , ] of TRecord>; a_offset1, a_offset2, a_offset3, buff_offset, CommandQueue<integer>)
-BufferCommandQueue.AddFillData(CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>)
-BufferCommandQueue.AddFillData(CommandQueue<IntPtr>; pattern_len, offset, CommandQueue<integer>)
-BufferCommandQueue.AddFillValue<TRecord>(TRecord; offset, CommandQueue<integer>)
-BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>; offset, CommandQueue<integer>)
-BufferCommandQueue.AddCopyForm(CommandQueue<Buffer>)
-BufferCommandQueue.AddCopyTo(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
-BufferCommandQueue.AddCopyForm(CommandQueue<Buffer>; from_pos, to_pos, CommandQueue<integer>)
-BufferCommandQueue.AddGetData
-BufferCommandQueue.AddGetData(offset, CommandQueue<integer>)
-BufferCommandQueue.AddGetValue<TRecord>
-BufferCommandQueue.AddGetValue<TRecord>(CommandQueue<integer>)
-BufferCommandQueue.AddGetArray1<TRecord>
-BufferCommandQueue.AddGetArray1<TRecord>(CommandQueue<integer>)
-BufferCommandQueue.AddGetArray2<TRecord>(len1, CommandQueue<integer>)
-BufferCommandQueue.AddGetArray3<TRecord>(len1, len2, CommandQueue<integer>)
-KernelCommandQueue.AddCommand(GPUCommand<Kernel>)
-KernelCommandQueue.AddProc((Kernel, Context)->())
-KernelCommandQueue.AddExec1(CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
-KernelCommandQueue.AddExec2(sz1, CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
-KernelCommandQueue.AddExec3(sz1, sz2, CommandQueue<integer>; params args: array of CommandQueue<KernelArg>)
-KernelCommandQueue.AddExec(global_work_offset, global_work_size, CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>)
 EnqueueableGPUCommand<T>
 EnqueueableGetCommand<TObj, TRes>
 WCQWaiter
