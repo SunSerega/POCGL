@@ -207,7 +207,7 @@ type
       
       var max_name_len := sub_timers.Keys.Max(name->name.Length);
       foreach var name in sub_timers.Keys do
-        sub_timers[name].TextLog(lvl+1, $'• {name.PadRight(max_name_len)}', otp);
+        sub_timers[name].TextLog(lvl+1, $'♦ {name.PadRight(max_name_len)}', otp);
       
     end;
     
