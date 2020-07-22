@@ -61,25 +61,3 @@ Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Const\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Err\0.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Cast\0.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~CQ\0.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0c.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~CQ\0.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~Err\0.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\07 HostExec\~Err\0.pas"
-Tester: Finished compiling: OK
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Cleanup
-Tester: System.NullReferenceException: Ссылка на объект не указывает на экземпляр объекта.
-   в PABCSystem.PABCSystem.GetEXEFileName()
-   в MiscUtils.MiscUtils.GetFullPathRTE(String fname)
-   в Tester.Program.<>lambda2()
-Error in Tester: System.Exception: Выдано исключение типа "System.Exception".

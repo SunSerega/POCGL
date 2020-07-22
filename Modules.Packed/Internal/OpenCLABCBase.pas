@@ -1439,16 +1439,18 @@ type
     
     {$region 1#Exec}
     
-    ///
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function Exec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
     
-    ///
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
     
-    ///
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): Kernel;
     
-    ///
+    ///Выполняет kernel с расширенным набором параметров
+    ///Данная перегрузка используется в первую очередь для тонких оптимизаций
+    ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
     public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): Kernel;
     
     {$endregion 1#Exec}
@@ -3713,16 +3715,18 @@ type
     
     {$region 1#Exec}
     
-    ///
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function AddExec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
-    ///
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
-    ///
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
-    ///
+    ///Выполняет kernel с расширенным набором параметров
+    ///Данная перегрузка используется в первую очередь для тонких оптимизаций
+    ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
     public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue;
     
     {$endregion 1#Exec}
