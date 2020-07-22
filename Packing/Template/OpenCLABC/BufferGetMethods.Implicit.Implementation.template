@@ -6,14 +6,14 @@
 function Buffer.GetData: IntPtr :=
 Context.Default.SyncInvoke(self.NewQueue.AddGetData as CommandQueue<IntPtr>);
 
-function Buffer.GetData(offset, len: CommandQueue<integer>): IntPtr :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetData(offset, len) as CommandQueue<IntPtr>);
+function Buffer.GetData(buff_offset, len: CommandQueue<integer>): IntPtr :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetData(buff_offset, len) as CommandQueue<IntPtr>);
 
 function Buffer.GetValue<TRecord>: TRecord :=
 GetValue&<TRecord>(0);
 
-function Buffer.GetValue<TRecord>(offset: CommandQueue<integer>): TRecord :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetValue&<TRecord>(offset) as CommandQueue<TRecord>);
+function Buffer.GetValue<TRecord>(buff_offset: CommandQueue<integer>): TRecord :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetValue&<TRecord>(buff_offset) as CommandQueue<TRecord>);
 
 function Buffer.GetArray1<TRecord>: array of TRecord :=
 Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord> as CommandQueue<array of TRecord>);

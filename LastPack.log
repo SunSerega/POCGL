@@ -40,26 +40,46 @@ Finished runing Template[OpenCLABCBase]
 Compiling "Packing\Doc\PackComments.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
-Comments[OpenCLABC]: WARNING: key %b.WriteData% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.WriteArray% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.WriteValue% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.ReadData% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.ReadArray% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.ReadValue% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.FillData% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.FillArray% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.FillValue% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.CopyFrom% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.CopyTo% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.CopyFromL% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.CopyToL% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetData% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetArray% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetArray1A% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetArray1% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetArray2% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetArray3% wasn't used!
-Comments[OpenCLABC]: WARNING: key %b.GetValue% wasn't used!
 Finished runing Comments[OpenCLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
+Finished compiling: OK
+===================================== Testing ====================================
+Compiling "Tests\Tester.pas"
+Finished compiling: OK
+Runing Tester
+Tester: Testing selected modules:
+Tester: OpenCLABC
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~CQ\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0c.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~CQ\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\07 HostExec\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Cleanup
+Tester: System.NullReferenceException: Ссылка на объект не указывает на экземпляр объекта.
+   в PABCSystem.PABCSystem.GetEXEFileName()
+   в MiscUtils.MiscUtils.GetFullPathRTE(String fname)
+   в Tester.Program.<>lambda2()
+Error in Tester: System.Exception: Выдано исключение типа "System.Exception".

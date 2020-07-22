@@ -1,182 +1,209 @@
 
 
 
-# b.WriteData
-Копирует область из оперативной памяти по адресу ptr в память буфера
+# Buffer:BuffOffsetDef
+buff_offset указывает отступ от начала буфера, в байтах
+# Buffer:BuffLenDef
+len указывает кол-во задействованных байт буфера
 
-# b.WriteArray
-Копирует данные из содержимого массива в память буфера
-
-# b.WriteValue
-Копирует содержимое val в память буфера
-
-
-
-# b.ReadData
-Копирует область памяти из буфера в оперативную память по адресу ptr
-
-# b.ReadArray
-Копирует данные из памяти буфера в содержимое массива
-
-# b.ReadValue
-Копирует память буфера в содержимое val
-
-
-
-# b.FillData
-Заполняет буфер копиями паттерна из оперативной памяти по адресу ptr и длинной pattern_len байт
-
-# b.FillArray
-Заполняет буфер копиями содержимого массива
-
-# b.FillValue
-Заполняет буфер копиями значения val
-
-
-
-# b.CopyFrom
-Копирует память из буфера b в текущий
-
-# b.CopyTo
-Копирует память из текущего буфера в b
-
-# b.CopyFromL
-Копирует память из буфера b в текущий
-from указывает отступ в буфере b
-to указывает отступ в текущем буфере
-len указывает кол-во байт которое надо скопировать
-
-# b.CopyToL
-Копирует память из текущего буфера в b
-from указывает отступ в текущем буфере
-to указывает отступ в буфере b
-len указывает кол-во байт которое надо скопировать
-
-
-
-# b.GetData
-Выделяет область неуправляемой памяти и копирует в неё содержимое буфера
-
-# b.GetArray
-Создаёт новый массив указанного типа с размерами (исчисляемых в элементах, НЕ байтах) szs и копирует в него содержимое буфера
-
-# b.GetArray1A
-Создаёт новый массив того же размера, что и буфер, и копирует в него содержимое буфера
-Если байт на последний элемент не хватает, они игнорируются
-К примеру, если читать буфер на 10 байт как "array of integer" (4 байт на элемент), то в массиве окажется (10 div 4) = 2 элемента
-
-# b.GetArray1
-Создаёт новый массив длиной в length элементов и копирует в него содержимое буфера
-# b.GetArray2
-Создаёт новый 2-мерный массив размером length1*length2 элементов и копирует в него содержимое буфера
-# b.GetArray3
-Создаёт новый 3-мерный массив размером length1*length2*length3 элементов и копирует в него содержимое буфера
-
-# b.GetValue
-Читает из буфера значение указанного размерного типа
-
+# Buffer:ArrLenDef
+len указывает кол-во задействованных элементов массива
+# Buffer:ArrOffsetDef
+a_offset(-ы) указывают индекс в массиве
+# Buffer:ArrOffsetWarning
+ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
 
 
 
 # Buffer.WriteData(CommandQueue<IntPtr>)
-# Buffer.ReadData(CommandQueue<IntPtr>)
-# Buffer.WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
 # Buffer.WriteData(pointer)
+# BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>)
+# BufferCommandQueue.AddWriteData(pointer)
+Заполняет весь буфер данными, находящимися по указанному адресу в RAM
+# Buffer.ReadData(CommandQueue<IntPtr>)
 # Buffer.ReadData(pointer)
-# Buffer.WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.WriteValue<TRecord>(TRecord)
-# Buffer.WriteValue<TRecord>(TRecord, CommandQueue<integer>)
-# Buffer.WriteValue<TRecord>(CommandQueue<TRecord>)
-# Buffer.WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
-# Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>)
-# Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>)
-# Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
-# Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
-# Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddReadData(CommandQueue<IntPtr>)
+# BufferCommandQueue.AddReadData(pointer)
+Копирует всё содержимое буфера в RAM, по указанному адресу
 
+# Buffer.WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer.WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+Заполняет часть буфер данными, находящимися по указанному адресу в RAM
+%Buffer:BuffOffsetDef%
+%Buffer:BuffLenDef%
+# Buffer.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+Копирует часть содержимого буфера в RAM, по указанному адресу
+%Buffer:BuffOffsetDef%
+%Buffer:BuffLenDef%
+
+
+
+# Buffer.WriteValue<TRecord>(TRecord)
+# Buffer.WriteValue<TRecord>(CommandQueue<TRecord>)
+# BufferCommandQueue.AddWriteValue<TRecord>(TRecord)
+# BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>)
+Записывает указанное значение размерного типа в начало буфера
+
+# Buffer.WriteValue<TRecord>(TRecord, CommandQueue<integer>)
+# Buffer.WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
+# BufferCommandQueue.AddWriteValue<TRecord>(TRecord, CommandQueue<integer>)
+# BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
+Записывает указанное значение размерного типа в буфер
+%Buffer:BuffOffsetDef%
+
+
+
+# Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>)
 # Buffer.WriteArray2<TRecord>(CommandQueue<array[,] of TRecord>)
 # Buffer.WriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
-# Buffer.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>)
-# Buffer.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
-# Buffer.WriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.WriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.WriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.WriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-
-# Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>)
-# Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.FillValue<TRecord>(TRecord)
-# Buffer.FillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.FillValue<TRecord>(CommandQueue<TRecord>)
-# Buffer.FillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.CopyTo(CommandQueue<Buffer>)
-# Buffer.CopyForm(CommandQueue<Buffer>)
-# Buffer.CopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.CopyForm(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.GetData
-# Buffer.GetData(CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.GetValue<TRecord>
-# Buffer.GetValue<TRecord>(CommandQueue<integer>)
-# Buffer.GetArray1<TRecord>
-# Buffer.GetArray1<TRecord>(CommandQueue<integer>)
-# Buffer.GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
-# Buffer.GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-
-
-
-
-# BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>)
-# BufferCommandQueue.AddReadData(CommandQueue<IntPtr>)
-# BufferCommandQueue.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddWriteData(pointer)
-# BufferCommandQueue.AddReadData(pointer)
-# BufferCommandQueue.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddWriteValue<TRecord>(TRecord)
-# BufferCommandQueue.AddWriteValue<TRecord>(TRecord, CommandQueue<integer>)
-# BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>)
-# BufferCommandQueue.AddWriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
 # BufferCommandQueue.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>)
 # BufferCommandQueue.AddWriteArray2<TRecord>(CommandQueue<array[,] of TRecord>)
 # BufferCommandQueue.AddWriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
+Записывает весь массив в начало буфера
+
+# Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>)
+# Buffer.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>)
+# Buffer.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
 # BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>)
 # BufferCommandQueue.AddReadArray2<TRecord>(CommandQueue<array[,] of TRecord>)
 # BufferCommandQueue.AddReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
-# BufferCommandQueue.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
-# BufferCommandQueue.AddWriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddWriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
-# BufferCommandQueue.AddReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Читает из буфера достаточно байт чтоб заполнить весь массив
+
+# Buffer.WriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer:WriteArrayDef
+Записывает указанный участок массива в буфер
+%Buffer:ArrOffsetDef%
+%Buffer:ArrLenDef%
+%Buffer:BuffOffsetDef%
+
+# Buffer.ReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer:ReadArrayDef
+Читает в буфер указанный участок массива
+%Buffer:ArrOffsetDef%
+%Buffer:ArrLenDef%
+%Buffer:BuffOffsetDef%
+
+# Buffer.WriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer.WriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddWriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddWriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# BufferCommandQueue.AddReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%Buffer:WriteArrayDef%
+
+%Buffer:ArrOffsetWarning%
+
+# Buffer.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%Buffer:ReadArrayDef%
+
+%Buffer:ArrOffsetWarning%
+
+
+
+# Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>)
 # BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>)
+Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями весь буфер
+
+# Buffer.FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями часть буфера
+%Buffer:BuffOffsetDef%
+%Buffer:BuffLenDef%
+
+
+
+# Buffer.FillValue<TRecord>(TRecord)
+# Buffer.FillValue<TRecord>(CommandQueue<TRecord>)
 # BufferCommandQueue.AddFillValue<TRecord>(TRecord)
-# BufferCommandQueue.AddFillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>)
+Заполняет весь буфер копиями указанного значения размерного типа
+
+# Buffer.FillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)
+# Buffer.FillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+# BufferCommandQueue.AddFillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddFillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+Заполняет часть буфера копиями указанного значения размерного типа
+%Buffer:BuffOffsetDef%
+%Buffer:BuffLenDef%
+
+
+
+# Buffer:CopyToDef
+Копирует данные из текущего буфера в b
+# Buffer:CopyFromDef
+Копирует данные из b в текущий буфер
+
+# Buffer:CopyAutoSizeDef
+Если буферы имеют разный размер - в качестве объёма данных берётся размер меньшего буфера
+# Buffer:CopyManualSizeDef
+from_pos указывает отступ в байтах от начала буфера, из которого копируют
+to_pos указывает отступ в байтах от начала буфера, в который копируют
+len указывает кол-во копируемых байт
+
+# Buffer.CopyTo(CommandQueue<Buffer>)
 # BufferCommandQueue.AddCopyTo(CommandQueue<Buffer>)
+%Buffer:CopyToDef%
+%Buffer:CopyAutoSizeDef%
+# Buffer.CopyForm(CommandQueue<Buffer>)
 # BufferCommandQueue.AddCopyForm(CommandQueue<Buffer>)
+%Buffer:CopyFromDef%
+%Buffer:CopyAutoSizeDef%
+
+# Buffer.CopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddCopyTo(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%Buffer:CopyToDef%
+%Buffer:CopyManualSizeDef%
+# Buffer.CopyForm(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddCopyForm(CommandQueue<Buffer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%Buffer:CopyFromDef%
+%Buffer:CopyManualSizeDef%
+
+
+
+# Buffer.GetData
 # BufferCommandQueue.AddGetData
+Выделяет область неуправляемой памяти и копирует в неё всё содержимое данного буфера
+
+# Buffer.GetData(CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddGetData(CommandQueue<integer>, CommandQueue<integer>)
+Выделяет область неуправляемой памяти и копирует в неё часть содержимого данного буфера
+%Buffer:BuffOffsetDef%
+%Buffer:BuffLenDef%
+
+
+
+# Buffer.GetValue<TRecord>
 # BufferCommandQueue.AddGetValue<TRecord>
+Читает значение указанного размерного типа из начала буфера
+
+# Buffer.GetValue<TRecord>(CommandQueue<integer>)
 # BufferCommandQueue.AddGetValue<TRecord>(CommandQueue<integer>)
+Читает значение указанного размерного типа из буфера
+%Buffer:BuffOffsetDef%
+
+
+
+# Buffer.GetArray1<TRecord>
 # BufferCommandQueue.AddGetArray1<TRecord>
+Создаёт массив максимального размера (на сколько хватит байт буфера) и копирует в него содержимое буфера
+
+# Buffer.GetArray1<TRecord>(CommandQueue<integer>)
+# Buffer.GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
+# Buffer.GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddGetArray1<TRecord>(CommandQueue<integer>)
 # BufferCommandQueue.AddGetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
 # BufferCommandQueue.AddGetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
+
+
+
