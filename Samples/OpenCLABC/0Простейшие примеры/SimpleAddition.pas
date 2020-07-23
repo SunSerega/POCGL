@@ -16,7 +16,7 @@ begin
     
     // Заполняем весь буфер значениями (1), прямо перед выполнением
     // Тип значения integer, потому что это тип по-умолчанию для целых чисел
-    A.NewQueue.AddFillValue(1).ToKernelArg
+    A.NewQueue.AddFillValue(1)
     
   );
   

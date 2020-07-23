@@ -85,6 +85,15 @@ type
     end;
     public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string, array of string);
     begin
+      var make_lns: List<string>->array of string := lst->
+      begin
+        var lc := lst.Count;
+        while (lc<>0) and string.IsNullOrWhiteSpace(lst[lc-1]) do lc -= 1;
+        lst.RemoveRange(lc, lst.Count-lc);
+        Result := lst.ToArray;
+        lst.Clear;
+      end;
+      
       var res := new List<string>;
       var names := new List<string>;
       var start := true;
@@ -96,21 +105,17 @@ type
           if (res.Count<>0) or not concat_blocks then
           begin
             
-            var lc := res.Count;
-            while (lc<>0) and string.IsNullOrWhiteSpace(res[lc-1]) do lc -= 1;
-            var lns := res.Take(lc).ToArray;
-            
             if start then
             begin
               if res.Count<>0 then
-                yield (nil as string, lns);
+                yield (nil as string, make_lns(res));
             end else
             begin
+              var lns := make_lns(res);
               yield sequence names.SelectMany(name->DetemplateName(name, lns));
               names.Clear;
             end;
             
-            res.Clear;
           end;
           
           names += l.Substring(power_sign.Length).Trim;
@@ -119,7 +124,8 @@ type
         if (res.Count<>0) or not string.IsNullOrWhiteSpace(l) then
           res += l;
       
-      yield sequence names.SelectMany(name->DetemplateName(name, res.ToArray));
+      var lns := make_lns(res);
+      yield sequence names.SelectMany(name->DetemplateName(name, lns));
     end;
     public static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     

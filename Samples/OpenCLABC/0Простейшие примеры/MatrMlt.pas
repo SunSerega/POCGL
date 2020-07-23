@@ -55,14 +55,14 @@ begin
     
     var Calc_C_Q :=
       code['MatrMltMatr'].NewQueue.AddExec2(MatrW, MatrW, // Выделяем ядра в форме квадрата, всего MatrW*MatrW ядер
-        A.NewQueue.AddWriteArray2&<real>(A_Matr).ToKernelArg,
-        B.NewQueue.AddWriteArray2&<real>(B_Mart).ToKernelArg,
+        A.NewQueue.AddWriteArray2&<real>(A_Matr),
+        B.NewQueue.AddWriteArray2&<real>(B_Mart),
         C,
         W
       ) as CommandQueue<Kernel>;
     
     var Otp_C_Q :=
-      C.NewQueue.AddReadArray2&<real>(A_Matr).ToKernelArg +
+      C.NewQueue.AddReadArray2&<real>(A_Matr) +
       HPQ(()->
       lock output do
       begin
@@ -74,13 +74,13 @@ begin
     var Calc_V2_Q :=
       code['MatrMltVec'].NewQueue.AddExec1(MatrW,
         C,
-        V1.NewQueue.AddWriteArray1&<real>(V1_Arr).ToKernelArg,
+        V1.NewQueue.AddWriteArray1&<real>(V1_Arr),
         V2,
         W
       ) as CommandQueue<Kernel>;
     
     var Otp_V2_Q :=
-      V2.NewQueue.AddReadArray1&<real>(V1_Arr).ToKernelArg +
+      V2.NewQueue.AddReadArray1&<real>(V1_Arr) +
       HPQ(()->
       lock output do
       begin

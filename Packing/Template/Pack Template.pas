@@ -213,17 +213,17 @@ begin
     if not is_secondary_proc and string.IsNullOrWhiteSpace(inp_fname) and string.IsNullOrWhiteSpace(otp_fname) and string.IsNullOrWhiteSpace(nick) then
     begin
       
-      inp_fname := 'Modules\Template\OpenGL.pas';
-      otp_fname := 'Modules\OpenGL.pas';
-      nick := 'OpenGL';
+//      inp_fname := 'Modules\Template\OpenGL.pas';
+//      otp_fname := 'Modules\OpenGL.pas';
+//      nick := 'OpenGL';
       
 //      inp_fname := 'Modules\Template\OpenCL.pas';
 //      otp_fname := 'Modules\OpenCL.pas';
 //      nick := 'OpenCL';
       
-//      inp_fname := 'Modules\Internal\OpenCLABCBase.pas';
-//      otp_fname := 'Modules.Packed\Internal\OpenCLABCBase.pas';
-//      nick := 'OpenCLABC';
+      inp_fname := 'Modules\Internal\OpenCLABCBase.pas';
+      otp_fname := 'Modules.Packed\Internal\OpenCLABCBase.pas';
+      nick := 'OpenCLABC';
       
 //      inp_fname := 'Modules\OpenCLABC.pas';
 //      otp_fname := 'Modules.Packed\OpenCLABC.pas';

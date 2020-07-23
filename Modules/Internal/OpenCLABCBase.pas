@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader}
+{%..\LicenseHeader%}
 
 /// Модуль для внутренних типов модуля OpenCLABC
 unit OpenCLABCBase;
@@ -26,6 +26,8 @@ unit OpenCLABCBase;
 // - Это может создать неопределённое поведение. Но, по моему, это правильней всего.
 // - Если так и останется - не забыть добавить в справку
 
+//ToDo Написать в справке что опасно передавать @i вместо KernelArg, где i - захваченная переменная
+
 {$endregion Справка}
 
 //ToDo А всегда ли abortable True при ожидании?
@@ -44,26 +46,26 @@ unit OpenCLABCBase;
 // - Очереди переданные в Wait - вообще не запускаются так
 // - Поэтому я и думал про что то типа CancelWait
 // - А вообще лучше разрешить выполнять Wait внутри другого Wait
-// - И заодно проверить чтоб Abort работало на Wait-ы
+// - И заодно проверить чтобы Abort работало на Wait-ы
 
-//ToDo По возможности избавится от .Cast&<object>
+//ToDo Исправить интерфейс CommandQueueBase
 
 //ToDo KernelArg из CommandQueue<TRecord> - создавать умнее
 // - Есть же смысл в need_ptr_qr, и создавать KernelArg, в итоге, из указателя, а не значения
-
-//ToDo Кидание исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
-
-//ToDo А ивенты переданные в cl.Enqueue* вообще когда то освобождаются?
+//ToDo Сюда же - может лучше создавать KernelArg, а не CommandQueue<KernelArg> из очередей?
+// - Это позволит красиво сделать все "operator implicit"-ы
+// - Но придётся сделать свой .Invoke, как у очередей
 
 //===================================
 // Запланированное:
 
-//ToDo Использовать BlittableHelper чтоб выводить хорошие ошибки
+//ToDo Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
+// - В том числе проверки с помощью BlittableHelper
 
 //ToDo Создание SubDevice из cl_device_id
 
 //ToDo Очереди-маркеры для Wait-очередей
-// - чтоб не приходилось использовать константные для этого
+// - чтобы не приходилось использовать константные для этого
 
 //ToDo Очередь-обработчик ошибок
 // - .HandleExceptions и какой то аналог try-finally
@@ -823,8 +825,6 @@ type
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}] of size {Size}';
     
-    public static function operator implicit(b: Buffer): CommandQueue<KernelArg>;
-    
     {$endregion operator's}
     
     {%BufferMethods.Implicit.Interface!MethodGen.pas%}
@@ -1359,7 +1359,6 @@ type
       try
         work;
       except
-        on e: ThreadAbortException do ;
         on e: Exception do CLTaskExt.AddErr(tsk, e);
       end;
       
@@ -1438,7 +1437,7 @@ type
       var work_thr: Thread;
       var abort_thr := NativeUtils.StartNewThread(()->
       begin
-        abort_thr_ev.WaitOne; // изначальная пауза, чтоб work_thr не убили до того как он успеет запуститься и выполнить cl.ReleaseEvent
+        abort_thr_ev.WaitOne; // изначальная пауза, чтобы work_thr не убили до того как он успеет запуститься и выполнить cl.ReleaseEvent
         abort_thr_ev.WaitOne;
         work_thr.Abort;
       end);
@@ -1457,7 +1456,6 @@ type
         end;
         
       except
-        on e: ThreadAbortException do ;
         on e: Exception do
         begin
           CLTaskExt.AddErr(tsk, e);
@@ -1562,7 +1560,7 @@ type
     
     public function GetResBase: object; abstract;
     
-    public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>;
+    public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; abstract;
     
   end;
   
@@ -1585,7 +1583,9 @@ type
     end;
     public function TrySetEvBase(new_ev: EventList): QueueResBase; override := TrySetEv(new_ev);
     
-    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
+    public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; override :=
+    LazyQuickTransform(o->f(o));
     
     /// Должно выполнятся только после ожидания ивентов
     public function ToPtr: IPtrQueueRes<T>; abstract;
@@ -1607,6 +1607,9 @@ type
     public function Clone: QueueRes<T>; override := new QueueResConst<T>(res, ev);
     
     public function GetRes: T; override := res;
+    
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
+    new QueueResConst<T2>(f(self.res), self.ev);
     
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
     
@@ -1631,6 +1634,9 @@ type
     public function GetRes: T; override := f();
     public function IQueueResFunc.GetF: ()->object := ()->f();
     
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
+    new QueueResFunc<T2>(()->f(self.f()), self.ev);
+    
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(f());
     
   end;
@@ -1644,6 +1650,9 @@ type
     public procedure SetRes(value: T); abstract;
     
     public function Clone: QueueRes<T>; override := new QueueResFunc<T>(self.GetRes, ev);
+    
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
+    new QueueResFunc<T2>(()->f(self.GetRes()), self.ev);
     
   end;
   QueueResDelayedObj<T> = sealed class(QueueResDelayedBase<T>)
@@ -1728,9 +1737,15 @@ type
     
     protected mu_res := new Dictionary<MultiusableCommandQueueHubBase, QueueResBase>;
     
+    {$region property's}
     
     private function OrgQueueBase: CommandQueueBase; abstract;
     public property OrgQueue: CommandQueueBase read OrgQueueBase;
+    
+    private org_c: Context;
+    public property OrgContext: Context read org_c;
+    
+    {$endregion property's}
     
     {$region AddErr}
     protected err_lst := new List<Exception>;
@@ -1746,6 +1761,7 @@ type
     
     protected procedure AddErr(e: Exception) :=
     begin
+      if e is ThreadAbortException then exit;
       lock err_lst do err_lst += e;
       lock user_events do
       begin
@@ -1837,12 +1853,13 @@ type
     protected constructor(q: CommandQueue<T>; c: Context);
     begin
       self.q := q;
+      self.org_c := c;
       RegisterWaitables(q);
       
       var cq: cl_command_queue;
       var qr := InvokeQueue(q, c, cq);
       
-      // mu выполняют лишний .Retain, чтоб ивент не удалился пока очередь ещё запускается
+      // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
       foreach var mu_qr in mu_res.Values do
         mu_qr.ev.Release;
       mu_res := nil;
@@ -1904,7 +1921,6 @@ type
       try
         ev(self);
       except
-        on e: ThreadAbortException do ;
         on e: Exception do AddErr(e);
       end;
       
@@ -1915,7 +1931,6 @@ type
         try
           ev(self, self.q_res);
         except
-          on e: ThreadAbortException do ;
           on e: Exception do AddErr(e);
         end;
         
@@ -1928,7 +1943,6 @@ type
         try
           ev(self, err_arr);
         except
-          on e: ThreadAbortException do ;
           on e: Exception do AddErr(e);
         end;
         
@@ -2022,12 +2036,8 @@ type
     
     {$region ThenConvert}
     
-    //ToDo #2218
-//    protected function ThenConvertBase<TOtp>(f: object->TOtp): CommandQueue<TOtp>;
-//    protected function ThenConvertBase<TOtp>(f: (object,Context)->TOtp): CommandQueue<TOtp>;
-    
     public function ThenConvertBase<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
-    public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
     
     //ToDo
 //    public function ThenConvert<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
@@ -2120,6 +2130,10 @@ type
     
     public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    
+    ///--
+    public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
+    ThenConvert(f as object as Func2<T, Context, TOtp>);
     
     {$endregion ThenConvert}
     
@@ -2266,7 +2280,7 @@ type
       end;
       
       if prev_ev<>nil then prev_ev.Retain;
-      // Используем внешнюю cq, чтоб не создавать лишнюю
+      // Используем внешнюю cq, чтобы не создавать лишнюю
       Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
       evs[evs.Length-1] := Result.ev;
       if prev_ev<>nil then prev_ev.Release;
@@ -2338,7 +2352,7 @@ type
       end;
       
       if prev_ev<>nil then prev_ev.Retain;
-      // Отдельно, чтоб не создавать лишнюю cq
+      // Отдельно, чтобы не создавать лишнюю cq
       var qr := qs[qs.Length-1].Invoke(tsk, c, main_dvc, false, cq, prev_ev);
       qrs[evs.Length-1] := qr;
       evs[evs.Length-1] := qr.ev;
@@ -2744,23 +2758,50 @@ type
   
   {$region KernelArg}
   
+  ISetableKernelArg = interface
+    procedure SetArg(k: cl_kernel; ind: UInt32; c: Context);
+  end;
   KernelArg = abstract class
-    private procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); abstract;
+    
+    {$region Def}
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; abstract;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
+    
+    {$endregion Def}
+    
+    {$region Buffer}
     
     public static function FromBuffer(b: Buffer): KernelArg;
-    public static function FromBufferCQ(bq: CommandQueue<Buffer>) := bq.ThenConvert((b,c)->FromBuffer(b));
     public static function operator implicit(b: Buffer): KernelArg := FromBuffer(b);
     
+    public static function FromBufferCQ(bq: CommandQueue<Buffer>): KernelArg;
+    public static function operator implicit(bq: CommandQueue<Buffer>): KernelArg := FromBufferCQ(bq);
+    public static function operator implicit(bq: BufferCommandQueue): KernelArg := FromBufferCQ(bq as CommandQueue<Buffer>);
+    
+    {$endregion Buffer}
+    
+    {$region Record}
+    
     public static function FromRecord<TRecord>(val: TRecord): KernelArg; where TRecord: record;
-    public static function FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>): CommandQueue<KernelArg>; where TRecord: record;
-    begin Result := valq.ThenConvert&<KernelArg>((val,c)->FromRecord(val)); end;
     public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromRecord(val); end;
     
+    public static function FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record;
+    public static function operator implicit<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromRecordCQ(valq); end;
+    
+    {$endregion Record}
+    
+    {$region Ptr}
+    
     public static function FromPtr(ptr: IntPtr; sz: UIntPtr): KernelArg;
-    public static function FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): CommandQueue<KernelArg>;
+    
+    public static function FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): KernelArg;
     
     public static function FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromPtr(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>)); end;
     public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromRecordPtr(ptr); end;
+    
+    {$endregion Ptr}
     
   end;
   
@@ -2900,28 +2941,6 @@ end;
 
 {$region QueueRes}
 
-//ToDo #2218 Переделать в абстрактный метод
-function QueueResBase.LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>;
-begin
-  match self with
-    IQueueResConst     (var qr): Result := new QueueResConst<T2>(f(self.GetResBase), self.ev);
-    IQueueResDelayed   (var qr): Result := new QueueResFunc<T2>(()->f(self.GetResBase), self.ev);
-    IQueueResFunc      (var qr): Result := new QueueResFunc<T2>(()->f(qr.GetF()), self.ev);
-    else raise new System.NotImplementedException;
-  end;
-end;
-
-//ToDo #2218 Переделать в абстрактный метод
-function QueueRes<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
-begin
-  match self with
-    QueueResConst       <T>(var qr): Result := new QueueResConst<T2>(f(qr.res), self.ev);
-    QueueResDelayedBase <T>(var qr): Result := new QueueResFunc<T2>(()->f(qr.GetRes()), self.ev);
-    QueueResFunc        <T>(var qr): Result := new QueueResFunc<T2>(()->f(qr.f()), self.ev);
-    else raise new System.NotImplementedException;
-  end;
-end;
-
 static function QueueResDelayedBase<T>.MakeNew(need_ptr_qr: boolean) := need_ptr_qr ?
 new QueueResDelayedPtr<T> as QueueResDelayedBase<T> :
 new QueueResDelayedObj<T> as QueueResDelayedBase<T>;
@@ -2973,12 +2992,13 @@ type
     protected constructor(q: CommandQueueBase; c: Context);
     begin
       self.q := q;
+      self.org_c := c;
       q.RegisterWaitables(self, new HashSet<MultiusableCommandQueueHubBase>);
       
       var cq: cl_command_queue;
       var qr := q.InvokeBase(self, c, c.MainDevice.Native, false, cq, nil);
       
-      // mu выполняют лишний .Retain, чтоб ивент не удалился пока очередь ещё запускается
+      // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
       foreach var mu_qr in mu_res.Values do
         mu_qr.ev.Release;
       mu_res := nil;
@@ -3034,7 +3054,6 @@ type
       try
         ev(self);
       except
-        on e: ThreadAbortException do ;
         on e: Exception do AddErr(e);
       end;
       
@@ -3045,7 +3064,6 @@ type
         try
           ev(self, self.q_res);
         except
-          on e: ThreadAbortException do ;
           on e: Exception do AddErr(e);
         end;
         
@@ -3058,7 +3076,6 @@ type
         try
           ev(self, err_arr);
         except
-          on e: ThreadAbortException do ;
           on e: Exception do AddErr(e);
         end;
         
@@ -3134,9 +3151,6 @@ function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
 new CommandQueueThenConvert<T, TOtp>(self, f);
 function CommandQueue<T>.ThenConvert<TOtp>(f: T->TOtp) :=
 new CommandQueueThenConvert<T, TOtp>(self, (o,c)->f(o));
-
-function CommandQueueBase.ThenConvertBase<TOtp>(f: (object, Context)->TOtp) :=
-self.Cast&<object>.ThenConvert(f);
 
 {$endregion ThenConvert}
 
@@ -3377,7 +3391,7 @@ type
     begin
       var new_plug: ()->CommandQueue<T> := hub.MakeNode;
       // new_plub всегда делает mu ноду, а она не использует prev_ev
-      // это тут, чтоб хаб передал need_ptr_qr. Он делает это при первом Invoke
+      // это тут, чтобы хаб передал need_ptr_qr. Он делает это при первом Invoke
       Result := new_plug().Invoke(tsk, c, main_dvc, need_ptr_qr, cq, nil);
       
       foreach var comm in cc.commands do
@@ -3401,16 +3415,34 @@ self.body := new CCBQueue<T>(q, self);
 
 {$region KernelArg}
 
+{$region Const}
+
+{$region Base}
+
+type
+  ConstKernelArg = abstract class(KernelArg, ISetableKernelArg)
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override :=
+    new QueueResConst<ISetableKernelArg>(self, new EventList);
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); abstract;
+    
+  end;
+  
+{$endregion Base}
+
 {$region Buffer}
 
 type
-  KernelArgBuffer = sealed class(KernelArg)
+  KernelArgBuffer = sealed class(ConstKernelArg)
     private b: Buffer;
     
     public constructor(b: Buffer) := self.b := b;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override;
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override;
     begin
       b.InitIfNeed(c);
       cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), b.ntv).RaiseIfError; 
@@ -3419,17 +3451,13 @@ type
   end;
   
 static function KernelArg.FromBuffer(b: Buffer) := new KernelArgBuffer(b) as KernelArg; //ToDo лишний as
-static function Buffer.operator implicit(b: Buffer): CommandQueue<KernelArg> := KernelArg.FromBuffer(b);
-
-function ToKernelArg(self: BufferCommandQueue); extensionmethod := KernelArg.FromBufferCQ(self as CommandQueue<Buffer>);
-function ToKernelArg(self: CommandQueue<Buffer>); extensionmethod := KernelArg.FromBufferCQ(self);
 
 {$endregion Buffer}
 
 {$region Record}
 
 type
-  KernelArgRecord<TRecord> = sealed class(KernelArg)
+  KernelArgRecord<TRecord> = sealed class(ConstKernelArg)
   where TRecord: record;
     private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
     
@@ -3439,22 +3467,19 @@ type
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(new IntPtr(val));
     
-    protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
     cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
     
   end;
   
 static function KernelArg.FromRecord<TRecord>(val: TRecord) := new KernelArgRecord<TRecord>(val) as KernelArg; //ToDo лишний as
 
-function ToKernelArg<TRecord>(self: CommandQueue<TRecord>): CommandQueue<KernelArg>; extensionmethod; where TRecord: record;
-begin Result := KernelArg.FromRecordCQ(self); end;
-
 {$endregion Record}
 
 {$region Ptr}
 
 type
-  KernelArgPtr = sealed class(KernelArg)
+  KernelArgPtr = sealed class(ConstKernelArg)
     private ptr: IntPtr;
     private sz: UIntPtr;
     
@@ -3465,19 +3490,124 @@ type
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
-    cl.SetKernelArg(k, ind, sz, pointer(ptr)).RaiseIfError; 
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
+    cl.SetKernelArg(k, ind, sz, pointer(ptr)).RaiseIfError;
     
   end;
   
 static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(ptr, sz) as KernelArg; //ToDo лишний as
 
-static function KernelArg.FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): CommandQueue<KernelArg>;
-begin
-  {%Static\KernelArg.FromPtrCQ!!Sub= }Result := nil; raise new NotImplementedException;{ %}
-end;
+{$endregion Ptr}
+
+{$endregion Const}
+
+{$region Invokeable}
+
+{$region Base}
+
+type
+  InvokeableKernelArg = abstract class(KernelArg) end;
+  
+{$endregion Base}
+
+{$region Buffer}
+
+type
+  KernelArgBufferCQ = sealed class(InvokeableKernelArg)
+    public q: CommandQueue<Buffer>;
+    public constructor(q: CommandQueue<Buffer>) := self.q := q;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override :=
+    q.InvokeNewQ(tsk, c, main_dvc, false, nil).LazyQuickTransform(b->new KernelArgBuffer(b) as ConstKernelArg as ISetableKernelArg); //ToDo #?
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
+    
+  end;
+  
+static function KernelArg.FromBufferCQ(bq: CommandQueue<Buffer>) :=
+new KernelArgBufferCQ(bq) as KernelArg;
+
+{$endregion Buffer}
+
+{$region Record}
+
+type
+  KernelArgRecordQR<TRecord> = sealed class(ISetableKernelArg)
+  where TRecord: record;
+    public qr: QueueRes<TRecord>;
+    public constructor(qr: QueueRes<TRecord>) := self.qr := qr;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context);
+    begin
+      var sz := new UIntPtr(Marshal.SizeOf&<TRecord>);
+      if qr is QueueResDelayedPtr<TRecord>(var pqr) then
+        cl.SetKernelArg(k, ind, sz, pointer(pqr.ptr)).RaiseIfError else
+      begin
+        var val := qr.GetRes;
+        cl.SetKernelArg(k, ind, sz, val).RaiseIfError;
+      end;
+    end;
+    
+  end;
+  KernelArgRecordCQ<TRecord> = sealed class(InvokeableKernelArg)
+  where TRecord: record;
+    public q: CommandQueue<TRecord>;
+    public constructor(q: CommandQueue<TRecord>) := self.q := q;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override;
+    begin
+      var prev_qr := q.InvokeNewQ(tsk, c, main_dvc, true, nil);
+      Result := new QueueResConst<ISetableKernelArg>(new KernelArgRecordQR<TRecord>(prev_qr), prev_qr.ev);
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
+    
+  end;
+  
+static function KernelArg.FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>) :=
+new KernelArgRecordCQ<TRecord>(valq) as KernelArg;
+
+{$endregion Record}
+
+{$region Ptr}
+
+type
+  KernelArgPtrCQ = sealed class(InvokeableKernelArg)
+    public ptr_q: CommandQueue<IntPtr>;
+    public sz_q: CommandQueue<UIntPtr>;
+    public constructor(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>);
+    begin
+      self.ptr_q := ptr_q;
+      self.sz_q := sz_q;
+    end;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override;
+    begin
+      var ptr_qr  := ptr_q.InvokeNewQ(tsk, c, main_dvc, false, nil);
+      var sz_qr   :=  sz_q.InvokeNewQ(tsk, c, main_dvc, false, nil);
+      Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgPtr(ptr_qr.GetRes, sz_qr.GetRes), ptr_qr.ev+sz_qr.ev);
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      ptr_q.RegisterWaitables(tsk, prev_hubs);
+       sz_q.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+  end;
+  
+static function KernelArg.FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>) :=
+new KernelArgPtrCQ(ptr_q, sz_q) as KernelArg;
 
 {$endregion Ptr}
+
+{$endregion Invokeable}
 
 {$endregion KernelArg}
 

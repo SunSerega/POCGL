@@ -2,7 +2,7 @@
 
 
 # Exec[%dims:1,2,3%]
-{%dims? sz1 : sz1,sz2 : sz1,sz2,sz3 %}: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>
+{%dims? sz1 : sz1,sz2 : sz1,sz2,sz3 %}: CommandQueue<integer>; params args: array of KernelArg
 !Enqueue
 o.UseExclusiveNative(ntv->
 begin
@@ -31,7 +31,7 @@ end);
 
 
 # Exec
-global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>
+global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg
 !Enqueue
 o.UseExclusiveNative(ntv->
 begin

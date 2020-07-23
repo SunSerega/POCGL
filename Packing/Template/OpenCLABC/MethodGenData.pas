@@ -71,6 +71,14 @@ type
     
   end;
   
+  MethodArgTypeKernelArg = sealed class(MethodArgType)
+    
+    public function Enmr: sequence of MethodArgType; override := new MethodArgType[](self);
+    
+    public constructor(s: string) := org_text := s;
+    
+  end;
+  
   MethodArgTypeBasic = sealed class(MethodArgType)
     
     public function Enmr: sequence of MethodArgType; override := new MethodArgType[](self);
@@ -87,12 +95,16 @@ begin
     Result := new MethodArgTypeArray(s) else
   if s.StartsWith('CommandQueue<') then
     Result := new MethodArgTypeCQ(s) else
+  if s = 'KernelArg' then
+    Result := new MethodArgTypeKernelArg(s) else
     Result := new MethodArgTypeBasic(s);
   
 end;
 
 function IsCQ(self: MethodArgType): boolean; extensionmethod :=
 self.Enmr.OfType&<MethodArgTypeCQ>.Any;
+function IsKA(self: MethodArgType): boolean; extensionmethod :=
+self.Enmr.Last is MethodArgTypeKernelArg;
 
 function ArrLvl(self: MethodArgType): integer; extensionmethod :=
 self.Enmr.TakeWhile(at->at is MethodArgTypeArray).Count;
@@ -344,17 +356,22 @@ type
       WriteInvokeHeader(settings);
       res_EIm += '    begin'#10;
       
+      if (settings as MethodSettings).args <> nil then
+        foreach var arg in (settings as MethodSettings).args do
+          if not (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+            Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used');
+      
       {$region param .Invoke's}
       
       if (settings as MethodSettings).args <> nil then
       begin
         var first_arg := true;
         foreach var arg in (settings as MethodSettings).args do
-          if not (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
-            Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used') else
+          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
           begin
-            
-            if arg.t.IsCQ then
+            var IsCQ := arg.t.IsCQ;
+            var IsKA := arg.t.IsKA;
+            if IsCQ or IsKA then
             begin
               res_EIm += '      var ';
               res_EIm += arg.name.PadLeft(max_arg_w);
@@ -377,12 +394,17 @@ type
               
               res_EIm += arg_name;
               res_EIm += '.Invoke';
-              res_EIm += first_arg ? '    ' : 'NewQ';
-              res_EIm += '(tsk, c, main_dvc, ';
-              res_EIm += ((settings as MethodSettings).arg_usage[arg.name]='ptr').ToString.PadLeft(5);
-              res_EIm += ', ';
-              res_EIm += first_arg ? 'cq, ' : arg.t is MethodArgTypeArray ? nil : '    ';
-              res_EIm += 'nil); ';
+              res_EIm += arg.t is MethodArgTypeArray ? nil : first_arg ? '    ' : 'NewQ';
+              res_EIm += '(tsk, c, main_dvc';
+              if IsCQ then
+              begin
+                res_EIm += ', ';
+                res_EIm += ((settings as MethodSettings).arg_usage[arg.name]='ptr').ToString.PadLeft(5);
+                res_EIm += ', ';
+                res_EIm += first_arg ? 'cq, ' : arg.t is MethodArgTypeArray ? nil : '    ';
+                res_EIm += 'nil';
+              end;
+              res_EIm += '); ';
               
               res_EIm += 'evs_l';
               res_EIm += (settings as MethodSettings).arg_usage[arg.name]='ptr' ? '2' : '1';
@@ -399,9 +421,8 @@ type
               loop arg.t.ArrLvl do res_EIm += ')';
               res_EIm += ';'#10;
               
-              first_arg := false;
+              if first_arg and IsCQ then first_arg := false;
             end;
-            
           end;
       end;
       
@@ -420,7 +441,9 @@ type
         foreach var arg in (settings as MethodSettings).args do
           if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
           begin
-            if not arg.t.IsCQ then continue;
+            var IsCQ := arg.t.IsCQ;
+            var IsKA := arg.t.IsKA;
+            if not IsCQ and not IsKA then continue;
             
             res_EIm += '        var ';
             res_EIm += arg.name.PadLeft(max_arg_w);
@@ -454,7 +477,6 @@ type
             res_EIm += ';'#10;
             
           end;
-      res_EIm += '        '#10;
       
       {$endregion param .GetRes's}
       
@@ -469,15 +491,19 @@ type
         res_EIm += #10;
       end;
       
+      if (settings as MethodSettings).need_thread then
+        res_EIm += '        evs.Release;'#10;
+      
       res_EIm += '        '#10;
       
       {$region GCHandle.Free for PtrRes's}
       
       AddGCHandleArgs(args_with_GCHandle, settings);
+      
+      var max_awg_w := args_with_GCHandle.Select(arg->arg.Length).DefaultIfEmpty(0).Max;
       if args_with_GCHandle.Count<>0 then
       begin
         
-        var max_awg_w := args_with_GCHandle.Max(arg->arg.Length);
         foreach var arg in args_with_GCHandle do
         begin
           res_EIm += '        var ';
@@ -488,19 +514,33 @@ type
         end;
         res_EIm += '        '#10;
         
+      end;
+      
+      {$endregion GCHandle.Free for PtrRes's}
+      
+      {$region FinallyCallback}
+      
+      if (args_with_GCHandle.Count<>0) or not (settings as MethodSettings).need_thread then
+      begin
         res_EIm += '        EventList.AttachFinallyCallback(res_ev, ()->'#10;
         res_EIm += '        begin'#10;
+        
+        if not (settings as MethodSettings).need_thread then
+          res_EIm += '          evs.Release;'#10;
+        
         foreach var arg in args_with_GCHandle do
         begin
           res_EIm += '          ';
           res_EIm += arg.PadLeft(max_awg_w);
           res_EIm += '_hnd.Free;'#10;
         end;
+        
         res_EIm += '        end, tsk);'#10;
         res_EIm += '        '#10;
+        
       end;
       
-      {$endregion GCHandle.Free for PtrRes's}
+      {$endregion FinallyCallback}
       
       res_EIm += '        Result := ';
       res_EIm += (settings as MethodSettings).need_thread ? 'cl_event.Zero' : 'res_ev';
@@ -603,7 +643,7 @@ type
         foreach var arg in (settings as MethodSettings).args do
           if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
           begin
-            if not arg.t.IsCQ then continue;
+            if not arg.t.IsCQ and not arg.t.IsKA then continue;
             
             if (settings as MethodSettings).arg_usage[arg.name] = 'ptr' then
               param_count_l2 += 1 else
@@ -665,7 +705,7 @@ type
         res_EIm += '    begin'#10;
         
         foreach var arg in (settings as MethodSettings).args.OrderBy(arg->arg.t.ArrLvl) do
-          if arg.t.IsCQ then
+          if arg.t.IsKA or arg.t.IsCQ then
           begin
             res_EIm += '      ';
             

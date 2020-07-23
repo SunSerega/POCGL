@@ -123,7 +123,62 @@ Tester: Executing Test[Samples\OpenCL\SimpleAddition]
 Tester: Done executing Test[Samples\OpenCL\SimpleAddition]
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: %WARNING: Settings updated for "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.td"
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
 Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Error in Tester: System.Runtime.InteropServices.COMException (0xC0000005): Исключение из HRESULT: 0xC0000005
+Tester: Executing Test[Tests\Exec\CLABC\01 Cast\~Const\0]
+Tester: Done executing Test[Tests\Exec\CLABC\01 Cast\~Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\01 Cast\~Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\01 Cast\~Err\0]
+Tester: %WARNING: Settings updated for "Tests\Exec\CLABC\01 Cast\~Err\0.td"
+Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~Cast\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~CQ\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~CQ\0]
+Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0]
+Tester: %WARNING: Settings updated for "Tests\Exec\CLABC\02 ThenConvert\~Err\0.td"
+Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0c]
+Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0c]
+Tester: %WARNING: Settings updated for "Tests\Exec\CLABC\02 ThenConvert\~Err\0c.td"
+Tester: Executing Test[Tests\Exec\CLABC\03 Multiusable\~CQ\0]
+Tester: Done executing Test[Tests\Exec\CLABC\03 Multiusable\~CQ\0]
+Tester: %WARNING: Settings updated for "Tests\Exec\CLABC\03 Multiusable\~CQ\0.td"
+Tester: Executing Test[Tests\Exec\CLABC\03 Multiusable\~Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\03 Multiusable\~Err\0]
+Tester: %WARNING: Settings updated for "Tests\Exec\CLABC\03 Multiusable\~Err\0.td"
+Tester: Executing Test[Tests\Exec\CLABC\07 HostExec\~Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\07 HostExec\~Err\0]
+Tester: %WARNING: Settings updated for "Tests\Exec\CLABC\07 HostExec\~Err\0.td"
+Tester: Cleanup
+Tester: WARNING: File "Tests\Exec\CLABC\01 Cast\~Err\0.td" updated
+Tester: WARNING: File "Tests\Exec\CLABC\02 ThenConvert\~Err\0.td" updated
+Tester: WARNING: File "Tests\Exec\CLABC\02 ThenConvert\~Err\0c.td" updated
+Tester: WARNING: File "Tests\Exec\CLABC\03 Multiusable\~CQ\0.td" updated
+Tester: WARNING: File "Tests\Exec\CLABC\03 Multiusable\~Err\0.td" updated
+Tester: WARNING: File "Tests\Exec\CLABC\07 HostExec\~Err\0.td" updated
+Tester: Done testing
+Finished runing Tester
+===================================== Release ====================================
+Packing Modules.Packed\OpenCL.pas
+Packing Modules.Packed\OpenCLABC.pas
+Packing Modules.Packed\Internal\OpenCLABCBase.pas
+Done copying release modules
+Packing sample "Samples\OpenCL\MatrMlt.cl"
+Packing sample "Samples\OpenCL\MatrMlt.pas"
+Packing sample "Samples\OpenCL\SimpleAddition.cl"
+Packing sample "Samples\OpenCL\SimpleAddition.pas"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.cl"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.cl"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Packing sample "Samples\OpenCLABC\Wait очереди\1.pas"
+Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
+Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
+Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
+Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Packed 13 sample files
+Packing spec [Гайд по использованию OpenGL и OpenCL.html]
+Packing spec [Справка OpenCLABC.html]
+Packing spec [Справка OpenGLABC.html]
+Packed 3 spec files
+Done packing

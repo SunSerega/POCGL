@@ -42,6 +42,7 @@ CommandQueue<T>.InvokeImpl(CLTaskBase, Context, cl_device_id, boolean, cl_comman
 CommandQueue<T>.Invoke(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
 CommandQueue<T>.InvokeBase(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
 CommandQueue<T>.InvokeNewQ(CLTaskBase, Context, cl_device_id, boolean, EventList)
+CommandQueue<T>.ThenConvertBase<TOtp>((object, Context)->TOtp)
 CommandQueue<T>.AfterQueueSyncBase(CommandQueueBase)
 CommandQueue<T>.AfterQueueAsyncBase(CommandQueueBase)
 CommandQueue<T>.MultiusableBase
@@ -79,6 +80,9 @@ GPUCommandContainerBody<T>
 GPUCommandContainer<T>
 EnqueueableGPUCommand<T>
 EnqueueableGetCommand<TObj, TRes>
+ISetableKernelArg
+KernelArg.Invoke(CLTaskBase, Context, cl_device_id)
+KernelArg.RegisterWaitables(CLTaskBase, HashSet<MultiusableCommandQueueHubBase>)
 WCQWaiter
 WCQWaiterAll
 WCQWaiterAny

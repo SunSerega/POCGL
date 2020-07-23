@@ -25,7 +25,6 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var ptr := ptr_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
@@ -34,6 +33,11 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -74,7 +78,6 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var ptr := ptr_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
@@ -83,6 +86,11 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -131,7 +139,6 @@ type
         var         ptr :=         ptr_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
@@ -140,6 +147,11 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -190,7 +202,6 @@ type
         var         ptr :=         ptr_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
@@ -199,6 +210,11 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -264,7 +280,6 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var buff_offset := buff_offset_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
@@ -273,6 +288,11 @@ type
           new IntPtr(val),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -321,7 +341,6 @@ type
       begin
         var         val :=         val_qr.ToPtr;
         var buff_offset := buff_offset_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
@@ -335,6 +354,7 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
+          evs.Release;
           val_hnd.Free;
         end, tsk);
         
@@ -382,13 +402,13 @@ type
       begin
         var a := a_qr.GetRes;
         
-        
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -433,13 +453,13 @@ type
       begin
         var a := a_qr.GetRes;
         
-        
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -484,13 +504,13 @@ type
       begin
         var a := a_qr.GetRes;
         
-        
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0,0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -535,13 +555,13 @@ type
       begin
         var a := a_qr.GetRes;
         
-        
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -586,13 +606,13 @@ type
       begin
         var a := a_qr.GetRes;
         
-        
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -637,13 +657,13 @@ type
       begin
         var a := a_qr.GetRes;
         
-        
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0,0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -700,13 +720,13 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -770,13 +790,13 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -845,13 +865,13 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        
         cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -913,13 +933,13 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -983,13 +1003,13 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -1058,13 +1078,13 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
           new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
+        evs.Release;
         
         Result := cl_event.Zero;
       end;
@@ -1118,7 +1138,6 @@ type
       begin
         var         ptr :=         ptr_qr.GetRes;
         var pattern_len := pattern_len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueFillBuffer(
@@ -1127,6 +1146,11 @@ type
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1180,7 +1204,6 @@ type
         var pattern_len := pattern_len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueFillBuffer(
@@ -1189,6 +1212,11 @@ type
           new UIntPtr(buff_offset), new UIntPtr(len),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1236,7 +1264,6 @@ type
       
       Result := (o, cq, tsk, c, evs)->
       begin
-        
         var res_ev: cl_event;
         
         cl.EnqueueFillBuffer(
@@ -1245,6 +1272,11 @@ type
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1296,7 +1328,6 @@ type
       begin
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueFillBuffer(
@@ -1305,6 +1336,11 @@ type
           new UIntPtr(buff_offset), new UIntPtr(len),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1347,7 +1383,6 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var val := val_qr.ToPtr;
-        
         var res_ev: cl_event;
         
         cl.EnqueueFillBuffer(
@@ -1357,12 +1392,11 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        
-        
         var val_hnd := GCHandle.Alloc(val);
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
+          evs.Release;
           val_hnd.Free;
         end, tsk);
         
@@ -1414,7 +1448,6 @@ type
         var         val :=         val_qr.ToPtr;
         var buff_offset := buff_offset_qr.GetRes;
         var         len :=         len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueFillBuffer(
@@ -1424,12 +1457,11 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        
-        
         var val_hnd := GCHandle.Alloc(val);
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
+          evs.Release;
           val_hnd.Free;
         end, tsk);
         
@@ -1478,7 +1510,6 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var b := b_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueCopyBuffer(
@@ -1487,6 +1518,11 @@ type
           o.Size64<b.Size64 ? o.Size : b.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1527,7 +1563,6 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var b := b_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueCopyBuffer(
@@ -1536,6 +1571,11 @@ type
           o.Size64<b.Size64 ? o.Size : b.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1588,7 +1628,6 @@ type
         var from_pos := from_pos_qr.GetRes;
         var   to_pos :=   to_pos_qr.GetRes;
         var      len :=      len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueCopyBuffer(
@@ -1598,7 +1637,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -1654,7 +1696,6 @@ type
         var from_pos := from_pos_qr.GetRes;
         var   to_pos :=   to_pos_qr.GetRes;
         var      len :=      len_qr.GetRes;
-        
         var res_ev: cl_event;
         
         cl.EnqueueCopyBuffer(
@@ -1664,7 +1705,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;

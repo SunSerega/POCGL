@@ -7,6 +7,9 @@
 
 
 
+# CLTaskBase.OrgContext
+Возвращает контекст, в котором выполняется данный CLTask
+
 # CLTaskBase.OrgQueue
 # CLTask<T>.OrgQueue
 Возвращает очередь, которую выполняет данный CLTask

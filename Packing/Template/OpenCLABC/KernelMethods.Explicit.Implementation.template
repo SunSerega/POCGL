@@ -8,12 +8,12 @@
 type
   KernelCommandExec1 = sealed class(EnqueueableGPUCommand<Kernel>)
     private  sz1: CommandQueue<integer>;
-    private args: array of CommandQueue<KernelArg>;
+    private args: array of KernelArg;
     
     protected function ParamCountL1: integer; override := 2;
     protected function ParamCountL2: integer; override := 0;
     
-    public constructor(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>);
+    public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
     begin
       self. sz1 :=  sz1;
       self.args := args;
@@ -23,13 +23,12 @@ type
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
         var  sz1 :=  sz1_qr.GetRes;
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
-        
         var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
@@ -56,6 +55,11 @@ type
           end, tsk);
         end);
         
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
+        
         Result := res_ev;
       end;
       
@@ -71,7 +75,7 @@ type
   
 {$endregion Exec1}
 
-function KernelCommandQueue.AddExec1(sz1: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+function KernelCommandQueue.AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCommandQueue :=
 AddCommand(new KernelCommandExec1(sz1, args));
 
 {$region Exec2}
@@ -80,12 +84,12 @@ type
   KernelCommandExec2 = sealed class(EnqueueableGPUCommand<Kernel>)
     private  sz1: CommandQueue<integer>;
     private  sz2: CommandQueue<integer>;
-    private args: array of CommandQueue<KernelArg>;
+    private args: array of KernelArg;
     
     protected function ParamCountL1: integer; override := 3;
     protected function ParamCountL2: integer; override := 0;
     
-    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>);
+    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
     begin
       self. sz1 :=  sz1;
       self. sz2 :=  sz2;
@@ -97,14 +101,13 @@ type
     begin
       var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
       var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz2_qr.ev;
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
         var  sz1 :=  sz1_qr.GetRes;
         var  sz2 :=  sz2_qr.GetRes;
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
-        
         var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
@@ -131,6 +134,11 @@ type
           end, tsk);
         end);
         
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
+        
         Result := res_ev;
       end;
       
@@ -147,7 +155,7 @@ type
   
 {$endregion Exec2}
 
-function KernelCommandQueue.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+function KernelCommandQueue.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCommandQueue :=
 AddCommand(new KernelCommandExec2(sz1, sz2, args));
 
 {$region Exec3}
@@ -157,12 +165,12 @@ type
     private  sz1: CommandQueue<integer>;
     private  sz2: CommandQueue<integer>;
     private  sz3: CommandQueue<integer>;
-    private args: array of CommandQueue<KernelArg>;
+    private args: array of KernelArg;
     
     protected function ParamCountL1: integer; override := 4;
     protected function ParamCountL2: integer; override := 0;
     
-    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>);
+    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
     begin
       self. sz1 :=  sz1;
       self. sz2 :=  sz2;
@@ -176,7 +184,7 @@ type
       var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
       var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz2_qr.ev;
       var  sz3_qr :=  sz3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz3_qr.ev;
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
@@ -184,7 +192,6 @@ type
         var  sz2 :=  sz2_qr.GetRes;
         var  sz3 :=  sz3_qr.GetRes;
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
-        
         var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
@@ -211,6 +218,11 @@ type
           end, tsk);
         end);
         
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
+        
         Result := res_ev;
       end;
       
@@ -228,7 +240,7 @@ type
   
 {$endregion Exec3}
 
-function KernelCommandQueue.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+function KernelCommandQueue.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCommandQueue :=
 AddCommand(new KernelCommandExec3(sz1, sz2, sz3, args));
 
 {$region Exec}
@@ -238,12 +250,12 @@ type
     private global_work_offset: CommandQueue<array of UIntPtr>;
     private   global_work_size: CommandQueue<array of UIntPtr>;
     private    local_work_size: CommandQueue<array of UIntPtr>;
-    private               args: array of CommandQueue<KernelArg>;
+    private               args: array of KernelArg;
     
     protected function ParamCountL1: integer; override := 4;
     protected function ParamCountL2: integer; override := 0;
     
-    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>);
+    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
     begin
       self.global_work_offset := global_work_offset;
       self.  global_work_size :=   global_work_size;
@@ -257,7 +269,7 @@ type
       var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += global_work_offset_qr.ev;
       var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   global_work_size_qr.ev;
       var    local_work_size_qr :=    local_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    local_work_size_qr.ev;
-      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.InvokeNewQ(tsk, c, main_dvc, False, nil); evs_l1 += Result.ev; end);
+      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
@@ -265,7 +277,6 @@ type
         var   global_work_size :=   global_work_size_qr.GetRes;
         var    local_work_size :=    local_work_size_qr.GetRes;
         var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
-        
         var res_ev: cl_event;
         
         o.UseExclusiveNative(ntv->
@@ -292,7 +303,10 @@ type
           end, tsk);
         end);
         
-        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          evs.Release;
+        end, tsk);
         
         Result := res_ev;
       end;
@@ -311,7 +325,7 @@ type
   
 {$endregion Exec}
 
-function KernelCommandQueue.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CommandQueue<KernelArg>): KernelCommandQueue :=
+function KernelCommandQueue.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCommandQueue :=
 AddCommand(new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
 
 {$endregion 1#Exec}
