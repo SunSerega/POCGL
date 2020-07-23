@@ -18,6 +18,7 @@ begin
         sw.WriteLine($'    public constructor(val: {tt}) := self.val := val;');
         sw.WriteLine($'    public static property Zero: {tname} read default({tname});');
         sw.WriteLine($'    public static property Size: integer read Marshal.SizeOf&<{tt}>;');
+        sw.WriteLine($'    public function ToString: string; override := $''{tname}[{{val}}]'';');
         sw.WriteLine($'  end;');
       end;
     

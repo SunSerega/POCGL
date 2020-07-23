@@ -1,9 +1,46 @@
 ﻿Executing selected stages:
-OpenCLABC + Compile + Test + Release
+OpenCL + OpenCLABC + Compile + Test + Release
 Start packing
-==================================== OpenCLABC ===================================
+===================================== OpenCL =====================================
 Compiling "Packing\Template\Pack Template.pas"
 Finished compiling: OK
+Runing Template[OpenCL]
+Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
+Template[OpenCL]: Finished compiling: OK
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
+Template[OpenCL]: Finished compiling: OK
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing records code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueMigrateMemObjectEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
+Finished runing Template[OpenCL]
+==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Finished compiling: OK
@@ -49,7 +86,11 @@ Compiling "Tests\Tester.pas"
 Finished compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCLABC
+Tester: OpenCL + OpenCLABC
+Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
+Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -61,3 +102,28 @@ Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Const\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~CQ\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0c.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~CQ\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\07 HostExec\~Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Executing Test[Samples\OpenCL\MatrMlt]
+Tester: Done executing Test[Samples\OpenCL\MatrMlt]
+Tester: Executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Done executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: %WARNING: Settings updated for "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.td"
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Error in Tester: System.Runtime.InteropServices.COMException (0xC0000005): Исключение из HRESULT: 0xC0000005

@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader!!StubForKotov= }{$title 'test title'}{ %}
+{%..\LicenseHeader}
 
 /// Модуль для внутренних типов модуля OpenCLABC
 unit OpenCLABCBase;
@@ -8,9 +8,6 @@ unit OpenCLABCBase;
 
 //===================================
 // Обязательно сделать до следующего пула:
-
-//ToDo Вернуть Buffer.Get методы
-// - И сразу добавить в BCQ
 
 {$region Справка}
 
@@ -30,12 +27,6 @@ unit OpenCLABCBase;
 // - Если так и останется - не забыть добавить в справку
 
 {$endregion Справка}
-
-{$region PackDoc}
-
-//ToDo Исправить описания
-
-{$endregion PackDoc}
 
 //ToDo А всегда ли abortable True при ожидании?
 // - В StartBackgroundWork поидее может зависнуть на неуправляемом вызове из за этого
@@ -401,12 +392,8 @@ type
     private function CreateProp: TProp; abstract;
     
     ///--
-    public function Equals(obj: object): boolean; override;
-    begin
-      //ToDo #2277
-      Result := (obj is WrapperBase<TNtv, TProp>(var wr));
-      Result := Result and (self.ntv=wr.ntv);
-    end;
+    public function Equals(obj: object): boolean; override :=
+    (obj is WrapperBase<TNtv, TProp>(var wr)) and (self.ntv=wr.ntv);
     
   end;
   

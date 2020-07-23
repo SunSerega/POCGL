@@ -38,60 +38,70 @@ type
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_mem read default(cl_mem);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_mem[{val}]';
   end;
   cl_platform_id = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_platform_id read default(cl_platform_id);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_platform_id[{val}]';
   end;
   cl_device_id = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_device_id read default(cl_device_id);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_device_id[{val}]';
   end;
   cl_context = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_context read default(cl_context);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_context[{val}]';
   end;
   cl_command_queue = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_command_queue read default(cl_command_queue);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_command_queue[{val}]';
   end;
   cl_sampler = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_sampler read default(cl_sampler);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_sampler[{val}]';
   end;
   cl_program = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_program read default(cl_program);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_program[{val}]';
   end;
   cl_kernel = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_kernel read default(cl_kernel);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_kernel[{val}]';
   end;
   cl_event = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_event read default(cl_event);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_event[{val}]';
   end;
   cl_accelerator_intel = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
     public static property Zero: cl_accelerator_intel read default(cl_accelerator_intel);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_accelerator_intel[{val}]';
   end;
   
   {$endregion Записи-имена}
