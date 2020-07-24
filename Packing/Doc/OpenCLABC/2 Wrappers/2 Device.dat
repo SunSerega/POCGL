@@ -11,11 +11,16 @@
 
 
 
+# Device:GetAllForNilRes
+Возвращает nil, если ни одно устройство не найдено
+
 # Device.GetAllFor(Platform, DeviceType)
 Собирает массив устройств указанного типа для указанной платформы
+%Device:GetAllForNilRes%
 
 # Device.GetAllFor(Platform)
 Собирает массив устройств GPU для указанной платформы
+%Device:GetAllForNilRes%
 
 
 

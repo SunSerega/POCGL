@@ -6,7 +6,7 @@ OpenCLABC
 
 #ExpExecErr
 System.InvalidCastException: Заданное приведение является недопустимым.
-   в OpenCLABCBase_implementation______.CastQueue`1.<>lambda53(Object <>o)
+   в OpenCLABCBase_implementation______.CastQueue`1.<>lambda51(Object <>o)
    в OpenCLABCBase.<>local_variables_class_4`2.<>lambda10(T <>o)
    в OpenCLABCBase.QueueResConst`1.LazyQuickTransform[T2](Func`2 f)
    в OpenCLABCBase.QueueRes`1.LazyQuickTransformBase[T2](Func`2 f)

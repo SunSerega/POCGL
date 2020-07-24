@@ -19,8 +19,6 @@ unit OpenCLABCBase;
 // - ReadValue отсутствует
 // - FillArray отсутствует
 
-//ToDo Удостоверится что в справке сказано про то, что Context.Default только для простого кода. Для профессионального - надо создавать свой контекст
-
 //ToDo Wait очереди:
 // - Пока сделал так: если ожидающая очередь абортится - она перестаёт ожидать.
 // - Это может создать неопределённое поведение. Но, по моему, это правильней всего.
@@ -28,17 +26,18 @@ unit OpenCLABCBase;
 
 //ToDo Написать в справке что опасно передавать @i вместо KernelArg, где i - захваченная переменная
 
+//ToDo Написать в справке, что любые лямбды пользователя, переданные в этот модуль, могут получить ThreadAbortException
+// - Но это только если возникнет ошибка во время выполнения другой части очереди
+
 {$endregion Справка}
-
-//ToDo А всегда ли abortable True при ожидании?
-// - В StartBackgroundWork поидее может зависнуть на неуправляемом вызове из за этого
-
-//ToDo Ловить ThreadAbortException всюду перед Exception
-// - Даже в колбеках ивентов - их может вызвать синхронно из потока UserEvent.StartBackgroundWork
-// - И написать в справке, что любые лямбды пользователя, переданные в этот модуль, могут получить ThreadAbortException
 
 //ToDo Тесты всех фич модуля
 //ToDo И в каждом сделать по несколько выполнений, на случай плавающий ошибок
+
+//ToDo Исправить интерфейс CommandQueueBase
+
+//===================================
+// Запланированное:
 
 //ToDo IWaitQueue.CancelWait
 //ToDo WaitAny(aborter, WaitAll(...));
@@ -47,17 +46,6 @@ unit OpenCLABCBase;
 // - Поэтому я и думал про что то типа CancelWait
 // - А вообще лучше разрешить выполнять Wait внутри другого Wait
 // - И заодно проверить чтобы Abort работало на Wait-ы
-
-//ToDo Исправить интерфейс CommandQueueBase
-
-//ToDo KernelArg из CommandQueue<TRecord> - создавать умнее
-// - Есть же смысл в need_ptr_qr, и создавать KernelArg, в итоге, из указателя, а не значения
-//ToDo Сюда же - может лучше создавать KernelArg, а не CommandQueue<KernelArg> из очередей?
-// - Это позволит красиво сделать все "operator implicit"-ы
-// - Но придётся сделать свой .Invoke, как у очередей
-
-//===================================
-// Запланированное:
 
 //ToDo Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 // - В том числе проверки с помощью BlittableHelper
@@ -1393,6 +1381,10 @@ type
           )) then continue;
           if CLTaskExt.AddErr(tsk, st) then Result := true;
         end;
+      
+      //ToDo NV#3035203 - без бага эта часть не нужна
+      if st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
+        if CLTaskExt.AddErr(tsk, st) then Result := true;
     end;
     public procedure AttachCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue) :=
     if evs=nil then work else AttachCallback(self.ToMarker(c, dvc, cq), work, tsk, SmartStatusErr);
@@ -1432,7 +1424,7 @@ type
       var res := MakeUserEvent(tsk, c);
       
       var abort_thr_ev := new AutoResetEvent(false);
-      res.AttachCallback(()->abort_thr_ev.Set(), tsk);
+      res.AttachFinallyCallback(()->abort_thr_ev.Set(), tsk);
       
       var work_thr: Thread;
       var abort_thr := NativeUtils.StartNewThread(()->
@@ -1444,11 +1436,20 @@ type
       
       work_thr := NativeUtils.StartNewThread(()->
       try
-        var err := (after<>nil) and (after.count<>0) and after.WaitAndRelease(tsk);
+        var err := (after<>nil) and (after.count<>0) and
+          (after.abortable ? after : after + MakeUserEvent(tsk,c)).WaitAndRelease(tsk);
+        // ThreadAbortException может прийти только из abort_thr, поэтому до следующей строчки - его не будет
+        // Таким образом следующая строчка всегда выполнится
         abort_thr_ev.Set;
+        // Далее - в любом случае выполняется res.SetStatus, который вызывает
+        // содержимое res.AttachFinallyCallback выше
+        // Поэтому abort_thr никогда не застрянет
         
         if err then
-          res.Abort else
+        begin
+          abort_thr.Abort;
+          res.Abort;
+        end else
         begin
           work;
           abort_thr.Abort;
@@ -1459,7 +1460,12 @@ type
         on e: Exception do
         begin
           CLTaskExt.AddErr(tsk, e);
-          res.Abort;
+          // Первый .AddErr всегда сам вызывает .Abort на всех UserEvent
+          // А значит и abort_thr.Abort уже выполнило выше
+          // Единственное исключение - если "e is ThreadAbortException"
+          // Но это случится только если abort_thr уже доработало
+//          abort_thr.Abort;
+//          res.Abort;
         end;
       end);
       
@@ -1500,10 +1506,10 @@ type
     
     {$region AttachCallback}
     
-    public procedure AttachCallback(work: Action; tsk: CLTaskBase; retain: boolean := true);
+    public procedure AttachFinallyCallback(work: Action; tsk: CLTaskBase);
     begin
-      if retain then cl.RetainEvent(self.uev).RaiseIfError;
-      EventList.AttachCallback(self, work, tsk);
+      cl.RetainEvent(self.uev).RaiseIfError;
+      EventList.AttachFinallyCallback(self, work, tsk);
     end;
     
     {$endregion AttachCallback}
@@ -1582,6 +1588,13 @@ type
       end;
     end;
     public function TrySetEvBase(new_ev: EventList): QueueResBase; override := TrySetEv(new_ev);
+    
+    public function EnsureAbortability(tsk: CLTaskBase; c: Context): QueueRes<T>;
+    begin
+      Result := self;
+      if (ev.count<>0) and not ev.abortable then
+        Result := Result.TrySetEv(ev + UserEvent.MakeUserEvent(tsk, c.Native));
+    end;
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
     public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; override :=
@@ -1864,6 +1877,7 @@ type
         mu_qr.ev.Release;
       mu_res := nil;
       
+      //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно
       qr.ev.AttachFinallyCallback(()->
       begin
         if cq<>cl_command_queue.Zero then
@@ -1973,18 +1987,7 @@ type
     
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; abstract;
     
-    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase;
-    begin
-      var cq := cl_command_queue.Zero;
-      Result := InvokeBase(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
-      
-      if cq<>cl_command_queue.Zero then
-        Result.ev.AttachFinallyCallback(()->
-        begin
-          System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(cq)))
-        end, tsk, c.Native, main_dvc, cq);
-      
-    end;
+    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase; abstract;
     
     {$endregion Invoke}
     
@@ -2093,15 +2096,15 @@ type
     {$region Invoke}
     
     protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; abstract;
+    
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>;
     begin
-      Result := InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
+      Result := InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev).EnsureAbortability(tsk, c);
       
       if self.IsWaitable then
         Result.ev.AttachCallback(self.ExecuteMWHandlers, tsk, c.Native, main_dvc, cq);
       
     end;
-    
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override :=
     Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
     
@@ -2110,6 +2113,7 @@ type
       var cq := cl_command_queue.Zero;
       Result := Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
       
+      // Result.ev.abortable уже true, потому что .EnsureAbortability в Invoke
       if cq<>cl_command_queue.Zero then
         Result.ev.AttachFinallyCallback(()->
         begin
@@ -2117,6 +2121,8 @@ type
         end, tsk, c.Native, main_dvc, cq);
       
     end;
+    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase; override :=
+    InvokeNewQ(tsk, c, main_dvc, need_ptr_qr, prev_ev);
     
     {$endregion Invoke}
     
@@ -2639,7 +2645,12 @@ type
       NativeUtils.FixCQ(c.Native, main_dvc, cq);
       
       if not need_thread and (ev_l1=nil) then
-        Result := enq_f(prev_qr.GetRes, cq, tsk, c, ev_l2) else
+      begin
+        Result := enq_f(prev_qr.GetRes, cq, tsk, c, ev_l2);
+        Result.abortable := true; // ev_l2 тут всегда напрямую передаётся в cl.Enqueue*... и ev_l2.abortable всегда true
+        //ToDo С другой стороны, если ev_l2 абортится - получаем CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST в качестве статуса
+        // - Надо бы проверить как это всё работает
+      end else
       begin
         var res_ev: UserEvent;
         
@@ -2666,7 +2677,7 @@ type
         begin
           System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
         end, tsk);
-        Result := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено, в отличии от первого "Result :="
+        Result := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено автоматически
       end;
       
     end;
@@ -2720,7 +2731,10 @@ type
       Result := qr;
       
       if not need_thread and (ev_l1=nil) then
-        Result.ev := enq_f(prev_qr.GetRes, cq, tsk, ev_l2, qr) else
+      begin
+        Result.ev := enq_f(prev_qr.GetRes, cq, tsk, ev_l2, qr);
+        Result.ev.abortable := true; //ToDo та же история что выше
+      end else
       begin
         var res_ev: UserEvent;
         
@@ -2747,7 +2761,7 @@ type
         begin
           System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
         end, tsk);
-        Result.ev := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено, в отличии от первого "Result :="
+        Result.ev := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено автоматически
       end;
       
     end;
@@ -3003,6 +3017,7 @@ type
         mu_qr.ev.Release;
       mu_res := nil;
       
+      //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно
       qr.ev.AttachFinallyCallback(()->
       begin
         if cq<>cl_command_queue.Zero then
