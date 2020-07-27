@@ -165,7 +165,6 @@ Finished runing Template[OpenGLABC]
 Runing Template[OpenGLABCBase]
 Finished runing Template[OpenGLABCBase]
 Runing Comments[OpenGLABC]
-Comments[OpenGLABC]: WARNING: Skipped [OpenGLABC], because data folder not found
 Finished runing Comments[OpenGLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
@@ -189,6 +188,10 @@ Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Finished compiling: OK
@@ -222,6 +225,10 @@ Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\Ma
 Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
 Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
+Tester: Done executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
+Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
+Tester: Done executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
 Tester: Executing Test[Tests\Exec\CLABC\01 Cast\~Const\0]
 Tester: Done executing Test[Tests\Exec\CLABC\01 Cast\~Const\0]
 Tester: Executing Test[Tests\Exec\CLABC\01 Cast\~Err\0]
@@ -266,9 +273,12 @@ Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAdd
 Packing sample "Samples\OpenCLABC\Wait очереди\1.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
+Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\0.cl"
+Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
+Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Packed 13 sample files
+Packed 16 sample files
 Packing spec [Гайд по использованию OpenGL и OpenCL.html]
 Packing spec [Справка OpenCLABC.html]
 Packing spec [Справка OpenGLABC.html]

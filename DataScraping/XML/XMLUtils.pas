@@ -1,7 +1,7 @@
 ﻿unit XMLUtils;
 
 {$reference System.XML.dll}
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils';
 
 var log := new System.IO.StreamWriter(
   GetFullPathRTE('xml.log'),

@@ -39,6 +39,12 @@ unit OpenCLABCBase;
 //===================================
 // Запланированное:
 
+//ToDo В тестеровщике, в тестах ошибок, в текстах ошибок - постоянно меняются номера лямбд...
+// - Наверное стоит захардкодить в тестировщик игнор числа после "<>lambda", и так же для контейнера лямбды
+
+//ToDo Заполнение Platform.All сейчас вылетит на компе с 0 платформ...
+// - Сразу не забыть исправить описание
+
 //ToDo IWaitQueue.CancelWait
 //ToDo WaitAny(aborter, WaitAll(...));
 // - Что случится с WaitAll если aborter будет первым?
@@ -93,6 +99,8 @@ unit OpenCLABCBase;
 
 //ToDo Интегрировать профайлинг очередей
 
+//ToDo Перепродумать SubBuffer, в случае перевыделения основного буфера - он плохо себя ведёт...
+
 //===================================
 // Сделать когда-нибуть:
 
@@ -139,32 +147,39 @@ type
     protected function GetSize(id: TInfo): UIntPtr;
     begin GetSizeImpl(id, Result); end;
     
-    protected procedure GetVal(id: TInfo; sz: UIntPtr; ptr: IntPtr) :=
+    protected procedure FillPtr(id: TInfo; sz: UIntPtr; ptr: IntPtr) :=
     GetValImpl(id, sz, PByte(pointer(ptr))^);
-    protected procedure GetVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
+    protected procedure FillVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
     GetValImpl(id, sz, PByte(pointer(@res))^);
     
     protected function GetVal<T>(id: TInfo): T;
-    begin GetVal(id, new UIntPtr(Marshal.SizeOf&<T>), Result); end;
+    begin FillVal(id, new UIntPtr(Marshal.SizeOf&<T>), Result); end;
     protected function GetValArr<T>(id: TInfo): array of T;
     begin
       var sz := GetSize(id);
-      
       Result := new T[uint64(sz) div Marshal.SizeOf&<T>];
-      GetVal(id, sz, Result[0]);
+      
+      if Result.Length<>0 then
+        FillVal(id, sz, Result[0]);
       
     end;
     protected function GetValArrArr<T>(id: TInfo; szs: array of UIntPtr): array of array of T;
     type PT = ^T;
     begin
+      if szs.Length=0 then
+      begin
+        SetLength(Result,0);
+        exit;
+      end;
       
       var res := new IntPtr[szs.Length];
+      SetLength(Result, szs.Length);
+      
       for var i := 0 to szs.Length-1 do res[i] := Marshal.AllocHGlobal(IntPtr(pointer(szs[i])));
       try
         
-        GetVal(id, new UIntPtr(szs.Length*Marshal.SizeOf&<IntPtr>), Result[0]);
+        FillVal(id, new UIntPtr(szs.Length*Marshal.SizeOf&<IntPtr>), res[0]);
         
-        SetLength(Result, szs.Length);
         var tsz := Marshal.SizeOf&<T>;
         for var i := 0 to szs.Length-1 do
         begin
@@ -207,7 +222,7 @@ type
       
       var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
       try
-        GetVal(id, sz, str_ptr);
+        FillPtr(id, sz, str_ptr);
         Result := Marshal.PtrToStringAnsi(str_ptr);
       finally
         Marshal.FreeHGlobal(str_ptr);
@@ -792,7 +807,7 @@ type
       self.ntv := new_ntv;
     end;
     
-    public procedure Dispose :=
+    public procedure Dispose; virtual :=
     if ntv<>cl_mem.Zero then lock self do
     begin
       if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
@@ -837,15 +852,14 @@ type
     
     protected constructor(parent: Buffer; reg: cl_buffer_region);
     begin
+      inherited Create(reg.size);
+      
       var parent_ntv := parent.Native;
       if parent_ntv=cl_mem.Zero then raise new InvalidOperationException($'%Err:Buffer:Empty%');
       
       var ec: ErrorCode;
       self.ntv := cl.CreateSubBuffer(parent_ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       ec.RaiseIfError;
-      
-      self.sz := reg.size;
-      GC.AddMemoryPressure(Size64);
       
       self._parent := parent;
     end;
@@ -858,6 +872,15 @@ type
     if self.ntv=cl_mem.Zero then raise new NotSupportedException($'%Err:SubBuffer:InitCall%');
     public procedure Init(c: Context); override := InitIgnoreOrErr;
     public procedure InitIfNeed(c: Context); override := InitIgnoreOrErr;
+    
+    public procedure Dispose; override :=
+    if ntv<>cl_mem.Zero then lock self do
+    begin
+      if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
+      self._properties := nil;
+      cl.ReleaseMemObject(ntv).RaiseIfError;
+      ntv := cl_mem.Zero;
+    end;
     
     {$endregion constructor's}
     
@@ -988,19 +1011,15 @@ type
     
     {$region constructor's}
     
-    public constructor(c: Context; params files_texts: array of string);
+    private procedure Build;
     begin
-      var ec: ErrorCode;
       
-      self.ntv := cl.CreateProgramWithSource(c.Native, files_texts.Length, files_texts, nil, ec);
-      ec.RaiseIfError;
-      
-      ec := cl.BuildProgram(self.ntv, c.dvcs.Count,c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
+      var ec := cl.BuildProgram(self.ntv, _c.dvcs.Count,_c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
       if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
       begin
         var sb := new StringBuilder($'%Err:ProgramCode:BuildFail%');
         
-        foreach var dvc in c.AllDevices do
+        foreach var dvc in _c.AllDevices do
         begin
           sb += #10#10;
           sb += dvc.ToString;
@@ -1023,19 +1042,35 @@ type
       end else
         ec.RaiseIfError;
       
-      self._c := c;
     end;
     
-    public constructor(ntv: cl_program);
+    public constructor(c: Context; params files_texts: array of string);
     begin
       
-      var c: cl_context;
-      cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(Marshal.SizeOf&<cl_context>), c, IntPtr.Zero).RaiseIfError;
-      self._c := new Context(c);
+      var ec: ErrorCode;
+      self.ntv := cl.CreateProgramWithSource(c.Native, files_texts.Length, files_texts, nil, ec);
+      ec.RaiseIfError;
       
+      self._c := c;
+      self.Build;
+      
+    end;
+    
+    private constructor(ntv: cl_program; c: Context);
+    begin
       cl.RetainProgram(ntv).RaiseIfError;
+      self._c := c;
       self.ntv := ntv;
     end;
+    
+    private static function GetProgContext(ntv: cl_program): Context;
+    begin
+      var c: cl_context;
+      cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(Marshal.SizeOf&<cl_context>), c, IntPtr.Zero).RaiseIfError;
+      Result := new Context(c);
+    end;
+    public constructor(ntv: cl_program) :=
+    Create(ntv, GetProgContext(ntv));
     
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
@@ -1070,22 +1105,20 @@ type
     
     {$region Serialize}
     
-    public function Serialize: array of byte;
-    begin
-      raise new NotImplementedException;
-//      var bytes_count: UIntPtr;
-//      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARY_SIZES, new UIntPtr(UIntPtr.Size),bytes_count, IntPtr.Zero).RaiseIfError;
-//      
-//      Result := new byte[bytes_count.ToUInt64];
-//      cl.GetProgramInfo(_program, ProgramInfo.PROGRAM_BINARIES, bytes_count,Result[0], IntPtr.Zero).RaiseIfError;
-//      
-    end;
+    public function Serialize: array of array of byte :=
+    {%Static\ProgramCode.Serialize!!Stub= } nil { %};
     
     public procedure SerializeTo(bw: System.IO.BinaryWriter);
     begin
-      var bts := Serialize;
-      bw.Write(bts.Length);
-      bw.Write(bts);
+      var bin := Serialize;
+      
+      bw.Write(bin.Length);
+      foreach var a in bin do
+      begin
+        bw.Write(a.Length);
+        bw.Write(a);
+      end;
+      
     end;
     public procedure SerializeTo(str: System.IO.Stream) :=
     SerializeTo(new System.IO.BinaryWriter(str));
@@ -1094,28 +1127,38 @@ type
     
     {$region Deserialize}
     
-    public static function Deserialize(c: Context; bin: array of byte): ProgramCode;
+    public static function Deserialize(c: Context; bin: array of array of byte): ProgramCode;
     begin
-      raise new NotImplementedException;
-//      Result := new ProgramCode;
-//      var bin_len := new UIntPtr(bin.Length);
-//      
-//      var bin_arr: array of array of byte;
-//      SetLength(bin_arr,1);
-//      bin_arr[0] := bin;
-//      
-//      var ec: ErrorCode;
-//      Result._program := cl.CreateProgramWithBinary(c._context,1,c._device, bin_len,bin_arr, IntPtr.Zero,ec);
-//      ec.RaiseIfError;
-//      
+      var ntv: cl_program;
+      
+      var dvcs := c.GetAllNtvDevices;
+      
+      var ec: ErrorCode;
+      ntv := cl.CreateProgramWithBinary(
+        c.Native, c.AllDevices.Count, dvcs[0],
+        bin.ConvertAll(a->new UIntPtr(a.Length))[0], bin,
+        IntPtr.Zero, ec
+      );
+      ec.RaiseIfError;
+      
+      Result := new ProgramCode(ntv, c);
+      Result.Build;
+      
     end;
     
     public static function DeserializeFrom(c: Context; br: System.IO.BinaryReader): ProgramCode;
     begin
-      var bin_len := br.ReadInt32;
-      var bin_arr := br.ReadBytes(bin_len);
-      if bin_arr.Length<bin_len then raise new System.IO.EndOfStreamException;
-      Result := Deserialize(c, bin_arr);
+      var bin: array of array of byte;
+      
+      SetLength(bin, br.ReadInt32);
+      for var i := 0 to bin.Length-1 do
+      begin
+        var len := br.ReadInt32;
+        bin[i] := br.ReadBytes(len);
+        if bin[i].Length<>len then raise new System.IO.EndOfStreamException;
+      end;
+      
+      Result := Deserialize(c, bin);
     end;
     public static function DeserializeFrom(c: Context; str: System.IO.Stream) :=
     DeserializeFrom(c, new System.IO.BinaryReader(str));
@@ -2417,7 +2460,7 @@ type
   
   {$endregion CommandQueue}
   
-  {$region GPUCommand}
+  {$region GPUCommandContainer's}
   
   {$region Base}
   
@@ -2610,7 +2653,7 @@ type
   
   {$endregion KernelCommandQueue}
   
-  {$endregion GPUCommand}
+  {$endregion GPUCommandContainer's}
   
   {$region Enqueueable's}
   

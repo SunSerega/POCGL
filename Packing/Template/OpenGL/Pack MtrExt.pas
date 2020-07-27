@@ -1,5 +1,5 @@
-﻿uses PackingUtils in '..\PackingUtils.pas';
-uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
+﻿uses PackingUtils in '..\PackingUtils';
+uses MiscUtils in '..\..\..\Utils\MiscUtils';
 uses MtrBase;
 
 procedure AddMtrMlt(res: StringBuilder; t1,t2: t_descr);

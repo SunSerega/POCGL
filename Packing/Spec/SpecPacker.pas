@@ -1,7 +1,7 @@
 ﻿{$reference '0MarkDig\Markdig.dll'}
 uses System.IO;
 
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils';
 
 type
   HTML = static class

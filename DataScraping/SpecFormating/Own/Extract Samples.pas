@@ -1,5 +1,5 @@
 ﻿uses System.IO;
-uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\..\Utils\MiscUtils';
 
 var enc := new System.Text.UTF8Encoding(true);
 

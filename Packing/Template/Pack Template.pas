@@ -148,6 +148,7 @@ type
         begin
 //          MiscUtils.Otp($'Reading');
 //          Writeln(inp_fname);
+          if not FileExists(inp_fname) then raise new MessageException($'ERROR: File [{GetRelativePathRTE(inp_fname)}] not found');
           var text := ReadAllText(inp_fname, enc).Trim.Remove(#13);
           
           var ind1 := 0;

@@ -64,7 +64,7 @@ function HPQ(p: Context->()): CommandQueueBase;
 
 {$endregion HFQ/HPQ}
 
-{$region Wait}
+{$region WaitFor}
 
 function WaitForAll(params qs: array of CommandQueueBase): CommandQueueBase;
 function WaitForAll(qs: sequence of CommandQueueBase): CommandQueueBase;
@@ -74,7 +74,7 @@ function WaitForAny(qs: sequence of CommandQueueBase): CommandQueueBase;
 
 function WaitFor(q: CommandQueueBase): CommandQueueBase;
 
-{$endregion Wait}
+{$endregion WaitFor}
 
 {$region CombineQueue's}
 
@@ -149,10 +149,10 @@ type
     
   end;
   
-function WaitForAll(params qs: array of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs));
+function WaitForAll(params qs: array of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
 function WaitForAll(qs: sequence of CommandQueueBase)     := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
 
-function WaitForAny(params qs: array of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs));
+function WaitForAny(params qs: array of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
 function WaitForAny(qs: sequence of CommandQueueBase)     := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
 
 function WaitFor(q: CommandQueueBase) := WaitForAll(q);

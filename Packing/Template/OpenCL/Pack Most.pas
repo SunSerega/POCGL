@@ -1,5 +1,5 @@
-﻿uses FuncData in '..\FuncData.pas';
-uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
+﻿uses FuncData in '..\FuncData';
+uses MiscUtils in '..\..\..\Utils\MiscUtils';
 
 begin
   try

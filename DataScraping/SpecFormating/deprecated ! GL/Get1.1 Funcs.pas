@@ -1,4 +1,4 @@
-﻿uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
+﻿uses MiscUtils in '..\..\..\Utils\MiscUtils';
 uses CoreFuncData;
 
 const lf = 'Fz';

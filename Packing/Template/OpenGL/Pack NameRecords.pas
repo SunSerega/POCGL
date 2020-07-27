@@ -1,3 +1,3 @@
-﻿uses NamedRecordsData in '..\NamedRecordsData.pas';
+﻿uses NamedRecordsData in '..\NamedRecordsData';
 
 begin end.

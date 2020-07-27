@@ -1,5 +1,5 @@
 ﻿uses System.Diagnostics;
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils';
 
 const GitExe = 'C:\Program Files\Git\bin\git.exe';
 var exe_dir := System.IO.Path.GetDirectoryName(GetEXEFileName);

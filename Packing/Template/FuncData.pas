@@ -2,8 +2,8 @@
 
 interface
 
-uses MiscUtils  in '..\..\Utils\MiscUtils.pas';
-uses Fixers     in '..\..\Utils\Fixers.pas';
+uses MiscUtils  in '..\..\Utils\MiscUtils';
+uses Fixers     in '..\..\Utils\Fixers';
 uses PackingUtils;
 {$string_nullbased+}
 
@@ -622,13 +622,15 @@ type
     public par: FuncParamT;
     public call_str: string; // res_str для [0]
     public generic_name: string;
+    public vars: List<(string, string)>;
     public init, fnls: List<string>;
     
-    public constructor(par: FuncParamT; call_str: string; generic_name: string; init, fnls: List<string>);
+    public constructor(par: FuncParamT; call_str: string; generic_name: string; vars: List<(string, string)>; init, fnls: List<string>);
     begin
       self.par          := par;
       self.call_str     := call_str;
       self.generic_name := generic_name;
+      self.vars         := vars;
       self.init         := init;
       self.fnls         := fnls;
     end;
@@ -982,8 +984,10 @@ type
           var ntv := new FuncParamT(par.var_arg, 0, par.tname);
           
           var relevant_res_str := 'Result';
+          
           var init := new List<string>;
           var fnls := new List<string>;
+          var vars := new List<(string, string)>;
           
           // нельзя определить размер массива в результате
           if par.arr_lvl<>0 then raise new System.NotSupportedException;
@@ -991,17 +995,18 @@ type
           if ntv.tname='string' then
           begin
             var str_ptr_name := $'res_str_ptr';
+            vars += (str_ptr_name, 'IntPtr');
             
             fnls += $'{relevant_res_str} := Marshal.PtrToStringAnsi({str_ptr_name});';
             if not org_par[0].readonly then
               fnls += $'Marshal.FreeHGlobal({str_ptr_name});';
             
-            relevant_res_str := 'var '+str_ptr_name;
+            relevant_res_str := str_ptr_name;
             ntv.tname := 'IntPtr';
           end;
           
           marshalers[0] += new FuncParamMarshaler(ntv);
-          marshalers[0] += new FuncParamMarshaler(par, relevant_res_str, nil, init,fnls);
+          marshalers[0] += new FuncParamMarshaler(par, relevant_res_str, nil, vars,init,fnls);
         end;
         {$endregion Result}
         
@@ -1013,17 +1018,20 @@ type
           
           var relevant_call_str := org_par[par_i].name;
           var generic_name: string := nil;
+          
           var init := new List<string>;
           var fnls := new List<string>;
+          var vars := new List<(string, string)>;
           
           {$region string}
           
           if ntv.tname='string' then
           begin
             var str_ptr_arr_name := $'par_{par_i}_str_ptr';
+            vars += (str_ptr_arr_name, 'array of '*par.arr_lvl + 'IntPtr');
             
             var str_ptr_arr_init := new StringBuilder;
-            str_ptr_arr_init += $'var {str_ptr_arr_name} := ';
+            str_ptr_arr_init += $'{str_ptr_arr_name} := ';
             var prev_arr_name := relevant_call_str;
             for var i := 1 to par.arr_lvl do
             begin
@@ -1059,9 +1067,10 @@ type
             for var temp_arr_i := par.arr_lvl-1 downto 1 do
             begin
               var temp_arr_name := $'par_{par_i}_temp_arr{temp_arr_i}';
+              vars += (temp_arr_name, 'array of '*temp_arr_i + 'IntPtr');
               
               var temp_arr_init := new StringBuilder;
-              temp_arr_init += $'var {temp_arr_name} := {relevant_call_str}';
+              temp_arr_init += $'{temp_arr_name} := {relevant_call_str}';
               for var i := 1 to temp_arr_i-1 do
                 temp_arr_init += $'?.ConvertAll(arr_el{i}->arr_el{i}';
               temp_arr_init += $'?.ConvertAll(arr_el{temp_arr_i}->begin';
@@ -1080,7 +1089,7 @@ type
               for var i := 1 to temp_arr_i do
               begin
                 var new_arr_name := $'arr_el{i}';
-                temp_arr_finl += $'foreach var {new_arr_name} in {prev_arr_name} do ';
+                temp_arr_finl += $'if {prev_arr_name}<>nil then foreach var {new_arr_name} in {prev_arr_name} do ';
                 prev_arr_name := new_arr_name;
               end;
               temp_arr_finl += $'Marshal.FreeHGlobal(arr_el{temp_arr_i});';
@@ -1113,9 +1122,10 @@ type
             begin
               ntv.var_arg := true;
               
-              marshalers[par_i] += new FuncParamMarshaler(par, relevant_call_str, generic_name, init,fnls);
+              marshalers[par_i] += new FuncParamMarshaler(par, relevant_call_str, generic_name, vars,init,fnls);
               par := new FuncParamT(true, 0, generic_name);
               relevant_call_str := org_par[par_i].name;
+              vars := new List<(string, string)>;
               init := new List<string>;
               fnls := new List<string>;
               
@@ -1127,7 +1137,7 @@ type
           
           {$endregion genetic}
           
-          marshalers[par_i] += new FuncParamMarshaler(par, relevant_call_str, generic_name, init,fnls);
+          marshalers[par_i] += new FuncParamMarshaler(par, relevant_call_str, generic_name, vars,init,fnls);
           marshalers[par_i] += new FuncParamMarshaler(ntv);
           marshalers[par_i].Reverse;
         end;
@@ -1256,12 +1266,13 @@ type
                 if (ms[par_i]<>nil) and (ms[par_i].generic_name<>nil) and not nil_arr_par_flags[par_i] then
                   generic_names += ms[par_i].generic_name;
               
+              var need_init := ms.Any(m-> (m?.init<>nil) and (m.init.Count<>0) );
+              var need_fnls := ms.Any(m-> (m?.fnls<>nil) and (m.fnls.Count<>0) );
+              
               var need_block :=
                 (generic_names.Count <> 0) or
-                ms.Any(m-> (m?.init<>nil) and (m.init.Count<>0) ) or
-                ms.Any(m-> (m?.fnls<>nil) and (m.fnls.Count<>0) )
+                need_init or need_fnls
               ;
-              var tabs := 2 + integer(need_block);
               
               sb += $'    {vis} [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
               WriteOvrT(curr_ovr, generic_names, ovr_name_str, is_static, m_ovr_i>0);
@@ -1285,13 +1296,32 @@ type
               end else
                 sb += ' :='#10;
               
-              if need_block then foreach var m in ms do if m?.init<>nil then
-                foreach var l in m.init do
-                begin
-                  sb += '  '*3;
-                  sb += l;
-                  sb += #10;
-                end;
+              foreach var g in ms.Where(m->m?.vars<>nil).SelectMany(m->m.vars).GroupBy(t->t[1], t->t[0]).OrderBy(g->g.Key) do
+              begin
+                sb += '  '*3;
+                sb += 'var ';
+                sb += g.JoinToString(', ');
+                sb += ': ';
+                sb += g.Key;
+                sb += ';'#10;
+              end;
+              
+              if need_init then
+              begin
+                
+                if need_fnls then sb += '      try'#10;
+                var padding := '  '*(3+integer(need_fnls));
+                foreach var m in ms do
+                  if m?.init<>nil then foreach var l in m.init do
+                  begin
+                    sb += padding;
+                    sb += l;
+                    sb += #10;
+                  end;
+                
+              end;
+              
+              var tabs := 2 + integer(need_block) + integer(need_init and need_fnls);
               
               var arr_par_inds := Range(0, curr_ovr.pars.Length-1)
               .Where(par_i->
@@ -1383,13 +1413,21 @@ type
               sb.Length -= ' else'#10.Length;
               sb += ';'#10;
               
-              if need_block then foreach var m in ms do if m?.fnls<>nil then
-                foreach var l in m.fnls do
-                begin
-                  sb += '  '*3;
-                  sb += l;
-                  sb += #10;
-                end;
+              if need_fnls then
+              begin
+                if need_init then sb += '      finally'#10;
+                var padding := '  '*(3+integer(need_init));
+                
+                foreach var m in ms do
+                  if m?.fnls<>nil then foreach var l in m.fnls do
+                  begin
+                    sb += padding;
+                    sb += l;
+                    sb += #10;
+                  end;
+                
+                if need_init then sb += '      end;'#10;
+              end;
               
               if need_block then
                 sb += '    end;'#10;

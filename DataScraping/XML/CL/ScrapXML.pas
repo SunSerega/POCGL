@@ -1,5 +1,5 @@
-﻿uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
-uses XMLUtils in '..\XMLUtils.pas';
+﻿uses MiscUtils in '..\..\..\Utils\MiscUtils';
+uses XMLUtils in '..\XMLUtils';
 
 type
   LogCache = static class

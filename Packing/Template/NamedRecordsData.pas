@@ -1,6 +1,6 @@
 ﻿unit NamedRecordsData;
 
-uses MiscUtils in '..\..\Utils\MiscUtils.pas';
+uses MiscUtils in '..\..\Utils\MiscUtils';
 
 begin
   try

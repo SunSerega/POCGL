@@ -3175,11 +3175,15 @@ type
     external 'opencl.dll' name 'clBuildProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (device_list<>nil) and (device_list.Length<>0) then
-        Result := z_BuildProgram_ovr_0(&program, num_devices, device_list[0], par_4_str_ptr, pfn_notify, user_data) else
-        Result := z_BuildProgram_ovr_0_anh0001000(&program, num_devices, IntPtr.Zero, par_4_str_ptr, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (device_list<>nil) and (device_list.Length<>0) then
+          Result := z_BuildProgram_ovr_0(&program, num_devices, device_list[0], par_4_str_ptr, pfn_notify, user_data) else
+          Result := z_BuildProgram_ovr_0_anh0001000(&program, num_devices, IntPtr.Zero, par_4_str_ptr, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_BuildProgram_ovr_1_anh0001000(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clBuildProgram';
@@ -3189,9 +3193,13 @@ type
       z_BuildProgram_ovr_0_anh0001000(&program, num_devices, IntPtr.Zero, options, pfn_notify, user_data);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_BuildProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_BuildProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
     z_BuildProgram_ovr_0(&program, num_devices, device_list, options, pfn_notify, user_data);
@@ -3199,9 +3207,13 @@ type
     external 'opencl.dll' name 'clBuildProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_BuildProgram_ovr_4(&program, num_devices, device_list, par_4_str_ptr, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_BuildProgram_ovr_4(&program, num_devices, device_list, par_4_str_ptr, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function BuildProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
     z_BuildProgram_ovr_4(&program, num_devices, device_list, options, pfn_notify, user_data);
@@ -3219,47 +3231,68 @@ type
     external 'opencl.dll' name 'clCompileProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: array of string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      var par_7_str_ptr := header_include_names?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
-      if (par_7_str_ptr<>nil) and (par_7_str_ptr.Length<>0) then
-        Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, par_7_str_ptr[0], pfn_notify, user_data) else
-        Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
-      foreach var arr_el1 in par_7_str_ptr do Marshal.FreeHGlobal(arr_el1);
+      var par_7_str_ptr: array of IntPtr;
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        par_7_str_ptr := header_include_names?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
+        if (par_7_str_ptr<>nil) and (par_7_str_ptr.Length<>0) then
+          Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, par_7_str_ptr[0], pfn_notify, user_data) else
+          Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+        foreach var arr_el1 in par_7_str_ptr do Marshal.FreeHGlobal(arr_el1);
+      end;
     end;
     private static function z_CompileProgram_ovr_1_anh0000000100(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: array of IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (header_include_names<>nil) and (header_include_names.Length<>0) then
-        Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names[0], pfn_notify, user_data) else
-        Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (header_include_names<>nil) and (header_include_names.Length<>0) then
+          Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names[0], pfn_notify, user_data) else
+          Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_CompileProgram_ovr_3(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; input_headers: IntPtr; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; input_headers: IntPtr; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_CompileProgram_ovr_3(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_ovr_3(&program, num_devices, device_list, par_4_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_CompileProgram_ovr_4_anh0000000100(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: array of string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     begin
-      var par_7_str_ptr := header_include_names?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
-      if (par_7_str_ptr<>nil) and (par_7_str_ptr.Length<>0) then
-        Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, options, num_input_headers, input_headers, par_7_str_ptr[0], pfn_notify, user_data) else
-        Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, options, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
-      foreach var arr_el1 in par_7_str_ptr do Marshal.FreeHGlobal(arr_el1);
+      var par_7_str_ptr: array of IntPtr;
+      try
+        par_7_str_ptr := header_include_names?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
+        if (par_7_str_ptr<>nil) and (par_7_str_ptr.Length<>0) then
+          Result := z_CompileProgram_ovr_0(&program, num_devices, device_list, options, num_input_headers, input_headers, par_7_str_ptr[0], pfn_notify, user_data) else
+          Result := z_CompileProgram_ovr_0_anh0000000100(&program, num_devices, device_list, options, num_input_headers, input_headers, IntPtr.Zero, pfn_notify, user_data);
+      finally
+        foreach var arr_el1 in par_7_str_ptr do Marshal.FreeHGlobal(arr_el1);
+      end;
     end;
     private static function z_CompileProgram_ovr_5_anh0000000100(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clCompileProgram';
@@ -3667,9 +3700,13 @@ type
     external 'opencl.dll' name 'clCreateKernel';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateKernel(&program: cl_program; kernel_name: string; var errcode_ret: ErrorCode): cl_kernel;
     begin
-      var par_2_str_ptr := Marshal.StringToHGlobalAnsi(kernel_name);
-      Result := z_CreateKernel_ovr_0(&program, par_2_str_ptr, errcode_ret);
-      Marshal.FreeHGlobal(par_2_str_ptr);
+      var par_2_str_ptr: IntPtr;
+      try
+        par_2_str_ptr := Marshal.StringToHGlobalAnsi(kernel_name);
+        Result := z_CreateKernel_ovr_0(&program, par_2_str_ptr, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_2_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateKernel(&program: cl_program; kernel_name: IntPtr; var errcode_ret: ErrorCode): cl_kernel :=
     z_CreateKernel_ovr_0(&program, kernel_name, errcode_ret);
@@ -3705,19 +3742,23 @@ type
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
-        if (arr_el1=nil) or (arr_el1.Length=0) then
-          Result := IntPtr.Zero else
-        begin
-          var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
-          Result := Marshal.AllocHGlobal(l);
-          Marshal.Copy(arr_el1,0,Result,l);
-        end;
-      end);
-      if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
-        Result := z_CreateProgramWithBinary_ovr_0(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
-        Result := z_CreateProgramWithBinary_ovr_0_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
-      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      var par_5_temp_arr1: array of IntPtr;
+      try
+        par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
+          if (arr_el1=nil) or (arr_el1.Length=0) then
+            Result := IntPtr.Zero else
+          begin
+            var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
+            Result := Marshal.AllocHGlobal(l);
+            Marshal.Copy(arr_el1,0,Result,l);
+          end;
+        end);
+        if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
+          Result := z_CreateProgramWithBinary_ovr_0(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
+          Result := z_CreateProgramWithBinary_ovr_0_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
+      finally
+        if par_5_temp_arr1<>nil then foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      end;
     end;
     private static function z_CreateProgramWithBinary_ovr_1(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; var binaries: IntPtr; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
@@ -3725,19 +3766,23 @@ type
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; var binary_status: ErrorCode; errcode_ret: IntPtr): cl_program;
     begin
-      var par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
-        if (arr_el1=nil) or (arr_el1.Length=0) then
-          Result := IntPtr.Zero else
-        begin
-          var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
-          Result := Marshal.AllocHGlobal(l);
-          Marshal.Copy(arr_el1,0,Result,l);
-        end;
-      end);
-      if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
-        Result := z_CreateProgramWithBinary_ovr_1(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
-        Result := z_CreateProgramWithBinary_ovr_1_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
-      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      var par_5_temp_arr1: array of IntPtr;
+      try
+        par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
+          if (arr_el1=nil) or (arr_el1.Length=0) then
+            Result := IntPtr.Zero else
+          begin
+            var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
+            Result := Marshal.AllocHGlobal(l);
+            Marshal.Copy(arr_el1,0,Result,l);
+          end;
+        end);
+        if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
+          Result := z_CreateProgramWithBinary_ovr_1(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
+          Result := z_CreateProgramWithBinary_ovr_1_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
+      finally
+        if par_5_temp_arr1<>nil then foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      end;
     end;
     private static function z_CreateProgramWithBinary_ovr_2(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; var binaries: IntPtr; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
@@ -3745,19 +3790,23 @@ type
     external 'opencl.dll' name 'clCreateProgramWithBinary';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBinary(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: array of array of Byte; binary_status: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
-        if (arr_el1=nil) or (arr_el1.Length=0) then
-          Result := IntPtr.Zero else
-        begin
-          var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
-          Result := Marshal.AllocHGlobal(l);
-          Marshal.Copy(arr_el1,0,Result,l);
-        end;
-      end);
-      if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
-        Result := z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
-        Result := z_CreateProgramWithBinary_ovr_2_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
-      foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      var par_5_temp_arr1: array of IntPtr;
+      try
+        par_5_temp_arr1 := binaries?.ConvertAll(arr_el1->begin
+          if (arr_el1=nil) or (arr_el1.Length=0) then
+            Result := IntPtr.Zero else
+          begin
+            var l := Marshal.SizeOf&<Byte>*arr_el1.Length;
+            Result := Marshal.AllocHGlobal(l);
+            Marshal.Copy(arr_el1,0,Result,l);
+          end;
+        end);
+        if (par_5_temp_arr1<>nil) and (par_5_temp_arr1.Length<>0) then
+          Result := z_CreateProgramWithBinary_ovr_2(context, num_devices, device_list, lengths, par_5_temp_arr1[0], binary_status, errcode_ret) else
+          Result := z_CreateProgramWithBinary_ovr_2_anh00000100(context, num_devices, device_list, lengths, IntPtr.Zero, binary_status, errcode_ret);
+      finally
+        if par_5_temp_arr1<>nil then foreach var arr_el1 in par_5_temp_arr1 do Marshal.FreeHGlobal(arr_el1);
+      end;
     end;
     private static function z_CreateProgramWithBinary_ovr_3_anh00000100(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; var lengths: UIntPtr; binaries: IntPtr; var binary_status: ErrorCode; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBinary';
@@ -3797,11 +3846,15 @@ type
     external 'opencl.dll' name 'clCreateProgramWithBuiltInKernels';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; kernel_names: string; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
-      if (device_list<>nil) and (device_list.Length<>0) then
-        Result := z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, errcode_ret) else
-        Result := z_CreateProgramWithBuiltInKernels_ovr_0_anh000100(context, num_devices, IntPtr.Zero, par_4_str_ptr, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
+        if (device_list<>nil) and (device_list.Length<>0) then
+          Result := z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, errcode_ret) else
+          Result := z_CreateProgramWithBuiltInKernels_ovr_0_anh000100(context, num_devices, IntPtr.Zero, par_4_str_ptr, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_CreateProgramWithBuiltInKernels_ovr_1_anh000100(context: cl_context; num_devices: UInt32; device_list: IntPtr; kernel_names: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithBuiltInKernels';
@@ -3811,9 +3864,13 @@ type
       z_CreateProgramWithBuiltInKernels_ovr_0_anh000100(context, num_devices, IntPtr.Zero, kernel_names, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; kernel_names: string; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
-      Result := z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list, par_4_str_ptr, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
+        Result := z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list, par_4_str_ptr, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; kernel_names: IntPtr; var errcode_ret: ErrorCode): cl_program :=
     z_CreateProgramWithBuiltInKernels_ovr_0(context, num_devices, device_list, kernel_names, errcode_ret);
@@ -3821,9 +3878,13 @@ type
     external 'opencl.dll' name 'clCreateProgramWithBuiltInKernels';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; device_list: IntPtr; kernel_names: string; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
-      Result := z_CreateProgramWithBuiltInKernels_ovr_4(context, num_devices, device_list, par_4_str_ptr, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(kernel_names);
+        Result := z_CreateProgramWithBuiltInKernels_ovr_4(context, num_devices, device_list, par_4_str_ptr, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithBuiltInKernels(context: cl_context; num_devices: UInt32; device_list: IntPtr; kernel_names: IntPtr; var errcode_ret: ErrorCode): cl_program :=
     z_CreateProgramWithBuiltInKernels_ovr_4(context, num_devices, device_list, kernel_names, errcode_ret);
@@ -3845,15 +3906,19 @@ type
     external 'opencl.dll' name 'clCreateProgramWithSource';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateProgramWithSource(context: cl_context; count: UInt32; strings: array of string; lengths: array of UIntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_3_str_ptr := strings?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
-      if (par_3_str_ptr<>nil) and (par_3_str_ptr.Length<>0) then
-        if (lengths<>nil) and (lengths.Length<>0) then
-          Result := z_CreateProgramWithSource_ovr_0(context, count, par_3_str_ptr[0], lengths[0], errcode_ret) else
-          Result := z_CreateProgramWithSource_ovr_0_anh000010(context, count, par_3_str_ptr[0], IntPtr.Zero, errcode_ret) else
-        if (lengths<>nil) and (lengths.Length<>0) then
-          Result := z_CreateProgramWithSource_ovr_0_anh000100(context, count, IntPtr.Zero, lengths[0], errcode_ret) else
-          Result := z_CreateProgramWithSource_ovr_0_anh000110(context, count, IntPtr.Zero, IntPtr.Zero, errcode_ret);
-      foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
+      var par_3_str_ptr: array of IntPtr;
+      try
+        par_3_str_ptr := strings?.ConvertAll(arr_el1->Marshal.StringToHGlobalAnsi(arr_el1));
+        if (par_3_str_ptr<>nil) and (par_3_str_ptr.Length<>0) then
+          if (lengths<>nil) and (lengths.Length<>0) then
+            Result := z_CreateProgramWithSource_ovr_0(context, count, par_3_str_ptr[0], lengths[0], errcode_ret) else
+            Result := z_CreateProgramWithSource_ovr_0_anh000010(context, count, par_3_str_ptr[0], IntPtr.Zero, errcode_ret) else
+          if (lengths<>nil) and (lengths.Length<>0) then
+            Result := z_CreateProgramWithSource_ovr_0_anh000100(context, count, IntPtr.Zero, lengths[0], errcode_ret) else
+            Result := z_CreateProgramWithSource_ovr_0_anh000110(context, count, IntPtr.Zero, IntPtr.Zero, errcode_ret);
+      finally
+        foreach var arr_el1 in par_3_str_ptr do Marshal.FreeHGlobal(arr_el1);
+      end;
     end;
     private static function z_CreateProgramWithSource_ovr_1_anh000100(context: cl_context; count: UInt32; strings: IntPtr; var lengths: UIntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clCreateProgramWithSource';
@@ -7119,9 +7184,13 @@ type
     external 'opencl.dll' name 'clGetExtensionFunctionAddress';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetExtensionFunctionAddress(func_name: string): IntPtr;
     begin
-      var par_1_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
-      Result := z_GetExtensionFunctionAddress_ovr_0(par_1_str_ptr);
-      Marshal.FreeHGlobal(par_1_str_ptr);
+      var par_1_str_ptr: IntPtr;
+      try
+        par_1_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
+        Result := z_GetExtensionFunctionAddress_ovr_0(par_1_str_ptr);
+      finally
+        Marshal.FreeHGlobal(par_1_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetExtensionFunctionAddress(func_name: IntPtr): IntPtr :=
     z_GetExtensionFunctionAddress_ovr_0(func_name);
@@ -7131,9 +7200,13 @@ type
     external 'opencl.dll' name 'clGetExtensionFunctionAddressForPlatform';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetExtensionFunctionAddressForPlatform(platform: cl_platform_id; func_name: string): IntPtr;
     begin
-      var par_2_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
-      Result := z_GetExtensionFunctionAddressForPlatform_ovr_0(platform, par_2_str_ptr);
-      Marshal.FreeHGlobal(par_2_str_ptr);
+      var par_2_str_ptr: IntPtr;
+      try
+        par_2_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
+        Result := z_GetExtensionFunctionAddressForPlatform_ovr_0(platform, par_2_str_ptr);
+      finally
+        Marshal.FreeHGlobal(par_2_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetExtensionFunctionAddressForPlatform(platform: cl_platform_id; func_name: IntPtr): IntPtr :=
     z_GetExtensionFunctionAddressForPlatform_ovr_0(platform, func_name);
@@ -7677,25 +7750,33 @@ type
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (device_list<>nil) and (device_list.Length<>0) then
-        if (input_programs<>nil) and (input_programs.Length<>0) then
-          Result := z_LinkProgram_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
-          Result := z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret) else
-        if (input_programs<>nil) and (input_programs.Length<>0) then
-          Result := z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
-          Result := z_LinkProgram_ovr_0_anh0001001000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (device_list<>nil) and (device_list.Length<>0) then
+          if (input_programs<>nil) and (input_programs.Length<>0) then
+            Result := z_LinkProgram_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
+            Result := z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret) else
+          if (input_programs<>nil) and (input_programs.Length<>0) then
+            Result := z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
+            Result := z_LinkProgram_ovr_0_anh0001001000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_LinkProgram_ovr_1_anh0001000000(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (device_list<>nil) and (device_list.Length<>0) then
-        Result := z_LinkProgram_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
-        Result := z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (device_list<>nil) and (device_list.Length<>0) then
+          Result := z_LinkProgram_ovr_0(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
+          Result := z_LinkProgram_ovr_0_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_LinkProgram_ovr_2(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
@@ -7703,11 +7784,15 @@ type
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (device_list<>nil) and (device_list.Length<>0) then
-        Result := z_LinkProgram_ovr_2(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
-        Result := z_LinkProgram_ovr_2_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (device_list<>nil) and (device_list.Length<>0) then
+          Result := z_LinkProgram_ovr_2(context, num_devices, device_list[0], par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret) else
+          Result := z_LinkProgram_ovr_2_anh0001000000(context, num_devices, IntPtr.Zero, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_LinkProgram_ovr_3_anh0001000000(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
@@ -7735,23 +7820,35 @@ type
       z_LinkProgram_ovr_2_anh0001000000(context, num_devices, IntPtr.Zero, options, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (input_programs<>nil) and (input_programs.Length<>0) then
-        Result := z_LinkProgram_ovr_0(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
-        Result := z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (input_programs<>nil) and (input_programs.Length<>0) then
+          Result := z_LinkProgram_ovr_0(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
+          Result := z_LinkProgram_ovr_0_anh0000001000(context, num_devices, device_list, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_LinkProgram_ovr_0(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_LinkProgram_ovr_0(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_LinkProgram_ovr_2(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_LinkProgram_ovr_2(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
     if (input_programs<>nil) and (input_programs.Length<>0) then
@@ -7767,25 +7864,37 @@ type
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: string; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      if (input_programs<>nil) and (input_programs.Length<>0) then
-        Result := z_LinkProgram_ovr_12(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
-        Result := z_LinkProgram_ovr_12_anh0000001000(context, num_devices, device_list, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        if (input_programs<>nil) and (input_programs.Length<>0) then
+          Result := z_LinkProgram_ovr_12(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs[0], pfn_notify, user_data, errcode_ret) else
+          Result := z_LinkProgram_ovr_12_anh0000001000(context, num_devices, device_list, par_4_str_ptr, num_input_programs, IntPtr.Zero, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: string; num_input_programs: UInt32; var input_programs: cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_LinkProgram_ovr_12(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_LinkProgram_ovr_12(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     private static function z_LinkProgram_ovr_14(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl.dll' name 'clLinkProgram';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: string; num_input_programs: UInt32; input_programs: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program;
     begin
-      var par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
-      Result := z_LinkProgram_ovr_14(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
-      Marshal.FreeHGlobal(par_4_str_ptr);
+      var par_4_str_ptr: IntPtr;
+      try
+        par_4_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_LinkProgram_ovr_14(context, num_devices, device_list, par_4_str_ptr, num_input_programs, input_programs, pfn_notify, user_data, errcode_ret);
+      finally
+        Marshal.FreeHGlobal(par_4_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function LinkProgram(context: cl_context; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_programs: UInt32; input_programs: array of cl_program; pfn_notify: ProgramCallback; user_data: IntPtr; var errcode_ret: ErrorCode): cl_program :=
     if (input_programs<>nil) and (input_programs.Length<>0) then
@@ -10123,9 +10232,13 @@ type
     external 'opencl.dll' name 'clLogMessagesToSystemLogAPPLE';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure LogMessagesToSystemLogAPPLE(errstr: string; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
     begin
-      var par_1_str_ptr := Marshal.StringToHGlobalAnsi(errstr);
-      z_LogMessagesToSystemLogAPPLE_ovr_0(par_1_str_ptr, private_info, cb, user_data);
-      Marshal.FreeHGlobal(par_1_str_ptr);
+      var par_1_str_ptr: IntPtr;
+      try
+        par_1_str_ptr := Marshal.StringToHGlobalAnsi(errstr);
+        z_LogMessagesToSystemLogAPPLE_ovr_0(par_1_str_ptr, private_info, cb, user_data);
+      finally
+        Marshal.FreeHGlobal(par_1_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure LogMessagesToSystemLogAPPLE(errstr: IntPtr; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr) :=
     z_LogMessagesToSystemLogAPPLE_ovr_0(errstr, private_info, cb, user_data);
@@ -10134,9 +10247,13 @@ type
     external 'opencl.dll' name 'clLogMessagesToStdoutAPPLE';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure LogMessagesToStdoutAPPLE(errstr: string; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
     begin
-      var par_1_str_ptr := Marshal.StringToHGlobalAnsi(errstr);
-      z_LogMessagesToStdoutAPPLE_ovr_0(par_1_str_ptr, private_info, cb, user_data);
-      Marshal.FreeHGlobal(par_1_str_ptr);
+      var par_1_str_ptr: IntPtr;
+      try
+        par_1_str_ptr := Marshal.StringToHGlobalAnsi(errstr);
+        z_LogMessagesToStdoutAPPLE_ovr_0(par_1_str_ptr, private_info, cb, user_data);
+      finally
+        Marshal.FreeHGlobal(par_1_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure LogMessagesToStdoutAPPLE(errstr: IntPtr; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr) :=
     z_LogMessagesToStdoutAPPLE_ovr_0(errstr, private_info, cb, user_data);
@@ -10145,9 +10262,13 @@ type
     external 'opencl.dll' name 'clLogMessagesToStderrAPPLE';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure LogMessagesToStderrAPPLE(errstr: string; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
     begin
-      var par_1_str_ptr := Marshal.StringToHGlobalAnsi(errstr);
-      z_LogMessagesToStderrAPPLE_ovr_0(par_1_str_ptr, private_info, cb, user_data);
-      Marshal.FreeHGlobal(par_1_str_ptr);
+      var par_1_str_ptr: IntPtr;
+      try
+        par_1_str_ptr := Marshal.StringToHGlobalAnsi(errstr);
+        z_LogMessagesToStderrAPPLE_ovr_0(par_1_str_ptr, private_info, cb, user_data);
+      finally
+        Marshal.FreeHGlobal(par_1_str_ptr);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure LogMessagesToStderrAPPLE(errstr: IntPtr; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr) :=
     z_LogMessagesToStderrAPPLE_ovr_0(errstr, private_info, cb, user_data);

@@ -1,5 +1,5 @@
-﻿uses MiscUtils in '..\..\..\Utils\MiscUtils.pas';
-uses XMLUtils in '..\XMLUtils.pas';
+﻿uses MiscUtils in '..\..\..\Utils\MiscUtils';
+uses XMLUtils in '..\XMLUtils';
 
 var allowed_api := HSet(
   'gl','glcore', // gl есть всюду где glcore, glcore только чтоб не выводить лишнее сообщение в лог
