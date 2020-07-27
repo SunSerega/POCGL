@@ -101,6 +101,9 @@ unit OpenCLABCBase;
 
 //ToDo Перепродумать SubBuffer, в случае перевыделения основного буфера - он плохо себя ведёт...
 
+//ToDo Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
+// - И в справке тогда убрать параграф...
+
 //===================================
 // Сделать когда-нибуть:
 
@@ -483,6 +486,7 @@ type
     end;
     public static function GetAllFor(pl: Platform) := GetAllFor(pl, DeviceType.DEVICE_TYPE_GPU);
     
+    private static supported_split_modes: array of DevicePartitionProperty := nil;
     private function Split(props: array of DevicePartitionProperty): array of SubDevice;
     
     public function SplitEqually(CUCount: integer): array of SubDevice;
@@ -2941,6 +2945,9 @@ implementation
 
 function Device.Split(props: array of DevicePartitionProperty): array of SubDevice;
 begin
+  if supported_split_modes=nil then supported_split_modes := {%Static\Device.Split.Modes!!Stub= } nil { %};
+  if not supported_split_modes.Contains(props[0]) then
+    raise new NotSupportedException($'%Err:Device:SplitNotSupported%');
   
   var c: UInt32;
   cl.CreateSubDevices(self.Native, props, 0, IntPtr.Zero, c).RaiseIfError;

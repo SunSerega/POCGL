@@ -9,6 +9,9 @@
 # Err:Device:SplitCUCount
 Количество ядер должно быть положительным числом, а не {CUCount}
 
+# Err:Device:SplitNotSupported
+Данный режим .Split не поддерживается выбранным устройством
+
 
 
 # Err:Context:WrongMainDvc
