@@ -1051,6 +1051,123 @@ var k := code['KernelName'];
 var ks := code.GetAllKernels;
 ks.PrintLines;
 </code></pre>
+<hr />
+<p>Методы, запускающие <code>Kernel</code> - принемают специальные аргументы типа <code>KernelArg</code>, которые передаются в OpenCL-C код.<br />
+Экземпляр <code>KernelArg</code> может быть создан из нескольких типов значений, а точнее:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var k: Kernel;
+  var val1 := 5;
+  var val2 := 5;
+  
+  k.Exec1(1,
+    // Передавать можно:
+    
+    // Буфер
+    new Buffer(1),
+    // Очередь возвращающую буфер
+    HFQ(()-&gt;new Buffer(1)),
+    // В том числе BufferCommandQueue
+    Buffer.Create(1).NewQueue as CommandQueue&lt;Buffer&gt;,
+    
+    // Размерное значение
+    val1,
+    HFQ(()-&gt;val1),
+    
+    // И указатель на размерное значение
+    // (в kernel попадёт само значение, не указатель)
+    @val2,
+    // Так нельзя, потому что val1 уже захвачена лямбдой HFQ
+//  @val1,
+    // Расширенный набор параметров
+    KernelArg.FromPtr(new System.IntPtr(@val2), new System.UIntPtr(sizeof(integer)))
+    
+  );
+end.
+</code></pre>
+<p>Обратите внимание, <code>KernelArg</code> из указателя на <code>val2</code> будет немного эффективнее
+чем <code>KernelArg</code> из самого значения <code>val2</code>. Но эту возможность стоит использовать
+только как тонкую оптимизацию, потому что много чего может пойти не так.
+Если передавать <code>@val2</code> в качестве <code>KernelArg</code> - надо знать все тонкости.</p>
+<hr />
+<p>Если <code>@val2</code> передали вкачестве <code>KernelArg</code>:</p>
+<ol>
+<li><p><code>val2</code> не может быть глобальной переменной или полем класса (в том числе статическим).<br />
+Она должна быть объявлена в той же подпрограмме, где использована.</p>
+</li>
+<li><p><code>val2</code> не должно быть захвачего лямбдой.<br />
+Хотя указатель на <code>val2</code> - уже можно захватывать:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var k: Kernel;
+  var val1 := 5;
+  var val2 := 5;
+
+  // на val1 всё ещё накладываются все ограничени
+  // но у val1_ptr этих ограничений нет
+  var val1_ptr := @val1;
+
+  k.Exec1(1,
+
+    val1,
+    HFQ(()-&gt;val1_ptr^), // захватили val1_ptr, а не val1
+
+    // Сама val1 нигде не захвачена, поэтому теперь так можно
+    @val1,
+    val1_ptr // то же самое
+
+  );
+
+end.
+</code></pre>
+</li>
+<li><p>Выходить из подпрограммы, где объявили <code>val2</code> нельзя, пока <code>.Exec</code> не закончит выполнятся.
+Это так же значит, что возвращать очередь, содержащую <code>KernelArg</code> из <code>@val2</code> обычно нельзя.<br />
+Но это можно обойти, если объявлять переменную в другой подпрограмме, а дальше передавать только её адрес:</p>
+<pre><code>uses OpenCLABC;
+
+var k: Kernel; // Вообще лучше передавать параметром в p2
+
+// Обратите внимание - val принимает var-параметром
+// То есть, p2 принимает адрес val
+// (можно так же принимать указатель, но это не так удобно)
+// Иначе переменная будет копироваться при передаче
+// То есть без var перед параметром - val тут
+// будет новой переменной, объявленной в p2 а не в p1
+function p2(var val: integer): CommandQueueBase;
+begin
+
+  Result := k.NewQueue.AddExec1(1,
+
+    @val
+
+  );
+
+end;
+
+procedure p1;
+begin
+  var val: integer;
+
+  var q := p2(val);
+  // Опять же, q не должна продолжать выпоняться
+  // после выхода из p1, потому что тут объявлена val
+  Context.Default.SyncInvoke(q);
+
+end;
+
+begin
+  p1;
+end.
+</code></pre>
+</li>
+</ol>
+<p>Компилятор не заставит вас следовать этим ограничениям. И программа может даже работать, игнорируя большинство сказанного тут.<br />
+Но потом вы добавите что то в совсем другой части программы, или запустите её на
+другом компьютере и она вдруг начнёт выводить мусорные значения,
+или падать с ошибками вроде <code>AccessViolationException</code>, которые совершенно не объясняют в чём проблема.</p>
 </div>
 <script>on_start_folder("Kernel", document.getElementById("page-8"))</script>
 <script>on_end_folder()</script>

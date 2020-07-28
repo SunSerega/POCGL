@@ -21,9 +21,6 @@ unit OpenCLABCBase;
 // - Это может создать неопределённое поведение. Но, по моему, это правильней всего.
 // - Если так и останется - не забыть добавить в справку
 
-//ToDo KernelArg в справку
-//ToDo Написать в справке что опасно передавать @i вместо KernelArg, где i - захваченная переменная
-
 //ToDo Написать в справке, что любые лямбды пользователя, переданные в этот модуль, могут получить ThreadAbortException
 // - Но это только если возникнет ошибка во время выполнения другой части очереди
 
@@ -739,7 +736,6 @@ type
   {$region Buffer}
   
   BufferCommandQueue = class;
-  KernelArg = class;
   Buffer = class(WrapperBase<cl_mem, BufferProperties>, IDisposable)
     private sz: UIntPtr;
     
@@ -896,6 +892,7 @@ type
   {$region Kernel}
   
   KernelCommandQueue = class;
+  KernelArg = class;
   Kernel = sealed class(WrapperBase<cl_kernel, KernelProperties>, IDisposable)
     private function CreateProp: KernelProperties; override := new KernelProperties(ntv);
     
