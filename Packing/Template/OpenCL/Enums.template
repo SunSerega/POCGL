@@ -912,6 +912,7 @@
     private static _DEVICE_OPENCL_C_FEATURES                           := new DeviceInfo($106F);
     private static _DEVICE_DEVICE_ENQUEUE_CAPABILITIES                 := new DeviceInfo($1070);
     private static _DEVICE_PIPE_SUPPORT                                := new DeviceInfo($1071);
+    private static _DEVICE_LATEST_CONFORMANCE_VERSION_PASSED           := new DeviceInfo($1072);
     private static _PROGRAM_IL_KHR                                     := new DeviceInfo($1169);
     private static _DEVICE_TERMINATE_CAPABILITY_KHR                    := new DeviceInfo($2031);
     private static _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR                 := new DeviceInfo($2035);
@@ -1080,6 +1081,7 @@
     public static property DEVICE_OPENCL_C_FEATURES:                           DeviceInfo read _DEVICE_OPENCL_C_FEATURES;
     public static property DEVICE_DEVICE_ENQUEUE_CAPABILITIES:                 DeviceInfo read _DEVICE_DEVICE_ENQUEUE_CAPABILITIES;
     public static property DEVICE_PIPE_SUPPORT:                                DeviceInfo read _DEVICE_PIPE_SUPPORT;
+    public static property DEVICE_LATEST_CONFORMANCE_VERSION_PASSED:           DeviceInfo read _DEVICE_LATEST_CONFORMANCE_VERSION_PASSED;
     public static property PROGRAM_IL_KHR:                                     DeviceInfo read _PROGRAM_IL_KHR;
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                    DeviceInfo read _DEVICE_TERMINATE_CAPABILITY_KHR;
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                 DeviceInfo read _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR;
@@ -1250,6 +1252,7 @@
       if self.val = UInt32($106F) then Result := 'DEVICE_OPENCL_C_FEATURES' else
       if self.val = UInt32($1070) then Result := 'DEVICE_DEVICE_ENQUEUE_CAPABILITIES' else
       if self.val = UInt32($1071) then Result := 'DEVICE_PIPE_SUPPORT' else
+      if self.val = UInt32($1072) then Result := 'DEVICE_LATEST_CONFORMANCE_VERSION_PASSED' else
       if self.val = UInt32($1169) then Result := 'PROGRAM_IL_KHR' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY_KHR' else
       if self.val = UInt32($2035) then Result := 'DEVICE_MAX_NAMED_BARRIER_COUNT_KHR' else

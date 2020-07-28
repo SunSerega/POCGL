@@ -561,8 +561,8 @@
 	clCloneKernel
 	clGetKernelSubGroupInfo
 	clEnqueueSVMMigrateMem
-	clSetProgramReleaseCallback
 	clSetProgramSpecializationConstant
+	clSetProgramReleaseCallback
 
 # 3.0
 	clGetPlatformIDs
@@ -674,8 +674,8 @@
 	clCloneKernel
 	clGetKernelSubGroupInfo
 	clEnqueueSVMMigrateMem
-	clSetProgramReleaseCallback
 	clSetProgramSpecializationConstant
+	clSetProgramReleaseCallback
 	clSetContextDestructorCallback
 	clCreateBufferWithProperties
 	clCreateImageWithProperties
