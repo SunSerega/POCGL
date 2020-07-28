@@ -38,6 +38,12 @@ CLTaskBase.WaitResBase
 CommandQueueBase.InvokeBase(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
 CommandQueueBase.InvokeNewQBase(CLTaskBase, Context, cl_device_id, boolean, EventList)
 CommandQueueBase.RegisterWaitables(CLTaskBase, HashSet<MultiusableCommandQueueHubBase>)
+CommandQueueBase.ThenConvertBase<TOtp>((object, Context)->TOtp)
+CommandQueueBase.AfterQueueSyncBase(CommandQueueBase)
+CommandQueueBase.AfterQueueAsyncBase(CommandQueueBase)
+CommandQueueBase.MultiusableBase
+CommandQueueBase.ThenWaitForAllBase(sequence of CommandQueueBase)
+CommandQueueBase.ThenWaitForAnyBase(sequence of CommandQueueBase)
 CommandQueue<T>.InvokeImpl(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
 CommandQueue<T>.Invoke(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)
 CommandQueue<T>.InvokeBase(CLTaskBase, Context, cl_device_id, boolean, cl_command_queue, EventList)

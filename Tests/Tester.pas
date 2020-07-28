@@ -428,7 +428,7 @@ type
       
       if stop_test then
       begin
-        Otp($'WARNING: Test[{fwoe}] wasn''t executed because of prior errors');
+        Otp($'WARNING: Test[{fwoe}] wasn''t executed because of prior errоrs');
         exit;
       end;
       

@@ -1,8 +1,7 @@
 
 
 
-# CommandQueueBase
-# CommandQueue<T>
+# CommandQueue[%Base,<T>%]
 Представляет очередь, состоящую в основном из команд, выполняемых на GPU
 
 
@@ -13,20 +12,19 @@
 
 
 
-# CommandQueueBase.ThenConvertBase<TOtp>(object->TOtp)
+# CommandQueueBase.ThenConvert<TOtp>(object->TOtp)
 # CommandQueue<T>.ThenConvert<TOtp>(T->TOtp)
 # CQ:ThenConvertDef
 Создаёт очередь, которая выполнит данную
 А затем выполнит на CPU функцию f, используя результат данной очереди
 
-# CommandQueueBase.ThenConvertBase<TOtp>((object, Context)->TOtp)
+# CommandQueueBase.ThenConvert<TOtp>((object, Context)->TOtp)
 # CommandQueue<T>.ThenConvert<TOtp>((T, Context)->TOtp)
 %CQ:ThenConvertDef% и контекст выполнения
 
 
 
-# CommandQueueBase.MultiusableBase
-# CommandQueue<T>.Multiusable
+# CommandQueue[%Base,<T>%].Multiusable
 Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
 Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
 
@@ -35,20 +33,13 @@
 # CQ:ThenWaitDef
 Создаёт очередь, сначала выполняющую данную, а затем ожидающую
 
-# CommandQueueBase.ThenWaitForBase(CommandQueueBase)
-# CommandQueue<T>.ThenWaitFor(CommandQueueBase)
+# CommandQueue[%Base,<T>%].ThenWaitFor(CommandQueueBase)
 %CQ:ThenWaitDef% сигнала выполненности от заданой очереди
 
-# CommandQueueBase.ThenWaitForAllBase(sequence of CommandQueueBase)
-# CommandQueueBase.ThenWaitForAllBase(array of CommandQueueBase)
-# CommandQueue<T>.ThenWaitForAll(array of CommandQueueBase)
-# CommandQueue<T>.ThenWaitForAll(sequence of CommandQueueBase)
+# CommandQueue[%Base,<T>%].ThenWaitForAll([%sequence,array%] of CommandQueueBase)
 %CQ:ThenWaitDef% сигнала выполненности от каждой из заданых очередей
 
-# CommandQueueBase.ThenWaitForAnyBase(sequence of CommandQueueBase)
-# CommandQueueBase.ThenWaitForAnyBase(array of CommandQueueBase)
-# CommandQueue<T>.ThenWaitForAny(array of CommandQueueBase)
-# CommandQueue<T>.ThenWaitForAny(sequence of CommandQueueBase)
+# CommandQueue[%Base,<T>%].ThenWaitForAny([%sequence,array%] of CommandQueueBase)
 %CQ:ThenWaitDef% первого сигнала выполненности от любой из заданных очередей
 
 

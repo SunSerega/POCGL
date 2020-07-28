@@ -2590,23 +2590,21 @@ type
     
     {$region ThenConvert}
     
+    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
+    
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
-    public function ThenConvertBase<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
+    public function ThenConvert<TOtp>(f: object->TOtp           ): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
-    public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
-    
-    //ToDo
-//    public function ThenConvert<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
-//    public function ThenConvert<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenConvert<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp> := ThenConvertBase(f);
     
     {$endregion ThenConvert}
     
     {$region +/*}
     
-    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    protected function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -2618,37 +2616,31 @@ type
     
     {$region Multiusable}
     
+    protected function MultiusableBase: ()->CommandQueueBase; abstract;
+    
     ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
     ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
-    public function MultiusableBase: ()->CommandQueueBase; abstract;
-    
-    //ToDo
-//    public function Multiusable: ()->CommandQueueBase := MultiusableBase;
+    public function Multiusable: ()->CommandQueueBase := MultiusableBase;
     
     {$endregion Multiusable}
     
     {$region ThenWait}
     
-    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
-    public function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
-    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
-    public function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
     
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
-    public function ThenWaitForAllBase(params qs: array of CommandQueueBase): CommandQueueBase := ThenWaitForAllBase(qs.AsEnumerable);
+    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
+    public function ThenWaitForAll(qs: sequence of CommandQueueBase    ) := ThenWaitForAllBase(qs);
+    
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
-    public function ThenWaitForAnyBase(params qs: array of CommandQueueBase): CommandQueueBase := ThenWaitForAnyBase(qs.AsEnumerable);
+    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAnyBase(qs);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
+    public function ThenWaitForAny(qs: sequence of CommandQueueBase    ) := ThenWaitForAnyBase(qs);
+    
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от заданой очереди
-    public function ThenWaitForBase(q: CommandQueueBase) := ThenWaitForAllBase(q);
-    
-    //ToDo
-//    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
-//    public function ThenWaitForAll(qs: sequence of CommandQueueBase    ) := ThenWaitForAllBase(qs);
-//    
-//    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAnyBase(qs);
-//    public function ThenWaitForAny(qs: sequence of CommandQueueBase    ) := ThenWaitForAnyBase(qs);
-//    
-//    public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
+    public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
     
     {$endregion ThenWait}
     

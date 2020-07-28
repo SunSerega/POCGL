@@ -29,8 +29,6 @@ unit OpenCLABCBase;
 //ToDo Тесты всех фич модуля
 //ToDo И в каждом сделать по несколько выполнений, на случай плавающий ошибок
 
-//ToDo Исправить интерфейс CommandQueueBase
-
 //===================================
 // Запланированное:
 
@@ -2084,19 +2082,17 @@ type
     
     {$region ThenConvert}
     
-    public function ThenConvertBase<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
-    public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
+    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
     
-    //ToDo
-//    public function ThenConvert<TOtp>(f: object->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
-//    public function ThenConvert<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenConvert<TOtp>(f: object->TOtp           ): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
+    public function ThenConvert<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp> := ThenConvertBase(f);
     
     {$endregion ThenConvert}
     
     {$region +/*}
     
-    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    protected function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -2108,30 +2104,24 @@ type
     
     {$region Multiusable}
     
-    public function MultiusableBase: ()->CommandQueueBase; abstract;
+    protected function MultiusableBase: ()->CommandQueueBase; abstract;
     
-    //ToDo
-//    public function Multiusable: ()->CommandQueueBase := MultiusableBase;
+    public function Multiusable: ()->CommandQueueBase := MultiusableBase;
     
     {$endregion Multiusable}
     
     {$region ThenWait}
     
-    public function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
-    public function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
     
-    public function ThenWaitForAllBase(params qs: array of CommandQueueBase): CommandQueueBase := ThenWaitForAllBase(qs.AsEnumerable);
-    public function ThenWaitForAnyBase(params qs: array of CommandQueueBase): CommandQueueBase := ThenWaitForAnyBase(qs.AsEnumerable);
-    public function ThenWaitForBase(q: CommandQueueBase) := ThenWaitForAllBase(q);
+    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
+    public function ThenWaitForAll(qs: sequence of CommandQueueBase    ) := ThenWaitForAllBase(qs);
     
-    //ToDo
-//    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
-//    public function ThenWaitForAll(qs: sequence of CommandQueueBase    ) := ThenWaitForAllBase(qs);
-//    
-//    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAnyBase(qs);
-//    public function ThenWaitForAny(qs: sequence of CommandQueueBase    ) := ThenWaitForAnyBase(qs);
-//    
-//    public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
+    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAnyBase(qs);
+    public function ThenWaitForAny(qs: sequence of CommandQueueBase    ) := ThenWaitForAnyBase(qs);
+    
+    public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
     
     {$endregion ThenWait}
     
