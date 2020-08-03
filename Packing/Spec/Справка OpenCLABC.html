@@ -962,18 +962,43 @@ end.
 <script>on_end_folder()</script>
 <div id="page-5" page_name="" hidden=true>
 <p>Обычно устройства получают статическим методом <code>Device.GetAllFor</code>:</p>
-<pre><code>  var dvcs := Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
-  dvcs.PrintLines;
+<pre><code>uses OpenCLABC;
+
+begin
+  foreach var pl in Platform.All do
+  begin
+    Writeln(pl);
+    var dvcs := Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
+    if dvcs&lt;&gt;nil then dvcs.PrintLines;
+    Writeln('='*30);
+  end;
+end.
 </code></pre>
 <p>И в большинстве случаев - это всё что вам понадобится.</p>
 <hr />
 <p>Но если где то нужен более тонкий контроль - можно создать несколько виртуальных
 под-устройств, каждому из которых даётся часть ядер изначального устройства.<br />
 Для этого используются методы <code>.Split*</code>:</p>
-<pre><code>  var dvc := Context.Default.MainDevice;
+<pre><code>uses OpenCLABC;
+
+begin
+  var dvc := Context.Default.MainDevice;
+  
+  Writeln('Поддерживаемые типы .Spilt-ов:');
+  // Пустой список, или DEVICE_PARTITION_BY_COUNTS_LIST_END, если ни 1 не поддерживается
+  dvc.Properties.PartitionProperties.PrintLines;
+  Writeln('='*30);
+  
+  Writeln('Виртуальные устройства, по 1 ядру каждое:');
+  // Если упадёт потому что слишком много
+  // устройств - пожалуйста, напишите в issue
   dvc.SplitEqually(1).PrintLines;
   Writeln('='*30);
+  
+  Writeln('Два устройства, 1 и 2 ядра соответственно:');
   dvc.SplitByCounts(1,2).PrintLines;
+  
+end.
 </code></pre>
 </div>
 <script>on_start_folder("Device", document.getElementById("page-5"))</script>
@@ -983,7 +1008,8 @@ end.
 Он содержит информацию о том, какие устройства будут использоваться для выполнения кода на GPU и хранения содержимого буферов.</p>
 <hr />
 <p>Создать контекст можно конструктором (<code>new Context(...)</code>).<br />
-Контекст можно и не создавать, используя везде свойство <code>Context.Default</code>.</p>
+Контекст можно и не создавать, используя везде свойство <code>Context.Default</code>.<br />
+Неявные очереди всегда используют <code>Context.Default</code>.</p>
 <p>Изначально этому свойству присваивается контекст, использующий GPU, если оно имеется,
 или любое другое устройство, поддерживающее OpenCL, если GPU отсутствует.</p>
 <p>Если устройств поддерживающих <code>OpenCL</code> нет - <code>Context.Default</code> будет <code>nil</code>.<br />
@@ -991,13 +1017,10 @@ end.
 всеми современными устройствами, занимающимися выводом изображения на экран.<br />
 Если <code>Context.Default = nil</code> - переустановите графические драйверы.</p>
 <hr />
-<p><code>Context.Default</code> можно перезаписывать.</p>
-<p>Используйте эту возможность только если во всей программе нужен общий контекст, но не стандартный.</p>
-<p>Если ваша программа достаточно сложная чтобы нуждаться в нескольких контекстах - лучше вообще
-не использовать <code>Context.Default</code>. И присвоить ему <code>nil</code>, чтобы не использовать случайно.</p>
-<hr />
-<p>Операции, у которых невозможно указать контекст
-(как неявные очереди), всегда используют <code>Context.Default</code>.</p>
+<p><code>Context.Default</code> можно перезаписывать.<br />
+Используйте эту возможность только если во всей программе нужен общий контекст, но не стандартный.</p>
+<p>Если ваша программа достаточно сложная чтобы нуждаться в нескольких контекстах - лучше не использовать
+<code>Context.Default</code>. И присвоить ему <code>nil</code>, чтобы не использовать случайно (к примеру, неявной очередью).</p>
 </div>
 <script>on_start_folder("Context", document.getElementById("page-6"))</script>
 <script>on_end_folder()</script>
@@ -1019,17 +1042,23 @@ end.
 <hr />
 <p>Но кроме выделения памяти GPU - OpenCL так же позволяет выделять память внутри другого буфера.<br />
 Для этого используется тип <code>SubBuffer</code>:</p>
-<pre><code>  // Не обязательно MainDevice, можно взять любое устройство из контекста
-  var align := Context.Default.MainDevice.Properties.MemBaseAddrAlign;
+<pre><code>uses OpenCLABC;
+
+begin
+  var c := Context.Default;
   
-  var b := new Buffer(align*2, Context.Default);
+  // Не обязательно MainDevice, можно взять любое устройство из контекста
+  var align := c.MainDevice.Properties.MemBaseAddrAlign;
+  
+  var b := new Buffer(align*2, c);
   // size может быть любым, но origin
   // должно быть align*N, где N - целое
-  var b1 := new SubBuffer(b, 0, align);
+  var b1 := new SubBuffer(b, 0, Min(123,align));
   var b2 := new SubBuffer(b, align, align);
   
   Writeln(b1);
   Writeln(b2);
+end.
 </code></pre>
 </div>
 <script>on_start_folder("Buffer", document.getElementById("page-7"))</script>
@@ -1052,7 +1081,7 @@ var ks := code.GetAllKernels;
 ks.PrintLines;
 </code></pre>
 <hr />
-<p>Методы, запускающие <code>Kernel</code> - принемают специальные аргументы типа <code>KernelArg</code>, которые передаются в OpenCL-C код.<br />
+<p>Методы, запускающие <code>Kernel</code> принимают специальные аргументы типа <code>KernelArg</code>, которые передаются в OpenCL-C код.<br />
 Экземпляр <code>KernelArg</code> может быть создан из нескольких типов значений, а точнее:</p>
 <pre><code>uses OpenCLABC;
 
@@ -1093,11 +1122,43 @@ end.
 <hr />
 <p>Если <code>@val2</code> передали вкачестве <code>KernelArg</code>:</p>
 <ol>
-<li><p><code>val2</code> не может быть глобальной переменной или полем класса (в том числе статическим).<br />
-Она должна быть объявлена в той же подпрограмме, где использована.</p>
+<li><p><code>val2</code> не может быть глобальной переменной или полем класса:</p>
+<pre><code>uses OpenCLABC;
+
+type
+  t1 = class
+    val1 := 1; // Не подходит, потому что поле класса
+    static val2 := 2; // И статичных полей это тоже касается
+  end;
+
+var
+  val3 := 3; // Глобальные переменные - тоже статические поля
+  k: Kernel; // k не важно где объявлена
+
+procedure p1;
+// Теоретически подходит, но вообще это плохой стиль кода
+var val4 := 4;
+begin
+
+  // А val5 однозначно подходит, потому что объявлена не только в той же
+  // подпрограмме, но и прямо перед использованием в k.Exec*
+  var val5 := 5;
+
+  k.Exec1(1,
+
+    // Это единственные 2 переменные, которые можно передавать адресом
+    @val4,
+    @val5
+
+  );
+
+end;
+
+begin end.
+</code></pre>
 </li>
 <li><p><code>val2</code> не должно быть захвачего лямбдой.<br />
-Хотя указатель на <code>val2</code> - уже можно захватывать:</p>
+Хотя указатель на <code>val2</code> уже можно захватывать:</p>
 <pre><code>uses OpenCLABC;
 
 begin
@@ -1105,8 +1166,9 @@ begin
   var val1 := 3;
   var val2 := 5;
 
-  // на val1 всё ещё накладываются все ограничени
-  // но у val1_ptr этих ограничений нет
+  // На val1 всё ещё накладываются все ограничени,
+  // когда val1_ptr использована в качестве KernelArg
+  // Но к самой val1_ptr эти ограничения не применяются
   var val1_ptr := @val1;
 
   k.Exec1(1,
@@ -1114,7 +1176,7 @@ begin
     val1,
     HFQ(()-&gt;val1_ptr^), // захватили val1_ptr, а не val1
 
-    // Сама val1 нигде не захвачена, поэтому теперь так можно
+    // val1 нигде не захвачена, поэтому теперь так можно
     @val1,
     val1_ptr // то же самое
 
@@ -1166,8 +1228,10 @@ end.
 </ol>
 <p>Компилятор не заставит вас следовать этим ограничениям. И программа может даже работать, игнорируя большинство сказанного тут.<br />
 Но потом вы добавите что то в совсем другой части программы, или запустите её на
-другом компьютере и она вдруг начнёт выводить мусорные значения,
-или падать с ошибками вроде <code>AccessViolationException</code>, которые совершенно не объясняют в чём проблема.</p>
+другом компьютере и она вдруг начнёт выводить мусорные значения, или падать с ошибками
+вроде <code>AccessViolationException</code>, которые совершенно не объясняют в чём проблема.</p>
+<p>Если очень интересно откуда берутся эти ограничения - начните с применения .Net декомпилятора к .exe файлам,
+получаемым при компиляции программ с данной страницы. Что останется непонятно - можете спрашивать в issue.</p>
 </div>
 <script>on_start_folder("Kernel", document.getElementById("page-8"))</script>
 <script>on_end_folder()</script>
@@ -1190,11 +1254,11 @@ end.
 <script>on_start_folder("ProgramCode", document.getElementById("page-9"))</script>
 <div id="page-10" page_name="Создание из исходного кода" hidden=true>
 <p>Конструктор <code>ProgramCode</code> (<code>new ProgramCode(...)</code>) принимает тексты исходников программы на языке OpenCL-C.<br />
-<strong>Именно тексты исходников, не имена файлов</strong></p>
+<strong>Именно тексты исходников, не имена файлов!</strong></p>
 <p>Так же, как исходники паскаля хранят в .pas файлах, исходники OpenCL-C кода хранят в .cl файлах.
 Но вообще, это не принципиально, потому что код даже не обязательно должен быть в файле.</p>
-<p>Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы на OpenCL-C можно хранить даже в строке в .pas программе.
-Тем не менее, хранение исходников OpenCL-C кода в .cl файлах упрощает жизнь, хотя бы потому что тогда их легко найти.</p>
+<p>Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы на OpenCL-C можно хранить даже в
+строке в .pas программе. Тем не менее, храненить исходники OpenCL-C кода в .cl файлах обычно удобнее всего.</p>
 </div>
 <script>on_page_added(document.getElementById("page-10"))</script>
 <div id="page-11" page_name="Создание из бинарного файла" hidden=true>
@@ -1266,8 +1330,7 @@ end.
 <p>После выполнения очереди метод <code>Context.SyncInvoke</code> возвращает то, что вернула очередь.<br />
 А если использовать метод <code>Context.BeginInvoke</code> - возвращаемое значение можно получить с помощью метода <code>CLTask.WaitRes</code>.</p>
 <hr />
-<p>Бывает необходимо хранить несколько очередей, с разными возвращаемыми значениями,
-вместе, к примеру, в переменной типа <code>List&lt;&gt;</code>.<br />
+<p>Бывает необходимо хранить несколько очередей, с разными возвращаемыми значениями, вместе. К примеру, в переменной типа <code>List&lt;&gt;</code>.<br />
 Но в переменной типа <code>CommandQueue&lt;SomeT&gt;</code> можно хранить только очередь с конкретным типом возвращаемого значения <code>SomeT</code>.</p>
 <p>Для того, чтобы хранить очереди с разными возвращаемыми значениями в одной переменной - используется <code>CommandQueueBase</code>.<br />
 <code>CommandQueueBase</code> это особый тип очереди, у которого не указывается возвращаемое значение.<br />
@@ -1279,6 +1342,42 @@ end.
 <script>on_start_folder("Возвращаемое значение очередей", document.getElementById("page-13"))</script>
 <script>on_end_folder()</script>
 <div id="page-14" page_name="" hidden=true>
+<p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.<br />
+Он синхронно выполняет очередь и вызвращает её результат.</p>
+<p>Но если надо выполнить очередь асинхронно - лучше использовать метод <code>Context.BeginInvoke</code>.<br />
+Он запускает асинхронное выполнение очереди и как только очередь была полностью запущена - возвращает объект типа <code>CLTask&lt;&gt;</code>, у которого есть:</p>
+<ul>
+<li>Event'ы (но реализованы методами), позволяющие указать что должно выполнятся когда выполнение <code>CLTask</code> завершится.</li>
+<li>Свойства, возвращающие оригинальную очередь и контекст выполнения.</li>
+<li>Методы для ожидания окончания выполнения и получения результата очереди.</li>
+</ul>
+<p>Метод <code>Context.SyncInvoke</code> реализован как <code>.BeginInvoke(...).WaitRes</code>.
+Поэтому, везде где сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot;, это же относится и к <code>.SyncInvoke</code>.</p>
+<p>У <code>CLTask</code>, как и у очереди - в <code>&lt;&gt;</code>, указывается тип возвращаемого значения. То есть:</p>
+<pre><code>var t: CLTask&lt;integer&gt;;
+</code></pre>
+<p>В такую переменную можно сохранить только результат <code>Context.BeginInvoke</code> для очереди типа <code>CommandQueue&lt;integer&gt;</code>.</p>
+<p>И как и у <code>CommandQueue</code>:</p>
+<ul>
+<li>Существует так же и тип <code>CLTaskBase</code>, у которого типа возвращаемого значения не указывается.</li>
+<li>Переменной типа <code>CLTaskBase</code> можно присвоить <code>CLTask</code> с любым возвращаемым значением.</li>
+<li><code>Context.BeginInvoke</code> для очереди типа <code>CommandQueueBase</code> возвращает <code>CLTaskBase</code>.</li>
+</ul>
+<p>Если при выполнении возникла ошибка, о ней выведет не полную информацию. Чтобы получить всю информацию - используется <code>try</code>:</p>
+<pre><code>try
+  
+  //ToDo ваш код, вызывающий ошибку
+  
+except
+  // Writeln выводит все внутренние исключения. &quot;e.ToString&quot; тоже.
+  on e: Exception do Writeln(e);
+end;
+</code></pre>
+<p>Для этого кода есть стандартный снипет. Чтобы активировать его - напишите <code>tryo</code> и нажмите Shift+Пробел.</p>
+</div>
+<script>on_start_folder("Выполнение очередей", document.getElementById("page-14"))</script>
+<script>on_end_folder()</script>
+<div id="page-15" page_name="" hidden=true>
 <h1>Есть всего 10 базовых способов создать очередь:</h1>
 <ol>
 <li><p><a path="Из буфера или kernel'a">				Из буфера / kernel'а					</a></p>
@@ -1303,8 +1402,8 @@ end.
 </li>
 </ol>
 </div>
-<script>on_start_folder("Создание очередей", document.getElementById("page-14"))</script>
-<div id="page-15" page_name="Из буфера или kernel'a" hidden=true>
+<script>on_start_folder("Создание очередей", document.getElementById("page-15"))</script>
+<div id="page-16" page_name="Из буфера или kernel'a" hidden=true>
 <p>Самый просто способ создать очередь — выбрать объект типа <code>Buffer</code> или <code>Kernel</code> и вызвать для него метод <code>.NewQueue</code>.</p>
 <p>Полученная очередь будет иметь особый тип: <code>BufferCommandQueue</code>/<code>KernelCommandQueue</code> для буфера/kernel'а соответственно.<br />
 К такой очереди можно добавлять команды, вызывая её методы, имена которых начинаются с <code>.Add...</code>.</p>
@@ -1341,8 +1440,8 @@ end.
 var q := new BufferCommandQueue(q0);
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-15"))</script>
-<div id="page-16" page_name="Из готового результата" hidden=true>
+<script>on_page_added(document.getElementById("page-16"))</script>
+<div id="page-17" page_name="Из готового результата" hidden=true>
 <p>Переменной очереди можно присвоить значение, тип которого совпадает с возвращаемым значением очереди:</p>
 <pre><code>var q: CommandQueue&lt;integer&gt; := 5;
 </code></pre>
@@ -1351,10 +1450,10 @@ var q := new BufferCommandQueue(q0);
 <pre><code>var cq := q as ConstQueue&lt;integer&gt;;
 if cq=nil then
   Writeln('Очередь не константная') else
-  Writeln($'Очередь была создана из значения {cq.Val}');
+  Writeln($'Очередь была создана из значения ({cq.Val})');
 </code></pre>
 <hr />
-<p><code>CommandQueueBase</code> также можно создать из значения, но для этого тип значения должен быть <code>Object</code>:</p>
+<p><code>CommandQueueBase</code> также можно создать из возвращаемого значения, но для этого тип значения должен быть <code>Object</code>:</p>
 <pre><code>var q: CommandQueueBase := 5 as object;
 </code></pre>
 <p>Чтобы получить значение, из которого создали константную очередь, когда не знаете его тип - используйте интерфейс <code>IConstQueue</code>:</p>
@@ -1364,8 +1463,8 @@ if cq=nil then
   Writeln($'Очередь была создана из значения ({cq.GetConstVal})');
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-16"))</script>
-<div id="page-17" page_name="С кодом для CPU" hidden=true>
+<script>on_page_added(document.getElementById("page-17"))</script>
+<div id="page-18" page_name="С кодом для CPU" hidden=true>
 <p>Иногда между командами для GPU надо вставить выполнение обычного кода на CPU.
 А разрывать для этого очередь на две части - плохо, потому что
 одна целая очередь всегда выполнится быстрее двух её частей.</p>
@@ -1374,14 +1473,62 @@ if cq=nil then
 HPQ — Host Procedure Queue<br />
 (Хост в контексте OpenCL - это CPU, потому что с него посылаются команды для GPU)</p>
 <p>Они возвращают очередь, выполняющую код (функцию/процедуру соотвественно) на CPU.<br />
-Подробнее уже описано
+Пример применения приведён
 <a path="../Возвращаемое значение очередей/">
 на странице выше
 </a>
 .</p>
+<hr />
+<p>Если во время выполнения очереди возникает какая-либо ошибка - весь пользовательский код,
+выполняемый на CPU в этой очереди получает <code>ThreadAbortException</code>:</p>
+<pre><code>uses OpenCLABC;
+
+begin
+  var t := Context.Default.BeginInvoke(
+    HPQ(()-&gt;
+    begin
+      try
+        Sleep(1000);
+      except
+        on e: Exception do lock output do
+        begin
+          Writeln('Ошибка во время выполнения первого HPQ:');
+          Writeln(e);
+          Writeln;
+        end;
+      end;
+      // Это никогда не выполнится, потому что
+      // ThreadAbortException кидает себя ещё раз в конце try
+      Writeln(1);
+    end)
+  *
+    HPQ(()-&gt;
+    begin
+      Sleep(500);
+      raise new Exception('abc');
+    end)
+  );
+  
+  try
+    t.Wait;
+  except
+    on e: Exception do lock output do
+    begin
+      Writeln('Ошибка во время выполнения очереди:');
+      Writeln(e);
+    end;
+  end;
+  
+end.
+</code></pre>
+<p>Исключение <code>ThreadAbortException</code> во многом опасно.<br />
+Подробнее можно прочитать в <a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.thread.abort?view=netframework-4.8">справке от microsoft</a>.</p>
+<p>А в кратце, если в вашем коде была кинута <code>ThreadAbortException</code> - становится очень сложно сказать что-либо о его состоянии.<br />
+Даже потокобезопастный код, как вызов <code>Buffer.Dispose</code>, может привести к утечкам памяти, если посреди него кинут <code>ThreadAbortException</code>.</p>
+<p>Считайте получение <code>ThreadAbortException</code> критической ошибкой, после которой очень желателен перезапуск всего .exe файла.</p>
 </div>
-<script>on_page_added(document.getElementById("page-17"))</script>
-<div id="page-18" page_name="Комбинируя другие очереди" hidden=true>
+<script>on_page_added(document.getElementById("page-18"))</script>
+<div id="page-19" page_name="Комбинируя другие очереди" hidden=true>
 <p>Если сложить две очереди A и B (<code>var C := A+B</code>) — получится очередь C, в которой сначала выполнится A, а затем B.<br />
 Очередь C будет считаться выполненной тогда, когда выполнится очередь B.</p>
 <p>Если умножить две очереди A и B (<code>var C := A*B</code>) — получится очередь C, в которой одновременно начнут выполняться A и B.<br />
@@ -1449,8 +1596,8 @@ begin
 end.
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-18"))</script>
-<div id="page-19" page_name="Из очереди + преобразователя" hidden=true>
+<script>on_page_added(document.getElementById("page-19"))</script>
+<div id="page-20" page_name="Из очереди + преобразователя" hidden=true>
 <p>Если надо с минимальными затратами изменить представление компилятора об очереди - лучше всего использовать <code>.Cast</code>.<br />
 Но он ограничен примерно так же, как метод последовательностей <code>.Cast</code>. То есть:</p>
 <pre><code>uses OpenCLABC;
@@ -1498,12 +1645,12 @@ begin
 end.
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-19"))</script>
-<div id="page-20" page_name="Из повторения очереди" hidden=true>
+<script>on_page_added(document.getElementById("page-20"))</script>
+<div id="page-21" page_name="Из повторения очереди" hidden=true>
 <p><del>В данный момент всё ещё не работает... Но уже совсем скоро, правда-правда!</del></p>
 </div>
-<script>on_page_added(document.getElementById("page-20"))</script>
-<div id="page-21" page_name="Множественное использование очереди" hidden=true>
+<script>on_page_added(document.getElementById("page-21"))</script>
+<div id="page-22" page_name="Множественное использование очереди" hidden=true>
 <p>Одну и ту же очередь можно использовать несколько раз, в том числе одновременно:</p>
 <pre><code>uses OpenCLABC;
 
@@ -1586,8 +1733,8 @@ end.
 <p>А если контекст разный - надо сохранять результат в переменную и использовать <code>Wait</code> очереди
 (<a path="Из ожидания очередей">подробнее на странице ниже</a>).</p>
 </div>
-<script>on_page_added(document.getElementById("page-21"))</script>
-<div id="page-22" page_name="Особые .Add методы" hidden=true>
+<script>on_page_added(document.getElementById("page-22"))</script>
+<div id="page-23" page_name="Особые .Add методы" hidden=true>
 <p>Между командами для GPU (хранимыми в очередях типов <code>BufferCommandQueue</code> и <code>KernelCommandQueue</code>)
 бывает надо вставить выполнение другой очереди или кода для CPU.</p>
 <p>Это можно сделать, используя несколько <code>.NewQueue</code>:</p>
@@ -1621,8 +1768,8 @@ q.AddQueue(q);
 <p>Все <code>.Add*</code> методы добавляют команды в существующую очередь, а не создают новую.
 Поэтому очередь, созданная предыдущим кодом при попытке выполнения начнёт циклически запускать саму себя.</p>
 </div>
-<script>on_page_added(document.getElementById("page-22"))</script>
-<div id="page-23" page_name="Из ожидания очередей" hidden=true>
+<script>on_page_added(document.getElementById("page-23"))</script>
+<div id="page-24" page_name="Из ожидания очередей" hidden=true>
 <p>Есть всего 3 группы подпрограмм, создающих очереди для ожидания других очередей:</p>
 <ol>
 <li><p>Глобальные, <code>WaitFor*</code>:<br />
@@ -1794,8 +1941,8 @@ begin
 end.
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-23"))</script>
-<div id="page-24" page_name="Не создавая явно" hidden=true>
+<script>on_page_added(document.getElementById("page-24"))</script>
+<div id="page-25" page_name="Не создавая явно" hidden=true>
 <p>Передавать команды по одной, когда их несколько - ужасно не эффективно!<br />
 Но нередко бывает так, что команда всего одна. Или для отладки надо одноразово выполнить одну команду.</p>
 <p>Для таких случаев можно создавать очередь неявно:<br />
@@ -1851,43 +1998,7 @@ begin
 end.
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-24"))</script>
-<script>on_end_folder()</script>
-<div id="page-25" page_name="" hidden=true>
-<p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.<br />
-Он синхронно выполняет очередь и вызвращает её результат.</p>
-<p>Но если надо выполнить очередь асинхронно - лучше использовать метод <code>Context.BeginInvoke</code>.<br />
-Он запускает асинхронное выполнение очереди и как только очередь была полностью запущена - возвращает объект типа <code>CLTask&lt;&gt;</code>, у которого есть:</p>
-<ul>
-<li>Event'ы (но реализованы методами), позволяющие указать что должно выполнятся когда выполнение <code>CLTask</code> завершится.</li>
-<li>Свойство, возвращающие оригинальную очередь.</li>
-<li>Методы для ожидания окончания выполнения и получения результата очереди.</li>
-</ul>
-<p>Метод <code>Context.SyncInvoke</code> реализован как <code>.BeginInvoke(...).WaitRes</code>.
-Поэтому, везде где сказано &quot;... происходит при вызове <code>.BeginInvoke</code>&quot;, это же относится и к <code>.SyncInvoke</code>.</p>
-<p>У <code>CLTask</code>, как и у очереди - в <code>&lt;&gt;</code>, указывается тип возвращаемого значения. То есть:</p>
-<pre><code>var t: CLTask&lt;integer&gt;;
-</code></pre>
-<p>В такую переменную можно сохранить только результат <code>Context.BeginInvoke</code> для очереди типа <code>CommandQueue&lt;integer&gt;</code>.</p>
-<p>И как и у <code>CommandQueue</code>:</p>
-<ul>
-<li>Существует так же и тип <code>CLTaskBase</code>, у которого типа возвращаемого значения не указывается.</li>
-<li>Переменной типа <code>CLTaskBase</code> можно присвоить <code>CLTask</code> с любым возвращаемым значением.</li>
-<li><code>Context.BeginInvoke</code> для очереди типа <code>CommandQueueBase</code> возвращает <code>CLTaskBase</code>.</li>
-</ul>
-<p>Если при выполнении возникла ошибка, о ней выведет не полную информацию. Чтобы получить всю информацию - используется <code>try</code>:</p>
-<pre><code>try
-  
-  //ToDo ваш код, вызывающий ошибку
-  
-except
-  // Writeln выводит все внутренние исключения. &quot;e.ToString&quot; тоже.
-  on e: Exception do Writeln(e);
-end;
-</code></pre>
-<p>Для этого кода есть стандартный снипет. Чтобы активировать его - напишите <code>tryo</code> и нажмите Shift+Пробел.</p>
-</div>
-<script>on_start_folder("Выполнение очередей", document.getElementById("page-25"))</script>
+<script>on_page_added(document.getElementById("page-25"))</script>
 <script>on_end_folder()</script>
 <div id="page-26" page_name="" hidden=true>
 <p>Все методы создающие одну команду (<code>.Add*</code> методы и все методы неявных очередей)
