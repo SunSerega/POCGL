@@ -140,7 +140,7 @@ unit OpenCLABCBase;
 
 {$region Debug}{$ifdef DEBUG}
 
-{ $define EventDebug} // сохранение информации о cl_event-ах
+{ $define EventDebug} // регистрация всех cl.RetainEvent и cl.ReleaseEvent
 
 {$endif DEBUG}{$endregion Debug}
 
@@ -2914,12 +2914,12 @@ type
     {$region ThenWait}
     
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
-    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAll(qs.AsEnumerable);
+    public function ThenWaitForAll(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAll(qs.AsEnumerable);
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAll(qs: sequence of CommandQueueBase): CommandQueue<T>;
     
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
-    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAny(qs.AsEnumerable);
+    public function ThenWaitForAny(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAny(qs.AsEnumerable);
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую первого сигнала выполненности от любой из заданных очередей
     public function ThenWaitForAny(qs: sequence of CommandQueueBase): CommandQueue<T>;
     

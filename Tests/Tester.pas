@@ -349,10 +349,14 @@ type
         dom.GetData('Result') as string,
         dom.GetData('Err') as string
       );
+      var du_otp := new ThrProcOtp;
+      domain_unload_otps += du_otp;
       StartBgThread(()->
       try
-        var du_otp := new ThrProcOtp;
-        lock domain_unload_otps do domain_unload_otps += du_otp;
+        // Иначе сыпятся AppDomainUnloadedException
+        // Наверное, после завершения очереди продолжаются вызываться ещё пара обработчиков ивентов
+        // Вообще плохо, но даже не представляю как можно сделать лучше
+        Sleep(100);
         try
           System.AppDomain.Unload(dom);
         except
