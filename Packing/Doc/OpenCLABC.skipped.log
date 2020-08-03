@@ -7,6 +7,8 @@ KernelProperties
 ProgramProperties
 WrapperBase<TNtv, TProp>
 Buffer.Finalize
+EventRetainReleaseData
+EventDebug
 CLTaskExt
 NativeUtils
 BlittableException
@@ -30,7 +32,7 @@ MultiusableCommandQueueHubBase
 CLTaskBase.AddErr(Exception)
 CLTaskBase.AddErr(ErrorCode)
 CLTaskBase.AddErr(CommandExecutionStatus)
-CLTaskBase.MakeUserEvent(cl_context)
+CLTaskBase.MakeUserEvent(cl_context, string)
 CLTaskBase.WhenDoneBase(Action<CLTaskBase>)
 CLTaskBase.WhenCompleteBase(Action<CLTaskBase, object>)
 CLTaskBase.WhenErrorBase(Action<CLTaskBase, array of Exception>)
@@ -82,7 +84,13 @@ ConvQueueArrayBase7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>
 ConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>
 ConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>
 QueueArrayUtils
+WCQWaiter
+WCQWaiterAll
+WCQWaiterAny
 GPUCommand<T>
+QueueCommand<T>
+ProcCommand<T>
+WaitCommand<T>
 GPUCommandContainerBody<T>
 GPUCommandContainer<T>
 EnqueueableGPUCommand<T>
@@ -90,6 +98,3 @@ EnqueueableGetCommand<TObj, TRes>
 ISetableKernelArg
 KernelArg.Invoke(CLTaskBase, Context, cl_device_id)
 KernelArg.RegisterWaitables(CLTaskBase, HashSet<MultiusableCommandQueueHubBase>)
-WCQWaiter
-WCQWaiterAll
-WCQWaiterAny

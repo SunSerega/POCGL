@@ -149,11 +149,11 @@ type
     
   end;
   
-function WaitForAll(params qs: array of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
-function WaitForAll(qs: sequence of CommandQueueBase)     := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
+function WaitForAll(params qs: array of CommandQueueBase) := WaitForAll(qs.AsEnumerable);
+function WaitForAll(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
 
-function WaitForAny(params qs: array of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
-function WaitForAny(qs: sequence of CommandQueueBase)     := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
+function WaitForAny(params qs: array of CommandQueueBase) := WaitForAny(qs.AsEnumerable);
+function WaitForAny(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
 
 function WaitFor(q: CommandQueueBase) := WaitForAll(q);
 

@@ -484,15 +484,28 @@ type
         res_EIm += '        var res_ev: cl_event;'#10;
       res_EIm += '        '#10;
       
+      var tabs := 4;
+      
+      if (settings as MethodSettings).need_thread then
+      begin
+        res_EIm += '  '*tabs;
+        res_EIm += 'try'#10;
+        tabs += 1;
+      end;
+      
       foreach var l in (settings as MethodSettings).def do
       begin
-        res_EIm += '        ';
+        res_EIm += '  '*tabs;
         res_EIm += l;
         res_EIm += #10;
       end;
       
       if (settings as MethodSettings).need_thread then
-        res_EIm += '        evs.Release;'#10;
+      begin
+        res_EIm += '        finally'#10;
+        res_EIm += '          evs.Release({$ifdef EventDebug}$''after use in waiting of {self.GetType}''{$endif});'#10;
+        res_EIm += '        end;'#10;
+      end;
       
       res_EIm += '        '#10;
       
@@ -526,7 +539,7 @@ type
         res_EIm += '        begin'#10;
         
         if not (settings as MethodSettings).need_thread then
-          res_EIm += '          evs.Release;'#10;
+          res_EIm += '          evs.Release({$ifdef EventDebug}$''after use in waiting of {self.GetType}''{$endif});'#10;
         
         foreach var arg in args_with_GCHandle do
         begin
@@ -535,7 +548,7 @@ type
           res_EIm += '_hnd.Free;'#10;
         end;
         
-        res_EIm += '        end, tsk);'#10;
+        res_EIm += '        end, tsk, false{$ifdef EventDebug}, nil{$endif});'#10;
         res_EIm += '        '#10;
         
       end;
@@ -555,6 +568,7 @@ type
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: TSettings); abstract;
     protected procedure WriteCommandTypeInhConstructor; virtual := exit;
+    protected procedure WriteMiscMethods(settings: TSettings); virtual := exit;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin
       res_EIm += '{$region ';
@@ -636,6 +650,7 @@ type
         res_EIm += '    protected function NeedThread: boolean; override := true;'#10;
         res_EIm += '    '#10;
       end;
+      WriteMiscMethods(settings);
       
       var param_count_l1 := 0;
       var param_count_l2 := 0;

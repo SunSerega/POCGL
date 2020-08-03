@@ -1058,7 +1058,7 @@ ks.PrintLines;
 
 begin
   var k: Kernel;
-  var val1 := 5;
+  var val1 := 3;
   var val2 := 5;
   
   k.Exec1(1,
@@ -1102,7 +1102,7 @@ end.
 
 begin
   var k: Kernel;
-  var val1 := 5;
+  var val1 := 3;
   var val2 := 5;
 
   // на val1 всё ещё накладываются все ограничени
@@ -1636,8 +1636,8 @@ q.AddQueue(q);
 Так же не имеет незаменимых применений, но ещё полезнее.<br />
 <code>Q.ThenWaitFor(...)</code> работает как <code>Q + WaitFor(...)</code>, за исключением того, что возвращает результат <code>Q</code>.<br />
 То есть, правильнее будет:</p>
-<pre><code> var Qs := Q.Multiusable;
- Result := Qs() + WaitFor(...) + Qs();
+<pre><code>var Qs := Q.Multiusable;
+Result := Qs() + WaitFor(...) + Qs();
 </code></pre>
 <p>Но это уже даже в одну строчку не напишешь.</p>
 </li>
@@ -1658,9 +1658,8 @@ q.AddQueue(q);
 <pre><code>Context.Default.BeginInvoke(Q1);
 Context.Default.BeginInvoke(WaitFor(Q1) + Q2);
 </code></pre>
-<p>Проблема этого кода в том, что <code>Q1</code> может закончить выполнятся ещё до того как <code>WaitFor(Q1)</code> начнёт ожидать.</p>
-<p>Чтоб такое не происходило - надо всегда запускать ожидаемую очередь
-в том же или, хотя бы, следующем вызове <code>Context.BeginInvoke</code> что и ожидающая:</p>
+<p>Проблема этого кода в том, что <code>Q1</code> может закончить выполняться ещё до того как <code>WaitFor(Q1)</code> начнёт ожидать.</p>
+<p>Чтоб такое не происходило - надо всегда запускать ожидающую очередь раньше ожидаемой:</p>
 <pre><code>Context.Default.BeginInvoke(WaitFor(Q1) + Q2);
 Context.Default.BeginInvoke(Q1);
 </code></pre>
@@ -1670,8 +1669,8 @@ Context.Default.BeginInvoke(Q1);
   ( WaitFor(Q1) + Q2 )
 );
 </code></pre>
-<p>Если ожидаемая и ожидающая очереди находятся в общем <code>Context.BeginInvoke</code> - не важно в каком порядке они написаны.
-<code>OpenCLABC</code> гарантирует что ожидающие очереди начнут ожидать до начала выполнения ожидаемых.</p>
+<p>Все ожидающие очереди начинают ожидать в самом начале вызова <code>Context.BeginInvoke</code>, перед тем как очередь начнёт выполнятся.
+Поэтому если ожидающая и ожидаемая очереди находятся в общем <code>Context.BeginInvoke</code> - о их порядке можно не волноваться.</p>
 <hr />
 <h3>Множественное ожидание несколько раз выполнившейся очереди</h3>
 <p>Когда начинает выполняться <code>Context.BeginInvoke</code> - для каждой ожидающей очереди в соответствующей
@@ -1682,7 +1681,7 @@ Context.Default.BeginInvoke(Q1);
 begin
   var Q1 := HPQ(()-&gt;
   begin
-    Sleep(200);
+    Sleep(1000);
     lock output do Writeln('Выполнилась Q1');
   end);
   
@@ -1693,9 +1692,9 @@ begin
     (WaitFor(Q1)+Q2) *
     (WaitFor(Q1)+Q3)
   );
-  Context.Default.BeginInvoke(Q1+Q1);
+  Context.Default.SyncInvoke(Q1+Q1);
   
-  t1.Wait;
+  t1.Wait; // Чтобы вывести ошибки, если возникнут при выполнении
 end.
 </code></pre>
 <p>Ну и, конечно, лучше совместить вызовы <code>Context.BeginInvoke</code>, раз контекст общий:</p>
@@ -1704,7 +1703,7 @@ end.
 begin
   var Q1 := HPQ(()-&gt;
   begin
-    Sleep(200);
+    Sleep(1000);
     lock output do Writeln('Выполнилась Q1');
   end);
   
@@ -1731,7 +1730,7 @@ begin
     WaitFor(Q1) +
     WaitFor(Q1) // второй запуск Q1 никогда не произойдёт, поэтому это зависнет
   );
-  Context.Default.BeginInvoke(Q1);
+  Context.Default.SyncInvoke(Q1);
   
   t1.Wait;
 end.
@@ -1744,7 +1743,7 @@ end.
 begin
   var Q1 := HPQ(()-&gt;
   begin
-    Sleep(200);
+    Sleep(1000);
     lock output do Writeln('Выполнилась Q1');
   end);
   
@@ -1755,14 +1754,15 @@ begin
   var Q5 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q5'));
   
   var t1 := Context.Default.BeginInvoke(
-    (WaitFor(Q1)+Q2) *
-    (WaitFor(Q1)+Q3)
+    ( WaitFor(Q1)+Q2 ) *
+    ( WaitFor(Q1)+Q3 )
   );
   var t2 := Context.Default.BeginInvoke(
-    (WaitFor(Q1)+Q4) *
-    (WaitFor(Q1)+Q5)
+    ( WaitFor(Q1)+Q4 ) *
+    ( WaitFor(Q1)+Q5 )
   );
-  Context.Default.BeginInvoke(Q1+Q1);
+  // Каждый вызов Q1 тут - активирует по 1 WaitFor(Q1) в каждом CLTask
+  Context.Default.SyncInvoke(Q1+Q1);
   
   t1.Wait;
   t2.Wait;
@@ -1774,21 +1774,23 @@ end.
 begin
   var Q1 := HPQ(()-&gt;
   begin
-    Sleep(200);
+    Sleep(1000);
     lock output do Writeln('Выполнилась Q1');
   end);
   
   var Q2 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q2'));
   var Q3 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q3'));
+  var Q4 := HPQ(()-&gt;lock output do Writeln('Выполнилась Q4'));
   
   var t1 := Context.Default.BeginInvoke(
-    (WaitFor(Q1)+Q2) *
-    (WaitFor(Q1)+Q3)
+    ( WaitFor(Q1)+Q3 ) *
+    ( WaitFor(Q1)+Q4 )
   );
-  Context.Default.BeginInvoke(WaitFor(Q1)+Q1);
-  Context.Default.BeginInvoke(Q1);
+  var t2 := Context.Default.BeginInvoke(WaitFor(Q1)+Q2+Q1);
+  Context.Default.SyncInvoke(Q1);
   
   t1.Wait;
+  t2.Wait;
 end.
 </code></pre>
 </div>

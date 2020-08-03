@@ -38,6 +38,7 @@
     
     protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<ValueTuple<TInp1, TInp2>>; override;
     begin
+      if (prev_ev<>nil) and (prev_ev.count<>0) then loop 1 do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var qr1 := q1.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
       var qr2 := q2.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
       Result := new QueueResFunc<ValueTuple<TInp1, TInp2>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes()), EventList.Combine(new EventList[](qr1.ev, qr2.ev), tsk, c.Native, main_dvc, cq));

@@ -73,33 +73,6 @@ type
     begin
       all_settings := new Dictionary<string, string>;
       
-      if not System.IO.File.Exists(td_fname) then
-      begin
-        var mark_skip: Action0 := ()->
-        begin
-          WriteAllText(td_fname, #10#10#10'#SkipTest'#10#10#10, enc);
-          raise new TestCanceledException;
-        end;
-        
-        if ReadAllText(pas_fname, enc).Contains('unit') then
-          mark_skip();
-        
-        case MessageBox.Show($'File {td_fname} not found'+#10'Mark .pas file as test-ignored?', 'New .pas file', MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) of
-          
-          DialogResult.Yes: mark_skip();
-          
-          DialogResult.No:
-          begin
-            resave_settings := true;
-            exit;
-          end;
-          
-          DialogResult.Cancel: Halt(-1);
-          
-        end;
-        
-      end;
-      
       var lns := ReadAllLines(td_fname, enc);
       
       var i := -1;
@@ -167,10 +140,31 @@ type
         t.pas_fname := pas_fname;
         t.test_dir := System.IO.Path.GetDirectoryName(t.pas_fname);
         t.td_fname := System.IO.Path.ChangeExtension(pas_fname, '.td');
-        if not unused_test_files.Remove(t.td_fname) then raise new System.InvalidOperationException;
+        if unused_test_files.Remove(t.td_fname) then
+          t.LoadSettingsDict else
+        begin
+          var mark_skip: Action0 := ()->
+          begin
+            WriteAllText(t.td_fname, #10#10#10'#SkipTest'#10#10#10, enc);
+            raise new TestCanceledException;
+          end;
+          
+          if ReadAllText(t.pas_fname, enc).Contains('unit') then
+            mark_skip();
+          
+          case MessageBox.Show($'File {GetRelativePath(t.td_fname)} not found'+#10'Mark .pas file as test-ignored?', 'New .pas file', MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) of
+            
+            DialogResult.Yes: mark_skip();
+            
+            DialogResult.No: t.resave_settings := true;
+            
+            DialogResult.Cancel: Halt(-1);
+            
+          end;
+          
+        end;
         
         {$region Settings}
-        t.LoadSettingsDict;
         
         if t.all_settings.ContainsKey('#SkipTest') then continue;
         
@@ -363,7 +357,10 @@ type
           System.AppDomain.Unload(dom);
         except
           on e: System.CannotUnloadAppDomainException do
+          begin
             du_otp.Enq($'Error unloading domain of {nick}: {e}');
+            Readln;
+          end;
         end;
         du_otp.Finish;
       except

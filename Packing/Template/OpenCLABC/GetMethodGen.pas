@@ -91,6 +91,16 @@ type
     end;
     protected procedure WriteCommandTypeInhConstructor; override :=
     res_EIm += '      inherited Create(ccq);'#10;
+    protected procedure WriteMiscMethods(settings: GetMethodSettings); override;
+    begin
+      
+      if settings.force_ptr_qr then
+      begin
+        res_EIm += '    protected function ForcePtrQr: boolean; override := true;'#10;
+        res_EIm += '    '#10;
+      end;
+      
+    end;
     
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: GetMethodSettings); override;
     begin

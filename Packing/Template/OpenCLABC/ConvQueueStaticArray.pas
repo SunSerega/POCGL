@@ -135,6 +135,7 @@ begin
       WriteVTDef;
       res.WriteLine('>; override;');
       res.WriteLine('    begin');
+      res.WriteLine($'      if (prev_ev<>nil) and (prev_ev.count<>0) then loop {c-1} do prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
       
       res.WriteLine(  $'      var qr{1} := q{1}.Invoke(tsk, c, main_dvc, false, cq, prev_ev);');
       for var i := 2 to c do

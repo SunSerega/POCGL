@@ -62,23 +62,47 @@ Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Ис
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01 Cast\~Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~CQ\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02 ThenConvert\~Err\0c.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~CQ\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03 Multiusable\~Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\07 HostExec\~Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\2.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\3.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\4.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~Err\0.pas"
 Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
@@ -88,24 +112,48 @@ Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\
 Tester: Done executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
 Tester: Done executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
-Tester: Executing Test[Tests\Exec\CLABC\01 Cast\~Const\0]
-Tester: Done executing Test[Tests\Exec\CLABC\01 Cast\~Const\0]
-Tester: Executing Test[Tests\Exec\CLABC\01 Cast\~Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\01 Cast\~Err\0]
-Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~Cast\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~Cast\0]
-Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~CQ\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~CQ\0]
-Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0]
-Tester: Executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0c]
-Tester: Done executing Test[Tests\Exec\CLABC\02 ThenConvert\~Err\0c]
-Tester: Executing Test[Tests\Exec\CLABC\03 Multiusable\~CQ\0]
-Tester: Done executing Test[Tests\Exec\CLABC\03 Multiusable\~CQ\0]
-Tester: Executing Test[Tests\Exec\CLABC\03 Multiusable\~Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\03 Multiusable\~Err\0]
-Tester: Executing Test[Tests\Exec\CLABC\07 HostExec\~Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\07 HostExec\~Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
+Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\1]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\2]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\2]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\3]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\3]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\4]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\4]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~Err\0]
+Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~Err\0]
 Tester: Cleanup
 Tester: Done testing
 Finished runing Tester

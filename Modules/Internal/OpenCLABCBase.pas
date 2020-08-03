@@ -27,10 +27,18 @@ unit OpenCLABCBase;
 {$endregion Справка}
 
 //ToDo Тесты всех фич модуля
-//ToDo И в каждом сделать по несколько выполнений, на случай плавающий ошибок
 
 //===================================
 // Запланированное:
+
+//ToDo Buffer переименовать в GPUMem
+//ToDo И добавить типы как GPUArray - наверное с методом вроде .Flush, для более эффективной записи
+//
+//ToDo Инициалию буфера из BufferCommandQueue перенести в, собственно, вызовы GPUCommand.Invoke
+// - И там же вызывать GPUArray.Flush
+
+//ToDo Можно же сохранять неуправляемые очереди в список внутри CLTask, и затем использовать несколько раз
+// - И почему я раньше об этом не подумал...
 
 //ToDo В тестеровщике, в тестах ошибок, в текстах ошибок - постоянно меняются номера лямбд...
 // - Наверное стоит захардкодить в тестировщик игнор числа после "<>lambda", и так же для контейнера лямбды
@@ -119,6 +127,12 @@ unit OpenCLABCBase;
 // - NV#3035203
 
 {$endregion}
+
+{$region Debug}{$ifdef DEBUG}
+
+{ $define EventDebug} // сохранение информации о cl_event-ах
+
+{$endif DEBUG}{$endregion Debug}
 
 interface
 
@@ -1085,6 +1099,16 @@ type
     
     {$endregion constructor's}
     
+    {$region operator's}
+    
+    public static function operator=(code1, code2: ProgramCode): boolean := code1.ntv = code2.ntv;
+    public static function operator<>(code1, code2: ProgramCode): boolean := code1.ntv <> code2.ntv;
+    
+    public function ToString: string; override :=
+    $'{self.GetType.Name}[{ntv.val}]';
+    
+    {$endregion operator's}
+    
     {$region GetKernel}
     
     public property KernelByName[kname: string]: Kernel read new Kernel(ntv, kname); default;
@@ -1172,6 +1196,82 @@ type
   {$endregion Wrappers}
   
   {$region Util type's}
+  
+  {$region EventDebug}{$ifdef EventDebug}
+  
+  EventRetainReleaseData = record
+    private is_release: boolean;
+    private reason: string;
+    
+    private static debug_time_counter := Stopwatch.StartNew;
+    private time: TimeSpan;
+    
+    public constructor(is_release: boolean; reason: string);
+    begin
+      self.is_release := is_release;
+      self.reason := reason;
+      self.time := debug_time_counter.Elapsed;
+    end;
+    
+    private function GetActStr := is_release ? 'Released' : 'Retained';
+    public function ToString: string; override :=
+    $'{time} | {GetActStr} when: {reason}';
+    
+  end;
+  EventDebug = static class
+    
+    {$region Retain/Release}
+    
+    private static RefCounter := new Dictionary<cl_event, List<EventRetainReleaseData>>;
+    private static function RefCounterFor(ev: cl_event): List<EventRetainReleaseData>;
+    begin
+      lock RefCounter do
+        if not RefCounter.TryGetValue(ev, Result) then
+        begin
+          Result := new List<EventRetainReleaseData>;
+          RefCounter[ev] := Result;
+        end;
+    end;
+    
+    public static procedure RegisterEventRetain(ev: cl_event; reason: string);
+    begin
+      var lst := RefCounterFor(ev);
+      lock lst do lst += new EventRetainReleaseData(false, reason);
+    end;
+    public static procedure RegisterEventRelease(ev: cl_event; reason: string);
+    begin
+      var lst := RefCounterFor(ev);
+      lock lst do lst += new EventRetainReleaseData(true, reason);
+    end;
+    
+    public static procedure ReportRefCounterInfo :=
+    lock output do lock RefCounter do
+    begin
+      
+      foreach var ev in RefCounter.Keys do
+      begin
+        $'Logging state change of {ev}'.Println;
+        var lst := RefCounter[ev];
+        var c := 0;
+        lock lst do
+          foreach var act in lst do
+          begin
+            if act.is_release then
+              c -= 1 else
+              c += 1;
+            $'{c,3} | {act}'.Println;
+          end;
+        Writeln('-'*30);
+      end;
+      
+      Writeln('='*40);
+    end;
+    
+    {$endregion Retain/Release}
+    
+  end;
+  
+  {$endif EventDebug}{$endregion EventDebug}
   
   {$region CLTaskExt}
   
@@ -1279,12 +1379,33 @@ type
     public count := 0;
     public abortable := false; // true только если можно моментально отменить
     
-    public constructor := exit;
-    
-    public constructor(count: integer) :=
-    self.evs := count=0 ? nil : new cl_event[count];
+    {$region Misc}
     
     public property Item[i: integer]: cl_event read evs[i]; default;
+    
+    public static function operator=(l1, l2: EventList): boolean;
+    begin
+      if object.ReferenceEquals(l1, l2) then
+      begin
+        Result := true;
+        exit;
+      end;
+      if object.ReferenceEquals(l1, nil) then exit;
+      if object.ReferenceEquals(l2, nil) then exit;
+      if l1.count <> l2.count then exit;
+      for var i := 0 to l1.count-1 do
+        if l1[i]<>l2[i] then exit;
+      Result := true;
+    end;
+    public static function operator<>(l1, l2: EventList): boolean := not (l1=l2);
+    
+    {$endregion Misc}
+    
+    {$region constructor's}
+    
+    public constructor := exit;
+    public constructor(count: integer) :=
+    if count<>0 then self.evs := new cl_event[count];
     
     public static function operator implicit(ev: cl_event): EventList;
     begin
@@ -1301,6 +1422,10 @@ type
       self.evs := evs;
       self.count := evs.Length;
     end;
+    
+    {$endregion constructor's}
+    
+    {$region operator+}
     
     public static procedure operator+=(l: EventList; ev: cl_event);
     begin
@@ -1330,50 +1455,49 @@ type
       Result += ev;
     end;
     
-    public static function operator=(l1, l2: EventList): boolean;
-    begin
-      if object.ReferenceEquals(l1, l2) then
-      begin
-        Result := true;
-        exit;
-      end;
-      if object.ReferenceEquals(l1, nil) then exit;
-      if object.ReferenceEquals(l2, nil) then exit;
-      if l1.count <> l2.count then exit;
-      for var i := 0 to l1.count-1 do
-        if l1[i]<>l2[i] then exit;
-      Result := true;
-    end;
-    public static function operator<>(l1, l2: EventList): boolean := not (l1=l2);
-    
     private static function Combine(evs: IList<EventList>; tsk: CLTaskBase; c: cl_context; main_dvc: cl_device_id; var cq: cl_command_queue): EventList;
     
-    public procedure Retain :=
-    for var i := 0 to count-1 do
-      cl.RetainEvent(evs[i]).RaiseIfError;
+    {$endregion operator+}
     
-    public procedure Release :=
-    for var i := 0 to count-1 do
-      cl.ReleaseEvent(evs[i]).RaiseIfError;
-    public function Release(tsk: CLTaskBase): boolean;
-    begin
-      for var i := 0 to count-1 do
-        if CLTaskExt.AddErr(tsk, cl.ReleaseEvent(evs[i])) then
-          Result := true;
-    end;
+    {$region cl_event.AttachCallback}
     
-    public static procedure AttachCallback(ev: cl_event; cb: EventCallback) :=
+    public static procedure AttachNativeCallback(ev: cl_event; cb: EventCallback) :=
     cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, NativeUtils.GCHndAlloc(cb)).RaiseIfError;
-    public static procedure AttachCallback(ev: cl_event; cb: EventCallback; tsk: CLTaskBase) :=
-    CLTaskExt.AddErr(tsk, cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, NativeUtils.GCHndAlloc(cb)) );
     
-    private static function DefaultStatusErr(tsk: CLTaskBase; st: CommandExecutionStatus): boolean := CLTaskExt.AddErr(tsk, st);
-    public static procedure AttachCallback(ev: cl_event; work: Action; tsk: CLTaskBase; st_err_handler: (CLTaskBase, CommandExecutionStatus)->boolean := DefaultStatusErr) :=
-    AttachCallback(ev, (ev,st,data)->
+    private static function DefaultStatusErr(tsk: CLTaskBase; st: CommandExecutionStatus; save_err: boolean): boolean := save_err ? CLTaskExt.AddErr(tsk, st) : st.IS_ERROR;
+    
+    public static procedure AttachCallback(ev: cl_event; work: Action; tsk: CLTaskBase; need_ev_release: boolean{$ifdef EventDebug}; reason: string{$endif}; st_err_handler: (CLTaskBase, CommandExecutionStatus, boolean)->boolean := DefaultStatusErr; save_err: boolean := true) :=
+    AttachNativeCallback(ev, (ev,st,data)->
     begin
+      if need_ev_release then
+      begin
+        CLTaskExt.AddErr(tsk, cl.ReleaseEvent(ev));
+        {$ifdef EventDebug}
+        EventDebug.RegisterEventRelease(ev, $'discarding after use in AttachCallback, working on {reason}');
+        {$endif EventDebug}
+      end;
+      
+      if not st_err_handler(tsk, st, save_err) then
+      try
+        work;
+      except
+        on e: Exception do CLTaskExt.AddErr(tsk, e);
+      end;
+      
       NativeUtils.GCHndFree(data);
-      if st_err_handler(tsk, st) then exit;
-      if CLTaskExt.AddErr(tsk, cl.ReleaseEvent(ev)) then exit;
+    end);
+    
+    public static procedure AttachFinallyCallback(ev: cl_event; work: Action; tsk: CLTaskBase; need_ev_release: boolean{$ifdef EventDebug}; reason: string{$endif}) :=
+    AttachNativeCallback(ev, (ev,st,data)->
+    begin
+      if need_ev_release then
+      begin
+        CLTaskExt.AddErr(tsk, cl.ReleaseEvent(ev));
+        {$ifdef EventDebug}
+        if reason=nil then raise new InvalidOperationException;
+        EventDebug.RegisterEventRelease(ev, $'discarding after use in AttachFinallyCallback, working on {reason}');
+        {$endif EventDebug}
+      end;
       
       try
         work;
@@ -1381,65 +1505,123 @@ type
         on e: Exception do CLTaskExt.AddErr(tsk, e);
       end;
       
-    end);
-    public static procedure AttachFinallyCallback(ev: cl_event; work: Action; tsk: CLTaskBase) :=
-    AttachCallback(ev, (ev,st,data)->
-    begin
       NativeUtils.GCHndFree(data);
-      
-      try
-        work;
-      except
-        on e: Exception do CLTaskExt.AddErr(tsk, e);
-      end;
-      
     end);
     
-    public function ToMarker(c: cl_context; dvc: cl_device_id; var cq: cl_command_queue): cl_event;
+    {$endregion cl_event.AttachCallback}
+    
+    {$region EventList.AttachCallback}
+    
+    private function ToMarker(c: cl_context; dvc: cl_device_id; var cq: cl_command_queue; expect_smart_status_err: boolean): cl_event;
     begin
+      {$ifdef DEBUG}
+      if count <= 1 then raise new System.NotSupportedException;
+      {$endif DEBUG}
       
-      if self.count>1 then
-      begin
-        NativeUtils.FixCQ(c, dvc, cq);
-        cl.EnqueueMarkerWithWaitList(cq, self.count, self.evs, Result).RaiseIfError;
-      end else
-      begin
-        Result := self[0]; // 0 элементов не должно быть. но если что - сразу видно где ошибка
-        cl.RetainEvent(Result).RaiseIfError;
-      end;
+      NativeUtils.FixCQ(c, dvc, cq);
+      cl.EnqueueMarkerWithWaitList(cq, self.count, self.evs, Result).RaiseIfError;
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(Result, $'enq''ed marker for evs: {evs.JoinToString}');
+      {$endif EventDebug}
+      if expect_smart_status_err then self.Retain(
+        {$ifdef EventDebug}$'making sure ev isn''t deleted until SmartStatusErr'{$endif}
+      );
       
     end;
     
-    private function SmartStatusErr(tsk: CLTaskBase; st: CommandExecutionStatus): boolean;
+    private function SmartStatusErr(tsk: CLTaskBase; org_st: CommandExecutionStatus; save_err: boolean; need_release: boolean): boolean;
     begin
       //ToDo NV#3035203
-//      if not st.IS_ERROR then exit;
-//      if st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
-//        Result := CLTaskExt.AddErr(tsk, st) else
-        for var i := 0 to count-1 do
+      //ToDo И добавить использование save_err, когда раскомметирую
+//      if not org_st.IS_ERROR then exit;
+//      if org_st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
+//        Result := CLTaskExt.AddErr(tsk, org_st) else
+      
+      {$ifdef DEBUG}
+      if count <= 1 then raise new System.NotSupportedException;
+      {$endif DEBUG}
+      
+      for var i := 0 to count-1 do
+      begin
+        var st: CommandExecutionStatus;
+        var ec := cl.GetEventInfo(
+          evs[i], EventInfo.EVENT_COMMAND_EXECUTION_STATUS,
+          new UIntPtr(sizeof(CommandExecutionStatus)), st, IntPtr.Zero
+        );
+        
+        if save_err then
         begin
-          if CLTaskExt.AddErr(tsk, cl.GetEventInfo(
-            evs[i], EventInfo.EVENT_COMMAND_EXECUTION_STATUS,
-            new UIntPtr(sizeof(CommandExecutionStatus)), st, IntPtr.Zero
-          )) then continue;
+          if CLTaskExt.AddErr(tsk, ec) then continue;
           if CLTaskExt.AddErr(tsk, st) then Result := true;
+        end else
+        begin
+          if ec.IS_ERROR then continue;
+          if st.IS_ERROR then Result := true;
         end;
+        
+      end;
+      
+      if need_release then self.Release(
+        {$ifdef EventDebug}$'after use in SmartStatusErr'{$endif}
+      );
       
       //ToDo NV#3035203 - без бага эта часть не нужна
-      if st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
-        if CLTaskExt.AddErr(tsk, st) then Result := true;
+      if org_st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
+        if save_err ? CLTaskExt.AddErr(tsk, org_st) : org_st.IS_ERROR then Result := true;
     end;
-    public procedure AttachCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue) :=
-    if evs=nil then work else AttachCallback(self.ToMarker(c, dvc, cq), work, tsk, SmartStatusErr);
-    public procedure AttachFinallyCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue) :=
-    if evs=nil then work else AttachFinallyCallback(self.ToMarker(c, dvc, cq), work, tsk);
+    
+    public procedure AttachCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue{$ifdef EventDebug}; reason: string{$endif}; save_err: boolean := true) :=
+    case self.count of
+      0: work;
+      1: AttachCallback(self.evs[0], work, tsk, false{$ifdef EventDebug}, nil{$endif}, DefaultStatusErr, save_err);
+      else AttachCallback(self.ToMarker(c, dvc, cq, true), work, tsk, true{$ifdef EventDebug}, reason{$endif}, (tsk,st,save_err)->SmartStatusErr(tsk,st,save_err,true), save_err);
+    end;
+    
+    public procedure AttachFinallyCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue{$ifdef EventDebug}; reason: string{$endif}) :=
+    case self.count of
+      0: work;
+      1: AttachFinallyCallback(self.evs[0], work, tsk, false{$ifdef EventDebug}, nil{$endif});
+      else AttachFinallyCallback(self.ToMarker(c, dvc, cq, false), work, tsk, true{$ifdef EventDebug}, reason{$endif});
+    end;
+    
+    {$endregion EventList.AttachCallback}
+    
+    {$region Retain/Release}
+    
+    public procedure Retain({$ifdef EventDebug}reason: string{$endif}) :=
+    for var i := 0 to count-1 do
+    begin
+      cl.RetainEvent(evs[i]).RaiseIfError;
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(evs[i], $'{reason}, together with evs: {evs.JoinToString}');
+      {$endif EventDebug}
+    end;
+    
+    public procedure Release({$ifdef EventDebug}reason: string{$endif}) :=
+    for var i := 0 to count-1 do
+    begin
+      cl.ReleaseEvent(evs[i]).RaiseIfError;
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRelease(evs[i], $'{reason}, together with evs: {evs.JoinToString}');
+      {$endif EventDebug}
+    end;
     
     /// True если возникла ошибка
     public function WaitAndRelease(tsk: CLTaskBase): boolean;
     begin
-      Result := SmartStatusErr(tsk, CommandExecutionStatus(cl.WaitForEvents(self.count, self.evs)));
-      if self.Release(tsk) then Result := true;
+      {$ifdef DEBUG}
+      if count=0 then raise new NotSupportedException;
+      {$endif DEBUG}
+      
+      var st := CommandExecutionStatus(cl.WaitForEvents(self.count, self.evs));
+      if count=1 then
+        Result := DefaultStatusErr(tsk, st, true) else
+        Result := SmartStatusErr(tsk, st, true, false);
+      
+      self.Release({$ifdef EventDebug}$'discarding after being waited upon'{$endif EventDebug});
     end;
+    
+    {$endregion Retain/Release}
     
   end;
   
@@ -1453,40 +1635,53 @@ type
     
     {$region constructor's}
     
-    public constructor(c: cl_context);
+    private constructor(c: cl_context{$ifdef EventDebug}; reason: string{$endif});
     begin
       var ec: ErrorCode;
       self.uev := cl.CreateUserEvent(c, ec);
       ec.RaiseIfError;
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(self.uev, $'Created for {reason}');
+      {$endif EventDebug}
     end;
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
-    static function MakeUserEvent(tsk: CLTaskBase; c: cl_context): UserEvent;
+    public static function MakeUserEvent(tsk: CLTaskBase; c: cl_context{$ifdef EventDebug}; reason: string{$endif}): UserEvent;
     
-    public static function StartBackgroundWork(after: EventList; work: Action; c: cl_context; tsk: CLTaskBase): UserEvent;
+    public static function StartBackgroundWork(after: EventList; work: Action; c: cl_context; tsk: CLTaskBase{$ifdef EventDebug}; reason: string{$endif}): UserEvent;
     begin
-      var res := MakeUserEvent(tsk, c);
+      var res := MakeUserEvent(tsk, c
+        {$ifdef EventDebug}, $'BackgroundWork, executing {reason}'{$endif}
+      );
       
       var abort_thr_ev := new AutoResetEvent(false);
-      res.AttachFinallyCallback(()->abort_thr_ev.Set(), tsk);
+      EventList.AttachFinallyCallback(res, ()->abort_thr_ev.Set(), tsk, false{$ifdef EventDebug}, nil{$endif});
       
       var work_thr: Thread;
       var abort_thr := NativeUtils.StartNewThread(()->
       begin
-        abort_thr_ev.WaitOne; // изначальная пауза, чтобы work_thr не убили до того как он успеет запуститься и выполнить cl.ReleaseEvent
+        abort_thr_ev.WaitOne; // изначальная пауза, чтобы work_thr не убили до того как он успеет запуститься и выполнить after.Release
         abort_thr_ev.WaitOne;
         work_thr.Abort;
       end);
       
       work_thr := NativeUtils.StartNewThread(()->
       try
-        var err := (after<>nil) and (after.count<>0) and
-          (after.abortable ? after : after + MakeUserEvent(tsk,c)).WaitAndRelease(tsk);
-        // ThreadAbortException может прийти только из abort_thr, поэтому до следующей строчки - его не будет
-        // Таким образом следующая строчка всегда выполнится
-        abort_thr_ev.Set;
-        // Далее - в любом случае выполняется res.SetStatus, который вызывает
-        // содержимое res.AttachFinallyCallback выше
-        // Поэтому abort_thr никогда не застрянет
+        var err := false;
+        try
+          if (after<>nil) and (after.count<>0) then
+          begin
+            if not after.abortable then
+              after := after + MakeUserEvent(tsk,c
+                {$ifdef EventDebug}, $'abortability of BackgroundWork wait on: {after.evs.JoinToString}'{$endif}
+              );
+            err := after.WaitAndRelease(tsk);
+          end;
+        finally
+          abort_thr_ev.Set;
+          // Далее - в любом случае выполняется res.SetStatus, который вызывает
+          // содержимое res.AttachFinallyCallback выше
+          // Поэтому abort_thr никогда не застрянет
+        end;
         
         if err then
         begin
@@ -1547,16 +1742,6 @@ type
     
     {$endregion Status}
     
-    {$region AttachCallback}
-    
-    public procedure AttachFinallyCallback(work: Action; tsk: CLTaskBase);
-    begin
-      cl.RetainEvent(self.uev).RaiseIfError;
-      EventList.AttachFinallyCallback(self, work, tsk);
-    end;
-    
-    {$endregion AttachCallback}
-    
     {$region operator's}
     
     public static function operator implicit(ev: UserEvent): cl_event := ev.uev;
@@ -1566,7 +1751,7 @@ type
       Result.abortable := true;
     end;
     
-    public static function operator +(ev1: EventList; ev2: UserEvent): EventList;
+    public static function operator+(ev1: EventList; ev2: UserEvent): EventList;
     begin
       Result := ev1 + ev2.uev;
       Result.abortable := true;
@@ -1636,7 +1821,9 @@ type
     begin
       Result := self;
       if (ev.count<>0) and not ev.abortable then
-        Result := Result.TrySetEv(ev + UserEvent.MakeUserEvent(tsk, c.Native));
+        Result := Result.TrySetEv(ev + UserEvent.MakeUserEvent(tsk, c.Native
+          {$ifdef EventDebug}, $'abortability of QueueRes with .ev: {ev.evs.JoinToString}'{$endif}
+        ));
     end;
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
@@ -1843,9 +2030,9 @@ type
     {$region UserEvent's}
     protected user_events := new List<UserEvent>;
     
-    protected function MakeUserEvent(c: cl_context): UserEvent;
+    protected function MakeUserEvent(c: cl_context{$ifdef EventDebug}; reason: string{$endif}): UserEvent;
     begin
-      Result := new UserEvent(c);
+      Result := new UserEvent(c{$ifdef EventDebug}, reason{$endif});
       
       lock user_events do
       begin
@@ -1917,16 +2104,22 @@ type
       
       // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
       foreach var mu_qr in mu_res.Values do
-        mu_qr.ev.Release;
+        mu_qr.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
       mu_res := nil;
+      
+      {$ifdef DEBUG}
+      //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно
+      if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
+      {$endif DEBUG}
       
       //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно
       qr.ev.AttachFinallyCallback(()->
       begin
+        qr.ev.Release({$ifdef EventDebug}$'last ev of CLTask'{$endif});
         if cq<>cl_command_queue.Zero then
           System.Threading.Tasks.Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
         OnQDone(qr);
-      end, self, c.Native, c.MainDevice.Native, cq);
+      end, self, c.Native, c.MainDevice.Native, cq{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
       
     end;
     
@@ -1971,8 +2164,6 @@ type
       finally
         wh.Set;
       end;
-      
-      qr.ev.Release(self);
       
       foreach var ev in l_EvDone do
       try
@@ -2036,11 +2227,6 @@ type
     
     {$region MW}
     
-    private waiters_c := 0;
-    private function IsWaitable := waiters_c<>0;
-    private procedure MakeWaitable := lock self do waiters_c += 1;
-    private procedure UnMakeWaitable := lock self do waiters_c -= 1;
-    
     /// добавляет tsk в качестве ключа для всех ожидаемых очередей
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
@@ -2061,6 +2247,7 @@ type
     
     private procedure ExecuteMWHandlers;
     begin
+      if mw_evs.Count=0 then exit;
       var conts: array of MWEventContainer;
       lock mw_evs do conts := mw_evs.Values.ToArray;
       for var i := 0 to conts.Length-1 do conts[i].ExecuteHandler;
@@ -2084,8 +2271,8 @@ type
     
     protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
     
-    public function ThenConvert<TOtp>(f: object->TOtp           ): CommandQueue<TOtp> := ThenConvertBase((o,c)->f(o));
-    public function ThenConvert<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp> := ThenConvertBase(f);
+    public function ThenConvert<TOtp>(f: object->TOtp           ) := ThenConvertBase((o,c)->f(o));
+    public function ThenConvert<TOtp>(f: (object, Context)->TOtp) := ThenConvertBase(f);
     
     {$endregion ThenConvert}
     
@@ -2106,7 +2293,7 @@ type
     
     protected function MultiusableBase: ()->CommandQueueBase; abstract;
     
-    public function Multiusable: ()->CommandQueueBase := MultiusableBase;
+    public function Multiusable := MultiusableBase;
     
     {$endregion Multiusable}
     
@@ -2135,10 +2322,7 @@ type
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>;
     begin
       Result := InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev).EnsureAbortability(tsk, c);
-      
-      if self.IsWaitable then
-        Result.ev.AttachCallback(self.ExecuteMWHandlers, tsk, c.Native, main_dvc, cq);
-      
+      Result.ev.AttachCallback(self.ExecuteMWHandlers, tsk, c.Native, main_dvc, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
     end;
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override :=
     Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
@@ -2148,12 +2332,16 @@ type
       var cq := cl_command_queue.Zero;
       Result := Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
       
+      {$ifdef DEBUG}
       // Result.ev.abortable уже true, потому что .EnsureAbortability в Invoke
+      if (Result.ev.count<>0) and not Result.ev.abortable then raise new System.NotSupportedException;
+      {$endif DEBUG}
+      
       if cq<>cl_command_queue.Zero then
         Result.ev.AttachFinallyCallback(()->
         begin
           System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(cq)))
-        end, tsk, c.Native, main_dvc, cq);
+        end, tsk, c.Native, main_dvc, cq{$ifdef EventDebug}, $'cl.ReleaseCommandQueue'{$endif});
       
     end;
     protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase; override :=
@@ -2169,11 +2357,10 @@ type
     
     {$region ThenConvert}
     
-    public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
+    public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
     
-    ///--
-    public function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
+    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
     ThenConvert(f as object as Func2<T, Context, TOtp>);
     
     {$endregion ThenConvert}
@@ -2194,24 +2381,23 @@ type
     {$region Multiusable}
     
     public function Multiusable: ()->CommandQueue<T>;
-    ///--
-    public function MultiusableBase: ()->CommandQueueBase; override := Multiusable as object as Func<CommandQueueBase>; //ToDo #2221
+    
+    protected function MultiusableBase: ()->CommandQueueBase; override := Multiusable as object as Func<CommandQueueBase>; //ToDo #2221
     
     {$endregion Multiusable}
     
     {$region ThenWait}
     
-    public function ThenWaitForAll(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAll(qs.AsEnumerable);
+    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAll(qs.AsEnumerable);
     public function ThenWaitForAll(qs: sequence of CommandQueueBase): CommandQueue<T>;
-    ///--
-    public function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
     
-    public function ThenWaitForAny(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAny(qs.AsEnumerable);
+    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAny(qs.AsEnumerable);
     public function ThenWaitForAny(qs: sequence of CommandQueueBase): CommandQueue<T>;
-    ///--
-    public function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
     
     public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
+    
+    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
+    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
     
     {$endregion ThenWait}
     
@@ -2233,7 +2419,9 @@ type
       var prev_qr := InvokeSubQs(tsk, c, main_dvc, cq, prev_ev);
       
       var qr := QueueResDelayedBase&<TRes>.MakeNew(need_ptr_qr);
-      qr.ev := UserEvent.StartBackgroundWork(prev_qr.ev, ()->qr.SetRes( ExecFunc(prev_qr.GetRes(), c) ), c.Native, tsk);
+      qr.ev := UserEvent.StartBackgroundWork(prev_qr.ev, ()->qr.SetRes( ExecFunc(prev_qr.GetRes(), c) ), c.Native, tsk
+        {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+      );
       
       Result := qr;
     end;
@@ -2312,19 +2500,15 @@ type
     
     protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
+      if (prev_ev<>nil) and (prev_ev.count<>0) then loop qs.Length-1 do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var evs := new EventList[qs.Length];
       
       for var i := 0 to qs.Length-2 do
-      begin
-        if prev_ev<>nil then prev_ev.Retain;
         evs[i] := qs[i].InvokeNewQBase(tsk, c, main_dvc, false, prev_ev).ev;
-      end;
       
-      if prev_ev<>nil then prev_ev.Retain;
       // Используем внешнюю cq, чтобы не создавать лишнюю
       Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
       evs[evs.Length-1] := Result.ev;
-      if prev_ev<>nil then prev_ev.Release;
       
       Result := Result.TrySetEv( EventList.Combine(evs, tsk, c.Native, main_dvc, cq) ?? new EventList );
     end;
@@ -2381,23 +2565,21 @@ type
     
     protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<array of TInp>; override;
     begin
+      if (prev_ev<>nil) and (prev_ev.count<>0) then loop qs.Length-1 do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var qrs := new QueueRes<TInp>[qs.Length];
       var evs := new EventList[qs.Length];
       
       for var i := 0 to qs.Length-2 do
       begin
-        if prev_ev<>nil then prev_ev.Retain;
         var qr := qs[i].InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
         qrs[i] := qr;
         evs[i] := qr.ev;
       end;
       
-      if prev_ev<>nil then prev_ev.Retain;
       // Отдельно, чтобы не создавать лишнюю cq
       var qr := qs[qs.Length-1].Invoke(tsk, c, main_dvc, false, cq, prev_ev);
       qrs[evs.Length-1] := qr;
       evs[evs.Length-1] := qr.ev;
-      if prev_ev<>nil then prev_ev.Release;
       
       Result := new QueueResFunc<array of TInp>(()->
       begin
@@ -2452,7 +2634,73 @@ type
   
   {$endregion CommandQueue}
   
-  {$region GPUCommandContainer's}
+  {$region WCQWaiter}
+  
+  WCQWaiter = abstract class
+    private waitables: array of CommandQueueBase;
+    
+    public constructor(waitables: array of CommandQueueBase) := self.waitables := waitables;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    public procedure RegisterWaitables(tsk: CLTaskBase) :=
+    foreach var q in waitables do q.RegisterWaiterTask(tsk);
+    
+    public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; abstract;
+    
+  end;
+  
+  WCQWaiterAll = sealed class(WCQWaiter)
+    
+    public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; override;
+    begin
+      var uev := tsk.MakeUserEvent(c.Native
+        {$ifdef EventDebug}, $'WCQWaiterAll[{waitables.Length}]'{$endif}
+      );
+      
+      var done := 0;
+      var total := waitables.Length;
+      var done_lock := new object;
+      
+      for var i := 0 to waitables.Length-1 do
+        waitables[i].AddMWHandler(tsk, ()->
+        begin
+          if uev.CanRemove then exit;
+          
+          lock done_lock do
+          begin
+            done += 1;
+            if done=total then
+              // Если uev.Abort вызовет между .CanRemove и этой строчкой - значит это было в отдельном потоке,
+              // т.е. в заведомо не_безопастном месте. А значит проверять тут - нет смысла
+              uev.SetStatus(CommandExecutionStatus.COMPLETE);
+          end;
+          
+          Result := true;
+        end);
+      
+      Result := uev;
+    end;
+    
+  end;
+  WCQWaiterAny = sealed class(WCQWaiter)
+    
+    public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; override;
+    begin
+      var uev := tsk.MakeUserEvent(c.Native
+        {$ifdef EventDebug}, $'WCQWaiterAny[{waitables.Length}]'{$endif}
+      );
+      
+      for var i := 0 to waitables.Length-1 do
+        waitables[i].AddMWHandler(tsk, ()->uev.SetStatus(CommandExecutionStatus.COMPLETE));
+      
+      Result := uev;
+    end;
+    
+  end;
+  
+  {$endregion WCQWaiter}
+  
+  {$region GPUCommand}
   
   {$region Base}
   
@@ -2464,6 +2712,86 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
   end;
+  
+  {$endregion Base}
+  
+  {$region Queue}
+  
+  QueueCommand<T> = sealed class(GPUCommand<T>)
+    public q: CommandQueueBase;
+    
+    public constructor(q: CommandQueueBase) := self.q := q;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList) := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
+    
+    protected function InvokeObj  (o: T;                      tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := Invoke(tsk, c, main_dvc, cq, prev_ev);
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>;  tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := Invoke(tsk, c, main_dvc, cq, prev_ev);
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
+    
+  end;
+  
+  {$endregion Queue}
+  
+  {$region Proc}
+  
+  ProcCommand<T> = sealed class(GPUCommand<T>)
+    public p: (T,Context)->();
+    
+    public constructor(p: (T,Context)->()) := self.p := p;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override :=
+    UserEvent.StartBackgroundWork(prev_ev, ()->p(o, c), c.Native, tsk
+      {$ifdef EventDebug}, $'const body of {self.GetType}'{$endif}
+    );
+    
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override;
+    begin
+      var o_q_res := o_q().Invoke(tsk, c, main_dvc, false, cq, prev_ev);
+      Result := UserEvent.StartBackgroundWork(o_q_res.ev, ()->p(o_q_res.GetRes(), c), c.Native, tsk
+        {$ifdef EventDebug}, $'queue body of {self.GetType}'{$endif}
+      );
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+  end;
+  
+  {$endregion Proc}
+  
+  {$region Wait}
+  
+  WaitCommand<T> = sealed class(GPUCommand<T>)
+    public waiter: WCQWaiter;
+    
+    public constructor(waiter: WCQWaiter) := self.waiter := waiter;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function Invoke(tsk: CLTaskBase; c: Context; prev_ev: EventList): EventList;
+    begin
+      if prev_ev=nil then
+        Result := waiter.GetWaitEv(tsk, c) else
+        Result := prev_ev + waiter.GetWaitEv(tsk, c);
+    end;
+    
+    protected function InvokeObj  (o: T;                      tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := Invoke(tsk, c, prev_ev);
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>;  tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := Invoke(tsk, c, prev_ev);
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    waiter.RegisterWaitables(tsk);
+    
+  end;
+  
+  {$endregion Wait}
+  
+  {$endregion GPUCommand}
+  
+  {$region GPUCommandContainer}
+  
+  {$region Base}
   
   GPUCommandContainer<T> = class;
   GPUCommandContainerBody<T> = abstract class
@@ -2489,6 +2817,14 @@ type
     
     protected constructor(o: T);
     protected constructor(q: CommandQueue<T>);
+    
+    protected function MakeQueueCommand(q: CommandQueueBase) := new QueueCommand<T>(q);
+    
+    protected function MakeProcCommand(p: T->()) := new ProcCommand<T>((o,c)->p(o));
+    protected function MakeProcCommand(p: (T,Context)->()) := new ProcCommand<T>(p);
+    
+    protected function MakeWaitAllCommand(qs: sequence of CommandQueueBase) := new WaitCommand<T>(new WCQWaiterAll(qs.ToArray));
+    protected function MakeWaitAnyCommand(qs: sequence of CommandQueueBase) := new WaitCommand<T>(new WCQWaiterAny(qs.ToArray));
     
     {$endregion Common}
     
@@ -2542,7 +2878,7 @@ type
     
     {$endregion constructor's}
     
-    {$region Utils}
+    {$region Non-command add's}
     
     protected function AddCommand(comm: GPUCommand<Buffer>): BufferCommandQueue;
     begin
@@ -2550,30 +2886,26 @@ type
       Result := self;
     end;
     
-    {$endregion Utils}
-    
-    {$region Non-command add's}
-    
     {$region Queue}
     
-    public function AddQueue(q: CommandQueueBase): BufferCommandQueue;
+    public function AddQueue(q: CommandQueueBase) := AddCommand(MakeQueueCommand(q));
     
     {$endregion Queue}
     
     {$region Proc}
     
-    public function AddProc(p: Buffer->()): BufferCommandQueue;
-    public function AddProc(p: (Buffer, Context)->()): BufferCommandQueue;
+    public function AddProc(p: Buffer->())            := AddCommand(MakeProcCommand(p));
+    public function AddProc(p: (Buffer, Context)->()) := AddCommand(MakeProcCommand(p));
     
     {$endregion Proc}
     
     {$region Wait}
     
-    public function AddWaitAll(params qs: array of CommandQueueBase): BufferCommandQueue := AddWaitAll(qs.AsEnumerable);
-    public function AddWaitAll(qs: sequence of CommandQueueBase): BufferCommandQueue;
+    public function AddWaitAll(params qs: array of CommandQueueBase)  := AddCommand(MakeWaitAllCommand(qs));
+    public function AddWaitAll(qs: sequence of CommandQueueBase)      := AddCommand(MakeWaitAllCommand(qs));
     
-    public function AddWaitAny(params qs: array of CommandQueueBase): BufferCommandQueue := AddWaitAny(qs.AsEnumerable);
-    public function AddWaitAny(qs: sequence of CommandQueueBase): BufferCommandQueue;
+    public function AddWaitAny(params qs: array of CommandQueueBase)  := AddCommand(MakeWaitAnyCommand(qs));
+    public function AddWaitAny(qs: sequence of CommandQueueBase)      := AddCommand(MakeWaitAnyCommand(qs));
     
     public function AddWait(q: CommandQueueBase) := AddWaitAll(q);
     
@@ -2600,7 +2932,7 @@ type
     
     {$endregion constructor's}
     
-    {$region Utils}
+    {$region Non-command add's}
     
     protected function AddCommand(comm: GPUCommand<Kernel>): KernelCommandQueue;
     begin
@@ -2608,30 +2940,26 @@ type
       Result := self;
     end;
     
-    {$endregion Utils}
-    
-    {$region Non-command add's}
-    
     {$region Queue}
     
-    public function AddQueue(q: CommandQueueBase): KernelCommandQueue;
+    public function AddQueue(q: CommandQueueBase) := AddCommand(MakeQueueCommand(q));
     
     {$endregion Queue}
     
     {$region Proc}
     
-    public function AddProc(p: Kernel->()): KernelCommandQueue;
-    public function AddProc(p: (Kernel, Context)->()): KernelCommandQueue;
+    public function AddProc(p: Kernel->())            := AddCommand(MakeProcCommand(p));
+    public function AddProc(p: (Kernel, Context)->()) := AddCommand(MakeProcCommand(p));
     
     {$endregion Proc}
     
     {$region Wait}
     
-    public function AddWaitAll(params qs: array of CommandQueueBase): KernelCommandQueue := AddWaitAll(qs.AsEnumerable);
-    public function AddWaitAll(qs: sequence of CommandQueueBase): KernelCommandQueue;
+    public function AddWaitAll(params qs: array of CommandQueueBase)  := AddCommand(MakeWaitAllCommand(qs));
+    public function AddWaitAll(qs: sequence of CommandQueueBase)      := AddCommand(MakeWaitAllCommand(qs));
     
-    public function AddWaitAny(params qs: array of CommandQueueBase): KernelCommandQueue := AddWaitAny(qs.AsEnumerable);
-    public function AddWaitAny(qs: sequence of CommandQueueBase): KernelCommandQueue;
+    public function AddWaitAny(params qs: array of CommandQueueBase)  := AddCommand(MakeWaitAnyCommand(qs));
+    public function AddWaitAny(qs: sequence of CommandQueueBase)      := AddCommand(MakeWaitAnyCommand(qs));
     
     public function AddWait(q: CommandQueueBase) := AddWaitAll(q);
     
@@ -2645,7 +2973,7 @@ type
   
   {$endregion KernelCommandQueue}
   
-  {$endregion GPUCommandContainer's}
+  {$endregion GPUCommandContainer}
   
   {$region Enqueueable's}
   
@@ -2682,6 +3010,9 @@ type
       if not need_thread and (ev_l1=nil) then
       begin
         Result := enq_f(prev_qr.GetRes, cq, tsk, c, ev_l2);
+        {$ifdef EventDebug}
+        EventDebug.RegisterEventRetain(Result.evs.Single, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+        {$endif EventDebug}
         Result.abortable := true; // ev_l2 тут всегда напрямую передаётся в cl.Enqueue*... и ev_l2.abortable всегда true
         //ToDo С другой стороны, если ev_l2 абортится - получаем CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST в качестве статуса
         // - Надо бы проверить как это всё работает
@@ -2694,24 +3025,31 @@ type
         cq := cl_command_queue.Zero;
         
         if need_thread then
-          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2), c.Native, tsk) else
+          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2), c.Native, tsk
+            {$ifdef EventDebug}, $'enq of {self.GetType}'{$endif}
+          ) else
         begin
-          res_ev := tsk.MakeUserEvent(c.Native);
+          res_ev := tsk.MakeUserEvent(c.Native
+            {$ifdef EventDebug}, $'{self.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+          );
           
           //ВНИМАНИЕ "ev_l1=nil" не может случится, из за условий выше
           ev_l1.AttachCallback(()->
           begin
-            ev_l1.Release;
+            ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {self.GetType}'{$endif});
             var enq_ev := enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2);
-            EventList.AttachCallback(enq_ev, ()->res_ev.SetStatus(CommandExecutionStatus.COMPLETE), tsk);
-          end, tsk, c.Native, main_dvc, lcq);
+            {$ifdef EventDebug}
+            EventDebug.RegisterEventRetain(enq_ev, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+            {$endif EventDebug}
+            EventList.AttachCallback(enq_ev, ()->res_ev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, true{$ifdef EventDebug}, $'propagating Enq ev of {self.GetType} to res_ev: {res_ev.uev}'{$endif});
+          end, tsk, c.Native, main_dvc, lcq{$ifdef EventDebug}, $'calling Enq of {self.GetType}'{$endif});
           
         end;
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
           System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
-        end, tsk);
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         Result := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено автоматически
       end;
       
@@ -2768,6 +3106,9 @@ type
       if not need_thread and (ev_l1=nil) then
       begin
         Result.ev := enq_f(prev_qr.GetRes, cq, tsk, ev_l2, qr);
+        {$ifdef EventDebug}
+        EventDebug.RegisterEventRetain(Result.ev.evs.Single, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+        {$endif EventDebug}
         Result.ev.abortable := true; //ToDo та же история что выше
       end else
       begin
@@ -2778,24 +3119,31 @@ type
         cq := cl_command_queue.Zero;
         
         if need_thread then
-          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, ev_l2, qr), c.Native, tsk) else
+          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, ev_l2, qr), c.Native, tsk
+            {$ifdef EventDebug}, $'enq of {self.GetType}'{$endif}
+          ) else
         begin
-          res_ev := tsk.MakeUserEvent(c.Native);
+          res_ev := tsk.MakeUserEvent(c.Native
+            {$ifdef EventDebug}, $'{self.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+          );
           
           //ВНИМАНИЕ "ev_l1=nil" не может случится, из за условий выше
           ev_l1.AttachCallback(()->
           begin
-            ev_l1.Release;
+            ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {self.GetType}'{$endif});
             var enq_ev := enq_f(prev_qr.GetRes, lcq, tsk, ev_l2, qr);
-            EventList.AttachCallback(enq_ev, ()->res_ev.SetStatus(CommandExecutionStatus.COMPLETE), tsk);
-          end, tsk, c.Native, main_dvc, lcq);
+            {$ifdef EventDebug}
+            EventDebug.RegisterEventRetain(enq_ev, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+            {$endif EventDebug}
+            EventList.AttachCallback(enq_ev, ()->res_ev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, true{$ifdef EventDebug}, $'propagating Enq ev of {self.GetType} to res_ev: {res_ev.uev}'{$endif});
+          end, tsk, c.Native, main_dvc, lcq{$ifdef EventDebug}, $'calling Enq of {self.GetType}'{$endif});
           
         end;
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
           System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
-        end, tsk);
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         Result.ev := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено автоматически
       end;
       
@@ -2856,75 +3204,6 @@ type
   
   {$endregion KernelArg}
   
-  {$region WCQWaiter}
-  
-  WCQWaiter = abstract class
-    private waitables: array of CommandQueueBase;
-    
-    public constructor(waitables: array of CommandQueueBase);
-    begin
-      foreach var q in waitables do q.MakeWaitable;
-      self.waitables := waitables;
-    end;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    public procedure RegisterWaitables(tsk: CLTaskBase) :=
-    foreach var q in waitables do q.RegisterWaiterTask(tsk);
-    
-    public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; abstract;
-    
-    protected procedure Finalize; override :=
-    foreach var q in waitables do q.UnMakeWaitable;
-    
-  end;
-  
-  WCQWaiterAll = sealed class(WCQWaiter)
-    
-    public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; override;
-    begin
-      var uev := tsk.MakeUserEvent(c.Native);
-      
-      var done := 0;
-      var total := waitables.Length;
-      var done_lock := new object;
-      
-      for var i := 0 to waitables.Length-1 do
-        waitables[i].AddMWHandler(tsk, ()->
-        begin
-          if uev.CanRemove then exit;
-          
-          lock done_lock do
-          begin
-            done += 1;
-            if done=total then
-              // Если uev.Abort вызовет между .CanRemove и этой строчкой - значит это было в отдельном потоке,
-              // т.е. в заведомо не_безопастном месте. А значит проверять тут - нет смысла
-              uev.SetStatus(CommandExecutionStatus.COMPLETE);
-          end;
-          
-          Result := true;
-        end);
-      
-      Result := uev;
-    end;
-    
-  end;
-  WCQWaiterAny = sealed class(WCQWaiter)
-    
-    public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; override;
-    begin
-      var uev := tsk.MakeUserEvent(c.Native);
-      
-      for var i := 0 to waitables.Length-1 do
-        waitables[i].AddMWHandler(tsk, ()->uev.SetStatus(CommandExecutionStatus.COMPLETE));
-      
-      Result := uev;
-    end;
-    
-  end;
-  
-  {$endregion WCQWaiter}
-  
 implementation
 
 {$region DelayedImpl}
@@ -2981,8 +3260,12 @@ begin
   
   if need_abort_ev then
   begin
-    var uev := tsk.MakeUserEvent(c);
-    Result.AttachCallback(()->begin uev.SetStatus(CommandExecutionStatus.COMPLETE) end, tsk, c, main_dvc, cq); //ToDo лишний begin-end
+    var uev := tsk.MakeUserEvent(c
+      {$ifdef EventDebug}, $'abortability of EventList.Combine of: {Result.evs.Take(Result.count).JoinToString}'{$endif}
+    );
+    Result.AttachCallback(()->begin uev.SetStatus(CommandExecutionStatus.COMPLETE) end, tsk, c, main_dvc, cq
+      {$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif}
+    ); //ToDo лишний begin-end
     Result += cl_event(uev);
     Result.abortable := true;
   end;
@@ -3001,7 +3284,7 @@ new QueueResDelayedObj<T> as QueueResDelayedBase<T>;
 
 {$region UserEvent}
 
-static function UserEvent.MakeUserEvent(tsk: CLTaskBase; c: cl_context) := tsk.MakeUserEvent(c);
+static function UserEvent.MakeUserEvent(tsk: CLTaskBase; c: cl_context{$ifdef EventDebug}; reason: string{$endif}) := tsk.MakeUserEvent(c{$ifdef EventDebug}, reason{$endif});
 
 {$endregion UserEvent}
 
@@ -3052,16 +3335,21 @@ type
       
       // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
       foreach var mu_qr in mu_res.Values do
-        mu_qr.ev.Release;
+        mu_qr.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
       mu_res := nil;
       
+      {$ifdef DEBUG}
       //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно
+      if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
+      {$endif DEBUG}
+      
       qr.ev.AttachFinallyCallback(()->
       begin
+        qr.ev.Release({$ifdef EventDebug}$'last ev of CLTask'{$endif});
         if cq<>cl_command_queue.Zero then
           System.Threading.Tasks.Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
         OnQDone(qr);
-      end, self, c.Native, c.MainDevice.Native, cq);
+      end, self, c.Native, c.MainDevice.Native, cq{$ifdef EventDebug}, $'CLTaskResLess.OnQDone'{$endif});
       
     end;
     
@@ -3100,8 +3388,6 @@ type
       finally
         wh.Set;
       end;
-      
-      qr.ev.Release(self);
       
       foreach var ev in l_EvDone do
       try
@@ -3202,8 +3488,6 @@ type
   
 function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
 new CommandQueueThenConvert<T, TOtp>(self, f);
-function CommandQueue<T>.ThenConvert<TOtp>(f: T->TOtp) :=
-new CommandQueueThenConvert<T, TOtp>(self, (o,c)->f(o));
 
 {$endregion ThenConvert}
 
@@ -3234,7 +3518,7 @@ type
         tsk.mu_res[self] := Result;
       end;
       
-      Result.ev.Retain;
+      Result.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
     end;
     
     public function MakeNode: CommandQueue<T>;
@@ -3263,7 +3547,7 @@ function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQ
 
 {$endregion Multiusable}
 
-{$region Wait}
+{$region ThenWait}
 
 type
   CommandQueueThenWaitFor<T> = sealed class(CommandQueue<T>)
@@ -3296,114 +3580,9 @@ new CommandQueueThenWaitFor<T>(self, new WCQWaiterAll(qs.ToArray));
 function CommandQueue<T>.ThenWaitForAny(qs: sequence of CommandQueueBase) :=
 new CommandQueueThenWaitFor<T>(self, new WCQWaiterAny(qs.ToArray));
 
-{$endregion Wait}
+{$endregion ThenWait}
 
 {$endregion Queue converter's}
-
-{$region Special GPUCommand's}
-
-{$region Queue}
-
-type
-  QueueCommand<T> = sealed class(GPUCommand<T>)
-    public q: CommandQueueBase;
-    
-    public constructor(q: CommandQueueBase) := self.q := q;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    protected function InvokeObj  (o: T;                      tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>;  tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    q.RegisterWaitables(tsk, prev_hubs);
-    
-  end;
-  
-function BufferCommandQueue.AddQueue(q: CommandQueueBase) := AddCommand(new QueueCommand<Buffer>(q));
-function KernelCommandQueue.AddQueue(q: CommandQueueBase) := AddCommand(new QueueCommand<Kernel>(q));
-
-{$endregion Queue}
-
-{$region Proc}
-
-type
-  ProcCommandBase<T> = abstract class(GPUCommand<T>)
-    
-    protected procedure ExecProc(o: T; c: Context); abstract;
-    
-    protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override :=
-    UserEvent.StartBackgroundWork(prev_ev, ()->ExecProc(o, c), c.Native, tsk);
-    
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override;
-    begin
-      var o_q_res := o_q().Invoke(tsk, c, main_dvc, false, cq, prev_ev);
-      Result := UserEvent.StartBackgroundWork(o_q_res.ev, ()->ExecProc(o_q_res.GetRes(), c), c.Native, tsk);
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
-    
-  end;
-  ProcCommand<T> = sealed class(ProcCommandBase<T>)
-    public p: T->();
-    
-    public constructor(p: T->()) := self.p := p;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    protected procedure ExecProc(o: T; c: Context); override := p(o);
-    
-  end;
-  ProcCommandC<T> = sealed class(ProcCommandBase<T>)
-    public p: (T,Context)->();
-    
-    public constructor(p: (T,Context)->()) := self.p := p;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    protected procedure ExecProc(o: T; c: Context); override := p(o, c);
-    
-    
-  end;
-  
-function BufferCommandQueue.AddProc(p: Buffer->()) := AddCommand(new ProcCommand<Buffer>(p));
-function KernelCommandQueue.AddProc(p: Kernel->()) := AddCommand(new ProcCommand<Kernel>(p));
-
-function BufferCommandQueue.AddProc(p: (Buffer, Context)->()) := AddCommand(new ProcCommandC<Buffer>(p));
-function KernelCommandQueue.AddProc(p: (Kernel, Context)->()) := AddCommand(new ProcCommandC<Kernel>(p));
-
-{$endregion Proc}
-
-{$region Wait}
-
-type
-  WaitCommand<T> = sealed class(GPUCommand<T>)
-    public waiter: WCQWaiter;
-    
-    public constructor(waiter: WCQWaiter) :=
-    self.waiter := waiter;
-    
-    private function Invoke(tsk: CLTaskBase; c: Context; prev_ev: EventList): EventList;
-    begin
-      if prev_ev=nil then
-        Result := waiter.GetWaitEv(tsk, c) else
-        Result := prev_ev + waiter.GetWaitEv(tsk, c);
-    end;
-    
-    protected function InvokeObj  (o: T;                      tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := Invoke(tsk, c, prev_ev);
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>;  tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override := Invoke(tsk, c, prev_ev);
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    waiter.RegisterWaitables(tsk);
-    
-  end;
-  
-function BufferCommandQueue.AddWaitAll(qs: sequence of CommandQueueBase) := AddCommand(new WaitCommand<Buffer>(new WCQWaiterAll(qs.ToArray)));
-function KernelCommandQueue.AddWaitAll(qs: sequence of CommandQueueBase) := AddCommand(new WaitCommand<Kernel>(new WCQWaiterAll(qs.ToArray)));
-
-function BufferCommandQueue.AddWaitAny(qs: sequence of CommandQueueBase) := AddCommand(new WaitCommand<Buffer>(new WCQWaiterAny(qs.ToArray)));
-function KernelCommandQueue.AddWaitAny(qs: sequence of CommandQueueBase) := AddCommand(new WaitCommand<Kernel>(new WCQWaiterAny(qs.ToArray)));
-
-{$endregion Wait}
-
-{$endregion Special GPUCommand's}
 
 {$region GPUCommandContainerBody}
 

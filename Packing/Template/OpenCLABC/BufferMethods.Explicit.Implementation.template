@@ -36,8 +36,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -89,8 +89,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -150,8 +150,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -213,8 +213,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -291,8 +291,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -354,9 +354,9 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           val_hnd.Free;
-        end, tsk);
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -402,13 +402,16 @@ type
       begin
         var a := a_qr.GetRes;
         
-        cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-          a[0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueWriteBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+            a[0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -453,13 +456,16 @@ type
       begin
         var a := a_qr.GetRes;
         
-        cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-          a[0,0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueWriteBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+            a[0,0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -504,13 +510,16 @@ type
       begin
         var a := a_qr.GetRes;
         
-        cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-          a[0,0,0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueWriteBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+            a[0,0,0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -555,13 +564,16 @@ type
       begin
         var a := a_qr.GetRes;
         
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-          a[0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+            a[0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -606,13 +618,16 @@ type
       begin
         var a := a_qr.GetRes;
         
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-          a[0,0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+            a[0,0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -657,13 +672,16 @@ type
       begin
         var a := a_qr.GetRes;
         
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-          a[0,0,0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+            a[0,0,0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -720,13 +738,16 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-          a[a_offset],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueWriteBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+            a[a_offset],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -790,13 +811,16 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-          a[a_offset1,a_offset2],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueWriteBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+            a[a_offset1,a_offset2],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -865,13 +889,16 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-          a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueWriteBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+            a[a_offset1,a_offset2,a_offset3],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -933,13 +960,16 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-          a[a_offset],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+            a[a_offset],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -1003,13 +1033,16 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-          a[a_offset1,a_offset2],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+            a[a_offset1,a_offset2],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -1078,13 +1111,16 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-          a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+            a[a_offset1,a_offset2,a_offset3],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -1149,8 +1185,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1215,8 +1251,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1275,8 +1311,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1339,8 +1375,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1396,9 +1432,9 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           val_hnd.Free;
-        end, tsk);
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1461,9 +1497,9 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           val_hnd.Free;
-        end, tsk);
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1521,8 +1557,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1574,8 +1610,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1639,8 +1675,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -1707,8 +1743,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;

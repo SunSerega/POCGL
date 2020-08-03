@@ -37,8 +37,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -94,8 +94,8 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -124,6 +124,8 @@ type
   BufferCommandGetValue<TRecord> = sealed class(EnqueueableGetCommand<Buffer, TRecord>)
   where TRecord: record;
     private buff_offset: CommandQueue<integer>;
+    
+    protected function ForcePtrQr: boolean; override := true;
     
     protected function ParamCountL1: integer; override := 1;
     protected function ParamCountL2: integer; override := 0;
@@ -155,9 +157,9 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           own_qr_hnd.Free;
-        end, tsk);
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -199,15 +201,18 @@ type
       Result := (o, cq, tsk, evs, own_qr)->
       begin
         
-        var len := o.Size64 div Marshal.SizeOf&<TRecord>;
-        var res := new TRecord[len]; own_qr.SetRes(res);
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(0), new UIntPtr(len * Marshal.SizeOf&<TRecord>),
-          res[0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          var len := o.Size64 div Marshal.SizeOf&<TRecord>;
+          var res := new TRecord[len]; own_qr.SetRes(res);
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(0), new UIntPtr(len * Marshal.SizeOf&<TRecord>),
+            res[0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -250,14 +255,17 @@ type
       begin
         var len := len_qr.GetRes;
         
-        var res := new TRecord[len]; own_qr.SetRes(res);
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf&<TRecord>),
-          res[0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          var res := new TRecord[len]; own_qr.SetRes(res);
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf&<TRecord>),
+            res[0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -307,14 +315,17 @@ type
         var len1 := len1_qr.GetRes;
         var len2 := len2_qr.GetRes;
         
-        var res := new TRecord[len1,len2]; own_qr.SetRes(res);
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf&<TRecord>),
-          res[0,0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          var res := new TRecord[len1,len2]; own_qr.SetRes(res);
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf&<TRecord>),
+            res[0,0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;
@@ -369,14 +380,17 @@ type
         var len2 := len2_qr.GetRes;
         var len3 := len3_qr.GetRes;
         
-        var res := new TRecord[len1,len2,len3]; own_qr.SetRes(res);
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf&<TRecord>),
-          res[0,0,0],
-          evs.count, evs.evs, IntPtr.Zero
-        ).RaiseIfError;
-        evs.Release;
+        try
+          var res := new TRecord[len1,len2,len3]; own_qr.SetRes(res);
+          cl.EnqueueReadBuffer(
+            cq, o.Native, Bool.BLOCKING,
+            new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf&<TRecord>),
+            res[0,0,0],
+            evs.count, evs.evs, IntPtr.Zero
+          ).RaiseIfError;
+        finally
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end;
         
         Result := cl_event.Zero;
       end;

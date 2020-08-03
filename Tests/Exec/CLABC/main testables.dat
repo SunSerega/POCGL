@@ -1,41 +1,28 @@
 
 
 
-- Вывод ошибок
+- 01#Wrap
+	- 01#Platform
+	- 02#Device
+	- 03#Context
+	- 04#Buffer
+	- 05#Kernel
+	- 06#ProgramCode
 
-- ConstQueue
-
-- Cast
-
-- ThenConvert [, Context]
-
-- Multiusable
-
-- Wait ( [Wait, ThenWait, .AddWait][, All, Any] )
-
-- GPUCommandContainer
-* - AddQueue
-* - AddProc
-* - Other .Add*
-
-- ProgramCode
-* - constructor (build err otp)
-* - GetAllKernels
-* - Serialize/Deserialize
-
-- HostExec (HFQ/HPQ)
-
-- CombineQueues [Sync, Async] [, operator[+,*,+=,*=]]
-* - NonConv
-* - Conv
-* * - NonContext
-* * - Context
-
-- CLTask.Abort
-
-
-
-В будущем:
-- Context и т.п. - когда будет нормальная связь с OpenCL.pas
+- 02#Выполнение очередй
+	- 00#Вывод ошибок
+	- 01#ConstQueue
+	- 02#Cast
+	- 03#ThenConvert
+	- 04#Multiusable
+	- 05#Wait
+		- WaitFor
+		- ThenWaitFor
+		- AddWait
+	- 06#GPUCommandContainer
+		- AddQueue
+		- AddProc
+	- 07#HFQ/HPQ
+	- 08#CombineQueues
 
 

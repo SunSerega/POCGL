@@ -52,13 +52,13 @@ type
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, tsk);
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -131,13 +131,13 @@ type
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, tsk);
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -215,13 +215,13 @@ type
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, tsk);
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -300,13 +300,13 @@ type
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, tsk);
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release;
-        end, tsk);
+          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;

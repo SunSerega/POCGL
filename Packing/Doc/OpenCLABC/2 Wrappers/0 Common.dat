@@ -52,6 +52,7 @@
 # Buffer.ToString
 # SubBuffer.ToString
 # Kernel.ToString
+# ProgramCode.ToString
 Возвращает строку с основными данными о данном объекте
 
 
