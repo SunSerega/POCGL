@@ -1,7 +1,7 @@
 ﻿uses OpenCLABC;
 
 begin
-  var Q := HFQ(()->1);
+  var Q := HFQ(()->5);
   var M: CommandQueueBase := nil as object;
   
   var t := Context.Default.BeginInvoke(
@@ -9,5 +9,5 @@ begin
   );
   Context.Default.SyncInvoke(M);
   
-//  t.WaitRes.Println;
+  t.WaitRes.Println;
 end.
