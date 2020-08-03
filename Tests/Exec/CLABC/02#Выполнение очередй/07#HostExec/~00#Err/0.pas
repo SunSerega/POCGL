@@ -3,7 +3,7 @@
 begin
   var q := HPQ(()->
   begin
-    raise new Exception('>>> текст исключения <<<');
+    raise new Exception('TestOK');
   end);
   Context.Default.SyncInvoke(q);
 end.

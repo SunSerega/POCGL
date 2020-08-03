@@ -102,58 +102,58 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wa
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\4.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0.pas"
 Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Done executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
-Tester: Done executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
+Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
-Tester: Done executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
-Tester: Done executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\1]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\2]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\2]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\3]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\3]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\4]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\4]
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~Err\0]
-Tester: Done executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~Err\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0]
+Tester: Done executing
 Tester: Cleanup
 Tester: Done testing
 Finished runing Tester

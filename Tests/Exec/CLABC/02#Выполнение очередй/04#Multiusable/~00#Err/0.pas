@@ -4,7 +4,7 @@ begin
   var qf := HPQ(()->
   begin
     Sleep(10);
-    raise new Exception('>>> текст ошибки <<<');
+    raise new Exception('TestOK');
   end).Multiusable;
   
   Context.Default.SyncInvoke(

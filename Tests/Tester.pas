@@ -341,7 +341,7 @@ type
       if dom.GetData('fatal_err') is string(var fatal_err) then
         raise new MessageException(fatal_err);
       
-      otp_l.s := $'Done executing {nick}';
+      otp_l.s := $'Done executing';
       otp_l.t += int64(dom.GetData('exec_time'));
       Otp(otp_l);
       

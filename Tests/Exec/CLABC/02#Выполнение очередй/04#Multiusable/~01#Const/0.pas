@@ -10,11 +10,11 @@ begin
     WaitFor(cq) +
     (
       WaitFor(cq) +
-      HPQ(()->raise new Exception('НЕПРАВИЛЬНЫЙ РЕЗУЛЬТАТ'))
+      HPQ(()->raise new Exception('TestERROR'))
     ) *
     (
       WaitFor(mq) +
-      HPQ(()->raise new Exception('>>> текст <<<'))
+      HPQ(()->raise new Exception('TestOK'))
     )
   );
   
