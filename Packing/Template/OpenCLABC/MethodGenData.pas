@@ -406,16 +406,18 @@ type
               end;
               res_EIm += '); ';
               
-              res_EIm += 'evs_l';
-              res_EIm += (settings as MethodSettings).arg_usage[arg.name]='ptr' ? '2' : '1';
-              res_EIm += ' += ';
+              if (settings as MethodSettings).arg_usage[arg.name]='ptr' then
+                res_EIm += $'({arg.name}_qr is QueueResDelayedPtr&<{arg.t.Enmr.Last.org_text}>?evs_l2:evs_l1)' else
+                res_EIm += 'evs_l1';
+              
+              res_EIm += '.Add(';
               if arg.t is MethodArgTypeArray then
                 res_EIm += 'Result' else
               begin
-                res_EIm += arg.name.PadLeft(max_arg_w);
+                res_EIm += arg.name;
                 res_EIm += '_qr';
               end;
-              res_EIm += '.ev';
+              res_EIm += '.ev)';
               
               if arg.t is MethodArgTypeArray then res_EIm += '; end';
               loop arg.t.ArrLvl do res_EIm += ')';
@@ -665,7 +667,8 @@ type
               param_count_l1 += 1;
             
           end;
-      res_EIm += $'    protected function ParamCountL1: integer; override := {param_count_l1};'+#10;
+      // +param_count_l2, потому что, к примеру, .Cast может вернуть не QueueResDelayedPtr, даже при need_ptr_qr
+      res_EIm += $'    protected function ParamCountL1: integer; override := {param_count_l1+param_count_l2};'+#10;
       res_EIm += $'    protected function ParamCountL2: integer; override := {param_count_l2};'+#10;
       
       res_EIm += '    '#10;

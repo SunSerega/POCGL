@@ -22,8 +22,8 @@ type
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
-      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
@@ -99,9 +99,9 @@ type
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
-      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
-      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz2_qr.ev;
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
+      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
@@ -181,10 +181,10 @@ type
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
-      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 +=  sz1_qr.ev;
-      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz2_qr.ev;
-      var  sz3_qr :=  sz3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=  sz3_qr.ev;
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
+      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
+      var  sz3_qr :=  sz3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz3_qr.ev);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
       
       Result := (o, cq, tsk, c, evs)->
       begin
@@ -266,10 +266,10 @@ type
     
     protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
-      var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1 += global_work_offset_qr.ev;
-      var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=   global_work_size_qr.ev;
-      var    local_work_size_qr :=    local_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1 +=    local_work_size_qr.ev;
-      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1 += Result.ev; end);
+      var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(global_work_offset_qr.ev);
+      var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(global_work_size_qr.ev);
+      var    local_work_size_qr :=    local_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(local_work_size_qr.ev);
+      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
       
       Result := (o, cq, tsk, c, evs)->
       begin

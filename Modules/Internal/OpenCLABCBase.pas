@@ -1836,8 +1836,7 @@ type
   end;
   
   // Результат который просто есть
-  IQueueResConst = interface end;
-  QueueResConst<T> = sealed class(QueueRes<T>, IQueueResConst)
+  QueueResConst<T> = sealed class(QueueRes<T>)
     private res: T;
     
     public constructor(res: T; ev: EventList);
@@ -1859,10 +1858,7 @@ type
   end;
   
   // Результат который надо будет сначала дождаться, а потом ещё досчитать
-  IQueueResFunc = interface
-    function GetF: ()->object;
-  end;
-  QueueResFunc<T> = sealed class(QueueRes<T>, IQueueResFunc)
+  QueueResFunc<T> = sealed class(QueueRes<T>)
     private f: ()->T;
     
     public constructor(f: ()->T; ev: EventList);
@@ -1875,7 +1871,6 @@ type
     public function Clone: QueueRes<T>; override := new QueueResFunc<T>(f, ev);
     
     public function GetRes: T; override := f();
-    public function IQueueResFunc.GetF: ()->object := ()->f();
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
     new QueueResFunc<T2>(()->f(self.f()), self.ev);
@@ -1885,8 +1880,7 @@ type
   end;
   
   // Результат который будет сохранён куда то, надо только дождаться
-  IQueueResDelayed = interface end;
-  QueueResDelayedBase<T> = abstract class(QueueRes<T>, IQueueResDelayed)
+  QueueResDelayedBase<T> = abstract class(QueueRes<T>)
     
     public static function MakeNew(need_ptr_qr: boolean): QueueResDelayedBase<T>;
     

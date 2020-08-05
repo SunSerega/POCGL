@@ -19,11 +19,8 @@ IPtrQueueRes<T>
 QRPtrWrap<T>
 QueueResBase
 QueueRes<T>
-IQueueResConst
 QueueResConst<T>
-IQueueResFunc
 QueueResFunc<T>
-IQueueResDelayed
 QueueResDelayedBase<T>
 QueueResDelayedObj<T>
 QueueResDelayedPtr<T>
