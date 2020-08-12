@@ -4143,6 +4143,7 @@ type
     function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (cl_command_queue, EventList, TInvData)->cl_event;
     
   end;
+  //ToDo EnqueueableCore это таки статический класс, а шаблонным надо сделать метод Invoke
   EnqueueableCore<TEnq, TInvData> = sealed class
   where TEnq: IEnqueueable<TInvData>;
     
@@ -4174,6 +4175,8 @@ type
         {$ifdef EventDebug}
         EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
         {$endif EventDebug}
+        // 1. ev_l2 можно освобождать только после выполнения команды, ожидающей его
+        // 2. Если ивент из ev_l2 завершится с ошибкой - enq_ev скажет только что была ошибка в ev_l2, но не скажет какая
         Result := ev_l2 + enq_ev;
       end else
       begin
@@ -4188,9 +4191,7 @@ type
           begin
             enq_f(lcq, ev_l2, inv_data);
             ev_l2.Release({$ifdef EventDebug}$'after using in blocking enq of {q.GetType}'{$endif});
-          end, c.Native, tsk
-            {$ifdef EventDebug}, $'enq of {q.GetType}'{$endif}
-          ) else
+          end, c.Native, tsk{$ifdef EventDebug}, $'enq of {q.GetType}'{$endif}) else
         begin
           res_ev := tsk.MakeUserEvent(c.Native
             {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
