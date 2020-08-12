@@ -58,13 +58,16 @@ type
       prev += l;
       var res := new StringBuilder;
       
+      var ind_comment := l.IndexOf('//');
+      if ind_comment=-1 then ind_comment := l.Length;
+      
       var last_ind := 0;
       while true do
       begin
-        var ind1 := l.IndexOf('%', last_ind);
+        var ind1 := l.IndexOf('%', last_ind, ind_comment-last_ind);
         if ind1=-1 then break;
         
-        var ind2 := l.IndexOf('%', ind1+1);
+        var ind2 := l.IndexOf('%', ind1+1, ind_comment-ind1-1);
         if ind2=-1 then raise new System.InvalidOperationException($'>>>{l}<<<');
         
         res.Append(l, last_ind, ind1-last_ind);
@@ -137,7 +140,9 @@ begin
         begin
           already_commented := (last_line<>nil) and last_line.TrimStart(' ').StartsWith('///');
           if last_line<>nil then res.WriteLine(last_line);
+          
           last_line := CommentData.Apply(l);
+          
           Result := true;
         end) do
         begin

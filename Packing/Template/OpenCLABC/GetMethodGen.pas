@@ -68,7 +68,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: GetMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (';
+      res_EIm += '    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (';
       res_EIm += t;
       res_EIm += ', cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<';
       res_EIm += settings.result_type.org_text;
@@ -96,7 +96,7 @@ type
       
       if settings.force_ptr_qr then
       begin
-        res_EIm += '    protected function ForcePtrQr: boolean; override := true;'#10;
+        res_EIm += '    public function ForcePtrQr: boolean; override := true;'#10;
         res_EIm += '    '#10;
       end;
       

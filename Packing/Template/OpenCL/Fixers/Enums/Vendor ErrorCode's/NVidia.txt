@@ -1,0 +1,8 @@
+
+
+
+# ErrorCode
+!add_enum
+NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE	=	-9999
+
+

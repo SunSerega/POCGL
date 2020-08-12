@@ -486,27 +486,11 @@ type
         res_EIm += '        var res_ev: cl_event;'#10;
       res_EIm += '        '#10;
       
-      var tabs := 4;
-      
-      if (settings as MethodSettings).need_thread then
-      begin
-        res_EIm += '  '*tabs;
-        res_EIm += 'try'#10;
-        tabs += 1;
-      end;
-      
       foreach var l in (settings as MethodSettings).def do
       begin
-        res_EIm += '  '*tabs;
+        res_EIm += '  '*4;
         res_EIm += l;
         res_EIm += #10;
-      end;
-      
-      if (settings as MethodSettings).need_thread then
-      begin
-        res_EIm += '        finally'#10;
-        res_EIm += '          evs.Release({$ifdef EventDebug}$''after use in waiting of {self.GetType}''{$endif});'#10;
-        res_EIm += '        end;'#10;
       end;
       
       res_EIm += '        '#10;
@@ -535,13 +519,10 @@ type
       
       {$region FinallyCallback}
       
-      if (args_with_GCHandle.Count<>0) or not (settings as MethodSettings).need_thread then
+      if args_with_GCHandle.Count<>0 then
       begin
         res_EIm += '        EventList.AttachFinallyCallback(res_ev, ()->'#10;
         res_EIm += '        begin'#10;
-        
-        if not (settings as MethodSettings).need_thread then
-          res_EIm += '          evs.Release({$ifdef EventDebug}$''after use in waiting of {self.GetType}''{$endif});'#10;
         
         foreach var arg in args_with_GCHandle do
         begin
@@ -649,7 +630,7 @@ type
       
       if (settings as MethodSettings).need_thread then
       begin
-        res_EIm += '    protected function NeedThread: boolean; override := true;'#10;
+        res_EIm += '    public function NeedThread: boolean; override := true;'#10;
         res_EIm += '    '#10;
       end;
       WriteMiscMethods(settings);
@@ -668,8 +649,8 @@ type
             
           end;
       // +param_count_l2, потому что, к примеру, .Cast может вернуть не QueueResDelayedPtr, даже при need_ptr_qr
-      res_EIm += $'    protected function ParamCountL1: integer; override := {param_count_l1+param_count_l2};'+#10;
-      res_EIm += $'    protected function ParamCountL2: integer; override := {param_count_l2};'+#10;
+      res_EIm += $'    public function ParamCountL1: integer; override := {param_count_l1+param_count_l2};'+#10;
+      res_EIm += $'    public function ParamCountL2: integer; override := {param_count_l2};'+#10;
       
       res_EIm += '    '#10;
       

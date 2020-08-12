@@ -342,16 +342,21 @@ end;
 
 static function CommentableBase.FindAllCommentalbes(lns: sequence of string; on_line: string->boolean): sequence of CommentableBase;
 begin
-  var enmr: IEnumerator<string> := lns.Where(on_line).Select(l->
+  var enmr: IEnumerator<string> := lns
+  .Where(on_line)
+  .Select(l->
   begin
     
     var ind := l.IndexOf('//');
     if ind<>-1 then l := l.Remove(ind);
     
-    l := l.RemoveBlock('{','}').RemoveBlock('''','''').Trim(' ');
-    
-    Result := l;
-  end).GetEnumerator;
+    Result := l
+      .RemoveBlock('{','}')
+      .RemoveBlock('''','''')
+      .Trim(' ')
+    ;
+  end)
+  .GetEnumerator;
   
   var start_checking := false;
   var end_checking := false;

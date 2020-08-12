@@ -46,6 +46,8 @@ begin
   thr.Start;
 end;
 
+function GetEXEFileName := System.Reflection.Assembly.GetExecutingAssembly.ManifestModule.FullyQualifiedName;
+
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
   if System.IO.Path.IsPathRooted(fname) then

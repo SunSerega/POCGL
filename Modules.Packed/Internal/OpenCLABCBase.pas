@@ -19,6 +19,10 @@ unit OpenCLABCBase;
 //===================================
 // Обязательно сделать до следующего пула:
 
+//ToDo (Q1+Q2)+(Q3+Q4) почему то сейчас не инлайнится в Q1+Q2+Q3+Q4
+
+//ToDo При запуске когда открыт файл OpenCLABCBase - компилятор вылетает
+
 //===================================
 // Запланированное:
 
@@ -2133,7 +2137,7 @@ type
     public static function StartBackgroundWork(after: EventList; work: Action; c: cl_context; tsk: CLTaskBase{$ifdef EventDebug}; reason: string{$endif}): UserEvent;
     begin
       var res := MakeUserEvent(tsk, c
-        {$ifdef EventDebug}, $'BackgroundWork, executing {reason}'{$endif}
+        {$ifdef EventDebug}, $'BackgroundWork, executing {reason}, after waiting on: {after?.evs?.JoinToString}'{$endif}
       );
       
       var abort_thr_ev := new AutoResetEvent(false);
@@ -2300,13 +2304,17 @@ type
     end;
     public function TrySetEvBase(new_ev: EventList): QueueResBase; override := TrySetEv(new_ev);
     
-    public function EnsureAbortability(tsk: CLTaskBase; c: Context): QueueRes<T>;
+    public function EnsureAbortability(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue): QueueRes<T>;
     begin
       Result := self;
       if (ev.count<>0) and not ev.abortable then
-        Result := Result.TrySetEv(ev + UserEvent.MakeUserEvent(tsk, c.Native
+      begin
+        var uev := UserEvent.MakeUserEvent(tsk, c.Native
           {$ifdef EventDebug}, $'abortability of QueueRes with .ev: {ev.evs.JoinToString}'{$endif}
-        ));
+        );
+        ev.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, c.Native, main_dvc, cq{$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif});
+        Result := Result.TrySetEv(ev + uev);
+      end;
     end;
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
@@ -2834,7 +2842,7 @@ type
     
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>;
     begin
-      Result := InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev).EnsureAbortability(tsk, c);
+      Result := InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev).EnsureAbortability(tsk, c, main_dvc, cq);
       Result.ev.AttachCallback(self.ExecuteMWHandlers, tsk, c.Native, main_dvc, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
     end;
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override :=
@@ -2997,18 +3005,27 @@ type
   {$region Simple}
   
   ISimpleQueueArray = interface
-    function GetQS: array of CommandQueueBase;
+    function GetQS: sequence of CommandQueueBase;
   end;
   SimpleQueueArray<T> = abstract class(CommandQueue<T>, ISimpleQueueArray)
     protected qs: array of CommandQueueBase;
+    protected last: CommandQueue<T>;
     
-    public constructor(params qs: array of CommandQueueBase) := self.qs := qs;
+    public constructor(params qs: array of CommandQueueBase);
+    begin
+      self.qs := new CommandQueueBase[qs.Length-1];
+      System.Array.Copy(qs, self.qs, qs.Length-1);
+      self.last := qs[qs.Length-1].Cast&<T>;
+    end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    public function GetQS: array of CommandQueueBase := qs;
+    public function GetQS: sequence of CommandQueueBase := qs.Append(last as CommandQueueBase); //ToDo #? https://github.com/pascalabcnet/pascalabcnet/issues?q=extensionmethod+is%3Aclosed
     
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    foreach var q in qs do q.RegisterWaitables(tsk, prev_hubs);
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      foreach var q in qs do q.RegisterWaitables(tsk, prev_hubs);
+      last.RegisterWaitables(tsk, prev_hubs);
+    end;
     
   end;
   
@@ -3018,10 +3035,10 @@ type
     protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       
-      for var i := 0 to qs.Length-2 do
+      for var i := 0 to qs.Length-1 do
         prev_ev := qs[i].InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).ev;
       
-      Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
+      Result := last.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
     end;
     
   end;
@@ -3031,15 +3048,15 @@ type
     
     protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
-      if (prev_ev<>nil) and (prev_ev.count<>0) then loop qs.Length-1 do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
-      var evs := new EventList[qs.Length];
+      if (prev_ev<>nil) and (prev_ev.count<>0) then loop qs.Length do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
+      var evs := new EventList[qs.Length+1];
       
-      for var i := 0 to qs.Length-2 do
+      for var i := 0 to qs.Length-1 do
         evs[i] := qs[i].InvokeNewQBase(tsk, c, main_dvc, false, prev_ev).ev;
       
       // Используем внешнюю cq, чтобы не создавать лишнюю
-      Result := (qs[qs.Length-1] as CommandQueue<T>).Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
-      evs[evs.Length-1] := Result.ev;
+      Result := last.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
+      evs[qs.Length] := Result.ev;
       
       Result := Result.TrySetEv( EventList.Combine(evs, tsk, c.Native, main_dvc, cq) ?? new EventList );
     end;
@@ -3692,7 +3709,7 @@ type
   {$region Base}
   
   GPUCommandContainer<T> = class;
-  GPUCommandContainerBody<T> = abstract class
+  GPUCommandContainerCore<T> = abstract class
     private cc: GPUCommandContainer<T>;
     
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; abstract;
@@ -3702,7 +3719,7 @@ type
   end;
   
   GPUCommandContainer<T> = abstract class(CommandQueue<T>)
-    protected body: GPUCommandContainerBody<T>;
+    protected body: GPUCommandContainerCore<T>;
     protected commands := new List<GPUCommand<T>>;
     
     {$region def}
@@ -4114,31 +4131,38 @@ type
   
   {$region Enqueueable's}
   
-  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>)
+  {$region Core}
+  
+  IEnqueueable<TInvData> = interface
     
-    // Если это True - InvokeParams должен возращать (...)->cl_event.Zero
-    // Иначе останется ивент, который никто не удалил
-    protected function NeedThread: boolean; virtual := false;
+    function NeedThread: boolean;
     
-    private function MakeEvList(exp_size: integer; start_ev: EventList): List<EventList>;
+    function ParamCountL1: integer;
+    function ParamCountL2: integer;
+    
+    function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (cl_command_queue, EventList, TInvData)->cl_event;
+    
+  end;
+  EnqueueableCore<TEnq, TInvData> = sealed class
+  where TEnq: IEnqueueable<TInvData>;
+    
+    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    
+    private static function MakeEvList(exp_size: integer; start_ev: EventList): List<EventList>;
     begin
       var need_start_ev := (start_ev<>nil) and (start_ev.count<>0);
       Result := new List<EventList>(exp_size + integer(need_start_ev));
       if need_start_ev then Result += start_ev;
     end;
-    protected function ParamCountL1: integer; abstract;
-    protected function ParamCountL2: integer; abstract;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; abstract;
-    
-    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_qr: QueueRes<T>; l2_start_ev: EventList): EventList;
+    public static function Invoke(q: TEnq; inv_data: TInvData; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; l1_start_ev, l2_start_ev: EventList): EventList;
     begin
-      var need_thread := self.NeedThread;
+      var need_thread := q.NeedThread;
       
-      var evs_l1 := MakeEvList(ParamCountL1, prev_qr.ev); // ожидание до Enqueue
-      var evs_l2 := MakeEvList(ParamCountL2, l2_start_ev); // ожидание, передаваемое в Enqueue
+      var evs_l1 := MakeEvList(q.ParamCountL1, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
+      var evs_l2 := MakeEvList(q.ParamCountL2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
       
-      var enq_f := InvokeParams(tsk, c, main_dvc, cq, evs_l1, evs_l2);
+      var enq_f := q.InvokeParams(tsk, c, main_dvc, cq, evs_l1, evs_l2);
       var ev_l1 := EventList.Combine(evs_l1, tsk, c.Native, main_dvc, cq);
       var ev_l2 := EventList.Combine(evs_l2, tsk, c.Native, main_dvc, cq) ?? new EventList;
       
@@ -4146,15 +4170,11 @@ type
       
       if not need_thread and (ev_l1=nil) then
       begin
-        Result := enq_f(prev_qr.GetRes, cq, tsk, c, ev_l2);
+        var enq_ev := enq_f(cq, ev_l2, inv_data);
         {$ifdef EventDebug}
-        EventDebug.RegisterEventRetain(Result.evs.Single, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+        EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
         {$endif EventDebug}
-        Result.abortable := true; // ev_l2 тут всегда напрямую передаётся в cl.Enqueue*... и ev_l2.abortable всегда true
-        //ToDo С другой стороны, если ev_l2 абортится - получаем CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST в качестве статуса
-        // - Надо бы проверить как это всё работает
-        // - Наверное надо возвращать в Result не только результат enq_f, но и ev_l2, чтоб SmartStatusErr видел другие ивенты
-        // - Ну и не забыть в .Get* так же поменять. Или лучше объединить этот дубль кода, сколько можно...
+        Result := ev_l2 + enq_ev;
       end else
       begin
         var res_ev: UserEvent;
@@ -4164,24 +4184,33 @@ type
         cq := cl_command_queue.Zero;
         
         if need_thread then
-          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2), c.Native, tsk
-            {$ifdef EventDebug}, $'enq of {self.GetType}'{$endif}
+          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->
+          begin
+            enq_f(lcq, ev_l2, inv_data);
+            ev_l2.Release({$ifdef EventDebug}$'after using in blocking enq of {q.GetType}'{$endif});
+          end, c.Native, tsk
+            {$ifdef EventDebug}, $'enq of {q.GetType}'{$endif}
           ) else
         begin
           res_ev := tsk.MakeUserEvent(c.Native
-            {$ifdef EventDebug}, $'{self.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+            {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
           );
           
           //ВНИМАНИЕ "ev_l1=nil" не может случится, из за условий выше
           ev_l1.AttachCallback(()->
           begin
-            ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {self.GetType}'{$endif});
-            var enq_ev := enq_f(prev_qr.GetRes, lcq, tsk, c, ev_l2);
+            ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {q.GetType}'{$endif});
+            var enq_ev := enq_f(lcq, ev_l2, inv_data);
             {$ifdef EventDebug}
-            EventDebug.RegisterEventRetain(enq_ev, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+            EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
             {$endif EventDebug}
-            EventList.AttachCallback(enq_ev, ()->res_ev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, true{$ifdef EventDebug}, $'propagating Enq ev of {self.GetType} to res_ev: {res_ev.uev}'{$endif});
-          end, tsk, c.Native, main_dvc, lcq{$ifdef EventDebug}, $'calling Enq of {self.GetType}'{$endif});
+            var final_ev := ev_l2+enq_ev;
+            final_ev.AttachCallback(()->
+            begin
+              final_ev.Release({$ifdef EventDebug}$'after waiting to set {res_ev.uev} of nested AttachCallback in Enq of {q.GetType}'{$endif});
+              res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
+            end, tsk, c.Native, main_dvc, lcq{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
+          end, tsk, c.Native, main_dvc, lcq{$ifdef EventDebug}, $'calling Enq of {q.GetType}'{$endif});
           
         end;
         
@@ -4189,9 +4218,46 @@ type
         begin
           System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
         end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        Result := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено автоматически
+        Result := res_ev;
       end;
       
+    end;
+    
+  end;
+  
+  {$endregion Core}
+  
+  {$region GPUCommand}
+  
+  EnqueueableGPUCommandInvData<T> = record
+    qr: QueueRes<T>;
+    tsk: CLTaskBase;
+    c: Context;
+  end;
+  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>, IEnqueueable<EnqueueableGPUCommandInvData<T>>)
+    
+    // Если это True - InvokeParamsImpl должен возращать (...)->cl_event.Zero
+    // Иначе останется ивент, который никто не удалил
+    public function NeedThread: boolean; virtual := false;
+    
+    public function ParamCountL1: integer; abstract;
+    public function ParamCountL2: integer; abstract;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; abstract;
+    public function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (cl_command_queue, EventList, EnqueueableGPUCommandInvData<T>)->cl_event;
+    begin
+      var enq_f := InvokeParamsImpl(tsk, c, main_dvc, cq, evs_l1, evs_l2);
+      Result := (lcq, ev, data)->enq_f(data.qr.GetRes, lcq, data.tsk, data.c, ev);
+    end;
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_qr: QueueRes<T>; l2_start_ev: EventList): EventList;
+    begin
+      var inv_data: EnqueueableGPUCommandInvData<T>;
+      inv_data.qr  := prev_qr;
+      inv_data.tsk := tsk;
+      inv_data.c   := c;
+      
+      Result := EnqueueableCore&<EnqueueableGPUCommand<T>, EnqueueableGPUCommandInvData<T>>.Invoke(self, inv_data, tsk, c, main_dvc, cq, prev_qr.ev, l2_start_ev);
     end;
     
     protected function InvokeObj(o: T; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): EventList; override :=
@@ -4202,93 +4268,54 @@ type
     
   end;
   
-  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>)
+  {$endregion GPUCommand}
+  
+  {$region GetCommand}
+  
+  //ToDo Может отдельный тип для ForcePtrQr?
+  EnqueueableGetCommandInvData<TObj, TRes> = record
+    prev_qr: QueueRes<TObj>;
+    tsk: CLTaskBase;
+    res_qr: QueueResDelayedBase<TRes>;
+  end;
+  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>, IEnqueueable<EnqueueableGetCommandInvData<TObj, TRes>>)
     protected prev_commands: GPUCommandContainer<TObj>;
     
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
     
-    // Если это True - InvokeParams должен возращать (...)->cl_event.Zero
+    // Если это True - InvokeParamsImpl должен возращать (...)->cl_event.Zero
     // Иначе останется ивент, который никто не удалил
-    protected function NeedThread: boolean; virtual := false;
+    public function NeedThread: boolean; virtual := false;
     
-    protected function ForcePtrQr: boolean; virtual := false;
+    public function ParamCountL1: integer; abstract;
+    public function ParamCountL2: integer; abstract;
     
-    private function MakeEvList(exp_size: integer; start_ev: EventList): List<EventList>;
+    public function ForcePtrQr: boolean; virtual := false;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (TObj, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
+    public function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (cl_command_queue, EventList, EnqueueableGetCommandInvData<TObj, TRes>)->cl_event;
     begin
-      var need_start_ev := (start_ev<>nil) and (start_ev.count<>0);
-      Result := new List<EventList>(exp_size + integer(need_start_ev));
-      if need_start_ev then Result += start_ev;
+      var enq_f := InvokeParamsImpl(tsk, c, main_dvc, cq, evs_l1, evs_l2);
+      Result := (lcq, ev, data)->enq_f(data.prev_qr.GetRes, lcq, data.tsk, ev, data.res_qr);
     end;
-    protected function ParamCountL1: integer; abstract;
-    protected function ParamCountL2: integer; abstract;
-    
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (TObj, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
     
     protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TRes>; override;
     begin
-      var need_thread := self.NeedThread;
       var prev_qr := prev_commands.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
       
-      var evs_l1 := MakeEvList(ParamCountL1, prev_qr.ev); // ожидание до Enqueue
-      var evs_l2 := MakeEvList(ParamCountL2, nil); // ожидание, передаваемое в Enqueue
+      var inv_data: EnqueueableGetCommandInvData<TObj, TRes>;
+      inv_data.prev_qr  := prev_qr;
+      inv_data.tsk      := tsk;
+      inv_data.res_qr   := QueueResDelayedBase&<TRes>.MakeNew(need_ptr_qr or ForcePtrQr);
       
-      var enq_f := InvokeParams(tsk, c, main_dvc, cq, evs_l1, evs_l2);
-      var ev_l1 := EventList.Combine(evs_l1, tsk, c.Native, main_dvc, cq);
-      var ev_l2 := EventList.Combine(evs_l2, tsk, c.Native, main_dvc, cq) ?? new EventList;
-      
-      NativeUtils.FixCQ(c.Native, main_dvc, cq);
-      
-      var qr := QueueResDelayedBase&<TRes>.MakeNew(need_ptr_qr or ForcePtrQr);
-      Result := qr;
-      
-      if not need_thread and (ev_l1=nil) then
-      begin
-        Result.ev := enq_f(prev_qr.GetRes, cq, tsk, ev_l2, qr);
-        {$ifdef EventDebug}
-        EventDebug.RegisterEventRetain(Result.ev.evs.Single, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-        {$endif EventDebug}
-        Result.ev.abortable := true; //ToDo та же история что выше
-      end else
-      begin
-        var res_ev: UserEvent;
-        
-        // Асинхронное Enqueue, придётся пересоздать cq
-        var lcq := cq;
-        cq := cl_command_queue.Zero;
-        
-        if need_thread then
-          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->enq_f(prev_qr.GetRes, lcq, tsk, ev_l2, qr), c.Native, tsk
-            {$ifdef EventDebug}, $'enq of {self.GetType}'{$endif}
-          ) else
-        begin
-          res_ev := tsk.MakeUserEvent(c.Native
-            {$ifdef EventDebug}, $'{self.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
-          );
-          
-          //ВНИМАНИЕ "ev_l1=nil" не может случится, из за условий выше
-          ev_l1.AttachCallback(()->
-          begin
-            ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {self.GetType}'{$endif});
-            var enq_ev := enq_f(prev_qr.GetRes, lcq, tsk, ev_l2, qr);
-            {$ifdef EventDebug}
-            EventDebug.RegisterEventRetain(enq_ev, $'Enq by {self.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-            {$endif EventDebug}
-            EventList.AttachCallback(enq_ev, ()->res_ev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, true{$ifdef EventDebug}, $'propagating Enq ev of {self.GetType} to res_ev: {res_ev.uev}'{$endif});
-          end, tsk, c.Native, main_dvc, lcq{$ifdef EventDebug}, $'calling Enq of {self.GetType}'{$endif});
-          
-        end;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        Result.ev := res_ev; //ВНИМАНИЕ: "Result.abortable" тут установлено автоматически
-      end;
-      
+      Result := inv_data.res_qr;
+      Result.ev := EnqueueableCore&<EnqueueableGetCommand<TObj,TRes>, EnqueueableGetCommandInvData<TObj,TRes>>.Invoke(self, inv_data, tsk, c, main_dvc, cq, prev_qr.ev, nil);
     end;
     
   end;
+  
+  {$endregion GetCommand}
   
   {$endregion Enqueueable's}
   
@@ -4412,7 +4439,7 @@ begin
     var uev := tsk.MakeUserEvent(c
       {$ifdef EventDebug}, $'abortability of EventList.Combine of: {Result.evs.Take(Result.count).JoinToString}'{$endif}
     );
-    Result.AttachCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, c, main_dvc, cq
+    Result.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, c, main_dvc, cq
       {$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif}
     );
     Result += cl_event(uev);
@@ -4733,10 +4760,10 @@ new CommandQueueThenWaitFor<T>(self, new WCQWaiterAny(qs.ToArray));
 
 {$endregion Queue converter's}
 
-{$region GPUCommandContainerBody}
+{$region GPUCommandContainerCore}
 
 type
-  CCBObj<T> = sealed class(GPUCommandContainerBody<T>)
+  CCCObj<T> = sealed class(GPUCommandContainerCore<T>)
     public o: T;
     
     public constructor(o: T; cc: GPUCommandContainer<T>);
@@ -4759,7 +4786,7 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
     
   end;
-  CCBQueue<T> = sealed class(GPUCommandContainerBody<T>)
+  CCCQueue<T> = sealed class(GPUCommandContainerCore<T>)
     public hub: MultiusableCommandQueueHub<T>;
     
     public constructor(q: CommandQueue<T>; cc: GPUCommandContainer<T>);
@@ -4787,12 +4814,12 @@ type
   end;
   
 constructor GPUCommandContainer<T>.Create(o: T) :=
-self.body := new CCBObj<T>(o, self);
+self.body := new CCCObj<T>(o, self);
 
 constructor GPUCommandContainer<T>.Create(q: CommandQueue<T>) :=
-self.body := new CCBQueue<T>(q, self);
+self.body := new CCCQueue<T>(q, self);
 
-{$endregion GPUCommandContainerBody}
+{$endregion GPUCommandContainerCore}
 
 {$region KernelArg}
 
@@ -5004,8 +5031,8 @@ type
   BufferCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private ptr: CommandQueue<IntPtr>;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -5013,7 +5040,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
       
@@ -5028,11 +5055,6 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -5057,8 +5079,8 @@ type
   BufferCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private ptr: CommandQueue<IntPtr>;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -5066,7 +5088,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
       
@@ -5081,11 +5103,6 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -5112,8 +5129,8 @@ type
     private buff_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 3;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>);
     begin
@@ -5123,7 +5140,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(buff_offset_qr.ev);
@@ -5142,11 +5159,6 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -5175,8 +5187,8 @@ type
     private buff_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 3;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>);
     begin
@@ -5186,7 +5198,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(buff_offset_qr.ev);
@@ -5205,11 +5217,6 @@ type
           ptr,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -5258,8 +5265,8 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(val: TRecord; buff_offset: CommandQueue<integer>);
     begin
@@ -5268,7 +5275,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
       
@@ -5283,11 +5290,6 @@ type
           new IntPtr(val),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -5317,8 +5319,8 @@ type
     private         val: CommandQueue<TRecord>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 2;
-    protected function ParamCountL2: integer; override := 1;
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 1;
     
     public constructor(val: CommandQueue<TRecord>; buff_offset: CommandQueue<integer>);
     begin
@@ -5327,7 +5329,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         val_qr :=         val.Invoke    (tsk, c, main_dvc,  True, cq, nil); (val_qr is QueueResDelayedPtr&<TRecord>?evs_l2:evs_l1).Add(val_qr.ev);
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(buff_offset_qr.ev);
@@ -5349,7 +5351,6 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           val_hnd.Free;
         end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
@@ -5378,10 +5379,10 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array of TRecord>);
     begin
@@ -5389,7 +5390,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var a_qr := a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       
@@ -5397,16 +5398,12 @@ type
       begin
         var a := a_qr.GetRes;
         
-        try
-          cl.EnqueueWriteBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-            a[0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5432,10 +5429,10 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,] of TRecord>);
     begin
@@ -5443,7 +5440,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var a_qr := a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       
@@ -5451,16 +5448,12 @@ type
       begin
         var a := a_qr.GetRes;
         
-        try
-          cl.EnqueueWriteBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-            a[0,0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0,0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5486,10 +5479,10 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,,] of TRecord>);
     begin
@@ -5497,7 +5490,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var a_qr := a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       
@@ -5505,16 +5498,12 @@ type
       begin
         var a := a_qr.GetRes;
         
-        try
-          cl.EnqueueWriteBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-            a[0,0,0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0,0,0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5540,10 +5529,10 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array of TRecord>);
     begin
@@ -5551,7 +5540,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var a_qr := a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       
@@ -5559,16 +5548,12 @@ type
       begin
         var a := a_qr.GetRes;
         
-        try
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-            a[0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5594,10 +5579,10 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,] of TRecord>);
     begin
@@ -5605,7 +5590,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var a_qr := a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       
@@ -5613,16 +5598,12 @@ type
       begin
         var a := a_qr.GetRes;
         
-        try
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-            a[0,0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0,0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5648,10 +5629,10 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,,] of TRecord>);
     begin
@@ -5659,7 +5640,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var a_qr := a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       
@@ -5667,16 +5648,12 @@ type
       begin
         var a := a_qr.GetRes;
         
-        try
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
-            a[0,0,0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0,0,0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5705,10 +5682,10 @@ type
     private         len: CommandQueue<integer>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>);
     begin
@@ -5719,7 +5696,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(a_offset_qr.ev);
@@ -5733,16 +5710,12 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        try
-          cl.EnqueueWriteBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-            a[a_offset],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5775,10 +5748,10 @@ type
     private         len: CommandQueue<integer>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 5;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 5;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>);
     begin
@@ -5790,7 +5763,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(a_offset1_qr.ev);
@@ -5806,16 +5779,12 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        try
-          cl.EnqueueWriteBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-            a[a_offset1,a_offset2],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5850,10 +5819,10 @@ type
     private         len: CommandQueue<integer>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 6;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 6;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>);
     begin
@@ -5866,7 +5835,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(a_offset1_qr.ev);
@@ -5884,16 +5853,12 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        try
-          cl.EnqueueWriteBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-            a[a_offset1,a_offset2,a_offset3],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2,a_offset3],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5927,10 +5892,10 @@ type
     private         len: CommandQueue<integer>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>);
     begin
@@ -5941,7 +5906,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       var    a_offset_qr :=    a_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(a_offset_qr.ev);
@@ -5955,16 +5920,12 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        try
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-            a[a_offset],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -5997,10 +5958,10 @@ type
     private         len: CommandQueue<integer>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 5;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 5;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>);
     begin
@@ -6012,7 +5973,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(a_offset1_qr.ev);
@@ -6028,16 +5989,12 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        try
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-            a[a_offset1,a_offset2],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -6072,10 +6029,10 @@ type
     private         len: CommandQueue<integer>;
     private buff_offset: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 6;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 6;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>);
     begin
@@ -6088,7 +6045,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var           a_qr :=           a.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(a_qr.ev);
       var   a_offset1_qr :=   a_offset1.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(a_offset1_qr.ev);
@@ -6106,16 +6063,12 @@ type
         var         len :=         len_qr.GetRes;
         var buff_offset := buff_offset_qr.GetRes;
         
-        try
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
-            a[a_offset1,a_offset2,a_offset3],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(buff_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
+          a[a_offset1,a_offset2,a_offset3],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -6150,8 +6103,8 @@ type
     private         ptr: CommandQueue<IntPtr>;
     private pattern_len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 2;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>);
     begin
@@ -6160,7 +6113,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
       var pattern_len_qr := pattern_len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(pattern_len_qr.ev);
@@ -6177,11 +6130,6 @@ type
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6210,8 +6158,8 @@ type
     private buff_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len, buff_offset, len: CommandQueue<integer>);
     begin
@@ -6222,7 +6170,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         ptr_qr :=         ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
       var pattern_len_qr := pattern_len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(pattern_len_qr.ev);
@@ -6243,11 +6191,6 @@ type
           new UIntPtr(buff_offset), new UIntPtr(len),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6281,8 +6224,8 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    protected function ParamCountL1: integer; override := 0;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 0;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(val: TRecord);
     begin
@@ -6290,7 +6233,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       
       Result := (o, cq, tsk, c, evs)->
@@ -6303,11 +6246,6 @@ type
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6339,8 +6277,8 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    protected function ParamCountL1: integer; override := 2;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(val: TRecord; buff_offset, len: CommandQueue<integer>);
     begin
@@ -6350,7 +6288,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
@@ -6367,11 +6305,6 @@ type
           new UIntPtr(buff_offset), new UIntPtr(len),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6398,8 +6331,8 @@ type
   where TRecord: record;
     private val: CommandQueue<TRecord>;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 1;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 1;
     
     public constructor(val: CommandQueue<TRecord>);
     begin
@@ -6407,7 +6340,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var val_qr := val.Invoke    (tsk, c, main_dvc,  True, cq, nil); (val_qr is QueueResDelayedPtr&<TRecord>?evs_l2:evs_l1).Add(val_qr.ev);
       
@@ -6427,7 +6360,6 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           val_hnd.Free;
         end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
@@ -6457,8 +6389,8 @@ type
     private buff_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 3;
-    protected function ParamCountL2: integer; override := 1;
+    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL2: integer; override := 1;
     
     public constructor(val: CommandQueue<TRecord>; buff_offset, len: CommandQueue<integer>);
     begin
@@ -6468,7 +6400,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var         val_qr :=         val.Invoke    (tsk, c, main_dvc,  True, cq, nil); (val_qr is QueueResDelayedPtr&<TRecord>?evs_l2:evs_l1).Add(val_qr.ev);
       var buff_offset_qr := buff_offset.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(buff_offset_qr.ev);
@@ -6492,7 +6424,6 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           val_hnd.Free;
         end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
@@ -6525,8 +6456,8 @@ type
   BufferCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private b: CommandQueue<Buffer>;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(b: CommandQueue<Buffer>);
     begin
@@ -6534,7 +6465,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(b_qr.ev);
       
@@ -6549,11 +6480,6 @@ type
           o.Size64<b.Size64 ? o.Size : b.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6578,8 +6504,8 @@ type
   BufferCommandCopyFormAutoSize = sealed class(EnqueueableGPUCommand<Buffer>)
     private b: CommandQueue<Buffer>;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(b: CommandQueue<Buffer>);
     begin
@@ -6587,7 +6513,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var b_qr := b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(b_qr.ev);
       
@@ -6602,11 +6528,6 @@ type
           o.Size64<b.Size64 ? o.Size : b.Size,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6634,8 +6555,8 @@ type
     private   to_pos: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>);
     begin
@@ -6646,7 +6567,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(b_qr.ev);
       var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(from_pos_qr.ev);
@@ -6667,11 +6588,6 @@ type
           new UIntPtr(len),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6702,8 +6618,8 @@ type
     private   to_pos: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(b: CommandQueue<Buffer>; from_pos, to_pos, len: CommandQueue<integer>);
     begin
@@ -6714,7 +6630,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var        b_qr :=        b.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(b_qr.ev);
       var from_pos_qr := from_pos.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(from_pos_qr.ev);
@@ -6735,11 +6651,6 @@ type
           new UIntPtr(len),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6770,8 +6681,8 @@ AddCommand(new BufferCommandCopyForm(b, from_pos, to_pos, len));
 type
   BufferCommandGetDataAutoSize = sealed class(EnqueueableGetCommand<Buffer, IntPtr>)
     
-    protected function ParamCountL1: integer; override := 0;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 0;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue);
     begin
@@ -6779,7 +6690,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
       
       Result := (o, cq, tsk, evs, own_qr)->
@@ -6796,11 +6707,6 @@ type
           res,
           evs.count, evs.evs, res_ev
         );
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6823,8 +6729,8 @@ type
     private buff_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    protected function ParamCountL1: integer; override := 2;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue; buff_offset, len: CommandQueue<integer>);
     begin
@@ -6834,7 +6740,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
       var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
@@ -6853,11 +6759,6 @@ type
           res,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;
@@ -6887,10 +6788,10 @@ type
   where TRecord: record;
     private buff_offset: CommandQueue<integer>;
     
-    protected function ForcePtrQr: boolean; override := true;
+    public function ForcePtrQr: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue; buff_offset: CommandQueue<integer>);
     begin
@@ -6899,7 +6800,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
     begin
       var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
       
@@ -6919,7 +6820,6 @@ type
         
         EventList.AttachFinallyCallback(res_ev, ()->
         begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
           own_qr_hnd.Free;
         end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
@@ -6946,10 +6846,10 @@ type
   BufferCommandGetArray1AutoSize<TRecord> = sealed class(EnqueueableGetCommand<Buffer, array of TRecord>)
   where TRecord: record;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 0;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 0;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue);
     begin
@@ -6957,24 +6857,20 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       
       Result := (o, cq, tsk, evs, own_qr)->
       begin
         
-        try
-          var len := o.Size64 div Marshal.SizeOf&<TRecord>;
-          var res := new TRecord[len]; own_qr.SetRes(res);
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(0), new UIntPtr(len * Marshal.SizeOf&<TRecord>),
-            res[0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        var len := o.Size64 div Marshal.SizeOf&<TRecord>;
+        var res := new TRecord[len]; own_qr.SetRes(res);
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(0), new UIntPtr(len * Marshal.SizeOf&<TRecord>),
+          res[0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -6997,10 +6893,10 @@ type
   where TRecord: record;
     private len: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 1;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue; len: CommandQueue<integer>);
     begin
@@ -7009,7 +6905,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       var len_qr := len.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(len_qr.ev);
       
@@ -7017,17 +6913,13 @@ type
       begin
         var len := len_qr.GetRes;
         
-        try
-          var res := new TRecord[len]; own_qr.SetRes(res);
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf&<TRecord>),
-            res[0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        var res := new TRecord[len]; own_qr.SetRes(res);
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf&<TRecord>),
+          res[0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -7054,10 +6946,10 @@ type
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 2;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue; len1,len2: CommandQueue<integer>);
     begin
@@ -7067,7 +6959,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,] of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,] of TRecord>)->cl_event; override;
     begin
       var len1_qr := len1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(len1_qr.ev);
       var len2_qr := len2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len2_qr.ev);
@@ -7077,17 +6969,13 @@ type
         var len1 := len1_qr.GetRes;
         var len2 := len2_qr.GetRes;
         
-        try
-          var res := new TRecord[len1,len2]; own_qr.SetRes(res);
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf&<TRecord>),
-            res[0,0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        var res := new TRecord[len1,len2]; own_qr.SetRes(res);
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf&<TRecord>),
+          res[0,0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -7116,10 +7004,10 @@ type
     private len2: CommandQueue<integer>;
     private len3: CommandQueue<integer>;
     
-    protected function NeedThread: boolean; override := true;
+    public function NeedThread: boolean; override := true;
     
-    protected function ParamCountL1: integer; override := 3;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(ccq: BufferCommandQueue; len1,len2,len3: CommandQueue<integer>);
     begin
@@ -7130,7 +7018,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,,] of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,,] of TRecord>)->cl_event; override;
     begin
       var len1_qr := len1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(len1_qr.ev);
       var len2_qr := len2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len2_qr.ev);
@@ -7142,17 +7030,13 @@ type
         var len2 := len2_qr.GetRes;
         var len3 := len3_qr.GetRes;
         
-        try
-          var res := new TRecord[len1,len2,len3]; own_qr.SetRes(res);
-          cl.EnqueueReadBuffer(
-            cq, o.Native, Bool.BLOCKING,
-            new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf&<TRecord>),
-            res[0,0,0],
-            evs.count, evs.evs, IntPtr.Zero
-          ).RaiseIfError;
-        finally
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end;
+        var res := new TRecord[len1,len2,len3]; own_qr.SetRes(res);
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf&<TRecord>),
+          res[0,0,0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
         
         Result := cl_event.Zero;
       end;
@@ -7334,8 +7218,8 @@ type
     private  sz1: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    protected function ParamCountL1: integer; override := 2;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
     begin
@@ -7344,7 +7228,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
       var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
@@ -7379,11 +7263,6 @@ type
           end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        
         Result := res_ev;
       end;
       
@@ -7410,8 +7289,8 @@ type
     private  sz2: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    protected function ParamCountL1: integer; override := 3;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
     begin
@@ -7421,7 +7300,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
       var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
@@ -7458,11 +7337,6 @@ type
           end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        
         Result := res_ev;
       end;
       
@@ -7491,8 +7365,8 @@ type
     private  sz3: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
     begin
@@ -7503,7 +7377,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
       var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
@@ -7542,11 +7416,6 @@ type
           end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        
         Result := res_ev;
       end;
       
@@ -7576,8 +7445,8 @@ type
     private    local_work_size: CommandQueue<array of UIntPtr>;
     private               args: array of KernelArg;
     
-    protected function ParamCountL1: integer; override := 4;
-    protected function ParamCountL2: integer; override := 0;
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
     
     public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
     begin
@@ -7588,7 +7457,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParams(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
     begin
       var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(global_work_offset_qr.ev);
       var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(global_work_size_qr.ev);
@@ -7626,11 +7495,6 @@ type
             args_hnd.Free;
           end, tsk, false{$ifdef EventDebug}, nil{$endif});
         end);
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          evs.Release({$ifdef EventDebug}$'after use in waiting of {self.GetType}'{$endif});
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
         
         Result := res_ev;
       end;

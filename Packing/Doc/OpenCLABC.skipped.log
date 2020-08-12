@@ -88,9 +88,13 @@ GPUCommand<T>
 QueueCommand<T>
 ProcCommand<T>
 WaitCommand<T>
-GPUCommandContainerBody<T>
+GPUCommandContainerCore<T>
 GPUCommandContainer<T>
+IEnqueueable<TInvData>
+EnqueueableCore<TEnq, TInvData>
+EnqueueableGPUCommandInvData<T>
 EnqueueableGPUCommand<T>
+EnqueueableGetCommandInvData<TObj, TRes>
 EnqueueableGetCommand<TObj, TRes>
 ISetableKernelArg
 KernelArg.Invoke(CLTaskBase, Context, cl_device_id)
