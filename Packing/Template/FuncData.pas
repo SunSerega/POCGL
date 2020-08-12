@@ -1966,7 +1966,7 @@ begin
     f.Apply(Result);
   end;
   
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat');
+  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat', System.IO.SearchOption.AllDirectories);
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
@@ -2102,7 +2102,7 @@ begin
     f.Apply(Result);
   end;
   
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat');
+  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat', System.IO.SearchOption.AllDirectories);
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
@@ -2331,7 +2331,7 @@ static procedure FuncFixer.InitAll;
 begin
   FuncFixer.GetFixableName := f->f.name;
   
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat');
+  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat', System.IO.SearchOption.AllDirectories);
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of

@@ -1761,6 +1761,7 @@ type
     private static _PIPE_FULL_INTEL                             := new ErrorCode(-1106);
     private static _PIPE_EMPTY_INTEL                            := new ErrorCode(-1107);
     private static _CONTEXT_TERMINATED_KHR                      := new ErrorCode(-1121);
+    private static _NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE         := new ErrorCode(-9999);
     
     public static property SUCCESS:                                     ErrorCode read _SUCCESS;
     public static property DEVICE_NOT_FOUND:                            ErrorCode read _DEVICE_NOT_FOUND;
@@ -1859,6 +1860,7 @@ type
     public static property PIPE_FULL_INTEL:                             ErrorCode read _PIPE_FULL_INTEL;
     public static property PIPE_EMPTY_INTEL:                            ErrorCode read _PIPE_EMPTY_INTEL;
     public static property CONTEXT_TERMINATED_KHR:                      ErrorCode read _CONTEXT_TERMINATED_KHR;
+    public static property NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE:         ErrorCode read _NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE;
     
     public function ToString: string; override;
     begin
@@ -1959,6 +1961,7 @@ type
       if self.val = Int32(-1106) then Result := 'PIPE_FULL_INTEL' else
       if self.val = Int32(-1107) then Result := 'PIPE_EMPTY_INTEL' else
       if self.val = Int32(-1121) then Result := 'CONTEXT_TERMINATED_KHR' else
+      if self.val = Int32(-9999) then Result := 'NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
         Result := $'ErrorCode[{self.val}]';
     end;
     
