@@ -3413,6 +3413,7 @@
     private static _DRIVER_UUID_EXT                                := new GetPName($9598);
     private static _DEVICE_LUID_EXT                                := new GetPName($9599);
     private static _DEVICE_NODE_MASK_EXT                           := new GetPName($959A);
+    private static _MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV     := new GetPName($95B6);
     private static _SHADING_RATE_QCOM                              := new GetPName($96A4);
     
     public static property CURRENT_COLOR:                                  GetPName read _CURRENT_COLOR;
@@ -3972,6 +3973,7 @@
     public static property DRIVER_UUID_EXT:                                GetPName read _DRIVER_UUID_EXT;
     public static property DEVICE_LUID_EXT:                                GetPName read _DEVICE_LUID_EXT;
     public static property DEVICE_NODE_MASK_EXT:                           GetPName read _DEVICE_NODE_MASK_EXT;
+    public static property MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV:     GetPName read _MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV;
     public static property SHADING_RATE_QCOM:                              GetPName read _SHADING_RATE_QCOM;
     
     public function ToString: string; override;
@@ -4533,6 +4535,7 @@
       if self.val = UInt32($9598) then Result := 'DRIVER_UUID_EXT' else
       if self.val = UInt32($9599) then Result := 'DEVICE_LUID_EXT' else
       if self.val = UInt32($959A) then Result := 'DEVICE_NODE_MASK_EXT' else
+      if self.val = UInt32($95B6) then Result := 'MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV' else
       if self.val = UInt32($96A4) then Result := 'SHADING_RATE_QCOM' else
         Result := $'GetPName[{self.val}]';
     end;
@@ -9397,13 +9400,25 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _D3D12_FENCE_VALUE_EXT := new SemaphoreParameterName($9595);
+    private static _D3D12_FENCE_VALUE_EXT       := new SemaphoreParameterName($9595);
+    private static _TIMELINE_SEMAPHORE_VALUE_NV := new SemaphoreParameterName($9595);
+    private static _SEMAPHORE_TYPE_NV           := new SemaphoreParameterName($95B3);
+    private static _SEMAPHORE_TYPE_BINARY_NV    := new SemaphoreParameterName($95B4);
+    private static _SEMAPHORE_TYPE_TIMELINE_NV  := new SemaphoreParameterName($95B5);
     
-    public static property D3D12_FENCE_VALUE_EXT: SemaphoreParameterName read _D3D12_FENCE_VALUE_EXT;
+    public static property D3D12_FENCE_VALUE_EXT:       SemaphoreParameterName read _D3D12_FENCE_VALUE_EXT;
+    public static property TIMELINE_SEMAPHORE_VALUE_NV: SemaphoreParameterName read _TIMELINE_SEMAPHORE_VALUE_NV;
+    public static property SEMAPHORE_TYPE_NV:           SemaphoreParameterName read _SEMAPHORE_TYPE_NV;
+    public static property SEMAPHORE_TYPE_BINARY_NV:    SemaphoreParameterName read _SEMAPHORE_TYPE_BINARY_NV;
+    public static property SEMAPHORE_TYPE_TIMELINE_NV:  SemaphoreParameterName read _SEMAPHORE_TYPE_TIMELINE_NV;
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($9595) then Result := 'D3D12_FENCE_VALUE_EXT' else
+      if self.val = UInt32($9595) then Result := 'TIMELINE_SEMAPHORE_VALUE_NV' else
+      if self.val = UInt32($95B3) then Result := 'SEMAPHORE_TYPE_NV' else
+      if self.val = UInt32($95B4) then Result := 'SEMAPHORE_TYPE_BINARY_NV' else
+      if self.val = UInt32($95B5) then Result := 'SEMAPHORE_TYPE_TIMELINE_NV' else
         Result := $'SemaphoreParameterName[{self.val}]';
     end;
     

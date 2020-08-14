@@ -8542,6 +8542,21 @@
 # glTextureNormalEXT
  TextureNormalModeEXT	|
 
+# glCreateSemaphoresNV
+ Int32	| array of UInt32	|
+ Int32	| var UInt32	|
+ Int32	| IntPtr	|
+
+# glSemaphoreParameterivNV
+ UInt32	| SemaphoreParameterName	| array of Int32	|
+ UInt32	| SemaphoreParameterName	| var Int32	|
+ UInt32	| SemaphoreParameterName	| IntPtr	|
+
+# glGetSemaphoreParameterivNV
+ UInt32	| SemaphoreParameterName	| array of Int32	|
+ UInt32	| SemaphoreParameterName	| var Int32	|
+ UInt32	| SemaphoreParameterName	| IntPtr	|
+
 # glGetQueryObjecti64vEXT
  UInt32	| QueryObjectParameterName	| array of Int64	|
  UInt32	| QueryObjectParameterName	| var Int64	|
