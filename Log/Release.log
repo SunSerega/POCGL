@@ -1,0 +1,34 @@
+﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packing Modules.Packed\OpenCL.pas
+Packing Modules.Packed\OpenCLABC.pas
+Packing Modules.Packed\OpenGL.pas
+Packing Modules.Packed\OpenGLABC.pas
+Packing Modules.Packed\Internal\OpenCLABCBase.pas
+Packing Modules.Packed\Internal\OpenGLABCBase.pas
+Done copying release modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packing sample "Samples\OpenCL\MatrMlt.cl"
+Packing sample "Samples\OpenCL\MatrMlt.pas"
+Packing sample "Samples\OpenCL\SimpleAddition.cl"
+Packing sample "Samples\OpenCL\SimpleAddition.pas"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.cl"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.cl"
+Packing sample "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Packing sample "Samples\OpenCLABC\Wait очереди\1.pas"
+Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
+Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
+Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\0.cl"
+Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
+Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
+Packing sample "Samples\OpenCLABC\Симуляция тепла\2D +WPF.pas"
+Packing sample "Samples\OpenCLABC\Симуляция тепла\2D.cl"
+Packing sample "Samples\OpenCLABC\Симуляция тепла\2D.pas"
+Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
+Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Packed 19 sample files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying spec ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packing spec [Гайд по использованию OpenGL и OpenCL.html]
+Packing spec [Справка OpenCLABC.html]
+Packing spec [Справка OpenGLABC.html]
+Packed 3 spec files

@@ -403,17 +403,22 @@ type
 type
   Logger = abstract class
     public static main_log: Logger;
+    protected static files_only_timed := false;
     
     private sub_loggers := new List<Logger>;
     
-    protected static files_only_timed := false;
-    
     public static procedure operator+=(log1, log2: Logger) :=
-    log1.sub_loggers += log2;
+    lock log1.sub_loggers do log1.sub_loggers += log2;
     public static function operator+(log1, log2: Logger): Logger;
     begin
       log1 += log2;
       Result := log1;
+    end;
+    
+    public static procedure operator-=(log1, log2: Logger);
+    begin
+      lock log1.sub_loggers do if not log1.sub_loggers.Remove(log2) then raise new System.InvalidOperationException;
+      log2.Close;
     end;
     
     public procedure Otp(l: OtpLine); virtual;
@@ -421,8 +426,9 @@ type
       
       OtpImpl(l);
       
-      foreach var log in sub_loggers do
-        log.Otp(l);
+      lock sub_loggers do
+        foreach var log in sub_loggers do
+          log.Otp(l);
     end;
     protected procedure OtpImpl(l: OtpLine); abstract;
     
@@ -989,16 +995,17 @@ type
     
   end;
   
-function operator+(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
-new SecThrProcSum(p1,p2);
-procedure operator+=(var p1: SecThrProc; p2: SecThrProc); extensionmethod :=
-p1 := p1+p2;
-
-function operator*(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
-new SecThrProcMlt(p1,p2);
-
 function ProcTask(p: Action0): SecThrProc :=
 new SecThrProcCustom(p);
+function EmptyTask := ProcTask(()->exit());
+
+function operator+(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
+new SecThrProcSum(p1??EmptyTask, p2??EmptyTask);
+procedure operator+=(var p1: SecThrProc; p2: SecThrProc); extensionmethod := p1 := p1+p2;
+
+function operator*(p1,p2: SecThrProc): SecThrProc; extensionmethod :=
+new SecThrProcMlt(p1??EmptyTask, p2??EmptyTask);
+procedure operator*=(var p1: SecThrProc; p2: SecThrProc); extensionmethod := p1 := p1*p2;
 
 function CompTask(fname: string) :=
 ProcTask(()->CompilePasFile(fname));
@@ -1006,10 +1013,8 @@ ProcTask(()->CompilePasFile(fname));
 function ExecTask(fname, nick: string; params pars: array of string) :=
 new SecThrProcExec(fname, nick, pars);
 
-function EmptyTask := ProcTask(()->exit());
-
-function SetEvTask(ev: ManualResetEvent) := ProcTask(()->begin ev.Set() end);
-function EventTask(ev: ManualResetEvent) := ProcTask(()->begin ev.WaitOne() end);
+function SetEvTask(ev: ManualResetEvent) := ProcTask(()->ev.Set());
+function EventTask(ev: ManualResetEvent) := ProcTask(()->ev.WaitOne());
 
 function CombineAsyncTask(self: sequence of SecThrProc): SecThrProc; extensionmethod;
 begin
@@ -1021,7 +1026,7 @@ begin
     var ev := new ManualResetEvent(false);
     
     var T_Wait: SecThrProc := EmptyTask;
-    foreach var pev in evs.SkipLast(System.Environment.ProcessorCount+1) do T_Wait:=T_Wait + EventTask(pev);
+    foreach var pev in evs.SkipLast(System.Environment.ProcessorCount+1) do T_Wait += EventTask(pev);
     
     evs += ev;
     var T_ver :=

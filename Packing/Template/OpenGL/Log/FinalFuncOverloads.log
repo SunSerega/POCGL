@@ -10327,6 +10327,18 @@
 # glNamedBufferAttachMemoryNV
  UInt32	| UInt32	| UInt64	|
 
+# glBufferPageCommitmentMemNV
+ BufferStorageTarget	| IntPtr	| IntPtr	| UInt32	| UInt64	| boolean	|
+
+# glTexPageCommitmentMemNV
+ TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| UInt32	| UInt64	| boolean	|
+
+# glNamedBufferPageCommitmentMemNV
+ UInt32	| IntPtr	| IntPtr	| UInt32	| UInt64	| boolean	|
+
+# glTexturePageCommitmentMemNV
+ UInt32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| UInt32	| UInt64	| boolean	|
+
 # glDrawMeshTasksNV
  UInt32	| UInt32	|
 

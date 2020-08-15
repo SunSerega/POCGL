@@ -3048,7 +3048,7 @@ type
           begin
             enq_f(lcq, ev_l2, inv_data);
             ev_l2.Release({$ifdef EventDebug}$'after using in blocking enq of {q.GetType}'{$endif});
-          end, c.Native, tsk{$ifdef EventDebug}, $'enq of {q.GetType}'{$endif}) else
+          end, c.Native, tsk{$ifdef EventDebug}, $'blocking enq of {q.GetType}, ev_l2 = [{ev_l2.evs?.JoinToString}]'{$endif}) else
         begin
           res_ev := tsk.MakeUserEvent(c.Native
             {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}

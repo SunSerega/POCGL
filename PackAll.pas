@@ -57,142 +57,119 @@ var AllStages := HSet(
   ReleaseStr
 );
 
-var stages: HashSet<string>;
-
-function FirstPack  := stages.Contains(FirstPackStr );
-function Spec       := stages.Contains(SpecStr      );
-function OpenCL     := stages.Contains(OpenCLStr    );
-function OpenCLABC  := stages.Contains(OpenCLABCStr );
-function OpenGL     := stages.Contains(OpenGLStr    );
-function OpenGLABC  := stages.Contains(OpenGLABCStr );
-function Compile    := stages.Contains(CompileStr   );
-function Test       := stages.Contains(TestStr      );
-function Release    := stages.Contains(ReleaseStr   );
-
-var module_packed_evs: Dictionary<string, ManualResetEvent>;
-
 {$endregion SpecialNames}
 
-{$region Shortcuts}
-
-function TitleTask(title: string; decor: char := '='): SecThrProc;
-begin
-  var c := 80-title.Length;
-  var c2 := c div 2;
-  var c1 := c-c2;
+{$region PackStage} type
   
-  var sb := new StringBuilder;
-  sb.Append(decor,c1);
-  sb += ' ';
-  sb += title;
-  sb += ' ';
-  sb.Append(decor,c2);
-  var full_title := sb.ToString;
+  {$region Base}
   
-  Result := ProcTask(()->Otp(full_title));
-end;
-
-function LLModuleTask(mn: string) := not stages.Contains(mn) ? EmptyTask :
-  TitleTask(mn) +
-  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}]', $'nick={mn}', $'"inp_fname=Modules\Template\{mn}.pas"', $'"otp_fname=Modules\{mn}.pas"') +
-  ProcTask(()->Directory.CreateDirectory('Modules.Packed')) +
-  ProcTask(()->System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true)) +
-  SetEvTask(module_packed_evs[mn])
-;
-
-function HLModuleTask(mn: string) := not stages.Contains(mn) ? EmptyTask :
-  TitleTask(mn) +
-  ProcTask(()->Directory.CreateDirectory('Modules.Packed\Internal')) +
-  
-  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}]',     $'nick={mn}', $'"inp_fname=Modules\{mn}.pas"',              $'"otp_fname=Modules.Packed\{mn}.pas"') *
-  ExecTask('Packing\Template\Pack Template.pas', $'Template[{mn}Base]', $'nick={mn}', $'"inp_fname=Modules\Internal\{mn}Base.pas"', $'"otp_fname=Modules.Packed\Internal\{mn}Base.pas"')
-  
-  + ExecTask('Packing\Doc\PackComments.pas', $'Comments[{mn}]', $'nick={mn}', $'"fname=Modules.Packed\{mn}.pas"', $'"fname=Modules.Packed\Internal\{mn}Base.pas"')
-  + SetEvTask(module_packed_evs[mn])
-;
-
-{$endregion Shortcuts}
-
-begin
-  try
+  PackingStage = abstract class
+    id, description, log_name: string;
+    log: FileLogger;
     
-//    stages := AllStages;
-//    module_packed_evs := AllModules.Intersect(stages).ToDictionary(mn->mn,mn->new ManualResetEvent(false));
-//    CompTask('Packing\Template\Pack Template.pas').SyncExec;
-//    exit;
+    static CurrentStages: HashSet<string>;
     
-    {$region Load}
-    
-    Logger.main_log += new FileLogger('LastPack.log');
-    Logger.main_log += new FileLogger('LastPack (Timed).log', true);
-    
-    // ====================================================
-    
+    static function TitleTask(title: string; decor: char := '='): SecThrProc;
     begin
-      var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('Stages='));
+      var c := 80-title.Length;
+      var c2 := c div 2;
+      var c1 := c-c2;
       
-      if arg=nil then
-      begin
-        stages := AllStages.ToHashSet;
-        stages.Remove(FirstPackStr);
-        Logger.main_log += new FileLogger('LastPack (Default).log');
-        Otp($'Executing default stages:');
-      end else
-      begin
-        stages := arg.Remove(0,'Stages='.Length).Split('+').Select(st->st.Trim).ToHashSet;
-        stages.RemoveWhere(stage->
-        begin
-          if stage in AllStages then exit;
-          Otp($'WARNING: Invalid pack stage [{stage}]');
-          Result := true;
-        end);
-        Otp($'Executing selected stages:');
-      end;
-//      stages := HSet(OpenGLABCStr);
+      var sb := new StringBuilder;
+      sb.Append(decor,c1);
+      sb += ' ';
+      sb += title;
+      sb += ' ';
+      sb.Append(decor,c2);
+      var full_title := sb.ToString;
       
-      Otp(stages.JoinIntoString(' + '));
+      Result := ProcTask(()->Otp(full_title));
     end;
     
-    module_packed_evs := AllModules.Intersect(stages).ToDictionary(mn->mn,mn->new ManualResetEvent(false));
+    constructor(name: string);
+    begin
+      self.id := name;
+      self.description := name;
+      self.log_name := name;
+    end;
+    constructor := raise new System.InvalidOperationException;
     
-    {$endregion Load}
-    
-    {$region MiscClear}
-    
-    var T_MiscClear :=
-      ProcTask(()->
-      begin
-        var c := 0;
-        var skip_pcu := AllModules.Except(stages).SelectMany(mn->
-          mn.EndsWith('ABC') ? Seq(
-            mn+'Base.pcu',
-            mn+'.pcu'
-          ) : Seq(
-            mn+'.pcu'
-          )
-        ).ToHashSet;
-        
-        foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
+    function MakeTask: SecThrProc;
+    begin
+      if (id<>nil) and not CurrentStages.Contains(id) then exit;
+      
+      if self.description<>nil then
+        Result += TitleTask(self.description);
+      
+      if self.log_name<>nil then
+        Result += ProcTask(()->
         begin
-          if skip_pcu.Contains(Path.GetFileName(fname)) then continue;
-          try
-            System.IO.File.Delete(fname);
-          except
-            Otp($'WARNING: Failed to clear file {GetRelativePath(fname)}');
-          end;
-          c += 1;
+          self.log := new FileLogger($'Log\{log_name}.log');
+          Logger.main_log += self.log;
+        end);
+      
+      Result += MakeCoreTask();
+      
+      if self.log_name<>nil then
+        Result += ProcTask(()->
+        begin
+          Logger.main_log -= self.log;
+        end);
+      
+    end;
+    function MakeCoreTask: SecThrProc; abstract;
+    
+  end;
+  
+  {$endregion Base}
+  
+  {$region MiscClear}
+  
+  MiscClearStage = sealed class(PackingStage)
+    
+    constructor := inherited Create(nil);
+    
+    function MakeCoreTask: SecThrProc; override :=
+    ProcTask(()->
+    begin
+      var c := 0;
+      var skip_pcu := AllModules.Except(CurrentStages).SelectMany(mn->
+        mn.EndsWith('ABC') ? Seq(
+          mn+'Base.pcu',
+          mn+'.pcu'
+        ) : Seq(
+          mn+'.pcu'
+        )
+      ).ToHashSet;
+      
+      foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
+      begin
+        if skip_pcu.Contains(Path.GetFileName(fname)) then continue;
+        try
+          System.IO.File.Delete(fname);
+        except
+          Otp($'WARNING: Failed to clear file {GetRelativePath(fname)}');
         end;
-        
-//        if c<>0 then Otp($'Cleared {c} files');
-      end)
-    ;
+        c += 1;
+      end;
+      
+    end);
     
-    {$endregion MiscClear}
+  end;
+  
+  {$endregion MiscClear}
+  
+  {$region FirstPack}
+  
+  FirstPackStage = sealed class(PackingStage)
     
-    {$region FirstPack}
-    var T_FirstPack: SecThrProc;
-    if not FirstPack then
-      T_FirstPack := EmptyTask else
+    constructor;
+    begin
+      inherited Create(FirstPackStr);
+      self.description := 'First Pack';
+    end;
+    
+    function MakeCoreTask: SecThrProc; override;
     begin
       
       {$region UpdateReps}
@@ -220,64 +197,145 @@ begin
       
       {$endregion ParseSpec}
       
-      T_FirstPack :=
-        TitleTask('First Pack') +
-        T_UpdateReps
-        +
-        
+      Result :=
+        T_UpdateReps +
         T_ScrapXML
-        
-        +
-        EmptyTask
       ;
     end;
-    {$endregion FirstPack}
     
-    {$region Spec}
+  end;
+  
+  {$endregion FirstPack}
+  
+  {$region Spec}
+  
+  SpecStage = sealed class(PackingStage)
     
-    var T_Spec := not Spec ? EmptyTask :
-      TitleTask('Specs') +
-      ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker')
-    ;
+    constructor;
+    begin
+      inherited Create(SpecStr);
+      self.description := 'Specs';
+    end;
     
-    {$endregion Spec}
+    function MakeCoreTask: SecThrProc; override :=
+    ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker');
     
-    {$region Compile}
+  end;
+  
+  {$endregion Spec}
+  
+  {$region Modules}
+  
+  ModulePackingStage = abstract class(PackingStage)
     
-    var T_Compile := not Compile ? EmptyTask :
-      TitleTask('Compiling') +
-      AllLLModules.Select(mn->
-      begin
-        Result := EmptyTask;
-        if stages.Contains(mn      ) then Result += EventTask(module_packed_evs[mn      ]);
-        if stages.Contains(mn+'ABC') then Result += EventTask(module_packed_evs[mn+'ABC']);
-        
-        if stages.Contains(mn+'ABC') then
+    static module_pack_evs := new Dictionary<string, ManualResetEvent>;
+    static function GetModulePackEv(module_name: string): ManualResetEvent;
+    begin
+      lock module_pack_evs do
+        if not module_pack_evs.TryGetValue(module_name, Result) then
         begin
-          if not stages.Contains(mn) then System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true);
-          Result += CompTask($'Modules.Packed\{mn}ABC.pas');
-        end else
-        if stages.Contains(mn) then
-          Result += CompTask($'Modules.Packed\{mn}.pas');
-        
-      end).CombineAsyncTask
+          Result := new ManualResetEvent(false);
+          module_pack_evs[module_name] := Result;
+        end;
+    end;
+    
+    constructor(module_name: string) :=
+    inherited Create(module_name);
+    
+    function MakeCoreTask: SecThrProc; override :=
+      MakeModuleTask +
+      SetEvTask(GetModulePackEv(self.id));
+    function MakeModuleTask: SecThrProc; abstract;
+    
+  end;
+  LLModuleStage = sealed class(ModulePackingStage)
+    
+    function MakeModuleTask: SecThrProc; override :=
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\Template\{id}.pas"', $'"otp_fname=Modules\{id}.pas"') +
+      ProcTask(()->
+      begin
+        Directory.CreateDirectory('Modules.Packed');
+        System.IO.File.Copy($'Modules\{id}.pas', $'Modules.Packed\{id}.pas', true);
+      end)
     ;
     
-    {$endregion Compile}
+  end;
+  HLModuleStage = sealed class(ModulePackingStage)
     
-    {$region Test}
-    
-    var T_Test := not Test ? EmptyTask :
-      TitleTask('Testing') +
-      ExecTask('Tests\Tester.pas', 'Tester', $'Modules={AllModules.Intersect(stages).JoinToString(''+'')}')
+    function MakeModuleTask: SecThrProc; override :=
+      ProcTask(()->Directory.CreateDirectory('Modules.Packed\Internal'))
+      +
+      
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]',     $'nick={id}', $'"inp_fname=Modules\{id}.pas"',              $'"otp_fname=Modules.Packed\{id}.pas"') *
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}Base]', $'nick={id}', $'"inp_fname=Modules\Internal\{id}Base.pas"', $'"otp_fname=Modules.Packed\Internal\{id}Base.pas"')
+      
+      +
+      ExecTask('Packing\Doc\PackComments.pas', $'Comments[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"', $'"fname=Modules.Packed\Internal\{id}Base.pas"')
     ;
     
-    {$endregion Test}
+  end;
+  
+  {$endregion Modules}
+  
+  {$region Compile}
+  
+  CompileStage = sealed class(PackingStage)
     
-    {$region Release}
-    var T_Release: SecThrProc;
-    if not Release then
-      T_Release := EmptyTask else
+    constructor;
+    begin
+      inherited Create(CompileStr);
+      self.description := 'Compiling';
+    end;
+    
+    function MakeModuleCompileTask(mn: string): SecThrProc;
+    begin
+      if CurrentStages.Contains(mn      ) then Result += EventTask(ModulePackingStage.GetModulePackEv(mn));
+      if CurrentStages.Contains(mn+'ABC') then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
+      
+      if CurrentStages.Contains(mn+'ABC') then
+      begin
+        if not CurrentStages.Contains(mn) then System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true);
+        Result += CompTask($'Modules.Packed\{mn}ABC.pas');
+      end else
+      if CurrentStages.Contains(mn) then
+        Result += CompTask($'Modules.Packed\{mn}.pas');
+      
+    end;
+    
+    function MakeCoreTask: SecThrProc; override :=
+    AllLLModules.Select(MakeModuleCompileTask).CombineAsyncTask;
+    
+  end;
+  
+  {$endregion Compile}
+  
+  {$region Test}
+  
+  TestStage = sealed class(PackingStage)
+    module_stages := AllModules.Intersect(CurrentStages);
+    module_stages_str := module_stages.JoinToString(' + ');
+    
+    constructor;
+    begin
+      inherited Create(TestStr);
+      self.description := 'Testing';
+      if module_stages.Count<>AllModules.Count then log_name := nil;
+    end;
+    
+    function MakeCoreTask: SecThrProc; override :=
+    ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"');
+    
+  end;
+  
+  {$endregion Test}
+  
+  {$region Release}
+  
+  ReleaseStage = sealed class(PackingStage)
+    
+    constructor := inherited Create(ReleaseStr);
+    
+    function MakeCoreTask: SecThrProc; override;
     begin
       
       {$region Clear}
@@ -294,9 +352,10 @@ begin
       {$region CopyModules}
       
       var T_CopyModules :=
+        TitleTask('Copying modules', '~') +
         ProcTask(()->
         begin
-          var mns := AllModules.Intersect(stages).ToHashSet;
+          var mns := AllModules.Intersect(PackingStage.CurrentStages).ToHashSet;
           var all_modules := mns.Count=0;
           if all_modules then mns := AllModules.ToHashSet;
           
@@ -327,7 +386,7 @@ begin
             end;
           end;
           
-          if copy_to_pf and (Compile or all_modules) then
+          if copy_to_pf and (PackingStage.CurrentStages.Contains(CompileStr) or all_modules) then
             foreach var mn in mns do
             begin
               var org_fname := $'Modules.Packed\{mn}.pcu';
@@ -354,6 +413,7 @@ begin
       {$region CopySamples}
       
       var T_CopySamples :=
+        TitleTask('Copying samples', '~') +
         ProcTask(()->
         begin
           var c := 0;
@@ -380,6 +440,7 @@ begin
       {$region CopySpec}
       
       var T_CopySpec :=
+        TitleTask('Copying spec', '~') +
         ProcTask(()->
         begin
           var c := 0;
@@ -399,8 +460,7 @@ begin
       
       {$endregion CopySpec}
       
-      T_Release :=
-        TitleTask('Release') +
+      Result :=
         T_Clear
         +
         
@@ -412,7 +472,59 @@ begin
         EmptyTask
       ;
     end;
-    {$endregion Release}
+    
+  end;
+  
+  {$endregion Release}
+  
+{$endregion PackStage}
+
+begin
+  try
+    
+    {$region Load}
+    
+    Logger.main_log += new FileLogger('LastPack.log');
+    Logger.main_log += new FileLogger('LastPack (Timed).log', true);
+    
+    // ====================================================
+    
+    begin
+      var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('Stages='));
+      
+      if arg=nil then
+      begin
+        PackingStage.CurrentStages := AllStages.ToHashSet;
+        PackingStage.CurrentStages.ExceptWith(|FirstPackStr|);
+        Otp($'Executing default stages:');
+      end else
+      begin
+        PackingStage.CurrentStages := arg.Remove(0,'Stages='.Length).Split('+').Select(st->st.Trim).ToHashSet;
+        PackingStage.CurrentStages.RemoveWhere(stage->
+        begin
+          if stage in AllStages then exit;
+          Otp($'WARNING: Invalid pack stage [{stage}]');
+          Result := true;
+        end);
+        Otp($'Executing selected stages:');
+      end;
+//      stages := HSet(OpenGLABCStr);
+      
+      Otp(PackingStage.CurrentStages.JoinIntoString(' + '));
+    end;
+    
+    {$endregion Load}
+    
+    var T_MiscClear := MiscClearStage.Create.MakeTask;
+    var T_FirstPack := FirstPackStage.Create.MakeTask;
+    var T_Spec      := SpecStage.Create.MakeTask;
+    var T_OpenCL    := LLModuleStage.Create(OpenCLStr).MakeTask;
+    var T_OpenCLABC := HLModuleStage.Create(OpenCLABCStr).MakeTask;
+    var T_OpenGL    := LLModuleStage.Create(OpenGLStr).MakeTask;
+    var T_OpenGLABC := HLModuleStage.Create(OpenGLABCStr).MakeTask;
+    var T_Compile   := CompileStage.Create.MakeTask;
+    var T_Test      := TestStage.Create.MakeTask;
+    var T_Release   := ReleaseStage.Create.MakeTask;
     
     Otp('Start packing');
     
@@ -421,8 +533,8 @@ begin
       T_FirstPack +
       
       T_Spec *
-      LLModuleTask(OpenCLStr) * HLModuleTask(OpenCLABCStr) *
-      LLModuleTask(OpenGLStr) * HLModuleTask(OpenGLABCStr) *
+      T_OpenCL * T_OpenCLABC *
+      T_OpenGL * T_OpenGLABC *
       T_Compile
       
       + T_Test
