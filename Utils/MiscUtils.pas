@@ -415,12 +415,6 @@ type
       Result := log1;
     end;
     
-    public static procedure operator-=(log1, log2: Logger);
-    begin
-      lock log1.sub_loggers do if not log1.sub_loggers.Remove(log2) then raise new System.InvalidOperationException;
-      log2.Close;
-    end;
-    
     public procedure Otp(l: OtpLine); virtual;
     begin
       
@@ -991,6 +985,31 @@ type
       if prep_otp<>nil then foreach var l in prep_otp do Otp(l);
       if ev<>nil then ev.WaitOne;
       ExecuteFile(fname, nick, pars);
+    end;
+    
+  end;
+  
+  SecThrProcHandled = sealed class(SecThrProc)
+    private t: SecThrProc;
+    public event p: OtpLine->();
+    
+    public constructor(t: SecThrProc; p: OtpLine->());
+    begin
+      self.t := t;
+      self.p += p;
+    end;
+    
+    private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override := t.Prepare(evs);
+    
+    private procedure SyncExecImpl; override;
+    begin
+      t.StartExecImpl;
+      var lp := p;
+      foreach var l in t.own_otp do
+      begin
+        if lp<>nil then lp(l);
+        Otp(l);
+      end;
     end;
     
   end;

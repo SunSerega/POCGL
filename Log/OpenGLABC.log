@@ -1,14 +1,6 @@
-﻿Finished compiling: OK
-Runing SpecPacker
-SpecPacker: Packing spec "Гайд по использованию OpenGL и OpenCL"
-SpecPacker: Done packing spec "Гайд по использованию OpenGL и OpenCL"
-SpecPacker: Packing spec "Справка OpenGLABC"
-SpecPacker: Done packing spec "Справка OpenGLABC"
-SpecPacker: Packing spec "Справка OpenCLABC"
-SpecPacker: Done packing spec "Справка OpenCLABC"
-Finished runing SpecPacker
-===================================== OpenCL =====================================
-Compiling "Packing\Template\Pack Template.pas"
-Finished compiling: OK
-Runing Template[OpenCL]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
+﻿Runing Template[OpenGLABC]
+Finished runing Template[OpenGLABC]
+Runing Template[OpenGLABCBase]
+Finished runing Template[OpenGLABCBase]
+Runing Comments[OpenGLABC]
+Finished runing Comments[OpenGLABC]

@@ -97,24 +97,16 @@ var AllStages := HSet(
     function MakeTask: SecThrProc;
     begin
       if (id<>nil) and not CurrentStages.Contains(id) then exit;
+      Result := MakeCoreTask;
+      
+      if self.log_name<>nil then
+      begin
+        self.log := new FileLogger($'Log\{log_name}.log');
+        Result := new SecThrProcHandled(Result, self.log.Otp) + ProcTask(self.log.Close);
+      end;
       
       if self.description<>nil then
-        Result += TitleTask(self.description);
-      
-      if self.log_name<>nil then
-        Result += ProcTask(()->
-        begin
-          self.log := new FileLogger($'Log\{log_name}.log');
-          Logger.main_log += self.log;
-        end);
-      
-      Result += MakeCoreTask();
-      
-      if self.log_name<>nil then
-        Result += ProcTask(()->
-        begin
-          Logger.main_log -= self.log;
-        end);
+        Result := TitleTask(self.description) + Result;
       
     end;
     function MakeCoreTask: SecThrProc; abstract;
