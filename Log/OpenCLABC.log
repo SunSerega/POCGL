@@ -1,4 +1,6 @@
-﻿Runing Template[OpenCLABC]
+﻿Compiling "Packing\Template\Pack Template.pas"
+Finished compiling: OK
+Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Finished compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]

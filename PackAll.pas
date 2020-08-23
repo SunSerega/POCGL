@@ -291,7 +291,11 @@ var AllStages := HSet(
   
   ReleaseStage = sealed class(PackingStage)
     
-    constructor := inherited Create(ReleaseStr);
+    constructor;
+    begin
+      inherited Create(ReleaseStr);
+      if not IsPackingAllModules then log_name := nil;
+    end;
     
     function MakeCoreTask: SecThrProc; override;
     begin
