@@ -306,7 +306,11 @@ type
       
       self.ptr := br.ReadInt32 - self.t.Count(ch->ch='-');
       if self.ptr<0 then raise new System.InvalidOperationException;
+//      if self.ptr>0 then raise new System.NotSupportedException(name); // cl_dx9_surface_info_khr содержит поле-указатель
       self.t := self.t.Remove('-').Trim;
+      
+      // static_arr_len
+      if br.ReadInt32 <> -1 then raise new System.NotSupportedException;
       
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
@@ -520,6 +524,7 @@ type
     public name, t: string;
     public readonly: boolean;
     public ptr: integer;
+    public static_arr_len: integer;
     public gr: Group;
     
     public constructor := exit;
@@ -535,14 +540,17 @@ type
       if br.ReadInt64 <> 1 then raise new System.NotSupportedException;
       
       self.readonly := br.ReadBoolean;
+      
       self.ptr := br.ReadInt32 + self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
       self.t := self.t.Remove('*','-').Trim;
       if self.ptr<0 then
       begin
-        if proto and (ntv_t.ToLower='void') and (ptr=-1) then
+        if proto and (ntv_t.ToLower='void') and (ptr=-1) then // void конвертирует в IntPtr-
           self.t := nil else
           raise new MessageException($'ERROR: par [{name}] with type [{ntv_t}] got negative ref count: [{self.ptr}]');
       end;
+      
+      self.static_arr_len := br.ReadInt32;
       
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
@@ -705,7 +713,7 @@ type
         begin
           if par.t='ntv_char' then
           begin
-            log.Otp('Param [{par.name}] with type [{par.t}] in func [{self.name}]');
+            log.Otp($'Param [{par.name}] with type [{par.t}] in func [{self.name}]');
             Result := Lst(new FuncParamT(false, 0, 'SByte'));
           end else
             Result := Lst(new FuncParamT(false, 0, par.GetTName)); // (0,nil) for procedure ret par
@@ -737,17 +745,29 @@ type
             Result := Lst(new FuncParamT(false, 0, new string('^',Max(0,par.ptr))+par.GetTName));
             exit;
           end;
-          var res := new List<FuncParamT>( Max(3,par.ptr+1) );
+          
+          var can_be_arr      := (par.static_arr_len=-1) or (par.static_arr_len>1);
+          var can_be_var_arg  := (par.static_arr_len=-1) or (par.static_arr_len>0);
+          
+          var res := new List<FuncParamT>(
+            can_be_arr ? Max(3,par.ptr+1) :
+            can_be_var_arg ? 2 :
+              1
+          );
           var par_t := par.GetTName;
           
-          if par.ptr=1 then
+          if (par.ptr=1) or not can_be_arr then
           begin
+            if par.ptr<>1 then
+              log.Otp($'Param [{par.name}] in func [{self.name}] had type of multi-array, but also cound not be array');
+            
             res += new FuncParamT(false, 0,
               par_t='IntPtr' ?
                 'pointer' :
                 'IntPtr'
             );
-            res += new FuncParamT(true, 0, par_t);
+            if can_be_var_arg then
+              res += new FuncParamT(true, 0, par_t);
           end else
           for var ptr := 0 to par.ptr-1 do
             res += new FuncParamT(false, ptr, 'IntPtr');
@@ -755,10 +775,11 @@ type
           var ToDo := 0; //ToDo костыль, надо маршлинг нормально настроить
           // но проблема в том, что для "array of boolean" не работает копирование в неуправляемую память
           // очевидное решение - через указатели получить "array of Byte". Только как покрасивше?
-          res += new FuncParamT(false, par.ptr,
-            (par_t='boolean') and (par.ptr>1) ?
-              'Byte' : par_t
-          );
+          if can_be_arr then
+            res += new FuncParamT(false, par.ptr,
+              (par_t='boolean') and (par.ptr>1) ?
+                'Byte' : par_t
+            );
           
           res.Reverse;
           Result := res;

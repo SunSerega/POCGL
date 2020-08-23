@@ -1,14 +1,6 @@
 
 
 
-# glGetShaderInfoLog
-!possible_par_types
- *	| *	| -array of Int32	| *	|
-
-# glGetProgramInfoLog
-!possible_par_types
- *	| *	| -array of Int32	| *	|
-
 # glNamedBufferData
 !possible_par_types
  *	| *	| -IntPtr +array of T +var T +IntPtr	| *	|

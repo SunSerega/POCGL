@@ -287,7 +287,6 @@
  ColorPointerType	| UInt32	|
 
 # glColorP3uiv
- ColorPointerType	| array of UInt32	|
  ColorPointerType	| var UInt32	|
  ColorPointerType	| IntPtr	|
 
@@ -295,7 +294,6 @@
  ColorPointerType	| UInt32	|
 
 # glColorP4uiv
- ColorPointerType	| array of UInt32	|
  ColorPointerType	| var UInt32	|
  ColorPointerType	| IntPtr	|
 
@@ -695,36 +693,16 @@
  UInt32	| UInt32	| AtomicCounterBufferPName	| IntPtr	|
 
 # glGetActiveAttrib
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetActiveSubroutineName
- UInt32	| ShaderType	| UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ShaderType	| UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| ShaderType	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
@@ -734,36 +712,16 @@
  ProgramName	| ShaderType	| UInt32	| SubroutineParameterName	| IntPtr	|
 
 # glGetActiveSubroutineUniformName
- UInt32	| ShaderType	| UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ShaderType	| UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| ShaderType	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetActiveUniform
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var UniformType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var UniformType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -773,12 +731,10 @@
  UInt32	| UInt32	| UniformBlockPName	| IntPtr	|
 
 # glGetActiveUniformBlockName
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetActiveUniformName
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
@@ -794,9 +750,6 @@
  UInt32	| Int32	| IntPtr	| UniformPName	| IntPtr	|
 
 # glGetAttachedShaders
- UInt32	| Int32	| array of Int32	| array of UInt32	|
- UInt32	| Int32	| array of Int32	| var UInt32	|
- UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| Int32	| var Int32	| array of UInt32	|
  UInt32	| Int32	| var Int32	| var UInt32	|
  UInt32	| Int32	| var Int32	| IntPtr	|
@@ -829,7 +782,6 @@
  BufferTargetARB	| BufferPNameARB	| IntPtr	|
 
 # glGetBufferPointerv
- BufferTargetARB	| BufferPointerNameARB	| array of IntPtr	|
  BufferTargetARB	| BufferPointerNameARB	| var IntPtr	|
  BufferTargetARB	| BufferPointerNameARB	| pointer	|
 
@@ -1038,28 +990,20 @@
  ProgramName	| Int32	| Int32	| IntPtr	|
 
 # glGetObjectLabel
- ObjectIdentifier	| UInt32	| Int32	| array of Int32	| IntPtr	|
  ObjectIdentifier	| UInt32	| Int32	| var Int32	| IntPtr	|
  ObjectIdentifier	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetObjectPtrLabel
- IntPtr	| Int32	| array of Int32	| IntPtr	|
  IntPtr	| Int32	| var Int32	| IntPtr	|
  IntPtr	| Int32	| IntPtr	| IntPtr	|
 
 # glGetPointerv
- GetPointervPName	| array of IntPtr	|
  GetPointervPName	| var IntPtr	|
  GetPointervPName	| pointer	|
 
 # glGetProgramBinary
- UInt32	| Int32	| array of Int32	| array of DummyEnum	| IntPtr	|
- UInt32	| Int32	| array of Int32	| var DummyEnum	| IntPtr	|
- UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| Int32	| var Int32	| array of DummyEnum	| IntPtr	|
  UInt32	| Int32	| var Int32	| var DummyEnum	| IntPtr	|
  UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| Int32	| IntPtr	| array of DummyEnum	| IntPtr	|
  UInt32	| Int32	| IntPtr	| var DummyEnum	| IntPtr	|
  UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -1078,7 +1022,6 @@
  ProgramName	| ProgramPropertyARB	| IntPtr	|
 
 # glGetProgramPipelineInfoLog
- UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| Int32	| IntPtr	| IntPtr	|
 
@@ -1092,27 +1035,18 @@
  UInt32	| ProgramName	| ProgramInterface	| IntPtr	|
 
 # glGetProgramResourceiv
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| array of Int32	| array of Int32	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| array of Int32	| var Int32	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| var Int32	| array of Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| var Int32	| var Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| var Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| IntPtr	| array of Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| IntPtr	| var Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of ProgramResourceProperty	| Int32	| IntPtr	| IntPtr	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| array of Int32	| array of Int32	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| array of Int32	| var Int32	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| var Int32	| array of Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| var Int32	| var Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| var Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| IntPtr	| array of Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| IntPtr	| var Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var ProgramResourceProperty	| Int32	| IntPtr	| IntPtr	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| array of Int32	| array of Int32	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| array of Int32	| var Int32	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| var Int32	| array of Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| var Int32	| var Int32	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| var Int32	| IntPtr	|
@@ -1129,12 +1063,10 @@
  Int32	| ProgramName	| ProgramInterface	| IntPtr	|
 
 # glGetProgramResourceName
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetProgramStageiv
- ProgramName	| ShaderType	| ProgramStagePName	| array of Int32	|
  ProgramName	| ShaderType	| ProgramStagePName	| var Int32	|
  ProgramName	| ShaderType	| ProgramStagePName	| IntPtr	|
 
@@ -1215,18 +1147,14 @@
  ShaderName	| ShaderParameterName	| IntPtr	|
 
 # glGetShaderPrecisionFormat
- ShaderType	| PrecisionType	| array of Int32	| array of Int32	|
  ShaderType	| PrecisionType	| array of Int32	| var Int32	|
  ShaderType	| PrecisionType	| array of Int32	| IntPtr	|
- ShaderType	| PrecisionType	| var Int32	| array of Int32	|
  ShaderType	| PrecisionType	| var Int32	| var Int32	|
  ShaderType	| PrecisionType	| var Int32	| IntPtr	|
- ShaderType	| PrecisionType	| IntPtr	| array of Int32	|
  ShaderType	| PrecisionType	| IntPtr	| var Int32	|
  ShaderType	| PrecisionType	| IntPtr	| IntPtr	|
 
 # glGetShaderSource
- UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| Int32	| IntPtr	| IntPtr	|
 
@@ -1245,9 +1173,6 @@
  Int32	| ProgramName	| ShaderType	| IntPtr	|
 
 # glGetSynciv
- GLsync	| SyncParameterName	| Int32	| array of Int32	| array of Int32	|
- GLsync	| SyncParameterName	| Int32	| array of Int32	| var Int32	|
- GLsync	| SyncParameterName	| Int32	| array of Int32	| IntPtr	|
  GLsync	| SyncParameterName	| Int32	| var Int32	| array of Int32	|
  GLsync	| SyncParameterName	| Int32	| var Int32	| var Int32	|
  GLsync	| SyncParameterName	| Int32	| var Int32	| IntPtr	|
@@ -1340,31 +1265,12 @@
  UInt32	| TransformFeedbackPName	| IntPtr	|
 
 # glGetTransformFeedbackVarying
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -1403,7 +1309,6 @@
  Int32	| ProgramName	| IntPtr	|
 
 # glGetUniformSubroutineuiv
- ShaderType	| Int32	| array of UInt32	|
  ShaderType	| Int32	| var UInt32	|
  ShaderType	| Int32	| IntPtr	|
 
@@ -1438,12 +1343,10 @@
  UInt32	| VertexAttribPropertyARB	| IntPtr	|
 
 # glGetVertexAttribIiv
- UInt32	| VertexAttribEnum	| array of Int32	|
  UInt32	| VertexAttribEnum	| var Int32	|
  UInt32	| VertexAttribEnum	| IntPtr	|
 
 # glGetVertexAttribIuiv
- UInt32	| VertexAttribEnum	| array of UInt32	|
  UInt32	| VertexAttribEnum	| var UInt32	|
  UInt32	| VertexAttribEnum	| IntPtr	|
 
@@ -1458,7 +1361,6 @@
  UInt32	| VertexAttribEnum	| IntPtr	|
 
 # glGetVertexAttribPointerv
- UInt32	| VertexAttribPointerPropertyARB	| array of IntPtr	|
  UInt32	| VertexAttribPointerPropertyARB	| var IntPtr	|
  UInt32	| VertexAttribPointerPropertyARB	| pointer	|
 
@@ -1636,7 +1538,6 @@
  TextureUnit	| TexCoordPointerType	| UInt32	|
 
 # glMultiTexCoordP1uiv
- TextureUnit	| TexCoordPointerType	| array of UInt32	|
  TextureUnit	| TexCoordPointerType	| var UInt32	|
  TextureUnit	| TexCoordPointerType	| IntPtr	|
 
@@ -1644,7 +1545,6 @@
  TextureUnit	| TexCoordPointerType	| UInt32	|
 
 # glMultiTexCoordP2uiv
- TextureUnit	| TexCoordPointerType	| array of UInt32	|
  TextureUnit	| TexCoordPointerType	| var UInt32	|
  TextureUnit	| TexCoordPointerType	| IntPtr	|
 
@@ -1652,7 +1552,6 @@
  TextureUnit	| TexCoordPointerType	| UInt32	|
 
 # glMultiTexCoordP3uiv
- TextureUnit	| TexCoordPointerType	| array of UInt32	|
  TextureUnit	| TexCoordPointerType	| var UInt32	|
  TextureUnit	| TexCoordPointerType	| IntPtr	|
 
@@ -1660,7 +1559,6 @@
  TextureUnit	| TexCoordPointerType	| UInt32	|
 
 # glMultiTexCoordP4uiv
- TextureUnit	| TexCoordPointerType	| array of UInt32	|
  TextureUnit	| TexCoordPointerType	| var UInt32	|
  TextureUnit	| TexCoordPointerType	| IntPtr	|
 
@@ -1708,7 +1606,6 @@
  NormalPointerType	| UInt32	|
 
 # glNormalP3uiv
- NormalPointerType	| array of UInt32	|
  NormalPointerType	| var UInt32	|
  NormalPointerType	| IntPtr	|
 
@@ -2066,7 +1963,6 @@
  ColorPointerType	| UInt32	|
 
 # glSecondaryColorP3uiv
- ColorPointerType	| array of UInt32	|
  ColorPointerType	| var UInt32	|
  ColorPointerType	| IntPtr	|
 
@@ -2137,7 +2033,6 @@
  TexCoordPointerType	| UInt32	|
 
 # glTexCoordP1uiv
- TexCoordPointerType	| array of UInt32	|
  TexCoordPointerType	| var UInt32	|
  TexCoordPointerType	| IntPtr	|
 
@@ -2145,7 +2040,6 @@
  TexCoordPointerType	| UInt32	|
 
 # glTexCoordP2uiv
- TexCoordPointerType	| array of UInt32	|
  TexCoordPointerType	| var UInt32	|
  TexCoordPointerType	| IntPtr	|
 
@@ -2153,7 +2047,6 @@
  TexCoordPointerType	| UInt32	|
 
 # glTexCoordP3uiv
- TexCoordPointerType	| array of UInt32	|
  TexCoordPointerType	| var UInt32	|
  TexCoordPointerType	| IntPtr	|
 
@@ -2161,7 +2054,6 @@
  TexCoordPointerType	| UInt32	|
 
 # glTexCoordP4uiv
- TexCoordPointerType	| array of UInt32	|
  TexCoordPointerType	| var UInt32	|
  TexCoordPointerType	| IntPtr	|
 
@@ -2598,7 +2490,6 @@
  UInt32	| real	|
 
 # glVertexAttrib1dv
- UInt32	| array of real	|
  UInt32	| var real	|
  UInt32	| IntPtr	|
 
@@ -2606,7 +2497,6 @@
  UInt32	| single	|
 
 # glVertexAttrib1fv
- UInt32	| array of single	|
  UInt32	| var single	|
  UInt32	| IntPtr	|
 
@@ -2614,7 +2504,6 @@
  UInt32	| Int16	|
 
 # glVertexAttrib1sv
- UInt32	| array of Int16	|
  UInt32	| var Int16	|
  UInt32	| IntPtr	|
 
@@ -2761,7 +2650,6 @@
  UInt32	| Int32	|
 
 # glVertexAttribI1iv
- UInt32	| array of Int32	|
  UInt32	| var Int32	|
  UInt32	| IntPtr	|
 
@@ -2769,7 +2657,6 @@
  UInt32	| UInt32	|
 
 # glVertexAttribI1uiv
- UInt32	| array of UInt32	|
  UInt32	| var UInt32	|
  UInt32	| IntPtr	|
 
@@ -2851,7 +2738,6 @@
  UInt32	| real	|
 
 # glVertexAttribL1dv
- UInt32	| array of real	|
  UInt32	| var real	|
  UInt32	| IntPtr	|
 
@@ -2889,7 +2775,6 @@
  UInt32	| VertexAttribPointerType	| boolean	| UInt32	|
 
 # glVertexAttribP1uiv
- UInt32	| VertexAttribPointerType	| boolean	| array of UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| var UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| IntPtr	|
 
@@ -2897,7 +2782,6 @@
  UInt32	| VertexAttribPointerType	| boolean	| UInt32	|
 
 # glVertexAttribP2uiv
- UInt32	| VertexAttribPointerType	| boolean	| array of UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| var UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| IntPtr	|
 
@@ -2905,7 +2789,6 @@
  UInt32	| VertexAttribPointerType	| boolean	| UInt32	|
 
 # glVertexAttribP3uiv
- UInt32	| VertexAttribPointerType	| boolean	| array of UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| var UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| IntPtr	|
 
@@ -2913,7 +2796,6 @@
  UInt32	| VertexAttribPointerType	| boolean	| UInt32	|
 
 # glVertexAttribP4uiv
- UInt32	| VertexAttribPointerType	| boolean	| array of UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| var UInt32	|
  UInt32	| VertexAttribPointerType	| boolean	| IntPtr	|
 
@@ -2927,7 +2809,6 @@
  VertexPointerType	| UInt32	|
 
 # glVertexP2uiv
- VertexPointerType	| array of UInt32	|
  VertexPointerType	| var UInt32	|
  VertexPointerType	| IntPtr	|
 
@@ -2935,7 +2816,6 @@
  VertexPointerType	| UInt32	|
 
 # glVertexP3uiv
- VertexPointerType	| array of UInt32	|
  VertexPointerType	| var UInt32	|
  VertexPointerType	| IntPtr	|
 
@@ -2943,7 +2823,6 @@
  VertexPointerType	| UInt32	|
 
 # glVertexP4uiv
- VertexPointerType	| array of UInt32	|
  VertexPointerType	| var UInt32	|
  VertexPointerType	| IntPtr	|
 
@@ -3167,7 +3046,6 @@
  Int32	| IntPtr	|
 
 # glEdgeFlagv
- array of boolean	|
  var boolean	|
  IntPtr	|
 
@@ -3178,7 +3056,6 @@
  real	|
 
 # glEvalCoord1dv
- array of real	|
  var real	|
  IntPtr	|
 
@@ -3186,7 +3063,6 @@
  single	|
 
 # glEvalCoord1fv
- array of single	|
  var single	|
  IntPtr	|
 
@@ -3227,7 +3103,6 @@
  real	|
 
 # glFogCoorddv
- array of real	|
  var real	|
  IntPtr	|
 
@@ -3235,7 +3110,6 @@
  single	|
 
 # glFogCoordfv
- array of single	|
  var single	|
  IntPtr	|
 
@@ -3353,7 +3227,6 @@
  real	|
 
 # glIndexdv
- array of real	|
  var real	|
  IntPtr	|
 
@@ -3361,7 +3234,6 @@
  single	|
 
 # glIndexfv
- array of single	|
  var single	|
  IntPtr	|
 
@@ -3369,7 +3241,6 @@
  Int32	|
 
 # glIndexiv
- array of Int32	|
  var Int32	|
  IntPtr	|
 
@@ -3383,7 +3254,6 @@
  Int16	|
 
 # glIndexsv
- array of Int16	|
  var Int16	|
  IntPtr	|
 
@@ -3391,7 +3261,6 @@
  Byte	|
 
 # glIndexubv
- array of Byte	|
  var Byte	|
  IntPtr	|
 
@@ -3517,7 +3386,6 @@
  TextureUnit	| real	|
 
 # glMultiTexCoord1dv
- TextureUnit	| array of real	|
  TextureUnit	| var real	|
  TextureUnit	| IntPtr	|
 
@@ -3525,7 +3393,6 @@
  TextureUnit	| single	|
 
 # glMultiTexCoord1fv
- TextureUnit	| array of single	|
  TextureUnit	| var single	|
  TextureUnit	| IntPtr	|
 
@@ -3533,7 +3400,6 @@
  TextureUnit	| Int32	|
 
 # glMultiTexCoord1iv
- TextureUnit	| array of Int32	|
  TextureUnit	| var Int32	|
  TextureUnit	| IntPtr	|
 
@@ -3541,7 +3407,6 @@
  TextureUnit	| Int16	|
 
 # glMultiTexCoord1sv
- TextureUnit	| array of Int16	|
  TextureUnit	| var Int16	|
  TextureUnit	| IntPtr	|
 
@@ -4008,7 +3873,6 @@
  real	|
 
 # glTexCoord1dv
- array of real	|
  var real	|
  IntPtr	|
 
@@ -4016,7 +3880,6 @@
  single	|
 
 # glTexCoord1fv
- array of single	|
  var single	|
  IntPtr	|
 
@@ -4024,7 +3887,6 @@
  Int32	|
 
 # glTexCoord1iv
- array of Int32	|
  var Int32	|
  IntPtr	|
 
@@ -4032,7 +3894,6 @@
  Int16	|
 
 # glTexCoord1sv
- array of Int16	|
  var Int16	|
  IntPtr	|
 
@@ -4663,9 +4524,6 @@
  QueryTarget	| UInt32	| DummyEnum	| UInt32	|
 
 # glGetPerfMonitorGroupsAMD
- array of Int32	| Int32	| array of UInt32	|
- array of Int32	| Int32	| var UInt32	|
- array of Int32	| Int32	| IntPtr	|
  var Int32	| Int32	| array of UInt32	|
  var Int32	| Int32	| var UInt32	|
  var Int32	| Int32	| IntPtr	|
@@ -4674,27 +4532,12 @@
  IntPtr	| Int32	| IntPtr	|
 
 # glGetPerfMonitorCountersAMD
- UInt32	| array of Int32	| array of Int32	| Int32	| array of UInt32	|
- UInt32	| array of Int32	| array of Int32	| Int32	| var UInt32	|
- UInt32	| array of Int32	| array of Int32	| Int32	| IntPtr	|
- UInt32	| array of Int32	| var Int32	| Int32	| array of UInt32	|
- UInt32	| array of Int32	| var Int32	| Int32	| var UInt32	|
- UInt32	| array of Int32	| var Int32	| Int32	| IntPtr	|
- UInt32	| array of Int32	| IntPtr	| Int32	| array of UInt32	|
- UInt32	| array of Int32	| IntPtr	| Int32	| var UInt32	|
- UInt32	| array of Int32	| IntPtr	| Int32	| IntPtr	|
- UInt32	| var Int32	| array of Int32	| Int32	| array of UInt32	|
- UInt32	| var Int32	| array of Int32	| Int32	| var UInt32	|
- UInt32	| var Int32	| array of Int32	| Int32	| IntPtr	|
  UInt32	| var Int32	| var Int32	| Int32	| array of UInt32	|
  UInt32	| var Int32	| var Int32	| Int32	| var UInt32	|
  UInt32	| var Int32	| var Int32	| Int32	| IntPtr	|
  UInt32	| var Int32	| IntPtr	| Int32	| array of UInt32	|
  UInt32	| var Int32	| IntPtr	| Int32	| var UInt32	|
  UInt32	| var Int32	| IntPtr	| Int32	| IntPtr	|
- UInt32	| IntPtr	| array of Int32	| Int32	| array of UInt32	|
- UInt32	| IntPtr	| array of Int32	| Int32	| var UInt32	|
- UInt32	| IntPtr	| array of Int32	| Int32	| IntPtr	|
  UInt32	| IntPtr	| var Int32	| Int32	| array of UInt32	|
  UInt32	| IntPtr	| var Int32	| Int32	| var UInt32	|
  UInt32	| IntPtr	| var Int32	| Int32	| IntPtr	|
@@ -4703,12 +4546,10 @@
  UInt32	| IntPtr	| IntPtr	| Int32	| IntPtr	|
 
 # glGetPerfMonitorGroupStringAMD
- UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetPerfMonitorCounterStringAMD
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
@@ -4737,13 +4578,10 @@
  UInt32	|
 
 # glGetPerfMonitorCounterDataAMD
- UInt32	| DummyEnum	| Int32	| array of UInt32	| array of Int32	|
  UInt32	| DummyEnum	| Int32	| array of UInt32	| var Int32	|
  UInt32	| DummyEnum	| Int32	| array of UInt32	| IntPtr	|
- UInt32	| DummyEnum	| Int32	| var UInt32	| array of Int32	|
  UInt32	| DummyEnum	| Int32	| var UInt32	| var Int32	|
  UInt32	| DummyEnum	| Int32	| var UInt32	| IntPtr	|
- UInt32	| DummyEnum	| Int32	| IntPtr	| array of Int32	|
  UInt32	| DummyEnum	| Int32	| IntPtr	| var Int32	|
  UInt32	| DummyEnum	| Int32	| IntPtr	| IntPtr	|
 
@@ -4847,7 +4685,6 @@
  DummyEnum	| Int32	| IntPtr	|
 
 # glGetTexParameterPointervAPPLE
- DummyEnum	| DummyEnum	| array of IntPtr	|
  DummyEnum	| DummyEnum	| var IntPtr	|
  DummyEnum	| DummyEnum	| pointer	|
 
@@ -5089,7 +4926,6 @@
  ProgramTarget	| UInt32	| IntPtr	|
 
 # glGetProgramivARB
- ProgramTarget	| ProgramPropertyARB	| array of Int32	|
  ProgramTarget	| ProgramPropertyARB	| var Int32	|
  ProgramTarget	| ProgramPropertyARB	| IntPtr	|
 
@@ -5442,7 +5278,6 @@
  TextureUnit	| real	|
 
 # glMultiTexCoord1dvARB
- TextureUnit	| array of real	|
  TextureUnit	| var real	|
  TextureUnit	| IntPtr	|
 
@@ -5450,7 +5285,6 @@
  TextureUnit	| single	|
 
 # glMultiTexCoord1fvARB
- TextureUnit	| array of single	|
  TextureUnit	| var single	|
  TextureUnit	| IntPtr	|
 
@@ -5458,7 +5292,6 @@
  TextureUnit	| Int32	|
 
 # glMultiTexCoord1ivARB
- TextureUnit	| array of Int32	|
  TextureUnit	| var Int32	|
  TextureUnit	| IntPtr	|
 
@@ -5466,7 +5299,6 @@
  TextureUnit	| Int16	|
 
 # glMultiTexCoord1svARB
- TextureUnit	| array of Int16	|
  TextureUnit	| var Int16	|
  TextureUnit	| IntPtr	|
 
@@ -5837,14 +5669,10 @@
  GLhandleARB	| DummyEnum	| IntPtr	|
 
 # glGetInfoLogARB
- GLhandleARB	| Int32	| array of Int32	| IntPtr	|
  GLhandleARB	| Int32	| var Int32	| IntPtr	|
  GLhandleARB	| Int32	| IntPtr	| IntPtr	|
 
 # glGetAttachedObjectsARB
- GLhandleARB	| Int32	| array of Int32	| array of GLhandleARB	|
- GLhandleARB	| Int32	| array of Int32	| var GLhandleARB	|
- GLhandleARB	| Int32	| array of Int32	| IntPtr	|
  GLhandleARB	| Int32	| var Int32	| array of GLhandleARB	|
  GLhandleARB	| Int32	| var Int32	| var GLhandleARB	|
  GLhandleARB	| Int32	| var Int32	| IntPtr	|
@@ -5857,31 +5685,12 @@
  Int32	| GLhandleARB	| IntPtr	|
 
 # glGetActiveUniformARB
- GLhandleARB	| UInt32	| Int32	| array of Int32	| array of Int32	| array of UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| array of Int32	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| var Int32	| array of UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| var Int32	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| IntPtr	| array of UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| IntPtr	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| array of Int32	| array of UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| array of Int32	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| array of UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| var UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| array of UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| var UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| array of Int32	| array of UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| array of Int32	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| array of UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| var UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| array of UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| var UniformType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -5896,7 +5705,6 @@
  GLhandleARB	| Int32	| IntPtr	|
 
 # glGetShaderSourceARB
- GLhandleARB	| Int32	| array of Int32	| IntPtr	|
  GLhandleARB	| Int32	| var Int32	| IntPtr	|
  GLhandleARB	| Int32	| IntPtr	| IntPtr	|
 
@@ -5926,10 +5734,8 @@
  boolean	| Int32	| IntPtr	|
 
 # glGetNamedStringARB
- Int32	| string	| Int32	| array of Int32	| IntPtr	|
  Int32	| string	| Int32	| var Int32	| IntPtr	|
  Int32	| string	| Int32	| IntPtr	| IntPtr	|
- Int32	| IntPtr	| Int32	| array of Int32	| IntPtr	|
  Int32	| IntPtr	| Int32	| var Int32	| IntPtr	|
  Int32	| IntPtr	| Int32	| IntPtr	| IntPtr	|
 
@@ -6080,7 +5886,6 @@
  BufferTargetARB	| BufferPNameARB	| IntPtr	|
 
 # glGetBufferPointervARB
- BufferTargetARB	| BufferPointerNameARB	| array of IntPtr	|
  BufferTargetARB	| BufferPointerNameARB	| var IntPtr	|
  BufferTargetARB	| BufferPointerNameARB	| pointer	|
 
@@ -6088,7 +5893,6 @@
  UInt32	| real	|
 
 # glVertexAttrib1dvARB
- UInt32	| array of real	|
  UInt32	| var real	|
  UInt32	| IntPtr	|
 
@@ -6096,7 +5900,6 @@
  UInt32	| single	|
 
 # glVertexAttrib1fvARB
- UInt32	| array of single	|
  UInt32	| var single	|
  UInt32	| IntPtr	|
 
@@ -6104,7 +5907,6 @@
  UInt32	| Int16	|
 
 # glVertexAttrib1svARB
- UInt32	| array of Int16	|
  UInt32	| var Int16	|
  UInt32	| IntPtr	|
 
@@ -6263,7 +6065,6 @@
  UInt32	| VertexAttribPropertyARB	| IntPtr	|
 
 # glGetVertexAttribPointervARB
- UInt32	| VertexAttribPointerPropertyARB	| array of IntPtr	|
  UInt32	| VertexAttribPointerPropertyARB	| var IntPtr	|
  UInt32	| VertexAttribPointerPropertyARB	| pointer	|
 
@@ -6272,31 +6073,12 @@
  GLhandleARB	| UInt32	| IntPtr	|
 
 # glGetActiveAttribARB
- GLhandleARB	| UInt32	| Int32	| array of Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| array of Int32	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| var Int32	| array of AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| var Int32	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| IntPtr	| array of AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| IntPtr	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| array of Int32	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| array of AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| array of AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| array of Int32	| array of AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| array of Int32	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| array of AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| array of AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
  GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -6476,12 +6258,10 @@
  UInt32	| UInt32	| Int32	| IntPtr	| PreserveModeATI	|
 
 # glGetObjectBufferfvATI
- UInt32	| ArrayObjectPNameATI	| array of single	|
  UInt32	| ArrayObjectPNameATI	| var single	|
  UInt32	| ArrayObjectPNameATI	| IntPtr	|
 
 # glGetObjectBufferivATI
- UInt32	| ArrayObjectPNameATI	| array of Int32	|
  UInt32	| ArrayObjectPNameATI	| var Int32	|
  UInt32	| ArrayObjectPNameATI	| IntPtr	|
 
@@ -6492,12 +6272,10 @@
  EnableCap	| Int32	| ScalarType	| Int32	| UInt32	| UInt32	|
 
 # glGetArrayObjectfvATI
- EnableCap	| ArrayObjectPNameATI	| array of single	|
  EnableCap	| ArrayObjectPNameATI	| var single	|
  EnableCap	| ArrayObjectPNameATI	| IntPtr	|
 
 # glGetArrayObjectivATI
- EnableCap	| ArrayObjectPNameATI	| array of Int32	|
  EnableCap	| ArrayObjectPNameATI	| var Int32	|
  EnableCap	| ArrayObjectPNameATI	| IntPtr	|
 
@@ -6505,12 +6283,10 @@
  UInt32	| ScalarType	| Int32	| UInt32	| UInt32	|
 
 # glGetVariantArrayObjectfvATI
- UInt32	| ArrayObjectPNameATI	| array of single	|
  UInt32	| ArrayObjectPNameATI	| var single	|
  UInt32	| ArrayObjectPNameATI	| IntPtr	|
 
 # glGetVariantArrayObjectivATI
- UInt32	| ArrayObjectPNameATI	| array of Int32	|
  UInt32	| ArrayObjectPNameATI	| var Int32	|
  UInt32	| ArrayObjectPNameATI	| IntPtr	|
 
@@ -6531,7 +6307,6 @@
  VertexStreamATI	| Int16	|
 
 # glVertexStream1svATI
- VertexStreamATI	| array of Int16	|
  VertexStreamATI	| var Int16	|
  VertexStreamATI	| IntPtr	|
 
@@ -6539,7 +6314,6 @@
  VertexStreamATI	| Int32	|
 
 # glVertexStream1ivATI
- VertexStreamATI	| array of Int32	|
  VertexStreamATI	| var Int32	|
  VertexStreamATI	| IntPtr	|
 
@@ -6547,7 +6321,6 @@
  VertexStreamATI	| single	|
 
 # glVertexStream1fvATI
- VertexStreamATI	| array of single	|
  VertexStreamATI	| var single	|
  VertexStreamATI	| IntPtr	|
 
@@ -6555,7 +6328,6 @@
  VertexStreamATI	| real	|
 
 # glVertexStream1dvATI
- VertexStreamATI	| array of real	|
  VertexStreamATI	| var real	|
  VertexStreamATI	| IntPtr	|
 
@@ -6907,7 +6679,6 @@
  DummyEnum	| UInt32	| Int32	| IntPtr	|
 
 # glGetObjectLabelEXT
- DummyEnum	| UInt32	| Int32	| array of Int32	| IntPtr	|
  DummyEnum	| UInt32	| Int32	| var Int32	| IntPtr	|
  DummyEnum	| UInt32	| Int32	| IntPtr	| IntPtr	|
 
@@ -7213,7 +6984,6 @@
  DummyEnum	| UInt32	| IntPtr	|
 
 # glGetPointerIndexedvEXT
- DummyEnum	| UInt32	| array of IntPtr	|
  DummyEnum	| UInt32	| var IntPtr	|
  DummyEnum	| UInt32	| pointer	|
 
@@ -7316,7 +7086,6 @@
  UInt32	| BufferPNameARB	| IntPtr	|
 
 # glGetNamedBufferPointervEXT
- UInt32	| BufferPointerNameARB	| array of IntPtr	|
  UInt32	| BufferPointerNameARB	| var IntPtr	|
  UInt32	| BufferPointerNameARB	| pointer	|
 
@@ -7568,7 +7337,6 @@
  DummyEnum	| UInt32	| IntPtr	|
 
 # glGetPointeri_vEXT
- DummyEnum	| UInt32	| array of IntPtr	|
  DummyEnum	| UInt32	| var IntPtr	|
  DummyEnum	| UInt32	| pointer	|
 
@@ -7602,7 +7370,6 @@
  UInt32	| ProgramTarget	| UInt32	| IntPtr	|
 
 # glGetNamedProgramivEXT
- UInt32	| ProgramTarget	| ProgramPropertyARB	| array of Int32	|
  UInt32	| ProgramTarget	| ProgramPropertyARB	| var Int32	|
  UInt32	| ProgramTarget	| ProgramPropertyARB	| IntPtr	|
 
@@ -7734,7 +7501,6 @@
  UInt32	| VertexArrayPName	| IntPtr	|
 
 # glGetVertexArrayPointervEXT
- UInt32	| VertexArrayPName	| array of IntPtr	|
  UInt32	| VertexArrayPName	| var IntPtr	|
  UInt32	| VertexArrayPName	| pointer	|
 
@@ -7915,7 +7681,6 @@
  single	|
 
 # glFogCoordfvEXT
- array of single	|
  var single	|
  IntPtr	|
 
@@ -7923,7 +7688,6 @@
  real	|
 
 # glFogCoorddvEXT
- array of real	|
  var real	|
  IntPtr	|
 
@@ -8239,12 +8003,10 @@
  PixelTransformTargetEXT	| PixelTransformPNameEXT	| single	|
 
 # glPixelTransformParameterivEXT
- PixelTransformTargetEXT	| PixelTransformPNameEXT	| array of Int32	|
  PixelTransformTargetEXT	| PixelTransformPNameEXT	| var Int32	|
  PixelTransformTargetEXT	| PixelTransformPNameEXT	| IntPtr	|
 
 # glPixelTransformParameterfvEXT
- PixelTransformTargetEXT	| PixelTransformPNameEXT	| array of single	|
  PixelTransformTargetEXT	| PixelTransformPNameEXT	| var single	|
  PixelTransformTargetEXT	| PixelTransformPNameEXT	| IntPtr	|
 
@@ -8585,31 +8347,12 @@
  UInt32	| Int32	| IntPtr	| DummyEnum	|
 
 # glGetTransformFeedbackVaryingEXT
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var AttributeType	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -8628,7 +8371,6 @@
  Int32	| Int32	| IntPtr	|
 
 # glGetPointervEXT
- GetPointervPName	| array of IntPtr	|
  GetPointervPName	| var IntPtr	|
  GetPointervPName	| pointer	|
 
@@ -8657,7 +8399,6 @@
  UInt32	| real	| real	| real	| real	|
 
 # glVertexAttribL1dvEXT
- UInt32	| array of real	|
  UInt32	| var real	|
  UInt32	| IntPtr	|
 
@@ -8844,7 +8585,6 @@
  single	|
 
 # glVertexWeightfvEXT
- array of single	|
  var single	|
  IntPtr	|
 
@@ -9005,13 +8745,8 @@
  UInt32	| Int32	|
 
 # glMapTexture2DINTEL
- IntPtr	| UInt32	| Int32	| DummyFlags	| array of Int32	| array of DummyEnum	|
- IntPtr	| UInt32	| Int32	| DummyFlags	| array of Int32	| var DummyEnum	|
- IntPtr	| UInt32	| Int32	| DummyFlags	| array of Int32	| IntPtr	|
- IntPtr	| UInt32	| Int32	| DummyFlags	| var Int32	| array of DummyEnum	|
  IntPtr	| UInt32	| Int32	| DummyFlags	| var Int32	| var DummyEnum	|
  IntPtr	| UInt32	| Int32	| DummyFlags	| var Int32	| IntPtr	|
- IntPtr	| UInt32	| Int32	| DummyFlags	| IntPtr	| array of DummyEnum	|
  IntPtr	| UInt32	| Int32	| DummyFlags	| IntPtr	| var DummyEnum	|
  IntPtr	| UInt32	| Int32	| DummyFlags	| IntPtr	| IntPtr	|
 
@@ -9693,14 +9428,10 @@
  UInt32	|
 
 # glProgramNamedParameter4fNV
- UInt32	| Int32	| array of Byte	| single	| single	| single	| single	|
  UInt32	| Int32	| var Byte	| single	| single	| single	| single	|
  UInt32	| Int32	| IntPtr	| single	| single	| single	| single	|
 
 # glProgramNamedParameter4fvNV
- UInt32	| Int32	| array of Byte	| array of single	|
- UInt32	| Int32	| array of Byte	| var single	|
- UInt32	| Int32	| array of Byte	| IntPtr	|
  UInt32	| Int32	| var Byte	| array of single	|
  UInt32	| Int32	| var Byte	| var single	|
  UInt32	| Int32	| var Byte	| IntPtr	|
@@ -9709,14 +9440,10 @@
  UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glProgramNamedParameter4dNV
- UInt32	| Int32	| array of Byte	| real	| real	| real	| real	|
  UInt32	| Int32	| var Byte	| real	| real	| real	| real	|
  UInt32	| Int32	| IntPtr	| real	| real	| real	| real	|
 
 # glProgramNamedParameter4dvNV
- UInt32	| Int32	| array of Byte	| array of real	|
- UInt32	| Int32	| array of Byte	| var real	|
- UInt32	| Int32	| array of Byte	| IntPtr	|
  UInt32	| Int32	| var Byte	| array of real	|
  UInt32	| Int32	| var Byte	| var real	|
  UInt32	| Int32	| var Byte	| IntPtr	|
@@ -9725,9 +9452,6 @@
  UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetProgramNamedParameterfvNV
- UInt32	| Int32	| array of Byte	| array of single	|
- UInt32	| Int32	| array of Byte	| var single	|
- UInt32	| Int32	| array of Byte	| IntPtr	|
  UInt32	| Int32	| var Byte	| array of single	|
  UInt32	| Int32	| var Byte	| var single	|
  UInt32	| Int32	| var Byte	| IntPtr	|
@@ -9736,9 +9460,6 @@
  UInt32	| Int32	| IntPtr	| IntPtr	|
 
 # glGetProgramNamedParameterdvNV
- UInt32	| Int32	| array of Byte	| array of real	|
- UInt32	| Int32	| array of Byte	| var real	|
- UInt32	| Int32	| array of Byte	| IntPtr	|
  UInt32	| Int32	| var Byte	| array of real	|
  UInt32	| Int32	| var Byte	| var real	|
  UInt32	| Int32	| var Byte	| IntPtr	|
@@ -9905,7 +9626,6 @@
  Half	|
 
 # glTexCoord1hvNV
- array of Half	|
  var Half	|
  IntPtr	|
 
@@ -9937,7 +9657,6 @@
  TextureUnit	| Half	|
 
 # glMultiTexCoord1hvNV
- TextureUnit	| array of Half	|
  TextureUnit	| var Half	|
  TextureUnit	| IntPtr	|
 
@@ -9969,7 +9688,6 @@
  Half	|
 
 # glFogCoordhvNV
- array of Half	|
  var Half	|
  IntPtr	|
 
@@ -9985,7 +9703,6 @@
  Half	|
 
 # glVertexWeighthvNV
- array of Half	|
  var Half	|
  IntPtr	|
 
@@ -9993,7 +9710,6 @@
  UInt32	| Half	|
 
 # glVertexAttrib1hvNV
- UInt32	| array of Half	|
  UInt32	| var Half	|
  UInt32	| IntPtr	|
 
@@ -10560,85 +10276,20 @@
  single	| UInt32	| Int32	| Int32	|
 
 # glPointAlongPathNV
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| var single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| var single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| IntPtr	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| IntPtr	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| array of single	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| var single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| var single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| IntPtr	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| IntPtr	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| var single	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| var single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| var single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| IntPtr	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| IntPtr	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| array of single	| IntPtr	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| var single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| var single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| IntPtr	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| IntPtr	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| array of single	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| var single	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| var single	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| IntPtr	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| IntPtr	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| var single	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| var single	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| var single	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| IntPtr	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| IntPtr	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| var single	| IntPtr	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| var single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| var single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| IntPtr	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| IntPtr	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| array of single	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| var single	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| var single	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| IntPtr	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| IntPtr	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| var single	| IntPtr	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| array of single	| array of single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| array of single	| var single	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| array of single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| var single	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| var single	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| var single	| IntPtr	|
- boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| IntPtr	| array of single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| IntPtr	| var single	|
  boolean	| UInt32	| Int32	| Int32	| single	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
@@ -10703,27 +10354,18 @@
  UInt32	| Int32	| DummyEnum	| Int32	| IntPtr	|
 
 # glGetProgramResourcefvNV
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| array of Int32	| array of single	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| array of Int32	| var single	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| var Int32	| array of single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| var Int32	| var single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| var Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| IntPtr	| array of single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| IntPtr	| var single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| array of DummyEnum	| Int32	| IntPtr	| IntPtr	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| array of Int32	| array of single	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| array of Int32	| var single	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| var Int32	| array of single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| var Int32	| var single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| var Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| IntPtr	| array of single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| IntPtr	| var single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| var DummyEnum	| Int32	| IntPtr	| IntPtr	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| array of Int32	| array of single	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| array of Int32	| var single	|
- UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| array of Int32	| IntPtr	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| var Int32	| array of single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| var Int32	| var single	|
  UInt32	| ProgramInterface	| UInt32	| Int32	| IntPtr	| Int32	| var Int32	| IntPtr	|
@@ -10962,7 +10604,6 @@
  UInt32	|
 
 # glGetShadingRateImagePaletteNV
- UInt32	| UInt32	| array of DummyEnum	|
  UInt32	| UInt32	| var DummyEnum	|
  UInt32	| UInt32	| IntPtr	|
 
@@ -11036,36 +10677,16 @@
  Int32	| UInt32	| IntPtr	|
 
 # glGetActiveVaryingNV
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| array of DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| var DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| array of DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| var DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| array of DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| var DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| array of DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| var DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| var Int32	| array of DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| var DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| array of DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| var DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| array of DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| var DummyEnum	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| array of DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| var DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| array of DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| var DummyEnum	| IntPtr	|
  UInt32	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetTransformFeedbackVaryingNV
- UInt32	| UInt32	| array of Int32	|
  UInt32	| UInt32	| var Int32	|
  UInt32	| UInt32	| IntPtr	|
 
@@ -11163,7 +10784,6 @@
  UInt32	| Int64	| Int64	| Int64	| Int64	|
 
 # glVertexAttribL1i64vNV
- UInt32	| array of Int64	|
  UInt32	| var Int64	|
  UInt32	| IntPtr	|
 
@@ -11195,7 +10815,6 @@
  UInt32	| UInt64	| UInt64	| UInt64	| UInt64	|
 
 # glVertexAttribL1ui64vNV
- UInt32	| array of UInt64	|
  UInt32	| var UInt64	|
  UInt32	| IntPtr	|
 
@@ -11315,27 +10934,22 @@
  UInt32	| VertexAttribEnumNV	| IntPtr	|
 
 # glGetTrackMatrixivNV
- VertexAttribEnumNV	| UInt32	| VertexAttribEnumNV	| array of Int32	|
  VertexAttribEnumNV	| UInt32	| VertexAttribEnumNV	| var Int32	|
  VertexAttribEnumNV	| UInt32	| VertexAttribEnumNV	| IntPtr	|
 
 # glGetVertexAttribdvNV
- UInt32	| VertexAttribEnumNV	| array of real	|
  UInt32	| VertexAttribEnumNV	| var real	|
  UInt32	| VertexAttribEnumNV	| IntPtr	|
 
 # glGetVertexAttribfvNV
- UInt32	| VertexAttribEnumNV	| array of single	|
  UInt32	| VertexAttribEnumNV	| var single	|
  UInt32	| VertexAttribEnumNV	| IntPtr	|
 
 # glGetVertexAttribivNV
- UInt32	| VertexAttribEnumNV	| array of Int32	|
  UInt32	| VertexAttribEnumNV	| var Int32	|
  UInt32	| VertexAttribEnumNV	| IntPtr	|
 
 # glGetVertexAttribPointervNV
- UInt32	| VertexAttribEnumNV	| array of IntPtr	|
  UInt32	| VertexAttribEnumNV	| var IntPtr	|
  UInt32	| VertexAttribEnumNV	| pointer	|
 
@@ -11388,7 +11002,6 @@
  UInt32	| real	|
 
 # glVertexAttrib1dvNV
- UInt32	| array of real	|
  UInt32	| var real	|
  UInt32	| IntPtr	|
 
@@ -11396,7 +11009,6 @@
  UInt32	| single	|
 
 # glVertexAttrib1fvNV
- UInt32	| array of single	|
  UInt32	| var single	|
  UInt32	| IntPtr	|
 
@@ -11404,7 +11016,6 @@
  UInt32	| Int16	|
 
 # glVertexAttrib1svNV
- UInt32	| array of Int16	|
  UInt32	| var Int16	|
  UInt32	| IntPtr	|
 
@@ -11578,7 +11189,6 @@
  UInt32	| UInt32	| UInt32	| UInt32	| UInt32	|
 
 # glVertexAttribI1ivEXT
- UInt32	| array of Int32	|
  UInt32	| var Int32	|
  UInt32	| IntPtr	|
 
@@ -11598,7 +11208,6 @@
  UInt32	| IntPtr	|
 
 # glVertexAttribI1uivEXT
- UInt32	| array of UInt32	|
  UInt32	| var UInt32	|
  UInt32	| IntPtr	|
 
@@ -11641,12 +11250,10 @@
  UInt32	| Int32	| VertexAttribIType	| Int32	| IntPtr	|
 
 # glGetVertexAttribIivEXT
- UInt32	| VertexAttribEnum	| array of Int32	|
  UInt32	| VertexAttribEnum	| var Int32	|
  UInt32	| VertexAttribEnum	| IntPtr	|
 
 # glGetVertexAttribIuivEXT
- UInt32	| VertexAttribEnum	| array of UInt32	|
  UInt32	| VertexAttribEnum	| var UInt32	|
  UInt32	| VertexAttribEnum	| IntPtr	|
 
@@ -11715,7 +11322,6 @@
  TextureUnit	| SByte	|
 
 # glMultiTexCoord1bvOES
- TextureUnit	| array of SByte	|
  TextureUnit	| var SByte	|
  TextureUnit	| IntPtr	|
 
@@ -11747,7 +11353,6 @@
  SByte	|
 
 # glTexCoord1bvOES
- array of SByte	|
  var SByte	|
  IntPtr	|
 
@@ -11971,7 +11576,6 @@
  Fixed	|
 
 # glEvalCoord1xvOES
- array of Fixed	|
  var Fixed	|
  IntPtr	|
 
@@ -12030,7 +11634,6 @@
  Fixed	|
 
 # glIndexxvOES
- array of Fixed	|
  var Fixed	|
  IntPtr	|
 
@@ -12060,7 +11663,6 @@
  TextureUnit	| Fixed	|
 
 # glMultiTexCoord1xvOES
- TextureUnit	| array of Fixed	|
  TextureUnit	| var Fixed	|
  TextureUnit	| IntPtr	|
 
@@ -12160,7 +11762,6 @@
  Fixed	|
 
 # glTexCoord1xvOES
- array of Fixed	|
  var Fixed	|
  IntPtr	|
 
@@ -12352,12 +11953,10 @@
  UInt32	|
 
 # glFinishAsyncSGIX
- Int32	| array of UInt32	|
  Int32	| var UInt32	|
  Int32	| IntPtr	|
 
 # glPollAsyncSGIX
- Int32	| array of UInt32	|
  Int32	| var UInt32	|
  Int32	| IntPtr	|
 
@@ -12459,7 +12058,6 @@
  Int32	| IntPtr	|
 
 # glPollInstrumentsSGIX
- Int32	| array of Int32	|
  Int32	| var Int32	|
  Int32	| IntPtr	|
 

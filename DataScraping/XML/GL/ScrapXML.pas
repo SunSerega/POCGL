@@ -109,12 +109,19 @@ type
     private name, t: string;
     private readonly: boolean;
     private ptr: integer;
+    private static_arr_len := -1;
     private gr: Group := nil;
     
     public on_used: ()->();
     
     public constructor(func_name: string; n: XmlNode);
     begin
+      
+      if n['len'] is string(var static_arr_len_str) then
+      begin
+        if not static_arr_len_str.TryToInteger(self.static_arr_len) then
+          ; // Если в будущем будет смысл обрабатывать значения кроме литералов - добавлять код сюда
+      end;
       
       self.name := n.Nodes['name'].Single.Text;
       if func_name=nil then func_name := self.name;
@@ -168,9 +175,10 @@ type
     begin
       bw.Write(name);
       bw.Write(t);
-      bw.Write(int64(1)); // rep_c, static strings
+      bw.Write(int64(1)); // rep_c, used in char[123] in OpenCL structs
       bw.Write(readonly);
       bw.Write(ptr);
+      bw.Write(static_arr_len);
       
       var ind := gr=nil ? -1 : grs.IndexOf(gr);
       if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');

@@ -303,6 +303,7 @@ type
       bw.Write(rep_c);
       bw.Write(readonly);
       bw.Write(ptr);
+      bw.Write(-1); // static_arr_len - in OpenGL controled by n['len'], no analogy in OpenCL
       
       var ind := gr=nil ? -1 : grs.IndexOf(gr);
       if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');
