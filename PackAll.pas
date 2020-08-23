@@ -68,6 +68,8 @@ var AllStages := HSet(
     log: FileLogger;
     
     static CurrentStages: HashSet<string>;
+    static function ModuleStages := AllModules.Intersect(CurrentStages);
+    static function IsPackingAllModules := ModuleStages.Count in |0,AllModules.Count|;
     
     static function TitleTask(title: string; decor: char := '='): SecThrProc;
     begin
@@ -114,42 +116,6 @@ var AllStages := HSet(
   end;
   
   {$endregion Base}
-  
-  {$region MiscClear}
-  
-  MiscClearStage = sealed class(PackingStage)
-    
-    constructor := inherited Create(nil);
-    
-    function MakeCoreTask: SecThrProc; override :=
-    ProcTask(()->
-    begin
-      var c := 0;
-      var skip_pcu := AllModules.Except(CurrentStages).SelectMany(mn->
-        mn.EndsWith('ABC') ? Seq(
-          mn+'Base.pcu',
-          mn+'.pcu'
-        ) : Seq(
-          mn+'.pcu'
-        )
-      ).ToHashSet;
-      
-      foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
-      begin
-        if skip_pcu.Contains(Path.GetFileName(fname)) then continue;
-        try
-          System.IO.File.Delete(fname);
-        except
-          Otp($'WARNING: Failed to clear file {GetRelativePath(fname)}');
-        end;
-        c += 1;
-      end;
-      
-    end);
-    
-  end;
-  
-  {$endregion MiscClear}
   
   {$region FirstPack}
   
@@ -277,6 +243,7 @@ var AllStages := HSet(
     begin
       inherited Create(CompileStr);
       self.description := 'Compiling';
+      if not IsPackingAllModules then log_name := nil;
     end;
     
     function MakeModuleCompileTask(mn: string): SecThrProc;
@@ -304,14 +271,13 @@ var AllStages := HSet(
   {$region Test}
   
   TestStage = sealed class(PackingStage)
-    module_stages := AllModules.Intersect(CurrentStages);
-    module_stages_str := module_stages.JoinToString(' + ');
+    module_stages_str := ModuleStages.JoinToString(' + ');
     
     constructor;
     begin
       inherited Create(TestStr);
       self.description := 'Testing';
-      if module_stages.Count<>AllModules.Count then log_name := nil;
+      if not IsPackingAllModules then log_name := nil;
     end;
     
     function MakeCoreTask: SecThrProc; override :=
@@ -347,7 +313,7 @@ var AllStages := HSet(
         TitleTask('Copying modules', '~') +
         ProcTask(()->
         begin
-          var mns := AllModules.Intersect(PackingStage.CurrentStages).ToHashSet;
+          var mns := ModuleStages.ToHashSet;
           var all_modules := mns.Count=0;
           if all_modules then mns := AllModules.ToHashSet;
           
@@ -507,7 +473,31 @@ begin
     
     {$endregion Load}
     
-    var T_MiscClear := MiscClearStage.Create.MakeTask;
+    {$region MiscClear}
+    
+    var c := 0;
+    var skip_pcu := AllModules.Except(PackingStage.CurrentStages).SelectMany(mn->
+      mn.EndsWith('ABC') ? Seq(
+        mn+'Base.pcu',
+        mn+'.pcu'
+      ) : Seq(
+        mn+'.pcu'
+      )
+    ).ToHashSet;
+    
+    foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
+    begin
+      if skip_pcu.Contains(Path.GetFileName(fname)) then continue;
+      try
+        System.IO.File.Delete(fname);
+      except
+        Otp($'WARNING: Failed to clear file {GetRelativePath(fname)}');
+      end;
+      c += 1;
+    end;
+    
+    {$endregion MiscClear}
+    
     var T_FirstPack := FirstPackStage.Create.MakeTask;
     var T_Spec      := SpecStage.Create.MakeTask;
     var T_OpenCL    := LLModuleStage.Create(OpenCLStr).MakeTask;
@@ -521,7 +511,6 @@ begin
     Otp('Start packing');
     
     (
-      T_MiscClear +
       T_FirstPack +
       
       T_Spec *

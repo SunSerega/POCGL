@@ -1,101 +1,9 @@
 ﻿Executing selected stages:
-FirstPack + Spec + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+OpenCLABC + Compile + Test + Release
 Start packing
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Finished compiling: OK
-Runing SubReps Update
-SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] [up to date]      master             -> origin/master
-SubReps Update: OpenCL Docs : [Info] [up to date]      246-enums          -> origin/246-enums
-SubReps Update: OpenCL Docs : [Info] [up to date]      job-slot-selection -> origin/job-slot-selection
-SubReps Update: OpenCL Docs : [Info] [up to date]      pub93-links        -> origin/pub93-links
-SubReps Update: OpenCL Docs : [Info] [up to date]      reflinks           -> origin/reflinks
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages           -> origin/refpages
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages2          -> origin/refpages2
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages3          -> origin/refpages3
-SubReps Update: OpenCL Docs : [Info] [up to date]      reserve-enums      -> origin/reserve-enums
-SubReps Update: OpenCL Docs : [Info] [up to date]      vksync             -> origin/vksync
-SubReps Update: OpenCL Docs : Already up to date.
-SubReps Update: Done pulling OpenCL Docs
-SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL Registry : [Info] [up to date]      master     -> origin/master
-SubReps Update: OpenGL Registry : [Info] [up to date]      335-docs   -> origin/335-docs
-SubReps Update: OpenGL Registry : [Info] [up to date]      341-issue  -> origin/341-issue
-SubReps Update: OpenGL Registry : [Info] [up to date]      pr/414     -> origin/pr/414
-SubReps Update: OpenGL Registry : Already up to date.
-SubReps Update: Done pulling OpenGL Registry
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\CL\ScrapXML.pas"
-Finished compiling: OK
-Runing ScrapXML[CL]
-ScrapXML[CL]: Parsing "cl"
-ScrapXML[CL]: Saving as binary
-Finished runing ScrapXML[CL]
-Compiling "DataScraping\XML\GL\ScrapXML.pas"
-Finished compiling: OK
-Runing ScrapXML[GL]
-ScrapXML[GL]: Parsing "gl"
-ScrapXML[GL]: WARNING: Func [glShadingRateImageBarrierNV] found 2 times in ext [GL_NV_shading_rate_image]
-ScrapXML[GL]: Parsing "wgl"
-ScrapXML[GL]: Parsing "glx"
-ScrapXML[GL]: Saving as binary
-Finished runing ScrapXML[GL]
-====================================== Specs =====================================
-Compiling "Packing\Spec\SpecPacker.pas"
-Finished compiling: OK
-Runing SpecPacker
-SpecPacker: Packing spec "Гайд по использованию OpenGL и OpenCL"
-SpecPacker: Done packing spec "Гайд по использованию OpenGL и OpenCL"
-SpecPacker: Packing spec "Справка OpenGLABC"
-SpecPacker: Done packing spec "Справка OpenGLABC"
-SpecPacker: Packing spec "Справка OpenCLABC"
-SpecPacker: Done packing spec "Справка OpenCLABC"
-Finished runing SpecPacker
-===================================== OpenCL =====================================
+==================================== OpenCLABC ===================================
 Compiling "Packing\Template\Pack Template.pas"
 Finished compiling: OK
-Runing Template[OpenCL]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
-Template[OpenCL]: Finished compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
-Template[OpenCL]: Finished compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing records code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueMigrateMemObjectEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
-Finished runing Template[OpenCL]
-==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Finished compiling: OK
@@ -133,98 +41,15 @@ Compiling "Packing\Doc\PackComments.pas"
 Finished compiling: OK
 Runing Comments[OpenCLABC]
 Finished runing Comments[OpenCLABC]
-===================================== OpenGL =====================================
-Runing Template[OpenGL]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing records code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferBase] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveAttrib]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveUniform]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVarying]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetPerfMonitorCountersAMD]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetProgramResourceiv]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveUniformARB]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveAttribARB]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetTransformFeedbackVaryingEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesAddressNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glListDrawCommandsStatesClientNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyBufferSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glPointAlongPathNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetProgramResourcefvNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glGetActiveVaryingNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglSetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglAssociateImageBufferEventsI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglQueryFrameTrackingI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
-Template[OpenGL]: Finished compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Finished runing Template[OpenGL]
-==================================== OpenGLABC ===================================
-Runing Template[OpenGLABC]
-Finished runing Template[OpenGLABC]
-Runing Template[OpenGLABCBase]
-Finished runing Template[OpenGLABCBase]
-Runing Comments[OpenGLABC]
-Finished runing Comments[OpenGLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
-Finished compiling: OK
-Compiling "Modules.Packed\OpenGLABC.pas"
 Finished compiling: OK
 ===================================== Testing ====================================
 Compiling "Tests\Tester.pas"
 Finished compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
-Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling: OK
+Tester: OpenCLABC
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -240,8 +65,6 @@ Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D +WPF.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Finished compiling: OK
@@ -303,14 +126,6 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#Co
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
-Tester: Finished compiling: OK
-Tester: Executing Test[Samples\OpenCL\MatrMlt]
-Tester: Done executing
-Tester: Executing Test[Samples\OpenCL\SimpleAddition]
-Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -349,6 +164,7 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
 Tester: Done executing
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
@@ -380,21 +196,16 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: Done executing
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.td"
 Tester: Cleanup
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0.td" updated
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing Modules.Packed\OpenCL.pas
 Packing Modules.Packed\OpenCLABC.pas
-Packing Modules.Packed\OpenGL.pas
-Packing Modules.Packed\OpenGLABC.pas
 Packing Modules.Packed\Internal\OpenCLABCBase.pas
-Packing Modules.Packed\Internal\OpenGLABCBase.pas
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample "Samples\OpenCL\MatrMlt.cl"

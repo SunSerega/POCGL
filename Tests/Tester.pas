@@ -1,4 +1,5 @@
 ﻿uses MiscUtils in '..\Utils\MiscUtils';
+{$string_nullbased+}
 
 {$reference System.Windows.Forms.dll}
 type MessageBox               = System.Windows.Forms.MessageBox;
@@ -406,6 +407,42 @@ type
     procedure RaiseWaitNotFound(wait_test, file_type: string) :=
     raise new MessageException($'ERROR: Wait {file_type} [{GetRelativePath(wait_test)}] of test [{GetRelativePath(self.td_fname)}] wasn''t found');
     
+    static function SmartIsTextDiff(text1, text2: string): boolean;
+    begin
+      var anon_names := |'<>local_variables_class_', '<>lambda'|;
+      var skip_anon_names: string->sequence of char := s->
+      begin
+        var inds := new integer[anon_names.Length];
+        var in_anon_name := false;
+        Result := s.Where(ch->
+        begin
+          if in_anon_name then
+          begin
+            if ch.IsDigit then exit;
+            in_anon_name := false;
+          end;
+          
+          for var i := 0 to inds.Length-1 do
+          begin
+            if anon_names[i][inds[i]] = ch then
+            begin
+              inds[i] += 1;
+              if inds[i] = anon_names[i].Length then
+              begin
+                in_anon_name := true;
+                inds.Fill(0);
+                break;
+              end;
+            end else
+              inds[i] := 0;
+          end;
+          
+          Result := true;
+        end);
+      end;
+      Result := not skip_anon_names(text1).SequenceEqual(skip_anon_names(text2));
+    end;
+    
     procedure Execute(all_executed: HashSet<TestInfo>) :=
     try
       if not all_executed.Add(self) then exit;
@@ -463,7 +500,7 @@ type
             DialogResult.Cancel: Halt(-1);
           end else
           
-        if expected_exec_err<>err then
+        if SmartIsTextDiff(expected_exec_err, err) then
           case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
@@ -509,7 +546,7 @@ type
           resave_settings := true;
           Otp($'WARNING: Settings updated for "{fwoe}.td"');
         end else
-        if expected_otp<>res then
+        if SmartIsTextDiff(expected_otp, res) then
         begin
           
           case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
