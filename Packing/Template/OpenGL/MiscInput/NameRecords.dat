@@ -39,7 +39,6 @@ PerfQueryHandleINTEL		= UInt32
 EGLsync						= IntPtr
 EGLDisplay					= IntPtr
 
-ShaderBinaryFormat			= UInt32
 ProgramResourceIndex		= UInt32
 ProgramBinaryFormat			= UInt32
 

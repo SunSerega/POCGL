@@ -165,13 +165,6 @@
     public function ToString: string; override := $'EGLDisplay[{val}]';
   end;
   
-  ShaderBinaryFormat = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: ShaderBinaryFormat read default(ShaderBinaryFormat);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'ShaderBinaryFormat[{val}]';
-  end;
   ProgramResourceIndex = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;

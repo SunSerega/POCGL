@@ -76,7 +76,16 @@ type
           
           res.enums.Add(enum[0], enum[1]);
           
-          if enum[1]<>0 then
+          if enum[1]=0 then
+          begin
+            if gname in |'EmptyFlags'| then
+            begin
+              group_t := gt_bitmask;
+              var ToDo := 0;
+              //ToDo костыль, надо определять тип групы по тому, как она использована в функциях
+              log.WriteLine($'Group {gname} was autoset to gt_bitmask, because of GL_NONE in enums, need fixing');
+            end;
+          end else
             case group_t of
               gt_any:     group_t := enum[2] ? gt_bitmask : gt_enum;
               gt_enum:    if     enum[2] then group_t := gt_error;
@@ -319,6 +328,7 @@ procedure ScrapFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
   var root := new XmlNode(GetFullPathRTE($'..\..\Reps\OpenGL-Registry\xml\{api_name}.xml'));
+//  var root := new XmlNode(GetFullPathRTE($'C:\0Prog\Test\OpenGL-Registry (fork)\xml\{api_name}.xml'));
   
   foreach var enums in root.Nodes['enums'] do
   begin
@@ -434,6 +444,13 @@ begin
     
     foreach var fname in xmls do
       log.WriteLine($'File [{fname}] wasn''t used');
+    
+//    foreach var f: FuncData in features.SelectMany(f->f.add+f.rem).Where(f->f.pars.Any(par->(par.t in ['GLenum', 'GLbitfield']) and (par.gr=nil))).Distinct.OrderBy(f->f.pars[0].name) do
+//    begin
+//      Writeln('='*30);
+//      f.pars.PrintLines(par->$'{par.name}: {par.t} [{_ObjectToString(par.gr)}]');
+//    end;
+//    exit;
     
     SaveBin;
     
