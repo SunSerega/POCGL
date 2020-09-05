@@ -70,7 +70,7 @@ GLDEBUGPROC				=GLDEBUGPROC
 GLDEBUGPROCAMD			=GLDEBUGPROC
 GLDEBUGPROCARB			=GLDEBUGPROC
 GLVULKANPROCNV			=GLVULKANPROCNV
-PROC					=IntPtr			=// unmannaged delegate
+PROC					=IntPtr			=// Result of wglGetProcAddress
 __GLXextFuncPtr			=IntPtr			=// unmannaged delegate
 
 //--------------------------------------------------
