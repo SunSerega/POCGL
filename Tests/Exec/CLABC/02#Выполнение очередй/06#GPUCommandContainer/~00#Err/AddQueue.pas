@@ -5,5 +5,6 @@ begin
   Context.Default.SyncInvoke(
     b.NewQueue
     .AddQueue(HPQ(()->raise new Exception($'{b.Size}, TestOK')))
+    as CommandQueue<Buffer>
   );
 end.

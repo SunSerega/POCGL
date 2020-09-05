@@ -59,6 +59,19 @@ var AllStages := HSet(
 
 {$endregion SpecialNames}
 
+{$region Utils}
+
+function IncludeBaseModules(self: sequence of string); extensionmethod :=
+self.SelectMany(mn->
+  mn.EndsWith('ABC') ? Seq(
+    mn, $'{mn}Base'
+  ) : Seq(
+    mn
+  )
+);
+
+{$endregion Utils}
+
 {$region PackStage} type
   
   {$region Base}
@@ -317,29 +330,28 @@ var AllStages := HSet(
         TitleTask('Copying modules', '~') +
         ProcTask(()->
         begin
-          var mns := ModuleStages.ToHashSet;
+          var mns := ModuleStages.IncludeBaseModules.ToHashSet;
           var all_modules := mns.Count=0;
-          if all_modules then mns := AllModules.ToHashSet;
+          if all_modules then mns := AllModules.IncludeBaseModules.ToHashSet;
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
           if not copy_to_pf then Otp($'WARNING: Dir [{pf_dir}] not found, skiping pf release copy');
           
-          foreach var mn in AllLLModules do
-            if mns.Contains(mn+'ABC') then
-              mns += $'Internal\{mn}ABCBase';
-          
           foreach var mn in mns do
           begin
-            var org_fname :=      $'Modules.Packed\{mn}.pas';
-            var release_fname :=  $'Release\bin\Lib\{mn}.pas';
-            var pf_fname :=       $'{pf_dir}\LibSource\{mn}.pas';
+            var mn_path := mn.EndsWith('ABCBase') ? $'Internal\{mn}' : mn;
+            var org_fname :=      $'Modules.Packed\{mn_path}.pas';
+            var release_fname :=  $'Release\bin\Lib\{mn_path}.pas';
+            var pf_fname :=       $'{pf_dir}\LibSource\{mn_path}.pas';
             Otp($'Packing {org_fname}');
             
             System.IO.Directory.CreateDirectory(Path.GetDirectoryName(release_fname));
             System.IO.File.Copy( org_fname, release_fname );
             if copy_to_pf then
             try
+              foreach var old_fname in EnumerateAllFiles($'{pf_dir}\LibSource', $'{mn}.pas') do
+                System.IO.File.Delete(old_fname);
               System.IO.Directory.CreateDirectory(Path.GetDirectoryName(pf_fname));
               System.IO.File.Copy( org_fname, pf_fname, true );
             except
@@ -351,11 +363,14 @@ var AllStages := HSet(
           if copy_to_pf and (PackingStage.CurrentStages.Contains(CompileStr) or all_modules) then
             foreach var mn in mns do
             begin
-              var org_fname := $'Modules.Packed\{mn}.pcu';
-              var pf_fname := $'{pf_dir}\Lib\{mn}.pcu';
+              var mn_path := mn.EndsWith('ABCBase') ? $'Internal\{mn}' : mn;
+              var org_fname := $'Modules.Packed\{mn_path}.pcu';
+              var pf_fname := $'{pf_dir}\Lib\{mn_path}.pcu';
               
               if FileExists(org_fname) then
               try
+                foreach var old_fname in EnumerateAllFiles($'{pf_dir}\Lib', $'{mn}.pcu') do
+                  System.IO.File.Delete(old_fname);
                 System.IO.Directory.CreateDirectory(Path.GetDirectoryName(pf_fname));
                 System.IO.File.Copy( org_fname, pf_fname, true );
               except
@@ -480,18 +495,11 @@ begin
     {$region MiscClear}
     
     var c := 0;
-    var skip_pcu := AllModules.Except(PackingStage.CurrentStages).SelectMany(mn->
-      mn.EndsWith('ABC') ? Seq(
-        mn+'Base.pcu',
-        mn+'.pcu'
-      ) : Seq(
-        mn+'.pcu'
-      )
-    ).ToHashSet;
+    var skip_pcu := AllModules.Except(PackingStage.CurrentStages).IncludeBaseModules.ToHashSet;
     
     foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
     begin
-      if skip_pcu.Contains(Path.GetFileName(fname)) then continue;
+      if skip_pcu.Contains(Path.GetFileNameWithoutExtension(fname)) then continue;
       try
         System.IO.File.Delete(fname);
       except

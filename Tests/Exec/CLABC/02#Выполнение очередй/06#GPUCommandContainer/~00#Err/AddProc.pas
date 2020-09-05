@@ -5,5 +5,6 @@ begin
   Context.Default.SyncInvoke(
     b.NewQueue
     .AddProc(b->raise new Exception($'{b.Size}, TestOK'))
+    as CommandQueue<Buffer>
   );
 end.
