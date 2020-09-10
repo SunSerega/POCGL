@@ -1,6 +1,4 @@
-﻿program prog;
-
-uses System.Threading;
+﻿uses System.Threading;
 uses System.Threading.Tasks;
 uses System.IO;
 uses MiscUtils in 'Utils\MiscUtils';
