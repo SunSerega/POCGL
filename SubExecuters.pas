@@ -3,6 +3,7 @@
 uses System.Diagnostics;
 
 uses AOtp;
+uses AQueue; //ToDo #2307
 uses PathUtils;
 uses Timers;
 
