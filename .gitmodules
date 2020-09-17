@@ -4,3 +4,6 @@
 [submodule "DataScraping/Reps/OpenGL-Registry"]
 	path = DataScraping/Reps/OpenGL-Registry
 	url = git@github.com:KhronosGroup/OpenGL-Registry.git
+[submodule "Utils"]
+	path = Utils
+	url = git@github.com:SunSerega/SunUtils.git
