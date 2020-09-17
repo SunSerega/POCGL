@@ -1,5 +1,5 @@
 ﻿uses System.IO;
-uses MiscUtils in '..\..\..\Utils\MiscUtils';
+uses POCGL_Utils in '..\..\..\POCGL_Utils';
 
 var enc := new System.Text.UTF8Encoding(true);
 

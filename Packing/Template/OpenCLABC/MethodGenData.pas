@@ -1,8 +1,9 @@
 ﻿unit MethodGenData;
 
-uses MiscUtils    in '..\..\..\Utils\MiscUtils';
-uses Fixers       in '..\..\..\Utils\Fixers';
 uses CodeGenUtils in '..\CodeGenUtils';
+uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+uses Fixers       in '..\..\..\Utils\Fixers';
+
 {$string_nullbased+}
 
 type

@@ -1072,6 +1072,8 @@ type
     private static _DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL := new DeviceInfo($4192);
     private static _DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL  := new DeviceInfo($4193);
     private static _DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL        := new DeviceInfo($4194);
+    private static _DEVICE_SCHEDULING_CONTROLS_CAPABILITIES_ARM        := new DeviceInfo($41E4);
+    private static _DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION_EXT          := new DeviceInfo($4230);
     
     public static property DEVICE_TYPE:                                        DeviceInfo read _DEVICE_TYPE;
     public static property DEVICE_VENDOR_ID:                                   DeviceInfo read _DEVICE_VENDOR_ID;
@@ -1241,6 +1243,8 @@ type
     public static property DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL: DeviceInfo read _DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL;
     public static property DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL:  DeviceInfo read _DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL;
     public static property DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL:        DeviceInfo read _DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL;
+    public static property DEVICE_SCHEDULING_CONTROLS_CAPABILITIES_ARM:        DeviceInfo read _DEVICE_SCHEDULING_CONTROLS_CAPABILITIES_ARM;
+    public static property DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION_EXT:          DeviceInfo read _DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION_EXT;
     
     public function ToString: string; override;
     begin
@@ -1412,6 +1416,8 @@ type
       if self.val = UInt32($4192) then Result := 'DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES_INTEL' else
       if self.val = UInt32($4193) then Result := 'DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES_INTEL' else
       if self.val = UInt32($4194) then Result := 'DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES_INTEL' else
+      if self.val = UInt32($41E4) then Result := 'DEVICE_SCHEDULING_CONTROLS_CAPABILITIES_ARM' else
+      if self.val = UInt32($4230) then Result := 'DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION_EXT' else
         Result := $'DeviceInfo[{self.val}]';
     end;
     
@@ -2270,24 +2276,30 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _KERNEL_EXEC_INFO_SVM_PTRS                     := new KernelExecInfo($11B6);
-    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM        := new KernelExecInfo($11B7);
-    private static _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL   := new KernelExecInfo($4200);
-    private static _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL := new KernelExecInfo($4201);
-    private static _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL := new KernelExecInfo($4202);
-    private static _KERNEL_EXEC_INFO_USM_PTRS_INTEL               := new KernelExecInfo($4203);
+    private static _KERNEL_EXEC_INFO_SVM_PTRS                          := new KernelExecInfo($11B6);
+    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM             := new KernelExecInfo($11B7);
+    private static _KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_ARM          := new KernelExecInfo($41E5);
+    private static _KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER_ARM := new KernelExecInfo($41E6);
+    private static _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL        := new KernelExecInfo($4200);
+    private static _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL      := new KernelExecInfo($4201);
+    private static _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL      := new KernelExecInfo($4202);
+    private static _KERNEL_EXEC_INFO_USM_PTRS_INTEL                    := new KernelExecInfo($4203);
     
-    public static property KERNEL_EXEC_INFO_SVM_PTRS:                     KernelExecInfo read _KERNEL_EXEC_INFO_SVM_PTRS;
-    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:        KernelExecInfo read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM;
-    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL:   KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL;
-    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL: KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL;
-    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL: KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL;
-    public static property KERNEL_EXEC_INFO_USM_PTRS_INTEL:               KernelExecInfo read _KERNEL_EXEC_INFO_USM_PTRS_INTEL;
+    public static property KERNEL_EXEC_INFO_SVM_PTRS:                          KernelExecInfo read _KERNEL_EXEC_INFO_SVM_PTRS;
+    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:             KernelExecInfo read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM;
+    public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_ARM:          KernelExecInfo read _KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_ARM;
+    public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER_ARM: KernelExecInfo read _KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER_ARM;
+    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL:        KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL:      KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL:      KernelExecInfo read _KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL;
+    public static property KERNEL_EXEC_INFO_USM_PTRS_INTEL:                    KernelExecInfo read _KERNEL_EXEC_INFO_USM_PTRS_INTEL;
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($11B6) then Result := 'KERNEL_EXEC_INFO_SVM_PTRS' else
       if self.val = UInt32($11B7) then Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM' else
+      if self.val = UInt32($41E5) then Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_ARM' else
+      if self.val = UInt32($41E6) then Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER_ARM' else
       if self.val = UInt32($4200) then Result := 'KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS_INTEL' else
       if self.val = UInt32($4201) then Result := 'KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS_INTEL' else
       if self.val = UInt32($4202) then Result := 'KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL' else
@@ -2694,12 +2706,15 @@ type
     public constructor(val: UInt64) := self.val := val;
     
     private static _MEM_ALLOC_FLAGS_INTEL := new MemPropertiesIntel($4195);
+    private static _MEM_CHANNEL_INTEL     := new MemPropertiesIntel($4213);
     
     public static property MEM_ALLOC_FLAGS_INTEL: MemPropertiesIntel read _MEM_ALLOC_FLAGS_INTEL;
+    public static property MEM_CHANNEL_INTEL:     MemPropertiesIntel read _MEM_CHANNEL_INTEL;
     
     public function ToString: string; override;
     begin
       if self.val = UInt64($4195) then Result := 'MEM_ALLOC_FLAGS_INTEL' else
+      if self.val = UInt64($4213) then Result := 'MEM_CHANNEL_INTEL' else
         Result := $'MemPropertiesIntel[{self.val}]';
     end;
     
@@ -2904,16 +2919,19 @@ type
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    private static _QUEUE_PRIORITY_KHR := new QueueProperties($1096);
-    private static _QUEUE_THROTTLE_KHR := new QueueProperties($1097);
+    private static _QUEUE_PRIORITY_KHR        := new QueueProperties($1096);
+    private static _QUEUE_THROTTLE_KHR        := new QueueProperties($1097);
+    private static _QUEUE_KERNEL_BATCHING_ARM := new QueueProperties($41E7);
     
-    public static property QUEUE_PRIORITY_KHR: QueueProperties read _QUEUE_PRIORITY_KHR;
-    public static property QUEUE_THROTTLE_KHR: QueueProperties read _QUEUE_THROTTLE_KHR;
+    public static property QUEUE_PRIORITY_KHR:        QueueProperties read _QUEUE_PRIORITY_KHR;
+    public static property QUEUE_THROTTLE_KHR:        QueueProperties read _QUEUE_THROTTLE_KHR;
+    public static property QUEUE_KERNEL_BATCHING_ARM: QueueProperties read _QUEUE_KERNEL_BATCHING_ARM;
     
     public function ToString: string; override;
     begin
       if self.val = UInt64($1096) then Result := 'QUEUE_PRIORITY_KHR' else
       if self.val = UInt64($1097) then Result := 'QUEUE_THROTTLE_KHR' else
+      if self.val = UInt64($41E7) then Result := 'QUEUE_KERNEL_BATCHING_ARM' else
         Result := $'QueueProperties[{self.val}]';
     end;
     
@@ -13508,6 +13526,27 @@ type
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMemAdviseINTEL_ovr_8(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, &event);
+    
+  end;
+  
+  [PCUNotRestore]
+  clCreateBufferWithPropertiesINTEL = static class
+    public const _ExtStr = 'intel_create_buffer_with_properties';
+    
+    private static function z_CreateBufferWithPropertiesINTEL_ovr_0(context: cl_context; var properties: MemPropertiesIntel; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateBufferWithPropertiesINTEL';
+    private static function z_CreateBufferWithPropertiesINTEL_ovr_0_anh0010000(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateBufferWithPropertiesINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithPropertiesINTEL(context: cl_context; properties: array of MemPropertiesIntel; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    if (properties<>nil) and (properties.Length<>0) then
+      z_CreateBufferWithPropertiesINTEL_ovr_0(context, properties[0], flags, size, host_ptr, errcode_ret) else
+      z_CreateBufferWithPropertiesINTEL_ovr_0_anh0010000(context, IntPtr.Zero, flags, size, host_ptr, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithPropertiesINTEL(context: cl_context; var properties: MemPropertiesIntel; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    z_CreateBufferWithPropertiesINTEL_ovr_0(context, properties, flags, size, host_ptr, errcode_ret);
+    private static function z_CreateBufferWithPropertiesINTEL_ovr_2(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateBufferWithPropertiesINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithPropertiesINTEL(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    z_CreateBufferWithPropertiesINTEL_ovr_2(context, properties, flags, size, host_ptr, errcode_ret);
     
   end;
   

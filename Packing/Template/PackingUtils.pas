@@ -6,7 +6,7 @@ function pas_keywords: HashSet<string>;
 
 implementation
 
-uses MiscUtils in '..\..\Utils\MiscUtils';
+uses POCGL_Utils in '..\..\POCGL_Utils';
 
 var _pas_keywords: HashSet<string>;
 function pas_keywords := _pas_keywords;

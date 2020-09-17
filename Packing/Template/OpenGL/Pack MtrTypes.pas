@@ -1,6 +1,6 @@
-﻿uses PackingUtils in '..\PackingUtils';
-uses MiscUtils in '..\..\..\Utils\MiscUtils';
-uses MtrBase;
+﻿uses MtrBase;
+uses PackingUtils in '..\PackingUtils';
+uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 
 procedure AddMtrType(res: StringBuilder; t: t_descr; prev_tps: sequence of t_descr);
 begin
@@ -548,7 +548,7 @@ begin
     res += '  {$endregion Mtr}'#10;
     res += '  ';
     
-    WriteAllText(GetFullPathRTE('MtrTypes.template'), res.ToString, enc);
+    WriteAllText(GetFullPathRTE('MtrTypes.template'), res.ToString);
   except
     on e: Exception do ErrOtp(e);
   end;

@@ -1,6 +1,7 @@
 ﻿unit NamedRecordsData;
 
-uses MiscUtils in '..\..\Utils\MiscUtils';
+uses POCGL_Utils  in '..\..\POCGL_Utils';
+uses AOtp         in '..\..\Utils\AOtp';
 
 begin
   try

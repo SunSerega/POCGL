@@ -1,4 +1,9 @@
-﻿uses MiscUtils in '..\Utils\MiscUtils';
+﻿uses POCGL_Utils in '..\POCGL_Utils';
+
+uses AOtp         in '..\Utils\AOtp';
+uses ATask        in '..\Utils\ATask';
+uses SubExecuters in '..\Utils\SubExecuters';
+
 {$string_nullbased+}
 
 {$reference System.Windows.Forms.dll}
@@ -20,7 +25,7 @@ type
     
     static all_loaded := new List<TestInfo>;
     static unused_test_files := new HashSet<string>;
-    static domain_unload_otps := new List<ThrProcOtp>;
+    static domain_unload_otps := new List<AsyncProcOtp>;
     
     {$endregion global testing info}
     
@@ -350,7 +355,7 @@ type
         dom.GetData('Result') as string,
         dom.GetData('Err') as string
       );
-      var du_otp := new ThrProcOtp;
+      var du_otp := new AsyncProcOtp(nil);
       domain_unload_otps += du_otp;
       StartBgThread(()->
       try
@@ -650,7 +655,6 @@ begin
     end;
     
     Otp('Done testing');
-    if not is_secondary_proc then Otp('Press Enter to exit');
   except
     on e: Exception do ErrOtp(e);
   end;

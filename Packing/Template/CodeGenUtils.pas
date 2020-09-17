@@ -1,7 +1,9 @@
 ﻿unit CodeGenUtils;
 
-uses MiscUtils  in '..\..\Utils\MiscUtils';
 uses System.IO;
+
+uses POCGL_Utils  in '..\..\POCGL_Utils';
+uses AOtp         in '..\..\Utils\AOtp';
 
 {$region Writer's}
 

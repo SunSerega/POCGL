@@ -1,5 +1,5 @@
 ﻿uses FuncData in '..\FuncData';
-uses MiscUtils in '..\..\..\Utils\MiscUtils';
+uses POCGL_Utils in '..\..\..\POCGL_Utils';
 
 begin
   try
@@ -50,7 +50,6 @@ begin
     res.Clear;
     
     FinishAll;
-    if not is_secondary_proc then Otp('done');
   except
     on e: Exception do ErrOtp(e);
   end;

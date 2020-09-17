@@ -1,7 +1,8 @@
 ﻿{$reference '0MarkDig\Markdig.dll'}
 uses System.IO;
 
-uses MiscUtils in '..\..\Utils\MiscUtils';
+uses POCGL_Utils  in '..\..\POCGL_Utils';
+uses AOtp         in '..\..\Utils\AOtp';
 
 type
   HTML = static class
@@ -12,8 +13,6 @@ type
       .UseCustomContainers  // блоки-спойлеры
       .UseGenericAttributes // прямое указание атрибутов html элемента, надо для спойлеров
     .Build;
-    
-    private static enc := new System.Text.UTF8Encoding(true);
     
     private static last_page_id: integer;
     
@@ -29,19 +28,19 @@ type
       if System.IO.File.Exists(path+'.css') then
       begin
         sw.WriteLine('<style>');
-        sw.WriteLine(ReadAllText(path+'.css', enc).Trim);
+        sw.WriteLine(ReadAllText(path+'.css').Trim);
         sw.WriteLine('</style>');
       end;
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText(path+'.md', enc),
+        ReadAllText(path+'.md'),
         md_pipeline
       ).Trim);
       
       if System.IO.File.Exists(path+'.js') then
       begin
         sw.WriteLine('<script>');
-        sw.WriteLine(ReadAllText(path+'.js', enc).Trim);
+        sw.WriteLine(ReadAllText(path+'.js').Trim);
         sw.WriteLine('</script>');
       end;
       
@@ -73,35 +72,34 @@ type
       sw.WriteLine($'<script>on_end_folder()</script>');
     end;
     
-    public static exe_dir := Path.GetDirectoryName(GetEXEFileName);
     public static procedure Pack(path, otp: string);
     begin
       var nick := otp.Remove(otp.LastIndexOf('.'));
-      MiscUtils.Otp($'Packing spec "{nick}"');
+      POCGL_Utils.Otp($'Packing spec "{nick}"');
       last_page_id := 0;
       
-      path := $'{exe_dir}\{path}';
-      otp  := $'{exe_dir}\{otp}';
+      path := GetFullPathRTE(path);
+      otp  := GetFullPathRTE(otp);
       
-      var sw := new StreamWriter(&File.Create(otp), enc);
+      var sw := new StreamWriter(otp, false, enc);
       sw.WriteLine('<html>');
       sw.WriteLine('<head>');
       sw.WriteLine('<meta charset="utf-8">');
       
       sw.WriteLine('<style>');
-      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.css', enc).Trim);
+      sw.WriteLine(ReadAllText(GetFullPathRTE('0SpecContainer\.css')).Trim);
       sw.WriteLine('</style>');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText($'{exe_dir}\0SpecContainer\.md', enc),
+        ReadAllText(GetFullPathRTE('0SpecContainer\.md')),
         md_pipeline
       ).Trim);
       
       sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText($'{exe_dir}\0SpecContainer\.js', enc).Trim);
+      sw.WriteLine(ReadAllText(GetFullPathRTE('0SpecContainer\.js')).Trim);
       sw.WriteLine('</script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);
@@ -110,7 +108,7 @@ type
       sw.WriteLine('</html>');
       sw.Close;
       
-      MiscUtils.Otp($'Done packing spec "{nick}"');
+      POCGL_Utils.Otp($'Done packing spec "{nick}"');
     end;
     
   end;
@@ -118,9 +116,9 @@ type
 begin
   try
     
-    HTML.Pack('Nativ Interop','Гайд по использованию OpenGL и OpenCL.html');
-    HTML.Pack('GL ABC','Справка OpenGLABC.html');
-    HTML.Pack('CL ABC','Справка OpenCLABC.html');
+    HTML.Pack('Nativ Interop',  'Гайд по использованию OpenGL и OpenCL.html');
+    HTML.Pack('GL ABC',         'Справка OpenGLABC.html');
+    HTML.Pack('CL ABC',         'Справка OpenCLABC.html');
     
   except
     on e: Exception do ErrOtp(e);

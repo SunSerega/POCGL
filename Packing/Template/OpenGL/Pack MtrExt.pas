@@ -1,6 +1,6 @@
-﻿uses PackingUtils in '..\PackingUtils';
-uses MiscUtils in '..\..\..\Utils\MiscUtils';
-uses MtrBase;
+﻿uses MtrBase;
+uses PackingUtils in '..\PackingUtils';
+uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 
 procedure AddMtrMlt(res: StringBuilder; t1,t2: t_descr);
 begin
@@ -75,7 +75,7 @@ begin
     res += '{$endregion MtrTranspose}'#10;
     res += '';
     
-    WriteAllText(GetFullPathRTE('MtrExt.template'), res.ToString, enc);
+    WriteAllText(GetFullPathRTE('MtrExt.template'), res.ToString);
   except
     on e: Exception do ErrOtp(e);
   end;

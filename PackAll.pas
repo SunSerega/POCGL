@@ -1,16 +1,12 @@
 ﻿uses System.Threading;
 uses System.Threading.Tasks;
 uses System.IO;
-uses MiscUtils in 'Utils\MiscUtils';
+
+uses AOtp       in 'Utils\AOtp';
+uses ATask      in 'Utils\ATask';
+uses PathUtils  in 'Utils\PathUtils';
 
 // АРГУМЕНТЫ КОМАНДНОЙ СТРОКИ:
-// 
-// - "OutputPipeId=123 456" | что то вроде тихого режима:
-//   - Readln в конце НЕТУ
-//   - Halt возвращает код исключения, при ошибке
-//   - Данные о замерах времени в конце не выводятся
-//   - Вместо 123 должен быть дескриптор анонимного пайпа-сервера в режиме "In". Туда будет направлен вывод
-//   - Вместо 456 должен быть дескриптор анонимного пайпа-сервера в режиме "Out". Туда можно отправить byte(1) чтоб аварийно завершить процесс
 // 
 // - "Stages=...+...+..." | запускает только указанные стадии упаковки
 //   - "FirstPack"  - Датаскрапинг спецификаций и исходников. Следует проводить только 1 раз, единственная по-умолчанию выключенная стадия
@@ -82,7 +78,7 @@ self.SelectMany(mn->
     static function ModuleStages := AllModules.Intersect(CurrentStages);
     static function IsPackingAllModules := ModuleStages.Count in |0,AllModules.Count|;
     
-    static function TitleTask(title: string; decor: char := '='): SecThrProc;
+    static function TitleTask(title: string; decor: char := '='): AsyncTask;
     begin
       var c := 80-title.Length;
       var c2 := c div 2;
@@ -107,7 +103,7 @@ self.SelectMany(mn->
     end;
     constructor := raise new System.InvalidOperationException;
     
-    function MakeTask: SecThrProc;
+    function MakeTask: AsyncTask;
     begin
       if (id<>nil) and not CurrentStages.Contains(id) then exit;
       Result := MakeCoreTask;
@@ -115,14 +111,14 @@ self.SelectMany(mn->
       if self.log_name<>nil then
       begin
         self.log := new FileLogger($'Log\{log_name}.log');
-        Result := new SecThrProcHandled(Result, self.log.Otp) + ProcTask(self.log.Close);
+        Result := new AsyncTaskOtpHandler(Result, self.log.Otp) + ProcTask(self.log.Close);
       end;
       
       if self.description<>nil then
         Result := TitleTask(self.description) + Result;
       
     end;
-    function MakeCoreTask: SecThrProc; abstract;
+    function MakeCoreTask: AsyncTask; abstract;
     
   end;
   
@@ -138,7 +134,7 @@ self.SelectMany(mn->
       self.description := 'First Pack';
     end;
     
-    function MakeCoreTask: SecThrProc; override;
+    function MakeCoreTask: AsyncTask; override;
     begin
       
       {$region UpdateReps}
@@ -186,7 +182,7 @@ self.SelectMany(mn->
       self.description := 'Specs';
     end;
     
-    function MakeCoreTask: SecThrProc; override :=
+    function MakeCoreTask: AsyncTask; override :=
     ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker');
     
   end;
@@ -211,15 +207,15 @@ self.SelectMany(mn->
     constructor(module_name: string) :=
     inherited Create(module_name);
     
-    function MakeCoreTask: SecThrProc; override :=
+    function MakeCoreTask: AsyncTask; override :=
       MakeModuleTask +
       SetEvTask(GetModulePackEv(self.id));
-    function MakeModuleTask: SecThrProc; abstract;
+    function MakeModuleTask: AsyncTask; abstract;
     
   end;
   LLModuleStage = sealed class(ModulePackingStage)
     
-    function MakeModuleTask: SecThrProc; override :=
+    function MakeModuleTask: AsyncTask; override :=
       ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\Template\{id}.pas"', $'"otp_fname=Modules\{id}.pas"') +
       ProcTask(()->
       begin
@@ -231,7 +227,7 @@ self.SelectMany(mn->
   end;
   HLModuleStage = sealed class(ModulePackingStage)
     
-    function MakeModuleTask: SecThrProc; override :=
+    function MakeModuleTask: AsyncTask; override :=
       ProcTask(()->Directory.CreateDirectory('Modules.Packed\Internal'))
       +
       
@@ -257,7 +253,7 @@ self.SelectMany(mn->
       if not IsPackingAllModules then log_name := nil;
     end;
     
-    function MakeModuleCompileTask(mn: string): SecThrProc;
+    function MakeModuleCompileTask(mn: string): AsyncTask;
     begin
       if CurrentStages.Contains(mn      ) then Result += EventTask(ModulePackingStage.GetModulePackEv(mn));
       if CurrentStages.Contains(mn+'ABC') then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
@@ -272,7 +268,7 @@ self.SelectMany(mn->
       
     end;
     
-    function MakeCoreTask: SecThrProc; override :=
+    function MakeCoreTask: AsyncTask; override :=
     AllLLModules.Select(MakeModuleCompileTask).CombineAsyncTask;
     
   end;
@@ -291,7 +287,7 @@ self.SelectMany(mn->
       if not IsPackingAllModules then log_name := nil;
     end;
     
-    function MakeCoreTask: SecThrProc; override :=
+    function MakeCoreTask: AsyncTask; override :=
     ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"');
     
   end;
@@ -308,7 +304,7 @@ self.SelectMany(mn->
       if not IsPackingAllModules then log_name := nil;
     end;
     
-    function MakeCoreTask: SecThrProc; override;
+    function MakeCoreTask: AsyncTask; override;
     begin
       
       {$region Clear}
@@ -459,8 +455,8 @@ begin
     
     {$region Load}
     
-    Logger.main_log += new FileLogger('LastPack.log');
-    Logger.main_log += new FileLogger('LastPack (Timed).log', true);
+    Logger.main += new FileLogger('LastPack.log');
+    Logger.main += new FileLogger('LastPack (Timed).log', true);
     
     // ====================================================
     
@@ -483,7 +479,7 @@ begin
         end);
         Otp($'Executing selected stages:');
       end;
-//      stages := HSet(OpenGLABCStr);
+//      PackingStage.CurrentStages := HSet(ReleaseStr);
       
       Otp(PackingStage.CurrentStages.JoinIntoString(' + '));
     end;
@@ -508,15 +504,15 @@ begin
     
     {$endregion MiscClear}
     
-    var T_FirstPack := FirstPackStage.Create.MakeTask;
-    var T_Spec      := SpecStage.Create.MakeTask;
-    var T_OpenCL    := LLModuleStage.Create(OpenCLStr).MakeTask;
-    var T_OpenCLABC := HLModuleStage.Create(OpenCLABCStr).MakeTask;
-    var T_OpenGL    := LLModuleStage.Create(OpenGLStr).MakeTask;
-    var T_OpenGLABC := HLModuleStage.Create(OpenGLABCStr).MakeTask;
-    var T_Compile   := CompileStage.Create.MakeTask;
-    var T_Test      := TestStage.Create.MakeTask;
-    var T_Release   := ReleaseStage.Create.MakeTask;
+    var T_FirstPack := FirstPackStage .Create               .MakeTask;
+    var T_Spec      := SpecStage      .Create               .MakeTask;
+    var T_OpenCL    := LLModuleStage  .Create(OpenCLStr)    .MakeTask;
+    var T_OpenCLABC := HLModuleStage  .Create(OpenCLABCStr) .MakeTask;
+    var T_OpenGL    := LLModuleStage  .Create(OpenGLStr)    .MakeTask;
+    var T_OpenGLABC := HLModuleStage  .Create(OpenGLABCStr) .MakeTask;
+    var T_Compile   := CompileStage   .Create               .MakeTask;
+    var T_Test      := TestStage      .Create               .MakeTask;
+    var T_Release   := ReleaseStage   .Create               .MakeTask;
     
     Otp('Start packing');
     

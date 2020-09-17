@@ -1,5 +1,5 @@
 ﻿uses PackingUtils in '..\PackingUtils';
-uses MiscUtils in '..\..\..\Utils\MiscUtils';
+uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 
 {$reference System.Windows.Forms.dll}
 
@@ -334,7 +334,7 @@ begin
     res += '  {$endregion Vec}'#10;
     res += '  ';
     
-    WriteAllText(GetFullPathRTE('VecTypes.template'), res.ToString, enc);
+    WriteAllText(GetFullPathRTE('VecTypes.template'), res.ToString);
   except
     on e: Exception do ErrOtp(e);
   end;

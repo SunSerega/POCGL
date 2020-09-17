@@ -3,25 +3,8 @@ Compiling "DataScraping\Reps\PullReps.pas"
 Finished compiling: OK
 Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] [up to date]      master        -> origin/master
-SubReps Update: OpenCL Docs : [Info] [up to date]      246-enums     -> origin/246-enums
-SubReps Update: OpenCL Docs : [Info] [up to date]      pub93-links   -> origin/pub93-links
-SubReps Update: OpenCL Docs : [Info] [up to date]      reflinks      -> origin/reflinks
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages      -> origin/refpages
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages2     -> origin/refpages2
-SubReps Update: OpenCL Docs : [Info] [up to date]      refpages3     -> origin/refpages3
-SubReps Update: OpenCL Docs : [Info] [up to date]      reserve-enums -> origin/reserve-enums
-SubReps Update: OpenCL Docs : [Info] [up to date]      vksync        -> origin/vksync
-SubReps Update: OpenCL Docs : Already up to date.
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL Registry : [Info] [up to date]      master     -> origin/master
-SubReps Update: OpenGL Registry : [Info] [up to date]      335-docs   -> origin/335-docs
-SubReps Update: OpenGL Registry : [Info] [up to date]      341-issue  -> origin/341-issue
-SubReps Update: OpenGL Registry : [Info] [up to date]      pr/414     -> origin/pr/414
-SubReps Update: OpenGL Registry : Already up to date.
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

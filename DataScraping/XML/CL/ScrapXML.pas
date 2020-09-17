@@ -1,5 +1,5 @@
-﻿uses MiscUtils in '..\..\..\Utils\MiscUtils';
-uses XMLUtils in '..\XMLUtils';
+﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+uses XMLUtils     in '..\XMLUtils';
 
 type
   LogCache = static class
@@ -561,7 +561,6 @@ begin
     SaveBin;
     
     log.Close;
-    if not is_secondary_proc then Otp('done');
   except
     on e: Exception do ErrOtp(e);
   end;

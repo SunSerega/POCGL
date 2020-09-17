@@ -2,7 +2,11 @@
 uses System.IO;
 {$string_nullbased+}
 
-uses MiscUtils in '..\..\Utils\MiscUtils';
+uses POCGL_Utils  in '..\..\POCGL_Utils';
+uses AOtp         in '..\..\Utils\AOtp';
+uses ATask        in '..\..\Utils\ATask';
+uses AQueue       in '..\..\Utils\AQueue';
+uses CLArgs       in '..\..\Utils\CLArgs';
 
 type
   FileBlock = abstract class
@@ -23,10 +27,10 @@ type
   end;
   
   WaitBlock = sealed class(FileBlock)
-    p_otp := new ThrProcOtp;
+    p_otp: AsyncProcOtp;
     f: AsyncQueue<string>->();
     
-    constructor(p: SecThrProc; f: AsyncQueue<string>->());
+    constructor(p: AsyncTask; f: AsyncQueue<string>->());
     begin
       p.StartExec;
       self.p_otp := p.own_otp;
@@ -44,7 +48,7 @@ type
   TemplateUtils = static class
     
     static prev_commands := new Dictionary<string, ManualResetEvent>;
-    static function RegisterCommand(name: string; work: ()->SecThrProc): SecThrProc;
+    static function RegisterCommand(name: string; work: ()->AsyncTask): AsyncTask;
     begin
       var ev: ManualResetEvent;
       
@@ -92,7 +96,7 @@ type
         p.StartExec;
         
         foreach var l in p.own_otp do
-          MiscUtils.Otp(l.ConvStr(s->$'{template_nick}: {s}'));
+          AOtp.Otp(l.ConvStr(s->$'{template_nick}: {s}'));
         
       end);
       
@@ -138,7 +142,7 @@ type
       
     end;
     
-    static function ProcessFile(curr_path: string; inp_fname: string; otp: AsyncQueue<string>): SecThrProc;
+    static function ProcessFile(curr_path: string; inp_fname: string; otp: AsyncQueue<string>): AsyncTask;
     begin
       var bls := new AsyncQueue<FileBlock>;
       var inp := new AsyncQueue<string>;
@@ -182,7 +186,7 @@ type
       );
       
     end;
-    static function ProcessingFile(curr_path: string; inp_fname, otp_fname: string): SecThrProc;
+    static function ProcessingFile(curr_path: string; inp_fname, otp_fname: string): AsyncTask;
     begin
       var otp := new AsyncQueue<string>;
       
@@ -211,7 +215,7 @@ begin
     var otp_fname := GetArgs('otp_fname').SingleOrDefault;
     var nick := GetArgs('nick').SingleOrDefault;
     
-    if not is_secondary_proc and string.IsNullOrWhiteSpace(inp_fname) and string.IsNullOrWhiteSpace(otp_fname) and string.IsNullOrWhiteSpace(nick) then
+    if is_separate_execution and string.IsNullOrWhiteSpace(inp_fname) and string.IsNullOrWhiteSpace(otp_fname) and string.IsNullOrWhiteSpace(nick) then
     begin
       
 //      inp_fname := 'Modules\Template\OpenGL.pas';

@@ -10341,6 +10341,27 @@
     
   end;
   
+  [PCUNotRestore]
+  clCreateBufferWithPropertiesINTEL = static class
+    public const _ExtStr = 'intel_create_buffer_with_properties';
+    
+    private static function z_CreateBufferWithPropertiesINTEL_ovr_0(context: cl_context; var properties: MemPropertiesIntel; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateBufferWithPropertiesINTEL';
+    private static function z_CreateBufferWithPropertiesINTEL_ovr_0_anh0010000(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateBufferWithPropertiesINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithPropertiesINTEL(context: cl_context; properties: array of MemPropertiesIntel; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    if (properties<>nil) and (properties.Length<>0) then
+      z_CreateBufferWithPropertiesINTEL_ovr_0(context, properties[0], flags, size, host_ptr, errcode_ret) else
+      z_CreateBufferWithPropertiesINTEL_ovr_0_anh0010000(context, IntPtr.Zero, flags, size, host_ptr, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithPropertiesINTEL(context: cl_context; var properties: MemPropertiesIntel; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    z_CreateBufferWithPropertiesINTEL_ovr_0(context, properties, flags, size, host_ptr, errcode_ret);
+    private static function z_CreateBufferWithPropertiesINTEL_ovr_2(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    external 'opencl.dll' name 'clCreateBufferWithPropertiesINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithPropertiesINTEL(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    z_CreateBufferWithPropertiesINTEL_ovr_2(context, properties, flags, size, host_ptr, errcode_ret);
+    
+  end;
+  
   {$endregion Extensions}
   
   

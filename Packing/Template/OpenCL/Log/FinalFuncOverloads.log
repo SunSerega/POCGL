@@ -1844,4 +1844,9 @@
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
 
+# clCreateBufferWithPropertiesINTEL
+ cl_mem	| cl_context	| array of MemPropertiesIntel	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemPropertiesIntel	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| IntPtr	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+
 

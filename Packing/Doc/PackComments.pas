@@ -1,6 +1,12 @@
 ﻿uses CommentableData;
-uses MiscUtils  in '..\..\Utils\MiscUtils';
-uses Fixers     in '..\..\Utils\Fixers';
+
+uses POCGL_Utils  in '..\..\POCGL_Utils';
+
+uses AOtp         in '..\..\Utils\AOtp';
+uses ATask        in '..\..\Utils\ATask';
+uses AQueue       in '..\..\Utils\AQueue';
+uses CLArgs       in '..\..\Utils\CLArgs';
+uses Fixers       in '..\..\Utils\Fixers';
 
 type
   CommentData = sealed class
@@ -90,7 +96,7 @@ begin
     var nick := GetArgs('nick').SingleOrDefault;
     var fls := GetArgs('fname').ToArray;
     
-    if not is_secondary_proc and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) then
+    if is_separate_execution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) then
     begin
       
       nick := 'OpenCLABC';
@@ -180,7 +186,6 @@ begin
       if not CommentData.all[key].used then
         Otp($'WARNING: key %{key}% wasn''t used!');
     
-    if not is_secondary_proc then Otp('done');
   except
     on e: Exception do ErrOtp(e);
   end;

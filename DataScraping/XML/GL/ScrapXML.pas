@@ -1,5 +1,5 @@
-﻿uses MiscUtils in '..\..\..\Utils\MiscUtils';
-uses XMLUtils in '..\XMLUtils';
+﻿uses POCGL_Utils in '..\..\..\POCGL_Utils';
+uses XMLUtils    in '..\XMLUtils';
 
 var allowed_api := HSet(
   'gl','glcore', // gl есть всюду где glcore, glcore только чтоб не выводить лишнее сообщение в лог
@@ -155,7 +155,7 @@ type
         begin
           if gname='String' then
           begin
-            if self.t <> 'GLubyte' then raise new MessageException($'Group [{gname}] was applied to type [{self.t}]');
+            if self.t <> 'GLubyte' then raise new MessageException($'ERROR: Group [{gname}] was applied to type [{self.t}]');
             self.t := 'GLchar';
           end else
             on_used += ()->
@@ -455,7 +455,6 @@ begin
     SaveBin;
     
     log.Close;
-    if not is_secondary_proc then Otp('done');
   except
     on e: Exception do ErrOtp(e);
   end;

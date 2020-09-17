@@ -2,9 +2,12 @@
 
 interface
 
-uses MiscUtils  in '..\..\Utils\MiscUtils';
-uses Fixers     in '..\..\Utils\Fixers';
+uses POCGL_Utils  in '..\..\POCGL_Utils';
 uses PackingUtils;
+
+uses AOtp         in '..\..\Utils\AOtp';
+uses Fixers       in '..\..\Utils\Fixers';
+
 {$string_nullbased+}
 
 {$region Log and Misc}

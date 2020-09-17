@@ -1,7 +1,8 @@
 ﻿unit XMLUtils;
 
 {$reference System.XML.dll}
-uses MiscUtils in '..\..\Utils\MiscUtils';
+uses POCGL_Utils in '..\..\POCGL_Utils';
+uses AOtp        in '..\..\Utils\AOtp';
 
 var log := new System.IO.StreamWriter(
   GetFullPathRTE('xml.log'),
