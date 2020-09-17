@@ -2,7 +2,8 @@
 
 
 IF NOT EXIST "Utils\.git" (
-	git.exe submodule update --progress --init -- "Utils"
+	git submodule init
+	git submodule update --progress --init --remote -- "Utils"
 )
 
 IF NOT EXIST "PackAll.exe" (
