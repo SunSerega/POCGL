@@ -163,7 +163,10 @@ begin
       
       AOtp.Otp($'Finished runing {nick}');
     finally
-      p.Kill;
+      try
+        p.Kill;
+      except
+      end;
       lock EmergencyHandler.All do
         EmergencyHandler.All.Remove(pek);
     end;
@@ -196,6 +199,7 @@ begin
     'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe',
     search_paths.Select(spath->$'/SearchDir:"{spath}"').Append($'"{fname}"').JoinToString
   );
+//  Otp(psi.Arguments);
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
   psi.RedirectStandardInput := true;

@@ -42,11 +42,12 @@ type
     constructor(s: string) := Create(s, pack_timer.ElapsedTicks);
     
     static function operator implicit(s: string): OtpLine := new OtpLine(s);
+    static function operator implicit(s: char): OtpLine := new OtpLine(s);
     
-    function ConvStr(f: string->string); virtual := new OtpLine(f(self.s), self.t);
+    function ConvStr(f: string->string) := new OtpLine(f(self.s), self.t);
     
-    function GetTimedStr; virtual :=
-    $'{t,15:N7} | {s}';
+    function GetTimedStr :=
+    $'{t/System.TimeSpan.TicksPerSecond,15:N7} | {s}';
     
     procedure Println; virtual :=
     Console.WriteLine(s);
@@ -59,18 +60,6 @@ type
     begin
       inherited Create(s);
       self.bg_colors := bg_colors;
-    end;
-    
-    function ConvStr(f: string->string): OtpLine; override;
-    begin
-      Result := nil;
-      raise new System.NotSupportedException;
-    end;
-    
-    function GetTimedStr: string; override;
-    begin
-      Result := nil;
-      raise new System.NotSupportedException;
     end;
     
     procedure Println; override;
@@ -92,7 +81,7 @@ type
   
   {$region AsyncProcOtp}
   
-  AsyncProcOtp = sealed class(AsyncQueue<OtpLine>)
+  AsyncProcOtp = sealed class(AsyncQueue<OtpLine>, IEnumerable<OtpLine>)
     private parent: AsyncProcOtp;
     public [System.ThreadStatic] static curr: AsyncProcOtp;
     
@@ -101,6 +90,10 @@ type
     private constructor := raise new System.InvalidOperationException;
     
     public procedure Dump;
+    
+    //ToDo #2306
+    public function GetEnumerator: IEnumerator<OtpLine> := inherited GetEnumerator;
+    public property Current: OtpLine read OtpLine(inherited Current);
     
   end;
   
@@ -137,9 +130,11 @@ type
     public procedure Close; virtual :=
     foreach var log in sub_loggers do
       log.Close;
-    public procedure CloseNonTimed; virtual :=
-    foreach var log in sub_loggers do
-      log.CloseNonTimed;
+    public function CloseNonTimed: boolean; virtual;
+    begin
+      sub_loggers.RemoveAll(l->l.CloseNonTimed);
+      Result := false;
+    end;
     
   end;
   
@@ -197,10 +192,13 @@ type
       
       inherited;
     end;
-    public procedure CloseNonTimed; override :=
-    if self.timed then
-      inherited else
-      self.Close;
+    public function CloseNonTimed: boolean; override;
+    begin
+      Result := not self.timed;
+      if Result then
+        self.Close else
+        inherited CloseNonTimed;
+    end;
     
   end;
   
@@ -331,7 +329,7 @@ end;
 // Потому что лямбды не работают в finalization
 procedure MakeSureToExit;
 begin
-  if Logger.main is ConsoleLogger then ReadString('Press Enter to exit:');
+  if Logger.main is ConsoleLogger then ReadString(#10'Press Enter to exit:');
   StartBgThread(()->
   begin
     Sleep(5000);

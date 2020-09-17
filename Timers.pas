@@ -34,7 +34,7 @@ type
     
     protected procedure ReCalcTotalTime; abstract;
     protected procedure TextLog(lvl: integer; header: string; otp: (integer, string)->()); virtual :=
-    otp(lvl, $'{header} : {total_time,15:N7}');
+    otp(lvl, $'{header} : {total_time/System.TimeSpan.TicksPerSecond,15:N7}');
     
     private static TextLogLvlColors := |System.ConsoleColor.Black, System.ConsoleColor.DarkGray|;
     public procedure GlobalLog; virtual;
@@ -43,7 +43,7 @@ type
       Otp('');
       TextLog(0, 'Total', (lvl, l)->
       begin
-        Otp(new OtpLineColored(' '*(4*lvl), SeqGen(lvl, i->(i=0?3:4, TextLogLvlColors[i mod TextLogLvlColors.Length]))));
+        Otp(new OtpLineColored(' '*(4*lvl) + l, SeqGen(lvl, i->(i=0?3:4, TextLogLvlColors[i mod TextLogLvlColors.Length]))));
       end);
     end;
     
