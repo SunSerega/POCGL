@@ -32,7 +32,10 @@ type
         on e: System.IO.IOException do
         begin
           Otp($'WARNING: Failed to use halt stream of process [{GetRelativePath(p.MainModule.FileName)}]:{#10}{e}');
-          p.Kill;
+          try
+            p.Kill;
+          except
+          end;
           exit;
         end;
       end;
