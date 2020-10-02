@@ -19,6 +19,9 @@ function GetRelativePathRTE(fname: string)                                      
 
 function is_separate_execution := Logger.main is ConsoleLogger;
 
+function nfi := AOtp.nfi;
+function enc := AOtp.enc;
+
 begin
   try
     while not FileExists('POCGL_Utils.pas') do

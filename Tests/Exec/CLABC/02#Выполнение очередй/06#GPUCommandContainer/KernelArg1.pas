@@ -9,15 +9,15 @@ begin
   TestArg(Buffer.Create(1).NewQueue as CommandQueue<Buffer>);
   Writeln;
   
-  //ToDo #2303
-  Writeln('WARNING: Record test off until #2303 fix');
-//  TestArg(3);
+  TestArg(3);
+  //ToDo #2311
+  Writeln('WARNING: Generic record test off until #2311 fix');
 //  TestArg(new ConstQueue<integer>(5));
   Writeln;
   
   var i := 5;
-  //ToDo #2303
-  Writeln('WARNING: Ptr test off until #2303 fix');
+  //ToDo #2318
+  Writeln('WARNING: Ptr test off until #2318 fix');
 //  TestArg(@i);
   Writeln;
   
