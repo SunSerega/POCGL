@@ -8,16 +8,16 @@ uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 function gl_to_pas_t(self: string): string; extensionmethod;
 begin
   case self of
-    ''+'b':     Result := 'SByte';
-    ''+'ub':    Result :=  'Byte';
-    ''+'s':     Result :=  'Int16';
-    ''+'us':    Result := 'UInt16';
-    ''+'i':     Result :=  'Int32';
-    ''+'ui':    Result := 'UInt32';
-    ''+'i64':   Result :=  'Int64';
-    ''+'ui64':  Result := 'UInt64';
-    ''+'f':     Result := 'single';
-    ''+'d':     Result := 'double';
+    'b':     Result := 'SByte';
+    'ub':    Result :=  'Byte';
+    's':     Result :=  'Int16';
+    'us':    Result := 'UInt16';
+    'i':     Result :=  'Int32';
+    'ui':    Result := 'UInt32';
+    'i64':   Result :=  'Int64';
+    'ui64':  Result := 'UInt64';
+    'f':     Result := 'single';
+    'd':     Result := 'double';
   end;
 end;
 
@@ -33,16 +33,16 @@ $'Vec{self[0]}{self[1]}';
 function GetElSize(self: t_descr): integer; extensionmethod;
 begin
   case self[1] of
-    ''+'b':     Result := 1;
-    ''+'ub':    Result := 1;
-    ''+'s':     Result := 2;
-    ''+'us':    Result := 2;
-    ''+'i':     Result := 4;
-    ''+'ui':    Result := 4;
-    ''+'i64':   Result := 8;
-    ''+'ui64':  Result := 8;
-    ''+'f':     Result := 4;
-    ''+'d':     Result := 8;
+    'b':     Result := 1;
+    'ub':    Result := 1;
+    's':     Result := 2;
+    'us':    Result := 2;
+    'i':     Result := 4;
+    'ui':    Result := 4;
+    'i64':   Result := 8;
+    'ui64':  Result := 8;
+    'f':     Result := 4;
+    'd':     Result := 8;
   end;
 end;
 
@@ -248,6 +248,21 @@ begin
     end;
   
   {$endregion static function Cross}
+  
+  {$region static function Read}
+  
+  foreach var ln in |'', 'ln'| do
+  begin
+    res +=  $'    public static function Read{ln}: {t.GetName};'+#10;
+    res +=  $'    begin'+#10;
+    res +=  $'      PABCSystem.Read{ln}(';
+    res += Range(0, t[0]-1).Select(i->$'Result.val{i}').JoinToString(', ');
+    res += ');'#10;
+    res +=  $'    end;'+#10;
+  end;
+  res +=    $'    '+#10;
+  
+  {$endregion static function Read}
   
   {$region function ToString}
   

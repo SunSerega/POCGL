@@ -66,6 +66,27 @@
     public function Det: single :=
     val00*val11 - val10*val01;
     
+    public static function ReadRows: Mtr2x2f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01);
+      PABCSystem.Read(Result.val10, Result.val11);
+    end;
+    public static function ReadlnRows: Mtr2x2f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01);
+      PABCSystem.Readln(Result.val10, Result.val11);
+    end;
+    public static function ReadCols: Mtr2x2f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10);
+      PABCSystem.Read(Result.val01, Result.val11);
+    end;
+    public static function ReadlnCols: Mtr2x2f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10);
+      PABCSystem.Readln(Result.val01, Result.val11);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -267,6 +288,31 @@
     
     public function Det: single :=
     val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
+    
+    public static function ReadRows: Mtr3x3f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22);
+    end;
+    public static function ReadlnRows: Mtr3x3f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
+    end;
+    public static function ReadCols: Mtr3x3f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22);
+    end;
+    public static function ReadlnCols: Mtr3x3f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
+    end;
     
     public function ToString: string; override;
     begin
@@ -514,6 +560,35 @@
     public function Det: single :=
     val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
     
+    public static function ReadRows: Mtr4x4f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22, Result.val23);
+      PABCSystem.Read(Result.val30, Result.val31, Result.val32, Result.val33);
+    end;
+    public static function ReadlnRows: Mtr4x4f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
+      PABCSystem.Readln(Result.val30, Result.val31, Result.val32, Result.val33);
+    end;
+    public static function ReadCols: Mtr4x4f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22, Result.val32);
+      PABCSystem.Read(Result.val03, Result.val13, Result.val23, Result.val33);
+    end;
+    public static function ReadlnCols: Mtr4x4f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
+      PABCSystem.Readln(Result.val03, Result.val13, Result.val23, Result.val33);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -675,6 +750,29 @@
       );
     end;
     
+    public static function ReadRows: Mtr2x3f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12);
+    end;
+    public static function ReadlnRows: Mtr2x3f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
+    end;
+    public static function ReadCols: Mtr2x3f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10);
+      PABCSystem.Read(Result.val01, Result.val11);
+      PABCSystem.Read(Result.val02, Result.val12);
+    end;
+    public static function ReadlnCols: Mtr2x3f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10);
+      PABCSystem.Readln(Result.val01, Result.val11);
+      PABCSystem.Readln(Result.val02, Result.val12);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -798,6 +896,29 @@
         +sr,  cr,
         0.0, 0.0
       );
+    end;
+    
+    public static function ReadRows: Mtr3x2f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01);
+      PABCSystem.Read(Result.val10, Result.val11);
+      PABCSystem.Read(Result.val20, Result.val21);
+    end;
+    public static function ReadlnRows: Mtr3x2f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01);
+      PABCSystem.Readln(Result.val10, Result.val11);
+      PABCSystem.Readln(Result.val20, Result.val21);
+    end;
+    public static function ReadCols: Mtr3x2f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21);
+    end;
+    public static function ReadlnCols: Mtr3x2f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
     end;
     
     public function ToString: string; override;
@@ -946,6 +1067,31 @@
       );
     end;
     
+    public static function ReadRows: Mtr2x4f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12, Result.val13);
+    end;
+    public static function ReadlnRows: Mtr2x4f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
+    end;
+    public static function ReadCols: Mtr2x4f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10);
+      PABCSystem.Read(Result.val01, Result.val11);
+      PABCSystem.Read(Result.val02, Result.val12);
+      PABCSystem.Read(Result.val03, Result.val13);
+    end;
+    public static function ReadlnCols: Mtr2x4f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10);
+      PABCSystem.Readln(Result.val01, Result.val11);
+      PABCSystem.Readln(Result.val02, Result.val12);
+      PABCSystem.Readln(Result.val03, Result.val13);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -1086,6 +1232,31 @@
         0.0, 0.0,
         0.0, 0.0
       );
+    end;
+    
+    public static function ReadRows: Mtr4x2f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01);
+      PABCSystem.Read(Result.val10, Result.val11);
+      PABCSystem.Read(Result.val20, Result.val21);
+      PABCSystem.Read(Result.val30, Result.val31);
+    end;
+    public static function ReadlnRows: Mtr4x2f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01);
+      PABCSystem.Readln(Result.val10, Result.val11);
+      PABCSystem.Readln(Result.val20, Result.val21);
+      PABCSystem.Readln(Result.val30, Result.val31);
+    end;
+    public static function ReadCols: Mtr4x2f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21, Result.val31);
+    end;
+    public static function ReadlnCols: Mtr4x2f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
     end;
     
     public function ToString: string; override;
@@ -1328,6 +1499,33 @@
       Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
+    end;
+    
+    public static function ReadRows: Mtr3x4f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22, Result.val23);
+    end;
+    public static function ReadlnRows: Mtr3x4f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
+    end;
+    public static function ReadCols: Mtr3x4f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22);
+      PABCSystem.Read(Result.val03, Result.val13, Result.val23);
+    end;
+    public static function ReadlnCols: Mtr3x4f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
+      PABCSystem.Readln(Result.val03, Result.val13, Result.val23);
     end;
     
     public function ToString: string; override;
@@ -1584,6 +1782,33 @@
       
     end;
     
+    public static function ReadRows: Mtr4x3f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22);
+      PABCSystem.Read(Result.val30, Result.val31, Result.val32);
+    end;
+    public static function ReadlnRows: Mtr4x3f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
+      PABCSystem.Readln(Result.val30, Result.val31, Result.val32);
+    end;
+    public static function ReadCols: Mtr4x3f;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22, Result.val32);
+    end;
+    public static function ReadlnCols: Mtr4x3f;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -1741,6 +1966,27 @@
     
     public function Det: double :=
     val00*val11 - val10*val01;
+    
+    public static function ReadRows: Mtr2x2d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01);
+      PABCSystem.Read(Result.val10, Result.val11);
+    end;
+    public static function ReadlnRows: Mtr2x2d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01);
+      PABCSystem.Readln(Result.val10, Result.val11);
+    end;
+    public static function ReadCols: Mtr2x2d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10);
+      PABCSystem.Read(Result.val01, Result.val11);
+    end;
+    public static function ReadlnCols: Mtr2x2d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10);
+      PABCSystem.Readln(Result.val01, Result.val11);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1970,6 +2216,31 @@
     
     public function Det: double :=
     val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
+    
+    public static function ReadRows: Mtr3x3d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22);
+    end;
+    public static function ReadlnRows: Mtr3x3d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
+    end;
+    public static function ReadCols: Mtr3x3d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22);
+    end;
+    public static function ReadlnCols: Mtr3x3d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
+    end;
     
     public function ToString: string; override;
     begin
@@ -2244,6 +2515,35 @@
     public function Det: double :=
     val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
     
+    public static function ReadRows: Mtr4x4d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22, Result.val23);
+      PABCSystem.Read(Result.val30, Result.val31, Result.val32, Result.val33);
+    end;
+    public static function ReadlnRows: Mtr4x4d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
+      PABCSystem.Readln(Result.val30, Result.val31, Result.val32, Result.val33);
+    end;
+    public static function ReadCols: Mtr4x4d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22, Result.val32);
+      PABCSystem.Read(Result.val03, Result.val13, Result.val23, Result.val33);
+    end;
+    public static function ReadlnCols: Mtr4x4d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
+      PABCSystem.Readln(Result.val03, Result.val13, Result.val23, Result.val33);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2432,6 +2732,29 @@
       );
     end;
     
+    public static function ReadRows: Mtr2x3d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12);
+    end;
+    public static function ReadlnRows: Mtr2x3d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
+    end;
+    public static function ReadCols: Mtr2x3d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10);
+      PABCSystem.Read(Result.val01, Result.val11);
+      PABCSystem.Read(Result.val02, Result.val12);
+    end;
+    public static function ReadlnCols: Mtr2x3d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10);
+      PABCSystem.Readln(Result.val01, Result.val11);
+      PABCSystem.Readln(Result.val02, Result.val12);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2582,6 +2905,29 @@
         +sr,  cr,
         0.0, 0.0
       );
+    end;
+    
+    public static function ReadRows: Mtr3x2d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01);
+      PABCSystem.Read(Result.val10, Result.val11);
+      PABCSystem.Read(Result.val20, Result.val21);
+    end;
+    public static function ReadlnRows: Mtr3x2d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01);
+      PABCSystem.Readln(Result.val10, Result.val11);
+      PABCSystem.Readln(Result.val20, Result.val21);
+    end;
+    public static function ReadCols: Mtr3x2d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21);
+    end;
+    public static function ReadlnCols: Mtr3x2d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
     end;
     
     public function ToString: string; override;
@@ -2757,6 +3103,31 @@
       );
     end;
     
+    public static function ReadRows: Mtr2x4d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12, Result.val13);
+    end;
+    public static function ReadlnRows: Mtr2x4d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
+    end;
+    public static function ReadCols: Mtr2x4d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10);
+      PABCSystem.Read(Result.val01, Result.val11);
+      PABCSystem.Read(Result.val02, Result.val12);
+      PABCSystem.Read(Result.val03, Result.val13);
+    end;
+    public static function ReadlnCols: Mtr2x4d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10);
+      PABCSystem.Readln(Result.val01, Result.val11);
+      PABCSystem.Readln(Result.val02, Result.val12);
+      PABCSystem.Readln(Result.val03, Result.val13);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2924,6 +3295,31 @@
         0.0, 0.0,
         0.0, 0.0
       );
+    end;
+    
+    public static function ReadRows: Mtr4x2d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01);
+      PABCSystem.Read(Result.val10, Result.val11);
+      PABCSystem.Read(Result.val20, Result.val21);
+      PABCSystem.Read(Result.val30, Result.val31);
+    end;
+    public static function ReadlnRows: Mtr4x2d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01);
+      PABCSystem.Readln(Result.val10, Result.val11);
+      PABCSystem.Readln(Result.val20, Result.val21);
+      PABCSystem.Readln(Result.val30, Result.val31);
+    end;
+    public static function ReadCols: Mtr4x2d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21, Result.val31);
+    end;
+    public static function ReadlnCols: Mtr4x2d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
     end;
     
     public function ToString: string; override;
@@ -3193,6 +3589,33 @@
       Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
+    end;
+    
+    public static function ReadRows: Mtr3x4d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22, Result.val23);
+    end;
+    public static function ReadlnRows: Mtr3x4d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
+    end;
+    public static function ReadCols: Mtr3x4d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22);
+      PABCSystem.Read(Result.val03, Result.val13, Result.val23);
+    end;
+    public static function ReadlnCols: Mtr3x4d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
+      PABCSystem.Readln(Result.val03, Result.val13, Result.val23);
     end;
     
     public function ToString: string; override;
@@ -3474,6 +3897,33 @@
       Result.val21 := k1*u.val0 + k2*( u.val1*u.val2 );
       Result.val22 := 1 + k2*( -u.val1*u.val1 - u.val0*u.val0 );
       
+    end;
+    
+    public static function ReadRows: Mtr4x3d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Read(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Read(Result.val20, Result.val21, Result.val22);
+      PABCSystem.Read(Result.val30, Result.val31, Result.val32);
+    end;
+    public static function ReadlnRows: Mtr4x3d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
+      PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
+      PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
+      PABCSystem.Readln(Result.val30, Result.val31, Result.val32);
+    end;
+    public static function ReadCols: Mtr4x3d;
+    begin
+      PABCSystem.Read(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Read(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Read(Result.val02, Result.val12, Result.val22, Result.val32);
+    end;
+    public static function ReadlnCols: Mtr4x3d;
+    begin
+      PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
+      PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
+      PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
     end;
     
     public function ToString: string; override;

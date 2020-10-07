@@ -22,6 +22,15 @@
     
     public function SqrLength := val0*val0;
     
+    public static function Read: Vec1b;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1b;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -59,6 +68,15 @@
     public static function operator implicit(v: Vec1ub): Vec1b := new Vec1b(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1ub;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1ub;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -101,6 +119,15 @@
     public static function operator implicit(v: Vec1s): Vec1ub := new Vec1ub(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1s;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1s;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -145,6 +172,15 @@
     public static function operator implicit(v: Vec1us): Vec1s := new Vec1s(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1us;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1us;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -193,6 +229,15 @@
     public static function operator implicit(v: Vec1i): Vec1us := new Vec1us(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1i;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1i;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -243,6 +288,15 @@
     public static function operator implicit(v: Vec1ui): Vec1i := new Vec1i(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1ui;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1ui;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -297,6 +351,15 @@
     public static function operator implicit(v: Vec1i64): Vec1ui := new Vec1ui(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1i64;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1i64;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -353,6 +416,15 @@
     public static function operator implicit(v: Vec1ui64): Vec1i64 := new Vec1i64(v.val0);
     
     public function SqrLength := val0*val0;
+    
+    public static function Read: Vec1ui64;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1ui64;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -415,6 +487,15 @@
     public function SqrLength := val0*val0;
     
     public function Normalized := self / single(Sqrt(self.SqrLength));
+    
+    public static function Read: Vec1f;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1f;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -482,6 +563,15 @@
     public function SqrLength := val0*val0;
     
     public function Normalized := self / self.SqrLength.Sqrt;
+    
+    public static function Read: Vec1d;
+    begin
+      PABCSystem.Read(Result.val0);
+    end;
+    public static function Readln: Vec1d;
+    begin
+      PABCSystem.Readln(Result.val0);
+    end;
     
     public function ToString: string; override;
     begin
@@ -557,6 +647,15 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
+    public static function Read: Vec2b;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2b;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -628,6 +727,15 @@
     public static function operator implicit(v: Vec2ub): Vec2b := new Vec2b(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2ub;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2ub;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -704,6 +812,15 @@
     public static function operator implicit(v: Vec2s): Vec2ub := new Vec2ub(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2s;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2s;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -782,6 +899,15 @@
     public static function operator implicit(v: Vec2us): Vec2s := new Vec2s(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2us;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2us;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -864,6 +990,15 @@
     public static function operator implicit(v: Vec2i): Vec2us := new Vec2us(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2i;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2i;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -948,6 +1083,15 @@
     public static function operator implicit(v: Vec2ui): Vec2i := new Vec2i(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2ui;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2ui;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1036,6 +1180,15 @@
     public static function operator implicit(v: Vec2i64): Vec2ui := new Vec2ui(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2i64;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2i64;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1126,6 +1279,15 @@
     public static function operator implicit(v: Vec2ui64): Vec2i64 := new Vec2i64(v.val0, v.val1);
     
     public function SqrLength := val0*val0 + val1*val1;
+    
+    public static function Read: Vec2ui64;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2ui64;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1222,6 +1384,15 @@
     public function SqrLength := val0*val0 + val1*val1;
     
     public function Normalized := self / single(Sqrt(self.SqrLength));
+    
+    public static function Read: Vec2f;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2f;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1323,6 +1494,15 @@
     public function SqrLength := val0*val0 + val1*val1;
     
     public function Normalized := self / self.SqrLength.Sqrt;
+    
+    public static function Read: Vec2d;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1);
+    end;
+    public static function Readln: Vec2d;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1438,6 +1618,15 @@
     public static function CrossCCW(v1,v2: Vec3b) :=
     new Vec3b(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
+    public static function Read: Vec3b;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3b;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -1543,6 +1732,15 @@
     public static function operator implicit(v: Vec3ub): Vec3b := new Vec3b(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
+    
+    public static function Read: Vec3ub;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3ub;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1660,6 +1858,15 @@
     public static function CrossCCW(v1,v2: Vec3s) :=
     new Vec3s(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
+    public static function Read: Vec3s;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3s;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -1771,6 +1978,15 @@
     public static function operator implicit(v: Vec3us): Vec3s := new Vec3s(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
+    
+    public static function Read: Vec3us;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3us;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
     
     public function ToString: string; override;
     begin
@@ -1894,6 +2110,15 @@
     public static function CrossCCW(v1,v2: Vec3i) :=
     new Vec3i(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
+    public static function Read: Vec3i;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3i;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2011,6 +2236,15 @@
     public static function operator implicit(v: Vec3ui): Vec3i := new Vec3i(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
+    
+    public static function Read: Vec3ui;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3ui;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
     
     public function ToString: string; override;
     begin
@@ -2140,6 +2374,15 @@
     public static function CrossCCW(v1,v2: Vec3i64) :=
     new Vec3i64(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     
+    public static function Read: Vec3i64;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3i64;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2263,6 +2506,15 @@
     public static function operator implicit(v: Vec3ui64): Vec3i64 := new Vec3i64(v.val0, v.val1, v.val2);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
+    
+    public static function Read: Vec3ui64;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3ui64;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
     
     public function ToString: string; override;
     begin
@@ -2399,6 +2651,15 @@
     
     public static function CrossCCW(v1,v2: Vec3f) :=
     new Vec3f(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    
+    public static function Read: Vec3f;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3f;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
     
     public function ToString: string; override;
     begin
@@ -2540,6 +2801,15 @@
     
     public static function CrossCCW(v1,v2: Vec3d) :=
     new Vec3d(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    
+    public static function Read: Vec3d;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2);
+    end;
+    public static function Readln: Vec3d;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
+    end;
     
     public function ToString: string; override;
     begin
@@ -2683,6 +2953,15 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
+    public static function Read: Vec4b;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4b;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
@@ -2822,6 +3101,15 @@
     public static function operator implicit(v: Vec4ub): Vec4b := new Vec4b(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4ub;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4ub;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -2966,6 +3254,15 @@
     public static function operator implicit(v: Vec4s): Vec4ub := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4s;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4s;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -3112,6 +3409,15 @@
     public static function operator implicit(v: Vec4us): Vec4s := new Vec4s(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4us;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4us;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -3262,6 +3568,15 @@
     public static function operator implicit(v: Vec4i): Vec4us := new Vec4us(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4i;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4i;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -3414,6 +3729,15 @@
     public static function operator implicit(v: Vec4ui): Vec4i := new Vec4i(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4ui;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4ui;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -3570,6 +3894,15 @@
     public static function operator implicit(v: Vec4i64): Vec4ui := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4i64;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4i64;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -3728,6 +4061,15 @@
     public static function operator implicit(v: Vec4ui64): Vec4i64 := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
+    
+    public static function Read: Vec4ui64;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4ui64;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -3892,6 +4234,15 @@
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
     public function Normalized := self / single(Sqrt(self.SqrLength));
+    
+    public static function Read: Vec4f;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4f;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
@@ -4061,6 +4412,15 @@
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
     public function Normalized := self / self.SqrLength.Sqrt;
+    
+    public static function Read: Vec4d;
+    begin
+      PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
+    public static function Readln: Vec4d;
+    begin
+      PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
+    end;
     
     public function ToString: string; override;
     begin
