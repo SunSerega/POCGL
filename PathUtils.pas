@@ -62,6 +62,16 @@ begin
 end;
 function GetRelativePathRTE(fname: string) := GetRelativePath(fname, exe_dir);
 
+procedure CopyDir(source, destination: string);
+begin
+  System.IO.Directory.CreateDirectory(destination);
+  var di := new System.IO.DirectoryInfo(source);
+  foreach var fi in di.EnumerateFiles do
+    fi.CopyTo(System.IO.Path.Combine(destination, fi.Name));
+  foreach var sdi in di.GetDirectories do
+    CopyDir(sdi.FullName, System.IO.Path.Combine(destination, sdi.Name));
+end;
+
 begin
   exe_file_name := System.Diagnostics.Process.GetCurrentProcess.MainModule.FileName;
   exe_dir := System.IO.Path.GetDirectoryName(exe_file_name);

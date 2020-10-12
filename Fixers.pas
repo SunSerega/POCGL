@@ -124,8 +124,15 @@ type
         if (res.Count<>0) or not string.IsNullOrWhiteSpace(l) then
           res += l;
       
-      var lns := make_lns(res);
-      yield sequence names.SelectMany(name->DetemplateName(name, lns));
+      if start then
+      begin
+        if res.Count<>0 then
+          yield (nil as string, make_lns(res));
+      end else
+      begin
+        var lns := make_lns(res);
+        yield sequence names.SelectMany(name->DetemplateName(name, lns));
+      end;
     end;
     public static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     

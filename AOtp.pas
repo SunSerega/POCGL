@@ -269,11 +269,16 @@ if Logger.main=nil then
 /// На случай ThreadAbortException - после вызова ErrOtp в потоке больше ничего быть не должно
 procedure ErrOtp(e: Exception);
 begin
+  var EternalSleep := procedure->
+  begin
+    Thread.CurrentThread.IsBackground := true;
+    Thread.CurrentThread.Suspend;
+  end;
+  
   if e is ThreadAbortException then
   begin
     Thread.ResetAbort;
-    Thread.CurrentThread.IsBackground := true;
-    Thread.CurrentThread.Suspend;
+    EternalSleep;
   end;
 //  Console.Error.WriteLine($'pre err {e}');
   
@@ -282,7 +287,11 @@ begin
   if e.GetType = typeof(System.IO.IOException) then Sleep(100);
   lock in_err_state_lock do
   begin
-    if in_err_state then exit;
+    if in_err_state then
+    begin
+      Monitor.Exit(in_err_state_lock);
+      EternalSleep;
+    end;
     in_err_state := true;
   end;
   
