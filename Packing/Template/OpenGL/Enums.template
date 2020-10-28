@@ -1323,19 +1323,28 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _COLOR_TABLE                   := new ColorTableTarget($80D0);
-    private static _POST_CONVOLUTION_COLOR_TABLE  := new ColorTableTarget($80D1);
-    private static _POST_COLOR_MATRIX_COLOR_TABLE := new ColorTableTarget($80D2);
+    private static _COLOR_TABLE                         := new ColorTableTarget($80D0);
+    private static _POST_CONVOLUTION_COLOR_TABLE        := new ColorTableTarget($80D1);
+    private static _POST_COLOR_MATRIX_COLOR_TABLE       := new ColorTableTarget($80D2);
+    private static _PROXY_COLOR_TABLE                   := new ColorTableTarget($80D3);
+    private static _PROXY_POST_CONVOLUTION_COLOR_TABLE  := new ColorTableTarget($80D4);
+    private static _PROXY_POST_COLOR_MATRIX_COLOR_TABLE := new ColorTableTarget($80D5);
     
-    public static property COLOR_TABLE:                   ColorTableTarget read _COLOR_TABLE;
-    public static property POST_CONVOLUTION_COLOR_TABLE:  ColorTableTarget read _POST_CONVOLUTION_COLOR_TABLE;
-    public static property POST_COLOR_MATRIX_COLOR_TABLE: ColorTableTarget read _POST_COLOR_MATRIX_COLOR_TABLE;
+    public static property COLOR_TABLE:                         ColorTableTarget read _COLOR_TABLE;
+    public static property POST_CONVOLUTION_COLOR_TABLE:        ColorTableTarget read _POST_CONVOLUTION_COLOR_TABLE;
+    public static property POST_COLOR_MATRIX_COLOR_TABLE:       ColorTableTarget read _POST_COLOR_MATRIX_COLOR_TABLE;
+    public static property PROXY_COLOR_TABLE:                   ColorTableTarget read _PROXY_COLOR_TABLE;
+    public static property PROXY_POST_CONVOLUTION_COLOR_TABLE:  ColorTableTarget read _PROXY_POST_CONVOLUTION_COLOR_TABLE;
+    public static property PROXY_POST_COLOR_MATRIX_COLOR_TABLE: ColorTableTarget read _PROXY_POST_COLOR_MATRIX_COLOR_TABLE;
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($80D0) then Result := 'COLOR_TABLE' else
       if self.val = UInt32($80D1) then Result := 'POST_CONVOLUTION_COLOR_TABLE' else
       if self.val = UInt32($80D2) then Result := 'POST_COLOR_MATRIX_COLOR_TABLE' else
+      if self.val = UInt32($80D3) then Result := 'PROXY_COLOR_TABLE' else
+      if self.val = UInt32($80D4) then Result := 'PROXY_POST_CONVOLUTION_COLOR_TABLE' else
+      if self.val = UInt32($80D5) then Result := 'PROXY_POST_COLOR_MATRIX_COLOR_TABLE' else
         Result := $'ColorTableTarget[{self.val}]';
     end;
     
@@ -1933,8 +1942,11 @@
     private static _SAMPLE_COVERAGE                         := new EnableCap($80A0);
     private static _SAMPLE_MASK_SGIS                        := new EnableCap($80A0);
     private static _TEXTURE_COLOR_TABLE_SGI                 := new EnableCap($80BC);
+    private static _COLOR_TABLE                             := new EnableCap($80D0);
     private static _COLOR_TABLE_SGI                         := new EnableCap($80D0);
+    private static _POST_CONVOLUTION_COLOR_TABLE            := new EnableCap($80D1);
     private static _POST_CONVOLUTION_COLOR_TABLE_SGI        := new EnableCap($80D1);
+    private static _POST_COLOR_MATRIX_COLOR_TABLE           := new EnableCap($80D2);
     private static _POST_COLOR_MATRIX_COLOR_TABLE_SGI       := new EnableCap($80D2);
     private static _TEXTURE_4D_SGIS                         := new EnableCap($8134);
     private static _PIXEL_TEX_GEN_SGIX                      := new EnableCap($8139);
@@ -2064,8 +2076,11 @@
     public static property SAMPLE_COVERAGE:                         EnableCap read _SAMPLE_COVERAGE;
     public static property SAMPLE_MASK_SGIS:                        EnableCap read _SAMPLE_MASK_SGIS;
     public static property TEXTURE_COLOR_TABLE_SGI:                 EnableCap read _TEXTURE_COLOR_TABLE_SGI;
+    public static property COLOR_TABLE:                             EnableCap read _COLOR_TABLE;
     public static property COLOR_TABLE_SGI:                         EnableCap read _COLOR_TABLE_SGI;
+    public static property POST_CONVOLUTION_COLOR_TABLE:            EnableCap read _POST_CONVOLUTION_COLOR_TABLE;
     public static property POST_CONVOLUTION_COLOR_TABLE_SGI:        EnableCap read _POST_CONVOLUTION_COLOR_TABLE_SGI;
+    public static property POST_COLOR_MATRIX_COLOR_TABLE:           EnableCap read _POST_COLOR_MATRIX_COLOR_TABLE;
     public static property POST_COLOR_MATRIX_COLOR_TABLE_SGI:       EnableCap read _POST_COLOR_MATRIX_COLOR_TABLE_SGI;
     public static property TEXTURE_4D_SGIS:                         EnableCap read _TEXTURE_4D_SGIS;
     public static property PIXEL_TEX_GEN_SGIX:                      EnableCap read _PIXEL_TEX_GEN_SGIX;
@@ -2197,8 +2212,11 @@
       if self.val = UInt32($80A0) then Result := 'SAMPLE_COVERAGE' else
       if self.val = UInt32($80A0) then Result := 'SAMPLE_MASK_SGIS' else
       if self.val = UInt32($80BC) then Result := 'TEXTURE_COLOR_TABLE_SGI' else
+      if self.val = UInt32($80D0) then Result := 'COLOR_TABLE' else
       if self.val = UInt32($80D0) then Result := 'COLOR_TABLE_SGI' else
+      if self.val = UInt32($80D1) then Result := 'POST_CONVOLUTION_COLOR_TABLE' else
       if self.val = UInt32($80D1) then Result := 'POST_CONVOLUTION_COLOR_TABLE_SGI' else
+      if self.val = UInt32($80D2) then Result := 'POST_COLOR_MATRIX_COLOR_TABLE' else
       if self.val = UInt32($80D2) then Result := 'POST_COLOR_MATRIX_COLOR_TABLE_SGI' else
       if self.val = UInt32($8134) then Result := 'TEXTURE_4D_SGIS' else
       if self.val = UInt32($8139) then Result := 'PIXEL_TEX_GEN_SGIX' else
@@ -4997,6 +5015,25 @@
     
   end;
   
+  HistogramTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _HISTOGRAM       := new HistogramTarget($8024);
+    private static _PROXY_HISTOGRAM := new HistogramTarget($8025);
+    
+    public static property HISTOGRAM:       HistogramTarget read _HISTOGRAM;
+    public static property PROXY_HISTOGRAM: HistogramTarget read _PROXY_HISTOGRAM;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($8024) then Result := 'HISTOGRAM' else
+      if self.val = UInt32($8025) then Result := 'PROXY_HISTOGRAM' else
+        Result := $'HistogramTarget[{self.val}]';
+    end;
+    
+  end;
+  
   IndexPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -7165,6 +7202,22 @@
       if self.val = UInt32($1B01) then Result := 'LINE' else
       if self.val = UInt32($1B02) then Result := 'FILL' else
         Result := $'MeshMode2[{self.val}]';
+    end;
+    
+  end;
+  
+  MinmaxTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MINMAX := new MinmaxTarget($802E);
+    
+    public static property MINMAX: MinmaxTarget read _MINMAX;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($802E) then Result := 'MINMAX' else
+        Result := $'MinmaxTarget[{self.val}]';
     end;
     
   end;
@@ -9424,6 +9477,38 @@
     
   end;
   
+  SeparableTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _SEPARABLE_2D := new SeparableTarget($8012);
+    
+    public static property SEPARABLE_2D: SeparableTarget read _SEPARABLE_2D;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($8012) then Result := 'SEPARABLE_2D' else
+        Result := $'SeparableTarget[{self.val}]';
+    end;
+    
+  end;
+  
+  ShaderBinaryFormat = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _SHADER_BINARY_FORMAT_SPIR_V := new ShaderBinaryFormat($9551);
+    
+    public static property SHADER_BINARY_FORMAT_SPIR_V: ShaderBinaryFormat read _SHADER_BINARY_FORMAT_SPIR_V;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($9551) then Result := 'SHADER_BINARY_FORMAT_SPIR_V' else
+        Result := $'ShaderBinaryFormat[{self.val}]';
+    end;
+    
+  end;
+  
   ShaderParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9989,6 +10074,7 @@
     private static _TEXTURE_UNNORMALIZED_COORDINATES_ARM := new TextureParameterName($8F6A);
     private static _DEPTH_STENCIL_TEXTURE_MODE           := new TextureParameterName($90EA);
     private static _TEXTURE_TILING_EXT                   := new TextureParameterName($9580);
+    private static _TEXTURE_FOVEATED_CUTOFF_DENSITY_QCOM := new TextureParameterName($96A0);
     
     public static property TEXTURE_WIDTH:                        TextureParameterName read _TEXTURE_WIDTH;
     public static property TEXTURE_HEIGHT:                       TextureParameterName read _TEXTURE_HEIGHT;
@@ -10063,6 +10149,7 @@
     public static property TEXTURE_UNNORMALIZED_COORDINATES_ARM: TextureParameterName read _TEXTURE_UNNORMALIZED_COORDINATES_ARM;
     public static property DEPTH_STENCIL_TEXTURE_MODE:           TextureParameterName read _DEPTH_STENCIL_TEXTURE_MODE;
     public static property TEXTURE_TILING_EXT:                   TextureParameterName read _TEXTURE_TILING_EXT;
+    public static property TEXTURE_FOVEATED_CUTOFF_DENSITY_QCOM: TextureParameterName read _TEXTURE_FOVEATED_CUTOFF_DENSITY_QCOM;
     
     public function ToString: string; override;
     begin
@@ -10139,6 +10226,7 @@
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
       if self.val = UInt32($90EA) then Result := 'DEPTH_STENCIL_TEXTURE_MODE' else
       if self.val = UInt32($9580) then Result := 'TEXTURE_TILING_EXT' else
+      if self.val = UInt32($96A0) then Result := 'TEXTURE_FOVEATED_CUTOFF_DENSITY_QCOM' else
         Result := $'TextureParameterName[{self.val}]';
     end;
     

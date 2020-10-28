@@ -534,6 +534,8 @@ begin
   foreach var struct in structs do
     struct.Save(bw, grs);
   
+  bw.Write(0); // classes
+  
   bw.Write(funcs.Length);
   foreach var func in funcs do
     func.Save(bw, grs);

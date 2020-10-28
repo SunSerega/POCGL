@@ -30,7 +30,7 @@ var dll_name: string;
 var allowed_ext_names: HashSet<string>;
 function GetExt(s: string): string;
 
-var allowed_api: HashSet<string>;
+var api_name: string := nil;
 
 {$endregion Log and Misc}
 
@@ -530,6 +530,16 @@ type
     public static_arr_len: integer;
     public gr: Group;
     
+    private static KnownClasses: HashSet<string>;
+    public static procedure LoadClasses(br: System.IO.BinaryReader);
+    begin
+      var c := br.ReadInt32;
+      KnownClasses := new HashSet<string>(c);
+      loop c do KnownClasses += br.ReadString;
+    end;
+    private static function ConvertClassName(t: string) :=
+    t.ToWords.Prepend(api_name).JoinToString('_');
+    
     public constructor := exit;
     public constructor(br: System.IO.BinaryReader; proto: boolean);
     begin
@@ -537,7 +547,9 @@ type
       if not proto and (self.name.ToLower in pas_keywords) then self.name := '&'+self.name;
       
       var ntv_t := br.ReadString;
-      self.t := TypeTable.Convert(ntv_t);
+      self.t := ntv_t in KnownClasses ?
+        ConvertClassName(ntv_t) :
+        TypeTable.Convert(ntv_t);
       
       // rep_c, used for static strings in structs
       if br.ReadInt64 <> 1 then raise new System.NotSupportedException;
@@ -1775,6 +1787,7 @@ begin
   var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
   Group.LoadAll(br);
   Struct.LoadAll(br);
+  FuncOrgParam.LoadClasses(br);
   Func.LoadAll(br);
   Feature.LoadAll(br);
   Extension.LoadAll(br);
@@ -1990,7 +2003,7 @@ begin
     f.Apply(Result);
   end;
   
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Enums', GetEXEFileName), '*.dat', System.IO.SearchOption.AllDirectories);
+  var fls := EnumerateAllFiles(GetFullPathRTE('Fixers\Enums'), '*.dat');
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
@@ -2126,7 +2139,7 @@ begin
     f.Apply(Result);
   end;
   
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Structs', GetEXEFileName), '*.dat', System.IO.SearchOption.AllDirectories);
+  var fls := EnumerateAllFiles(GetFullPathRTE('Fixers\Structs'), '*.dat');
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
@@ -2355,7 +2368,7 @@ static procedure FuncFixer.InitAll;
 begin
   FuncFixer.GetFixableName := f->f.name;
   
-  var fls := System.IO.Directory.EnumerateFiles(GetFullPath('..\Fixers\Funcs', GetEXEFileName), '*.dat', System.IO.SearchOption.AllDirectories);
+  var fls := EnumerateAllFiles(GetFullPathRTE('Fixers\Funcs'), '*.dat');
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of

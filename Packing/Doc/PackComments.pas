@@ -23,6 +23,8 @@ type
     public static all := new Dictionary<string, CommentData>;
     public static procedure LoadFile(fname: string) :=
     foreach var bl in FixerUtils.ReadBlocks(fname, true) do
+      if bl[0]=nil then
+        continue else // Комментарий в начале файла
       if all.ContainsKey(bl[0]) then
         Otp($'ERROR: key %{bl[0]}% found in "{all[bl[0]].source}" and "{GetRelativePathRTE(fname)}"') else
         all[bl[0]] := new CommentData(GetRelativePathRTE(fname), bl[1].JoinToString(#10).Trim);

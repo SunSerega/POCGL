@@ -1,4 +1,5 @@
 ﻿Enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
+Empty group [SyncBehaviorFlags] in api [gl]
 Skipped group attrib for type [GLfloat]
 Skipped group attrib for type [GLint]
 Skipped group attrib for type [GLuint]
@@ -13,6 +14,7 @@ Skipped group attrib for type [void]
 Skipped group attrib for type [GLsizeiptr]
 Skipped group attrib for type [GLintptr]
 Skipped group attrib for type [GLsync]
+Group [SyncBehaviorFlags] isn't defined
 Invalid api: [gles1]
 Invalid api: [gles2]
 Invalid api: [glsc2]
@@ -58,6 +60,8 @@ Group [TextureMinFilter] wasn't used in any function
 Group [TextureWrapMode] wasn't used in any function
 Group [GetConvolutionParameter] wasn't used in any function
 Group [ConvolutionBorderModeEXT] wasn't used in any function
+Group [GetColorTableParameterPName] wasn't used in any function
+Group [ColorTableParameterPName] wasn't used in any function
 Group [PointParameterNameSGIS] wasn't used in any function
 Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function
@@ -97,6 +101,8 @@ Group [TextureMinFilter] wasn't used in any function
 Group [TextureWrapMode] wasn't used in any function
 Group [GetConvolutionParameter] wasn't used in any function
 Group [ConvolutionBorderModeEXT] wasn't used in any function
+Group [GetColorTableParameterPName] wasn't used in any function
+Group [ColorTableParameterPName] wasn't used in any function
 Group [PointParameterNameSGIS] wasn't used in any function
 Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function
@@ -136,6 +142,8 @@ Group [TextureMinFilter] wasn't used in any function
 Group [TextureWrapMode] wasn't used in any function
 Group [GetConvolutionParameter] wasn't used in any function
 Group [ConvolutionBorderModeEXT] wasn't used in any function
+Group [GetColorTableParameterPName] wasn't used in any function
+Group [ColorTableParameterPName] wasn't used in any function
 Group [PointParameterNameSGIS] wasn't used in any function
 Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function

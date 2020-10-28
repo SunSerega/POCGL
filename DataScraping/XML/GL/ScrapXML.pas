@@ -115,6 +115,8 @@ type
   end;
   
   ParData = sealed class
+    public static ParClasses := new HashSet<string>;
+    
     private name, t: string;
     private readonly: boolean;
     private ptr: integer;
@@ -135,12 +137,17 @@ type
       self.name := n.Nodes['name'].Single.Text;
       if func_name=nil then func_name := self.name;
       
-      var text := n.Text;
-      self.t := n.Nodes['ptype'].SingleOrDefault?.Text;
-      if self.t=nil then
-        self.t := text.Remove(text.LastIndexOf(' ')).Remove('const').Trim;
+      var class_name := n['class'];
+      if class_name<>nil then ParClasses += class_name;
       
-      self.readonly := text.Contains('const');
+      var ptype_node := n.Nodes['ptype'].SingleOrDefault; //ToDo #2335
+      
+      self.t :=
+        class_name ??
+        (ptype_node=nil ? nil : ptype_node.Text) ??
+        n.Text.Remove(n.Text.LastIndexOf(' ')).Remove('const').Trim;
+      ;
+      self.readonly := n.Text.Contains('const');
       
       self.ptr := n.Text.Count(ch->ch='*');
       
@@ -158,6 +165,7 @@ type
             if self.t <> 'GLubyte' then raise new MessageException($'ERROR: Group [{gname}] was applied to type [{self.t}]');
             self.t := 'GLchar';
           end else
+          if class_name=nil then
             on_used += ()->
             if LogCache.invalid_type_for_group.Add(t) then
               log.WriteLine($'Skipped group attrib for type [{t}]');
@@ -418,6 +426,10 @@ begin
     gr.Save(bw);
   
   bw.Write(0); // structs
+  
+  bw.Write(ParData.ParClasses.Count);
+  foreach var cl in ParData.ParClasses do
+    bw.Write(cl);
   
   bw.Write(funcs.Length);
   foreach var func in funcs do

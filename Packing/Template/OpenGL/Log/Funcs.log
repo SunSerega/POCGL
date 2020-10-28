@@ -60,6 +60,8 @@ Group [TextureMinFilter] was skipped
 Group [TextureWrapMode] was skipped
 Group [GetConvolutionParameter] was skipped
 Group [ConvolutionBorderModeEXT] was skipped
+Group [GetColorTableParameterPName] was skipped
+Group [ColorTableParameterPName] was skipped
 Group [PointParameterNameSGIS] was skipped
 Group [TextureFilterFuncSGIS] was skipped
 Group [LightModelColorControl] was skipped

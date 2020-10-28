@@ -5,4 +5,10 @@
 !possible_par_types
  *	| *	| -IntPtr +array of T +var T +IntPtr	| *	|
 
+# glCreateSyncFromCLeventARB
+# glFenceSync
+# glImportSyncEXT
+!repl_par_t
+GLsync = gl_sync
+
 

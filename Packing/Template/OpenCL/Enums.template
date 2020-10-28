@@ -2357,6 +2357,7 @@
     private static _MEM_HOST_READ_ONLY                  := new MemFlags($0100);
     private static _MEM_HOST_NO_ACCESS                  := new MemFlags($0200);
     private static _MEM_KERNEL_READ_AND_WRITE           := new MemFlags($1000);
+    private static _MEM_FORCE_HOST_MEMORY_INTEL         := new MemFlags($100000);
     private static _MEM_NO_ACCESS_INTEL                 := new MemFlags($1000000);
     private static _MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL := new MemFlags($2000000);
     private static _MEM_USE_UNCACHED_CPU_MEMORY_IMG     := new MemFlags($4000000);
@@ -2379,6 +2380,7 @@
     public static property MEM_HOST_READ_ONLY:                  MemFlags read _MEM_HOST_READ_ONLY;
     public static property MEM_HOST_NO_ACCESS:                  MemFlags read _MEM_HOST_NO_ACCESS;
     public static property MEM_KERNEL_READ_AND_WRITE:           MemFlags read _MEM_KERNEL_READ_AND_WRITE;
+    public static property MEM_FORCE_HOST_MEMORY_INTEL:         MemFlags read _MEM_FORCE_HOST_MEMORY_INTEL;
     public static property MEM_NO_ACCESS_INTEL:                 MemFlags read _MEM_NO_ACCESS_INTEL;
     public static property MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL: MemFlags read _MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL;
     public static property MEM_USE_UNCACHED_CPU_MEMORY_IMG:     MemFlags read _MEM_USE_UNCACHED_CPU_MEMORY_IMG;
@@ -2403,6 +2405,7 @@
     public property HAS_FLAG_MEM_HOST_READ_ONLY:                  boolean read self.val and $0100 <> 0;
     public property HAS_FLAG_MEM_HOST_NO_ACCESS:                  boolean read self.val and $0200 <> 0;
     public property HAS_FLAG_MEM_KERNEL_READ_AND_WRITE:           boolean read self.val and $1000 <> 0;
+    public property HAS_FLAG_MEM_FORCE_HOST_MEMORY_INTEL:         boolean read self.val and $100000 <> 0;
     public property HAS_FLAG_MEM_NO_ACCESS_INTEL:                 boolean read self.val and $1000000 <> 0;
     public property HAS_FLAG_MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL: boolean read self.val and $2000000 <> 0;
     public property HAS_FLAG_MEM_USE_UNCACHED_CPU_MEMORY_IMG:     boolean read self.val and $4000000 <> 0;
@@ -2428,6 +2431,7 @@
       if self.val and UInt64($0100) = UInt64($0100) then res += 'MEM_HOST_READ_ONLY+';
       if self.val and UInt64($0200) = UInt64($0200) then res += 'MEM_HOST_NO_ACCESS+';
       if self.val and UInt64($1000) = UInt64($1000) then res += 'MEM_KERNEL_READ_AND_WRITE+';
+      if self.val and UInt64($100000) = UInt64($100000) then res += 'MEM_FORCE_HOST_MEMORY_INTEL+';
       if self.val and UInt64($1000000) = UInt64($1000000) then res += 'MEM_NO_ACCESS_INTEL+';
       if self.val and UInt64($2000000) = UInt64($2000000) then res += 'MEM_ACCESS_FLAGS_UNRESTRICTED_INTEL+';
       if self.val and UInt64($4000000) = UInt64($4000000) then res += 'MEM_USE_UNCACHED_CPU_MEMORY_IMG+';

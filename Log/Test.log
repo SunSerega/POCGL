@@ -89,6 +89,8 @@ Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
 Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\GL\Vec.Cross.pas"
+Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCL\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCL\SimpleAddition]
@@ -166,6 +168,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing

@@ -1,20 +1,19 @@
 
 
 
-GLsync						= IntPtr
-GLeglImageOES				= IntPtr
-
-QueryName					= UInt32
-BufferName					= UInt32
-ShaderName					= UInt32
-ProgramName					= UInt32
-ProgramPipelineName			= UInt32
-TextureName					= UInt32
-SamplerName					= UInt32
-FramebufferName				= UInt32
-RenderbufferName			= UInt32
-VertexArrayName				= UInt32
-TransformFeedbackName		= UInt32
+gl_program					= UInt32
+gl_program_pipeline			= UInt32
+gl_texture					= UInt32
+gl_buffer					= UInt32
+gl_shader					= UInt32
+gl_query					= UInt32
+gl_framebuffer				= UInt32
+gl_renderbuffer				= UInt32
+gl_sampler					= UInt32
+gl_transform_feedback		= UInt32
+gl_vertex_array				= UInt32
+gl_sync						= IntPtr
+gl_display_list				= UInt32
 
 GLContext					= UInt32
 GDI_DC						= IntPtr
@@ -25,25 +24,17 @@ cl_context					= IntPtr
 ///--
 cl_event					= IntPtr
 
-
-
-
-
 //	INTEL_performance_query
 PerfQueryIdINTEL			= UInt32
 PerfQueryHandleINTEL		= UInt32
 
 
+
 //ToDo	переименовать	и	проверить	типы	всего	дальше:
 
-EGLsync						= IntPtr
-EGLDisplay					= IntPtr
-
-ProgramResourceIndex		= UInt32
-ProgramBinaryFormat			= UInt32
+GLeglImageOES				= IntPtr
 
 GLhandleARB					= UInt32
-PBufferName					= UInt32
 HPVIDEODEV					= IntPtr
 HVIDEOOUTPUTDEVICENV		= IntPtr
 HVIDEOINPUTDEVICENV			= IntPtr
@@ -51,40 +42,13 @@ PGPU_DEVICE					= IntPtr
 HGPUNV						= IntPtr
 HPBUFFER					= IntPtr
 GLeglClientBufferEXT		= IntPtr
-VideoOutputDeviceHandleNV	= IntPtr
-VideoInputDeviceHandleNV	= IntPtr
-VideoDeviceHandleNV			= IntPtr
 GLvdpauSurfaceNV			= IntPtr
-GPUAffinityHandle			= IntPtr
-GLXFBConfig					= IntPtr
-GLXContextID				= UInt64
-GLXPbuffer					= UInt64
-GLXWindow					= UInt64
-GLXPixmap					= UInt64
-GLXColormap					= UInt64
-GLXDrawable					= UInt64
-GLXContext					= UInt64
-GLXVideoCaptureDeviceNV		= UInt64
-GLXVideoSourceSGIX			= UInt64
-GLXVideoDeviceNV			= UInt32
-GLXFuncPtr					= IntPtr
-
-PDisplay					= IntPtr
-PXVisualInfo				= IntPtr
 
 
 
 //ToDo	эти	типы	вообще	угадывал,	перепроверить
 
-GLXDMparams					= IntPtr
-GLXDMbuffer					= IntPtr
-GLXVLServer					= IntPtr
-GLXVLPath					= IntPtr
-GLXVLNode					= IntPtr
-GLXStatus					= IntPtr
-GLUnurbs					= IntPtr
 GDI_HENHMetafile			= IntPtr
-
 GDI_LayerPlaneDescriptor	= IntPtr
 
 

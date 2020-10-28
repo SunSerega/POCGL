@@ -1,97 +1,96 @@
 ﻿  
   
   
-  GLsync = record
+  gl_program = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_program read default(gl_program);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_program[{val}]';
+  end;
+  gl_program_pipeline = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_program_pipeline read default(gl_program_pipeline);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_program_pipeline[{val}]';
+  end;
+  gl_texture = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_texture read default(gl_texture);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_texture[{val}]';
+  end;
+  gl_buffer = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_buffer read default(gl_buffer);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_buffer[{val}]';
+  end;
+  gl_shader = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_shader read default(gl_shader);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_shader[{val}]';
+  end;
+  gl_query = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_query read default(gl_query);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_query[{val}]';
+  end;
+  gl_framebuffer = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_framebuffer read default(gl_framebuffer);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_framebuffer[{val}]';
+  end;
+  gl_renderbuffer = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_renderbuffer read default(gl_renderbuffer);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_renderbuffer[{val}]';
+  end;
+  gl_sampler = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_sampler read default(gl_sampler);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_sampler[{val}]';
+  end;
+  gl_transform_feedback = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_transform_feedback read default(gl_transform_feedback);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_transform_feedback[{val}]';
+  end;
+  gl_vertex_array = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: gl_vertex_array read default(gl_vertex_array);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'gl_vertex_array[{val}]';
+  end;
+  gl_sync = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLsync read default(GLsync);
+    public static property Zero: gl_sync read default(gl_sync);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLsync[{val}]';
+    public function ToString: string; override := $'gl_sync[{val}]';
   end;
-  GLeglImageOES = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLeglImageOES read default(GLeglImageOES);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLeglImageOES[{val}]';
-  end;
-  
-  QueryName = record
+  gl_display_list = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
-    public static property Zero: QueryName read default(QueryName);
+    public static property Zero: gl_display_list read default(gl_display_list);
     public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'QueryName[{val}]';
-  end;
-  BufferName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: BufferName read default(BufferName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'BufferName[{val}]';
-  end;
-  ShaderName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: ShaderName read default(ShaderName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'ShaderName[{val}]';
-  end;
-  ProgramName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: ProgramName read default(ProgramName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'ProgramName[{val}]';
-  end;
-  ProgramPipelineName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: ProgramPipelineName read default(ProgramPipelineName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'ProgramPipelineName[{val}]';
-  end;
-  TextureName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: TextureName read default(TextureName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'TextureName[{val}]';
-  end;
-  SamplerName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: SamplerName read default(SamplerName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'SamplerName[{val}]';
-  end;
-  FramebufferName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: FramebufferName read default(FramebufferName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'FramebufferName[{val}]';
-  end;
-  RenderbufferName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: RenderbufferName read default(RenderbufferName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'RenderbufferName[{val}]';
-  end;
-  VertexArrayName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: VertexArrayName read default(VertexArrayName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'VertexArrayName[{val}]';
-  end;
-  TransformFeedbackName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: TransformFeedbackName read default(TransformFeedbackName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'TransformFeedbackName[{val}]';
+    public function ToString: string; override := $'gl_display_list[{val}]';
   end;
   
   GLContext = record
@@ -127,10 +126,6 @@
     public function ToString: string; override := $'cl_event[{val}]';
   end;
   
-  
-  
-  
-  
   //	INTEL_performance_query
   PerfQueryIdINTEL = record
     public val: UInt32;
@@ -148,36 +143,15 @@
   end;
   
   
+  
   //ToDo	переименовать	и	проверить	типы	всего	дальше:
   
-  EGLsync = record
+  GLeglImageOES = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: EGLsync read default(EGLsync);
+    public static property Zero: GLeglImageOES read default(GLeglImageOES);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'EGLsync[{val}]';
-  end;
-  EGLDisplay = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: EGLDisplay read default(EGLDisplay);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'EGLDisplay[{val}]';
-  end;
-  
-  ProgramResourceIndex = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: ProgramResourceIndex read default(ProgramResourceIndex);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'ProgramResourceIndex[{val}]';
-  end;
-  ProgramBinaryFormat = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: ProgramBinaryFormat read default(ProgramBinaryFormat);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'ProgramBinaryFormat[{val}]';
+    public function ToString: string; override := $'GLeglImageOES[{val}]';
   end;
   
   GLhandleARB = record
@@ -186,13 +160,6 @@
     public static property Zero: GLhandleARB read default(GLhandleARB);
     public static property Size: integer read Marshal.SizeOf&<UInt32>;
     public function ToString: string; override := $'GLhandleARB[{val}]';
-  end;
-  PBufferName = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: PBufferName read default(PBufferName);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'PBufferName[{val}]';
   end;
   HPVIDEODEV = record
     public val: IntPtr;
@@ -243,27 +210,6 @@
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
     public function ToString: string; override := $'GLeglClientBufferEXT[{val}]';
   end;
-  VideoOutputDeviceHandleNV = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: VideoOutputDeviceHandleNV read default(VideoOutputDeviceHandleNV);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'VideoOutputDeviceHandleNV[{val}]';
-  end;
-  VideoInputDeviceHandleNV = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: VideoInputDeviceHandleNV read default(VideoInputDeviceHandleNV);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'VideoInputDeviceHandleNV[{val}]';
-  end;
-  VideoDeviceHandleNV = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: VideoDeviceHandleNV read default(VideoDeviceHandleNV);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'VideoDeviceHandleNV[{val}]';
-  end;
   GLvdpauSurfaceNV = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -271,166 +217,11 @@
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
     public function ToString: string; override := $'GLvdpauSurfaceNV[{val}]';
   end;
-  GPUAffinityHandle = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GPUAffinityHandle read default(GPUAffinityHandle);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GPUAffinityHandle[{val}]';
-  end;
-  GLXFBConfig = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXFBConfig read default(GLXFBConfig);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXFBConfig[{val}]';
-  end;
-  GLXContextID = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXContextID read default(GLXContextID);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXContextID[{val}]';
-  end;
-  GLXPbuffer = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXPbuffer read default(GLXPbuffer);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXPbuffer[{val}]';
-  end;
-  GLXWindow = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXWindow read default(GLXWindow);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXWindow[{val}]';
-  end;
-  GLXPixmap = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXPixmap read default(GLXPixmap);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXPixmap[{val}]';
-  end;
-  GLXColormap = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXColormap read default(GLXColormap);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXColormap[{val}]';
-  end;
-  GLXDrawable = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXDrawable read default(GLXDrawable);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXDrawable[{val}]';
-  end;
-  GLXContext = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXContext read default(GLXContext);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXContext[{val}]';
-  end;
-  GLXVideoCaptureDeviceNV = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXVideoCaptureDeviceNV read default(GLXVideoCaptureDeviceNV);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXVideoCaptureDeviceNV[{val}]';
-  end;
-  GLXVideoSourceSGIX = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    public static property Zero: GLXVideoSourceSGIX read default(GLXVideoSourceSGIX);
-    public static property Size: integer read Marshal.SizeOf&<UInt64>;
-    public function ToString: string; override := $'GLXVideoSourceSGIX[{val}]';
-  end;
-  GLXVideoDeviceNV = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    public static property Zero: GLXVideoDeviceNV read default(GLXVideoDeviceNV);
-    public static property Size: integer read Marshal.SizeOf&<UInt32>;
-    public function ToString: string; override := $'GLXVideoDeviceNV[{val}]';
-  end;
-  GLXFuncPtr = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXFuncPtr read default(GLXFuncPtr);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXFuncPtr[{val}]';
-  end;
-  
-  PDisplay = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: PDisplay read default(PDisplay);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'PDisplay[{val}]';
-  end;
-  PXVisualInfo = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: PXVisualInfo read default(PXVisualInfo);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'PXVisualInfo[{val}]';
-  end;
   
   
   
   //ToDo	эти	типы	вообще	угадывал,	перепроверить
   
-  GLXDMparams = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXDMparams read default(GLXDMparams);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXDMparams[{val}]';
-  end;
-  GLXDMbuffer = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXDMbuffer read default(GLXDMbuffer);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXDMbuffer[{val}]';
-  end;
-  GLXVLServer = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXVLServer read default(GLXVLServer);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXVLServer[{val}]';
-  end;
-  GLXVLPath = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXVLPath read default(GLXVLPath);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXVLPath[{val}]';
-  end;
-  GLXVLNode = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXVLNode read default(GLXVLNode);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXVLNode[{val}]';
-  end;
-  GLXStatus = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLXStatus read default(GLXStatus);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLXStatus[{val}]';
-  end;
-  GLUnurbs = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: GLUnurbs read default(GLUnurbs);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'GLUnurbs[{val}]';
-  end;
   GDI_HENHMetafile = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -438,7 +229,6 @@
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
     public function ToString: string; override := $'GDI_HENHMetafile[{val}]';
   end;
-  
   GDI_LayerPlaneDescriptor = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;

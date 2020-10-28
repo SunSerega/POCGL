@@ -18,7 +18,6 @@ Compiling "DataScraping\XML\GL\ScrapXML.pas"
 Finished compiling: OK
 Runing ScrapXML[GL]
 ScrapXML[GL]: Parsing "gl"
-ScrapXML[GL]: WARNING: Func [glShadingRateImageBarrierNV] found 2 times in ext [GL_NV_shading_rate_image]
 ScrapXML[GL]: Parsing "wgl"
 ScrapXML[GL]: Parsing "glx"
 ScrapXML[GL]: Saving as binary
