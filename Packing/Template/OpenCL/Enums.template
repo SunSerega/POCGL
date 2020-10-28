@@ -377,7 +377,8 @@
     public static property QUEUE_RESERVED_QCOM:                  CommandQueueProperties read _QUEUE_RESERVED_QCOM;
     public static property QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL: CommandQueueProperties read _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL;
     
-    public static function operator or(f1,f2: CommandQueueProperties) := new CommandQueueProperties(f1.val or f2.val);
+    public static function operator+(f1,f2: CommandQueueProperties) := new CommandQueueProperties(f1.val or f2.val);
+    public static function operator or(f1,f2: CommandQueueProperties) := f1+f2;
     
     public property ANY_FLAGS: boolean read self.val<>0;
     public property HAS_FLAG_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  boolean read self.val and $0001 <> 0;
@@ -681,7 +682,8 @@
     public static property DEVICE_AFFINITY_DOMAIN_L1_CACHE:           DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_L1_CACHE;
     public static property DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE: DeviceAffinityDomain read _DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE;
     
-    public static function operator or(f1,f2: DeviceAffinityDomain) := new DeviceAffinityDomain(f1.val or f2.val);
+    public static function operator+(f1,f2: DeviceAffinityDomain) := new DeviceAffinityDomain(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceAffinityDomain) := f1+f2;
     
     public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_NUMA:               boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_DEVICE_AFFINITY_DOMAIN_L4_CACHE:           boolean read self.val and $0002 <> 0;
@@ -719,7 +721,8 @@
     public static property EXEC_KERNEL:        DeviceExecCapabilities read _EXEC_KERNEL;
     public static property EXEC_NATIVE_KERNEL: DeviceExecCapabilities read _EXEC_NATIVE_KERNEL;
     
-    public static function operator or(f1,f2: DeviceExecCapabilities) := new DeviceExecCapabilities(f1.val or f2.val);
+    public static function operator+(f1,f2: DeviceExecCapabilities) := new DeviceExecCapabilities(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceExecCapabilities) := f1+f2;
     
     public property HAS_FLAG_EXEC_KERNEL:        boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_EXEC_NATIVE_KERNEL: boolean read self.val and $0002 <> 0;
@@ -761,7 +764,8 @@
     public static property FP_SOFT_FLOAT:                    DeviceFPConfig read _FP_SOFT_FLOAT;
     public static property FP_CORRECTLY_ROUNDED_DIVIDE_SQRT: DeviceFPConfig read _FP_CORRECTLY_ROUNDED_DIVIDE_SQRT;
     
-    public static function operator or(f1,f2: DeviceFPConfig) := new DeviceFPConfig(f1.val or f2.val);
+    public static function operator+(f1,f2: DeviceFPConfig) := new DeviceFPConfig(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceFPConfig) := f1+f2;
     
     public property HAS_FLAG_FP_DENORM:                        boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_FP_INF_NAN:                       boolean read self.val and $0002 <> 0;
@@ -1431,7 +1435,8 @@
     public static property DEVICE_SVM_FINE_GRAIN_SYSTEM:   DeviceSVMCapabilities read _DEVICE_SVM_FINE_GRAIN_SYSTEM;
     public static property DEVICE_SVM_ATOMICS:             DeviceSVMCapabilities read _DEVICE_SVM_ATOMICS;
     
-    public static function operator or(f1,f2: DeviceSVMCapabilities) := new DeviceSVMCapabilities(f1.val or f2.val);
+    public static function operator+(f1,f2: DeviceSVMCapabilities) := new DeviceSVMCapabilities(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceSVMCapabilities) := f1+f2;
     
     public property HAS_FLAG_DEVICE_SVM_COARSE_GRAIN_BUFFER: boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_DEVICE_SVM_FINE_GRAIN_BUFFER:   boolean read self.val and $0002 <> 0;
@@ -1473,7 +1478,8 @@
     public static property DEVICE_TYPE_CUSTOM:      DeviceType read _DEVICE_TYPE_CUSTOM;
     public static property DEVICE_TYPE_ALL:         DeviceType read _DEVICE_TYPE_ALL;
     
-    public static function operator or(f1,f2: DeviceType) := new DeviceType(f1.val or f2.val);
+    public static function operator+(f1,f2: DeviceType) := new DeviceType(f1.val or f2.val);
+    public static function operator or(f1,f2: DeviceType) := f1+f2;
     
     public property HAS_FLAG_DEVICE_TYPE_DEFAULT:     boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_DEVICE_TYPE_CPU:         boolean read self.val and $0002 <> 0;
@@ -2316,7 +2322,8 @@
     public static property MAP_WRITE:                   MapFlags read _MAP_WRITE;
     public static property MAP_WRITE_INVALIDATE_REGION: MapFlags read _MAP_WRITE_INVALIDATE_REGION;
     
-    public static function operator or(f1,f2: MapFlags) := new MapFlags(f1.val or f2.val);
+    public static function operator+(f1,f2: MapFlags) := new MapFlags(f1.val or f2.val);
+    public static function operator or(f1,f2: MapFlags) := f1+f2;
     
     public property HAS_FLAG_MAP_READ:                    boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MAP_WRITE:                   boolean read self.val and $0002 <> 0;
@@ -2388,7 +2395,8 @@
     public static property MEM_USE_GRALLOC_PTR_IMG:             MemFlags read _MEM_USE_GRALLOC_PTR_IMG;
     public static property MEM_EXT_HOST_PTR_QCOM:               MemFlags read _MEM_EXT_HOST_PTR_QCOM;
     
-    public static function operator or(f1,f2: MemFlags) := new MemFlags(f1.val or f2.val);
+    public static function operator+(f1,f2: MemFlags) := new MemFlags(f1.val or f2.val);
+    public static function operator or(f1,f2: MemFlags) := f1+f2;
     
     public property HAS_FLAG_MEM_READ_WRITE:                      boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MEM_RESERVED0_ARM:                   boolean read self.val and $0001 <> 0;
@@ -2525,7 +2533,8 @@
     public static property MIGRATE_MEM_OBJECT_HOST:              MemMigrationFlags read _MIGRATE_MEM_OBJECT_HOST;
     public static property MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED: MemMigrationFlags read _MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED;
     
-    public static function operator or(f1,f2: MemMigrationFlags) := new MemMigrationFlags(f1.val or f2.val);
+    public static function operator+(f1,f2: MemMigrationFlags) := new MemMigrationFlags(f1.val or f2.val);
+    public static function operator or(f1,f2: MemMigrationFlags) := f1+f2;
     
     public property HAS_FLAG_MIGRATE_MEM_OBJECT_HOST:              boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MIGRATE_MEM_OBJECT_CONTENT_UNDEFINED: boolean read self.val and $0002 <> 0;

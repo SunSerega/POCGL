@@ -167,7 +167,8 @@
     public static property MULTISAMPLE_BIT_EXT:  AttribMask read _MULTISAMPLE_BIT_EXT;
     public static property ALL_ATTRIB_BITS:      AttribMask read _ALL_ATTRIB_BITS;
     
-    public static function operator or(f1,f2: AttribMask) := new AttribMask(f1.val or f2.val);
+    public static function operator+(f1,f2: AttribMask) := new AttribMask(f1.val or f2.val);
+    public static function operator or(f1,f2: AttribMask) := f1+f2;
     
     public property HAS_FLAG_CURRENT_BIT:          boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_POINT_BIT:            boolean read self.val and $0002 <> 0;
@@ -855,7 +856,8 @@
     public static property PER_GPU_STORAGE_BIT_NV:        BufferStorageMask read _PER_GPU_STORAGE_BIT_NV;
     public static property EXTERNAL_STORAGE_BIT_NVX:      BufferStorageMask read _EXTERNAL_STORAGE_BIT_NVX;
     
-    public static function operator or(f1,f2: BufferStorageMask) := new BufferStorageMask(f1.val or f2.val);
+    public static function operator+(f1,f2: BufferStorageMask) := new BufferStorageMask(f1.val or f2.val);
+    public static function operator or(f1,f2: BufferStorageMask) := f1+f2;
     
     public property HAS_FLAG_MAP_READ_BIT:                  boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MAP_READ_BIT_EXT:              boolean read self.val and $0001 <> 0;
@@ -974,7 +976,8 @@
     public static property COLOR_BUFFER_BIT:       ClearBufferMask read _COLOR_BUFFER_BIT;
     public static property COVERAGE_BUFFER_BIT_NV: ClearBufferMask read _COVERAGE_BUFFER_BIT_NV;
     
-    public static function operator or(f1,f2: ClearBufferMask) := new ClearBufferMask(f1.val or f2.val);
+    public static function operator+(f1,f2: ClearBufferMask) := new ClearBufferMask(f1.val or f2.val);
+    public static function operator or(f1,f2: ClearBufferMask) := f1+f2;
     
     public property HAS_FLAG_DEPTH_BUFFER_BIT:       boolean read self.val and $0100 <> 0;
     public property HAS_FLAG_ACCUM_BUFFER_BIT:       boolean read self.val and $0200 <> 0;
@@ -1012,7 +1015,8 @@
     public static property CLIENT_VERTEX_ARRAY_BIT: ClientAttribMask read _CLIENT_VERTEX_ARRAY_BIT;
     public static property CLIENT_ALL_ATTRIB_BITS:  ClientAttribMask read _CLIENT_ALL_ATTRIB_BITS;
     
-    public static function operator or(f1,f2: ClientAttribMask) := new ClientAttribMask(f1.val or f2.val);
+    public static function operator+(f1,f2: ClientAttribMask) := new ClientAttribMask(f1.val or f2.val);
+    public static function operator or(f1,f2: ClientAttribMask) := f1+f2;
     
     public property HAS_FLAG_CLIENT_PIXEL_STORE_BIT:  boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_CLIENT_VERTEX_ARRAY_BIT: boolean read self.val and $0002 <> 0;
@@ -6776,7 +6780,8 @@
     public static property MAP_COHERENT_BIT:              MapBufferAccessMask read _MAP_COHERENT_BIT;
     public static property MAP_COHERENT_BIT_EXT:          MapBufferAccessMask read _MAP_COHERENT_BIT_EXT;
     
-    public static function operator or(f1,f2: MapBufferAccessMask) := new MapBufferAccessMask(f1.val or f2.val);
+    public static function operator+(f1,f2: MapBufferAccessMask) := new MapBufferAccessMask(f1.val or f2.val);
+    public static function operator or(f1,f2: MapBufferAccessMask) := f1+f2;
     
     public property HAS_FLAG_MAP_READ_BIT:                  boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_MAP_READ_BIT_EXT:              boolean read self.val and $0001 <> 0;
@@ -7068,7 +7073,8 @@
     public static property ALL_BARRIER_BITS:                     MemoryBarrierMask read _ALL_BARRIER_BITS;
     public static property ALL_BARRIER_BITS_EXT:                 MemoryBarrierMask read _ALL_BARRIER_BITS_EXT;
     
-    public static function operator or(f1,f2: MemoryBarrierMask) := new MemoryBarrierMask(f1.val or f2.val);
+    public static function operator+(f1,f2: MemoryBarrierMask) := new MemoryBarrierMask(f1.val or f2.val);
+    public static function operator or(f1,f2: MemoryBarrierMask) := f1+f2;
     
     public property HAS_FLAG_VERTEX_ATTRIB_ARRAY_BARRIER_BIT:      boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_VERTEX_ATTRIB_ARRAY_BARRIER_BIT_EXT:  boolean read self.val and $0001 <> 0;
@@ -7603,7 +7609,8 @@
     public static property BOLD_BIT_NV:   PathFontStyle read _BOLD_BIT_NV;
     public static property ITALIC_BIT_NV: PathFontStyle read _ITALIC_BIT_NV;
     
-    public static function operator or(f1,f2: PathFontStyle) := new PathFontStyle(f1.val or f2.val);
+    public static function operator+(f1,f2: PathFontStyle) := new PathFontStyle(f1.val or f2.val);
+    public static function operator or(f1,f2: PathFontStyle) := f1+f2;
     
     public property ANY_FLAGS: boolean read self.val<>0;
     public property HAS_FLAG_BOLD_BIT_NV:   boolean read self.val and $0001 <> 0;
@@ -7768,7 +7775,8 @@
     public static property FONT_HAS_KERNING_BIT_NV:                 PathMetricMask read _FONT_HAS_KERNING_BIT_NV;
     public static property FONT_NUM_GLYPH_INDICES_BIT_NV:           PathMetricMask read _FONT_NUM_GLYPH_INDICES_BIT_NV;
     
-    public static function operator or(f1,f2: PathMetricMask) := new PathMetricMask(f1.val or f2.val);
+    public static function operator+(f1,f2: PathMetricMask) := new PathMetricMask(f1.val or f2.val);
+    public static function operator or(f1,f2: PathMetricMask) := f1+f2;
     
     public property HAS_FLAG_GLYPH_WIDTH_BIT_NV:                      boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_GLYPH_HEIGHT_BIT_NV:                     boolean read self.val and $0002 <> 0;
@@ -9768,7 +9776,8 @@
     public static property SYNC_FLUSH_COMMANDS_BIT:       SyncObjectMask read _SYNC_FLUSH_COMMANDS_BIT;
     public static property SYNC_FLUSH_COMMANDS_BIT_APPLE: SyncObjectMask read _SYNC_FLUSH_COMMANDS_BIT_APPLE;
     
-    public static function operator or(f1,f2: SyncObjectMask) := new SyncObjectMask(f1.val or f2.val);
+    public static function operator+(f1,f2: SyncObjectMask) := new SyncObjectMask(f1.val or f2.val);
+    public static function operator or(f1,f2: SyncObjectMask) := f1+f2;
     
     public property HAS_FLAG_SYNC_FLUSH_COMMANDS_BIT:       boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_SYNC_FLUSH_COMMANDS_BIT_APPLE: boolean read self.val and $0001 <> 0;
@@ -10911,7 +10920,8 @@
     public static property ALL_SHADER_BITS:                UseProgramStageMask read _ALL_SHADER_BITS;
     public static property ALL_SHADER_BITS_EXT:            UseProgramStageMask read _ALL_SHADER_BITS_EXT;
     
-    public static function operator or(f1,f2: UseProgramStageMask) := new UseProgramStageMask(f1.val or f2.val);
+    public static function operator+(f1,f2: UseProgramStageMask) := new UseProgramStageMask(f1.val or f2.val);
+    public static function operator or(f1,f2: UseProgramStageMask) := f1+f2;
     
     public property HAS_FLAG_VERTEX_SHADER_BIT:              boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_VERTEX_SHADER_BIT_EXT:          boolean read self.val and $0001 <> 0;
@@ -12629,7 +12639,8 @@
     
     public static property TEXTURE_STORAGE_SPARSE_BIT_AMD: TextureStorageMaskAMD read _TEXTURE_STORAGE_SPARSE_BIT_AMD;
     
-    public static function operator or(f1,f2: TextureStorageMaskAMD) := new TextureStorageMaskAMD(f1.val or f2.val);
+    public static function operator+(f1,f2: TextureStorageMaskAMD) := new TextureStorageMaskAMD(f1.val or f2.val);
+    public static function operator or(f1,f2: TextureStorageMaskAMD) := f1+f2;
     
     public property HAS_FLAG_TEXTURE_STORAGE_SPARSE_BIT_AMD: boolean read self.val and $0001 <> 0;
     
@@ -13009,7 +13020,8 @@
     public static property DOUBLEBUFFER_DONTCARE: PixelFormatFlagsGDI read _DOUBLEBUFFER_DONTCARE;
     public static property STEREO_DONTCARE:       PixelFormatFlagsGDI read _STEREO_DONTCARE;
     
-    public static function operator or(f1,f2: PixelFormatFlagsGDI) := new PixelFormatFlagsGDI(f1.val or f2.val);
+    public static function operator+(f1,f2: PixelFormatFlagsGDI) := new PixelFormatFlagsGDI(f1.val or f2.val);
+    public static function operator or(f1,f2: PixelFormatFlagsGDI) := f1+f2;
     
     public property HAS_FLAG_DOUBLEBUFFER:          boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_STEREO:                boolean read self.val and $0002 <> 0;
@@ -13184,7 +13196,8 @@
     public static property PERFQUERY_SINGLE_CONTEXT_INTEL: PerfQueryCapFlagsINTEL read _PERFQUERY_SINGLE_CONTEXT_INTEL;
     public static property PERFQUERY_GLOBAL_CONTEXT_INTEL: PerfQueryCapFlagsINTEL read _PERFQUERY_GLOBAL_CONTEXT_INTEL;
     
-    public static function operator or(f1,f2: PerfQueryCapFlagsINTEL) := new PerfQueryCapFlagsINTEL(f1.val or f2.val);
+    public static function operator+(f1,f2: PerfQueryCapFlagsINTEL) := new PerfQueryCapFlagsINTEL(f1.val or f2.val);
+    public static function operator or(f1,f2: PerfQueryCapFlagsINTEL) := f1+f2;
     
     public property ANY_FLAGS: boolean read self.val<>0;
     public property HAS_FLAG_PERFQUERY_GLOBAL_CONTEXT_INTEL: boolean read self.val and $0001 <> 0;
@@ -14021,7 +14034,8 @@
     public static property TEXTURE_DEFORMATION_BIT_SGIX:  FfdMaskSGIX read _TEXTURE_DEFORMATION_BIT_SGIX;
     public static property GEOMETRY_DEFORMATION_BIT_SGIX: FfdMaskSGIX read _GEOMETRY_DEFORMATION_BIT_SGIX;
     
-    public static function operator or(f1,f2: FfdMaskSGIX) := new FfdMaskSGIX(f1.val or f2.val);
+    public static function operator+(f1,f2: FfdMaskSGIX) := new FfdMaskSGIX(f1.val or f2.val);
+    public static function operator or(f1,f2: FfdMaskSGIX) := f1+f2;
     
     public property HAS_FLAG_TEXTURE_DEFORMATION_BIT_SGIX:  boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_GEOMETRY_DEFORMATION_BIT_SGIX: boolean read self.val and $0002 <> 0;

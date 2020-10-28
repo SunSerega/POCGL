@@ -197,7 +197,8 @@ type
       if bitmask then
       begin
         
-        sb +=     $'    public static function operator or(f1,f2: {name}) := new {name}(f1.val or f2.val);' + #10;
+        sb +=     $'    public static function operator+(f1,f2: {name}) := new {name}(f1.val or f2.val);' + #10;
+        sb +=     $'    public static function operator or(f1,f2: {name}) := f1+f2;' + #10;
         sb +=     $'    ' + #10;
         
         foreach var ename in EnumrKeys do
