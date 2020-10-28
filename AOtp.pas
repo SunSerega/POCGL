@@ -298,7 +298,13 @@ begin
   lock sec_thrs do
     foreach var thr in sec_thrs do
       if thr<>Thread.CurrentThread then
+      try
         thr.Abort;
+      except
+        on abort_e: System.Threading.ThreadStateException do
+          if not thr.ThreadState.HasFlag(System.Threading.ThreadState.Suspended) then
+            raise abort_e;
+      end;
   
   foreach var h in EmergencyHandler.All do
     h.Handle;
