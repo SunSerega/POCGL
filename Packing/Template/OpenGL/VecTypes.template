@@ -1613,10 +1613,8 @@
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
     public static function CrossCW(v1,v2: Vec3b) :=
-    new Vec3b(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function CrossCCW(v1,v2: Vec3b) :=
     new Vec3b(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    public static function CrossCCW(v1,v2: Vec3b) := CrossCW(v2,v1);
     
     public static function Read: Vec3b;
     begin
@@ -1853,10 +1851,8 @@
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
     public static function CrossCW(v1,v2: Vec3s) :=
-    new Vec3s(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function CrossCCW(v1,v2: Vec3s) :=
     new Vec3s(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    public static function CrossCCW(v1,v2: Vec3s) := CrossCW(v2,v1);
     
     public static function Read: Vec3s;
     begin
@@ -2105,10 +2101,8 @@
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
     public static function CrossCW(v1,v2: Vec3i) :=
-    new Vec3i(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function CrossCCW(v1,v2: Vec3i) :=
     new Vec3i(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    public static function CrossCCW(v1,v2: Vec3i) := CrossCW(v2,v1);
     
     public static function Read: Vec3i;
     begin
@@ -2369,10 +2363,8 @@
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
     public static function CrossCW(v1,v2: Vec3i64) :=
-    new Vec3i64(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function CrossCCW(v1,v2: Vec3i64) :=
     new Vec3i64(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    public static function CrossCCW(v1,v2: Vec3i64) := CrossCW(v2,v1);
     
     public static function Read: Vec3i64;
     begin
@@ -2647,10 +2639,8 @@
     public function Normalized := self / single(Sqrt(self.SqrLength));
     
     public static function CrossCW(v1,v2: Vec3f) :=
-    new Vec3f(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function CrossCCW(v1,v2: Vec3f) :=
     new Vec3f(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    public static function CrossCCW(v1,v2: Vec3f) := CrossCW(v2,v1);
     
     public static function Read: Vec3f;
     begin
@@ -2797,10 +2787,8 @@
     public function Normalized := self / self.SqrLength.Sqrt;
     
     public static function CrossCW(v1,v2: Vec3d) :=
-    new Vec3d(v1.val2*v2.val1 - v2.val2*v1.val1, v1.val0*v2.val2 - v2.val0*v1.val2, v1.val1*v2.val0 - v2.val1*v1.val0);
-    
-    public static function CrossCCW(v1,v2: Vec3d) :=
     new Vec3d(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
+    public static function CrossCCW(v1,v2: Vec3d) := CrossCW(v2,v1);
     
     public static function Read: Vec3d;
     begin

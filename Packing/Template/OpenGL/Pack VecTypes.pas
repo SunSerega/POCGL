@@ -231,21 +231,21 @@ begin
   {$region static function Cross}
   
   if (t[0] = 3) and not t[1].Contains('u') then
-    foreach var CW_st in Arr('CW','CCW') do
-    begin
-      res += $'    public static function Cross{CW_st}(v1,v2: {t.GetName}) :='+#10;
-      res += $'    new {t.GetName}(';
-      
-      var k := CW_st='CW'?2:1;
-      res +=
-        Range(0,2)
-        .Select(i->$'v1.val{(i+k*1) mod 3}*v2.val{(i+k*2) mod 3} - v2.val{(i+k*1) mod 3}*v1.val{(i+k*2) mod 3}')
-        .JoinIntoString(', ')
-      ;
-      
-      res += ');'#10;
-      res += '    '#10;
-    end;
+  begin
+    res += $'    public static function CrossCW(v1,v2: {t.GetName}) :='+#10;
+    res += $'    new {t.GetName}(';
+    
+    res +=
+      Range(0,2)
+      .Select(i->$'v1.val{(i+1) mod 3}*v2.val{(i+2) mod 3} - v2.val{(i+1) mod 3}*v1.val{(i+2) mod 3}')
+      .JoinIntoString(', ')
+    ;
+    
+    res += ');'#10;
+    res += $'    public static function CrossCCW(v1,v2: {t.GetName}) := CrossCW(v2,v1);'+#10;
+    
+    res += '    '#10;
+  end;
   
   {$endregion static function Cross}
   
