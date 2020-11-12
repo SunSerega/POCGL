@@ -21,9 +21,14 @@ type
   end;
   
   AsyncQueue<T> = class(__AsyncQueueBase, IEnumerable<T>, IEnumerator<T>)
-    protected q := new Queue<T>;
+    protected q: Queue<T>;
     protected done := false;
     private ev := new ManualResetEvent(false);
+    
+    public constructor :=
+    q := new Queue<T>;
+    public constructor(capacity: integer) :=
+    q := new Queue<T>(capacity);
     
     public procedure Enq(o: T) :=
     lock q do

@@ -1,8 +1,8 @@
 ﻿unit PathUtils;
 {$string_nullbased+}
 
-var exe_file_name: string;
-var exe_dir: string;
+var assembly_file_name: string;
+var assembly_dir: string;
 
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
@@ -24,7 +24,7 @@ begin
   
   Result := $'{path}\{fname}';
 end;
-function GetFullPathRTE(fname: string) := GetFullPath(fname, exe_dir);
+function GetFullPathRTA(fname: string) := GetFullPath(fname, assembly_dir);
 
 function GetRelativePath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
@@ -60,7 +60,23 @@ begin
   
   Result := res.ToString;
 end;
-function GetRelativePathRTE(fname: string) := GetRelativePath(fname, exe_dir);
+function GetRelativePathRTA(fname: string) := GetRelativePath(fname, assembly_dir);
+
+procedure CopyFile(source, destination: string);
+begin
+  if FileExists(destination) then raise new System.InvalidOperationException($'File {destination} already exists');
+  var source_str := System.IO.File.OpenRead(source);
+  try
+    var destination_str := System.IO.File.Create(destination);
+    try
+      source_str.CopyTo(destination_str);
+    finally
+      destination_str.Close;
+    end;
+  finally
+    source_str.Close;
+  end;
+end;
 
 procedure CopyDir(source, destination: string);
 begin
@@ -73,6 +89,8 @@ begin
 end;
 
 begin
-  exe_file_name := System.Diagnostics.Process.GetCurrentProcess.MainModule.FileName;
-  exe_dir := System.IO.Path.GetDirectoryName(exe_file_name);
+  assembly_file_name := System.Reflection.Assembly.GetExecutingAssembly.Location;
+  assembly_dir := System.IO.Path.GetDirectoryName(assembly_file_name);
+//  exe_file_name := System.Diagnostics.Process.GetCurrentProcess.MainModule.FileName;
+//  exe_dir := System.IO.Path.GetDirectoryName(exe_file_name);
 end.
