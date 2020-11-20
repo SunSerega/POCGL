@@ -13,7 +13,6 @@ Skipped group attrib for type [GLsizei]
 Skipped group attrib for type [void]
 Skipped group attrib for type [GLsizeiptr]
 Skipped group attrib for type [GLintptr]
-Skipped group attrib for type [GLsync]
 Group [SyncBehaviorFlags] isn't defined
 Invalid api: [gles1]
 Invalid api: [gles2]

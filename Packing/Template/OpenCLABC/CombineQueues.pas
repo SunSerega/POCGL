@@ -19,7 +19,7 @@ begin
     (
       ProcTask(()->
       begin
-        var res := new System.IO.StreamWriter(GetFullPathRTE('CombineQueues.Interface.template'), false, enc);
+        var res := new System.IO.StreamWriter(GetFullPathRTA('CombineQueues.Interface.template'), false, enc);
         loop 3 do res.WriteLine;
         
         foreach var exec_order in exec_orders do
@@ -86,7 +86,7 @@ begin
     *
       ProcTask(()->
       begin
-        var res := new System.IO.StreamWriter(GetFullPathRTE('CombineQueues.Implementation.template'), false, enc);
+        var res := new System.IO.StreamWriter(GetFullPathRTA('CombineQueues.Implementation.template'), false, enc);
         loop 3 do res.WriteLine;
         
         foreach var exec_order in exec_orders do

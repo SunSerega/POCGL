@@ -926,15 +926,15 @@
  ErrorCode	| UInt32	| IntPtr	|
 
 # clGetDeviceIDsFromD3D10KHR
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_platform_id	| D3d10DeviceSourceKhr	| IntPtr	| D3d10DeviceSetKhr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromD3D10BufferKHR
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| var ErrorCode	|
@@ -1010,15 +1010,15 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetDeviceIDsFromD3D11KHR
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| array of cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| var UInt32	|
- ErrorCode	| cl_platform_id	| UInt32	| IntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| array of cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| array of cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| array of cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| var cl_device_id	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| var cl_device_id	| var UInt32	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| var cl_device_id	| IntPtr	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_platform_id	| D3d11DeviceSourceKhr	| IntPtr	| D3d11DeviceSetKhr	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateFromD3D11BufferKHR
  cl_mem	| cl_context	| MemFlags	| array of IntPtr	| var ErrorCode	|
@@ -1353,15 +1353,15 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| MemMigrationFlagsExt	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetDeviceImageInfoQCOM
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| array of cl_image_format	| UInt32	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| array of cl_image_format	| UInt32	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| array of cl_image_format	| UInt32	| UIntPtr	| IntPtr	| IntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| var cl_image_format	| UInt32	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| var cl_image_format	| UInt32	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| var cl_image_format	| UInt32	| UIntPtr	| IntPtr	| IntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| IntPtr	| UInt32	| UIntPtr	| IntPtr	| array of UIntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| IntPtr	| UInt32	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| IntPtr	| UInt32	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| array of cl_image_format	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| array of cl_image_format	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| array of cl_image_format	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| var cl_image_format	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| var cl_image_format	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| var cl_image_format	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| IntPtr	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| IntPtr	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_device_id	| UIntPtr	| UIntPtr	| IntPtr	| ImagePitchInfoQcom	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clEnqueueAcquireGrallocObjectsIMG
  ErrorCode	| cl_command_queue	| UInt32	| array of cl_mem	| UInt32	| array of cl_event	| array of cl_event	|
@@ -1427,12 +1427,12 @@
  ErrorCode	| cl_kernel	| cl_device_id	| KernelSubGroupInfo	| UIntPtr	| IntPtr	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clImportMemoryARM
- cl_mem	| cl_context	| MemFlags	| array of IntPtr	| IntPtr	| UIntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| var IntPtr	| IntPtr	| UIntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| MemFlags	| pointer	| IntPtr	| UIntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| MemFlags	| array of ImportPropertiesArm	| IntPtr	| UIntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| MemFlags	| var ImportPropertiesArm	| IntPtr	| UIntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| MemFlags	| IntPtr	| IntPtr	| UIntPtr	| var ErrorCode	|
 
 # clSVMAllocARM
- IntPtr	| cl_context	| UInt64	| UIntPtr	| UInt32	|
+ IntPtr	| cl_context	| SvmMemFlagsArm	| UIntPtr	| UInt32	|
 
 # clSVMFreeARM
  cl_context	| IntPtr	|
@@ -1496,7 +1496,7 @@
  ErrorCode	| cl_kernel	| UInt32	| IntPtr	|
 
 # clSetKernelExecInfoARM
- ErrorCode	| cl_kernel	| UInt32	| UIntPtr	| IntPtr	|
+ ErrorCode	| cl_kernel	| KernelExecInfoArm	| UIntPtr	| IntPtr	|
 
 # clCreateAcceleratorINTEL
  cl_accelerator_intel	| cl_context	| AcceleratorTypeIntel	| UIntPtr	| IntPtr	| var ErrorCode	|
@@ -1822,17 +1822,6 @@
  ErrorCode	| cl_command_queue	| Bool	| IntPtr	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| Bool	| IntPtr	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| IntPtr	|
 
-# clEnqueueMigrateMemINTEL
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| IntPtr	|
-
 # clEnqueueMemAdviseINTEL
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| array of cl_event	| array of cl_event	|
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| array of cl_event	| var cl_event	|
@@ -1843,6 +1832,17 @@
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+
+# clEnqueueMigrateMemINTEL
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| IntPtr	| UIntPtr	| MemMigrationFlags	| UInt32	| IntPtr	| IntPtr	|
 
 # clCreateBufferWithPropertiesINTEL
  cl_mem	| cl_context	| array of MemPropertiesIntel	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|

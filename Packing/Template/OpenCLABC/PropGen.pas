@@ -50,7 +50,7 @@ type
 begin
   try
     
-    System.IO.Directory.EnumerateFiles(GetFullPathRTE('PropDef'), '*.dat')
+    System.IO.Directory.EnumerateFiles(GetFullPathRTA('PropDef'), '*.dat')
     .Select(fname->ProcTask(()->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
@@ -64,7 +64,7 @@ begin
       var max_type_len := ps.Max(p->p.t.Length);
       var max_get_prop_len := ps.Max(p->p.get_prop_name.Length);
       
-      var res := new System.IO.StreamWriter(GetFullPathRTE($'{t}.Properties.template'), false, enc);
+      var res := new System.IO.StreamWriter(GetFullPathRTA($'{t}.Properties.template'), false, enc);
       loop 3 do res.WriteLine('    ');
       foreach var p in ps do
       begin

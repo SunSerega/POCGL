@@ -125,7 +125,7 @@ type
 begin
   try
     
-    EnumerateFiles(GetFullPathRTE('GetMethodDef'), '*.dat')
+    EnumerateFiles(GetFullPathRTA('GetMethodDef'), '*.dat')
     .Select(fname->ProcTask(()->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);

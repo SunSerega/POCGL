@@ -26,11 +26,11 @@ type
       if bl[0]=nil then
         continue else // Комментарий в начале файла
       if all.ContainsKey(bl[0]) then
-        Otp($'ERROR: key %{bl[0]}% found in "{all[bl[0]].source}" and "{GetRelativePathRTE(fname)}"') else
-        all[bl[0]] := new CommentData(GetRelativePathRTE(fname), bl[1].JoinToString(#10).Trim);
+        Otp($'ERROR: key %{bl[0]}% found in "{all[bl[0]].source}" and "{GetRelativePathRTA(fname)}"') else
+        all[bl[0]] := new CommentData(GetRelativePathRTA(fname), bl[1].JoinToString(#10).Trim);
     public static procedure LoadAll(nick: string);
     begin
-      var path := GetFullPathRTE(nick);
+      var path := GetFullPathRTA(nick);
       if not System.IO.Directory.Exists(path) then
       begin
         Otp($'WARNING: Skipped [{nick}], because data folder not found');
@@ -118,7 +118,7 @@ begin
       ProcTask(()->
       begin
         var skipped_types := new HashSet<string>;
-        var skipped := new System.IO.StreamWriter(GetFullPathRTE($'{nick}.skipped.log'), false, enc);
+        var skipped := new System.IO.StreamWriter(GetFullPathRTA($'{nick}.skipped.log'), false, enc);
         
         foreach var q in all_skipped.Values do
           foreach var c in q do

@@ -1,6 +1,8 @@
 ﻿Type [unsigned int] is referenced but not defined
 Type-less group [Constants.Versioning]
-Type-less group [Constants.uuid]
+Type-less group [Constants.cl_khr_extended_versioning]
+Type-less group [Constants.cl_khr_device_uuid]
+Type-less group [Constants.cl_arm_import_memory]
 Type-less group [MiscNumbers]
 Type-less group [cl_affinity_domain_ext]
 Type-less group [clCommandExecutionStatus]

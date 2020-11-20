@@ -1987,6 +1987,7 @@
     private static _SAMPLE_MASK                             := new EnableCap($8E51);
     private static _PRIMITIVE_RESTART                       := new EnableCap($8F9D);
     private static _DEBUG_OUTPUT                            := new EnableCap($92E0);
+    private static _SHADING_RATE_IMAGE_PER_PRIMITIVE_NV     := new EnableCap($95B1);
     private static _SHADING_RATE_PRESERVE_ASPECT_RATIO_QCOM := new EnableCap($96A5);
     
     public static property POINT_SMOOTH:                            EnableCap read _POINT_SMOOTH;
@@ -2121,6 +2122,7 @@
     public static property SAMPLE_MASK:                             EnableCap read _SAMPLE_MASK;
     public static property PRIMITIVE_RESTART:                       EnableCap read _PRIMITIVE_RESTART;
     public static property DEBUG_OUTPUT:                            EnableCap read _DEBUG_OUTPUT;
+    public static property SHADING_RATE_IMAGE_PER_PRIMITIVE_NV:     EnableCap read _SHADING_RATE_IMAGE_PER_PRIMITIVE_NV;
     public static property SHADING_RATE_PRESERVE_ASPECT_RATIO_QCOM: EnableCap read _SHADING_RATE_PRESERVE_ASPECT_RATIO_QCOM;
     
     public function ToString: string; override;
@@ -2257,6 +2259,7 @@
       if self.val = UInt32($8E51) then Result := 'SAMPLE_MASK' else
       if self.val = UInt32($8F9D) then Result := 'PRIMITIVE_RESTART' else
       if self.val = UInt32($92E0) then Result := 'DEBUG_OUTPUT' else
+      if self.val = UInt32($95B1) then Result := 'SHADING_RATE_IMAGE_PER_PRIMITIVE_NV' else
       if self.val = UInt32($96A5) then Result := 'SHADING_RATE_PRESERVE_ASPECT_RATIO_QCOM' else
         Result := $'EnableCap[{self.val}]';
     end;
@@ -3435,6 +3438,8 @@
     private static _DRIVER_UUID_EXT                                := new GetPName($9598);
     private static _DEVICE_LUID_EXT                                := new GetPName($9599);
     private static _DEVICE_NODE_MASK_EXT                           := new GetPName($959A);
+    private static _SHADING_RATE_IMAGE_PER_PRIMITIVE_NV            := new GetPName($95B1);
+    private static _SHADING_RATE_IMAGE_PALETTE_COUNT_NV            := new GetPName($95B2);
     private static _MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV     := new GetPName($95B6);
     private static _SHADING_RATE_QCOM                              := new GetPName($96A4);
     
@@ -3995,6 +4000,8 @@
     public static property DRIVER_UUID_EXT:                                GetPName read _DRIVER_UUID_EXT;
     public static property DEVICE_LUID_EXT:                                GetPName read _DEVICE_LUID_EXT;
     public static property DEVICE_NODE_MASK_EXT:                           GetPName read _DEVICE_NODE_MASK_EXT;
+    public static property SHADING_RATE_IMAGE_PER_PRIMITIVE_NV:            GetPName read _SHADING_RATE_IMAGE_PER_PRIMITIVE_NV;
+    public static property SHADING_RATE_IMAGE_PALETTE_COUNT_NV:            GetPName read _SHADING_RATE_IMAGE_PALETTE_COUNT_NV;
     public static property MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV:     GetPName read _MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV;
     public static property SHADING_RATE_QCOM:                              GetPName read _SHADING_RATE_QCOM;
     
@@ -4557,6 +4564,8 @@
       if self.val = UInt32($9598) then Result := 'DRIVER_UUID_EXT' else
       if self.val = UInt32($9599) then Result := 'DEVICE_LUID_EXT' else
       if self.val = UInt32($959A) then Result := 'DEVICE_NODE_MASK_EXT' else
+      if self.val = UInt32($95B1) then Result := 'SHADING_RATE_IMAGE_PER_PRIMITIVE_NV' else
+      if self.val = UInt32($95B2) then Result := 'SHADING_RATE_IMAGE_PALETTE_COUNT_NV' else
       if self.val = UInt32($95B6) then Result := 'MAX_TIMELINE_SEMAPHORE_VALUE_DIFFERENCE_NV' else
       if self.val = UInt32($96A4) then Result := 'SHADING_RATE_QCOM' else
         Result := $'GetPName[{self.val}]';

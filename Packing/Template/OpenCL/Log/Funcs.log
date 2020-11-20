@@ -13,12 +13,15 @@ Struct [cl_mem_ext_host_ptr] was skipped
 Struct [cl_mem_ion_host_ptr] was skipped
 Struct [cl_mem_android_native_buffer_host_ptr] was skipped
 Struct [cl_name_version] was skipped
+Struct [cl_name_version_khr] was skipped
 Group [DeviceAtomicCapabilities] was skipped
 Group [DeviceEnqueueCapabilities] was skipped
 Group [QueuePriorityKhr] was skipped
 Group [QueueThrottleKhr] was skipped
 Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was skipped
 Group [MemAllocFlagsIntel] was skipped
+Group [MipmapFilterModeImg] was skipped
 Group [KhronosVendorId] was skipped
+Group [DeviceSvmCapabilitiesArm] was skipped
 Group [UnifiedSharedMemoryTypeIntel] was skipped
 done

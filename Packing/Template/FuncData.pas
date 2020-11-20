@@ -12,11 +12,11 @@ uses Fixers       in '..\..\Utils\Fixers';
 
 {$region Log and Misc}
 
-var log := new FileLogger(GetFullPathRTE('Log\Funcs.log')) +
-           new FileLogger(GetFullPathRTE('Log\Funcs (Timed).log'), true);
-var log_groups    := new FileLogger(GetFullPathRTE('Log\FinalGroups.log'));
-var log_structs   := new FileLogger(GetFullPathRTE('Log\FinalStructs.log'));
-var log_func_ovrs := new FileLogger(GetFullPathRTE('Log\FinalFuncOverloads.log'));
+var log := new FileLogger(GetFullPathRTA('Log\Funcs.log')) +
+           new FileLogger(GetFullPathRTA('Log\Funcs (Timed).log'), true);
+var log_groups    := new FileLogger(GetFullPathRTA('Log\FinalGroups.log'));
+var log_structs   := new FileLogger(GetFullPathRTA('Log\FinalStructs.log'));
+var log_func_ovrs := new FileLogger(GetFullPathRTA('Log\FinalFuncOverloads.log'));
 
 type
   LogCache = static class
@@ -778,7 +778,7 @@ type
               log.Otp($'Param [{par.name}] in func [{self.name}] had type of multi-array, but also cound not be array');
             
             res += new FuncParamT(false, 0,
-              par_t='IntPtr' ?
+              can_be_var_arg and (par_t='IntPtr') ?
                 'pointer' :
                 'IntPtr'
             );
@@ -1585,7 +1585,7 @@ type
       // func - deprecation version
       var deprecated := new Dictionary<Func, string>;
       
-      var log_func_ver := new FileLogger(GetFullPathRTE($'Log\FuncsVer ({api}).log'));
+      var log_func_ver := new FileLogger(GetFullPathRTA($'Log\FuncsVer ({api}).log'));
       loop 3 do log_func_ver.Otp('');
       
       foreach var ftr in ByApi[api] do
@@ -2004,7 +2004,7 @@ begin
     f.Apply(Result);
   end;
   
-  var fls := EnumerateAllFiles(GetFullPathRTE('Fixers\Enums'), '*.dat');
+  var fls := EnumerateAllFiles(GetFullPathRTA('Fixers\Enums'), '*.dat');
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
@@ -2140,7 +2140,7 @@ begin
     f.Apply(Result);
   end;
   
-  var fls := EnumerateAllFiles(GetFullPathRTE('Fixers\Structs'), '*.dat');
+  var fls := EnumerateAllFiles(GetFullPathRTA('Fixers\Structs'), '*.dat');
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of
@@ -2369,7 +2369,7 @@ static procedure FuncFixer.InitAll;
 begin
   FuncFixer.GetFixableName := f->f.name;
   
-  var fls := EnumerateAllFiles(GetFullPathRTE('Fixers\Funcs'), '*.dat');
+  var fls := EnumerateAllFiles(GetFullPathRTA('Fixers\Funcs'), '*.dat');
   foreach var gr in fls.SelectMany(fname->FixerUtils.ReadBlocks(fname,true)) do
     foreach var bl in FixerUtils.ReadBlocks(gr[1],'!',false) do
     case bl[0] of

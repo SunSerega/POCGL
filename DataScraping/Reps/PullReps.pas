@@ -7,7 +7,7 @@ procedure PullRep(name, nick: string);
 begin
   Otp($'Pulling {nick}');
   
-  var psi := new ProcessStartInfo('git', $'submodule update --progress --remote --init -- "{GetFullPathRTE(name)}"');
+  var psi := new ProcessStartInfo('git', $'submodule update --progress --remote --init -- "{GetFullPathRTA(name)}"');
   psi.UseShellExecute := false;
   psi.RedirectStandardError := true;
   psi.RedirectStandardOutput := true;

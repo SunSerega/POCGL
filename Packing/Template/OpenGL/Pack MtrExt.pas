@@ -75,7 +75,7 @@ begin
     res += '{$endregion MtrTranspose}'#10;
     res += '';
     
-    WriteAllText(GetFullPathRTE('MtrExt.template'), res.ToString);
+    WriteAllText(GetFullPathRTA('MtrExt.template'), res.ToString);
   except
     on e: Exception do ErrOtp(e);
   end;

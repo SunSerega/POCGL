@@ -474,7 +474,7 @@ type
     private static _QUEUE_ON_DEVICE                      := new CommandQueueProperties($0004);
     private static _QUEUE_ON_DEVICE_DEFAULT              := new CommandQueueProperties($0008);
     private static _QUEUE_RESERVED_QCOM                  := new CommandQueueProperties($40000000);
-    private static _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL := new CommandQueueProperties($FFFFFFFF80000000);
+    private static _QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL := new CommandQueueProperties($80000000);
     
     public static property NONE:                                 CommandQueueProperties read _NONE;
     public static property QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE:  CommandQueueProperties read _QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
@@ -493,7 +493,7 @@ type
     public property HAS_FLAG_QUEUE_ON_DEVICE:                      boolean read self.val and $0004 <> 0;
     public property HAS_FLAG_QUEUE_ON_DEVICE_DEFAULT:              boolean read self.val and $0008 <> 0;
     public property HAS_FLAG_QUEUE_RESERVED_QCOM:                  boolean read self.val and $40000000 <> 0;
-    public property HAS_FLAG_QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL: boolean read self.val and $FFFFFFFF80000000 <> 0;
+    public property HAS_FLAG_QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL: boolean read self.val and $80000000 <> 0;
     
     public function ToString: string; override;
     begin
@@ -504,7 +504,7 @@ type
       if self.val and UInt64($0004) = UInt64($0004) then res += 'QUEUE_ON_DEVICE+';
       if self.val and UInt64($0008) = UInt64($0008) then res += 'QUEUE_ON_DEVICE_DEFAULT+';
       if self.val and UInt64($40000000) = UInt64($40000000) then res += 'QUEUE_RESERVED_QCOM+';
-      if self.val and UInt64($FFFFFFFF80000000) = UInt64($FFFFFFFF80000000) then res += 'QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL+';
+      if self.val and UInt64($80000000) = UInt64($80000000) then res += 'QUEUE_THREAD_LOCAL_EXEC_ENABLE_INTEL+';
       if res.Length<>0 then
       begin
         res.Length -= 1;
@@ -562,6 +562,14 @@ type
     private static _COMMAND_MIGRATE_MEM_OBJECT_EXT              := new CommandType($4040);
     private static _COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL := new CommandType($409A);
     private static _COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL := new CommandType($409B);
+    private static _COMMAND_SVM_FREE_ARM                        := new CommandType($40BA);
+    private static _COMMAND_SVM_MEMCPY_ARM                      := new CommandType($40BB);
+    private static _COMMAND_SVM_MEMFILL_ARM                     := new CommandType($40BC);
+    private static _COMMAND_SVM_MAP_ARM                         := new CommandType($40BD);
+    private static _COMMAND_SVM_UNMAP_ARM                       := new CommandType($40BE);
+    private static _COMMAND_ACQUIRE_GRALLOC_OBJECTS_IMG         := new CommandType($40D2);
+    private static _COMMAND_RELEASE_GRALLOC_OBJECTS_IMG         := new CommandType($40D3);
+    private static _COMMAND_GENERATE_MIPMAP_IMG                 := new CommandType($40D6);
     private static _COMMAND_MEMFILL_INTEL                       := new CommandType($4204);
     private static _COMMAND_MEMCPY_INTEL                        := new CommandType($4205);
     private static _COMMAND_MIGRATEMEM_INTEL                    := new CommandType($4206);
@@ -610,6 +618,14 @@ type
     public static property COMMAND_MIGRATE_MEM_OBJECT_EXT:              CommandType read _COMMAND_MIGRATE_MEM_OBJECT_EXT;
     public static property COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL: CommandType read _COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL;
     public static property COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL: CommandType read _COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL;
+    public static property COMMAND_SVM_FREE_ARM:                        CommandType read _COMMAND_SVM_FREE_ARM;
+    public static property COMMAND_SVM_MEMCPY_ARM:                      CommandType read _COMMAND_SVM_MEMCPY_ARM;
+    public static property COMMAND_SVM_MEMFILL_ARM:                     CommandType read _COMMAND_SVM_MEMFILL_ARM;
+    public static property COMMAND_SVM_MAP_ARM:                         CommandType read _COMMAND_SVM_MAP_ARM;
+    public static property COMMAND_SVM_UNMAP_ARM:                       CommandType read _COMMAND_SVM_UNMAP_ARM;
+    public static property COMMAND_ACQUIRE_GRALLOC_OBJECTS_IMG:         CommandType read _COMMAND_ACQUIRE_GRALLOC_OBJECTS_IMG;
+    public static property COMMAND_RELEASE_GRALLOC_OBJECTS_IMG:         CommandType read _COMMAND_RELEASE_GRALLOC_OBJECTS_IMG;
+    public static property COMMAND_GENERATE_MIPMAP_IMG:                 CommandType read _COMMAND_GENERATE_MIPMAP_IMG;
     public static property COMMAND_MEMFILL_INTEL:                       CommandType read _COMMAND_MEMFILL_INTEL;
     public static property COMMAND_MEMCPY_INTEL:                        CommandType read _COMMAND_MEMCPY_INTEL;
     public static property COMMAND_MIGRATEMEM_INTEL:                    CommandType read _COMMAND_MIGRATEMEM_INTEL;
@@ -660,6 +676,14 @@ type
       if self.val = UInt32($4040) then Result := 'COMMAND_MIGRATE_MEM_OBJECT_EXT' else
       if self.val = UInt32($409A) then Result := 'COMMAND_ACQUIRE_VA_API_MEDIA_SURFACES_INTEL' else
       if self.val = UInt32($409B) then Result := 'COMMAND_RELEASE_VA_API_MEDIA_SURFACES_INTEL' else
+      if self.val = UInt32($40BA) then Result := 'COMMAND_SVM_FREE_ARM' else
+      if self.val = UInt32($40BB) then Result := 'COMMAND_SVM_MEMCPY_ARM' else
+      if self.val = UInt32($40BC) then Result := 'COMMAND_SVM_MEMFILL_ARM' else
+      if self.val = UInt32($40BD) then Result := 'COMMAND_SVM_MAP_ARM' else
+      if self.val = UInt32($40BE) then Result := 'COMMAND_SVM_UNMAP_ARM' else
+      if self.val = UInt32($40D2) then Result := 'COMMAND_ACQUIRE_GRALLOC_OBJECTS_IMG' else
+      if self.val = UInt32($40D3) then Result := 'COMMAND_RELEASE_GRALLOC_OBJECTS_IMG' else
+      if self.val = UInt32($40D6) then Result := 'COMMAND_GENERATE_MIPMAP_IMG' else
       if self.val = UInt32($4204) then Result := 'COMMAND_MEMFILL_INTEL' else
       if self.val = UInt32($4205) then Result := 'COMMAND_MEMCPY_INTEL' else
       if self.val = UInt32($4206) then Result := 'COMMAND_MIGRATEMEM_INTEL' else
@@ -732,30 +756,44 @@ type
     public constructor(val: IntPtr) := self.val := val;
     public constructor(val: Int32) := self.val := new IntPtr(val);
     
-    private static _CONTEXT_PLATFORM          := new ContextProperties($1084);
-    private static _CONTEXT_INTEROP_USER_SYNC := new ContextProperties($1085);
-    private static _GL_CONTEXT_KHR            := new ContextProperties($2008);
-    private static _EGL_DISPLAY_KHR           := new ContextProperties($2009);
-    private static _GLX_DISPLAY_KHR           := new ContextProperties($200A);
-    private static _WGL_HDC_KHR               := new ContextProperties($200B);
-    private static _CGL_SHAREGROUP_KHR        := new ContextProperties($200C);
-    private static _CONTEXT_TERMINATE_KHR     := new ContextProperties($2032);
-    private static _PRINTF_CALLBACK_ARM       := new ContextProperties($40B0);
-    private static _PRINTF_BUFFERSIZE_ARM     := new ContextProperties($40B1);
+    private static _CONTEXT_DIAGNOSTICS_LEVEL_GOOD_INTEL    := new ContextProperties($0001);
+    private static _CONTEXT_DIAGNOSTICS_LEVEL_BAD_INTEL     := new ContextProperties($0002);
+    private static _CONTEXT_DIAGNOSTICS_LEVEL_NEUTRAL_INTEL := new ContextProperties($0004);
+    private static _CONTEXT_DIAGNOSTICS_LEVEL_ALL_INTEL     := new ContextProperties($00FF);
+    private static _CONTEXT_PLATFORM                        := new ContextProperties($1084);
+    private static _CONTEXT_INTEROP_USER_SYNC               := new ContextProperties($1085);
+    private static _GL_CONTEXT_KHR                          := new ContextProperties($2008);
+    private static _EGL_DISPLAY_KHR                         := new ContextProperties($2009);
+    private static _GLX_DISPLAY_KHR                         := new ContextProperties($200A);
+    private static _WGL_HDC_KHR                             := new ContextProperties($200B);
+    private static _CGL_SHAREGROUP_KHR                      := new ContextProperties($200C);
+    private static _CONTEXT_TERMINATE_KHR                   := new ContextProperties($2032);
+    private static _PRINTF_CALLBACK_ARM                     := new ContextProperties($40B0);
+    private static _PRINTF_BUFFERSIZE_ARM                   := new ContextProperties($40B1);
+    private static _CONTEXT_SHOW_DIAGNOSTICS_INTEL          := new ContextProperties($4106);
     
-    public static property CONTEXT_PLATFORM:          ContextProperties read _CONTEXT_PLATFORM;
-    public static property CONTEXT_INTEROP_USER_SYNC: ContextProperties read _CONTEXT_INTEROP_USER_SYNC;
-    public static property GL_CONTEXT_KHR:            ContextProperties read _GL_CONTEXT_KHR;
-    public static property EGL_DISPLAY_KHR:           ContextProperties read _EGL_DISPLAY_KHR;
-    public static property GLX_DISPLAY_KHR:           ContextProperties read _GLX_DISPLAY_KHR;
-    public static property WGL_HDC_KHR:               ContextProperties read _WGL_HDC_KHR;
-    public static property CGL_SHAREGROUP_KHR:        ContextProperties read _CGL_SHAREGROUP_KHR;
-    public static property CONTEXT_TERMINATE_KHR:     ContextProperties read _CONTEXT_TERMINATE_KHR;
-    public static property PRINTF_CALLBACK_ARM:       ContextProperties read _PRINTF_CALLBACK_ARM;
-    public static property PRINTF_BUFFERSIZE_ARM:     ContextProperties read _PRINTF_BUFFERSIZE_ARM;
+    public static property CONTEXT_DIAGNOSTICS_LEVEL_GOOD_INTEL:    ContextProperties read _CONTEXT_DIAGNOSTICS_LEVEL_GOOD_INTEL;
+    public static property CONTEXT_DIAGNOSTICS_LEVEL_BAD_INTEL:     ContextProperties read _CONTEXT_DIAGNOSTICS_LEVEL_BAD_INTEL;
+    public static property CONTEXT_DIAGNOSTICS_LEVEL_NEUTRAL_INTEL: ContextProperties read _CONTEXT_DIAGNOSTICS_LEVEL_NEUTRAL_INTEL;
+    public static property CONTEXT_DIAGNOSTICS_LEVEL_ALL_INTEL:     ContextProperties read _CONTEXT_DIAGNOSTICS_LEVEL_ALL_INTEL;
+    public static property CONTEXT_PLATFORM:                        ContextProperties read _CONTEXT_PLATFORM;
+    public static property CONTEXT_INTEROP_USER_SYNC:               ContextProperties read _CONTEXT_INTEROP_USER_SYNC;
+    public static property GL_CONTEXT_KHR:                          ContextProperties read _GL_CONTEXT_KHR;
+    public static property EGL_DISPLAY_KHR:                         ContextProperties read _EGL_DISPLAY_KHR;
+    public static property GLX_DISPLAY_KHR:                         ContextProperties read _GLX_DISPLAY_KHR;
+    public static property WGL_HDC_KHR:                             ContextProperties read _WGL_HDC_KHR;
+    public static property CGL_SHAREGROUP_KHR:                      ContextProperties read _CGL_SHAREGROUP_KHR;
+    public static property CONTEXT_TERMINATE_KHR:                   ContextProperties read _CONTEXT_TERMINATE_KHR;
+    public static property PRINTF_CALLBACK_ARM:                     ContextProperties read _PRINTF_CALLBACK_ARM;
+    public static property PRINTF_BUFFERSIZE_ARM:                   ContextProperties read _PRINTF_BUFFERSIZE_ARM;
+    public static property CONTEXT_SHOW_DIAGNOSTICS_INTEL:          ContextProperties read _CONTEXT_SHOW_DIAGNOSTICS_INTEL;
     
     public function ToString: string; override;
     begin
+      if self.val = IntPtr($0001) then Result := 'CONTEXT_DIAGNOSTICS_LEVEL_GOOD_INTEL' else
+      if self.val = IntPtr($0002) then Result := 'CONTEXT_DIAGNOSTICS_LEVEL_BAD_INTEL' else
+      if self.val = IntPtr($0004) then Result := 'CONTEXT_DIAGNOSTICS_LEVEL_NEUTRAL_INTEL' else
+      if self.val = IntPtr($00FF) then Result := 'CONTEXT_DIAGNOSTICS_LEVEL_ALL_INTEL' else
       if self.val = IntPtr($1084) then Result := 'CONTEXT_PLATFORM' else
       if self.val = IntPtr($1085) then Result := 'CONTEXT_INTEROP_USER_SYNC' else
       if self.val = IntPtr($2008) then Result := 'GL_CONTEXT_KHR' else
@@ -766,7 +804,84 @@ type
       if self.val = IntPtr($2032) then Result := 'CONTEXT_TERMINATE_KHR' else
       if self.val = IntPtr($40B0) then Result := 'PRINTF_CALLBACK_ARM' else
       if self.val = IntPtr($40B1) then Result := 'PRINTF_BUFFERSIZE_ARM' else
+      if self.val = IntPtr($4106) then Result := 'CONTEXT_SHOW_DIAGNOSTICS_INTEL' else
         Result := $'ContextProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  D3d10DeviceSetKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PREFERRED_DEVICES_FOR_D3D10_KHR := new D3d10DeviceSetKhr($4012);
+    private static _ALL_DEVICES_FOR_D3D10_KHR       := new D3d10DeviceSetKhr($4013);
+    
+    public static property PREFERRED_DEVICES_FOR_D3D10_KHR: D3d10DeviceSetKhr read _PREFERRED_DEVICES_FOR_D3D10_KHR;
+    public static property ALL_DEVICES_FOR_D3D10_KHR:       D3d10DeviceSetKhr read _ALL_DEVICES_FOR_D3D10_KHR;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($4012) then Result := 'PREFERRED_DEVICES_FOR_D3D10_KHR' else
+      if self.val = UInt32($4013) then Result := 'ALL_DEVICES_FOR_D3D10_KHR' else
+        Result := $'D3d10DeviceSetKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  D3d10DeviceSourceKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _D3D10_DEVICE_KHR       := new D3d10DeviceSourceKhr($4010);
+    private static _D3D10_DXGI_ADAPTER_KHR := new D3d10DeviceSourceKhr($4011);
+    
+    public static property D3D10_DEVICE_KHR:       D3d10DeviceSourceKhr read _D3D10_DEVICE_KHR;
+    public static property D3D10_DXGI_ADAPTER_KHR: D3d10DeviceSourceKhr read _D3D10_DXGI_ADAPTER_KHR;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($4010) then Result := 'D3D10_DEVICE_KHR' else
+      if self.val = UInt32($4011) then Result := 'D3D10_DXGI_ADAPTER_KHR' else
+        Result := $'D3d10DeviceSourceKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  D3d11DeviceSetKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _PREFERRED_DEVICES_FOR_D3D11_KHR := new D3d11DeviceSetKhr($401B);
+    private static _ALL_DEVICES_FOR_D3D11_KHR       := new D3d11DeviceSetKhr($401C);
+    
+    public static property PREFERRED_DEVICES_FOR_D3D11_KHR: D3d11DeviceSetKhr read _PREFERRED_DEVICES_FOR_D3D11_KHR;
+    public static property ALL_DEVICES_FOR_D3D11_KHR:       D3d11DeviceSetKhr read _ALL_DEVICES_FOR_D3D11_KHR;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($401B) then Result := 'PREFERRED_DEVICES_FOR_D3D11_KHR' else
+      if self.val = UInt32($401C) then Result := 'ALL_DEVICES_FOR_D3D11_KHR' else
+        Result := $'D3d11DeviceSetKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  D3d11DeviceSourceKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _D3D11_DEVICE_KHR       := new D3d11DeviceSourceKhr($4019);
+    private static _D3D11_DXGI_ADAPTER_KHR := new D3d11DeviceSourceKhr($401A);
+    
+    public static property D3D11_DEVICE_KHR:       D3d11DeviceSourceKhr read _D3D11_DEVICE_KHR;
+    public static property D3D11_DXGI_ADAPTER_KHR: D3d11DeviceSourceKhr read _D3D11_DXGI_ADAPTER_KHR;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($4019) then Result := 'D3D11_DEVICE_KHR' else
+      if self.val = UInt32($401A) then Result := 'D3D11_DXGI_ADAPTER_KHR' else
+        Result := $'D3d11DeviceSourceKhr[{self.val}]';
     end;
     
   end;
@@ -984,7 +1099,9 @@ type
     private static _DEVICE_PREFERRED_INTEROP_USER_SYNC                 := new DeviceInfo($1048);
     private static _DEVICE_PRINTF_BUFFER_SIZE                          := new DeviceInfo($1049);
     private static _DEVICE_IMAGE_PITCH_ALIGNMENT                       := new DeviceInfo($104A);
+    private static _DEVICE_IMAGE_PITCH_ALIGNMENT_KHR                   := new DeviceInfo($104A);
     private static _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT                := new DeviceInfo($104B);
+    private static _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT_KHR            := new DeviceInfo($104B);
     private static _DEVICE_MAX_READ_WRITE_IMAGE_ARGS                   := new DeviceInfo($104C);
     private static _DEVICE_MAX_GLOBAL_VARIABLE_SIZE                    := new DeviceInfo($104D);
     private static _DEVICE_QUEUE_ON_DEVICE_PROPERTIES                  := new DeviceInfo($104E);
@@ -1005,9 +1122,14 @@ type
     private static _DEVICE_MAX_NUM_SUB_GROUPS                          := new DeviceInfo($105C);
     private static _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS      := new DeviceInfo($105D);
     private static _DEVICE_NUMERIC_VERSION                             := new DeviceInfo($105E);
+    private static _DEVICE_NUMERIC_VERSION_KHR                         := new DeviceInfo($105E);
+    private static _DEVICE_OPENCL_C_NUMERIC_VERSION_KHR                := new DeviceInfo($105F);
     private static _DEVICE_EXTENSIONS_WITH_VERSION                     := new DeviceInfo($1060);
+    private static _DEVICE_EXTENSIONS_WITH_VERSION_KHR                 := new DeviceInfo($1060);
     private static _DEVICE_ILS_WITH_VERSION                            := new DeviceInfo($1061);
+    private static _DEVICE_ILS_WITH_VERSION_KHR                        := new DeviceInfo($1061);
     private static _DEVICE_BUILT_IN_KERNELS_WITH_VERSION               := new DeviceInfo($1062);
+    private static _DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR           := new DeviceInfo($1062);
     private static _DEVICE_ATOMIC_MEMORY_CAPABILITIES                  := new DeviceInfo($1063);
     private static _DEVICE_ATOMIC_FENCE_CAPABILITIES                   := new DeviceInfo($1064);
     private static _DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT              := new DeviceInfo($1065);
@@ -1024,7 +1146,6 @@ type
     private static _DEVICE_DEVICE_ENQUEUE_CAPABILITIES                 := new DeviceInfo($1070);
     private static _DEVICE_PIPE_SUPPORT                                := new DeviceInfo($1071);
     private static _DEVICE_LATEST_CONFORMANCE_VERSION_PASSED           := new DeviceInfo($1072);
-    private static _PROGRAM_IL_KHR                                     := new DeviceInfo($1169);
     private static _DEVICE_TERMINATE_CAPABILITY_KHR                    := new DeviceInfo($2031);
     private static _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR                 := new DeviceInfo($2035);
     private static _DEVICE_COMPUTE_CAPABILITY_MAJOR_NV                 := new DeviceInfo($4000);
@@ -1061,6 +1182,9 @@ type
     private static _DEVICE_REFERENCE_COUNT_EXT                         := new DeviceInfo($4057);
     private static _DEVICE_PARTITION_STYLE_EXT                         := new DeviceInfo($4058);
     private static _DEVICE_ME_VERSION_INTEL                            := new DeviceInfo($407E);
+    private static _DEVICE_EXT_MEM_PADDING_IN_BYTES_QCOM               := new DeviceInfo($40A0);
+    private static _DEVICE_PAGE_SIZE_QCOM                              := new DeviceInfo($40A1);
+    private static _DEVICE_SVM_CAPABILITIES_ARM                        := new DeviceInfo($40B6);
     private static _DEVICE_COMPUTE_UNITS_BITFIELD_ARM                  := new DeviceInfo($40BF);
     private static _DEVICE_SPIR_VERSIONS                               := new DeviceInfo($40E0);
     private static _DEVICE_SIMULTANEOUS_INTEROPS_INTEL                 := new DeviceInfo($4104);
@@ -1155,7 +1279,9 @@ type
     public static property DEVICE_PREFERRED_INTEROP_USER_SYNC:                 DeviceInfo read _DEVICE_PREFERRED_INTEROP_USER_SYNC;
     public static property DEVICE_PRINTF_BUFFER_SIZE:                          DeviceInfo read _DEVICE_PRINTF_BUFFER_SIZE;
     public static property DEVICE_IMAGE_PITCH_ALIGNMENT:                       DeviceInfo read _DEVICE_IMAGE_PITCH_ALIGNMENT;
+    public static property DEVICE_IMAGE_PITCH_ALIGNMENT_KHR:                   DeviceInfo read _DEVICE_IMAGE_PITCH_ALIGNMENT_KHR;
     public static property DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT:                DeviceInfo read _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT;
+    public static property DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT_KHR:            DeviceInfo read _DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT_KHR;
     public static property DEVICE_MAX_READ_WRITE_IMAGE_ARGS:                   DeviceInfo read _DEVICE_MAX_READ_WRITE_IMAGE_ARGS;
     public static property DEVICE_MAX_GLOBAL_VARIABLE_SIZE:                    DeviceInfo read _DEVICE_MAX_GLOBAL_VARIABLE_SIZE;
     public static property DEVICE_QUEUE_ON_DEVICE_PROPERTIES:                  DeviceInfo read _DEVICE_QUEUE_ON_DEVICE_PROPERTIES;
@@ -1176,9 +1302,14 @@ type
     public static property DEVICE_MAX_NUM_SUB_GROUPS:                          DeviceInfo read _DEVICE_MAX_NUM_SUB_GROUPS;
     public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS:      DeviceInfo read _DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS;
     public static property DEVICE_NUMERIC_VERSION:                             DeviceInfo read _DEVICE_NUMERIC_VERSION;
+    public static property DEVICE_NUMERIC_VERSION_KHR:                         DeviceInfo read _DEVICE_NUMERIC_VERSION_KHR;
+    public static property DEVICE_OPENCL_C_NUMERIC_VERSION_KHR:                DeviceInfo read _DEVICE_OPENCL_C_NUMERIC_VERSION_KHR;
     public static property DEVICE_EXTENSIONS_WITH_VERSION:                     DeviceInfo read _DEVICE_EXTENSIONS_WITH_VERSION;
+    public static property DEVICE_EXTENSIONS_WITH_VERSION_KHR:                 DeviceInfo read _DEVICE_EXTENSIONS_WITH_VERSION_KHR;
     public static property DEVICE_ILS_WITH_VERSION:                            DeviceInfo read _DEVICE_ILS_WITH_VERSION;
+    public static property DEVICE_ILS_WITH_VERSION_KHR:                        DeviceInfo read _DEVICE_ILS_WITH_VERSION_KHR;
     public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION:               DeviceInfo read _DEVICE_BUILT_IN_KERNELS_WITH_VERSION;
+    public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR:           DeviceInfo read _DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR;
     public static property DEVICE_ATOMIC_MEMORY_CAPABILITIES:                  DeviceInfo read _DEVICE_ATOMIC_MEMORY_CAPABILITIES;
     public static property DEVICE_ATOMIC_FENCE_CAPABILITIES:                   DeviceInfo read _DEVICE_ATOMIC_FENCE_CAPABILITIES;
     public static property DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT:              DeviceInfo read _DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT;
@@ -1195,7 +1326,6 @@ type
     public static property DEVICE_DEVICE_ENQUEUE_CAPABILITIES:                 DeviceInfo read _DEVICE_DEVICE_ENQUEUE_CAPABILITIES;
     public static property DEVICE_PIPE_SUPPORT:                                DeviceInfo read _DEVICE_PIPE_SUPPORT;
     public static property DEVICE_LATEST_CONFORMANCE_VERSION_PASSED:           DeviceInfo read _DEVICE_LATEST_CONFORMANCE_VERSION_PASSED;
-    public static property PROGRAM_IL_KHR:                                     DeviceInfo read _PROGRAM_IL_KHR;
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                    DeviceInfo read _DEVICE_TERMINATE_CAPABILITY_KHR;
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                 DeviceInfo read _DEVICE_MAX_NAMED_BARRIER_COUNT_KHR;
     public static property DEVICE_COMPUTE_CAPABILITY_MAJOR_NV:                 DeviceInfo read _DEVICE_COMPUTE_CAPABILITY_MAJOR_NV;
@@ -1232,6 +1362,9 @@ type
     public static property DEVICE_REFERENCE_COUNT_EXT:                         DeviceInfo read _DEVICE_REFERENCE_COUNT_EXT;
     public static property DEVICE_PARTITION_STYLE_EXT:                         DeviceInfo read _DEVICE_PARTITION_STYLE_EXT;
     public static property DEVICE_ME_VERSION_INTEL:                            DeviceInfo read _DEVICE_ME_VERSION_INTEL;
+    public static property DEVICE_EXT_MEM_PADDING_IN_BYTES_QCOM:               DeviceInfo read _DEVICE_EXT_MEM_PADDING_IN_BYTES_QCOM;
+    public static property DEVICE_PAGE_SIZE_QCOM:                              DeviceInfo read _DEVICE_PAGE_SIZE_QCOM;
+    public static property DEVICE_SVM_CAPABILITIES_ARM:                        DeviceInfo read _DEVICE_SVM_CAPABILITIES_ARM;
     public static property DEVICE_COMPUTE_UNITS_BITFIELD_ARM:                  DeviceInfo read _DEVICE_COMPUTE_UNITS_BITFIELD_ARM;
     public static property DEVICE_SPIR_VERSIONS:                               DeviceInfo read _DEVICE_SPIR_VERSIONS;
     public static property DEVICE_SIMULTANEOUS_INTEROPS_INTEL:                 DeviceInfo read _DEVICE_SIMULTANEOUS_INTEROPS_INTEL;
@@ -1328,7 +1461,9 @@ type
       if self.val = UInt32($1048) then Result := 'DEVICE_PREFERRED_INTEROP_USER_SYNC' else
       if self.val = UInt32($1049) then Result := 'DEVICE_PRINTF_BUFFER_SIZE' else
       if self.val = UInt32($104A) then Result := 'DEVICE_IMAGE_PITCH_ALIGNMENT' else
+      if self.val = UInt32($104A) then Result := 'DEVICE_IMAGE_PITCH_ALIGNMENT_KHR' else
       if self.val = UInt32($104B) then Result := 'DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT' else
+      if self.val = UInt32($104B) then Result := 'DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT_KHR' else
       if self.val = UInt32($104C) then Result := 'DEVICE_MAX_READ_WRITE_IMAGE_ARGS' else
       if self.val = UInt32($104D) then Result := 'DEVICE_MAX_GLOBAL_VARIABLE_SIZE' else
       if self.val = UInt32($104E) then Result := 'DEVICE_QUEUE_ON_DEVICE_PROPERTIES' else
@@ -1349,9 +1484,14 @@ type
       if self.val = UInt32($105C) then Result := 'DEVICE_MAX_NUM_SUB_GROUPS' else
       if self.val = UInt32($105D) then Result := 'DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS' else
       if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION' else
+      if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION_KHR' else
+      if self.val = UInt32($105F) then Result := 'DEVICE_OPENCL_C_NUMERIC_VERSION_KHR' else
       if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION' else
+      if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION_KHR' else
       if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION' else
+      if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION_KHR' else
       if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION' else
+      if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR' else
       if self.val = UInt32($1063) then Result := 'DEVICE_ATOMIC_MEMORY_CAPABILITIES' else
       if self.val = UInt32($1064) then Result := 'DEVICE_ATOMIC_FENCE_CAPABILITIES' else
       if self.val = UInt32($1065) then Result := 'DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT' else
@@ -1368,7 +1508,6 @@ type
       if self.val = UInt32($1070) then Result := 'DEVICE_DEVICE_ENQUEUE_CAPABILITIES' else
       if self.val = UInt32($1071) then Result := 'DEVICE_PIPE_SUPPORT' else
       if self.val = UInt32($1072) then Result := 'DEVICE_LATEST_CONFORMANCE_VERSION_PASSED' else
-      if self.val = UInt32($1169) then Result := 'PROGRAM_IL_KHR' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY_KHR' else
       if self.val = UInt32($2035) then Result := 'DEVICE_MAX_NAMED_BARRIER_COUNT_KHR' else
       if self.val = UInt32($4000) then Result := 'DEVICE_COMPUTE_CAPABILITY_MAJOR_NV' else
@@ -1405,6 +1544,9 @@ type
       if self.val = UInt32($4057) then Result := 'DEVICE_REFERENCE_COUNT_EXT' else
       if self.val = UInt32($4058) then Result := 'DEVICE_PARTITION_STYLE_EXT' else
       if self.val = UInt32($407E) then Result := 'DEVICE_ME_VERSION_INTEL' else
+      if self.val = UInt32($40A0) then Result := 'DEVICE_EXT_MEM_PADDING_IN_BYTES_QCOM' else
+      if self.val = UInt32($40A1) then Result := 'DEVICE_PAGE_SIZE_QCOM' else
+      if self.val = UInt32($40B6) then Result := 'DEVICE_SVM_CAPABILITIES_ARM' else
       if self.val = UInt32($40BF) then Result := 'DEVICE_COMPUTE_UNITS_BITFIELD_ARM' else
       if self.val = UInt32($40E0) then Result := 'DEVICE_SPIR_VERSIONS' else
       if self.val = UInt32($4104) then Result := 'DEVICE_SIMULTANEOUS_INTEROPS_INTEL' else
@@ -1500,7 +1642,13 @@ type
     
     private static _PARTITION_BY_COUNTS_LIST_END_EXT        := new DevicePartitionPropertyExt($0000);
     private static _PROPERTIES_LIST_END_EXT                 := new DevicePartitionPropertyExt($0000);
+    private static _AFFINITY_DOMAIN_L1_CACHE_EXT            := new DevicePartitionPropertyExt($0001);
     private static _PARTITION_BY_NAMES_LIST_END_EXT         := new DevicePartitionPropertyExt(-1);
+    private static _AFFINITY_DOMAIN_L2_CACHE_EXT            := new DevicePartitionPropertyExt($0002);
+    private static _AFFINITY_DOMAIN_L3_CACHE_EXT            := new DevicePartitionPropertyExt($0003);
+    private static _AFFINITY_DOMAIN_L4_CACHE_EXT            := new DevicePartitionPropertyExt($0004);
+    private static _AFFINITY_DOMAIN_NUMA_EXT                := new DevicePartitionPropertyExt($0010);
+    private static _AFFINITY_DOMAIN_NEXT_FISSIONABLE_EXT    := new DevicePartitionPropertyExt($0100);
     private static _DEVICE_PARTITION_EQUALLY_EXT            := new DevicePartitionPropertyExt($4050);
     private static _DEVICE_PARTITION_BY_COUNTS_EXT          := new DevicePartitionPropertyExt($4051);
     private static _DEVICE_PARTITION_BY_NAMES_EXT           := new DevicePartitionPropertyExt($4052);
@@ -1508,7 +1656,13 @@ type
     
     public static property PARTITION_BY_COUNTS_LIST_END_EXT:        DevicePartitionPropertyExt read _PARTITION_BY_COUNTS_LIST_END_EXT;
     public static property PROPERTIES_LIST_END_EXT:                 DevicePartitionPropertyExt read _PROPERTIES_LIST_END_EXT;
+    public static property AFFINITY_DOMAIN_L1_CACHE_EXT:            DevicePartitionPropertyExt read _AFFINITY_DOMAIN_L1_CACHE_EXT;
     public static property PARTITION_BY_NAMES_LIST_END_EXT:         DevicePartitionPropertyExt read _PARTITION_BY_NAMES_LIST_END_EXT;
+    public static property AFFINITY_DOMAIN_L2_CACHE_EXT:            DevicePartitionPropertyExt read _AFFINITY_DOMAIN_L2_CACHE_EXT;
+    public static property AFFINITY_DOMAIN_L3_CACHE_EXT:            DevicePartitionPropertyExt read _AFFINITY_DOMAIN_L3_CACHE_EXT;
+    public static property AFFINITY_DOMAIN_L4_CACHE_EXT:            DevicePartitionPropertyExt read _AFFINITY_DOMAIN_L4_CACHE_EXT;
+    public static property AFFINITY_DOMAIN_NUMA_EXT:                DevicePartitionPropertyExt read _AFFINITY_DOMAIN_NUMA_EXT;
+    public static property AFFINITY_DOMAIN_NEXT_FISSIONABLE_EXT:    DevicePartitionPropertyExt read _AFFINITY_DOMAIN_NEXT_FISSIONABLE_EXT;
     public static property DEVICE_PARTITION_EQUALLY_EXT:            DevicePartitionPropertyExt read _DEVICE_PARTITION_EQUALLY_EXT;
     public static property DEVICE_PARTITION_BY_COUNTS_EXT:          DevicePartitionPropertyExt read _DEVICE_PARTITION_BY_COUNTS_EXT;
     public static property DEVICE_PARTITION_BY_NAMES_EXT:           DevicePartitionPropertyExt read _DEVICE_PARTITION_BY_NAMES_EXT;
@@ -1518,7 +1672,13 @@ type
     begin
       if self.val = UInt64($0000) then Result := 'PARTITION_BY_COUNTS_LIST_END_EXT' else
       if self.val = UInt64($0000) then Result := 'PROPERTIES_LIST_END_EXT' else
+      if self.val = UInt64($0001) then Result := 'AFFINITY_DOMAIN_L1_CACHE_EXT' else
       if self.val = UInt64(-1) then Result := 'PARTITION_BY_NAMES_LIST_END_EXT' else
+      if self.val = UInt64($0002) then Result := 'AFFINITY_DOMAIN_L2_CACHE_EXT' else
+      if self.val = UInt64($0003) then Result := 'AFFINITY_DOMAIN_L3_CACHE_EXT' else
+      if self.val = UInt64($0004) then Result := 'AFFINITY_DOMAIN_L4_CACHE_EXT' else
+      if self.val = UInt64($0010) then Result := 'AFFINITY_DOMAIN_NUMA_EXT' else
+      if self.val = UInt64($0100) then Result := 'AFFINITY_DOMAIN_NEXT_FISSIONABLE_EXT' else
       if self.val = UInt64($4050) then Result := 'DEVICE_PARTITION_EQUALLY_EXT' else
       if self.val = UInt64($4051) then Result := 'DEVICE_PARTITION_BY_COUNTS_EXT' else
       if self.val = UInt64($4052) then Result := 'DEVICE_PARTITION_BY_NAMES_EXT' else
@@ -2172,6 +2332,60 @@ type
     
   end;
   
+  ImagePitchInfoQcom = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _IMAGE_ROW_ALIGNMENT_QCOM   := new ImagePitchInfoQcom($40A2);
+    private static _IMAGE_SLICE_ALIGNMENT_QCOM := new ImagePitchInfoQcom($40A3);
+    
+    public static property IMAGE_ROW_ALIGNMENT_QCOM:   ImagePitchInfoQcom read _IMAGE_ROW_ALIGNMENT_QCOM;
+    public static property IMAGE_SLICE_ALIGNMENT_QCOM: ImagePitchInfoQcom read _IMAGE_SLICE_ALIGNMENT_QCOM;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($40A2) then Result := 'IMAGE_ROW_ALIGNMENT_QCOM' else
+      if self.val = UInt32($40A3) then Result := 'IMAGE_SLICE_ALIGNMENT_QCOM' else
+        Result := $'ImagePitchInfoQcom[{self.val}]';
+    end;
+    
+  end;
+  
+  ImportPropertiesArm = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public constructor(val: Int32) := self.val := new IntPtr(val);
+    
+    private static _IMPORT_MEMORY_WHOLE_ALLOCATION_ARM            := new ImportPropertiesArm(-1);
+    private static _IMPORT_TYPE_ARM                               := new ImportPropertiesArm($40B2);
+    private static _IMPORT_TYPE_HOST_ARM                          := new ImportPropertiesArm($40B3);
+    private static _IMPORT_TYPE_DMA_BUF_ARM                       := new ImportPropertiesArm($40B4);
+    private static _IMPORT_TYPE_PROTECTED_ARM                     := new ImportPropertiesArm($40B5);
+    private static _IMPORT_TYPE_ANDROID_HARDWARE_BUFFER_ARM       := new ImportPropertiesArm($41E2);
+    private static _IMPORT_DMA_BUF_DATA_CONSISTENCY_WITH_HOST_ARM := new ImportPropertiesArm($41E3);
+    
+    public static property IMPORT_MEMORY_WHOLE_ALLOCATION_ARM:            ImportPropertiesArm read _IMPORT_MEMORY_WHOLE_ALLOCATION_ARM;
+    public static property IMPORT_TYPE_ARM:                               ImportPropertiesArm read _IMPORT_TYPE_ARM;
+    public static property IMPORT_TYPE_HOST_ARM:                          ImportPropertiesArm read _IMPORT_TYPE_HOST_ARM;
+    public static property IMPORT_TYPE_DMA_BUF_ARM:                       ImportPropertiesArm read _IMPORT_TYPE_DMA_BUF_ARM;
+    public static property IMPORT_TYPE_PROTECTED_ARM:                     ImportPropertiesArm read _IMPORT_TYPE_PROTECTED_ARM;
+    public static property IMPORT_TYPE_ANDROID_HARDWARE_BUFFER_ARM:       ImportPropertiesArm read _IMPORT_TYPE_ANDROID_HARDWARE_BUFFER_ARM;
+    public static property IMPORT_DMA_BUF_DATA_CONSISTENCY_WITH_HOST_ARM: ImportPropertiesArm read _IMPORT_DMA_BUF_DATA_CONSISTENCY_WITH_HOST_ARM;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = IntPtr(-1) then Result := 'IMPORT_MEMORY_WHOLE_ALLOCATION_ARM' else
+      if self.val = IntPtr($40B2) then Result := 'IMPORT_TYPE_ARM' else
+      if self.val = IntPtr($40B3) then Result := 'IMPORT_TYPE_HOST_ARM' else
+      if self.val = IntPtr($40B4) then Result := 'IMPORT_TYPE_DMA_BUF_ARM' else
+      if self.val = IntPtr($40B5) then Result := 'IMPORT_TYPE_PROTECTED_ARM' else
+      if self.val = IntPtr($41E2) then Result := 'IMPORT_TYPE_ANDROID_HARDWARE_BUFFER_ARM' else
+      if self.val = IntPtr($41E3) then Result := 'IMPORT_DMA_BUF_DATA_CONSISTENCY_WITH_HOST_ARM' else
+        Result := $'ImportPropertiesArm[{self.val}]';
+    end;
+    
+  end;
+  
   KernelArgAccessQualifier = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2311,6 +2525,25 @@ type
       if self.val = UInt32($4202) then Result := 'KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS_INTEL' else
       if self.val = UInt32($4203) then Result := 'KERNEL_EXEC_INFO_USM_PTRS_INTEL' else
         Result := $'KernelExecInfo[{self.val}]';
+    end;
+    
+  end;
+  
+  KernelExecInfoArm = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _KERNEL_EXEC_INFO_SVM_PTRS_ARM              := new KernelExecInfoArm($40B8);
+    private static _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM := new KernelExecInfoArm($40B9);
+    
+    public static property KERNEL_EXEC_INFO_SVM_PTRS_ARM:              KernelExecInfoArm read _KERNEL_EXEC_INFO_SVM_PTRS_ARM;
+    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM: KernelExecInfoArm read _KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($40B8) then Result := 'KERNEL_EXEC_INFO_SVM_PTRS_ARM' else
+      if self.val = UInt32($40B9) then Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM' else
+        Result := $'KernelExecInfoArm[{self.val}]';
     end;
     
   end;
@@ -2457,15 +2690,10 @@ type
     public constructor(val: UInt64) := self.val := val;
     
     private static _MEM_READ_WRITE                      := new MemFlags($0001);
-    private static _MEM_RESERVED0_ARM                   := new MemFlags($0001);
-    private static _MEM_RESERVED1_ARM                   := new MemFlags($0002);
     private static _MEM_WRITE_ONLY                      := new MemFlags($0002);
     private static _MEM_READ_ONLY                       := new MemFlags($0004);
-    private static _MEM_RESERVED2_ARM                   := new MemFlags($0004);
-    private static _MEM_RESERVED3_ARM                   := new MemFlags($0008);
     private static _MEM_USE_HOST_PTR                    := new MemFlags($0008);
     private static _MEM_ALLOC_HOST_PTR                  := new MemFlags($0010);
-    private static _MEM_RESERVED4_ARM                   := new MemFlags($0010);
     private static _MEM_COPY_HOST_PTR                   := new MemFlags($0020);
     private static _MEM_HOST_WRITE_ONLY                 := new MemFlags($0080);
     private static _MEM_HOST_READ_ONLY                  := new MemFlags($0100);
@@ -2478,17 +2706,17 @@ type
     private static _MEM_USE_CACHED_CPU_MEMORY_IMG       := new MemFlags($8000000);
     private static _MEM_USE_GRALLOC_PTR_IMG             := new MemFlags($10000000);
     private static _MEM_EXT_HOST_PTR_QCOM               := new MemFlags($20000000);
+    private static _MEM_RESERVED0_ARM                   := new MemFlags($100000000);
+    private static _MEM_RESERVED1_ARM                   := new MemFlags($200000000);
+    private static _MEM_RESERVED2_ARM                   := new MemFlags($400000000);
+    private static _MEM_RESERVED3_ARM                   := new MemFlags($800000000);
+    private static _MEM_RESERVED4_ARM                   := new MemFlags($1000000000);
     
     public static property MEM_READ_WRITE:                      MemFlags read _MEM_READ_WRITE;
-    public static property MEM_RESERVED0_ARM:                   MemFlags read _MEM_RESERVED0_ARM;
-    public static property MEM_RESERVED1_ARM:                   MemFlags read _MEM_RESERVED1_ARM;
     public static property MEM_WRITE_ONLY:                      MemFlags read _MEM_WRITE_ONLY;
     public static property MEM_READ_ONLY:                       MemFlags read _MEM_READ_ONLY;
-    public static property MEM_RESERVED2_ARM:                   MemFlags read _MEM_RESERVED2_ARM;
-    public static property MEM_RESERVED3_ARM:                   MemFlags read _MEM_RESERVED3_ARM;
     public static property MEM_USE_HOST_PTR:                    MemFlags read _MEM_USE_HOST_PTR;
     public static property MEM_ALLOC_HOST_PTR:                  MemFlags read _MEM_ALLOC_HOST_PTR;
-    public static property MEM_RESERVED4_ARM:                   MemFlags read _MEM_RESERVED4_ARM;
     public static property MEM_COPY_HOST_PTR:                   MemFlags read _MEM_COPY_HOST_PTR;
     public static property MEM_HOST_WRITE_ONLY:                 MemFlags read _MEM_HOST_WRITE_ONLY;
     public static property MEM_HOST_READ_ONLY:                  MemFlags read _MEM_HOST_READ_ONLY;
@@ -2501,20 +2729,20 @@ type
     public static property MEM_USE_CACHED_CPU_MEMORY_IMG:       MemFlags read _MEM_USE_CACHED_CPU_MEMORY_IMG;
     public static property MEM_USE_GRALLOC_PTR_IMG:             MemFlags read _MEM_USE_GRALLOC_PTR_IMG;
     public static property MEM_EXT_HOST_PTR_QCOM:               MemFlags read _MEM_EXT_HOST_PTR_QCOM;
+    public static property MEM_RESERVED0_ARM:                   MemFlags read _MEM_RESERVED0_ARM;
+    public static property MEM_RESERVED1_ARM:                   MemFlags read _MEM_RESERVED1_ARM;
+    public static property MEM_RESERVED2_ARM:                   MemFlags read _MEM_RESERVED2_ARM;
+    public static property MEM_RESERVED3_ARM:                   MemFlags read _MEM_RESERVED3_ARM;
+    public static property MEM_RESERVED4_ARM:                   MemFlags read _MEM_RESERVED4_ARM;
     
     public static function operator+(f1,f2: MemFlags) := new MemFlags(f1.val or f2.val);
     public static function operator or(f1,f2: MemFlags) := f1+f2;
     
     public property HAS_FLAG_MEM_READ_WRITE:                      boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_MEM_RESERVED0_ARM:                   boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_MEM_RESERVED1_ARM:                   boolean read self.val and $0002 <> 0;
     public property HAS_FLAG_MEM_WRITE_ONLY:                      boolean read self.val and $0002 <> 0;
     public property HAS_FLAG_MEM_READ_ONLY:                       boolean read self.val and $0004 <> 0;
-    public property HAS_FLAG_MEM_RESERVED2_ARM:                   boolean read self.val and $0004 <> 0;
-    public property HAS_FLAG_MEM_RESERVED3_ARM:                   boolean read self.val and $0008 <> 0;
     public property HAS_FLAG_MEM_USE_HOST_PTR:                    boolean read self.val and $0008 <> 0;
     public property HAS_FLAG_MEM_ALLOC_HOST_PTR:                  boolean read self.val and $0010 <> 0;
-    public property HAS_FLAG_MEM_RESERVED4_ARM:                   boolean read self.val and $0010 <> 0;
     public property HAS_FLAG_MEM_COPY_HOST_PTR:                   boolean read self.val and $0020 <> 0;
     public property HAS_FLAG_MEM_HOST_WRITE_ONLY:                 boolean read self.val and $0080 <> 0;
     public property HAS_FLAG_MEM_HOST_READ_ONLY:                  boolean read self.val and $0100 <> 0;
@@ -2527,20 +2755,20 @@ type
     public property HAS_FLAG_MEM_USE_CACHED_CPU_MEMORY_IMG:       boolean read self.val and $8000000 <> 0;
     public property HAS_FLAG_MEM_USE_GRALLOC_PTR_IMG:             boolean read self.val and $10000000 <> 0;
     public property HAS_FLAG_MEM_EXT_HOST_PTR_QCOM:               boolean read self.val and $20000000 <> 0;
+    public property HAS_FLAG_MEM_RESERVED0_ARM:                   boolean read self.val and $100000000 <> 0;
+    public property HAS_FLAG_MEM_RESERVED1_ARM:                   boolean read self.val and $200000000 <> 0;
+    public property HAS_FLAG_MEM_RESERVED2_ARM:                   boolean read self.val and $400000000 <> 0;
+    public property HAS_FLAG_MEM_RESERVED3_ARM:                   boolean read self.val and $800000000 <> 0;
+    public property HAS_FLAG_MEM_RESERVED4_ARM:                   boolean read self.val and $1000000000 <> 0;
     
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
       if self.val and UInt64($0001) = UInt64($0001) then res += 'MEM_READ_WRITE+';
-      if self.val and UInt64($0001) = UInt64($0001) then res += 'MEM_RESERVED0_ARM+';
-      if self.val and UInt64($0002) = UInt64($0002) then res += 'MEM_RESERVED1_ARM+';
       if self.val and UInt64($0002) = UInt64($0002) then res += 'MEM_WRITE_ONLY+';
       if self.val and UInt64($0004) = UInt64($0004) then res += 'MEM_READ_ONLY+';
-      if self.val and UInt64($0004) = UInt64($0004) then res += 'MEM_RESERVED2_ARM+';
-      if self.val and UInt64($0008) = UInt64($0008) then res += 'MEM_RESERVED3_ARM+';
       if self.val and UInt64($0008) = UInt64($0008) then res += 'MEM_USE_HOST_PTR+';
       if self.val and UInt64($0010) = UInt64($0010) then res += 'MEM_ALLOC_HOST_PTR+';
-      if self.val and UInt64($0010) = UInt64($0010) then res += 'MEM_RESERVED4_ARM+';
       if self.val and UInt64($0020) = UInt64($0020) then res += 'MEM_COPY_HOST_PTR+';
       if self.val and UInt64($0080) = UInt64($0080) then res += 'MEM_HOST_WRITE_ONLY+';
       if self.val and UInt64($0100) = UInt64($0100) then res += 'MEM_HOST_READ_ONLY+';
@@ -2553,6 +2781,11 @@ type
       if self.val and UInt64($8000000) = UInt64($8000000) then res += 'MEM_USE_CACHED_CPU_MEMORY_IMG+';
       if self.val and UInt64($10000000) = UInt64($10000000) then res += 'MEM_USE_GRALLOC_PTR_IMG+';
       if self.val and UInt64($20000000) = UInt64($20000000) then res += 'MEM_EXT_HOST_PTR_QCOM+';
+      if self.val and UInt64($100000000) = UInt64($100000000) then res += 'MEM_RESERVED0_ARM+';
+      if self.val and UInt64($200000000) = UInt64($200000000) then res += 'MEM_RESERVED1_ARM+';
+      if self.val and UInt64($400000000) = UInt64($400000000) then res += 'MEM_RESERVED2_ARM+';
+      if self.val and UInt64($800000000) = UInt64($800000000) then res += 'MEM_RESERVED3_ARM+';
+      if self.val and UInt64($1000000000) = UInt64($1000000000) then res += 'MEM_RESERVED4_ARM+';
       if res.Length<>0 then
       begin
         res.Length -= 1;
@@ -2585,6 +2818,7 @@ type
     private static _MEM_DX9_RESOURCE_INTEL         := new MemInfo($4027);
     private static _MEM_DX9_SHARED_HANDLE_INTEL    := new MemInfo($4074);
     private static _MEM_VA_API_MEDIA_SURFACE_INTEL := new MemInfo($4098);
+    private static _MEM_USES_SVM_POINTER_ARM       := new MemInfo($40B7);
     
     public static property MEM_TYPE:                       MemInfo read _MEM_TYPE;
     public static property MEM_FLAGS:                      MemInfo read _MEM_FLAGS;
@@ -2604,6 +2838,7 @@ type
     public static property MEM_DX9_RESOURCE_INTEL:         MemInfo read _MEM_DX9_RESOURCE_INTEL;
     public static property MEM_DX9_SHARED_HANDLE_INTEL:    MemInfo read _MEM_DX9_SHARED_HANDLE_INTEL;
     public static property MEM_VA_API_MEDIA_SURFACE_INTEL: MemInfo read _MEM_VA_API_MEDIA_SURFACE_INTEL;
+    public static property MEM_USES_SVM_POINTER_ARM:       MemInfo read _MEM_USES_SVM_POINTER_ARM;
     
     public function ToString: string; override;
     begin
@@ -2625,6 +2860,7 @@ type
       if self.val = UInt32($4027) then Result := 'MEM_DX9_RESOURCE_INTEL' else
       if self.val = UInt32($4074) then Result := 'MEM_DX9_SHARED_HANDLE_INTEL' else
       if self.val = UInt32($4098) then Result := 'MEM_VA_API_MEDIA_SURFACE_INTEL' else
+      if self.val = UInt32($40B7) then Result := 'MEM_USES_SVM_POINTER_ARM' else
         Result := $'MemInfo[{self.val}]';
     end;
     
@@ -2759,25 +2995,29 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    private static _PLATFORM_PROFILE                 := new PlatformInfo($0900);
-    private static _PLATFORM_VERSION                 := new PlatformInfo($0901);
-    private static _PLATFORM_NAME                    := new PlatformInfo($0902);
-    private static _PLATFORM_VENDOR                  := new PlatformInfo($0903);
-    private static _PLATFORM_EXTENSIONS              := new PlatformInfo($0904);
-    private static _PLATFORM_HOST_TIMER_RESOLUTION   := new PlatformInfo($0905);
-    private static _PLATFORM_NUMERIC_VERSION         := new PlatformInfo($0906);
-    private static _PLATFORM_EXTENSIONS_WITH_VERSION := new PlatformInfo($0907);
-    private static _PLATFORM_ICD_SUFFIX_KHR          := new PlatformInfo($0920);
+    private static _PLATFORM_PROFILE                     := new PlatformInfo($0900);
+    private static _PLATFORM_VERSION                     := new PlatformInfo($0901);
+    private static _PLATFORM_NAME                        := new PlatformInfo($0902);
+    private static _PLATFORM_VENDOR                      := new PlatformInfo($0903);
+    private static _PLATFORM_EXTENSIONS                  := new PlatformInfo($0904);
+    private static _PLATFORM_HOST_TIMER_RESOLUTION       := new PlatformInfo($0905);
+    private static _PLATFORM_NUMERIC_VERSION             := new PlatformInfo($0906);
+    private static _PLATFORM_NUMERIC_VERSION_KHR         := new PlatformInfo($0906);
+    private static _PLATFORM_EXTENSIONS_WITH_VERSION     := new PlatformInfo($0907);
+    private static _PLATFORM_EXTENSIONS_WITH_VERSION_KHR := new PlatformInfo($0907);
+    private static _PLATFORM_ICD_SUFFIX_KHR              := new PlatformInfo($0920);
     
-    public static property PLATFORM_PROFILE:                 PlatformInfo read _PLATFORM_PROFILE;
-    public static property PLATFORM_VERSION:                 PlatformInfo read _PLATFORM_VERSION;
-    public static property PLATFORM_NAME:                    PlatformInfo read _PLATFORM_NAME;
-    public static property PLATFORM_VENDOR:                  PlatformInfo read _PLATFORM_VENDOR;
-    public static property PLATFORM_EXTENSIONS:              PlatformInfo read _PLATFORM_EXTENSIONS;
-    public static property PLATFORM_HOST_TIMER_RESOLUTION:   PlatformInfo read _PLATFORM_HOST_TIMER_RESOLUTION;
-    public static property PLATFORM_NUMERIC_VERSION:         PlatformInfo read _PLATFORM_NUMERIC_VERSION;
-    public static property PLATFORM_EXTENSIONS_WITH_VERSION: PlatformInfo read _PLATFORM_EXTENSIONS_WITH_VERSION;
-    public static property PLATFORM_ICD_SUFFIX_KHR:          PlatformInfo read _PLATFORM_ICD_SUFFIX_KHR;
+    public static property PLATFORM_PROFILE:                     PlatformInfo read _PLATFORM_PROFILE;
+    public static property PLATFORM_VERSION:                     PlatformInfo read _PLATFORM_VERSION;
+    public static property PLATFORM_NAME:                        PlatformInfo read _PLATFORM_NAME;
+    public static property PLATFORM_VENDOR:                      PlatformInfo read _PLATFORM_VENDOR;
+    public static property PLATFORM_EXTENSIONS:                  PlatformInfo read _PLATFORM_EXTENSIONS;
+    public static property PLATFORM_HOST_TIMER_RESOLUTION:       PlatformInfo read _PLATFORM_HOST_TIMER_RESOLUTION;
+    public static property PLATFORM_NUMERIC_VERSION:             PlatformInfo read _PLATFORM_NUMERIC_VERSION;
+    public static property PLATFORM_NUMERIC_VERSION_KHR:         PlatformInfo read _PLATFORM_NUMERIC_VERSION_KHR;
+    public static property PLATFORM_EXTENSIONS_WITH_VERSION:     PlatformInfo read _PLATFORM_EXTENSIONS_WITH_VERSION;
+    public static property PLATFORM_EXTENSIONS_WITH_VERSION_KHR: PlatformInfo read _PLATFORM_EXTENSIONS_WITH_VERSION_KHR;
+    public static property PLATFORM_ICD_SUFFIX_KHR:              PlatformInfo read _PLATFORM_ICD_SUFFIX_KHR;
     
     public function ToString: string; override;
     begin
@@ -2788,7 +3028,9 @@ type
       if self.val = UInt32($0904) then Result := 'PLATFORM_EXTENSIONS' else
       if self.val = UInt32($0905) then Result := 'PLATFORM_HOST_TIMER_RESOLUTION' else
       if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION' else
+      if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION_KHR' else
       if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
+      if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION_KHR' else
       if self.val = UInt32($0920) then Result := 'PLATFORM_ICD_SUFFIX_KHR' else
         Result := $'PlatformInfo[{self.val}]';
     end;
@@ -2893,6 +3135,7 @@ type
     private static _PROGRAM_NUM_KERNELS                := new ProgramInfo($1167);
     private static _PROGRAM_KERNEL_NAMES               := new ProgramInfo($1168);
     private static _PROGRAM_IL                         := new ProgramInfo($1169);
+    private static _PROGRAM_IL_KHR                     := new ProgramInfo($1169);
     private static _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT := new ProgramInfo($116A);
     private static _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT := new ProgramInfo($116B);
     
@@ -2906,6 +3149,7 @@ type
     public static property PROGRAM_NUM_KERNELS:                ProgramInfo read _PROGRAM_NUM_KERNELS;
     public static property PROGRAM_KERNEL_NAMES:               ProgramInfo read _PROGRAM_KERNEL_NAMES;
     public static property PROGRAM_IL:                         ProgramInfo read _PROGRAM_IL;
+    public static property PROGRAM_IL_KHR:                     ProgramInfo read _PROGRAM_IL_KHR;
     public static property PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT: ProgramInfo read _PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT;
     public static property PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT: ProgramInfo read _PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT;
     
@@ -2921,6 +3165,7 @@ type
       if self.val = UInt32($1167) then Result := 'PROGRAM_NUM_KERNELS' else
       if self.val = UInt32($1168) then Result := 'PROGRAM_KERNEL_NAMES' else
       if self.val = UInt32($1169) then Result := 'PROGRAM_IL' else
+      if self.val = UInt32($1169) then Result := 'PROGRAM_IL_KHR' else
       if self.val = UInt32($116A) then Result := 'PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT' else
       if self.val = UInt32($116B) then Result := 'PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT' else
         Result := $'ProgramInfo[{self.val}]';
@@ -3057,6 +3302,25 @@ type
       if self.val = UInt64($0800) then Result := 'MEM_SVM_ATOMICS' else
       if self.val = UInt64($1000) then Result := 'MEM_KERNEL_READ_AND_WRITE' else
         Result := $'SvmMemFlags[{self.val}]';
+    end;
+    
+  end;
+  
+  SvmMemFlagsArm = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_SVM_FINE_GRAIN_BUFFER_ARM := new SvmMemFlagsArm($0400);
+    private static _MEM_SVM_ATOMICS_ARM           := new SvmMemFlagsArm($0800);
+    
+    public static property MEM_SVM_FINE_GRAIN_BUFFER_ARM: SvmMemFlagsArm read _MEM_SVM_FINE_GRAIN_BUFFER_ARM;
+    public static property MEM_SVM_ATOMICS_ARM:           SvmMemFlagsArm read _MEM_SVM_ATOMICS_ARM;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($0400) then Result := 'MEM_SVM_FINE_GRAIN_BUFFER_ARM' else
+      if self.val = UInt64($0800) then Result := 'MEM_SVM_ATOMICS_ARM' else
+        Result := $'SvmMemFlagsArm[{self.val}]';
     end;
     
   end;
@@ -8194,15 +8458,15 @@ type
   clD3d10SharingKHR = static class
     public const _ExtStr = 'khr_d3d10_sharing';
     
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices[0]) else
@@ -8210,41 +8474,41 @@ type
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_8(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_8(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_8(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
     
     private static function z_CreateFromD3D10BufferKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -8700,15 +8964,15 @@ type
   clD3d11SharingKHR = static class
     public const _ExtStr = 'khr_d3d11_sharing';
     
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices[0]) else
@@ -8716,41 +8980,41 @@ type
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_8(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_8(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_8(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
     
     private static function z_CreateFromD3D11BufferKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -10852,15 +11116,15 @@ type
   clExtHostPtrQCOM = static class
     public const _ExtStr = 'qcom_ext_host_ptr';
     
-    private static function z_GetDeviceImageInfoQCOM_ovr_0(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
     if (image_format<>nil) and (image_format.Length<>0) then
       if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret[0]) else
@@ -10868,41 +11132,41 @@ type
       if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret[0]) else
         z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, IntPtr.Zero);
-    private static function z_GetDeviceImageInfoQCOM_ovr_1_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_1_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     if (image_format<>nil) and (image_format.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetDeviceImageInfoQCOM_ovr_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     if (image_format<>nil) and (image_format.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_2(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
     if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device, image_width, image_height, image_format, param_name, param_value_size, param_value, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_2(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetDeviceImageInfoQCOM_ovr_6(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_6(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
     if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_6(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device, image_width, image_height, image_format, param_name, param_value_size, param_value, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_6(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetDeviceImageInfoQCOM_ovr_8(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_8(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_8(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
@@ -11340,19 +11604,19 @@ type
   clImportMemoryARM = static class
     public const _ExtStr = 'arm_import_memory';
     
-    private static function z_ImportMemoryARM_ovr_0(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_ImportMemoryARM_ovr_0(context: cl_context; flags: MemFlags; var properties: ImportPropertiesArm; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
     private static function z_ImportMemoryARM_ovr_0_anh0001000(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of ImportPropertiesArm; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_ImportMemoryARM_ovr_0(context, flags, properties[0], memory, size, errcode_ret) else
       z_ImportMemoryARM_ovr_0_anh0001000(context, flags, IntPtr.Zero, memory, size, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: ImportPropertiesArm; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_ImportMemoryARM_ovr_0(context, flags, properties, memory, size, errcode_ret);
-    private static function z_ImportMemoryARM_ovr_2(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_ImportMemoryARM_ovr_2(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_ImportMemoryARM_ovr_2(context, flags, properties, memory, size, errcode_ret);
     
   end;
@@ -11361,9 +11625,9 @@ type
   clSharedVirtualMemoryARM = static class
     public const _ExtStr = 'arm_shared_virtual_memory';
     
-    private static function z_SVMAllocARM_ovr_0(context: cl_context; flags: UInt64; size: UIntPtr; alignment: UInt32): IntPtr;
+    private static function z_SVMAllocARM_ovr_0(context: cl_context; flags: SvmMemFlagsArm; size: UIntPtr; alignment: UInt32): IntPtr;
     external 'opencl.dll' name 'clSVMAllocARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SVMAllocARM(context: cl_context; flags: UInt64; size: UIntPtr; alignment: UInt32): IntPtr :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SVMAllocARM(context: cl_context; flags: SvmMemFlagsArm; size: UIntPtr; alignment: UInt32): IntPtr :=
     z_SVMAllocARM_ovr_0(context, flags, size, alignment);
     
     private static procedure z_SVMFreeARM_ovr_0(context: cl_context; svm_pointer: IntPtr);
@@ -11641,9 +11905,9 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelArgSVMPointerARM(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): ErrorCode :=
     z_SetKernelArgSVMPointerARM_ovr_0(kernel, arg_index, arg_value);
     
-    private static function z_SetKernelExecInfoARM_ovr_0(kernel: cl_kernel; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode;
+    private static function z_SetKernelExecInfoARM_ovr_0(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clSetKernelExecInfoARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode :=
     z_SetKernelExecInfoARM_ovr_0(kernel, param_name, param_value_size, param_value);
     
   end;
@@ -13434,59 +13698,6 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMemcpyINTEL_ovr_8(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event);
     
-    private static function z_EnqueueMigrateMemINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      if (&event<>nil) and (&event.Length<>0) then
-        z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
-        z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if (&event<>nil) and (&event.Length<>0) then
-        z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
-        z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
-    private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
-      z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
-      z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if (&event<>nil) and (&event.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
-      z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_6(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if (&event<>nil) and (&event.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
-      z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_8(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_8(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    
     private static function z_EnqueueMemAdviseINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     private static function z_EnqueueMemAdviseINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -13539,6 +13750,59 @@ type
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMemAdviseINTEL_ovr_8(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, &event);
+    
+    private static function z_EnqueueMigrateMemINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
+        z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
+        z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
+    if (&event<>nil) and (&event.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
+      z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueMigrateMemINTEL_ovr_6(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
+    if (&event<>nil) and (&event.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
+      z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueMigrateMemINTEL_ovr_8(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_8(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
     
   end;
   

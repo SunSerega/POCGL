@@ -349,7 +349,7 @@ begin
     res += '  {$endregion Vec}'#10;
     res += '  ';
     
-    WriteAllText(GetFullPathRTE('VecTypes.template'), res.ToString);
+    WriteAllText(GetFullPathRTA('VecTypes.template'), res.ToString);
   except
     on e: Exception do ErrOtp(e);
   end;

@@ -167,13 +167,15 @@ type
             val := 0 else
           if val_str='((cl_device_partition_property_ext)0 - 1)' then
             val := -1 else
+          if val_str = 'SIZE_MAX' then
+            val := (System.UIntPtr.Zero - 1).ToUInt64 else
           if not enums.TryGetValue(val_str, val) then
           begin
             Otp($'ERROR parsing enum [{ename}] val [{val_str}] of group [{self.name}]');
             continue;
           end;
         end else
-          val := 1 shl e['bitpos'].ToInteger;
+          val := int64(1) shl e['bitpos'].ToInteger;
         
         enums.Add(ename, val);
         AllEnums.Add(ename, val);
@@ -196,7 +198,7 @@ type
       var comment := n['comment'];
       if comment=nil then exit;
       
-      foreach var gname in comment.ToWords do
+      foreach var gname in comment.ToWords.Except(|'cl_uint'|) do
       begin
         
         var gr: Group;
@@ -487,7 +489,7 @@ type
 procedure ScrapFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(GetFullPathRTE($'..\..\Reps\OpenCL-Docs\xml\{api_name}.xml'));
+  var root := new XmlNode(GetFullPathRTA($'..\..\Reps\OpenCL-Docs\xml\{api_name}.xml'));
   
   foreach var n in root.Nodes['types'].Single.Nodes['type'] do
     new TypeDef(n);

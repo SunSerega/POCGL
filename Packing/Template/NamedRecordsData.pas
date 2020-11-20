@@ -5,9 +5,9 @@ uses AOtp         in '..\..\Utils\AOtp';
 
 begin
   try
-    var sw := new System.IO.StreamWriter(GetFullPathRTE('NameRecords.template'), false, enc);
+    var sw := new System.IO.StreamWriter(GetFullPathRTA('NameRecords.template'), false, enc);
     
-    foreach var l in ReadLines(GetFullPathRTE('MiscInput\NameRecords.dat')) do
+    foreach var l in ReadLines(GetFullPathRTA('MiscInput\NameRecords.dat')) do
       if not l.Contains('=') then
         sw.WriteLine('  '+l) else
       begin

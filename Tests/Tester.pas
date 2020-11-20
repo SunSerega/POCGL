@@ -336,7 +336,7 @@ type
         begin
           thr.Abort;
           dom.SetData('exec_time', MaxExecTime*System.TimeSpan.TicksPerMillisecond);
-          dom.SetData('fatal_err', $'ERROR: Execution took too long for "{GetFullPathRTE(fname)}"');
+          dom.SetData('fatal_err', $'ERROR: Execution took too long for "{GetFullPathRTA(fname)}"');
         end else
           dom.SetData('Result', res.ToString);
         

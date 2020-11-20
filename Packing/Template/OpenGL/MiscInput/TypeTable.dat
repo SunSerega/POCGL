@@ -91,7 +91,6 @@ GLXHyperpipeConfigSGIX	=GLXHyperpipeConfigSGIX
 //--------------------------------------------------
 
 // gl
-GLsync					=GLsync
 HGLRC					=GLContext
 struct _cl_context		=cl_context
 struct _cl_event		=cl_event

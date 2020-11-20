@@ -5,7 +5,7 @@ uses POCGL_Utils in '..\..\POCGL_Utils';
 uses AOtp        in '..\..\Utils\AOtp';
 
 var log := new System.IO.StreamWriter(
-  GetFullPathRTE('xml.log'),
+  GetFullPathRTA('xml.log'),
   false, enc
 );
 var xmls: HashSet<string>;

@@ -78,8 +78,8 @@ type
       POCGL_Utils.Otp($'Packing spec "{nick}"');
       last_page_id := 0;
       
-      path := GetFullPathRTE(path);
-      otp  := GetFullPathRTE(otp);
+      path := GetFullPathRTA(path);
+      otp  := GetFullPathRTA(otp);
       
       var sw := new StreamWriter(otp, false, enc);
       sw.WriteLine('<html>');
@@ -87,19 +87,19 @@ type
       sw.WriteLine('<meta charset="utf-8">');
       
       sw.WriteLine('<style>');
-      sw.WriteLine(ReadAllText(GetFullPathRTE('0SpecContainer\.css')).Trim);
+      sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.css')).Trim);
       sw.WriteLine('</style>');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText(GetFullPathRTE('0SpecContainer\.md')),
+        ReadAllText(GetFullPathRTA('0SpecContainer\.md')),
         md_pipeline
       ).Trim);
       
       sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText(GetFullPathRTE('0SpecContainer\.js')).Trim);
+      sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.js')).Trim);
       sw.WriteLine('</script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);

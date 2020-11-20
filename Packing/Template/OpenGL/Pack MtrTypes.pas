@@ -570,7 +570,7 @@ begin
     res += '  {$endregion Mtr}'#10;
     res += '  ';
     
-    WriteAllText(GetFullPathRTE('MtrTypes.template'), res.ToString);
+    WriteAllText(GetFullPathRTA('MtrTypes.template'), res.ToString);
   except
     on e: Exception do ErrOtp(e);
   end;

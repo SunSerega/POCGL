@@ -48,4 +48,8 @@
 	version: UInt32
 	name: ntv_char
 
+# cl_name_version_khr
+	version: UInt32
+	name: ntv_char
+
 

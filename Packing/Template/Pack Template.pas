@@ -84,11 +84,11 @@ type
           generator_fname := Path.ChangeExtension(generator_fname, '.exe');
         end;
         
-        tsk := RegisterCommand(Concat(generator_fname,'!',generator_par.JoinToString('!')), ()->tsk+ExecTask(generator_fname, $'TemplateCommand[{GetRelativePathRTE(generator_fname)}]', generator_par));
+        tsk := RegisterCommand(Concat(generator_fname,'!',generator_par.JoinToString('!')), ()->tsk+ExecTask(generator_fname, $'TemplateCommand[{GetRelativePathRTA(generator_fname)}]', generator_par));
       end;
       
       //ToDo #
-      var template_nick := $'Template[{GetRelativePathRTE(Path.ChangeExtension(template_fname, nil))}]';
+      var template_nick := $'Template[{GetRelativePathRTA(Path.ChangeExtension(template_fname, nil))}]';
       yield new WaitBlock(tsk, otp->
       begin
         
@@ -152,7 +152,7 @@ type
         begin
 //          MiscUtils.Otp($'Reading');
 //          Writeln(inp_fname);
-          if not FileExists(inp_fname) then raise new MessageException($'ERROR: File [{GetRelativePathRTE(inp_fname)}] not found');
+          if not FileExists(inp_fname) then raise new MessageException($'ERROR: File [{GetRelativePathRTA(inp_fname)}] not found');
           var text := ReadAllText(inp_fname, enc).Trim.Remove(#13);
           
           var ind1 := 0;

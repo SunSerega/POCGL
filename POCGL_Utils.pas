@@ -12,10 +12,10 @@ procedure Otp(l: OtpLine) := AOtp.Otp(l);
 procedure ErrOtp(e: Exception) := AOtp.ErrOtp(e);
 
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory) := PathUtils.GetFullPath(fname, base_folder);
-function GetFullPathRTE(fname: string)                                                          := PathUtils.GetFullPathRTE(fname);
+function GetFullPathRTA(fname: string)                                                          := PathUtils.GetFullPathRTA(fname);
 
 function GetRelativePath(fname: string; base_folder: string := System.Environment.CurrentDirectory) := PathUtils.GetRelativePath(fname, base_folder);
-function GetRelativePathRTE(fname: string)                                                          := PathUtils.GetRelativePathRTE(fname);
+function GetRelativePathRTA(fname: string)                                                          := PathUtils.GetRelativePathRTA(fname);
 
 function is_separate_execution := Logger.main is ConsoleLogger;
 

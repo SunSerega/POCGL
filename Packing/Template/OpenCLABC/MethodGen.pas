@@ -46,7 +46,7 @@ type
 begin
   try
     
-    EnumerateDirectories(GetFullPathRTE('MethodDef'))
+    EnumerateDirectories(GetFullPathRTA('MethodDef'))
     .Select(dir->ProcTask(()->
     begin
       var t := System.IO.Path.GetFileName(dir);

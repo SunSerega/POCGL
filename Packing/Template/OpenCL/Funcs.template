@@ -4993,15 +4993,15 @@
   clD3d10SharingKHR = static class
     public const _ExtStr = 'khr_d3d10_sharing';
     
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices[0]) else
@@ -5009,41 +5009,41 @@
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000011(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D10KHR_ovr_2_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D10KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D10KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D10KHR_ovr_6_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D10KHR_ovr_8(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D10KHR_ovr_8(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D10KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D10KHR(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D10KHR_ovr_8(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
     
     private static function z_CreateFromD3D10BufferKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -5499,15 +5499,15 @@
   clD3d11SharingKHR = static class
     public const _ExtStr = 'khr_d3d11_sharing';
     
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices[0]) else
@@ -5515,41 +5515,41 @@
       if (num_devices<>nil) and (num_devices.Length<>0) then
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices[0]) else
         z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000011(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, IntPtr.Zero);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_1_anh00000010(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; var num_devices: UInt32): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: array of cl_device_id; num_devices: IntPtr): ErrorCode :=
     if (devices<>nil) and (devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices[0], num_devices) else
       z_GetDeviceIDsFromD3D11KHR_ovr_2_anh00000010(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, IntPtr.Zero, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D11KHR_ovr_0_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_0(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; var devices: cl_device_id; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_2(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: array of UInt32): ErrorCode :=
     if (num_devices<>nil) and (num_devices.Length<>0) then
       z_GetDeviceIDsFromD3D11KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices[0]) else
       z_GetDeviceIDsFromD3D11KHR_ovr_6_anh00000001(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; var num_devices: UInt32): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_6(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
-    private static function z_GetDeviceIDsFromD3D11KHR_ovr_8(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
+    private static function z_GetDeviceIDsFromD3D11KHR_ovr_8(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceIDsFromD3D11KHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: UInt32; d3d_object: IntPtr; d3d_device_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceIDsFromD3D11KHR(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode :=
     z_GetDeviceIDsFromD3D11KHR_ovr_8(platform, d3d_device_source, d3d_object, d3d_device_set, num_entries, devices, num_devices);
     
     private static function z_CreateFromD3D11BufferKHR_ovr_0(context: cl_context; flags: MemFlags; var resource: IntPtr; var errcode_ret: ErrorCode): cl_mem;
@@ -7651,15 +7651,15 @@
   clExtHostPtrQCOM = static class
     public const _ExtStr = 'qcom_ext_host_ptr';
     
-    private static function z_GetDeviceImageInfoQCOM_ovr_0(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
     if (image_format<>nil) and (image_format.Length<>0) then
       if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret[0]) else
@@ -7667,41 +7667,41 @@
       if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
         z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret[0]) else
         z_GetDeviceImageInfoQCOM_ovr_0_anh000010001(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, IntPtr.Zero);
-    private static function z_GetDeviceImageInfoQCOM_ovr_1_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_1_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     if (image_format<>nil) and (image_format.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetDeviceImageInfoQCOM_ovr_0_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetDeviceImageInfoQCOM_ovr_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     if (image_format<>nil) and (image_format.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_2(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
       z_GetDeviceImageInfoQCOM_ovr_2_anh000010000(device, image_width, image_height, IntPtr.Zero, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
     if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetDeviceImageInfoQCOM_ovr_0_anh000000001(device, image_width, image_height, image_format, param_name, param_value_size, param_value, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_0(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_2(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetDeviceImageInfoQCOM_ovr_6(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_6(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    private static function z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
     if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
       z_GetDeviceImageInfoQCOM_ovr_6(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret[0]) else
       z_GetDeviceImageInfoQCOM_ovr_6_anh000000001(device, image_width, image_height, image_format, param_name, param_value_size, param_value, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_6(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetDeviceImageInfoQCOM_ovr_8(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceImageInfoQCOM_ovr_8(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceImageInfoQCOM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceImageInfoQCOM_ovr_8(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
@@ -8139,19 +8139,19 @@
   clImportMemoryARM = static class
     public const _ExtStr = 'arm_import_memory';
     
-    private static function z_ImportMemoryARM_ovr_0(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_ImportMemoryARM_ovr_0(context: cl_context; flags: MemFlags; var properties: ImportPropertiesArm; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
     private static function z_ImportMemoryARM_ovr_0_anh0001000(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: array of ImportPropertiesArm; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_ImportMemoryARM_ovr_0(context, flags, properties[0], memory, size, errcode_ret) else
       z_ImportMemoryARM_ovr_0_anh0001000(context, flags, IntPtr.Zero, memory, size, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; var properties: ImportPropertiesArm; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_ImportMemoryARM_ovr_0(context, flags, properties, memory, size, errcode_ret);
-    private static function z_ImportMemoryARM_ovr_2(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_ImportMemoryARM_ovr_2(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clImportMemoryARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: pointer; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ImportMemoryARM(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_ImportMemoryARM_ovr_2(context, flags, properties, memory, size, errcode_ret);
     
   end;
@@ -8160,9 +8160,9 @@
   clSharedVirtualMemoryARM = static class
     public const _ExtStr = 'arm_shared_virtual_memory';
     
-    private static function z_SVMAllocARM_ovr_0(context: cl_context; flags: UInt64; size: UIntPtr; alignment: UInt32): IntPtr;
+    private static function z_SVMAllocARM_ovr_0(context: cl_context; flags: SvmMemFlagsArm; size: UIntPtr; alignment: UInt32): IntPtr;
     external 'opencl.dll' name 'clSVMAllocARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SVMAllocARM(context: cl_context; flags: UInt64; size: UIntPtr; alignment: UInt32): IntPtr :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SVMAllocARM(context: cl_context; flags: SvmMemFlagsArm; size: UIntPtr; alignment: UInt32): IntPtr :=
     z_SVMAllocARM_ovr_0(context, flags, size, alignment);
     
     private static procedure z_SVMFreeARM_ovr_0(context: cl_context; svm_pointer: IntPtr);
@@ -8440,9 +8440,9 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelArgSVMPointerARM(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): ErrorCode :=
     z_SetKernelArgSVMPointerARM_ovr_0(kernel, arg_index, arg_value);
     
-    private static function z_SetKernelExecInfoARM_ovr_0(kernel: cl_kernel; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode;
+    private static function z_SetKernelExecInfoARM_ovr_0(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clSetKernelExecInfoARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; param_value: IntPtr): ErrorCode :=
     z_SetKernelExecInfoARM_ovr_0(kernel, param_name, param_value_size, param_value);
     
   end;
@@ -10233,59 +10233,6 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemcpyINTEL(command_queue: cl_command_queue; blocking: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMemcpyINTEL_ovr_8(command_queue, blocking, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event);
     
-    private static function z_EnqueueMigrateMemINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      if (&event<>nil) and (&event.Length<>0) then
-        z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
-        z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
-      if (&event<>nil) and (&event.Length<>0) then
-        z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
-        z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
-    private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
-      z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
-      z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
-    if (&event<>nil) and (&event.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
-      z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_6(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
-    if (&event<>nil) and (&event.Length<>0) then
-      z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
-      z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMigrateMemINTEL_ovr_8(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    z_EnqueueMigrateMemINTEL_ovr_8(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
-    
     private static function z_EnqueueMemAdviseINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     private static function z_EnqueueMemAdviseINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -10338,6 +10285,59 @@
     external 'opencl.dll' name 'clEnqueueMemAdviseINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemAdviseINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; advice: UInt32; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMemAdviseINTEL_ovr_8(command_queue, ptr, size, advice, num_events_in_wait_list, event_wait_list, &event);
+    
+    private static function z_EnqueueMigrateMemINTEL_ovr_0(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event[0]) else
+        z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
+        z_EnqueueMigrateMemINTEL_ovr_0_anh00000011(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_EnqueueMigrateMemINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueMigrateMemINTEL_ovr_0_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueMigrateMemINTEL_ovr_2(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueMigrateMemINTEL_ovr_2_anh00000010(command_queue, ptr, size, flags, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
+    if (&event<>nil) and (&event.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
+      z_EnqueueMigrateMemINTEL_ovr_0_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_0(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_2(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueMigrateMemINTEL_ovr_6(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    private static function z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
+    if (&event<>nil) and (&event.Length<>0) then
+      z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event[0]) else
+      z_EnqueueMigrateMemINTEL_ovr_6_anh00000001(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_6(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueMigrateMemINTEL_ovr_8(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueMigrateMemINTEL_ovr_8(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
     
   end;
   

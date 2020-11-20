@@ -310,10 +310,10 @@ type
     begin
       self.t := t;
       
-      self.res_IIn := new FileWriter(GetFullPathRTE($'{MakeOtpFileName(t)}.Implicit.Interface.template'));
-      self.res_IIm := new FileWriter(GetFullPathRTE($'{MakeOtpFileName(t)}.Implicit.Implementation.template'));
-      self.res_EIn := new FileWriter(GetFullPathRTE($'{MakeOtpFileName(t)}.Explicit.Interface.template'));
-      self.res_EIm := new FileWriter(GetFullPathRTE($'{MakeOtpFileName(t)}.Explicit.Implementation.template'));
+      self.res_IIn := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Implicit.Interface.template'));
+      self.res_IIm := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Implicit.Implementation.template'));
+      self.res_EIn := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Explicit.Interface.template'));
+      self.res_EIm := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Explicit.Implementation.template'));
       
       self.res_In := new WriterArr(res_IIn, res_EIn);
       self.res_Im := new WriterArr(res_IIm, res_EIm);

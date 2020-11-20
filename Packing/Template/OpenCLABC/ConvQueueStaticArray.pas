@@ -11,7 +11,7 @@ begin
     
     Range(2, MaxQueueStaticArraySize).Select(c->ProcTask(()->
     begin
-      var res := new System.IO.StreamWriter(GetFullPathRTE($'ConvQueueStaticArray[{c}].template'), false, enc);
+      var res := new System.IO.StreamWriter(GetFullPathRTA($'ConvQueueStaticArray[{c}].template'), false, enc);
       loop 3 do res.WriteLine('  ');
       
       var WriteVTDef: Action0 := ()->
@@ -168,7 +168,7 @@ begin
       res.Close;
     end)).Append(ProcTask(()->
     begin
-      var res := new System.IO.StreamWriter(GetFullPathRTE('ConvQueueStaticArray.template'), false, enc);
+      var res := new System.IO.StreamWriter(GetFullPathRTA('ConvQueueStaticArray.template'), false, enc);
       
       loop 3 do res.WriteLine('  ');
       for var c := 2 to MaxQueueStaticArraySize do
