@@ -21,6 +21,7 @@ Group [QueueThrottleKhr] was skipped
 Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was skipped
 Group [MemAllocFlagsIntel] was skipped
 Group [MipmapFilterModeImg] was skipped
+Group [MemAllocFlagsImg] was skipped
 Group [KhronosVendorId] was skipped
 Group [DeviceSvmCapabilitiesArm] was skipped
 Group [UnifiedSharedMemoryTypeIntel] was skipped

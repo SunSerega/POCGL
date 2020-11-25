@@ -1,7 +1,32 @@
 ﻿Executing selected stages:
-Spec + OpenCL + OpenGL + Compile + Test + Release
+FirstPack + Spec + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 WARNING: Failed to clear file PackAll.pdb
 Start packing
+=================================== First Pack ===================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\Reps\PullReps.pas"
+Finished compiling: OK
+Runing SubReps Update
+SubReps Update: Pulling OpenCL Docs
+SubReps Update: Done pulling OpenCL Docs
+SubReps Update: Pulling OpenGL Registry
+SubReps Update: Done pulling OpenGL Registry
+Finished runing SubReps Update
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\XML\CL\ScrapXML.pas"
+Finished compiling: OK
+Runing ScrapXML[CL]
+ScrapXML[CL]: Parsing "cl"
+ScrapXML[CL]: Saving as binary
+Finished runing ScrapXML[CL]
+Compiling "DataScraping\XML\GL\ScrapXML.pas"
+Finished compiling: OK
+Runing ScrapXML[GL]
+ScrapXML[GL]: Parsing "gl"
+ScrapXML[GL]: Parsing "wgl"
+ScrapXML[GL]: Parsing "glx"
+ScrapXML[GL]: Saving as binary
+Finished runing ScrapXML[GL]
 ====================================== Specs =====================================
 Compiling "Packing\Spec\SpecPacker.pas"
 Finished compiling: OK
@@ -52,6 +77,44 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) 
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]
+==================================== OpenCLABC ===================================
+Runing Template[OpenCLABC]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
+Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
+Finished runing Template[OpenCLABC]
+Runing Template[OpenCLABCBase]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\PropGen.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\PropGen.exe]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Context]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Device]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Kernel]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Mem]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Platform]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\PropGen.exe]: Packed props for [Program]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\PropGen.exe]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\MethodGen.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\MethodGen.exe]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Buffer]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Kernel]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\MethodGen.exe]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\GetMethodGen.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
+Template[OpenCLABCBase]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [Buffer]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
+Template[OpenCLABCBase]: Compiling "Packing\Template\OpenCLABC\ConvQueueStaticArray.pas"
+Template[OpenCLABCBase]: Finished compiling: OK
+Template[OpenCLABCBase]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
+Template[OpenCLABCBase]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
+Finished runing Template[OpenCLABCBase]
+Compiling "Packing\Doc\PackComments.pas"
+Finished compiling: OK
+Runing Comments[OpenCLABC]
+Finished runing Comments[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
@@ -110,22 +173,105 @@ Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
 Finished runing Template[OpenGL]
+==================================== OpenGLABC ===================================
+Runing Template[OpenGLABC]
+Finished runing Template[OpenGLABC]
+Runing Template[OpenGLABCBase]
+Finished runing Template[OpenGLABCBase]
+Runing Comments[OpenGLABC]
+Finished runing Comments[OpenGLABC]
 ==================================== Compiling ===================================
-Compiling "Modules.Packed\OpenCL.pas"
+Compiling "Modules.Packed\OpenCLABC.pas"
 Finished compiling: OK
-Compiling "Modules.Packed\OpenGL.pas"
+Compiling "Modules.Packed\OpenGLABC.pas"
 Finished compiling: OK
 ===================================== Testing ====================================
 Compiling "Tests\Tester.pas"
 Finished compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCL + OpenGL
+Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
 Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
 Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D +WPF.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D.pas"
+Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec2.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec4.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~02#Cast\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
 Tester: Finished compiling: OK
@@ -136,6 +282,76 @@ Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCL\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\Симуляция тепла\2D]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec2]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec4]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~02#Cast\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Done executing
@@ -149,7 +365,11 @@ Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing Modules.Packed\OpenCL.pas
+Packing Modules.Packed\OpenCLABC.pas
+Packing Modules.Packed\Internal\OpenCLABCBase.pas
 Packing Modules.Packed\OpenGL.pas
+Packing Modules.Packed\OpenGLABC.pas
+Packing Modules.Packed\Internal\OpenGLABCBase.pas
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample "Samples\OpenCL\MatrMlt.cl"

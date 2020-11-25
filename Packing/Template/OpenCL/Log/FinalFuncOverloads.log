@@ -28,8 +28,8 @@
  cl_mem	| cl_context	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
 
 # clCreateBufferWithProperties
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
 
 # clCreateCommandQueue
@@ -72,24 +72,24 @@
  cl_mem	| cl_context	| MemFlags	| IntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| UIntPtr	| IntPtr	| var ErrorCode	|
 
 # clCreateImageWithProperties
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| array of UInt64	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
- cl_mem	| cl_context	| var UInt64	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| array of MemProperties	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| var cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| var cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| var cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| IntPtr	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| IntPtr	| var cl_image_desc	| IntPtr	| var ErrorCode	|
+ cl_mem	| cl_context	| var MemProperties	| MemFlags	| IntPtr	| IntPtr	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| MemFlags	| array of cl_image_format	| array of cl_image_desc	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| MemFlags	| array of cl_image_format	| var cl_image_desc	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| MemFlags	| array of cl_image_format	| IntPtr	| IntPtr	| var ErrorCode	|

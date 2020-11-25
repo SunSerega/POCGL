@@ -2950,6 +2950,22 @@ type
     
   end;
   
+  MemProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_ALLOC_FLAGS_IMG := new MemProperties($40D7);
+    
+    public static property MEM_ALLOC_FLAGS_IMG: MemProperties read _MEM_ALLOC_FLAGS_IMG;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($40D7) then Result := 'MEM_ALLOC_FLAGS_IMG' else
+        Result := $'MemProperties[{self.val}]';
+    end;
+    
+  end;
+  
   MemPropertiesIntel = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -3631,15 +3647,15 @@ type
     z_CreateBuffer_ovr_2(context, flags, size, host_ptr, errcode_ret);
     
     // added in cl3.0
-    private static function z_CreateBufferWithProperties_ovr_0(context: cl_context; var properties: UInt64; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateBufferWithProperties_ovr_0(context: cl_context; var properties: MemProperties; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateBufferWithProperties';
     private static function z_CreateBufferWithProperties_ovr_0_anh0010000(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateBufferWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_CreateBufferWithProperties_ovr_0(context, properties[0], flags, size, host_ptr, errcode_ret) else
       z_CreateBufferWithProperties_ovr_0_anh0010000(context, IntPtr.Zero, flags, size, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBufferWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateBufferWithProperties_ovr_0(context, properties, flags, size, host_ptr, errcode_ret);
     private static function z_CreateBufferWithProperties_ovr_2(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateBufferWithProperties';
@@ -3795,23 +3811,23 @@ type
     z_CreateImage3D_ovr_2(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
     
     // added in cl3.0
-    private static function z_CreateImageWithProperties_ovr_0(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_0(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_0_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_ovr_0_anh00001000(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_0_anh00001000(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_0_anh00101000(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_ovr_0_anh00000100(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_0_anh00000100(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_0_anh00100100(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_ovr_0_anh00001100(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_0_anh00001100(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_0_anh00101100(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       if (image_format<>nil) and (image_format.Length<>0) then
         if (image_desc<>nil) and (image_desc.Length<>0) then
@@ -3829,11 +3845,11 @@ type
           z_CreateImageWithProperties_ovr_0_anh00101100(context, IntPtr.Zero, flags, IntPtr.Zero, IntPtr.Zero, host_ptr, errcode_ret);
     private static function z_CreateImageWithProperties_ovr_1_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_ovr_1_anh00001000(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_1_anh00001000(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_1_anh00101000(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; image_format: array of cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: array of cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       if (image_format<>nil) and (image_format.Length<>0) then
         z_CreateImageWithProperties_ovr_0(context, properties[0], flags, image_format[0], image_desc, host_ptr, errcode_ret) else
@@ -3841,15 +3857,15 @@ type
       if (image_format<>nil) and (image_format.Length<>0) then
         z_CreateImageWithProperties_ovr_0_anh00100000(context, IntPtr.Zero, flags, image_format[0], image_desc, host_ptr, errcode_ret) else
         z_CreateImageWithProperties_ovr_0_anh00101000(context, IntPtr.Zero, flags, IntPtr.Zero, image_desc, host_ptr, errcode_ret);
-    private static function z_CreateImageWithProperties_ovr_2(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_2(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_2_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_ovr_2_anh00001000(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_2_anh00001000(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_2_anh00101000(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; image_format: array of cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: array of cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       if (image_format<>nil) and (image_format.Length<>0) then
         z_CreateImageWithProperties_ovr_2(context, properties[0], flags, image_format[0], image_desc, host_ptr, errcode_ret) else
@@ -3861,7 +3877,7 @@ type
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_3_anh00100100(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; var image_format: cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       if (image_desc<>nil) and (image_desc.Length<>0) then
         z_CreateImageWithProperties_ovr_0(context, properties[0], flags, image_format, image_desc[0], host_ptr, errcode_ret) else
@@ -3871,25 +3887,25 @@ type
         z_CreateImageWithProperties_ovr_0_anh00100100(context, IntPtr.Zero, flags, image_format, IntPtr.Zero, host_ptr, errcode_ret);
     private static function z_CreateImageWithProperties_ovr_4_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_CreateImageWithProperties_ovr_0(context, properties[0], flags, image_format, image_desc, host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_0_anh00100000(context, IntPtr.Zero, flags, image_format, image_desc, host_ptr, errcode_ret);
     private static function z_CreateImageWithProperties_ovr_5_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_CreateImageWithProperties_ovr_2(context, properties[0], flags, image_format, image_desc, host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_2_anh00100000(context, IntPtr.Zero, flags, image_format, image_desc, host_ptr, errcode_ret);
-    private static function z_CreateImageWithProperties_ovr_6(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_6(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_6_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_ovr_6_anh00000100(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_6_anh00000100(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_6_anh00100100(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; image_format: IntPtr; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       if (image_desc<>nil) and (image_desc.Length<>0) then
         z_CreateImageWithProperties_ovr_6(context, properties[0], flags, image_format, image_desc[0], host_ptr, errcode_ret) else
@@ -3899,19 +3915,19 @@ type
         z_CreateImageWithProperties_ovr_6_anh00100100(context, IntPtr.Zero, flags, image_format, IntPtr.Zero, host_ptr, errcode_ret);
     private static function z_CreateImageWithProperties_ovr_7_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_CreateImageWithProperties_ovr_6(context, properties[0], flags, image_format, image_desc, host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_6_anh00100000(context, IntPtr.Zero, flags, image_format, image_desc, host_ptr, errcode_ret);
-    private static function z_CreateImageWithProperties_ovr_8(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_ovr_8(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_ovr_8_anh00100000(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of UInt64; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (properties<>nil) and (properties.Length<>0) then
       z_CreateImageWithProperties_ovr_8(context, properties[0], flags, image_format, image_desc, host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_8_anh00100000(context, IntPtr.Zero, flags, image_format, image_desc, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (image_format<>nil) and (image_format.Length<>0) then
       if (image_desc<>nil) and (image_desc.Length<>0) then
         z_CreateImageWithProperties_ovr_0(context, properties, flags, image_format[0], image_desc[0], host_ptr, errcode_ret) else
@@ -3919,29 +3935,29 @@ type
       if (image_desc<>nil) and (image_desc.Length<>0) then
         z_CreateImageWithProperties_ovr_0_anh00001000(context, properties, flags, IntPtr.Zero, image_desc[0], host_ptr, errcode_ret) else
         z_CreateImageWithProperties_ovr_0_anh00001100(context, properties, flags, IntPtr.Zero, IntPtr.Zero, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: array of cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: array of cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (image_format<>nil) and (image_format.Length<>0) then
       z_CreateImageWithProperties_ovr_0(context, properties, flags, image_format[0], image_desc, host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_0_anh00001000(context, properties, flags, IntPtr.Zero, image_desc, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: array of cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: array of cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (image_format<>nil) and (image_format.Length<>0) then
       z_CreateImageWithProperties_ovr_2(context, properties, flags, image_format[0], image_desc, host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_2_anh00001000(context, properties, flags, IntPtr.Zero, image_desc, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (image_desc<>nil) and (image_desc.Length<>0) then
       z_CreateImageWithProperties_ovr_0(context, properties, flags, image_format, image_desc[0], host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_0_anh00000100(context, properties, flags, image_format, IntPtr.Zero, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImageWithProperties_ovr_0(context, properties, flags, image_format, image_desc, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImageWithProperties_ovr_2(context, properties, flags, image_format, image_desc, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: array of cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     if (image_desc<>nil) and (image_desc.Length<>0) then
       z_CreateImageWithProperties_ovr_6(context, properties, flags, image_format, image_desc[0], host_ptr, errcode_ret) else
       z_CreateImageWithProperties_ovr_6_anh00000100(context, properties, flags, image_format, IntPtr.Zero, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImageWithProperties_ovr_6(context, properties, flags, image_format, image_desc, host_ptr, errcode_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: UInt64; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImageWithProperties_ovr_8(context, properties, flags, image_format, image_desc, host_ptr, errcode_ret);
     private static function z_CreateImageWithProperties_ovr_18(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl.dll' name 'clCreateImageWithProperties';

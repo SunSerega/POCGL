@@ -2843,6 +2843,22 @@
     
   end;
   
+  MemProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    private static _MEM_ALLOC_FLAGS_IMG := new MemProperties($40D7);
+    
+    public static property MEM_ALLOC_FLAGS_IMG: MemProperties read _MEM_ALLOC_FLAGS_IMG;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($40D7) then Result := 'MEM_ALLOC_FLAGS_IMG' else
+        Result := $'MemProperties[{self.val}]';
+    end;
+    
+  end;
+  
   MemPropertiesIntel = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
