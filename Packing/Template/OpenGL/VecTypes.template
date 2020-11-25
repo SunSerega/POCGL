@@ -22,12 +22,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1b;
+    public static function Read(prompt: string := nil): Vec1b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1b;
+    public static function Readln(prompt: string := nil): Vec1b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -69,12 +71,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1ub;
+    public static function Read(prompt: string := nil): Vec1ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1ub;
+    public static function Readln(prompt: string := nil): Vec1ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -120,12 +124,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1s;
+    public static function Read(prompt: string := nil): Vec1s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1s;
+    public static function Readln(prompt: string := nil): Vec1s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -173,12 +179,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1us;
+    public static function Read(prompt: string := nil): Vec1us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1us;
+    public static function Readln(prompt: string := nil): Vec1us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -230,12 +238,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1i;
+    public static function Read(prompt: string := nil): Vec1i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1i;
+    public static function Readln(prompt: string := nil): Vec1i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -289,12 +299,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1ui;
+    public static function Read(prompt: string := nil): Vec1ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1ui;
+    public static function Readln(prompt: string := nil): Vec1ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -352,12 +364,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1i64;
+    public static function Read(prompt: string := nil): Vec1i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1i64;
+    public static function Readln(prompt: string := nil): Vec1i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -417,12 +431,14 @@
     
     public function SqrLength := val0*val0;
     
-    public static function Read: Vec1ui64;
+    public static function Read(prompt: string := nil): Vec1ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1ui64;
+    public static function Readln(prompt: string := nil): Vec1ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -488,12 +504,14 @@
     
     public function Normalized := self / single(Sqrt(self.SqrLength));
     
-    public static function Read: Vec1f;
+    public static function Read(prompt: string := nil): Vec1f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1f;
+    public static function Readln(prompt: string := nil): Vec1f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -564,12 +582,14 @@
     
     public function Normalized := self / self.SqrLength.Sqrt;
     
-    public static function Read: Vec1d;
+    public static function Read(prompt: string := nil): Vec1d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0);
     end;
-    public static function Readln: Vec1d;
+    public static function Readln(prompt: string := nil): Vec1d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0);
     end;
     
@@ -647,12 +667,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2b;
+    public static function Read(prompt: string := nil): Vec2b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2b;
+    public static function Readln(prompt: string := nil): Vec2b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -728,12 +750,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2ub;
+    public static function Read(prompt: string := nil): Vec2ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2ub;
+    public static function Readln(prompt: string := nil): Vec2ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -813,12 +837,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2s;
+    public static function Read(prompt: string := nil): Vec2s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2s;
+    public static function Readln(prompt: string := nil): Vec2s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -900,12 +926,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2us;
+    public static function Read(prompt: string := nil): Vec2us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2us;
+    public static function Readln(prompt: string := nil): Vec2us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -991,12 +1019,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2i;
+    public static function Read(prompt: string := nil): Vec2i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2i;
+    public static function Readln(prompt: string := nil): Vec2i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -1084,12 +1114,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2ui;
+    public static function Read(prompt: string := nil): Vec2ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2ui;
+    public static function Readln(prompt: string := nil): Vec2ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -1181,12 +1213,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2i64;
+    public static function Read(prompt: string := nil): Vec2i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2i64;
+    public static function Readln(prompt: string := nil): Vec2i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -1280,12 +1314,14 @@
     
     public function SqrLength := val0*val0 + val1*val1;
     
-    public static function Read: Vec2ui64;
+    public static function Read(prompt: string := nil): Vec2ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2ui64;
+    public static function Readln(prompt: string := nil): Vec2ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -1385,12 +1421,14 @@
     
     public function Normalized := self / single(Sqrt(self.SqrLength));
     
-    public static function Read: Vec2f;
+    public static function Read(prompt: string := nil): Vec2f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2f;
+    public static function Readln(prompt: string := nil): Vec2f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -1495,12 +1533,14 @@
     
     public function Normalized := self / self.SqrLength.Sqrt;
     
-    public static function Read: Vec2d;
+    public static function Read(prompt: string := nil): Vec2d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1);
     end;
-    public static function Readln: Vec2d;
+    public static function Readln(prompt: string := nil): Vec2d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1);
     end;
     
@@ -1616,12 +1656,14 @@
     new Vec3b(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     public static function CrossCCW(v1,v2: Vec3b) := CrossCW(v2,v1);
     
-    public static function Read: Vec3b;
+    public static function Read(prompt: string := nil): Vec3b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3b;
+    public static function Readln(prompt: string := nil): Vec3b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -1731,12 +1773,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public static function Read: Vec3ub;
+    public static function Read(prompt: string := nil): Vec3ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3ub;
+    public static function Readln(prompt: string := nil): Vec3ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -1854,12 +1898,14 @@
     new Vec3s(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     public static function CrossCCW(v1,v2: Vec3s) := CrossCW(v2,v1);
     
-    public static function Read: Vec3s;
+    public static function Read(prompt: string := nil): Vec3s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3s;
+    public static function Readln(prompt: string := nil): Vec3s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -1975,12 +2021,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public static function Read: Vec3us;
+    public static function Read(prompt: string := nil): Vec3us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3us;
+    public static function Readln(prompt: string := nil): Vec3us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2104,12 +2152,14 @@
     new Vec3i(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     public static function CrossCCW(v1,v2: Vec3i) := CrossCW(v2,v1);
     
-    public static function Read: Vec3i;
+    public static function Read(prompt: string := nil): Vec3i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3i;
+    public static function Readln(prompt: string := nil): Vec3i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2231,12 +2281,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public static function Read: Vec3ui;
+    public static function Read(prompt: string := nil): Vec3ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3ui;
+    public static function Readln(prompt: string := nil): Vec3ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2366,12 +2418,14 @@
     new Vec3i64(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     public static function CrossCCW(v1,v2: Vec3i64) := CrossCW(v2,v1);
     
-    public static function Read: Vec3i64;
+    public static function Read(prompt: string := nil): Vec3i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3i64;
+    public static function Readln(prompt: string := nil): Vec3i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2499,12 +2553,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2;
     
-    public static function Read: Vec3ui64;
+    public static function Read(prompt: string := nil): Vec3ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3ui64;
+    public static function Readln(prompt: string := nil): Vec3ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2642,12 +2698,14 @@
     new Vec3f(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     public static function CrossCCW(v1,v2: Vec3f) := CrossCW(v2,v1);
     
-    public static function Read: Vec3f;
+    public static function Read(prompt: string := nil): Vec3f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3f;
+    public static function Readln(prompt: string := nil): Vec3f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2790,12 +2848,14 @@
     new Vec3d(v1.val1*v2.val2 - v2.val1*v1.val2, v1.val2*v2.val0 - v2.val2*v1.val0, v1.val0*v2.val1 - v2.val0*v1.val1);
     public static function CrossCCW(v1,v2: Vec3d) := CrossCW(v2,v1);
     
-    public static function Read: Vec3d;
+    public static function Read(prompt: string := nil): Vec3d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2);
     end;
-    public static function Readln: Vec3d;
+    public static function Readln(prompt: string := nil): Vec3d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2);
     end;
     
@@ -2941,12 +3001,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4b;
+    public static function Read(prompt: string := nil): Vec4b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4b;
+    public static function Readln(prompt: string := nil): Vec4b;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -3090,12 +3152,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4ub;
+    public static function Read(prompt: string := nil): Vec4ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4ub;
+    public static function Readln(prompt: string := nil): Vec4ub;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -3243,12 +3307,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4s;
+    public static function Read(prompt: string := nil): Vec4s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4s;
+    public static function Readln(prompt: string := nil): Vec4s;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -3398,12 +3464,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4us;
+    public static function Read(prompt: string := nil): Vec4us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4us;
+    public static function Readln(prompt: string := nil): Vec4us;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -3557,12 +3625,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4i;
+    public static function Read(prompt: string := nil): Vec4i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4i;
+    public static function Readln(prompt: string := nil): Vec4i;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -3718,12 +3788,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4ui;
+    public static function Read(prompt: string := nil): Vec4ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4ui;
+    public static function Readln(prompt: string := nil): Vec4ui;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -3883,12 +3955,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4i64;
+    public static function Read(prompt: string := nil): Vec4i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4i64;
+    public static function Readln(prompt: string := nil): Vec4i64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -4050,12 +4124,14 @@
     
     public function SqrLength := val0*val0 + val1*val1 + val2*val2 + val3*val3;
     
-    public static function Read: Vec4ui64;
+    public static function Read(prompt: string := nil): Vec4ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4ui64;
+    public static function Readln(prompt: string := nil): Vec4ui64;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -4223,12 +4299,14 @@
     
     public function Normalized := self / single(Sqrt(self.SqrLength));
     
-    public static function Read: Vec4f;
+    public static function Read(prompt: string := nil): Vec4f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4f;
+    public static function Readln(prompt: string := nil): Vec4f;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     
@@ -4401,12 +4479,14 @@
     
     public function Normalized := self / self.SqrLength.Sqrt;
     
-    public static function Read: Vec4d;
+    public static function Read(prompt: string := nil): Vec4d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Read(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
-    public static function Readln: Vec4d;
+    public static function Readln(prompt: string := nil): Vec4d;
     begin
+      if prompt <> nil then prompt.Print;
       PABCSystem.Readln(Result.val0, Result.val1, Result.val2, Result.val3);
     end;
     

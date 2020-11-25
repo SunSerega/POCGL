@@ -400,22 +400,38 @@ begin
   
   {$region static function Read}
   
-  res +=        $'    '+#10;
+  res +=          $'    '+#10;
   
   for var rows := true downto false do
     foreach var ln in |'', 'ln'| do
     begin
-      res +=    $'    public static function Read{ln}';
+      res +=      $'    public static function Read{ln}';
       res += rows ? 'Rows' : 'Cols';
-      res +=    $': {t.GetName};'+#10;
-      res +=    $'    begin'+#10;
+      res +=      $'(prompt: string := nil';
+      if ln <> '' then
+      begin
+        res += '; ';
+        res += rows ? 'row' : 'col';
+        res += '_prompt: integer->string := nil';
+      end;
+      res += $'): {t.GetName};'+#10;
+      res +=      $'    begin'+#10;
+      res +=      $'      if prompt <> nil then prompt.Print{ln};'+#10;
       for var i1 := 0 to rows ? t[0][0]-1 : t[0][1]-1 do
       begin
-        res +=  $'      PABCSystem.Read{ln}(';
+        if ln <> '' then
+        begin
+          res +=  $'      ';
+          res += rows ? 'row' : 'col';
+          res += '_prompt(';
+          res += i1.ToString;
+          res += ').Print;'#10;
+        end;
+        res +=    $'      PABCSystem.Read{ln}(';
         res += Range(0, rows ? t[0][1]-1 : t[0][0]-1).Select(i2->rows ? $'Result.val{i1}{i2}' : $'Result.val{i2}{i1}').JoinToString(', ');
         res += ');'#10;
       end;
-      res +=    $'    end;'+#10;
+      res +=      $'    end;'+#10;
     end;
   
   {$endregion static function Read}

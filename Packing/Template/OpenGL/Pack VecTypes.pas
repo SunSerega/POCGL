@@ -253,8 +253,9 @@ begin
   
   foreach var ln in |'', 'ln'| do
   begin
-    res +=  $'    public static function Read{ln}: {t.GetName};'+#10;
+    res +=  $'    public static function Read{ln}(prompt: string := nil): {t.GetName};'+#10;
     res +=  $'    begin'+#10;
+    res +=  $'      if prompt <> nil then prompt.Print;'+#10;
     res +=  $'      PABCSystem.Read{ln}(';
     res += Range(0, t[0]-1).Select(i->$'Result.val{i}').JoinToString(', ');
     res += ');'#10;
