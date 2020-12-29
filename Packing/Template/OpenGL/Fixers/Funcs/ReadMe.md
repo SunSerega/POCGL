@@ -38,7 +38,7 @@ InvalidTypeName= TypeName1 | array of TypeName2
 `DummyEnum` should be used exactly once.\
 `InvalidTypeName` should be used exactly 2 times.
 
-`TypeName1` would not be matched with `array of TypeName1`.
+`InvalidTypeName` would not be matched with `array of InvalidTypeName`.
 
 Return type is always before parameters.\
 Same applies to other change types. 

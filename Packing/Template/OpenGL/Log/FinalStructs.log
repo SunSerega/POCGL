@@ -4,13 +4,13 @@
 # Fixed
 	val: UInt32
 
-# GDI_COLORREF
+# gdi_colorref
 	a: byte
 	r: byte
 	g: byte
 	b: byte
 
-# GDI_GlyphmetricsFloat
+# gdi_glyphmetrics_float
 	gmfBlackBoxX: single
 	gmfBlackBoxY: single
 	gmfptGlyphOriginX: single
@@ -18,12 +18,43 @@
 	gmfCellIncX: single
 	gmfCellIncY: single
 
-# GDI_PixelFormatDescriptor
+# gdi_layer_plane_descriptor
 	nSize: UInt16
 	nVersion: UInt16
 	: 
-	dwFlags: PixelFormatFlagsGDI
-	iPixelType: PixelDataTypeGDI
+	dwFlags: GDI_LayerPlaneFlags
+	iPixelType: GDI_PixelDataType
+	: 
+	cColorBits: Byte
+	cRedBits: Byte
+	cRedShift: Byte
+	cGreenBits: Byte
+	cGreenShift: Byte
+	cBlueBits: Byte
+	cBlueShift: Byte
+	cAlphaBits: Byte
+	cAlphaShift: Byte
+	: 
+	cAccumBits: Byte
+	cAccumRedBits: Byte
+	cAccumGreenBits: Byte
+	cAccumBlueBits: Byte
+	cAccumAlphaBits: Byte
+	cDepthBits: Byte
+	cStencilBits: Byte
+	: 
+	cAuxBuffers: Byte
+	iLayerPlane: Byte
+	bReserved: Byte
+	: 
+	crTransparent: gdi_colorref
+
+# gdi_pixel_format_descriptor
+	nSize: UInt16
+	nVersion: UInt16
+	: 
+	dwFlags: GDI_PixelFormatFlags
+	iPixelType: GDI_PixelDataType
 	: 
 	cColorBits: Byte
 	cRedBits: Byte
@@ -52,7 +83,42 @@
 	dwVisibleMask: UInt32
 	dwDamageMask: UInt32
 
+# glx_hyperpipe_config_SGIX
+	pipeName: ntv_char[80]
+	channel: Int32
+	participationType: PipeParticipationTypeFlags
+	timeSlice: Int32
+
+# glx_hyperpipe_network_SGIX
+	pipeName: ntv_char[80]
+	networkId: Int32
+
+# glx_pipe_rect_limits_SGIX
+	pipeName: ntv_char[80]
+	XOrigin: Int32
+	YOrigin: Int32
+	maxHeight: Int32
+	maxWidth: Int32
+
+# glx_pipe_rect_SGIX
+	pipeName: ntv_char[80]
+	srcXOrigin: Int32
+	srcYOrigin: Int32
+	srcWidth: Int32
+	srcHeight: Int32
+	destXOrigin: Int32
+	destYOrigin: Int32
+	destWidth: Int32
+	destHeight: Int32
+
 # Half
 	val: UInt16
+
+# wgl_GPU_device_NV
+	cb: UInt32
+	DeviceName: ntv_char[32]
+	DeviceString: ntv_char[128]
+	Flags: GPUDisplayDeviceFlagsNV
+	rcVirtualScreen: record left, top, right, bottom: Int64; end
 
 

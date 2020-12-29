@@ -24,7 +24,7 @@ begin
     Struct.WriteAll(res);
     res += '  '#10;
     res += '  ';
-    WriteAllText(GetFullPath('..\Records.template', GetEXEFileName), res.ToString);
+    WriteAllText(GetFullPathRTA('Records.template'), res.ToString);
     res.Clear;
     
     Otp($'Constructing enums code');
@@ -34,7 +34,7 @@ begin
     Group.WriteAll(res);
     res += '  '#10;
     res += '  ';
-    WriteAllText(GetFullPath('..\Enums.template', GetEXEFileName), res.ToString);
+    WriteAllText(GetFullPathRTA('Enums.template'), res.ToString);
     res.Clear;
     
     Otp($'Constructing funcs code');
@@ -45,7 +45,7 @@ begin
     Extension.WriteAll(res);
     res += '  '#10;
     res += '  ';
-    WriteAllText(GetFullPath('..\Funcs.template', GetEXEFileName), res.ToString);
+    WriteAllText(GetFullPathRTA('Funcs.template'), res.ToString);
     res.Clear;
     
     FinishAll;

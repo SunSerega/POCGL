@@ -43,7 +43,6 @@ Group [CommandOpcodesNV] was skipped
 Group [MapTextureFormatINTEL] was skipped
 Group [TransformFeedbackTokenNV] was skipped
 Group [TriangleListSUN] was skipped
-Group [Boolean] was skipped
 Group [TextureSwizzle] was skipped
 Group [TextureCompareMode] was skipped
 Group [PixelTexGenMode] was skipped

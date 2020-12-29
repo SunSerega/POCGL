@@ -2,10 +2,10 @@
   
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  GLDEBUGPROC = procedure(source: DebugSource; &type: DebugType; id: UInt32; severity: DebugSeverity; length: Int32; message_text: IntPtr; userParam: pointer);
+  GL_DEBUG_PROC = procedure(source: DebugSource; &type: DebugType; id: UInt32; severity: DebugSeverity; length: Int32; message_text: IntPtr; userParam: pointer);
   
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  GLVULKANPROCNV = procedure;
+  GL_VULKAN_PROC_NV = procedure;
   
   
   

@@ -1,0 +1,40 @@
+
+
+
+# glXQueryHyperpipeNetworkSGIX
+!possible_par_types
+ *	| *	| -array of Int32	|
+
+# glXHyperpipeConfigSGIX
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of Int32	|
+
+# glXQueryHyperpipeConfigSGIX
+!possible_par_types
+ *	| *	| *	| -array of Int32	|
+
+# glXQueryHyperpipeBestAttribSGIX
+!repl_ovrs
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_SGIX			| array of glx_pipe_rect_SGIX			|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_SGIX				| var glx_pipe_rect_SGIX				|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_limits_SGIX	| array of glx_pipe_rect_limits_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_limits_SGIX			| var glx_pipe_rect_limits_SGIX			|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| IntPtr								| IntPtr								|
+
+# glXHyperpipeAttribSGIX
+!repl_ovrs
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_SGIX			|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_SGIX				|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var Int32								|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| IntPtr								|
+
+# glXQueryHyperpipeAttribSGIX
+!repl_ovrs
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_SGIX			|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_SGIX				|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_limits_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_limits_SGIX			|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var Int32								|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| IntPtr								|
+
+

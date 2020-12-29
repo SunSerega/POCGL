@@ -7,32 +7,32 @@
     
     {$region Misc}
     
-    ///Создаёт новую поверхность рисования GDI для дескриптора элемента управления
-    public static function GetControlDC(hwnd: IntPtr): GDI_DC;
+    ///Создаёт новый контекст устройства GDI для дескриптора элемента управления
+    public static function GetControlDC(hwnd: IntPtr): gdi_device_context;
     external 'user32.dll' name 'GetDC';
     
     {$endregion Misc}
     
     {$region InitControl}
     
-    ///Создаёт и настраивает поверхность рисования GDI элемента управления WF
+    ///Создаёт и настраивает контекст устройства GDI элемента управления WF
     ///hwnd - дескриптор элемента управления
-    public static function InitControl(hwnd: IntPtr): GDI_DC;
+    public static function InitControl(hwnd: IntPtr): gdi_device_context;
     begin
       Result := gl_gdi.GetControlDC(hwnd);
       
-      var pfd: GDI_PixelFormatDescriptor;
+      var pfd: gdi_pixel_format_descriptor;
       pfd.nVersion := 1;
       
       pfd.dwFlags :=
-        PixelFormatFlagsGDI.DRAW_TO_WINDOW or
-        PixelFormatFlagsGDI.SUPPORT_OPENGL or
-        PixelFormatFlagsGDI.DOUBLEBUFFER
+        GDI_PixelFormatFlags.DRAW_TO_WINDOW or
+        GDI_PixelFormatFlags.SUPPORT_OPENGL or
+        GDI_PixelFormatFlags.DOUBLEBUFFER
       ;
       pfd.cColorBits := 24;
       pfd.cDepthBits := 16;
       
-      if 1 <> gdi.SetPixelFormat(
+      if not gdi.SetPixelFormat(
         Result,
         gdi.ChoosePixelFormat(Result, pfd),
         pfd
@@ -40,7 +40,7 @@
       
     end;
     
-    ///Создаёт и настраивает поверхность рисования GDI элемента управления WF
+    ///Создаёт и настраивает контекст устройства GDI элемента управления WF
     public static function InitControl(c: System.Windows.Forms.Control) := InitControl(c.Handle);
     
     {$endregion InitControl}
@@ -48,9 +48,9 @@
     {$region SetupControlRedrawing}
     
     ///Добавляет в эвент Form.Load формы (f) обработчик, который:
-    ///1. Создаёт контекст OpenGL на поверхности рисования GDI (hdc)
+    ///1. Создаёт контекст OpenGL из контекста устройства GDI (hdc)
     ///2. Запускает перерисовку (RedrawThreadProc)
-    public static procedure SetupControlRedrawing(f: System.Windows.Forms.Form; hdc: GDI_DC; RedrawThreadProc: procedure(EndFrame: ()->()); vsync_fps: integer := 65);
+    public static procedure SetupControlRedrawing(f: System.Windows.Forms.Form; hdc: gdi_device_context; RedrawThreadProc: procedure(EndFrame: ()->()); vsync_fps: integer := 65);
     begin
       
       f.Load += (o,e)->
@@ -58,7 +58,7 @@
         begin
           
           var context := wgl.CreateContext(hdc);
-          if 1 <> wgl.MakeCurrent(hdc, context) then raise new InvalidOperationException('Не удалось применить контекст');
+          if not wgl.MakeCurrent(hdc, context) then raise new InvalidOperationException('Не удалось применить контекст');
           
           var EndFrame: ()->();
           if vsync_fps<=0 then

@@ -1,0 +1,15 @@
+
+
+
+#wgl_GPU_device_NV
+!add
+cb:					UInt32
+DeviceName:			ntv_char[32]
+DeviceString:		ntv_char[128]
+Flags:				GPUDisplayDeviceFlagsNV
+rcVirtualScreen:	record left, top, right, bottom: Int64; end
+!default
+cb = sizeof(wgl_GPU_device_NV)
+rcVirtualScreen = (left: 0; top: 0; right: 0; bottom: 0)
+
+

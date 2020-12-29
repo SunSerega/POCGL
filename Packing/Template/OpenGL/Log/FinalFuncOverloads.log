@@ -420,7 +420,7 @@
  CullFaceMode	|
 
 # glDebugMessageCallback
- GLDEBUGPROC	| IntPtr	|
+ GL_DEBUG_PROC	| IntPtr	|
 
 # glDebugMessageControl
  DebugSource	| DebugType	| DebugSeverity	| Int32	| array of UInt32	| boolean	|
@@ -4205,102 +4205,259 @@
  IntPtr	|
 
 # wglCopyContext
- UInt32	| GLContext	| GLContext	| UInt32	|
+ Bool	| wgl_context	| wgl_context	| UInt32	|
 
 # wglCreateContext
- GLContext	| GDI_DC	|
+ wgl_context	| gdi_device_context	|
 
 # wglCreateLayerContext
- GLContext	| GDI_DC	| Int32	|
+ wgl_context	| gdi_device_context	| Int32	|
 
 # wglDeleteContext
- UInt32	| GLContext	|
+ Bool	| wgl_context	|
 
 # wglDescribeLayerPlane
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of GDI_LayerPlaneDescriptor	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var GDI_LayerPlaneDescriptor	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of gdi_layer_plane_descriptor	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var gdi_layer_plane_descriptor	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	|
 
 # wglGetCurrentContext
- GLContext	|
+ wgl_context	|
 
 # wglGetCurrentDC
- GDI_DC	|
+ gdi_device_context	|
 
 # wglGetLayerPaletteEntries
- Int32	| GDI_DC	| Int32	| Int32	| Int32	| array of GDI_COLORREF	|
- Int32	| GDI_DC	| Int32	| Int32	| Int32	| var GDI_COLORREF	|
- Int32	| GDI_DC	| Int32	| Int32	| Int32	| IntPtr	|
+ Int32	| gdi_device_context	| Int32	| Int32	| Int32	| array of gdi_colorref	|
+ Int32	| gdi_device_context	| Int32	| Int32	| Int32	| var gdi_colorref	|
+ Int32	| gdi_device_context	| Int32	| Int32	| Int32	| IntPtr	|
 
 # wglGetProcAddress
  IntPtr	| IntPtr	|
 
 # wglMakeCurrent
- UInt32	| GDI_DC	| GLContext	|
+ Bool	| gdi_device_context	| wgl_context	|
 
 # wglRealizeLayerPalette
- UInt32	| GDI_DC	| Int32	| UInt32	|
+ Bool	| gdi_device_context	| Int32	| Bool	|
 
 # wglSetLayerPaletteEntries
- Int32	| GDI_DC	| Int32	| Int32	| Int32	| array of GDI_COLORREF	|
- Int32	| GDI_DC	| Int32	| Int32	| Int32	| var GDI_COLORREF	|
- Int32	| GDI_DC	| Int32	| Int32	| Int32	| IntPtr	|
+ Int32	| gdi_device_context	| Int32	| Int32	| Int32	| array of gdi_colorref	|
+ Int32	| gdi_device_context	| Int32	| Int32	| Int32	| var gdi_colorref	|
+ Int32	| gdi_device_context	| Int32	| Int32	| Int32	| IntPtr	|
 
 # wglShareLists
- UInt32	| GLContext	| GLContext	|
+ Bool	| wgl_context	| wgl_context	|
 
 # wglSwapLayerBuffers
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglUseFontBitmaps
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	|
 
 # wglUseFontBitmapsA
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	|
 
 # wglUseFontBitmapsW
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	|
 
 # wglUseFontOutlines
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| array of GDI_GlyphmetricsFloat	|
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| var GDI_GlyphmetricsFloat	|
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| array of gdi_glyphmetrics_float	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| var gdi_glyphmetrics_float	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| IntPtr	|
 
 # wglUseFontOutlinesA
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| array of GDI_GlyphmetricsFloat	|
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| var GDI_GlyphmetricsFloat	|
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| array of gdi_glyphmetrics_float	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| var gdi_glyphmetrics_float	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| IntPtr	|
 
 # wglUseFontOutlinesW
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| array of GDI_GlyphmetricsFloat	|
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| var GDI_GlyphmetricsFloat	|
- UInt32	| GDI_DC	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| array of gdi_glyphmetrics_float	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| var gdi_glyphmetrics_float	|
+ Bool	| gdi_device_context	| UInt32	| UInt32	| UInt32	| single	| single	| Int32	| IntPtr	|
+
+# glXChooseFBConfig
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	| IntPtr	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	| IntPtr	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	| IntPtr	|
+
+# glXChooseVisual
+ x_p_visual_info	| x_p_display	| Int32	| array of Int32	|
+ x_p_visual_info	| x_p_display	| Int32	| var Int32	|
+ x_p_visual_info	| x_p_display	| Int32	| IntPtr	|
+
+# glXCopyContext
+ x_p_display	| glx_context	| glx_context	| UInt64	|
+
+# glXCreateContext
+ glx_context	| x_p_display	| x_p_visual_info	| glx_context	| Bool	|
+
+# glXCreateGLXPixmap
+ glx_pixmap	| x_p_display	| x_p_visual_info	| x_pixmap	|
+
+# glXCreateNewContext
+ glx_context	| x_p_display	| glx_fb_config	| Int32	| glx_context	| Bool	|
+
+# glXCreatePbuffer
+ glx_pbuffer	| x_p_display	| glx_fb_config	| array of Int32	|
+ glx_pbuffer	| x_p_display	| glx_fb_config	| var Int32	|
+ glx_pbuffer	| x_p_display	| glx_fb_config	| IntPtr	|
+
+# glXCreatePixmap
+ glx_pixmap	| x_p_display	| glx_fb_config	| x_pixmap	| array of Int32	|
+ glx_pixmap	| x_p_display	| glx_fb_config	| x_pixmap	| var Int32	|
+ glx_pixmap	| x_p_display	| glx_fb_config	| x_pixmap	| IntPtr	|
+
+# glXCreateWindow
+ glx_window	| x_p_display	| glx_fb_config	| x_window	| array of Int32	|
+ glx_window	| x_p_display	| glx_fb_config	| x_window	| var Int32	|
+ glx_window	| x_p_display	| glx_fb_config	| x_window	| IntPtr	|
+
+# glXDestroyContext
+ x_p_display	| glx_context	|
+
+# glXDestroyGLXPixmap
+ x_p_display	| glx_pixmap	|
+
+# glXDestroyPbuffer
+ x_p_display	| glx_pbuffer	|
+
+# glXDestroyPixmap
+ x_p_display	| glx_pixmap	|
+
+# glXDestroyWindow
+ x_p_display	| glx_window	|
+
+# glXGetClientString
+ string	| x_p_display	| Int32	|
+
+# glXGetConfig
+ Int32	| x_p_display	| x_p_visual_info	| Int32	| array of Int32	|
+ Int32	| x_p_display	| x_p_visual_info	| Int32	| var Int32	|
+ Int32	| x_p_display	| x_p_visual_info	| Int32	| IntPtr	|
+
+# glXGetCurrentContext
+ glx_context	|
+
+# glXGetCurrentDisplay
+ x_p_display	|
+
+# glXGetCurrentDrawable
+ glx_drawable	|
+
+# glXGetCurrentReadDrawable
+ glx_drawable	|
+
+# glXGetFBConfigAttrib
+ Int32	| x_p_display	| glx_fb_config	| Int32	| array of Int32	|
+ Int32	| x_p_display	| glx_fb_config	| Int32	| var Int32	|
+ Int32	| x_p_display	| glx_fb_config	| Int32	| IntPtr	|
+
+# glXGetFBConfigs
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	|
+
+# glXGetProcAddress
+ IntPtr	| array of Byte	|
+ IntPtr	| var Byte	|
+ IntPtr	| IntPtr	|
+
+# glXGetSelectedEvent
+ x_p_display	| glx_drawable	| array of UInt64	|
+ x_p_display	| glx_drawable	| var UInt64	|
+ x_p_display	| glx_drawable	| IntPtr	|
+
+# glXGetVisualFromFBConfig
+ x_p_visual_info	| x_p_display	| glx_fb_config	|
+
+# glXIsDirect
+ Bool	| x_p_display	| glx_context	|
+
+# glXMakeContextCurrent
+ Bool	| x_p_display	| glx_drawable	| glx_drawable	| glx_context	|
+
+# glXMakeCurrent
+ Bool	| x_p_display	| glx_drawable	| glx_context	|
+
+# glXQueryContext
+ Int32	| x_p_display	| glx_context	| Int32	| array of Int32	|
+ Int32	| x_p_display	| glx_context	| Int32	| var Int32	|
+ Int32	| x_p_display	| glx_context	| Int32	| IntPtr	|
+
+# glXQueryDrawable
+ x_p_display	| glx_drawable	| Int32	| array of UInt32	|
+ x_p_display	| glx_drawable	| Int32	| var UInt32	|
+ x_p_display	| glx_drawable	| Int32	| IntPtr	|
+
+# glXQueryExtension
+ Bool	| x_p_display	| array of Int32	| array of Int32	|
+ Bool	| x_p_display	| array of Int32	| var Int32	|
+ Bool	| x_p_display	| array of Int32	| IntPtr	|
+ Bool	| x_p_display	| var Int32	| array of Int32	|
+ Bool	| x_p_display	| var Int32	| var Int32	|
+ Bool	| x_p_display	| var Int32	| IntPtr	|
+ Bool	| x_p_display	| IntPtr	| array of Int32	|
+ Bool	| x_p_display	| IntPtr	| var Int32	|
+ Bool	| x_p_display	| IntPtr	| IntPtr	|
+
+# glXQueryExtensionsString
+ string	| x_p_display	| Int32	|
+
+# glXQueryServerString
+ string	| x_p_display	| Int32	| Int32	|
+
+# glXQueryVersion
+ Bool	| x_p_display	| array of Int32	| array of Int32	|
+ Bool	| x_p_display	| array of Int32	| var Int32	|
+ Bool	| x_p_display	| array of Int32	| IntPtr	|
+ Bool	| x_p_display	| var Int32	| array of Int32	|
+ Bool	| x_p_display	| var Int32	| var Int32	|
+ Bool	| x_p_display	| var Int32	| IntPtr	|
+ Bool	| x_p_display	| IntPtr	| array of Int32	|
+ Bool	| x_p_display	| IntPtr	| var Int32	|
+ Bool	| x_p_display	| IntPtr	| IntPtr	|
+
+# glXSelectEvent
+ x_p_display	| glx_drawable	| UInt64	|
+
+# glXSwapBuffers
+ x_p_display	| glx_drawable	|
+
+# glXUseXFont
+ x_font	| Int32	| Int32	| Int32	|
 
 # ChoosePixelFormat
- Int32	| GDI_DC	| array of GDI_PixelFormatDescriptor	|
- Int32	| GDI_DC	| var GDI_PixelFormatDescriptor	|
- Int32	| GDI_DC	| IntPtr	|
+ Int32	| gdi_device_context	| array of gdi_pixel_format_descriptor	|
+ Int32	| gdi_device_context	| var gdi_pixel_format_descriptor	|
+ Int32	| gdi_device_context	| IntPtr	|
 
 # DescribePixelFormat
- Int32	| GDI_DC	| Int32	| UInt32	| array of GDI_PixelFormatDescriptor	|
- Int32	| GDI_DC	| Int32	| UInt32	| var GDI_PixelFormatDescriptor	|
- Int32	| GDI_DC	| Int32	| UInt32	| IntPtr	|
+ Int32	| gdi_device_context	| Int32	| UInt32	| array of gdi_pixel_format_descriptor	|
+ Int32	| gdi_device_context	| Int32	| UInt32	| var gdi_pixel_format_descriptor	|
+ Int32	| gdi_device_context	| Int32	| UInt32	| IntPtr	|
 
 # GetEnhMetaFilePixelFormat
- UInt32	| GDI_HENHMetafile	| array of GDI_PixelFormatDescriptor	|
- UInt32	| GDI_HENHMetafile	| var GDI_PixelFormatDescriptor	|
- UInt32	| GDI_HENHMetafile	| IntPtr	|
+ UInt32	| gdi_h_enh_metafile	| array of gdi_pixel_format_descriptor	|
+ UInt32	| gdi_h_enh_metafile	| var gdi_pixel_format_descriptor	|
+ UInt32	| gdi_h_enh_metafile	| IntPtr	|
 
 # GetPixelFormat
- Int32	| GDI_DC	|
+ Int32	| gdi_device_context	|
 
 # SetPixelFormat
- UInt32	| GDI_DC	| Int32	| array of GDI_PixelFormatDescriptor	|
- UInt32	| GDI_DC	| Int32	| var GDI_PixelFormatDescriptor	|
- UInt32	| GDI_DC	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of gdi_pixel_format_descriptor	|
+ Bool	| gdi_device_context	| Int32	| var gdi_pixel_format_descriptor	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	|
 
 # SwapBuffers
- UInt32	| GDI_DC	|
+ Bool	| gdi_device_context	|
 
 # glTbufferMask3DFX
  UInt32	|
@@ -4315,7 +4472,7 @@
  DummyEnum	| DebugSeverity	| UInt32	| Int32	| IntPtr	|
 
 # glDebugMessageCallbackAMD
- GLDEBUGPROC	| IntPtr	|
+ GL_DEBUG_PROC	| IntPtr	|
 
 # glGetDebugMessageLogAMD
  UInt32	| UInt32	| Int32	| var DummyEnum	| var UInt32	| var UInt32	| var Int32	| IntPtr	|
@@ -4801,14 +4958,14 @@
  UInt32	| VertexAttribEnum	| IntPtr	|
 
 # glCreateSyncFromCLeventARB
- gl_sync	| array of cl_context	| array of cl_event	| DummyFlags	|
- gl_sync	| array of cl_context	| var cl_event	| DummyFlags	|
- gl_sync	| array of cl_context	| IntPtr	| DummyFlags	|
- gl_sync	| var cl_context	| array of cl_event	| DummyFlags	|
- gl_sync	| var cl_context	| var cl_event	| DummyFlags	|
- gl_sync	| var cl_context	| IntPtr	| DummyFlags	|
- gl_sync	| IntPtr	| array of cl_event	| DummyFlags	|
- gl_sync	| IntPtr	| var cl_event	| DummyFlags	|
+ gl_sync	| array of gl_cl_context	| array of gl_cl_event	| DummyFlags	|
+ gl_sync	| array of gl_cl_context	| var gl_cl_event	| DummyFlags	|
+ gl_sync	| array of gl_cl_context	| IntPtr	| DummyFlags	|
+ gl_sync	| var gl_cl_context	| array of gl_cl_event	| DummyFlags	|
+ gl_sync	| var gl_cl_context	| var gl_cl_event	| DummyFlags	|
+ gl_sync	| var gl_cl_context	| IntPtr	| DummyFlags	|
+ gl_sync	| IntPtr	| array of gl_cl_event	| DummyFlags	|
+ gl_sync	| IntPtr	| var gl_cl_event	| DummyFlags	|
  gl_sync	| IntPtr	| IntPtr	| DummyFlags	|
 
 # glClampColorARB
@@ -4827,7 +4984,7 @@
  DebugSource	| DebugType	| UInt32	| DebugSeverity	| Int32	| IntPtr	|
 
 # glDebugMessageCallbackARB
- GLDEBUGPROC	| IntPtr	|
+ GL_DEBUG_PROC	| IntPtr	|
 
 # glGetDebugMessageLogARB
  UInt32	| UInt32	| Int32	| var DebugSource	| var DebugType	| var UInt32	| var DebugSeverity	| var Int32	| IntPtr	|
@@ -5538,45 +5695,45 @@
  single	|
 
 # glDeleteObjectARB
- GLhandleARB	|
+ gl_handle_ARB	|
 
 # glGetHandleARB
- GLhandleARB	| DummyEnum	|
+ gl_handle_ARB	| DummyEnum	|
 
 # glDetachObjectARB
- GLhandleARB	| GLhandleARB	|
+ gl_handle_ARB	| gl_handle_ARB	|
 
 # glCreateShaderObjectARB
- GLhandleARB	| ShaderType	|
+ gl_handle_ARB	| ShaderType	|
 
 # glShaderSourceARB
- GLhandleARB	| Int32	| array of string	| array of Int32	|
- GLhandleARB	| Int32	| array of string	| var Int32	|
- GLhandleARB	| Int32	| array of string	| IntPtr	|
- GLhandleARB	| Int32	| array of IntPtr	| array of Int32	|
- GLhandleARB	| Int32	| array of IntPtr	| var Int32	|
- GLhandleARB	| Int32	| array of IntPtr	| IntPtr	|
- GLhandleARB	| Int32	| IntPtr	| array of Int32	|
- GLhandleARB	| Int32	| IntPtr	| var Int32	|
- GLhandleARB	| Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| Int32	| array of string	| array of Int32	|
+ gl_handle_ARB	| Int32	| array of string	| var Int32	|
+ gl_handle_ARB	| Int32	| array of string	| IntPtr	|
+ gl_handle_ARB	| Int32	| array of IntPtr	| array of Int32	|
+ gl_handle_ARB	| Int32	| array of IntPtr	| var Int32	|
+ gl_handle_ARB	| Int32	| array of IntPtr	| IntPtr	|
+ gl_handle_ARB	| Int32	| IntPtr	| array of Int32	|
+ gl_handle_ARB	| Int32	| IntPtr	| var Int32	|
+ gl_handle_ARB	| Int32	| IntPtr	| IntPtr	|
 
 # glCompileShaderARB
- GLhandleARB	|
+ gl_handle_ARB	|
 
 # glCreateProgramObjectARB
- GLhandleARB	|
+ gl_handle_ARB	|
 
 # glAttachObjectARB
- GLhandleARB	| GLhandleARB	|
+ gl_handle_ARB	| gl_handle_ARB	|
 
 # glLinkProgramARB
- GLhandleARB	|
+ gl_handle_ARB	|
 
 # glUseProgramObjectARB
- GLhandleARB	|
+ gl_handle_ARB	|
 
 # glValidateProgramARB
- GLhandleARB	|
+ gl_handle_ARB	|
 
 # glUniform1fARB
  Int32	| single	|
@@ -5658,54 +5815,54 @@
  Int32	| Int32	| boolean	| IntPtr	|
 
 # glGetObjectParameterfvARB
- GLhandleARB	| DummyEnum	| array of single	|
- GLhandleARB	| DummyEnum	| var single	|
- GLhandleARB	| DummyEnum	| IntPtr	|
+ gl_handle_ARB	| DummyEnum	| array of single	|
+ gl_handle_ARB	| DummyEnum	| var single	|
+ gl_handle_ARB	| DummyEnum	| IntPtr	|
 
 # glGetObjectParameterivARB
- GLhandleARB	| DummyEnum	| array of Int32	|
- GLhandleARB	| DummyEnum	| var Int32	|
- GLhandleARB	| DummyEnum	| IntPtr	|
+ gl_handle_ARB	| DummyEnum	| array of Int32	|
+ gl_handle_ARB	| DummyEnum	| var Int32	|
+ gl_handle_ARB	| DummyEnum	| IntPtr	|
 
 # glGetInfoLogARB
- GLhandleARB	| Int32	| var Int32	| IntPtr	|
- GLhandleARB	| Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| Int32	| var Int32	| IntPtr	|
+ gl_handle_ARB	| Int32	| IntPtr	| IntPtr	|
 
 # glGetAttachedObjectsARB
- GLhandleARB	| Int32	| var Int32	| array of GLhandleARB	|
- GLhandleARB	| Int32	| var Int32	| var GLhandleARB	|
- GLhandleARB	| Int32	| var Int32	| IntPtr	|
- GLhandleARB	| Int32	| IntPtr	| array of GLhandleARB	|
- GLhandleARB	| Int32	| IntPtr	| var GLhandleARB	|
- GLhandleARB	| Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| Int32	| var Int32	| array of gl_handle_ARB	|
+ gl_handle_ARB	| Int32	| var Int32	| var gl_handle_ARB	|
+ gl_handle_ARB	| Int32	| var Int32	| IntPtr	|
+ gl_handle_ARB	| Int32	| IntPtr	| array of gl_handle_ARB	|
+ gl_handle_ARB	| Int32	| IntPtr	| var gl_handle_ARB	|
+ gl_handle_ARB	| Int32	| IntPtr	| IntPtr	|
 
 # glGetUniformLocationARB
- Int32	| GLhandleARB	| string	|
- Int32	| GLhandleARB	| IntPtr	|
+ Int32	| gl_handle_ARB	| string	|
+ Int32	| gl_handle_ARB	| IntPtr	|
 
 # glGetActiveUniformARB
- GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| var UniformType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| var Int32	| var UniformType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| IntPtr	| var UniformType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| var Int32	| var UniformType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| IntPtr	| var UniformType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetUniformfvARB
- GLhandleARB	| Int32	| array of single	|
- GLhandleARB	| Int32	| var single	|
- GLhandleARB	| Int32	| IntPtr	|
+ gl_handle_ARB	| Int32	| array of single	|
+ gl_handle_ARB	| Int32	| var single	|
+ gl_handle_ARB	| Int32	| IntPtr	|
 
 # glGetUniformivARB
- GLhandleARB	| Int32	| array of Int32	|
- GLhandleARB	| Int32	| var Int32	|
- GLhandleARB	| Int32	| IntPtr	|
+ gl_handle_ARB	| Int32	| array of Int32	|
+ gl_handle_ARB	| Int32	| var Int32	|
+ gl_handle_ARB	| Int32	| IntPtr	|
 
 # glGetShaderSourceARB
- GLhandleARB	| Int32	| var Int32	| IntPtr	|
- GLhandleARB	| Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| Int32	| var Int32	| IntPtr	|
+ gl_handle_ARB	| Int32	| IntPtr	| IntPtr	|
 
 # glNamedStringARB
  DummyEnum	| Int32	| string	| Int32	| string	|
@@ -6068,22 +6225,22 @@
  UInt32	| VertexAttribPointerPropertyARB	| pointer	|
 
 # glBindAttribLocationARB
- GLhandleARB	| UInt32	| string	|
- GLhandleARB	| UInt32	| IntPtr	|
+ gl_handle_ARB	| UInt32	| string	|
+ gl_handle_ARB	| UInt32	| IntPtr	|
 
 # glGetActiveAttribARB
- GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
- GLhandleARB	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| var Int32	| var AttributeType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| IntPtr	| var AttributeType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| var Int32	| var AttributeType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| IntPtr	| var AttributeType	| IntPtr	|
+ gl_handle_ARB	| UInt32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetAttribLocationARB
- Int32	| GLhandleARB	| string	|
- Int32	| GLhandleARB	| IntPtr	|
+ Int32	| gl_handle_ARB	| string	|
+ Int32	| gl_handle_ARB	| IntPtr	|
 
 # glDepthRangeArraydvNV
  UInt32	| Int32	| array of real	|
@@ -6476,14 +6633,14 @@
  VertexStreamATI	| single	|
 
 # glEGLImageTargetTexStorageEXT
- DummyEnum	| GLeglImageOES	| array of Int32	|
- DummyEnum	| GLeglImageOES	| var Int32	|
- DummyEnum	| GLeglImageOES	| IntPtr	|
+ DummyEnum	| egl_image_OES	| array of Int32	|
+ DummyEnum	| egl_image_OES	| var Int32	|
+ DummyEnum	| egl_image_OES	| IntPtr	|
 
 # glEGLImageTargetTextureStorageEXT
- gl_texture	| GLeglImageOES	| array of Int32	|
- gl_texture	| GLeglImageOES	| var Int32	|
- gl_texture	| GLeglImageOES	| IntPtr	|
+ gl_texture	| egl_image_OES	| array of Int32	|
+ gl_texture	| egl_image_OES	| var Int32	|
+ gl_texture	| egl_image_OES	| IntPtr	|
 
 # glUniformBufferEXT
  gl_program	| Int32	| gl_buffer	|
@@ -7670,10 +7827,10 @@
  PrimitiveType	| UInt32	| UInt32	| Int32	| DrawElementsType	| IntPtr	|
 
 # glBufferStorageExternalEXT
- DummyEnum	| IntPtr	| IntPtr	| GLeglClientBufferEXT	| BufferStorageMask	|
+ DummyEnum	| IntPtr	| IntPtr	| egl_chient_buffer_EXT	| BufferStorageMask	|
 
 # glNamedBufferStorageExternalEXT
- gl_buffer	| IntPtr	| IntPtr	| GLeglClientBufferEXT	| BufferStorageMask	|
+ gl_buffer	| IntPtr	| IntPtr	| egl_chient_buffer_EXT	| BufferStorageMask	|
 
 # glFogCoordfEXT
  single	|
@@ -8769,43 +8926,43 @@
  Int32	| VertexPointerType	| pointer	|
 
 # glBeginPerfQueryINTEL
- PerfQueryHandleINTEL	|
+ gl_perf_query_handle_INTEL	|
 
 # glCreatePerfQueryINTEL
- PerfQueryIdINTEL	| var PerfQueryHandleINTEL	|
- PerfQueryIdINTEL	| IntPtr	|
+ gl_perf_query_id_INTEL	| var gl_perf_query_handle_INTEL	|
+ gl_perf_query_id_INTEL	| IntPtr	|
 
 # glDeletePerfQueryINTEL
- PerfQueryHandleINTEL	|
+ gl_perf_query_handle_INTEL	|
 
 # glEndPerfQueryINTEL
- PerfQueryHandleINTEL	|
+ gl_perf_query_handle_INTEL	|
 
 # glGetFirstPerfQueryIdINTEL
- var PerfQueryIdINTEL	|
+ var gl_perf_query_id_INTEL	|
  IntPtr	|
 
 # glGetNextPerfQueryIdINTEL
- PerfQueryIdINTEL	| PerfQueryIdINTEL	|
- PerfQueryIdINTEL	| IntPtr	|
+ gl_perf_query_id_INTEL	| gl_perf_query_id_INTEL	|
+ gl_perf_query_id_INTEL	| IntPtr	|
 
 # glGetPerfCounterInfoINTEL
- PerfQueryIdINTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| var UInt64	|
- PerfQueryIdINTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
+ gl_perf_query_id_INTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| var UInt64	|
+ gl_perf_query_id_INTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetPerfQueryDataINTEL
- PerfQueryHandleINTEL	| PerfQueryDataFlagsINTEL	| Int32	| IntPtr	| var UInt32	|
- PerfQueryHandleINTEL	| PerfQueryDataFlagsINTEL	| Int32	| IntPtr	| IntPtr	|
+ gl_perf_query_handle_INTEL	| PerfQueryDataFlagsINTEL	| Int32	| IntPtr	| var UInt32	|
+ gl_perf_query_handle_INTEL	| PerfQueryDataFlagsINTEL	| Int32	| IntPtr	| IntPtr	|
 
 # glGetPerfQueryIdByNameINTEL
- string	| var PerfQueryIdINTEL	|
+ string	| var gl_perf_query_id_INTEL	|
  string	| IntPtr	|
- IntPtr	| var PerfQueryIdINTEL	|
+ IntPtr	| var gl_perf_query_id_INTEL	|
  IntPtr	| IntPtr	|
 
 # glGetPerfQueryInfoINTEL
- PerfQueryIdINTEL	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var PerfQueryCapFlagsINTEL	|
- PerfQueryIdINTEL	| UInt32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
+ gl_perf_query_id_INTEL	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var PerfQueryCapFlagsINTEL	|
+ gl_perf_query_id_INTEL	| UInt32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # glMaxShaderCompilerThreadsKHR
  UInt32	|
@@ -9333,8 +9490,8 @@
  UInt64	| gl_sampler	| single	| single	| single	| single	| single	| single	| single	| single	| single	|
 
 # glGetVkProcAddrNV
- GLVULKANPROCNV	| string	|
- GLVULKANPROCNV	| IntPtr	|
+ GL_VULKAN_PROC_NV	| string	|
+ GL_VULKAN_PROC_NV	| IntPtr	|
 
 # glWaitVkSemaphoreNV
  UInt64	|
@@ -10722,49 +10879,49 @@
  IntPtr	| IntPtr	|
 
 # glVDPAURegisterVideoSurfaceNV
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| array of UInt32	|
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| var UInt32	|
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| IntPtr	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| array of UInt32	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| var UInt32	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| IntPtr	|
 
 # glVDPAURegisterOutputSurfaceNV
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| array of UInt32	|
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| var UInt32	|
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| IntPtr	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| array of UInt32	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| var UInt32	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| IntPtr	|
 
 # glVDPAUIsSurfaceNV
- boolean	| GLvdpauSurfaceNV	|
+ boolean	| gl_vdpau_surface_NV	|
 
 # glVDPAUUnregisterSurfaceNV
- GLvdpauSurfaceNV	|
+ gl_vdpau_surface_NV	|
 
 # glVDPAUGetSurfaceivNV
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| array of Int32	| array of Int32	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| array of Int32	| var Int32	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| array of Int32	| IntPtr	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| var Int32	| array of Int32	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| var Int32	| var Int32	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| var Int32	| IntPtr	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| IntPtr	| array of Int32	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| IntPtr	| var Int32	|
- GLvdpauSurfaceNV	| DummyEnum	| Int32	| IntPtr	| IntPtr	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| array of Int32	| array of Int32	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| array of Int32	| var Int32	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| array of Int32	| IntPtr	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| var Int32	| array of Int32	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| var Int32	| var Int32	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| var Int32	| IntPtr	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| IntPtr	| array of Int32	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| IntPtr	| var Int32	|
+ gl_vdpau_surface_NV	| DummyEnum	| Int32	| IntPtr	| IntPtr	|
 
 # glVDPAUSurfaceAccessNV
- GLvdpauSurfaceNV	| DummyEnum	|
+ gl_vdpau_surface_NV	| DummyEnum	|
 
 # glVDPAUMapSurfacesNV
- Int32	| array of GLvdpauSurfaceNV	|
- Int32	| var GLvdpauSurfaceNV	|
+ Int32	| array of gl_vdpau_surface_NV	|
+ Int32	| var gl_vdpau_surface_NV	|
  Int32	| IntPtr	|
 
 # glVDPAUUnmapSurfacesNV
- Int32	| array of GLvdpauSurfaceNV	|
- Int32	| var GLvdpauSurfaceNV	|
+ Int32	| array of gl_vdpau_surface_NV	|
+ Int32	| var gl_vdpau_surface_NV	|
  Int32	| IntPtr	|
 
 # glVDPAURegisterVideoSurfaceWithPictureStructureNV
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| array of UInt32	| boolean	|
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| var UInt32	| boolean	|
- GLvdpauSurfaceNV	| IntPtr	| DummyEnum	| Int32	| IntPtr	| boolean	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| array of UInt32	| boolean	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| var UInt32	| boolean	|
+ gl_vdpau_surface_NV	| IntPtr	| DummyEnum	| Int32	| IntPtr	| boolean	|
 
 # glVertexArrayRangeNV
  Int32	| IntPtr	|
@@ -12397,7 +12554,7 @@
  IntPtr	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
 
 # wglSetStereoEmitterState3DL
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglGetGPUIDsAMD
  UInt32	| UInt32	| array of UInt32	|
@@ -12408,188 +12565,188 @@
  Int32	| UInt32	| Int32	| DummyEnum	| UInt32	| IntPtr	|
 
 # wglGetContextGPUIDAMD
- UInt32	| GLContext	|
+ UInt32	| wgl_context	|
 
 # wglCreateAssociatedContextAMD
- GLContext	| UInt32	|
+ wgl_context	| UInt32	|
 
 # wglCreateAssociatedContextAttribsAMD
- GLContext	| UInt32	| GLContext	| array of Int32	|
- GLContext	| UInt32	| GLContext	| var Int32	|
- GLContext	| UInt32	| GLContext	| IntPtr	|
+ wgl_context	| UInt32	| wgl_context	| array of Int32	|
+ wgl_context	| UInt32	| wgl_context	| var Int32	|
+ wgl_context	| UInt32	| wgl_context	| IntPtr	|
 
 # wglDeleteAssociatedContextAMD
- UInt32	| GLContext	|
+ Bool	| wgl_context	|
 
 # wglMakeAssociatedContextCurrentAMD
- UInt32	| GLContext	|
+ Bool	| wgl_context	|
 
 # wglGetCurrentAssociatedContextAMD
- GLContext	|
+ wgl_context	|
 
 # wglBlitContextFramebufferAMD
- GLContext	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| DummyFlags	| DummyEnum	|
+ wgl_context	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| DummyFlags	| DummyEnum	|
 
 # wglCreateBufferRegionARB
- IntPtr	| GDI_DC	| Int32	| UInt32	|
+ IntPtr	| gdi_device_context	| Int32	| UInt32	|
 
 # wglDeleteBufferRegionARB
  IntPtr	|
 
 # wglSaveBufferRegionARB
- UInt32	| IntPtr	| Int32	| Int32	| Int32	| Int32	|
+ Bool	| IntPtr	| Int32	| Int32	| Int32	| Int32	|
 
 # wglRestoreBufferRegionARB
- UInt32	| IntPtr	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	|
+ Bool	| IntPtr	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	|
 
 # wglCreateContextAttribsARB
- GLContext	| GDI_DC	| GLContext	| array of Int32	|
- GLContext	| GDI_DC	| GLContext	| var Int32	|
- GLContext	| GDI_DC	| GLContext	| IntPtr	|
+ wgl_context	| gdi_device_context	| wgl_context	| array of Int32	|
+ wgl_context	| gdi_device_context	| wgl_context	| var Int32	|
+ wgl_context	| gdi_device_context	| wgl_context	| IntPtr	|
 
 # wglGetExtensionsStringARB
- string	| GDI_DC	|
+ string	| gdi_device_context	|
 
 # wglMakeContextCurrentARB
- UInt32	| GDI_DC	| GDI_DC	| GLContext	|
+ Bool	| gdi_device_context	| gdi_device_context	| wgl_context	|
 
 # wglGetCurrentReadDCARB
- GDI_DC	|
+ gdi_device_context	|
 
 # wglCreatePbufferARB
- HPBUFFER	| GDI_DC	| Int32	| Int32	| Int32	| array of Int32	|
- HPBUFFER	| GDI_DC	| Int32	| Int32	| Int32	| var Int32	|
- HPBUFFER	| GDI_DC	| Int32	| Int32	| Int32	| IntPtr	|
+ wgl_pbuffer_ARB	| gdi_device_context	| Int32	| Int32	| Int32	| array of Int32	|
+ wgl_pbuffer_ARB	| gdi_device_context	| Int32	| Int32	| Int32	| var Int32	|
+ wgl_pbuffer_ARB	| gdi_device_context	| Int32	| Int32	| Int32	| IntPtr	|
 
 # wglGetPbufferDCARB
- GDI_DC	| HPBUFFER	|
+ gdi_device_context	| wgl_pbuffer_ARB	|
 
 # wglReleasePbufferDCARB
- Int32	| HPBUFFER	| GDI_DC	|
+ Int32	| wgl_pbuffer_ARB	| gdi_device_context	|
 
 # wglDestroyPbufferARB
- UInt32	| HPBUFFER	|
+ Bool	| wgl_pbuffer_ARB	|
 
 # wglQueryPbufferARB
- UInt32	| HPBUFFER	| Int32	| array of Int32	|
- UInt32	| HPBUFFER	| Int32	| var Int32	|
- UInt32	| HPBUFFER	| Int32	| IntPtr	|
+ Bool	| wgl_pbuffer_ARB	| Int32	| array of Int32	|
+ Bool	| wgl_pbuffer_ARB	| Int32	| var Int32	|
+ Bool	| wgl_pbuffer_ARB	| Int32	| IntPtr	|
 
 # wglGetPixelFormatAttribivARB
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| var Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
 
 # wglGetPixelFormatAttribfvARB
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| array of single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| var single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| array of single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| var single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| array of single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| var single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| array of single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| var single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| array of single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| var single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| array of single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| var single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
 
 # wglChoosePixelFormatARB
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # wglBindTexImageARB
- UInt32	| HPBUFFER	| Int32	|
+ Bool	| wgl_pbuffer_ARB	| Int32	|
 
 # wglReleaseTexImageARB
- UInt32	| HPBUFFER	| Int32	|
+ Bool	| wgl_pbuffer_ARB	| Int32	|
 
 # wglSetPbufferAttribARB
- UInt32	| HPBUFFER	| array of Int32	|
- UInt32	| HPBUFFER	| var Int32	|
- UInt32	| HPBUFFER	| IntPtr	|
+ Bool	| wgl_pbuffer_ARB	| array of Int32	|
+ Bool	| wgl_pbuffer_ARB	| var Int32	|
+ Bool	| wgl_pbuffer_ARB	| IntPtr	|
 
 # wglCreateDisplayColorTableEXT
  boolean	| UInt16	|
@@ -12609,523 +12766,525 @@
  string	|
 
 # wglMakeContextCurrentEXT
- UInt32	| GDI_DC	| GDI_DC	| GLContext	|
+ Bool	| gdi_device_context	| gdi_device_context	| wgl_context	|
 
 # wglGetCurrentReadDCEXT
- GDI_DC	|
+ gdi_device_context	|
 
 # wglCreatePbufferEXT
- HPBUFFER	| GDI_DC	| Int32	| Int32	| Int32	| array of Int32	|
- HPBUFFER	| GDI_DC	| Int32	| Int32	| Int32	| var Int32	|
- HPBUFFER	| GDI_DC	| Int32	| Int32	| Int32	| IntPtr	|
+ wgl_pbuffer_EXT	| gdi_device_context	| Int32	| Int32	| Int32	| array of Int32	|
+ wgl_pbuffer_EXT	| gdi_device_context	| Int32	| Int32	| Int32	| var Int32	|
+ wgl_pbuffer_EXT	| gdi_device_context	| Int32	| Int32	| Int32	| IntPtr	|
 
 # wglGetPbufferDCEXT
- GDI_DC	| HPBUFFER	|
+ gdi_device_context	| wgl_pbuffer_EXT	|
 
 # wglReleasePbufferDCEXT
- Int32	| HPBUFFER	| GDI_DC	|
+ Int32	| wgl_pbuffer_EXT	| gdi_device_context	|
 
 # wglDestroyPbufferEXT
- UInt32	| HPBUFFER	|
+ Bool	| wgl_pbuffer_EXT	|
 
 # wglQueryPbufferEXT
- UInt32	| HPBUFFER	| Int32	| array of Int32	|
- UInt32	| HPBUFFER	| Int32	| var Int32	|
- UInt32	| HPBUFFER	| Int32	| IntPtr	|
+ Bool	| wgl_pbuffer_EXT	| Int32	| array of Int32	|
+ Bool	| wgl_pbuffer_EXT	| Int32	| var Int32	|
+ Bool	| wgl_pbuffer_EXT	| Int32	| IntPtr	|
 
 # wglGetPixelFormatAttribivEXT
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| var Int32	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
 
 # wglGetPixelFormatAttribfvEXT
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| array of single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| var single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| array of single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| var single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| array of single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| var single	|
- UInt32	| GDI_DC	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| array of single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| var single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| array of single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| var single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| array of single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| var single	|
+ Bool	| gdi_device_context	| Int32	| Int32	| UInt32	| IntPtr	| IntPtr	|
 
 # wglChoosePixelFormatEXT
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| array of single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var single	| UInt32	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| var Int32	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| array of single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| var single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| array of single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var single	| UInt32	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| array of Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| array of Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| var Int32	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| var Int32	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # wglSwapIntervalEXT
- UInt32	| Int32	|
+ Bool	| Int32	|
 
 # wglGetSwapIntervalEXT
  Int32	|
 
 # wglGetDigitalVideoParametersI3D
- UInt32	| GDI_DC	| Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	|
 
 # wglSetDigitalVideoParametersI3D
- UInt32	| GDI_DC	| Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	|
 
 # wglGetGammaTableParametersI3D
- UInt32	| GDI_DC	| Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	|
 
 # wglSetGammaTableParametersI3D
- UInt32	| GDI_DC	| Int32	| array of Int32	|
- UInt32	| GDI_DC	| Int32	| var Int32	|
- UInt32	| GDI_DC	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of Int32	|
+ Bool	| gdi_device_context	| Int32	| var Int32	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	|
 
 # wglGetGammaTableI3D
- UInt32	| GDI_DC	| Int32	| array of UInt16	| array of UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| array of UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| array of UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| var UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| var UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| var UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| IntPtr	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| IntPtr	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| array of UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| array of UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| array of UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| var UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| var UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| var UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| IntPtr	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| IntPtr	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| array of UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| array of UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| array of UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| var UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| var UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| var UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| IntPtr	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| IntPtr	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| array of UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| array of UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| array of UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| var UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| var UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| var UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| IntPtr	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| IntPtr	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| array of UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| array of UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| array of UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| var UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| var UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| var UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| IntPtr	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| IntPtr	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| array of UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| array of UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| array of UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| var UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| var UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| var UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| IntPtr	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| IntPtr	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| IntPtr	| IntPtr	|
 
 # wglSetGammaTableI3D
- UInt32	| GDI_DC	| Int32	| array of UInt16	| array of UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| array of UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| array of UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| var UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| var UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| var UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| IntPtr	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| IntPtr	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| array of UInt16	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| array of UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| array of UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| array of UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| var UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| var UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| var UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| IntPtr	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| IntPtr	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| var UInt16	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| array of UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| array of UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| array of UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| var UInt16	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| var UInt16	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| var UInt16	| IntPtr	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| IntPtr	| array of UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| IntPtr	| var UInt16	|
- UInt32	| GDI_DC	| Int32	| IntPtr	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| array of UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| array of UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| array of UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| var UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| var UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| var UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| IntPtr	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| IntPtr	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| array of UInt16	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| array of UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| array of UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| array of UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| var UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| var UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| var UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| IntPtr	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| IntPtr	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| var UInt16	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| array of UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| array of UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| array of UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| var UInt16	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| var UInt16	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| var UInt16	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| IntPtr	| array of UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| IntPtr	| var UInt16	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	| IntPtr	| IntPtr	|
 
 # wglEnableGenlockI3D
- UInt32	| GDI_DC	|
+ Bool	| gdi_device_context	|
 
 # wglDisableGenlockI3D
- UInt32	| GDI_DC	|
+ Bool	| gdi_device_context	|
 
 # wglIsEnabledGenlockI3D
- UInt32	| GDI_DC	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| array of Bool	|
+ Bool	| gdi_device_context	| var Bool	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglGenlockSourceI3D
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglGetGenlockSourceI3D
- UInt32	| GDI_DC	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglGenlockSourceEdgeI3D
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglGetGenlockSourceEdgeI3D
- UInt32	| GDI_DC	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglGenlockSampleRateI3D
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglGetGenlockSampleRateI3D
- UInt32	| GDI_DC	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglGenlockSourceDelayI3D
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglGetGenlockSourceDelayI3D
- UInt32	| GDI_DC	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglQueryGenlockMaxSourceDelayI3D
- UInt32	| GDI_DC	| array of UInt32	| array of UInt32	|
- UInt32	| GDI_DC	| array of UInt32	| var UInt32	|
- UInt32	| GDI_DC	| array of UInt32	| IntPtr	|
- UInt32	| GDI_DC	| var UInt32	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	| var UInt32	|
- UInt32	| GDI_DC	| var UInt32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of UInt32	| var UInt32	|
+ Bool	| gdi_device_context	| array of UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| var UInt32	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	| var UInt32	|
+ Bool	| gdi_device_context	| var UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	|
 
 # wglCreateImageBufferI3D
- IntPtr	| GDI_DC	| UInt32	| UInt32	|
+ IntPtr	| gdi_device_context	| UInt32	| UInt32	|
 
 # wglDestroyImageBufferI3D
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglAssociateImageBufferEventsI3D
- UInt32	| GDI_DC	| array of IntPtr	| array of IntPtr	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| array of IntPtr	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| array of IntPtr	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| var IntPtr	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| var IntPtr	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| var IntPtr	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| pointer	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| pointer	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| array of IntPtr	| pointer	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| array of IntPtr	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| array of IntPtr	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| array of IntPtr	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| var IntPtr	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| var IntPtr	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| var IntPtr	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| pointer	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| pointer	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| pointer	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| pointer	| array of IntPtr	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| pointer	| array of IntPtr	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| pointer	| array of IntPtr	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| pointer	| var IntPtr	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| pointer	| var IntPtr	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| pointer	| var IntPtr	| IntPtr	| UInt32	|
- UInt32	| GDI_DC	| pointer	| pointer	| array of UInt32	| UInt32	|
- UInt32	| GDI_DC	| pointer	| pointer	| var UInt32	| UInt32	|
- UInt32	| GDI_DC	| pointer	| pointer	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| array of IntPtr	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| array of IntPtr	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| array of IntPtr	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| var IntPtr	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| var IntPtr	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| var IntPtr	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| pointer	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| pointer	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| pointer	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| array of IntPtr	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| array of IntPtr	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| array of IntPtr	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| var IntPtr	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| var IntPtr	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| var IntPtr	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| pointer	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| pointer	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| pointer	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| array of IntPtr	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| array of IntPtr	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| array of IntPtr	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| var IntPtr	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| var IntPtr	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| var IntPtr	| IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| pointer	| array of UInt32	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| pointer	| var UInt32	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| pointer	| IntPtr	| UInt32	|
 
 # wglReleaseImageBufferEventsI3D
- UInt32	| GDI_DC	| array of IntPtr	| UInt32	|
- UInt32	| GDI_DC	| var IntPtr	| UInt32	|
- UInt32	| GDI_DC	| pointer	| UInt32	|
+ Bool	| gdi_device_context	| array of IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| var IntPtr	| UInt32	|
+ Bool	| gdi_device_context	| pointer	| UInt32	|
 
 # wglEnableFrameLockI3D
- UInt32	|
+ Bool	|
 
 # wglDisableFrameLockI3D
- UInt32	|
+ Bool	|
 
 # wglIsEnabledFrameLockI3D
- UInt32	| array of UInt32	|
- UInt32	| var UInt32	|
- UInt32	| IntPtr	|
+ Bool	| array of Bool	|
+ Bool	| var Bool	|
+ Bool	| IntPtr	|
 
 # wglQueryFrameLockMasterI3D
- UInt32	| array of UInt32	|
- UInt32	| var UInt32	|
- UInt32	| IntPtr	|
+ Bool	| array of Bool	|
+ Bool	| var Bool	|
+ Bool	| IntPtr	|
 
 # wglGetFrameUsageI3D
- UInt32	| array of single	|
- UInt32	| var single	|
- UInt32	| IntPtr	|
+ Bool	| array of single	|
+ Bool	| var single	|
+ Bool	| IntPtr	|
 
 # wglBeginFrameTrackingI3D
- UInt32	|
+ Bool	|
 
 # wglEndFrameTrackingI3D
- UInt32	|
+ Bool	|
 
 # wglQueryFrameTrackingI3D
- UInt32	| array of UInt32	| array of UInt32	| array of single	|
- UInt32	| array of UInt32	| array of UInt32	| var single	|
- UInt32	| array of UInt32	| array of UInt32	| IntPtr	|
- UInt32	| array of UInt32	| var UInt32	| array of single	|
- UInt32	| array of UInt32	| var UInt32	| var single	|
- UInt32	| array of UInt32	| var UInt32	| IntPtr	|
- UInt32	| array of UInt32	| IntPtr	| array of single	|
- UInt32	| array of UInt32	| IntPtr	| var single	|
- UInt32	| array of UInt32	| IntPtr	| IntPtr	|
- UInt32	| var UInt32	| array of UInt32	| array of single	|
- UInt32	| var UInt32	| array of UInt32	| var single	|
- UInt32	| var UInt32	| array of UInt32	| IntPtr	|
- UInt32	| var UInt32	| var UInt32	| array of single	|
- UInt32	| var UInt32	| var UInt32	| var single	|
- UInt32	| var UInt32	| var UInt32	| IntPtr	|
- UInt32	| var UInt32	| IntPtr	| array of single	|
- UInt32	| var UInt32	| IntPtr	| var single	|
- UInt32	| var UInt32	| IntPtr	| IntPtr	|
- UInt32	| IntPtr	| array of UInt32	| array of single	|
- UInt32	| IntPtr	| array of UInt32	| var single	|
- UInt32	| IntPtr	| array of UInt32	| IntPtr	|
- UInt32	| IntPtr	| var UInt32	| array of single	|
- UInt32	| IntPtr	| var UInt32	| var single	|
- UInt32	| IntPtr	| var UInt32	| IntPtr	|
- UInt32	| IntPtr	| IntPtr	| array of single	|
- UInt32	| IntPtr	| IntPtr	| var single	|
- UInt32	| IntPtr	| IntPtr	| IntPtr	|
+ Bool	| array of UInt32	| array of UInt32	| array of single	|
+ Bool	| array of UInt32	| array of UInt32	| var single	|
+ Bool	| array of UInt32	| array of UInt32	| IntPtr	|
+ Bool	| array of UInt32	| var UInt32	| array of single	|
+ Bool	| array of UInt32	| var UInt32	| var single	|
+ Bool	| array of UInt32	| var UInt32	| IntPtr	|
+ Bool	| array of UInt32	| IntPtr	| array of single	|
+ Bool	| array of UInt32	| IntPtr	| var single	|
+ Bool	| array of UInt32	| IntPtr	| IntPtr	|
+ Bool	| var UInt32	| array of UInt32	| array of single	|
+ Bool	| var UInt32	| array of UInt32	| var single	|
+ Bool	| var UInt32	| array of UInt32	| IntPtr	|
+ Bool	| var UInt32	| var UInt32	| array of single	|
+ Bool	| var UInt32	| var UInt32	| var single	|
+ Bool	| var UInt32	| var UInt32	| IntPtr	|
+ Bool	| var UInt32	| IntPtr	| array of single	|
+ Bool	| var UInt32	| IntPtr	| var single	|
+ Bool	| var UInt32	| IntPtr	| IntPtr	|
+ Bool	| IntPtr	| array of UInt32	| array of single	|
+ Bool	| IntPtr	| array of UInt32	| var single	|
+ Bool	| IntPtr	| array of UInt32	| IntPtr	|
+ Bool	| IntPtr	| var UInt32	| array of single	|
+ Bool	| IntPtr	| var UInt32	| var single	|
+ Bool	| IntPtr	| var UInt32	| IntPtr	|
+ Bool	| IntPtr	| IntPtr	| array of single	|
+ Bool	| IntPtr	| IntPtr	| var single	|
+ Bool	| IntPtr	| IntPtr	| IntPtr	|
 
 # wglCopyImageSubDataNV
- UInt32	| GLContext	| UInt32	| DummyEnum	| Int32	| Int32	| Int32	| Int32	| GLContext	| UInt32	| DummyEnum	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	|
+ Bool	| wgl_context	| UInt32	| DummyEnum	| Int32	| Int32	| Int32	| Int32	| wgl_context	| UInt32	| DummyEnum	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	|
 
 # wglDelayBeforeSwapNV
- UInt32	| GDI_DC	| single	|
+ Bool	| gdi_device_context	| single	|
 
 # wglDXSetResourceShareHandleNV
- UInt32	| IntPtr	| IntPtr	|
+ Bool	| IntPtr	| IntPtr	|
 
 # wglDXOpenDeviceNV
  IntPtr	| IntPtr	|
 
 # wglDXCloseDeviceNV
- UInt32	| IntPtr	|
+ Bool	| IntPtr	|
 
 # wglDXRegisterObjectNV
  IntPtr	| IntPtr	| IntPtr	| UInt32	| DummyEnum	| DummyEnum	|
 
 # wglDXUnregisterObjectNV
- UInt32	| IntPtr	| IntPtr	|
+ Bool	| IntPtr	| IntPtr	|
 
 # wglDXObjectAccessNV
- UInt32	| IntPtr	| DummyEnum	|
+ Bool	| IntPtr	| DummyEnum	|
 
 # wglDXLockObjectsNV
- UInt32	| IntPtr	| Int32	| array of IntPtr	|
- UInt32	| IntPtr	| Int32	| var IntPtr	|
- UInt32	| IntPtr	| Int32	| pointer	|
+ Bool	| IntPtr	| Int32	| array of IntPtr	|
+ Bool	| IntPtr	| Int32	| var IntPtr	|
+ Bool	| IntPtr	| Int32	| pointer	|
 
 # wglDXUnlockObjectsNV
- UInt32	| IntPtr	| Int32	| array of IntPtr	|
- UInt32	| IntPtr	| Int32	| var IntPtr	|
- UInt32	| IntPtr	| Int32	| pointer	|
+ Bool	| IntPtr	| Int32	| array of IntPtr	|
+ Bool	| IntPtr	| Int32	| var IntPtr	|
+ Bool	| IntPtr	| Int32	| pointer	|
 
 # wglEnumGpusNV
- UInt32	| UInt32	| array of HGPUNV	|
- UInt32	| UInt32	| var HGPUNV	|
- UInt32	| UInt32	| IntPtr	|
+ Bool	| UInt32	| array of wgl_GPU_NV	|
+ Bool	| UInt32	| var wgl_GPU_NV	|
+ Bool	| UInt32	| IntPtr	|
 
 # wglEnumGpuDevicesNV
- UInt32	| HGPUNV	| UInt32	| PGPU_DEVICE	|
+ Bool	| wgl_GPU_NV	| UInt32	| array of wgl_GPU_device_NV	|
+ Bool	| wgl_GPU_NV	| UInt32	| var wgl_GPU_device_NV	|
+ Bool	| wgl_GPU_NV	| UInt32	| IntPtr	|
 
 # wglCreateAffinityDCNV
- GDI_DC	| array of HGPUNV	|
- GDI_DC	| var HGPUNV	|
- GDI_DC	| IntPtr	|
+ gdi_device_context	| array of wgl_GPU_NV	|
+ gdi_device_context	| var wgl_GPU_NV	|
+ gdi_device_context	| IntPtr	|
 
 # wglEnumGpusFromAffinityDCNV
- UInt32	| GDI_DC	| UInt32	| array of HGPUNV	|
- UInt32	| GDI_DC	| UInt32	| var HGPUNV	|
- UInt32	| GDI_DC	| UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| UInt32	| array of wgl_GPU_NV	|
+ Bool	| gdi_device_context	| UInt32	| var wgl_GPU_NV	|
+ Bool	| gdi_device_context	| UInt32	| IntPtr	|
 
 # wglDeleteDCNV
- UInt32	| GDI_DC	|
+ Bool	| gdi_device_context	|
 
 # wglEnumerateVideoDevicesNV
- Int32	| GDI_DC	| array of HVIDEOOUTPUTDEVICENV	|
- Int32	| GDI_DC	| var HVIDEOOUTPUTDEVICENV	|
- Int32	| GDI_DC	| IntPtr	|
+ Int32	| gdi_device_context	| array of wgl_h_video_output_device_NV	|
+ Int32	| gdi_device_context	| var wgl_h_video_output_device_NV	|
+ Int32	| gdi_device_context	| IntPtr	|
 
 # wglBindVideoDeviceNV
- UInt32	| GDI_DC	| UInt32	| HVIDEOOUTPUTDEVICENV	| array of Int32	|
- UInt32	| GDI_DC	| UInt32	| HVIDEOOUTPUTDEVICENV	| var Int32	|
- UInt32	| GDI_DC	| UInt32	| HVIDEOOUTPUTDEVICENV	| IntPtr	|
+ Bool	| gdi_device_context	| UInt32	| wgl_h_video_output_device_NV	| array of Int32	|
+ Bool	| gdi_device_context	| UInt32	| wgl_h_video_output_device_NV	| var Int32	|
+ Bool	| gdi_device_context	| UInt32	| wgl_h_video_output_device_NV	| IntPtr	|
 
 # wglQueryCurrentContextNV
- UInt32	| Int32	| array of Int32	|
- UInt32	| Int32	| var Int32	|
- UInt32	| Int32	| IntPtr	|
+ Bool	| Int32	| array of Int32	|
+ Bool	| Int32	| var Int32	|
+ Bool	| Int32	| IntPtr	|
 
 # wglJoinSwapGroupNV
- UInt32	| GDI_DC	| UInt32	|
+ Bool	| gdi_device_context	| UInt32	|
 
 # wglBindSwapBarrierNV
- UInt32	| UInt32	| UInt32	|
+ Bool	| UInt32	| UInt32	|
 
 # wglQuerySwapGroupNV
- UInt32	| GDI_DC	| array of UInt32	| array of UInt32	|
- UInt32	| GDI_DC	| array of UInt32	| var UInt32	|
- UInt32	| GDI_DC	| array of UInt32	| IntPtr	|
- UInt32	| GDI_DC	| var UInt32	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	| var UInt32	|
- UInt32	| GDI_DC	| var UInt32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of UInt32	| var UInt32	|
+ Bool	| gdi_device_context	| array of UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| var UInt32	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	| var UInt32	|
+ Bool	| gdi_device_context	| var UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	|
 
 # wglQueryMaxSwapGroupsNV
- UInt32	| GDI_DC	| array of UInt32	| array of UInt32	|
- UInt32	| GDI_DC	| array of UInt32	| var UInt32	|
- UInt32	| GDI_DC	| array of UInt32	| IntPtr	|
- UInt32	| GDI_DC	| var UInt32	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	| var UInt32	|
- UInt32	| GDI_DC	| var UInt32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of UInt32	|
- UInt32	| GDI_DC	| IntPtr	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	| array of UInt32	|
+ Bool	| gdi_device_context	| array of UInt32	| var UInt32	|
+ Bool	| gdi_device_context	| array of UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| var UInt32	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	| var UInt32	|
+ Bool	| gdi_device_context	| var UInt32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	|
 
 # wglQueryFrameCountNV
- UInt32	| GDI_DC	| array of UInt32	|
- UInt32	| GDI_DC	| var UInt32	|
- UInt32	| GDI_DC	| IntPtr	|
+ Bool	| gdi_device_context	| array of UInt32	|
+ Bool	| gdi_device_context	| var UInt32	|
+ Bool	| gdi_device_context	| IntPtr	|
 
 # wglResetFrameCountNV
- UInt32	| GDI_DC	|
+ Bool	| gdi_device_context	|
 
 # wglBindVideoCaptureDeviceNV
- UInt32	| UInt32	| HVIDEOINPUTDEVICENV	|
+ Bool	| UInt32	| wgl_h_video_input_device_NV	|
 
 # wglEnumerateVideoCaptureDevicesNV
- UInt32	| GDI_DC	| array of HVIDEOINPUTDEVICENV	|
- UInt32	| GDI_DC	| var HVIDEOINPUTDEVICENV	|
- UInt32	| GDI_DC	| IntPtr	|
+ UInt32	| gdi_device_context	| array of wgl_h_video_input_device_NV	|
+ UInt32	| gdi_device_context	| var wgl_h_video_input_device_NV	|
+ UInt32	| gdi_device_context	| IntPtr	|
 
 # wglLockVideoCaptureDeviceNV
- UInt32	| GDI_DC	| HVIDEOINPUTDEVICENV	|
+ Bool	| gdi_device_context	| wgl_h_video_input_device_NV	|
 
 # wglQueryVideoCaptureDeviceNV
- UInt32	| GDI_DC	| HVIDEOINPUTDEVICENV	| Int32	| array of Int32	|
- UInt32	| GDI_DC	| HVIDEOINPUTDEVICENV	| Int32	| var Int32	|
- UInt32	| GDI_DC	| HVIDEOINPUTDEVICENV	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| wgl_h_video_input_device_NV	| Int32	| array of Int32	|
+ Bool	| gdi_device_context	| wgl_h_video_input_device_NV	| Int32	| var Int32	|
+ Bool	| gdi_device_context	| wgl_h_video_input_device_NV	| Int32	| IntPtr	|
 
 # wglReleaseVideoCaptureDeviceNV
- UInt32	| GDI_DC	| HVIDEOINPUTDEVICENV	|
+ Bool	| gdi_device_context	| wgl_h_video_input_device_NV	|
 
 # wglGetVideoDeviceNV
- UInt32	| GDI_DC	| Int32	| array of HPVIDEODEV	|
- UInt32	| GDI_DC	| Int32	| var HPVIDEODEV	|
- UInt32	| GDI_DC	| Int32	| IntPtr	|
+ Bool	| gdi_device_context	| Int32	| array of wgl_h_video_device_NV	|
+ Bool	| gdi_device_context	| Int32	| var wgl_h_video_device_NV	|
+ Bool	| gdi_device_context	| Int32	| IntPtr	|
 
 # wglReleaseVideoDeviceNV
- UInt32	| HPVIDEODEV	|
+ Bool	| wgl_h_video_device_NV	|
 
 # wglBindVideoImageNV
- UInt32	| HPVIDEODEV	| HPBUFFER	| Int32	|
+ Bool	| wgl_h_video_device_NV	| wgl_pbuffer_ARB	| Int32	|
 
 # wglReleaseVideoImageNV
- UInt32	| HPBUFFER	| Int32	|
+ Bool	| wgl_pbuffer_ARB	| Int32	|
 
 # wglSendPbufferToVideoNV
- UInt32	| HPBUFFER	| Int32	| array of UInt64	| UInt32	|
- UInt32	| HPBUFFER	| Int32	| var UInt64	| UInt32	|
- UInt32	| HPBUFFER	| Int32	| IntPtr	| UInt32	|
+ Bool	| wgl_pbuffer_ARB	| Int32	| array of UInt64	| Bool	|
+ Bool	| wgl_pbuffer_ARB	| Int32	| var UInt64	| Bool	|
+ Bool	| wgl_pbuffer_ARB	| Int32	| IntPtr	| Bool	|
 
 # wglGetVideoInfoNV
- UInt32	| HPVIDEODEV	| array of UInt64	| array of UInt64	|
- UInt32	| HPVIDEODEV	| array of UInt64	| var UInt64	|
- UInt32	| HPVIDEODEV	| array of UInt64	| IntPtr	|
- UInt32	| HPVIDEODEV	| var UInt64	| array of UInt64	|
- UInt32	| HPVIDEODEV	| var UInt64	| var UInt64	|
- UInt32	| HPVIDEODEV	| var UInt64	| IntPtr	|
- UInt32	| HPVIDEODEV	| IntPtr	| array of UInt64	|
- UInt32	| HPVIDEODEV	| IntPtr	| var UInt64	|
- UInt32	| HPVIDEODEV	| IntPtr	| IntPtr	|
+ Bool	| wgl_h_video_device_NV	| array of UInt64	| array of UInt64	|
+ Bool	| wgl_h_video_device_NV	| array of UInt64	| var UInt64	|
+ Bool	| wgl_h_video_device_NV	| array of UInt64	| IntPtr	|
+ Bool	| wgl_h_video_device_NV	| var UInt64	| array of UInt64	|
+ Bool	| wgl_h_video_device_NV	| var UInt64	| var UInt64	|
+ Bool	| wgl_h_video_device_NV	| var UInt64	| IntPtr	|
+ Bool	| wgl_h_video_device_NV	| IntPtr	| array of UInt64	|
+ Bool	| wgl_h_video_device_NV	| IntPtr	| var UInt64	|
+ Bool	| wgl_h_video_device_NV	| IntPtr	| IntPtr	|
 
 # wglAllocateMemoryNV
  IntPtr	| Int32	| single	| single	| single	|
@@ -13134,107 +13293,737 @@
  IntPtr	|
 
 # wglGetSyncValuesOML
- UInt32	| GDI_DC	| array of Int64	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| array of Int64	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| array of Int64	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| array of Int64	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| array of Int64	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| array of Int64	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| array of Int64	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| array of Int64	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| array of Int64	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| var Int64	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| var Int64	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| var Int64	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| var Int64	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| var Int64	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| var Int64	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| var Int64	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| var Int64	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| var Int64	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| IntPtr	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| IntPtr	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| IntPtr	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| IntPtr	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int64	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| array of Int64	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| array of Int64	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int64	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| array of Int64	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| array of Int64	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int64	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| array of Int64	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| array of Int64	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| var Int64	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| var Int64	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| var Int64	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| var Int64	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| var Int64	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| var Int64	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| var Int64	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| var Int64	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| var Int64	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| IntPtr	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| IntPtr	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| IntPtr	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| IntPtr	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	| IntPtr	|
 
 # wglGetMscRateOML
- UInt32	| GDI_DC	| array of Int32	| array of Int32	|
- UInt32	| GDI_DC	| array of Int32	| var Int32	|
- UInt32	| GDI_DC	| array of Int32	| IntPtr	|
- UInt32	| GDI_DC	| var Int32	| array of Int32	|
- UInt32	| GDI_DC	| var Int32	| var Int32	|
- UInt32	| GDI_DC	| var Int32	| IntPtr	|
- UInt32	| GDI_DC	| IntPtr	| array of Int32	|
- UInt32	| GDI_DC	| IntPtr	| var Int32	|
- UInt32	| GDI_DC	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| array of Int32	| array of Int32	|
+ Bool	| gdi_device_context	| array of Int32	| var Int32	|
+ Bool	| gdi_device_context	| array of Int32	| IntPtr	|
+ Bool	| gdi_device_context	| var Int32	| array of Int32	|
+ Bool	| gdi_device_context	| var Int32	| var Int32	|
+ Bool	| gdi_device_context	| var Int32	| IntPtr	|
+ Bool	| gdi_device_context	| IntPtr	| array of Int32	|
+ Bool	| gdi_device_context	| IntPtr	| var Int32	|
+ Bool	| gdi_device_context	| IntPtr	| IntPtr	|
 
 # wglSwapBuffersMscOML
- Int64	| GDI_DC	| Int64	| Int64	| Int64	|
+ Int64	| gdi_device_context	| Int64	| Int64	| Int64	|
 
 # wglSwapLayerBuffersMscOML
- Int64	| GDI_DC	| Int32	| Int64	| Int64	| Int64	|
+ Int64	| gdi_device_context	| Int32	| Int64	| Int64	| Int64	|
 
 # wglWaitForMscOML
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| IntPtr	|
 
 # wglWaitForSbcOML
- UInt32	| GDI_DC	| Int64	| array of Int64	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| Int64	| array of Int64	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| var Int64	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| var Int64	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| var Int64	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| var Int64	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| var Int64	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| var Int64	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| var Int64	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| var Int64	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| Int64	| var Int64	| IntPtr	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| array of Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| array of Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| array of Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| var Int64	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| var Int64	| var Int64	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| var Int64	| IntPtr	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| IntPtr	| array of Int64	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| IntPtr	| var Int64	|
- UInt32	| GDI_DC	| Int64	| IntPtr	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| array of Int64	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| var Int64	| IntPtr	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| array of Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| array of Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| array of Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| var Int64	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| var Int64	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| var Int64	| IntPtr	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| IntPtr	| array of Int64	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| IntPtr	| var Int64	|
+ Bool	| gdi_device_context	| Int64	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXGetGPUIDsAMD
+ UInt32	| UInt32	| array of UInt32	|
+ UInt32	| UInt32	| var UInt32	|
+ UInt32	| UInt32	| IntPtr	|
+
+# glXGetGPUInfoAMD
+ Int32	| UInt32	| Int32	| DummyEnum	| UInt32	| IntPtr	|
+
+# glXGetContextGPUIDAMD
+ UInt32	| glx_context	|
+
+# glXCreateAssociatedContextAMD
+ glx_context	| UInt32	| glx_context	|
+
+# glXCreateAssociatedContextAttribsAMD
+ glx_context	| UInt32	| glx_context	| array of Int32	|
+ glx_context	| UInt32	| glx_context	| var Int32	|
+ glx_context	| UInt32	| glx_context	| IntPtr	|
+
+# glXDeleteAssociatedContextAMD
+ Bool	| glx_context	|
+
+# glXMakeAssociatedContextCurrentAMD
+ Bool	| glx_context	|
+
+# glXGetCurrentAssociatedContextAMD
+ glx_context	|
+
+# glXBlitContextFramebufferAMD
+ glx_context	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| DummyFlags	| DummyEnum	|
+
+# glXCreateContextAttribsARB
+ glx_context	| x_p_display	| glx_fb_config	| glx_context	| Bool	| array of Int32	|
+ glx_context	| x_p_display	| glx_fb_config	| glx_context	| Bool	| var Int32	|
+ glx_context	| x_p_display	| glx_fb_config	| glx_context	| Bool	| IntPtr	|
+
+# glXGetProcAddressARB
+ IntPtr	| array of Byte	|
+ IntPtr	| var Byte	|
+ IntPtr	| IntPtr	|
+
+# glXGetCurrentDisplayEXT
+ x_p_display	|
+
+# glXQueryContextInfoEXT
+ Int32	| x_p_display	| glx_context	| Int32	| array of Int32	|
+ Int32	| x_p_display	| glx_context	| Int32	| var Int32	|
+ Int32	| x_p_display	| glx_context	| Int32	| IntPtr	|
+
+# glXGetContextIDEXT
+ glx_context_id	| glx_context	|
+
+# glXImportContextEXT
+ glx_context	| x_p_display	| glx_context_id	|
+
+# glXFreeContextEXT
+ x_p_display	| glx_context	|
+
+# glXSwapIntervalEXT
+ x_p_display	| glx_drawable	| Int32	|
+
+# glXBindTexImageEXT
+ x_p_display	| glx_drawable	| Int32	| array of Int32	|
+ x_p_display	| glx_drawable	| Int32	| var Int32	|
+ x_p_display	| glx_drawable	| Int32	| IntPtr	|
+
+# glXReleaseTexImageEXT
+ x_p_display	| glx_drawable	| Int32	|
+
+# glXGetAGPOffsetMESA
+ UInt32	| IntPtr	|
+
+# glXCopySubBufferMESA
+ x_p_display	| glx_drawable	| Int32	| Int32	| Int32	| Int32	|
+
+# glXCreateGLXPixmapMESA
+ glx_pixmap	| x_p_display	| x_p_visual_info	| x_pixmap	| x_colormap	|
+
+# glXQueryCurrentRendererIntegerMESA
+ Bool	| Int32	| array of UInt32	|
+ Bool	| Int32	| var UInt32	|
+ Bool	| Int32	| IntPtr	|
+
+# glXQueryCurrentRendererStringMESA
+ string	| Int32	|
+
+# glXQueryRendererIntegerMESA
+ Bool	| x_p_display	| Int32	| Int32	| Int32	| array of UInt32	|
+ Bool	| x_p_display	| Int32	| Int32	| Int32	| var UInt32	|
+ Bool	| x_p_display	| Int32	| Int32	| Int32	| IntPtr	|
+
+# glXQueryRendererStringMESA
+ string	| x_p_display	| Int32	| Int32	| Int32	|
+
+# glXReleaseBuffersMESA
+ Bool	| x_p_display	| glx_drawable	|
+
+# glXSet3DfxModeMESA
+ boolean	| Int32	|
+
+# glXGetSwapIntervalMESA
+ Int32	|
+
+# glXSwapIntervalMESA
+ Int32	| UInt32	|
+
+# glXCopyBufferSubDataNV
+ x_p_display	| glx_context	| glx_context	| DummyEnum	| DummyEnum	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXNamedCopyBufferSubDataNV
+ x_p_display	| glx_context	| glx_context	| UInt32	| UInt32	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXCopyImageSubDataNV
+ x_p_display	| glx_context	| UInt32	| DummyEnum	| Int32	| Int32	| Int32	| Int32	| glx_context	| UInt32	| DummyEnum	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	|
+
+# glXDelayBeforeSwapNV
+ Bool	| x_p_display	| glx_drawable	| single	|
+
+# glXEnumerateVideoDevicesNV
+ ^UInt32	| x_p_display	| Int32	| array of Int32	|
+ ^UInt32	| x_p_display	| Int32	| var Int32	|
+ ^UInt32	| x_p_display	| Int32	| IntPtr	|
+
+# glXBindVideoDeviceNV
+ Int32	| x_p_display	| UInt32	| UInt32	| array of Int32	|
+ Int32	| x_p_display	| UInt32	| UInt32	| var Int32	|
+ Int32	| x_p_display	| UInt32	| UInt32	| IntPtr	|
+
+# glXJoinSwapGroupNV
+ Bool	| x_p_display	| glx_drawable	| UInt32	|
+
+# glXBindSwapBarrierNV
+ Bool	| x_p_display	| UInt32	| UInt32	|
+
+# glXQuerySwapGroupNV
+ Bool	| x_p_display	| glx_drawable	| array of UInt32	| array of UInt32	|
+ Bool	| x_p_display	| glx_drawable	| array of UInt32	| var UInt32	|
+ Bool	| x_p_display	| glx_drawable	| array of UInt32	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| var UInt32	| array of UInt32	|
+ Bool	| x_p_display	| glx_drawable	| var UInt32	| var UInt32	|
+ Bool	| x_p_display	| glx_drawable	| var UInt32	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| array of UInt32	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| var UInt32	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| IntPtr	|
+
+# glXQueryMaxSwapGroupsNV
+ Bool	| x_p_display	| Int32	| array of UInt32	| array of UInt32	|
+ Bool	| x_p_display	| Int32	| array of UInt32	| var UInt32	|
+ Bool	| x_p_display	| Int32	| array of UInt32	| IntPtr	|
+ Bool	| x_p_display	| Int32	| var UInt32	| array of UInt32	|
+ Bool	| x_p_display	| Int32	| var UInt32	| var UInt32	|
+ Bool	| x_p_display	| Int32	| var UInt32	| IntPtr	|
+ Bool	| x_p_display	| Int32	| IntPtr	| array of UInt32	|
+ Bool	| x_p_display	| Int32	| IntPtr	| var UInt32	|
+ Bool	| x_p_display	| Int32	| IntPtr	| IntPtr	|
+
+# glXQueryFrameCountNV
+ Bool	| x_p_display	| Int32	| array of UInt32	|
+ Bool	| x_p_display	| Int32	| var UInt32	|
+ Bool	| x_p_display	| Int32	| IntPtr	|
+
+# glXResetFrameCountNV
+ Bool	| x_p_display	| Int32	|
+
+# glXBindVideoCaptureDeviceNV
+ Int32	| x_p_display	| UInt32	| glx_video_capture_device_NV	|
+
+# glXEnumerateVideoCaptureDevicesNV
+ ^glx_video_capture_device_NV	| x_p_display	| Int32	| array of Int32	|
+ ^glx_video_capture_device_NV	| x_p_display	| Int32	| var Int32	|
+ ^glx_video_capture_device_NV	| x_p_display	| Int32	| IntPtr	|
+
+# glXLockVideoCaptureDeviceNV
+ x_p_display	| glx_video_capture_device_NV	|
+
+# glXQueryVideoCaptureDeviceNV
+ Int32	| x_p_display	| glx_video_capture_device_NV	| Int32	| array of Int32	|
+ Int32	| x_p_display	| glx_video_capture_device_NV	| Int32	| var Int32	|
+ Int32	| x_p_display	| glx_video_capture_device_NV	| Int32	| IntPtr	|
+
+# glXReleaseVideoCaptureDeviceNV
+ x_p_display	| glx_video_capture_device_NV	|
+
+# glXGetVideoDeviceNV
+ Int32	| x_p_display	| Int32	| Int32	| array of glx_video_device_NV	|
+ Int32	| x_p_display	| Int32	| Int32	| var glx_video_device_NV	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	|
+
+# glXReleaseVideoDeviceNV
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	|
+
+# glXBindVideoImageNV
+ Int32	| x_p_display	| glx_video_device_NV	| glx_pbuffer	| Int32	|
+
+# glXReleaseVideoImageNV
+ Int32	| x_p_display	| glx_pbuffer	|
+
+# glXSendPbufferToVideoNV
+ Int32	| x_p_display	| glx_pbuffer	| Int32	| array of UInt64	| boolean	|
+ Int32	| x_p_display	| glx_pbuffer	| Int32	| var UInt64	| boolean	|
+ Int32	| x_p_display	| glx_pbuffer	| Int32	| IntPtr	| boolean	|
+
+# glXGetVideoInfoNV
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| array of UInt64	| array of UInt64	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| array of UInt64	| var UInt64	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| array of UInt64	| IntPtr	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| var UInt64	| array of UInt64	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| var UInt64	| var UInt64	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| var UInt64	| IntPtr	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| IntPtr	| array of UInt64	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| IntPtr	| var UInt64	|
+ Int32	| x_p_display	| Int32	| glx_video_device_NV	| IntPtr	| IntPtr	|
+
+# glXGetSyncValuesOML
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| array of Int64	| IntPtr	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| var Int64	| IntPtr	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXGetMscRateOML
+ Bool	| x_p_display	| glx_drawable	| array of Int32	| array of Int32	|
+ Bool	| x_p_display	| glx_drawable	| array of Int32	| var Int32	|
+ Bool	| x_p_display	| glx_drawable	| array of Int32	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| var Int32	| array of Int32	|
+ Bool	| x_p_display	| glx_drawable	| var Int32	| var Int32	|
+ Bool	| x_p_display	| glx_drawable	| var Int32	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| array of Int32	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| var Int32	|
+ Bool	| x_p_display	| glx_drawable	| IntPtr	| IntPtr	|
+
+# glXSwapBuffersMscOML
+ Int64	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	|
+
+# glXWaitForMscOML
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| array of Int64	| IntPtr	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| var Int64	| IntPtr	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| Int64	| Int64	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXWaitForSbcOML
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| array of Int64	| IntPtr	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| var Int64	| IntPtr	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| array of Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| array of Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| array of Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| var Int64	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| var Int64	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| var Int64	| IntPtr	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| IntPtr	| array of Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| IntPtr	| var Int64	|
+ Bool	| x_p_display	| glx_drawable	| Int64	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXCushionSGI
+ x_p_display	| x_window	| single	|
+
+# glXMakeCurrentReadSGI
+ Bool	| x_p_display	| glx_drawable	| glx_drawable	| glx_context	|
+
+# glXGetCurrentReadDrawableSGI
+ glx_drawable	|
+
+# glXSwapIntervalSGI
+ Int32	| Int32	|
+
+# glXGetVideoSyncSGI
+ Int32	| array of UInt32	|
+ Int32	| var UInt32	|
+ Int32	| IntPtr	|
+
+# glXWaitVideoSyncSGI
+ Int32	| Int32	| Int32	| array of UInt32	|
+ Int32	| Int32	| Int32	| var UInt32	|
+ Int32	| Int32	| Int32	| IntPtr	|
+
+# glXAssociateDMPbufferSGIX
+ Bool	| x_p_display	| glx_pbuffer	| array of x_dm_params	| x_dm_buffer	|
+ Bool	| x_p_display	| glx_pbuffer	| var x_dm_params	| x_dm_buffer	|
+ Bool	| x_p_display	| glx_pbuffer	| IntPtr	| x_dm_buffer	|
+
+# glXGetFBConfigAttribSGIX
+ Int32	| x_p_display	| glx_fb_config	| Int32	| array of Int32	|
+ Int32	| x_p_display	| glx_fb_config	| Int32	| var Int32	|
+ Int32	| x_p_display	| glx_fb_config	| Int32	| IntPtr	|
+
+# glXChooseFBConfigSGIX
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| array of Int32	| IntPtr	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| var Int32	| IntPtr	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	| array of Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	| var Int32	|
+ ^glx_fb_config	| x_p_display	| Int32	| IntPtr	| IntPtr	|
+
+# glXCreateGLXPixmapWithConfigSGIX
+ glx_pixmap	| x_p_display	| glx_fb_config	| x_pixmap	|
+
+# glXCreateContextWithConfigSGIX
+ glx_context	| x_p_display	| glx_fb_config	| Int32	| glx_context	| Bool	|
+
+# glXGetVisualFromFBConfigSGIX
+ x_p_visual_info	| x_p_display	| glx_fb_config	|
+
+# glXGetFBConfigFromVisualSGIX
+ glx_fb_config	| x_p_display	| x_p_visual_info	|
+
+# glXQueryHyperpipeNetworkSGIX
+ ^glx_hyperpipe_network_SGIX	| x_p_display	| var Int32	|
+ ^glx_hyperpipe_network_SGIX	| x_p_display	| IntPtr	|
+
+# glXHyperpipeConfigSGIX
+ Int32	| x_p_display	| Int32	| Int32	| array of glx_hyperpipe_config_SGIX	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of glx_hyperpipe_config_SGIX	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var glx_hyperpipe_config_SGIX	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var glx_hyperpipe_config_SGIX	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	|
+
+# glXQueryHyperpipeConfigSGIX
+ ^glx_hyperpipe_config_SGIX	| x_p_display	| Int32	| var Int32	|
+ ^glx_hyperpipe_config_SGIX	| x_p_display	| Int32	| IntPtr	|
+
+# glXDestroyHyperpipeConfigSGIX
+ Int32	| x_p_display	| Int32	|
+
+# glXBindHyperpipeSGIX
+ Int32	| x_p_display	| Int32	|
+
+# glXQueryHyperpipeBestAttribSGIX
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_SGIX	| array of glx_pipe_rect_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_SGIX	| var glx_pipe_rect_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_limits_SGIX	| array of glx_pipe_rect_limits_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_limits_SGIX	| var glx_pipe_rect_limits_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| IntPtr	| IntPtr	|
+
+# glXHyperpipeAttribSGIX
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| IntPtr	|
+
+# glXQueryHyperpipeAttribSGIX
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| array of glx_pipe_rect_limits_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var glx_pipe_rect_limits_SGIX	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| IntPtr	|
+
+# glXCreateGLXPbufferSGIX
+ glx_pbuffer	| x_p_display	| glx_fb_config	| UInt32	| UInt32	| array of Int32	|
+ glx_pbuffer	| x_p_display	| glx_fb_config	| UInt32	| UInt32	| var Int32	|
+ glx_pbuffer	| x_p_display	| glx_fb_config	| UInt32	| UInt32	| IntPtr	|
+
+# glXDestroyGLXPbufferSGIX
+ x_p_display	| glx_pbuffer	|
+
+# glXQueryGLXPbufferSGIX
+ x_p_display	| glx_pbuffer	| Int32	| array of UInt32	|
+ x_p_display	| glx_pbuffer	| Int32	| var UInt32	|
+ x_p_display	| glx_pbuffer	| Int32	| IntPtr	|
+
+# glXSelectEventSGIX
+ x_p_display	| glx_drawable	| UInt64	|
+
+# glXGetSelectedEventSGIX
+ x_p_display	| glx_drawable	| array of UInt64	|
+ x_p_display	| glx_drawable	| var UInt64	|
+ x_p_display	| glx_drawable	| IntPtr	|
+
+# glXBindSwapBarrierSGIX
+ x_p_display	| glx_drawable	| Int32	|
+
+# glXQueryMaxSwapBarriersSGIX
+ Bool	| x_p_display	| Int32	| array of Int32	|
+ Bool	| x_p_display	| Int32	| var Int32	|
+ Bool	| x_p_display	| Int32	| IntPtr	|
+
+# glXJoinSwapGroupSGIX
+ x_p_display	| glx_drawable	| glx_drawable	|
+
+# glXBindChannelToWindowSGIX
+ Int32	| x_p_display	| Int32	| Int32	| x_window	|
+
+# glXChannelRectSGIX
+ Int32	| x_p_display	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	|
+
+# glXQueryChannelRectSGIX
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXQueryChannelDeltasSGIX
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| array of Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| var Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| array of Int32	| IntPtr	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| array of Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| var Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| var Int32	| IntPtr	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| array of Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| var Int32	| IntPtr	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| array of Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| array of Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| array of Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| var Int32	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| var Int32	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| var Int32	| IntPtr	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| IntPtr	| array of Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| IntPtr	| var Int32	|
+ Int32	| x_p_display	| Int32	| Int32	| IntPtr	| IntPtr	| IntPtr	| IntPtr	|
+
+# glXChannelRectSyncSGIX
+ Int32	| x_p_display	| Int32	| Int32	| DummyEnum	|
+
+# glXCreateGLXVideoSourceSGIX
+ glx_video_source_SGIX	| x_p_display	| Int32	| x_vl_server	| x_vl_path	| Int32	| x_vl_node	|
+
+# glXDestroyGLXVideoSourceSGIX
+ x_p_display	| glx_video_source_SGIX	|
+
+# glXGetTransparentIndexSUN
+ Bool	| x_p_display	| x_window	| x_window	| array of UInt64	|
+ Bool	| x_p_display	| x_window	| x_window	| var UInt64	|
+ Bool	| x_p_display	| x_window	| x_window	| IntPtr	|
 
 

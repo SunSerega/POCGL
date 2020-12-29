@@ -1,0 +1,9 @@
+
+
+
+# glGetDebugMessageLogAMD
+!repl_ovrs
+ UInt32	| UInt32	| Int32	| var DummyEnum		| var UInt32	| var UInt32	| var Int32	| IntPtr	|
+ UInt32	| UInt32	| Int32	| IntPtr			| IntPtr		| IntPtr		| IntPtr	| IntPtr	|
+
+

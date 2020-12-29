@@ -337,19 +337,13 @@ type
       Result := res.ToString;
     end;
     
-    public procedure Write(sb: StringBuilder; pos: string := nil);
+    public procedure Write(sb: StringBuilder);
     begin
       sb += '    ';
       if name<>nil then
       begin
         sb += vis;
         sb += ' ';
-        if pos<>nil then
-        begin
-          sb += '[FieldOffset(';
-          sb += pos;
-          sb += ')] ';
-        end;
         sb += self.MakeDef;
         if def_val<>nil then
         begin
@@ -419,6 +413,50 @@ type
           Otp($'WARNING: Struct [{s.name}] was explicitly added, but wasn''t used') else
           log.Otp($'Struct [{s.name}] was skipped');
     
+    private static ValueStringNamesCache := new HashSet<string>;
+    private static function MakeValueString(sb: StringBuilder; len: integer): string;
+    begin
+      Result := $'ValueString_{len}';
+      if not ValueStringNamesCache.Add(Result) then exit;
+      
+      sb += '  [StructLayout(LayoutKind.Explicit, Size = ';
+      sb += len.ToString;
+      sb += ')]'#10;
+      
+      sb += '  ';
+      sb += Result;
+      sb += ' = record'#10;
+      sb += '    '#10;
+      
+      sb += '    public property NtvChars[i: integer]: Byte'#10;
+      sb += '    read Marshal.ReadByte(new IntPtr(@self), i)'#10;
+      sb += '    write Marshal.WriteByte(new IntPtr(@self), i, value);';
+      
+      sb += '    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;'#10;
+      sb += '    '#10;
+      
+      sb += '    public constructor(s: string);'#10;
+      sb += '    begin'#10;
+      sb += '      if s.Length >= ';
+      sb += len.ToString;
+      sb += ' then raise new System.OverflowException;'#10;
+      sb += '      '#10;
+      sb += '      for var i := 0 to s.Length-1 do'#10;
+      sb += '        self[i] := s[i+1];'#10;
+      sb += '      self.NtvChars[s.Length] := 0;'#10;
+      sb += '      '#10;
+      sb += '    end;'#10;
+      sb += '    '#10;
+      
+      sb += '    public function ToString: string; override :='#10;
+      sb += '    Marshal.PtrToStringAnsi(new IntPtr(@self));'#10;
+      sb += '    '#10;
+      
+      sb += '  end;'#10;
+      sb += '  '#10;
+      
+    end;
+    
     public procedure Write(sb: StringBuilder);
     begin
       log_structs.Otp($'# {name}');
@@ -428,56 +466,17 @@ type
       
       if not used then exit;
       
-      var need_expl := flds.Any(fld->fld.rep_c<>1);
-      var fld_offset := new Dictionary<StructField, string>;
-      var max_fld_offset_len: integer;
-      if need_expl then
-      begin
-        var tc := new Dictionary<string, integer>;
-        var prev_val := 0;
-        var temp_fld := new StructField;
-        
-        foreach var fld in flds.Append(nil) do
+      foreach var fld in flds do
+        if fld.rep_c<>1 then
         begin
-          
-          if tc.Count=0 then
-            fld_offset[fld] := '0' else
-          begin
-            
-            var ofs := new StringBuilder;
-            foreach var t in tc.Keys do
-            begin
-//              ofs += $'sizeof({t})'; //ToDo http://forum.mmcs.sfedu.ru/t/topic/143/1767?u=sun_serega
-              
-              case t of
-                'UInt32': ofs += '4';
-                'Byte':   ofs += '1';
-                else raise new System.NotSupportedException($'{t} in {name}');
-              end;
-              
-              ofs += $'*{tc[t]} + ';
-            end;
-            ofs.Length -= ' + '.Length;
-            
-            fld_offset[fld??temp_fld] := ofs.ToString;
-          end;
-          
-          if fld=nil then break;
-          
-          if tc.TryGetValue(fld.t, prev_val) then
-            tc[fld.t] := prev_val+fld.rep_c else
-            tc[fld.t] := fld.rep_c;
-          
+          if fld.t<>'ntv_char' then raise new System.NotSupportedException;
+          fld.t := MakeValueString(sb, fld.rep_c);
         end;
-        
-        sb += $'  [StructLayout(LayoutKind.&Explicit, Size = {fld_offset[temp_fld]})]';
-        max_fld_offset_len := fld_offset[flds[flds.Count-1]].Length;
-      end;
       
       sb += $'  {name} = record' + #10;
       
       foreach var fld in flds do
-        fld.Write(sb, need_expl ? fld_offset[fld].PadLeft(max_fld_offset_len) : nil);
+        fld.Write(sb);
       sb += '    '#10;
       
       var constr_flds := flds.ToList;
@@ -702,7 +701,7 @@ type
     
     public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
     begin
-      if not (api in ['gl','glx']) then exit;
+      if not (api in |'gl', 'glx'|) then exit;
       sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
       if api='glx' then
         sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
@@ -857,15 +856,10 @@ type
       foreach var ovr in all_overloads do
         foreach var par in is_proc ? ovr.pars.Skip(1) : ovr.pars do
         begin
-          Group.MarkUsed(par.tname);
-          Struct.MarkUsed(par.tname);
+          var tname := par.tname.TrimStart('^');
+          Group.MarkUsed(tname);
+          Struct.MarkUsed(tname);
         end;
-    end;
-    //ToDo для glx, в будущем убрать
-    public procedure MarkSemiUsed;
-    begin
-      if used then exit;
-      used := true;
     end;
     
     public static procedure WarnAllUnused :=
@@ -1522,13 +1516,6 @@ type
       begin
         var f := new Feature(br);
         
-        if f.api='glx' then //ToDo Требует бОльшего тестирования
-        begin
-          foreach var fnc in f.add do fnc.MarkSemiUsed;
-          foreach var fnc in f.rem do fnc.MarkSemiUsed;
-          continue;
-        end;
-        
         var lst: List<Feature>;
         if not ByApi.TryGetValue(f.api, lst) then
         begin
@@ -1694,13 +1681,6 @@ type
       begin
         var ext := new Extension(br);
         
-        if ext.api='glx' then //ToDo Требует бОльшего тестирования
-        begin
-          foreach var f in ext.add do
-            f.MarkSemiUsed;
-          continue;
-        end;
-        
         All += ext;
       end;
       
@@ -1765,7 +1745,7 @@ procedure InitAll;
 begin
   
   allowed_ext_names :=
-    ReadLines(GetFullPath('..\MiscInput\AllowedExtNames.dat',GetEXEFileName))
+    ReadLines(GetFullPathRTA('MiscInput\AllowedExtNames.dat'))
     .Where(l->not string.IsNullOrWhiteSpace(l))
     .Select(l->l.Trim)
     .OrderByDescending(l->l.Length)
@@ -2042,10 +2022,20 @@ type
           
           if l.Trim<>'*' then
           begin
-            var s := l.Split(':');
-            fld.name := s[0].Trim;
-            fld.ptr := s[1].Count(ch->ch='*');
-            fld.t := s[1].Remove('*').Trim;
+            var ind := l.IndexOf(':');
+            fld.name := l.Remove(ind).Trim;
+            
+            var t := l.SubString(ind+1).Trim;
+            fld.ptr := t.Count(ch->ch='*');
+            fld.t := t.Remove('*').Trim;
+            
+            ind := fld.t.IndexOf('[');
+            if ind <> -1 then
+            begin
+              if not fld.t.EndsWith(']') then raise new System.FormatException(fld.t);
+              fld.rep_c := StrToInt64( fld.t.SubString(ind+1, fld.t.Length-ind-2) );
+              fld.t := fld.t.Remove(ind);
+            end;
           end else
             fld.name := nil;
           

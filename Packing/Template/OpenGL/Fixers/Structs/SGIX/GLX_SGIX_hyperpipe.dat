@@ -1,0 +1,42 @@
+
+
+
+# glx_hyperpipe_network_SGIX
+!add
+pipeName:	ntv_char[80]
+networkId:	Int32
+
+
+
+# glx_hyperpipe_config_SGIX
+!add
+pipeName:			ntv_char[80]
+channel:			Int32
+participationType:	PipeParticipationTypeFlags
+timeSlice:			Int32
+
+
+
+# glx_pipe_rect_SGIX
+!add
+pipeName:		ntv_char[80]
+srcXOrigin:		Int32
+srcYOrigin:		Int32
+srcWidth:		Int32
+srcHeight:		Int32
+destXOrigin:	Int32
+destYOrigin:	Int32
+destWidth:		Int32
+destHeight:		Int32
+
+
+
+# glx_pipe_rect_limits_SGIX
+!add
+pipeName:	ntv_char[80]
+XOrigin:	Int32
+YOrigin:	Int32
+maxHeight:	Int32
+maxWidth:	Int32
+
+
