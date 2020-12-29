@@ -170,7 +170,8 @@
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 80)]
-  ValueString_80 = record
+  ///--
+  _ValueString_80 = record
     
     public property NtvChars[i: integer]: Byte
     read Marshal.ReadByte(new IntPtr(@self), i)
@@ -192,12 +193,12 @@
   end;
   
   glx_hyperpipe_config_SGIX = record
-    public pipeName: ValueString_80;
+    public pipeName: _ValueString_80;
     public channel: Int32;
     public participationType: PipeParticipationTypeFlags;
     public timeSlice: Int32;
     
-    public constructor(pipeName: ValueString_80; channel: Int32; participationType: PipeParticipationTypeFlags; timeSlice: Int32);
+    public constructor(pipeName: _ValueString_80; channel: Int32; participationType: PipeParticipationTypeFlags; timeSlice: Int32);
     begin
       self.pipeName := pipeName;
       self.channel := channel;
@@ -208,10 +209,10 @@
   end;
   
   glx_hyperpipe_network_SGIX = record
-    public pipeName: ValueString_80;
+    public pipeName: _ValueString_80;
     public networkId: Int32;
     
-    public constructor(pipeName: ValueString_80; networkId: Int32);
+    public constructor(pipeName: _ValueString_80; networkId: Int32);
     begin
       self.pipeName := pipeName;
       self.networkId := networkId;
@@ -220,13 +221,13 @@
   end;
   
   glx_pipe_rect_limits_SGIX = record
-    public pipeName: ValueString_80;
+    public pipeName: _ValueString_80;
     public XOrigin: Int32;
     public YOrigin: Int32;
     public maxHeight: Int32;
     public maxWidth: Int32;
     
-    public constructor(pipeName: ValueString_80; XOrigin: Int32; YOrigin: Int32; maxHeight: Int32; maxWidth: Int32);
+    public constructor(pipeName: _ValueString_80; XOrigin: Int32; YOrigin: Int32; maxHeight: Int32; maxWidth: Int32);
     begin
       self.pipeName := pipeName;
       self.XOrigin := XOrigin;
@@ -238,7 +239,7 @@
   end;
   
   glx_pipe_rect_SGIX = record
-    public pipeName: ValueString_80;
+    public pipeName: _ValueString_80;
     public srcXOrigin: Int32;
     public srcYOrigin: Int32;
     public srcWidth: Int32;
@@ -248,7 +249,7 @@
     public destWidth: Int32;
     public destHeight: Int32;
     
-    public constructor(pipeName: ValueString_80; srcXOrigin: Int32; srcYOrigin: Int32; srcWidth: Int32; srcHeight: Int32; destXOrigin: Int32; destYOrigin: Int32; destWidth: Int32; destHeight: Int32);
+    public constructor(pipeName: _ValueString_80; srcXOrigin: Int32; srcYOrigin: Int32; srcWidth: Int32; srcHeight: Int32; destXOrigin: Int32; destYOrigin: Int32; destWidth: Int32; destHeight: Int32);
     begin
       self.pipeName := pipeName;
       self.srcXOrigin := srcXOrigin;
@@ -274,7 +275,8 @@
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 32)]
-  ValueString_32 = record
+  ///--
+  _ValueString_32 = record
     
     public property NtvChars[i: integer]: Byte
     read Marshal.ReadByte(new IntPtr(@self), i)
@@ -296,7 +298,8 @@
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 128)]
-  ValueString_128 = record
+  ///--
+  _ValueString_128 = record
     
     public property NtvChars[i: integer]: Byte
     read Marshal.ReadByte(new IntPtr(@self), i)
@@ -319,12 +322,12 @@
   
   wgl_GPU_device_NV = record
     public cb: UInt32 := sizeof(wgl_GPU_device_NV);
-    public DeviceName: ValueString_32;
-    public DeviceString: ValueString_128;
+    public DeviceName: _ValueString_32;
+    public DeviceString: _ValueString_128;
     public Flags: GPUDisplayDeviceFlagsNV;
     public rcVirtualScreen: record left, top, right, bottom: Int64; end := (left: 0; top: 0; right: 0; bottom: 0);
     
-    public constructor(DeviceName: ValueString_32; DeviceString: ValueString_128; Flags: GPUDisplayDeviceFlagsNV);
+    public constructor(DeviceName: _ValueString_32; DeviceString: _ValueString_128; Flags: GPUDisplayDeviceFlagsNV);
     begin
       self.DeviceName := DeviceName;
       self.DeviceString := DeviceString;

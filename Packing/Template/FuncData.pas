@@ -416,13 +416,18 @@ type
     private static ValueStringNamesCache := new HashSet<string>;
     private static function MakeValueString(sb: StringBuilder; len: integer): string;
     begin
-      Result := $'ValueString_{len}';
+      Result := $'_ValueString_{len}';
       if not ValueStringNamesCache.Add(Result) then exit;
+      
+      log_structs.Otp($'# {Result}');
+      log_structs.Otp($'{#9}body: ntv_char[{len}]');
+      log_structs.Otp('');
       
       sb += '  [StructLayout(LayoutKind.Explicit, Size = ';
       sb += len.ToString;
       sb += ')]'#10;
       
+      sb += '  ///--'#10;
       sb += '  ';
       sb += Result;
       sb += ' = record'#10;
@@ -459,19 +464,20 @@ type
     
     public procedure Write(sb: StringBuilder);
     begin
+      foreach var fld in flds do
+        if fld.rep_c<>1 then
+        begin
+          if fld.t<>'ntv_char' then raise new System.NotSupportedException;
+          fld.t := MakeValueString(sb, fld.rep_c);
+          fld.rep_c := 1;
+        end;
+      
       log_structs.Otp($'# {name}');
       foreach var fld in flds do
         log_structs.Otp($'{#9}{fld.MakeDef}' + (fld.rep_c<>1 ? $'[{fld.rep_c}]' : '') );
       log_structs.Otp('');
       
       if not used then exit;
-      
-      foreach var fld in flds do
-        if fld.rep_c<>1 then
-        begin
-          if fld.t<>'ntv_char' then raise new System.NotSupportedException;
-          fld.t := MakeValueString(sb, fld.rep_c);
-        end;
       
       sb += $'  {name} = record' + #10;
       
