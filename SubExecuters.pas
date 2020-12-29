@@ -18,7 +18,12 @@ type
     
     public procedure Handle; override;
     begin
-      if p.HasExited then exit;
+      try
+        if p.HasExited then exit;
+      except
+        // Если процесс ещё даже запустится не успел
+        on System.InvalidOperationException do exit;
+      end;
       
       if not use_halt_str then
       begin
