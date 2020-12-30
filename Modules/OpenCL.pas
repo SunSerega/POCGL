@@ -202,7 +202,7 @@ type
         Result := $'Bool[{self.val}]';
     end;
     
-    public static function operator implicit(b: Bool): boolean := b<>Bool.FALSE;
+    public static function operator implicit(b: Bool): boolean := b.val<>Bool.FALSE.val;
     public static function operator implicit(b: boolean): Bool := new Bool(UInt32(b));
     
     public static function operator not(b: Bool): Bool := b.val=Bool.FALSE.val ? Bool.TRUE : Bool.FALSE;

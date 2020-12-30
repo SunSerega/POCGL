@@ -299,12 +299,8 @@ type
     public constructor(br: System.IO.BinaryReader);
     begin
       self.name := br.ReadString;
-      
       self.t := TypeTable.Convert(br.ReadString);
-      
       self.rep_c := br.ReadInt64;
-      if (self.t='ntv_char') and (self.rep_c<>1) then
-        self.t := 'Byte';
       
       if br.ReadBoolean then raise new System.NotSupportedException; // readonly
       
@@ -414,7 +410,7 @@ type
           log.Otp($'Struct [{s.name}] was skipped');
     
     private static ValueStringNamesCache := new HashSet<string>;
-    private static function MakeValueString(sb: StringBuilder; len: integer): string;
+    private function MakeValueString(sb: StringBuilder; len: integer): string;
     begin
       Result := $'_ValueString_{len}';
       if not ValueStringNamesCache.Add(Result) then exit;
@@ -422,6 +418,8 @@ type
       log_structs.Otp($'# {Result}');
       log_structs.Otp($'{#9}body: ntv_char[{len}]');
       log_structs.Otp('');
+      
+      if not used then exit;
       
       sb += '  [StructLayout(LayoutKind.Explicit, Size = ';
       sb += len.ToString;

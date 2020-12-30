@@ -44,12 +44,15 @@
 	sad_adjust_mode: UInt32
 	search_path_type: UInt32
 
+# _ValueString_64
+	body: ntv_char[64]
+
 # cl_name_version
 	version: UInt32
-	name: ntv_char
+	name: _ValueString_64
 
 # cl_name_version_khr
 	version: UInt32
-	name: ntv_char
+	name: _ValueString_64
 
 

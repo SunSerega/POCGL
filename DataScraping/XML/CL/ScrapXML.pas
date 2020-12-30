@@ -277,12 +277,17 @@ type
         end else
           raise new MessageException($'ERROR: unable to parse func par [{text}]');
       
-      if self.t.Contains('[') and self.t.EndsWith(']') then
+      if text.Contains('[') and text.EndsWith(']') then
       begin
-        var ind := self.t.IndexOf('[');
-        var c := self.t.Substring(ind+1, self.t.Length-ind-2);
-        if TryStrToInt64(c, self.rep_c) or Group.AllEnums.TryGetValue(c, self.rep_c) then
-          self.t := self.t.Remove(ind);
+        var ind := text.IndexOf('[');
+        var c := text.Substring(ind+1, text.Length-ind-2).Trim;
+        if c <> '' then
+        begin
+          
+          if TryStrToInt64(c, self.rep_c) or Group.AllEnums.TryGetValue(c, self.rep_c) then
+            ;
+          
+        end;
       end;
       
       self.readonly := text.Contains('const');
