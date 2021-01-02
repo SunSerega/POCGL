@@ -1,5 +1,7 @@
 ﻿unit Fixers;
 
+{$savepcu false} //ToDo #2382
+
 type
   FixerUtils = static class
     
@@ -139,7 +141,7 @@ type
   end;
   
   Fixer<TFixer, TFixable> = abstract class
-//  where TFixer: Fixer<TFixer, TFixable>; //ToDo #2191
+  where TFixer: Fixer<TFixer, TFixable>;
     protected name: string;
     protected used: boolean;
     
@@ -155,7 +157,7 @@ type
     public static property Item[name: string]: List<TFixer> read GetItem; default;
     
     private static adders := new List<TFixer>;
-    protected procedure RegisterAsAdder := adders.Add(TFixer(self as object)); //ToDo #2191, но TFixer() нужно
+    protected procedure RegisterAsAdder := adders.Add( TFixer(self) );
     
     protected static GetFixableName: TFixable->string;
     protected static MakeNewFixable: TFixer->TFixable;
@@ -164,7 +166,7 @@ type
     begin
       self.name := name;
       if name=nil then exit;
-      Item[name].Add( TFixer(self as object) ); //ToDo #2191, но TFixer() нужно
+      Item[name].Add( TFixer(self) );
     end;
     
     protected function ApplyOrderBase; virtual := 0;
@@ -180,19 +182,23 @@ type
       for var i := lst.Count-1 downto 0 do
       begin
         var o := lst[i];
-        foreach var f in Item[GetFixableName(o)].OrderBy(f->(f as object as Fixer<TFixer, TFixable>).ApplyOrderBase) do //ToDo #2191
-          if (f as object as Fixer<TFixer, TFixable>).Apply(o) then //ToDo #2191
+        foreach var f in Item[GetFixableName(o)].OrderBy(f->f.ApplyOrderBase) do
+          if f.Apply(o) then
             lst.RemoveAt(i);
       end;
       
       lst.TrimExcess;
     end;
     
-    protected procedure WarnUnused; abstract;
+    protected procedure WarnUnused(all_unused_for_name: List<TFixer>); abstract;
     public static procedure WarnAllUnused :=
     foreach var l in all.Values do
-      if l.Any(f->not (f as object as Fixer<TFixer, TFixable>).used) then //ToDo #2191
-        (l[0] as object as Fixer<TFixer, TFixable>).WarnUnused; //ToDo #2191
+    begin
+      var unused := l.ToList;
+      unused.RemoveAll(f->(f as Fixer<TFixer, TFixable>).used); //ToDo #2383
+      if unused.Count=0 then continue;
+      unused[0].WarnUnused(unused);
+    end;
     
   end;
   
