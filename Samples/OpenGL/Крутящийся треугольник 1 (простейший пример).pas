@@ -13,7 +13,7 @@ uses OpenGL;
 
 {$apptype windows} // убирает консоль
 
-var gl: OpenGL.gl;
+var gl: OpenGL.gl<PlWin>;
 
 {$region Shader}
 
@@ -113,7 +113,7 @@ begin
     
     // При создании экземпляра OpenGL.gl инициализируются некоторые функции
     // Это необходимо для всех функций из OpenGL1.2 и выше, потому что они локальны для контекста OpenGL
-    gl := new OpenGL.gl;
+    gl := new OpenGL.gl<PlWin>;
     
     {$endregion Настройка глобальных параметров OpenGL}
     

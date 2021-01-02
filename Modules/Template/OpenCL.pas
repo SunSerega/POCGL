@@ -29,7 +29,7 @@ type
   
   {$region Перечисления}
   
-  {%Enums!Pack Most.pas%}
+  {%Groups!Pack Most.pas%}
   
   {$endregion Перечисления}
   
@@ -41,7 +41,7 @@ type
   
   {$region Записи}
   
-  {%Records!Pack Most.pas%}
+  {%Structs!Pack Most.pas%}
   
   {$endregion Записи}
   

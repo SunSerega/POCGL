@@ -1,0 +1,13 @@
+  
+  
+  
+  PlWin = record(IPlatformAPI)
+    public function GetProcAddress(lpszProc: string): IntPtr := wgl.GetProcAddress(lpszProc);
+  end;
+  
+  PlX = record(IPlatformAPI)
+    public function GetProcAddress(lpszProc: string): IntPtr := glx.GetProcAddress(lpszProc);
+  end;
+  
+  
+  

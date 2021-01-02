@@ -10,7 +10,7 @@ Template[OpenCL]: Finished compiling: OK
 Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing records code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]

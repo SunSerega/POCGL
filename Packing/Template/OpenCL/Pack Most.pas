@@ -18,14 +18,14 @@ begin
     
     var res := new StringBuilder;
     
-    Otp($'Constructing records code');
+    Otp($'Constructing structs code');
     res += '  '#10;
     res += '  '#10;
     res += '  '#10;
     Struct.WriteAll(res);
     res += '  '#10;
     res += '  ';
-    WriteAllText(GetFullPath('..\Records.template', GetEXEFileName), res.ToString);
+    WriteAllText(GetFullPathRTA('Structs.template'), res.ToString);
     res.Clear;
     
     Otp($'Constructing enums code');
@@ -35,18 +35,18 @@ begin
     Group.WriteAll(res);
     res += '  '#10;
     res += '  ';
-    WriteAllText(GetFullPath('..\Enums.template', GetEXEFileName), res.ToString);
+    WriteAllText(GetFullPathRTA('Groups.template'), res.ToString);
     res.Clear;
     
     Otp($'Constructing funcs code');
     res += '  '#10;
     res += '  '#10;
     res += '  '#10;
-    Feature.WriteAll(res);
-    Extension.WriteAll(res);
+    Feature.WriteAll(res, nil);
+    Extension.WriteAll(res, nil);
     res += '  '#10;
     res += '  ';
-    WriteAllText(GetFullPath('..\Funcs.template', GetEXEFileName), res.ToString);
+    WriteAllText(GetFullPathRTA('Funcs.template'), res.ToString);
     res.Clear;
     
     FinishAll;

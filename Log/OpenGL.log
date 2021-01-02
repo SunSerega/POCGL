@@ -8,7 +8,7 @@ Template[OpenGL]: Finished compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing records code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]

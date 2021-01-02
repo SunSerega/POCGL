@@ -14,7 +14,7 @@ GLubyte					=Byte
 GLchar					=ntv_char
 GLcharARB				=ntv_char
 char					=ntv_char
-LPCSTR					=ntv_char *
+LPCSTR					=const ntv_char *
 
 GLshort					=Int16
 GLushort				=UInt16

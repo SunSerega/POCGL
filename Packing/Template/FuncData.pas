@@ -276,8 +276,8 @@ type
     
     public static procedure InitAll;
     
-    protected procedure WarnUnused; override :=
-    Otp($'WARNING: Fixer of group [{self.name}] wasn''t used');
+    protected procedure WarnUnused(all_unused_for_name: List<GroupFixer>); override :=
+    Otp($'WARNING: {all_unused_for_name.Count} fixers of group [{self.name}] wasn''t used');
     
   end;
   
@@ -516,8 +516,8 @@ type
     
     public static procedure InitAll;
     
-    protected procedure WarnUnused; override :=
-    Otp($'WARNING: Fixer of struct [{self.name}] wasn''t used');
+    protected procedure WarnUnused(all_unused_for_name: List<StructFixer>); override :=
+    Otp($'WARNING: {all_unused_for_name.Count} fixers of struct [{self.name}] wasn''t used');
     
   end;
   
@@ -559,6 +559,11 @@ type
       if br.ReadInt64 <> 1 then raise new System.NotSupportedException;
       
       self.readonly := br.ReadBoolean;
+      if self.t.StartsWith('const ') then
+      begin
+        self.readonly := true;
+        self.t := self.t.Remove(0, 'const '.Length);
+      end;
       
       self.ptr := br.ReadInt32 + self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
       self.t := self.t.Remove('*','-').Trim;
@@ -703,18 +708,6 @@ type
       loop All.Capacity do All += new Func(br);
     end;
     
-    public static procedure WriteGetPtrFunc(sb: StringBuilder; api: string);
-    begin
-      if not (api in |'gl', 'glx'|) then exit;
-      sb += '    public static function GetFuncAdr([MarshalAs(UnmanagedType.LPStr)] lpszProc: string): IntPtr;'#10;
-      if api='glx' then
-        sb += '    external ''opengl32.dll'' name ''glXGetProcAddress'';'#10 else
-        sb += '    external ''opengl32.dll'' name ''wglGetProcAddress'';'#10;
-      sb += '    public static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
-      sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
-      sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
-    end;
-    
     {$endregion Misc}
     
     {$region PPT}
@@ -761,7 +754,7 @@ type
         begin
           if par_i=0 then
           begin
-            Result := Lst(new FuncParamT(false, 0, new string('^',Max(0,par.ptr))+par.GetTName));
+            Result := Lst(new FuncParamT(false, 0, new string('^',par.ptr.ClampBottom(0)) + par.GetTName));
             exit;
           end;
           
@@ -874,7 +867,7 @@ type
     {$endregion MarkUsed}
     
     public static prev_func_names := new HashSet<string>;
-    public procedure Write(sb: StringBuilder; api, version: string; static_container: boolean);
+    public procedure Write(sb, ntv_sb: StringBuilder; ntv_t_name, api, version: string; static_container: boolean);
     begin
       InitOverloads;
       var arr_hlp_ovr_par := new FuncParamT(false, 0, 'IntPtr');
@@ -919,9 +912,9 @@ type
         log.Otp($'Func [{name}] had api [{api}], which isn''t start of it''s name');
       prev_func_names += l_name.ToLower;
       
-      var use_external := true;
+      var use_external := static_container;
       case api of
-        'gl': use_external := version <= '1.1';
+        'gl': use_external := (version<>nil) and (version <= '1.1');
       end;
       if not use_external then
         sb += $'    private z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
@@ -930,7 +923,7 @@ type
       
       {$region WriteOvrT}
       
-      var WriteOvrT: procedure(ovr: FuncOverload; generic_names: List<string>; name: string; is_static, allow_skip_arr_hlp: boolean) := (ovr,generic_names,name, is_static, allow_skip_arr_hlp)->
+      var WriteOvrT := procedure(sb: StringBuilder; ovr: FuncOverload; generic_names: List<string>; name: string; is_static, allow_skip_arr_hlp: boolean)->
       begin
         
         var use_standart_dt := false; // единственное применение - в "Marshal.GetDelegateForFunctionPointer". Но он их и не принимает
@@ -1267,12 +1260,14 @@ type
               begin
                 var ext_ovr_name := {'_'+}ovr_name_str;
                 
-                sb += '    private ';
-                WriteOvrT(curr_ovr,nil, ext_ovr_name, true, false);
-                sb += ';'#10;
+                ntv_sb += '    ';
+                ntv_sb += ntv_t_name<>nil ? 'public' : 'private';
+                ntv_sb += ' ';
+                WriteOvrT(ntv_sb, curr_ovr,nil, ext_ovr_name, true, false);
+                ntv_sb += ';'#10;
                 if api='gdi' then
-                  sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
-                  sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
+                  ntv_sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
+                  ntv_sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
                 
 //                sb += $'    {vis} static {ovr_name_str}';
 //                if (org_par.Length=1) and not is_proc then
@@ -1286,7 +1281,7 @@ type
               begin
                 
                 sb += $'    private {ovr_name_str} := GetFuncOrNil&<';
-                WriteOvrT(curr_ovr,nil, nil, false, false);
+                WriteOvrT(sb, curr_ovr,nil, nil, false, false);
                 sb += $'>(z_{l_name}_adr);'+#10;
                 
               end;
@@ -1310,7 +1305,7 @@ type
               ;
               
               sb += $'    {vis} [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-              WriteOvrT(curr_ovr, generic_names, ovr_name_str, is_static, m_ovr_i>0);
+              WriteOvrT(sb, curr_ovr, generic_names, ovr_name_str, is_static, m_ovr_i>0);
               
               if need_block then
               begin
@@ -1472,12 +1467,20 @@ type
             
           end);
           
+          if use_external and (ntv_t_name<>nil) then
+            relevant_ovr_name := (
+              $'{ntv_t_name}.{relevant_ovr_name[0]}',
+              relevant_ovr_name[1]
+            );
+          
         end;
         
         {$endregion Code-generation}
         
       end;
       
+      if use_external and (ntv_t_name<>nil) then
+        ntv_sb += '    '#10;
       sb += '    '#10;
     end;
     
@@ -1489,8 +1492,8 @@ type
     protected function ApplyOrder: integer; abstract;
     protected function ApplyOrderBase: integer; override := ApplyOrder;
     
-    protected procedure WarnUnused; override :=
-    Otp($'WARNING: Fixer of func [{self.name}] wasn''t used');
+    protected procedure WarnUnused(all_unused_for_name: List<FuncFixer>); override :=
+    Otp($'WARNING: {all_unused_for_name.Count} fixers of func [{self.name}] wasn''t used');
     
   end;
   
@@ -1567,7 +1570,22 @@ type
       foreach var f in lst do
         f.MarkUsed;
     
-    public static procedure WriteAll(sb: StringBuilder) :=
+    public static function IsAPIDynamic(api: string): boolean;
+    begin
+      case api of
+        
+        'gl':   Result := true;
+        'wgl':  Result := false;
+        'glx':  Result := false;
+        'gdi':  Result := false;
+        
+        'cl':   Result := false;
+        
+        else raise new System.NotSupportedException(api);
+      end;
+    end;
+    
+    public static procedure WriteAll(sb, ntv_sb: StringBuilder) :=
     foreach var api in Feature.ByApi.Keys do
     begin
       
@@ -1603,20 +1621,47 @@ type
       loop 1 do log_func_ver.Otp('');
       log_func_ver.Close;
       
-      var is_static := not (api in ['gl']);
-      var class_type := is_static ? 'static' : 'sealed';
+      var is_dynamic := IsAPIDynamic(api);
+      var class_type := is_dynamic ? 'sealed' : 'static';
       
-      sb += $'  [PCUNotRestore]'+#10;
-      sb += $'  {api} = {class_type} class'+#10;
-      Func.WriteGetPtrFunc(sb, api);
-      sb += $'    '+#10;
+      var ntv_t_name := default(string);
+      if is_dynamic then
+      begin
+        ntv_t_name := api + '_ntv';
+        ntv_sb += '  [PCUNotRestore]'#10;
+        ntv_sb += '  ///--'#10;
+        ntv_sb += '  ';
+        ntv_sb += ntv_t_name;
+        ntv_sb += ' = static class'#10;
+        ntv_sb += '    '#10;
+      end;
+      
+      sb += '  [PCUNotRestore]'#10;
+      sb += '  ';
+      sb += api;
+      if is_dynamic then
+        sb += '<TPlatformAPI>';
+      sb += ' = ';
+      sb += class_type;
+      sb += ' class'#10;
+      if is_dynamic then
+      begin
+        sb += '  where TPlatformAPI: record, IPlatformAPI;'#10;
+        sb += '    private static platform_api := default(TPlatformAPI);'#10;
+        sb += '    private static function GetFuncAdr(lpszProc: string) := platform_api.GetProcAddress(lpszProc);'#10;
+        sb += '    private static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
+        sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
+        sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
+      end;
+      
+      sb += '    '#10;
       
       foreach var f in all_funcs.Keys.OrderBy(f->f.name) do
         if not deprecated.ContainsKey(f) then
         begin
           if api<>'gdi' then
             sb += $'    // added in {api}{all_funcs[f]}'+#10;
-          f.Write(sb, api,all_funcs[f], is_static);
+          f.Write(sb, is_dynamic ? ntv_sb : sb, ntv_t_name, api,all_funcs[f], not is_dynamic);
         end;
       
       Func.prev_func_names.Clear;
@@ -1624,21 +1669,45 @@ type
       sb += $'  '+#10;
       
       if not deprecated.Any then continue;
-      sb += $'  [PCUNotRestore]'+#10;
-      sb += $'  {api}D = {class_type} class'+#10;
-      Func.WriteGetPtrFunc(sb, api);
+      sb += '  [PCUNotRestore]'#10;
+      
+      sb += '  ';
+      sb += api;
+      sb += 'D';
+      if is_dynamic then
+        sb += '<TPlatformAPI>';
+      sb += ' = ';
+      sb += class_type;
+      sb += ' class'#10;
+      if is_dynamic then
+      begin
+        sb += '  where TPlatformAPI: record, IPlatformAPI;'#10;
+        sb += '    private static platform_api := default(TPlatformAPI);'#10;
+        sb += '    private static function GetFuncAdr(lpszProc: string) := platform_api.GetProcAddress(lpszProc);'#10;
+        sb += '    private static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
+        sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
+        sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
+      end;
+      
       sb += $'    '+#10;
       
-      foreach var f in all_funcs.Keys.Where(f->deprecated.ContainsKey(f)).OrderBy(f->f.name) do
+      foreach var f in all_funcs.Keys.Where(deprecated.ContainsKey).OrderBy(f->f.name) do
       begin
         if api<>'gdi' then
           sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
-        f.Write(sb, api,all_funcs[f], is_static);
+        f.Write(sb, ntv_t_name<>nil ? ntv_sb : sb, ntv_t_name, api,all_funcs[f], not is_dynamic);
       end;
       
       Func.prev_func_names.Clear;
-      sb += $'  end;'+#10;
-      sb += $'  '+#10;
+      sb += '  end;'#10;
+      sb += '  '#10;
+      
+      if is_dynamic then
+      begin
+        ntv_sb += '  end;'#10;
+        ntv_sb += '  '#10;
+      end;
+      
     end;
     
   end;
@@ -1676,7 +1745,7 @@ type
       
     end;
     
-    private static All := new List<Extension>;
+    public static All := new List<Extension>;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
@@ -1703,30 +1772,85 @@ type
     foreach var ext in All do
       ext.MarkUsed;
     
-    public procedure Write(sb: StringBuilder);
+    public static function IsAPIDynamic(api: string): boolean;
+    begin
+      case api of
+        
+        'gl':   Result := true;
+        'wgl':  Result := true;
+        'glx':  Result := true;
+        'gdi':  Result := false;
+        
+        'cl':   Result := false;
+        
+        else raise new System.NotSupportedException(api);
+      end;
+    end;
+    
+    public procedure Write(sb, ntv_sb: StringBuilder);
     begin
       if add.Count=0 then exit;
       
-      sb += $'  [PCUNotRestore]'+#10;
-      sb += $'  {display_name} = ';
-      var is_static := not (api in ['gl']);
-      sb += is_static ? 'static' : 'sealed';
+      sb += '  [PCUNotRestore]'#10;
+      
+      sb += '  ';
+      sb += display_name;
+      if Feature.IsAPIDynamic(api) then
+        sb += '<TPlatformAPI>';
+      sb += ' = ';
+      var is_dynamic := IsAPIDynamic(api);
+      sb += is_dynamic ? 'sealed' : 'static';
       sb += ' class'#10;
-      Func.WriteGetPtrFunc(sb, api);
+      
+      var ntv_t_name := default(string);
+//      if is_dynamic then
+//      begin
+//        ntv_t_name := display_name + '_ntv';
+//        ntv_sb += '  [PCUNotRestore]'#10;
+//        ntv_sb += '  ///--'#10;
+//        ntv_sb += '  ';
+//        ntv_sb += ntv_t_name;
+//        ntv_sb += ' = static class'#10;
+//        ntv_sb += '    '#10;
+//      end;
+      
+      if is_dynamic then
+      begin
+        if Feature.IsAPIDynamic(api) then
+        begin
+          sb += '  where TPlatformAPI: record, IPlatformAPI;'#10;
+          sb += '    private static platform_api := default(TPlatformAPI);'#10;
+          sb += '    private static function GetFuncAdr(lpszProc: string) := platform_api.GetProcAddress(lpszProc);'#10;
+        end else
+        begin
+          sb += $'    private static function GetFuncAdr(lpszProc: string) := {api}.GetProcAddress(lpszProc);'+#10;
+        end;
+        sb += '    private static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
+        sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
+        sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
+      end;
+      
       sb += $'    public const _ExtStr = ''{name}'';'+#10;
       sb += $'    '+#10;
       
       foreach var f in add do
-        f.Write(sb, api,nil, is_static);
+        f.Write(sb, ntv_t_name<>nil ? ntv_sb : sb, ntv_t_name, api,nil, not is_dynamic);
       Func.prev_func_names.Clear;
       sb += $'  end;'+#10;
       sb += $'  '+#10;
+      
+//      if is_dynamic then
+//      begin
+//        ntv_sb += $'  end;'+#10;
+//        ntv_sb += $'  '+#10;
+//      end;
+      
     end;
-    public static procedure WriteAll(sb: StringBuilder);
+    public static procedure WriteAll(sb, ntv_sb: StringBuilder);
     begin
       sb += '  {$region Extensions}'#10;
       sb += '  '#10;
-      foreach var ext in All do ext.Write(sb);
+      foreach var ext in All do ext.Write(sb, ntv_sb);
       sb += '  {$endregion Extensions}'#10;
       sb += '  '#10;
     end;

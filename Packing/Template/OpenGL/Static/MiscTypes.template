@@ -16,5 +16,9 @@
     
   end;
   
+  IPlatformAPI = interface
+    function GetProcAddress(lpszProc: string): IntPtr;
+  end;
+  
   
   

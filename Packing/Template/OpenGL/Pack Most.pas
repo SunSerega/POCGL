@@ -15,38 +15,31 @@ begin
     Feature.FixGL_GDI;
     MarkUsed;
     
-    var res := new StringBuilder;
-    
-    Otp($'Constructing records code');
-    res += '  '#10;
-    res += '  '#10;
-    res += '  '#10;
-    Struct.WriteAll(res);
-    res += '  '#10;
-    res += '  ';
-    WriteAllText(GetFullPathRTA('Records.template'), res.ToString);
-    res.Clear;
+    Otp($'Constructing structs code');
+    var structs_sb := new StringBuilder;
+    loop 3 do structs_sb += '  '#10;
+    Struct.WriteAll(structs_sb);
+    structs_sb += '  '#10'  ';
+    WriteAllText(GetFullPathRTA('Structs.template'), structs_sb.ToString);
     
     Otp($'Constructing enums code');
-    res += '  '#10;
-    res += '  '#10;
-    res += '  '#10;
-    Group.WriteAll(res);
-    res += '  '#10;
-    res += '  ';
-    WriteAllText(GetFullPathRTA('Enums.template'), res.ToString);
-    res.Clear;
+    var groups_sb := new StringBuilder;
+    loop 3 do groups_sb += '  '#10;
+    Group.WriteAll(groups_sb);
+    groups_sb += '  '#10'  ';
+    WriteAllText(GetFullPathRTA('Groups.template'), groups_sb.ToString);
     
     Otp($'Constructing funcs code');
-    res += '  '#10;
-    res += '  '#10;
-    res += '  '#10;
-    Feature.WriteAll(res);
-    Extension.WriteAll(res);
-    res += '  '#10;
-    res += '  ';
-    WriteAllText(GetFullPathRTA('Funcs.template'), res.ToString);
-    res.Clear;
+    var funcs_sb := new StringBuilder;
+    var funcs_ntv_sb := new StringBuilder;
+    loop 3 do funcs_sb += '  '#10;
+    loop 3 do funcs_ntv_sb += '  '#10;
+    Feature.WriteAll(funcs_sb, funcs_ntv_sb);
+    Extension.WriteAll(funcs_sb, funcs_ntv_sb);
+    funcs_sb += '  '#10'  ';
+    funcs_ntv_sb += '  '#10'  ';
+    WriteAllText(GetFullPathRTA('Funcs.template'), funcs_sb.ToString);
+    WriteAllText(GetFullPathRTA('FuncsNtv.template'), funcs_ntv_sb.ToString);
     
     FinishAll;
   except

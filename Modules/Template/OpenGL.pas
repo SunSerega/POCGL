@@ -29,7 +29,7 @@ type
   
   {$region Перечисления}
   
-  {%Enums!Pack Most.pas%}
+  {%Groups!Pack Most.pas%}
   
   {$endregion Перечисления}
   
@@ -47,7 +47,7 @@ type
   
   {$region Misc}
   
-  {%Records!Pack Most.pas%}
+  {%Structs!Pack Most.pas%}
   
   {$endregion Misc}
   
@@ -59,11 +59,23 @@ type
   
   {$endregion Другие типы}
   
+  {$region Внешние external перегрузки функций}
+  
+  {%FuncsNtv!Pack Most.pas%}
+  
+  {$endregion Внешние external перегрузки функций}
+  
   {$region Функции}
   
   {%Funcs!Pack Most.pas%}
   
   {$endregion Функции}
+  
+  {$region Платформы}
+  
+  {%Static\Platforms%}
+  
+  {$endregion Платформы}
   
   {$region GDI}
   
