@@ -2,6 +2,7 @@
   
   
   [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
   ///--
   gl_ntv = static class
     

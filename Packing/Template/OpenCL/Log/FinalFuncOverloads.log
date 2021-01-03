@@ -1849,4 +1849,87 @@
  cl_mem	| cl_context	| var MemPropertiesIntel	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
  cl_mem	| cl_context	| IntPtr	| MemFlags	| UIntPtr	| IntPtr	| var ErrorCode	|
 
+# clEnqueueGenerateMipmapIMG
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| array of UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| var UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| array of UIntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| array of UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| var UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| var UIntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| array of UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| var UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+
 

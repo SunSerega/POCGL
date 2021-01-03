@@ -1629,6 +1629,7 @@ type
       begin
         ntv_t_name := api + '_ntv';
         ntv_sb += '  [PCUNotRestore]'#10;
+        ntv_sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
         ntv_sb += '  ///--'#10;
         ntv_sb += '  ';
         ntv_sb += ntv_t_name;
@@ -1637,6 +1638,7 @@ type
       end;
       
       sb += '  [PCUNotRestore]'#10;
+      sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
       sb += '  ';
       sb += api;
       if is_dynamic then
@@ -1670,6 +1672,7 @@ type
       
       if not deprecated.Any then continue;
       sb += '  [PCUNotRestore]'#10;
+      sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
       
       sb += '  ';
       sb += api;
@@ -1792,6 +1795,7 @@ type
       if add.Count=0 then exit;
       
       sb += '  [PCUNotRestore]'#10;
+      sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
       
       sb += '  ';
       sb += display_name;
@@ -1807,6 +1811,7 @@ type
 //      begin
 //        ntv_t_name := display_name + '_ntv';
 //        ntv_sb += '  [PCUNotRestore]'#10;
+//        ntv_sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
 //        ntv_sb += '  ///--'#10;
 //        ntv_sb += '  ';
 //        ntv_sb += ntv_t_name;

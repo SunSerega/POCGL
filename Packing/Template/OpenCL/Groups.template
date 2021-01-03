@@ -2883,6 +2883,25 @@
     
   end;
   
+  MipmapFilterModeImg = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    private static _MIPMAP_FILTER_ANY_IMG := new MipmapFilterModeImg($0000);
+    private static _MIPMAP_FILTER_BOX_IMG := new MipmapFilterModeImg($0001);
+    
+    public static property MIPMAP_FILTER_ANY_IMG: MipmapFilterModeImg read _MIPMAP_FILTER_ANY_IMG;
+    public static property MIPMAP_FILTER_BOX_IMG: MipmapFilterModeImg read _MIPMAP_FILTER_BOX_IMG;
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0000) then Result := 'MIPMAP_FILTER_ANY_IMG' else
+      if self.val = UInt32($0001) then Result := 'MIPMAP_FILTER_BOX_IMG' else
+        Result := $'MipmapFilterModeImg[{self.val}]';
+    end;
+    
+  end;
+  
   PipeInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
