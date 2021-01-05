@@ -140,11 +140,9 @@ type
       var class_name := n['class'];
       if class_name<>nil then ParClasses += class_name;
       
-      var ptype_node := n.Nodes['ptype'].SingleOrDefault; //ToDo #2335
-      
       self.t :=
         class_name ??
-        (ptype_node=nil ? nil : ptype_node.Text) ??
+        n.Nodes['ptype'].SingleOrDefault?.Text ??
         n.Text.Remove(n.Text.LastIndexOf(' ')).Remove('const').Trim;
       ;
       self.readonly := n.Text.Contains('const');

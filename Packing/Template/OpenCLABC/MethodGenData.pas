@@ -833,22 +833,18 @@ type
         res_IIm += GetIImResT(settings);
         res_IIm += '>);'#10;
         
-        //ToDo #2278
-        var temp_res_EIm := res_EIm;
-        var temp_t := t;
-        
         WriteMethodEImBody(()->
         begin
-          temp_res_EIm += 'new ';
-          temp_res_EIm += temp_t;
-          temp_res_EIm += 'Command';
-          temp_res_EIm += tn;
-          temp_res_EIm += (settings as MethodSettings).generics_str;
+          res_EIm += 'new ';
+          res_EIm += t;
+          res_EIm += 'Command';
+          res_EIm += tn;
+          res_EIm += (settings as MethodSettings).generics_str;
           if (settings as MethodSettings).impl_args<>nil then
           begin
-            temp_res_EIm += '(';
-            temp_res_EIm += (settings as MethodSettings).impl_args.JoinToString(', ');
-            temp_res_EIm += ')';
+            res_EIm += '(';
+            res_EIm += (settings as MethodSettings).impl_args.JoinToString(', ');
+            res_EIm += ')';
           end;
         end, settings);
         

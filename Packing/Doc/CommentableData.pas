@@ -371,9 +371,8 @@ begin
     if not end_checking and l.Contains('implementation') then end_checking := true;
     if end_checking then continue;
     
-    if CommentableType.Parse(l) is CommentableType(var _t) then
+    if CommentableType.Parse(l) is CommentableType(var t) then
     begin
-      var t := _t; //ToDo #2265
       yield t;
       if t.ReDef<>nil then continue;
       
