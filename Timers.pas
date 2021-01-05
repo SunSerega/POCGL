@@ -1,5 +1,4 @@
 ﻿unit Timers;
-{$savepcu false} //ToDo #2387
 
 uses AOtp;
 

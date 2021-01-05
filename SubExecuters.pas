@@ -3,7 +3,6 @@
 uses System.Diagnostics;
 
 uses AOtp;
-uses AQueue; //ToDo #2307
 uses PathUtils;
 uses Timers;
 
@@ -205,8 +204,7 @@ begin
     try
       
       p.BeginOutputReadLine;
-      //ToDo #2306
-      foreach var l in thr_otp as IEnumerable<OtpLine> do l_otp(l);
+      foreach var l in thr_otp do l_otp(l);
       p.WaitForExit;
       
       if p.ExitCode<>0 then

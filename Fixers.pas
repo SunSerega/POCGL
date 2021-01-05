@@ -1,7 +1,5 @@
 ﻿unit Fixers;
 
-{$savepcu false} //ToDo #2382
-
 type
   FixerUtils = static class
     
@@ -195,7 +193,7 @@ type
     foreach var l in all.Values do
     begin
       var unused := l.ToList;
-      unused.RemoveAll(f->(f as Fixer<TFixer, TFixable>).used); //ToDo #2383
+      unused.RemoveAll(f->f.used);
       if unused.Count=0 then continue;
       unused[0].WarnUnused(unused);
     end;

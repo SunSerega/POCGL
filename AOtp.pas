@@ -81,7 +81,7 @@ type
   
   {$region AsyncProcOtp}
   
-  AsyncProcOtp = sealed class(AsyncQueue<OtpLine>, IEnumerable<OtpLine>)
+  AsyncProcOtp = sealed class(AsyncQueue<OtpLine>)
     private parent: AsyncProcOtp;
     public [System.ThreadStatic] static curr: AsyncProcOtp;
     
@@ -90,10 +90,6 @@ type
     private constructor := raise new System.InvalidOperationException;
     
     public procedure Dump;
-    
-    //ToDo #2306
-    public function GetEnumerator: IEnumerator<OtpLine> := inherited GetEnumerator;
-    public property Current: OtpLine read OtpLine(inherited Current);
     
   end;
   

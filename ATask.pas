@@ -3,7 +3,6 @@
 uses System.Threading;
 
 uses AOtp;
-uses AQueue; //ToDo #2307
 uses SubExecuters;
 
 type
@@ -96,9 +95,8 @@ type
       p1.StartExecImpl;
       p2.StartExecImpl;
       
-      //ToDo #2306
-      foreach var l in p1.own_otp as IEnumerable<OtpLine> do Otp(l);
-      foreach var l in p2.own_otp as IEnumerable<OtpLine> do Otp(l);
+      foreach var l in p1.own_otp do Otp(l);
+      foreach var l in p2.own_otp do Otp(l);
     end;
     
   end;
@@ -143,8 +141,7 @@ type
     private procedure SyncExecImpl; override;
     begin
       if prep_otp<>nil then
-        //ToDo #2306
-        foreach var l in prep_otp as IEnumerable<OtpLine> do
+        foreach var l in prep_otp do
           Otp(l);
       if ev<>nil then ev.WaitOne;
       ExecuteFile(fname, nick, pars);
@@ -168,8 +165,7 @@ type
     begin
       t.StartExecImpl;
       var lp := p;
-        //ToDo #2306
-      foreach var l in t.own_otp as IEnumerable<OtpLine> do
+      foreach var l in t.own_otp do
       begin
         if lp<>nil then lp(l);
         Otp(l);
