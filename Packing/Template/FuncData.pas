@@ -176,7 +176,6 @@ type
       if not used then exit;
       
       if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
-      var max_w := screened_enums.Keys.DefaultIfEmpty('').Max(ename->ename.Length);
       var max_scr_w := screened_enums.Values.DefaultIfEmpty('').Max(ename->ename.Length);
       sb +=       $'  {name} = record' + #10;
       
@@ -187,11 +186,7 @@ type
       sb +=       $'    ' + #10;
       
       foreach var ename in EnumrKeys do
-        sb +=     $'    private static _{ename.PadRight(max_w)} := new {name}({ValueStr[ename]});' + #10;
-      sb +=       $'    ' + #10;
-      
-      foreach var ename in EnumrKeys do
-        sb +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {name} read _{ename};' + #10;
+        sb +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {name} read new {name}({ValueStr[ename]});' + #10;
       sb +=       $'    ' + #10;
       
       if bitmask then

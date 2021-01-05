@@ -1,10 +1,12 @@
   
   
   
+  /// Платформа Windows
   PlWin = record(IPlatformAPI)
     public function GetProcAddress(lpszProc: string): IntPtr := wgl.GetProcAddress(lpszProc);
   end;
   
+  /// Платформа XWindow (используется в UNIX-подобных системах)
   PlX = record(IPlatformAPI)
     public function GetProcAddress(lpszProc: string): IntPtr := glx.GetProcAddress(lpszProc);
   end;
