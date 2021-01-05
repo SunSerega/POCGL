@@ -64,8 +64,8 @@ begin
   prev := prev+|fname|;
   
   var text := ReadAllText(fname, enc);
-  if text.Contains('{savepcu false}') then exit;
-  yield fname;
+  if not text.Contains('{savepcu false}') then
+    yield fname;
   
   var dir := System.IO.Path.GetDirectoryName(fname);
   var ind := 0;
