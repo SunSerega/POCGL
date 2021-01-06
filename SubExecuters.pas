@@ -3,9 +3,10 @@
 uses System.Diagnostics;
 
 uses AOtp;
-uses AQueue; //ToDo #2307
 uses PathUtils;
 uses Timers;
+
+{$region Helpers}
 
 type
   SubProcessEmergencyKiller = sealed class(EmergencyHandler)
@@ -18,7 +19,12 @@ type
     
     public procedure Handle; override;
     begin
-      if p.HasExited then exit;
+      try
+        if p.HasExited then exit;
+      except
+        // Если процесс ещё даже запустится не успел
+        on System.InvalidOperationException do exit;
+      end;
       
       if not use_halt_str then
       begin
@@ -45,6 +51,49 @@ type
     
   end;
   
+function GetUsedModules(fname: string; prev: array of string): sequence of string;
+const uses_str = 'uses';
+const in_str = 'in';
+begin
+  fname := System.IO.Path.ChangeExtension(fname, '.pas');
+  if not FileExists(fname) then exit;
+  
+  
+  if fname in prev then exit;
+  prev := prev+|fname|;
+  
+  var text := ReadAllText(fname, enc);
+  if not text.Contains('{savepcu false}') then
+    yield fname;
+  
+  var dir := System.IO.Path.GetDirectoryName(fname);
+  var ind := 0;
+  while true do
+  begin
+    ind := text.IndexOf(uses_str, ind);
+    if ind=-1 then break;
+    ind += uses_str.Length;
+    
+    var ind2 := text.IndexOf(';', ind);
+    if ind2=-1 then raise new System.FormatException(fname);
+    
+    foreach var u_str in text.Substring(ind, ind2-ind).Split(',') do
+      yield sequence GetUsedModules(GetFullPath(
+        if u_str.Contains(in_str) then
+          u_str.Split(|in_str|, 2, System.StringSplitOptions.None)[1].Trim(''' '.ToCharArray) else
+          u_str.Trim
+      ,
+        dir
+      ), prev);
+  end;
+end;
+function GetUsedModules(fname: string) := GetUsedModules(fname, new string[0]);
+var GetUsedModules_lock := new object;
+
+{$endregion Helpers}
+
+{$region Core}
+
 procedure RunFile(fname, nick: string; l_otp: OtpLine->(); params pars: array of string);
 // Если менять - то в SubExecutables тоже
 const OutputPipeIdStr = 'OutputPipeId';
@@ -155,8 +204,7 @@ begin
     try
       
       p.BeginOutputReadLine;
-      //ToDo #2306
-      foreach var l in thr_otp as IEnumerable<OtpLine> do l_otp(l);
+      foreach var l in thr_otp do l_otp(l);
       p.WaitForExit;
       
       if p.ExitCode<>0 then
@@ -197,6 +245,29 @@ begin
   if l_otp=nil then l_otp := AOtp.Otp;
   if err=nil then err := s->raise new MessageException($'Error compiling "{GetRelativePath(fname)}": {s}');
   
+  var locks := new List<System.IO.FileStream>;
+  lock GetUsedModules_lock do
+  begin
+    var lock_names := GetUsedModules(fname).Distinct.Select(u_name->u_name+'.compile_lock').ToList;
+    
+    while true do
+    try
+      foreach var used_fname in lock_names do
+        locks += System.IO.File.Create(used_fname, 1, System.IO.FileOptions.DeleteOnClose);
+      break;
+    except
+      on e: System.IO.IOException do
+      begin
+        foreach var l in locks do
+          l.Close;
+        locks.Clear;
+        Sleep(100);
+        continue;
+      end;
+    end;
+    
+  end;
+  
   l_otp($'Compiling "{GetRelativePath(fname)}"');
   
   var psi := new ProcessStartInfo(
@@ -218,6 +289,9 @@ begin
     p.StandardInput.WriteLine;
     p.WaitForExit;
   end);
+  
+  foreach var l in locks do
+    l.Close;
   
   var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
@@ -246,7 +320,9 @@ begin
   RunFile(fname, nick, l_otp, pars);
 end;
 
+{$endregion Core}
 
+{$region Additional overloads}
 
 procedure RunFile(fname, nick: string; params pars: array of string) :=
 RunFile(fname, nick, nil, pars);
@@ -256,5 +332,7 @@ CompilePasFile(fname, nil, nil);
 
 procedure ExecuteFile(fname, nick: string; params pars: array of string) :=
 ExecuteFile(fname, nick, nil, pars);
+
+{$endregion Additional overloads}
 
 end.
