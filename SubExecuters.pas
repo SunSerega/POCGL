@@ -205,6 +205,7 @@ begin
   );
 //  Otp(psi.Arguments);
   psi.UseShellExecute := false;
+  psi.CreateNoWindow := true;
   psi.RedirectStandardOutput := true;
   psi.RedirectStandardInput := true;
   
