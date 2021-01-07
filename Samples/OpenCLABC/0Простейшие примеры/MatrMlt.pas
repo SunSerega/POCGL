@@ -6,9 +6,6 @@ const
   VecByteSize = MatrW*8;
   MatrByteSize = MatrW*MatrW*8;
   
-//ToDo issue компилятора:
-// - #1981
-
 begin
   try
     Randomize(0); // делает так, чтобы каждое выполнение давало одинаковый результат
@@ -55,11 +52,11 @@ begin
     
     var Calc_C_Q :=
       code['MatrMltMatr'].NewQueue.AddExec2(MatrW, MatrW, // Выделяем ядра в форме квадрата, всего MatrW*MatrW ядер
-        A.NewQueue.AddWriteArray2&<real>(A_Matr),
+        A.NewQueue.AddWriteArray2&<real>(A_Matr), //ToDo #2392
         B.NewQueue.AddWriteArray2&<real>(B_Mart),
         C,
         W
-      ) as CommandQueue<Kernel>;
+      );
     
     var Otp_C_Q :=
       C.NewQueue.AddReadArray2&<real>(A_Matr) +
@@ -77,7 +74,7 @@ begin
         V1.NewQueue.AddWriteArray1&<real>(V1_Arr),
         V2,
         W
-      ) as CommandQueue<Kernel>;
+      );
     
     var Otp_V2_Q :=
       V2.NewQueue.AddReadArray1&<real>(V1_Arr) +
@@ -94,13 +91,8 @@ begin
     Context.Default.SyncInvoke(
       
       Calc_C_Q +
-      (
-        Otp_C_Q * // выводить C и считать V2 можно одновременно, поэтому тут *, т.е. параллельное выполнение
-        (
-          Calc_V2_Q +
-          Otp_V2_Q
-        )
-      )
+      Calc_V2_Q * Otp_C_Q + // Считать V2 и выводить C можно одновременно, поэтому тут *, т.е. параллельное выполнение
+      Otp_V2_Q
       
     );
     
