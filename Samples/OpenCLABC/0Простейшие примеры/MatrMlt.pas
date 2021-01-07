@@ -52,7 +52,7 @@ begin
     
     var Calc_C_Q :=
       code['MatrMltMatr'].NewQueue.AddExec2(MatrW, MatrW, // Выделяем ядра в форме квадрата, всего MatrW*MatrW ядер
-        A.NewQueue.AddWriteArray2&<real>(A_Matr), //ToDo #2392
+        A.NewQueue.AddWriteArray2&<real>(A_Matr), // Тип в &<> надо указывать явно, потому что компилятор не может вычислить его из типа элементов массива
         B.NewQueue.AddWriteArray2&<real>(B_Mart),
         C,
         W

@@ -5,12 +5,22 @@
 OpenCLABC
 
 #ExpOtp
+>>> Const
+
+Buffer:
 OpenCLABCBase_implementation______.KernelArgBuffer
-OpenCLABCBase_implementation______.KernelArgBufferCQ
-
+Record:
 OpenCLABCBase_implementation______.KernelArgRecord`1[System.Int32]
-WARNING: Generic record test off until #2311 fix
+Ptr:
+OpenCLABCBase_implementation______.KernelArgPtr
 
-WARNING: Ptr test off until #2318 fix
+>>> Invokable
+
+Buffer:
+OpenCLABCBase_implementation______.KernelArgBufferCQ
+Record:
+OpenCLABCBase_implementation______.KernelArgRecord`1[System.Int32]
+Ptr:
+OpenCLABCBase_implementation______.KernelArgPtrCQ
 
 

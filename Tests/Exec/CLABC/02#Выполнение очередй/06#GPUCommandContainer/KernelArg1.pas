@@ -5,20 +5,22 @@ Writeln(arg.GetType);
 
 begin
   
+  Writeln(#10'>>> Const'#10);
+  
+  Writeln('Buffer:');
   TestArg(new Buffer(1));
-  TestArg(Buffer.Create(1).NewQueue as CommandQueue<Buffer>);
-  Writeln;
+  Writeln('Record:');
+  TestArg(1);
+  Writeln('Ptr:');
+  TestArg(KernelArg.FromPtr(System.IntPtr.Zero, System.UIntPtr.Zero));
   
-  TestArg(3);
-  //ToDo #2311
-  Writeln('WARNING: Generic record test off until #2311 fix');
-//  TestArg(new ConstQueue<integer>(5));
-  Writeln;
+  Writeln(#10'>>> Invokable'#10);
   
-  var i := 5;
-  //ToDo #2318
-  Writeln('WARNING: Ptr test off until #2318 fix');
-//  TestArg(@i);
-  Writeln;
+  Writeln('Buffer:');
+  TestArg(Buffer.Create(1).NewQueue()); //ToDo Лишние (), разобраться когда путаница пройдёт
+  Writeln('Record:');
+  TestArg(HFQ(()->1));
+  Writeln('Ptr:');
+  TestArg(KernelArg.FromPtrCQ(HFQ(()->System.IntPtr.Zero), System.UIntPtr.Zero));
   
 end.
