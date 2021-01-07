@@ -3,11 +3,11 @@ Compiling "DataScraping\Reps\PullReps.pas"
 Finished compiling: OK
 Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] e9a4d46..48a4a8a  master     -> origin/master
-SubReps Update: OpenCL Docs : Submodule path 'DataScraping/Reps/OpenCL-Docs': checked out '48a4a8af5dfa17c58e5a84d4523533e2be2cff0e'
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
+SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
+SubReps Update: OpenGL Registry : [Info] 0dc2416..a301c9b  master     -> origin/master
+SubReps Update: OpenGL Registry : Submodule path 'DataScraping/Reps/OpenGL-Registry': checked out 'a301c9b4600e4074008b93fba17744a859fb763b'
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

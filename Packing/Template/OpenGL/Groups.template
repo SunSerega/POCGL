@@ -2768,6 +2768,7 @@
     public static property READ_FRAMEBUFFER_BINDING:                       GetPName read new GetPName($8CAA);
     public static property MAX_ELEMENT_INDEX:                              GetPName read new GetPName($8D6B);
     public static property MAX_GEOMETRY_UNIFORM_COMPONENTS:                GetPName read new GetPName($8DDF);
+    public static property SHADER_BINARY_FORMATS:                          GetPName read new GetPName($8DF8);
     public static property NUM_SHADER_BINARY_FORMATS:                      GetPName read new GetPName($8DF9);
     public static property SHADER_COMPILER:                                GetPName read new GetPName($8DFA);
     public static property MAX_VERTEX_UNIFORM_VECTORS:                     GetPName read new GetPName($8DFB);
@@ -3332,6 +3333,7 @@
       if self.val = UInt32($8CAA) then Result := 'READ_FRAMEBUFFER_BINDING' else
       if self.val = UInt32($8D6B) then Result := 'MAX_ELEMENT_INDEX' else
       if self.val = UInt32($8DDF) then Result := 'MAX_GEOMETRY_UNIFORM_COMPONENTS' else
+      if self.val = UInt32($8DF8) then Result := 'SHADER_BINARY_FORMATS' else
       if self.val = UInt32($8DF9) then Result := 'NUM_SHADER_BINARY_FORMATS' else
       if self.val = UInt32($8DFA) then Result := 'SHADER_COMPILER' else
       if self.val = UInt32($8DFB) then Result := 'MAX_VERTEX_UNIFORM_VECTORS' else
@@ -4007,6 +4009,8 @@
     public static property RG16_SNORM_EXT:                            InternalFormat read new InternalFormat($8F99);
     public static property RGB16_SNORM:                               InternalFormat read new InternalFormat($8F9A);
     public static property RGB16_SNORM_EXT:                           InternalFormat read new InternalFormat($8F9A);
+    public static property SR8_EXT:                                   InternalFormat read new InternalFormat($8FBD);
+    public static property SRG8_EXT:                                  InternalFormat read new InternalFormat($8FBE);
     public static property RGB10_A2UI:                                InternalFormat read new InternalFormat($906F);
     public static property COMPRESSED_R11_EAC:                        InternalFormat read new InternalFormat($9270);
     public static property COMPRESSED_SIGNED_R11_EAC:                 InternalFormat read new InternalFormat($9271);
@@ -4306,6 +4310,8 @@
       if self.val = UInt32($8F99) then Result := 'RG16_SNORM_EXT' else
       if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM' else
       if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM_EXT' else
+      if self.val = UInt32($8FBD) then Result := 'SR8_EXT' else
+      if self.val = UInt32($8FBE) then Result := 'SRG8_EXT' else
       if self.val = UInt32($906F) then Result := 'RGB10_A2UI' else
       if self.val = UInt32($9270) then Result := 'COMPRESSED_R11_EAC' else
       if self.val = UInt32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC' else
@@ -7019,10 +7025,20 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
+    public static property SGX_BINARY_IMG:              ShaderBinaryFormat read new ShaderBinaryFormat($8C0A);
+    public static property MALI_SHADER_BINARY_ARM:      ShaderBinaryFormat read new ShaderBinaryFormat($8F60);
+    public static property SHADER_BINARY_VIV:           ShaderBinaryFormat read new ShaderBinaryFormat($8FC4);
+    public static property SHADER_BINARY_DMP:           ShaderBinaryFormat read new ShaderBinaryFormat($9250);
+    public static property GCCSO_SHADER_BINARY_FJ:      ShaderBinaryFormat read new ShaderBinaryFormat($9260);
     public static property SHADER_BINARY_FORMAT_SPIR_V: ShaderBinaryFormat read new ShaderBinaryFormat($9551);
     
     public function ToString: string; override;
     begin
+      if self.val = UInt32($8C0A) then Result := 'SGX_BINARY_IMG' else
+      if self.val = UInt32($8F60) then Result := 'MALI_SHADER_BINARY_ARM' else
+      if self.val = UInt32($8FC4) then Result := 'SHADER_BINARY_VIV' else
+      if self.val = UInt32($9250) then Result := 'SHADER_BINARY_DMP' else
+      if self.val = UInt32($9260) then Result := 'GCCSO_SHADER_BINARY_FJ' else
       if self.val = UInt32($9551) then Result := 'SHADER_BINARY_FORMAT_SPIR_V' else
         Result := $'ShaderBinaryFormat[{self.val}]';
     end;
