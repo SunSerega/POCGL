@@ -87,8 +87,6 @@ type
         tsk := RegisterCommand(Concat(generator_fname,'!',generator_par.JoinToString('!')), ()->tsk+ExecTask(generator_fname, $'TemplateCommand[{GetRelativePathRTA(generator_fname)}]', generator_par));
       end;
       
-      //ToDo #
-      var template_nick := $'Template[{GetRelativePathRTA(Path.ChangeExtension(template_fname, nil))}]';
       yield new WaitBlock(tsk, otp->
       begin
         
@@ -96,7 +94,7 @@ type
         p.StartExec;
         
         foreach var l in p.own_otp do
-          AOtp.Otp(l.ConvStr(s->$'{template_nick}: {s}'));
+          AOtp.Otp(l.ConvStr(s->$'Template[{GetRelativePathRTA(Path.ChangeExtension(template_fname, nil))}]: {s}'));
         
       end);
       

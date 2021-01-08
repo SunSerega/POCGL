@@ -1,5 +1,5 @@
 ﻿unit MethodGenData;
-{$savepcu false} //ToDo #????
+{$savepcu false} //ToDo 2394
 
 uses CodeGenUtils in '..\CodeGenUtils';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
@@ -204,8 +204,7 @@ type
         if arg_usage.ContainsKey(arg_name) and (arg_usage[arg_name]<>usage) then
           raise new System.NotSupportedException($'arg [{arg_name}] in {debug_tn}({args_str}) had usages [{arg_usage[arg_name]}] and [{usage}]');
         
-        //ToDo #?
-        var arg := args=nil ? nil : args.SingleOrDefault(arg->arg.name=arg_name);
+        var arg := args?.SingleOrDefault(arg->arg.name=arg_name);
         if arg=nil then raise new System.InvalidOperationException($'arg [{arg_name}] not found in params of func {debug_tn}({args_str})');
         
         arg_usage[arg_name] := usage;
@@ -358,18 +357,18 @@ type
       WriteInvokeHeader(settings);
       res_EIm += '    begin'#10;
       
-      if (settings as MethodSettings).args <> nil then
-        foreach var arg in (settings as MethodSettings).args do
-          if not (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+      if settings.args <> nil then
+        foreach var arg in settings.args do
+          if not settings.arg_usage.ContainsKey(arg.name) then
             Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used');
       
       {$region param .Invoke's}
       
-      if (settings as MethodSettings).args <> nil then
+      if settings.args <> nil then
       begin
         var first_arg := true;
-        foreach var arg in (settings as MethodSettings).args do
-          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+        foreach var arg in settings.args do
+          if settings.arg_usage.ContainsKey(arg.name) then
           begin
             var IsCQ := arg.t.IsCQ;
             var IsKA := arg.t.IsKA;
@@ -401,14 +400,14 @@ type
               if IsCQ then
               begin
                 res_EIm += ', ';
-                res_EIm += ((settings as MethodSettings).arg_usage[arg.name]='ptr').ToString.PadLeft(5);
+                res_EIm += (settings.arg_usage[arg.name]='ptr').ToString.PadLeft(5);
                 res_EIm += ', ';
                 res_EIm += first_arg ? 'cq, ' : arg.t is MethodArgTypeArray ? nil : '    ';
                 res_EIm += 'nil';
               end;
               res_EIm += '); ';
               
-              if (settings as MethodSettings).arg_usage[arg.name]='ptr' then
+              if settings.arg_usage[arg.name]='ptr' then
                 res_EIm += $'({arg.name}_qr is QueueResDelayedPtr&<{arg.t.Enmr.Last.org_text}>?evs_l2:evs_l1)' else
                 res_EIm += 'evs_l1';
               
@@ -441,9 +440,9 @@ type
       {$region param .GetRes's}
       
       var args_with_GCHandle := new List<string>;
-      if (settings as MethodSettings).args <> nil then
-        foreach var arg in (settings as MethodSettings).args do
-          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+      if settings.args <> nil then
+        foreach var arg in settings.args do
+          if settings.arg_usage.ContainsKey(arg.name) then
           begin
             var IsCQ := arg.t.IsCQ;
             var IsKA := arg.t.IsKA;
@@ -463,7 +462,7 @@ type
               res_EIm += i.ToString;
             end;
             
-            var usage := (settings as MethodSettings).arg_usage[arg.name];
+            var usage := settings.arg_usage[arg.name];
             if usage=nil then
               res_EIm += '.GetRes' else
             case usage of
@@ -471,7 +470,7 @@ type
               'ptr':
               begin
                 res_EIm += '.ToPtr';
-                if not (settings as MethodSettings).need_thread then args_with_GCHandle += arg.name;
+                if not settings.need_thread then args_with_GCHandle += arg.name;
               end;
               
               else raise new System.NotImplementedException;
@@ -484,11 +483,11 @@ type
       
       {$endregion param .GetRes's}
       
-      if not (settings as MethodSettings).need_thread then
+      if not settings.need_thread then
         res_EIm += '        var res_ev: cl_event;'#10;
       res_EIm += '        '#10;
       
-      foreach var l in (settings as MethodSettings).def do
+      foreach var l in settings.def do
       begin
         res_EIm += '  '*4;
         res_EIm += l;
@@ -541,7 +540,7 @@ type
       {$endregion FinallyCallback}
       
       res_EIm += '        Result := ';
-      res_EIm += (settings as MethodSettings).need_thread ? 'cl_event.Zero' : 'res_ev';
+      res_EIm += settings.need_thread ? 'cl_event.Zero' : 'res_ev';
       res_EIm += ';'#10;
       res_EIm += '      end;'#10;
       
@@ -566,28 +565,28 @@ type
       res_EIm += t;
       res_EIm += 'Command';
       res_EIm += tn;
-      res_EIm += (settings as MethodSettings).generics_str;
+      res_EIm += settings.generics_str;
       res_EIm += ' = sealed class(';
       WriteCommandBaseTypeName(t, settings);
       res_EIm += ')'#10;
       
-      if (settings as MethodSettings).where_record_str<>nil then
+      if settings.where_record_str<>nil then
       begin
         res_EIm += '  ';
-        res_EIm += (settings as MethodSettings).where_record_str;
+        res_EIm += settings.where_record_str;
         res_EIm += #10;
       end;
       
       {$region field's}
       
-      var max_arg_w := (settings as MethodSettings).args=nil ? 0 : (settings as MethodSettings).args.Max(arg->arg.name.Length);
+      var max_arg_w := settings.args=nil ? 0 : settings.args.Max(arg->arg.name.Length);
       
       var val_ptr_args := new HashSet<string>;
-      if (settings as MethodSettings).args<>nil then
-        foreach var arg: MethodArg in (settings as MethodSettings).args do
-          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+      if settings.args<>nil then
+        foreach var arg: MethodArg in settings.args do
+          if settings.arg_usage.ContainsKey(arg.name) then
           begin
-            var is_val_ptr := ((settings as MethodSettings).arg_usage[arg.name]='ptr') and not arg.t.IsCQ;
+            var is_val_ptr := (settings.arg_usage[arg.name]='ptr') and not arg.t.IsCQ;
             if is_val_ptr then val_ptr_args += arg.name;
             
             res_EIm += '    private ';
@@ -630,7 +629,7 @@ type
         res_EIm += '    '#10;
       end;
       
-      if (settings as MethodSettings).need_thread then
+      if settings.need_thread then
       begin
         res_EIm += '    public function NeedThread: boolean; override := true;'#10;
         res_EIm += '    '#10;
@@ -639,13 +638,13 @@ type
       
       var param_count_l1 := 0;
       var param_count_l2 := 0;
-      if (settings as MethodSettings).args<>nil then
-        foreach var arg in (settings as MethodSettings).args do
-          if (settings as MethodSettings).arg_usage.ContainsKey(arg.name) then
+      if settings.args<>nil then
+        foreach var arg in settings.args do
+          if settings.arg_usage.ContainsKey(arg.name) then
           begin
             if not arg.t.IsCQ and not arg.t.IsKA then continue;
             
-            if (settings as MethodSettings).arg_usage[arg.name] = 'ptr' then
+            if settings.arg_usage[arg.name] = 'ptr' then
               param_count_l2 += 1 else
               param_count_l1 += 1;
             
@@ -661,16 +660,16 @@ type
       {$region constructor}
       
       res_EIm += '    public constructor';
-      if (settings as MethodSettings).impl_args_str = nil then
+      if settings.impl_args_str = nil then
         res_EIm += ' := exit;'#10 else
       begin
         res_EIm += '(';
-        res_EIm += (settings as MethodSettings).impl_args_str;
+        res_EIm += settings.impl_args_str;
         res_EIm += ');'#10;
         res_EIm += '    begin'#10;
         WriteCommandTypeInhConstructor;
-        if (settings as MethodSettings).args <> nil then
-          foreach var arg in (settings as MethodSettings).args do
+        if settings.args <> nil then
+          foreach var arg in settings.args do
           begin
             res_EIm += '      self.';
             res_EIm += arg.name.PadLeft(max_arg_w);
@@ -699,13 +698,13 @@ type
       {$region RegisterWaitables}
       
       res_EIm += '    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override';
-      if (settings as MethodSettings).args = nil then
+      if settings.args = nil then
         res_EIm += ' := exit;'#10 else
       begin
         res_EIm += ';'#10;
         res_EIm += '    begin'#10;
         
-        foreach var arg in (settings as MethodSettings).args.OrderBy(arg->arg.t.ArrLvl) do
+        foreach var arg in settings.args.OrderBy(arg->arg.t.ArrLvl) do
           if arg.t.IsKA or arg.t.IsCQ then
           begin
             res_EIm += '      ';
@@ -756,22 +755,20 @@ type
         settings.Apply(setting[0], setting[1], tn);
       settings.Seal(t, tn);
       
-      //ToDo #?
-      // - и ещё в куче мест убрать "as MethodSettings"
-      if not (settings as MethodSettings).is_short_def then
+      if not settings.is_short_def then
         WriteCommandType(fn, tn, settings);
       
       {$region Header}
       
       begin
-        var l_res_EIm := (settings as MethodSettings).implicit_only ? new WriterEmpty  : res_EIm;
+        var l_res_EIm := settings.implicit_only ? new WriterEmpty  : res_EIm;
         
-        var l_res_In  := (settings as MethodSettings).implicit_only ? res_IIn          : res_In;
-        var l_res_Im  := (settings as MethodSettings).implicit_only ? res_IIm          : res_Im;
+        var l_res_In  := settings.implicit_only ? res_IIn          : res_In;
+        var l_res_Im  := settings.implicit_only ? res_IIm          : res_Im;
         
-        var l_res_E   := (settings as MethodSettings).implicit_only ? new WriterEmpty  : res_E;
+        var l_res_E   := settings.implicit_only ? new WriterEmpty  : res_E;
         
-        var l_res     := (settings as MethodSettings).implicit_only ? res_I            : res;
+        var l_res     := settings.implicit_only ? res_I            : res;
         
         l_res_In += '    public ';
         l_res += 'function ';
@@ -780,20 +777,20 @@ type
         l_res_Im += '.';
         l_res_E += 'Add';
         l_res += fn;
-        l_res += (settings as MethodSettings).generics_str;
-        if (settings as MethodSettings).args_str <> nil then
+        l_res += settings.generics_str;
+        if settings.args_str <> nil then
         begin
           l_res += '(';
-          l_res += (settings as MethodSettings).args_str;
+          l_res += settings.args_str;
           l_res += ')';
         end;
         l_res += ': ';
         WriteMethodResT(l_res, l_res_E, settings);
         l_res_In += ';';
-        if (settings as MethodSettings).where_record_str<>nil then
+        if settings.where_record_str<>nil then
         begin
           l_res_In += ' ';
-          l_res_In += (settings as MethodSettings).where_record_str;
+          l_res_In += settings.where_record_str;
         end;
         l_res_Im += ' :=';
         l_res += #10;
@@ -804,13 +801,13 @@ type
       
       {$region Body}
       
-      if (settings as MethodSettings).is_short_def then
+      if settings.is_short_def then
       begin
-        var l_res_Im  := (settings as MethodSettings).implicit_only ? res_IIm          : res_Im;
-        var l_res_EIm := (settings as MethodSettings).implicit_only ? new WriterEmpty  : res_EIm;
+        var l_res_Im  := settings.implicit_only ? res_IIm          : res_Im;
+        var l_res_EIm := settings.implicit_only ? new WriterEmpty  : res_EIm;
         
         l_res_EIm += 'Add';
-        l_res_Im += (settings as MethodSettings).def.Single;
+        l_res_Im += settings.def.Single;
         l_res_Im += #10;
         
       end else
@@ -818,32 +815,35 @@ type
         
         res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Add';
         res_IIm += fn;
-        if (settings as MethodSettings).generics_str <> nil then
+        if settings.generics_str <> nil then
         begin
           res_IIm += '&';
-          res_IIm += (settings as MethodSettings).generics_str;
+          res_IIm += settings.generics_str;
         end;
-        if (settings as MethodSettings).args<>nil then
+        if settings.args<>nil then
         begin
           res_IIm += '(';
-          res_IIm += (settings as MethodSettings).args.Select(arg->arg.name).JoinToString(', ');
+          res_IIm += settings.args.Select(arg->arg.name).JoinToString(', ');
           res_IIm += ')';
         end;
         res_IIm += ' as CommandQueue<';
         res_IIm += GetIImResT(settings);
         res_IIm += '>);'#10;
         
+        //ToDo #2395
+        var settings_copy := settings;
         WriteMethodEImBody(()->
         begin
+          var settings_copy := settings_copy;
           res_EIm += 'new ';
           res_EIm += t;
           res_EIm += 'Command';
           res_EIm += tn;
-          res_EIm += (settings as MethodSettings).generics_str;
-          if (settings as MethodSettings).impl_args<>nil then
+          res_EIm += settings_copy.generics_str;
+          if settings_copy.impl_args<>nil then
           begin
             res_EIm += '(';
-            res_EIm += (settings as MethodSettings).impl_args.JoinToString(', ');
+            res_EIm += settings_copy.impl_args.JoinToString(', ');
             res_EIm += ')';
           end;
         end, settings);
