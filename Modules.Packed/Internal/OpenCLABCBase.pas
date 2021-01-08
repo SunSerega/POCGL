@@ -132,7 +132,7 @@ unit OpenCLABCBase;
 //ToDo https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2145
 // - #2221
-// - #2390
+// - #2398
 
 //ToDo Баги NVidia
 //ToDo https://developer.nvidia.com/nvidia_bug/{id}
@@ -4858,7 +4858,7 @@ type
     
   end;
   
-static function KernelArg.FromBuffer(b: Buffer) := new KernelArgBuffer(b) as KernelArg; //ToDo #2390
+static function KernelArg.FromBuffer(b: Buffer) := new KernelArgBuffer(b);
 
 {$endregion Buffer}
 
@@ -4880,7 +4880,7 @@ type
     
   end;
   
-static function KernelArg.FromRecord<TRecord>(val: TRecord) := new KernelArgRecord<TRecord>(val) as KernelArg; //ToDo #2390
+static function KernelArg.FromRecord<TRecord>(val: TRecord) := new KernelArgRecord<TRecord>(val) as KernelArg; //ToDo #2398
 
 {$endregion Record}
 
@@ -4903,7 +4903,7 @@ type
     
   end;
   
-static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(ptr, sz) as KernelArg; //ToDo #2390
+static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(ptr, sz);
 
 {$endregion Ptr}
 
@@ -4935,7 +4935,7 @@ type
   end;
   
 static function KernelArg.FromBufferCQ(bq: CommandQueue<Buffer>) :=
-new KernelArgBufferCQ(bq) as KernelArg; //ToDo #2390
+new KernelArgBufferCQ(bq);
 
 {$endregion Buffer}
 
@@ -4978,7 +4978,7 @@ type
   end;
   
 static function KernelArg.FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>) :=
-new KernelArgRecordCQ<TRecord>(valq) as KernelArg; //ToDo #2390
+new KernelArgRecordCQ<TRecord>(valq) as KernelArg; //ToDo #2398
 
 {$endregion Record}
 
@@ -5011,7 +5011,7 @@ type
   end;
   
 static function KernelArg.FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>) :=
-new KernelArgPtrCQ(ptr_q, sz_q) as KernelArg; //ToDo #2390
+new KernelArgPtrCQ(ptr_q, sz_q);
 
 {$endregion Ptr}
 
