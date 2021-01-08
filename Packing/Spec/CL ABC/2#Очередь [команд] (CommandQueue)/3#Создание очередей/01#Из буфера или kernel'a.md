@@ -25,9 +25,7 @@ begin
   q.AddWriteValue(5, 1*sizeof(integer) ).AddWriteValue(7, 2*sizeof(integer) );
   // Все команды в q будут выполняться последовательно
   
-  // В данной версии надо писать "as CommandQueue<...>" при использовании [Buffer/Kernel]CommandQueue там,
-  // где принимает CommandQueue<...>, из за бага компилятора #1981
-  Context.Default.SyncInvoke(q as CommandQueue<Buffer>);
+  Context.Default.SyncInvoke(q);
   
   // Вообще чтение тоже надо делать через очереди, но для простого примера - и неявные очереди подходят
   b.GetArray1&<integer>(3).Println;

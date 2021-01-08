@@ -61,7 +61,6 @@ begin
     var Otp_C_Q :=
       C.NewQueue.AddReadArray2&<real>(A_Matr) +
       HPQ(()->
-      lock output do
       begin
         'Матрица С = A*B:'.Println;
         A_Matr.Println;
@@ -79,7 +78,6 @@ begin
     var Otp_V2_Q :=
       V2.NewQueue.AddReadArray1&<real>(V1_Arr) +
       HPQ(()->
-      lock output do
       begin
         'Вектор V2 = C*V1:'.Println;
         V1_Arr.Println;
