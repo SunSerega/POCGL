@@ -110,8 +110,7 @@ type
       Result := log1;
     end;
     
-    //ToDo
-    public procedure Otp(l: OtpLine){; virtual} :=
+    public procedure Otp(l: OtpLine) :=
     lock self do
     begin
       
