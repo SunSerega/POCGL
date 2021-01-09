@@ -25,10 +25,9 @@ type
     static loged_ffo          := new HashSet<string>; // final func ovrs
   end;
   
-var dll_name: string;
-
 var allowed_ext_names: HashSet<string>;
 function GetExt(s: string): string;
+function GetDllNameForAPI(api: string): string;
 
 var api_name: string := nil;
 
@@ -1260,9 +1259,7 @@ type
                 ntv_sb += ' ';
                 WriteOvrT(ntv_sb, curr_ovr,nil, ext_ovr_name, true, false);
                 ntv_sb += ';'#10;
-                if api='gdi' then
-                  ntv_sb += $'    external ''gdi32.dll'' name ''{name}'';'+#10 else
-                  ntv_sb += $'    external ''{dll_name}'' name ''{name}'';'+#10;
+                ntv_sb += $'    external ''{GetDllNameForAPI(api)}'' name ''{name}'';'+#10;
                 
 //                sb += $'    {vis} static {ovr_name_str}';
 //                if (org_par.Length=1) and not is_proc then
@@ -1957,6 +1954,18 @@ begin
   if LogCache.invalid_ext_names.Add(prev_res) and (prev_res.Length>1) then
     log.Otp($'Invalid ext name [{prev_res}], replaced with [{Result}]');
   
+end;
+
+function GetDllNameForAPI(api: string): string;
+begin
+  case api of
+    'cl':   Result := 'opencl.dll';
+    'gl':   Result := 'opengl32.dll';
+    'wgl':  Result := 'opengl32.dll';
+    'glx':  Result := 'libGL.so.1';
+    'gdi':  Result := 'gdi32.dll';
+    else raise new System.NotSupportedException(api);
+  end;
 end;
 
 {$endregion Misc}

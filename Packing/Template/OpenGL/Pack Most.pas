@@ -4,7 +4,6 @@ uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 begin
   try
     InitAll;
-    dll_name := 'opengl32.dll';
     api_name := 'gl';
     
     Otp($'Reading .bin');

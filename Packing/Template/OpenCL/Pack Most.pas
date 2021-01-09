@@ -4,7 +4,7 @@ uses POCGL_Utils in '..\..\..\POCGL_Utils';
 begin
   try
     InitAll;
-    dll_name := 'opencl.dll';
+    api_name := 'cl';
     
     Otp($'Reading .bin');
     LoadBin('DataScraping\XML\CL\funcs.bin');
