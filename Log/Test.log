@@ -71,7 +71,6 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wa
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1.pas"
 Tester: Finished compiling: OK
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1.td"
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue.pas"
@@ -152,7 +151,6 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue]
@@ -174,6 +172,5 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1.td" updated
 Tester: Done testing
 Finished runing Tester
