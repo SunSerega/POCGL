@@ -9,18 +9,24 @@ OpenCLABC
 
 Buffer:
 OpenCLABCBase_implementation______.KernelArgBuffer
+OpenCLABCBase_implementation______.KernelArgBuffer
 Record:
 OpenCLABCBase_implementation______.KernelArgRecord`1[System.Int32]
+OpenCLABCBase_implementation______.KernelArgRecord`1[System.Int32]
 Ptr:
+OpenCLABCBase_implementation______.KernelArgPtr
 OpenCLABCBase_implementation______.KernelArgPtr
 
 >>> Invokable
 
 Buffer:
 OpenCLABCBase_implementation______.KernelArgBufferCQ
+OpenCLABCBase_implementation______.KernelArgBufferCQ
 Record:
+OpenCLABCBase_implementation______.KernelArgRecordCQ`1[System.Int32]
 OpenCLABCBase_implementation______.KernelArgRecordCQ`1[System.Int32]
 Ptr:
 OpenCLABCBase_implementation______.KernelArgPtrCQ
+OpenCLABCBase_implementation______.Nope >_>
 
 
