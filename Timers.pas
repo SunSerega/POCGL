@@ -1,5 +1,7 @@
 ﻿unit Timers;
 
+interface
+
 uses AOtp;
 
 type
@@ -192,9 +194,26 @@ type
   
   {$endregion Default}
   
+implementation
+
+function CloseIfNonTimed(log: Logger): boolean;
+begin
+  Result := (log is FileLogger(var f_log)) and not f_log.IsTimed;
+  if Result then
+    log.Close else
+    log.sub_loggers.RemoveAll(CloseIfNonTimed);
+end;
+
+procedure MainLoggerPreClose;
+begin
+  CloseIfNonTimed(Logger.main);
+  Timer.main.GlobalLog;
+end;
+
 begin
   try
     Timer.main := new ExeTimer;
+    Logger.main.PreClose += MainLoggerPreClose;
   except
     on e: Exception do ErrOtp(e);
   end;

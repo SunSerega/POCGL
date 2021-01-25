@@ -5,7 +5,7 @@ uses System.Threading;
 
 type
   
-  //ToDo #2397
+  //ToDo #2038
   ///--
   __AsyncQueueBase = abstract class(System.Collections.IEnumerable, System.Collections.IEnumerator)
     

@@ -99,8 +99,7 @@ type
   
   Logger = abstract class
     public static main: Logger;
-    
-    private sub_loggers := new List<Logger>;
+    public sub_loggers := new List<Logger>;
     
     public static procedure operator+=(log1, log2: Logger) :=
     lock log1.sub_loggers do log1.sub_loggers += log2;
@@ -122,13 +121,15 @@ type
     end;
     protected procedure OtpImpl(l: OtpLine); abstract;
     
-    public procedure Close; virtual :=
-    foreach var log in sub_loggers do
-      log.Close;
-    public function CloseNonTimed: boolean; virtual;
+    public event PreClose: procedure;
+    public procedure Close; virtual;
     begin
-      sub_loggers.RemoveAll(l->l.CloseNonTimed);
-      Result := false;
+      var PreClose := self.PreClose;
+      if PreClose<>nil then PreClose();
+      
+      foreach var log in sub_loggers do
+        log.Close;
+      
     end;
     
   end;
@@ -166,6 +167,8 @@ type
       self.timed      := timed;
     end;
     
+    public property IsTimed: boolean read timed;
+    
     public procedure OtpImpl(l: OtpLine); override;
     begin
       var s := timed ? l.GetTimedStr : l.s;
@@ -186,13 +189,6 @@ type
       System.IO.File.Delete(bu_fname);
       
       inherited;
-    end;
-    public function CloseNonTimed: boolean; override;
-    begin
-      Result := not self.timed;
-      if Result then
-        self.Close else
-        inherited CloseNonTimed;
     end;
     
   end;
@@ -222,7 +218,6 @@ procedure ErrOtp(e: Exception);
 implementation
 
 uses PathUtils;
-uses Timers;
 
 procedure AsyncProcOtp.Dump;
 begin
@@ -359,8 +354,6 @@ initialization
   end;
 finalization
   try
-    Logger.main.CloseNonTimed;
-    Timer.main.GlobalLog;
     Logger.main.Close;
     MakeSureToExit;
   except
