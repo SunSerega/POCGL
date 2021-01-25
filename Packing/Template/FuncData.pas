@@ -779,8 +779,8 @@ type
             res += new FuncParamT(false, ptr, 'IntPtr');
           
           var ToDo := 0; //ToDo костыль, надо маршлинг нормально настроить
-          // но проблема в том, что для "array of boolean" не работает копирование в неуправляемую память
-          // очевидное решение - через указатели получить "array of Byte". Только как покрасивше?
+          // Но проблема в том, что для "array of boolean" не работает копирование в неуправляемую память
+          // Очевидное решение - через указатели получить "array of Byte". Только как покрасивше?
           if can_be_arr then
             res += new FuncParamT(false, par.ptr,
               (par_t='boolean') and (par.ptr>1) ?

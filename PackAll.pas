@@ -3,6 +3,7 @@ uses System.Threading.Tasks;
 uses System.IO;
 
 uses AOtp       in 'Utils\AOtp';
+uses Timers     in 'Utils\Timers';
 uses ATask      in 'Utils\ATask';
 uses PathUtils  in 'Utils\PathUtils';
 

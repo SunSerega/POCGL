@@ -1500,6 +1500,10 @@ type
     public static property PIPE_FULL_INTEL:                             ErrorCode read new ErrorCode(-1106);
     public static property PIPE_EMPTY_INTEL:                            ErrorCode read new ErrorCode(-1107);
     public static property CONTEXT_TERMINATED_KHR:                      ErrorCode read new ErrorCode(-1121);
+    public static property ERROR_RESERVED0_IMG:                         ErrorCode read new ErrorCode(-1122);
+    public static property ERROR_RESERVED1_IMG:                         ErrorCode read new ErrorCode(-1123);
+    public static property ERROR_RESERVED2_IMG:                         ErrorCode read new ErrorCode(-1124);
+    public static property ERROR_RESERVED3_IMG:                         ErrorCode read new ErrorCode(-1125);
     public static property NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE:         ErrorCode read new ErrorCode(-9999);
     
     public function ToString: string; override;
@@ -1601,6 +1605,10 @@ type
       if self.val = Int32(-1106) then Result := 'PIPE_FULL_INTEL' else
       if self.val = Int32(-1107) then Result := 'PIPE_EMPTY_INTEL' else
       if self.val = Int32(-1121) then Result := 'CONTEXT_TERMINATED_KHR' else
+      if self.val = Int32(-1122) then Result := 'ERROR_RESERVED0_IMG' else
+      if self.val = Int32(-1123) then Result := 'ERROR_RESERVED1_IMG' else
+      if self.val = Int32(-1124) then Result := 'ERROR_RESERVED2_IMG' else
+      if self.val = Int32(-1125) then Result := 'ERROR_RESERVED3_IMG' else
       if self.val = Int32(-9999) then Result := 'NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
         Result := $'ErrorCode[{self.val}]';
     end;

@@ -1,5 +1,5 @@
 ﻿unit MethodGenData;
-{$savepcu false} //ToDo 2394
+{$savepcu false} //ToDo #2394
 
 uses CodeGenUtils in '..\CodeGenUtils';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
@@ -830,7 +830,7 @@ type
         res_IIm += GetIImResT(settings);
         res_IIm += '>);'#10;
         
-        //ToDo #2395
+        //ToDo #2418
         var settings_copy := settings;
         WriteMethodEImBody(()->
         begin
