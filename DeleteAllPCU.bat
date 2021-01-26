@@ -1,0 +1,7 @@
+
+
+
+del /S *.pcu
+pause
+
+
