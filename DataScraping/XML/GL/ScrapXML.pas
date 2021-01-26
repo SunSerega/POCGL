@@ -118,6 +118,7 @@ type
     public static ParClasses := new HashSet<string>;
     
     private name, t: string;
+    private rep_c: int64 := 1;
     private readonly: boolean;
     private ptr: integer;
     private static_arr_len := -1;
@@ -151,8 +152,10 @@ type
       if n.Text.EndsWith(']') then
       begin
         var ind := n.Text.LastIndexOf('[', n.Text.Length-2);
-        var len := n.Text.SubString(ind+1, n.Text.Length-ind-2).ToInteger;
-        self.ptr += 1;
+        var len_str := n.Text.SubString(ind+1, n.Text.Length-ind-2);
+        if len_str='' then
+          self.ptr += 1 else
+          self.rep_c := StrToInt64(len_str);
       end;
       
       var is_enum := self.t in |'GLenum', 'GLbitfield'|;
@@ -196,7 +199,7 @@ type
     begin
       bw.Write(name);
       bw.Write(t);
-      bw.Write(int64(1)); // rep_c, used in char[123] in OpenCL structs
+      bw.Write(rep_c);
       bw.Write(readonly);
       bw.Write(ptr);
       bw.Write(static_arr_len);

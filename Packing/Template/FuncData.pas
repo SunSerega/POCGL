@@ -524,7 +524,7 @@ type
   FuncOrgParam = sealed class
     public name, t: string;
     public readonly: boolean;
-    public ptr: integer;
+    public ptr: integer := 0;
     public static_arr_len: integer;
     public gr: Group;
     
@@ -548,9 +548,16 @@ type
       self.t := ntv_t in KnownClasses ?
         ConvertClassName(ntv_t) :
         TypeTable.Convert(ntv_t);
+      self.ptr += self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
+      self.t := self.t.Remove('*','-').Trim;
       
-      // rep_c, used for static strings in structs
-      if br.ReadInt64 <> 1 then raise new System.NotSupportedException;
+      var rep_c := br.ReadInt64;
+      if rep_c<>1 then
+      begin
+        if rep_c<1 then raise new System.InvalidOperationException(rep_c.ToString);
+        self.ptr += 1;
+        rep_c := 1;
+      end;
       
       self.readonly := br.ReadBoolean;
       if self.t.StartsWith('const ') then
@@ -559,8 +566,7 @@ type
         self.t := self.t.Remove(0, 'const '.Length);
       end;
       
-      self.ptr := br.ReadInt32 + self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
-      self.t := self.t.Remove('*','-').Trim;
+      self.ptr += br.ReadInt32;
       if self.ptr<0 then
       begin
         if proto and (ntv_t.ToLower='void') and (ptr=-1) then // void конвертирует в IntPtr-

@@ -285,7 +285,7 @@ type
         begin
           
           if TryStrToInt64(c, self.rep_c) or Group.AllEnums.TryGetValue(c, self.rep_c) then
-            ;
+            else raise new System.FormatException(c);
           
         end else
           self.ptr += 1;
