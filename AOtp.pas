@@ -121,16 +121,22 @@ type
     end;
     protected procedure OtpImpl(l: OtpLine); abstract;
     
-    public event PreClose: procedure;
-    public procedure Close; virtual;
+    public static event PreClose: procedure;
+    public procedure Close;
     begin
-      var PreClose := self.PreClose;
-      if PreClose<>nil then PreClose();
+      if self = Logger.main then
+      begin
+        var PreClose := self.PreClose;
+        if PreClose<>nil then PreClose();
+      end;
+      
+      CloseImpl;
       
       foreach var log in sub_loggers do
         log.Close;
       
     end;
+    public procedure CloseImpl; abstract;
     
   end;
   
@@ -150,6 +156,8 @@ type
       
       Console.ForegroundColor := System.ConsoleColor.DarkGreen;
     end;
+    
+    public procedure CloseImpl; override := exit;
     
   end;
   
@@ -181,14 +189,11 @@ type
       
     end;
     
-    public procedure Close; override;
+    public procedure CloseImpl; override;
     begin
-      
       main_sw.Close;
       backup_sw.Close;
       System.IO.File.Delete(bu_fname);
-      
-      inherited;
     end;
     
   end;
@@ -319,6 +324,9 @@ begin
     begin
       Sleep(100); // Обычно это из за ошибки вообще в другом процессе, лучше сначала дать довывести ту ошибку
       Console.Error.WriteLine($'{GetRelativePath(GetEXEFileName)} failed to output it''s error because: {dbl_e}');
+      Console.Error.WriteLine('Trying again, simplified:');
+      Console.Error.WriteLine(e);
+      Console.Error.WriteLine('(end simplified error output)');
     end;
   end;
   

@@ -33,9 +33,12 @@ type
         hnd_strs[1]
       );
       StartBgThread(()->
-      case halt_str.ReadByte of
-        1: ErrOtp(new ParentHaltException);
-        else ErrOtp(new MessageException($'Received invalid halt command'));
+      begin
+        var command := halt_str.ReadByte;
+        case command of
+          1, -1: ErrOtp(new ParentHaltException);
+          else ErrOtp(new MessageException($'Received invalid halt command: {command}'));
+        end;
       end);
       
     end;
@@ -48,10 +51,9 @@ type
       bw.Flush;
     end;
     
-    public procedure Close; override;
+    public procedure CloseImpl; override;
     begin
       bw.Close;
-      inherited;
     end;
     
   end;

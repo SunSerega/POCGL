@@ -213,7 +213,7 @@ end;
 begin
   try
     Timer.main := new ExeTimer;
-    Logger.main.PreClose += MainLoggerPreClose;
+    Logger.PreClose += MainLoggerPreClose;
   except
     on e: Exception do ErrOtp(e);
   end;
