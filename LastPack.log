@@ -1,31 +1,6 @@
-﻿Executing selected stages:
-FirstPack + Spec + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+﻿Executing default stages:
+Spec + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Finished compiling: OK
-Runing SubReps Update
-SubReps Update: Pulling OpenCL Docs
-SubReps Update: Done pulling OpenCL Docs
-SubReps Update: Pulling OpenGL Registry
-SubReps Update: Done pulling OpenGL Registry
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\CL\ScrapXML.pas"
-Finished compiling: OK
-Runing ScrapXML[CL]
-ScrapXML[CL]: Parsing "cl"
-ScrapXML[CL]: Saving as binary
-Finished runing ScrapXML[CL]
-Compiling "DataScraping\XML\GL\ScrapXML.pas"
-Finished compiling: OK
-Runing ScrapXML[GL]
-ScrapXML[GL]: Parsing "gl"
-ScrapXML[GL]: Parsing "wgl"
-ScrapXML[GL]: Parsing "glx"
-ScrapXML[GL]: Saving as binary
-Finished runing ScrapXML[GL]
 ====================================== Specs =====================================
 Compiling "Packing\Spec\SpecPacker.pas"
 Finished compiling: OK

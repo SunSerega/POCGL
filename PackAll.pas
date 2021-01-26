@@ -480,7 +480,7 @@ begin
         end);
         Otp($'Executing selected stages:');
       end;
-//      PackingStage.CurrentStages := HSet(ReleaseStr);
+//      PackingStage.CurrentStages := HSet(OpenCLABCStr);
       
       Otp(PackingStage.CurrentStages.JoinIntoString(' + '));
     end;
@@ -492,7 +492,7 @@ begin
     var c := 0;
     var skip_pcu := AllModules.Except(PackingStage.CurrentStages).IncludeBaseModules.ToHashSet;
     
-    foreach var fname in Arr('*.pcu','*.pdb').SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
+    foreach var fname in |{'*.pcu',}'*.pdb'|.SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
     begin
       if skip_pcu.Contains(Path.GetFileNameWithoutExtension(fname)) then continue;
       try
