@@ -144,7 +144,7 @@
 
 # clEnqueueSVMFree
 !possible_par_types
- *	| *	| *	| -IntPtr +array of IntPtr +var IntPtr +pointer	| *	| *	| *	| *	| -array of cl_event	|
+ *	| *	| *	| *	| *	| *	| *	| *	| -array of cl_event	|
 
 # clEnqueueSVMMemcpy
 !possible_par_types

@@ -10495,7 +10495,9 @@
  Int32	| DummyEnum	| IntPtr	| UInt32	| Int32	| UInt32	| DummyEnum	| DummyEnum	| IntPtr	|
 
 # glPathGlyphIndexRangeNV
- DummyEnum	| DummyEnum	| IntPtr	| PathFontStyle	| UInt32	| single	| UInt32	|
+ DummyEnum	| DummyEnum	| IntPtr	| PathFontStyle	| UInt32	| single	| array of UInt32	|
+ DummyEnum	| DummyEnum	| IntPtr	| PathFontStyle	| UInt32	| single	| var UInt32	|
+ DummyEnum	| DummyEnum	| IntPtr	| PathFontStyle	| UInt32	| single	| IntPtr	|
 
 # glPathGlyphIndexArrayNV
  DummyEnum	| UInt32	| DummyEnum	| IntPtr	| PathFontStyle	| UInt32	| Int32	| UInt32	| single	|

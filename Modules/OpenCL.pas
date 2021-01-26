@@ -10898,15 +10898,123 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure SVMFreeARM(context: cl_context; svm_pointer: IntPtr) :=
     z_SVMFreeARM_ovr_0(context, svm_pointer);
     
-    private static function z_EnqueueSVMFreeARM_ovr_0(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueSVMFreeARM_ovr_0(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    private static function z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    private static function z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    private static function z_EnqueueSVMFreeARM_ovr_0_anh000000011(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000100010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000100001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000000011(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_0_anh000100011(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
+          z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event[0]) else
+          z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
+        if (&event<>nil) and (&event.Length<>0) then
+          z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
+          z_EnqueueSVMFreeARM_ovr_0_anh000000011(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero) else
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (&event<>nil) and (&event.Length<>0) then
+          z_EnqueueSVMFreeARM_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event[0]) else
+          z_EnqueueSVMFreeARM_ovr_0_anh000100001(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
+        if (&event<>nil) and (&event.Length<>0) then
+          z_EnqueueSVMFreeARM_ovr_0_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
+          z_EnqueueSVMFreeARM_ovr_0_anh000100011(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_EnqueueSVMFreeARM_ovr_1_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_1_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_1_anh000100010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event) else
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueSVMFreeARM_ovr_0_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_2(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_2_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_2_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_2_anh000100010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_2(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueSVMFreeARM_ovr_2_anh000000010(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event) else
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_2_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueSVMFreeARM_ovr_2_anh000100010(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_3_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_3_anh000100001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
+        z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
+        z_EnqueueSVMFreeARM_ovr_0_anh000100001(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    private static function z_EnqueueSVMFreeARM_ovr_4_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueSVMFreeARM_ovr_0_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_5_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_2(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueSVMFreeARM_ovr_2_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_6(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_6_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_6_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_6_anh000100001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_6(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
+        z_EnqueueSVMFreeARM_ovr_6_anh000000001(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero) else
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_6_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
+        z_EnqueueSVMFreeARM_ovr_6_anh000100001(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    private static function z_EnqueueSVMFreeARM_ovr_7_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_6(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueSVMFreeARM_ovr_6_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_8(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_8_anh000100000(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_8(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueSVMFreeARM_ovr_8_anh000100000(command_queue, num_svm_pointers, IntPtr.Zero, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
     if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event[0]) else
@@ -10914,42 +11022,82 @@ type
       if (&event<>nil) and (&event.Length<>0) then
         z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
         z_EnqueueSVMFreeARM_ovr_0_anh000000011(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
-    private static function z_EnqueueSVMFreeARM_ovr_1_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
     if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFreeARM_ovr_0_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
-    private static function z_EnqueueSVMFreeARM_ovr_2(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    private static function z_EnqueueSVMFreeARM_ovr_2_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
     if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_2(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
       z_EnqueueSVMFreeARM_ovr_2_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
     if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMFreeARM_ovr_0_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueSVMFreeARM_ovr_0(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMFreeARM_ovr_2(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueSVMFreeARM_ovr_6(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    private static function z_EnqueueSVMFreeARM_ovr_6_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
     if (&event<>nil) and (&event.Length<>0) then
       z_EnqueueSVMFreeARM_ovr_6(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
       z_EnqueueSVMFreeARM_ovr_6_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueSVMFreeARM_ovr_6(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueSVMFreeARM_ovr_8(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; var svm_pointers: IntPtr; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMFreeARM_ovr_8(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_18(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_18_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_18_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_18_anh000000011(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: array of cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_18(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event[0]) else
+        z_EnqueueSVMFreeARM_ovr_18_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], IntPtr.Zero) else
+      if (&event<>nil) and (&event.Length<>0) then
+        z_EnqueueSVMFreeARM_ovr_18_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event[0]) else
+        z_EnqueueSVMFreeARM_ovr_18_anh000000011(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_EnqueueSVMFreeARM_ovr_19_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_18(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueSVMFreeARM_ovr_18_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_20(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_20_anh000000010(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_20(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueSVMFreeARM_ovr_20_anh000000010(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: array of cl_event): ErrorCode :=
+    if (&event<>nil) and (&event.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_18(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
+      z_EnqueueSVMFreeARM_ovr_18_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueSVMFreeARM_ovr_18(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueSVMFreeARM_ovr_20(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_24(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    private static function z_EnqueueSVMFreeARM_ovr_24_anh000000001(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: array of cl_event): ErrorCode :=
+    if (&event<>nil) and (&event.Length<>0) then
+      z_EnqueueSVMFreeARM_ovr_24(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event[0]) else
+      z_EnqueueSVMFreeARM_ovr_24_anh000000001(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueSVMFreeARM_ovr_24(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueSVMFreeARM_ovr_26(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueSVMFreeARM';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: EnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueSVMFreeARM_ovr_26(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, &event);
     
     private static function z_EnqueueSVMMemcpyARM_ovr_0(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueSVMMemcpyARM';

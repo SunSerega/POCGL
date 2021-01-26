@@ -148,8 +148,14 @@ type
       self.readonly := n.Text.Contains('const');
       
       self.ptr := n.Text.Count(ch->ch='*');
+      if n.Text.EndsWith(']') then
+      begin
+        var ind := n.Text.LastIndexOf('[', n.Text.Length-2);
+        var len := n.Text.SubString(ind+1, n.Text.Length-ind-2).ToInteger;
+        self.ptr += 1;
+      end;
       
-      var is_enum := self.t in ['GLenum', 'GLbitfield'];
+      var is_enum := self.t in |'GLenum', 'GLbitfield'|;
       
       var gname := n['group'];
       if gname<>nil then

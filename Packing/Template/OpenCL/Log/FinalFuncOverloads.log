@@ -1438,15 +1438,33 @@
  cl_context	| IntPtr	|
 
 # clEnqueueSVMFreeARM
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
- ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| array of IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| var IntPtr	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| UInt32	| pointer	| EnqueueSVMFreeCallback	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
 # clEnqueueSVMMemcpyARM
  ErrorCode	| cl_command_queue	| Bool	| IntPtr	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| array of cl_event	|

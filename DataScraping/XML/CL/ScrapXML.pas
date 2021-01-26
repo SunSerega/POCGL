@@ -287,7 +287,8 @@ type
           if TryStrToInt64(c, self.rep_c) or Group.AllEnums.TryGetValue(c, self.rep_c) then
             ;
           
-        end;
+        end else
+          self.ptr += 1;
       end;
       
       self.readonly := text.Contains('const');
