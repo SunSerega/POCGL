@@ -830,20 +830,17 @@ type
         res_IIm += GetIImResT(settings);
         res_IIm += '>);'#10;
         
-        //ToDo #2418
-        var settings_copy := settings;
         WriteMethodEImBody(()->
         begin
-          var settings_copy := settings_copy;
           res_EIm += 'new ';
           res_EIm += t;
           res_EIm += 'Command';
           res_EIm += tn;
-          res_EIm += settings_copy.generics_str;
-          if settings_copy.impl_args<>nil then
+          res_EIm += settings.generics_str;
+          if settings.impl_args<>nil then
           begin
             res_EIm += '(';
-            res_EIm += settings_copy.impl_args.JoinToString(', ');
+            res_EIm += settings.impl_args.JoinToString(', ');
             res_EIm += ')';
           end;
         end, settings);
