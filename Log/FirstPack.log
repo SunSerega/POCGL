@@ -5,6 +5,9 @@ Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
+SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
+SubReps Update: OpenGL Registry : [Info] e82287b..2afca87  master     -> origin/master
+SubReps Update: OpenGL Registry : Submodule path 'DataScraping/Reps/OpenGL-Registry': checked out '2afca877b25ec2c7f19ddcba21a8627b9fa8e026'
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
