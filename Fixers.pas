@@ -97,12 +97,13 @@ type
       var res := new List<string>;
       var names := new List<string>;
       var start := true;
+      var bl_start := true;
       
       foreach var l in lines do
         if l.StartsWith(power_sign) then
         begin
           
-          if (res.Count<>0) or not concat_blocks then
+          if not bl_start or not concat_blocks then
           begin
             
             if start then
@@ -120,9 +121,15 @@ type
           
           names += l.Substring(power_sign.Length).Trim;
           start := false;
+          bl_start := true;
         end else
-        if (res.Count<>0) or not string.IsNullOrWhiteSpace(l) then
-          res += l;
+        begin
+          
+          if (res.Count<>0) or not string.IsNullOrWhiteSpace(l) then
+            res += l;
+          
+          bl_start := false;
+        end;
       
       if start then
       begin
