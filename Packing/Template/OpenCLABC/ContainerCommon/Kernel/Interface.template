@@ -1,0 +1,26 @@
+﻿    
+    
+    
+    public constructor(o: Kernel);
+    public constructor(q: CommandQueue<Kernel>);
+    private constructor;
+    
+    {$region Special .Add's}
+    
+    public function AddQueue(q: CommandQueueBase): KernelCommandQueue;
+    
+    public function AddProc(p: Kernel->()): KernelCommandQueue;
+    public function AddProc(p: (Kernel, Context)->()): KernelCommandQueue;
+    
+    public function AddWaitAll(params qs: array of CommandQueueBase): KernelCommandQueue;
+    public function AddWaitAll(qs: sequence of CommandQueueBase): KernelCommandQueue;
+    
+    public function AddWaitAny(params qs: array of CommandQueueBase): KernelCommandQueue;
+    public function AddWaitAny(qs: sequence of CommandQueueBase): KernelCommandQueue;
+    
+    public function AddWait(q: CommandQueueBase): KernelCommandQueue;
+    
+    {$endregion Special .Add's}
+    
+    
+    

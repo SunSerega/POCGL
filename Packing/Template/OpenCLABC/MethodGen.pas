@@ -9,7 +9,7 @@ type
   MethodSettings = sealed class(MethodGenData.MethodSettings) end;
   MethodGenerator = sealed class(MethodGenData.MethodGenerator<MethodSettings>)
     
-    protected function MakeOtpFileName(t: string): string; override := $'{t}Methods';
+    protected function MakeOtpFileName(t: string): string; override := $'{t}.';
     
     protected procedure WriteInvokeHeader(settings: MethodSettings); override;
     begin
@@ -36,7 +36,7 @@ type
     end;
     protected procedure WriteMethodEImBody(write_new_ct: Action0; settings: MethodSettings); override;
     begin
-      res_EIm += 'AddCommand(';
+      res_EIm += 'AddCommand(self, ';
       write_new_ct;
       res_EIm += ');'#10;
     end;
@@ -46,7 +46,7 @@ type
 begin
   try
     
-    EnumerateDirectories(GetFullPathRTA('MethodDef'))
+    EnumerateDirectories(GetFullPathRTA('ContainerMethods\Def'))
     .Select(dir->ProcTask(()->
     begin
       var t := System.IO.Path.GetFileName(dir);

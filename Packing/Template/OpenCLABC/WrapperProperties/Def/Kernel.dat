@@ -1,0 +1,12 @@
+cl_kernel
+KernelInfo
+clGetKernelInfo
+
+
+
+# FUNCTION_NAME:	String
+# NUM_ARGS:			UInt32
+# REFERENCE_COUNT:	UInt32
+# ATTRIBUTES:		String
+
+

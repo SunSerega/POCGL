@@ -5,8 +5,8 @@
 OpenCLABC
 
 #ExpOtp
-OpenCLABCBase.ProgramCode
-OpenCLABCBase.ProgramProperties
+OpenCLABC.ProgramCode
+OpenCLABC.ProgramCodeProperties
 TEST
 ==============================
 
@@ -19,8 +19,8 @@ __kernel void TEST() { }
 ==============================
 True 
 True 
-OpenCLABCBase.ProgramCode
-OpenCLABCBase.ProgramProperties
+OpenCLABC.ProgramCode
+OpenCLABC.ProgramCodeProperties
 TEST
 ==============================
 

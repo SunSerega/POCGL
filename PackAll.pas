@@ -54,19 +54,6 @@ var AllStages := HSet(
 
 {$endregion SpecialNames}
 
-{$region Utils}
-
-function IncludeBaseModules(self: sequence of string); extensionmethod :=
-self.SelectMany(mn->
-  mn.EndsWith('ABC') ? Seq(
-    mn, $'{mn}Base'
-  ) : Seq(
-    mn
-  )
-);
-
-{$endregion Utils}
-
 {$region PackStage} type
   
   {$region Base}
@@ -229,14 +216,11 @@ self.SelectMany(mn->
   HLModuleStage = sealed class(ModulePackingStage)
     
     function MakeModuleTask: AsyncTask; override :=
-      ProcTask(()->Directory.CreateDirectory('Modules.Packed\Internal'))
+      ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
       +
-      
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]',     $'nick={id}', $'"inp_fname=Modules\{id}.pas"',              $'"otp_fname=Modules.Packed\{id}.pas"') *
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}Base]', $'nick={id}', $'"inp_fname=Modules\Internal\{id}Base.pas"', $'"otp_fname=Modules.Packed\Internal\{id}Base.pas"')
-      
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]',     $'nick={id}', $'"inp_fname=Modules\{id}.pas"',              $'"otp_fname=Modules.Packed\{id}.pas"')
       +
-      ExecTask('Packing\Doc\PackComments.pas', $'Comments[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"', $'"fname=Modules.Packed\Internal\{id}Base.pas"')
+      ExecTask('Packing\Doc\PackComments.pas', $'Comments[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
     ;
     
   end;
@@ -325,9 +309,9 @@ self.SelectMany(mn->
         TitleTask('Copying modules', '~') +
         ProcTask(()->
         begin
-          var mns := ModuleStages.IncludeBaseModules.ToHashSet;
+          var mns := ModuleStages.ToHashSet;
           var all_modules := mns.Count=0;
-          if all_modules then mns := AllModules.IncludeBaseModules.ToHashSet;
+          if all_modules then mns := AllModules.ToHashSet;
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
@@ -335,10 +319,9 @@ self.SelectMany(mn->
           
           foreach var mn in mns do
           begin
-            var mn_path := mn.EndsWith('ABCBase') ? $'Internal\{mn}' : mn;
-            var org_fname :=      $'Modules.Packed\{mn_path}.pas';
-            var release_fname :=  $'Release\bin\Lib\{mn_path}.pas';
-            var pf_fname :=       $'{pf_dir}\LibSource\{mn_path}.pas';
+            var org_fname :=      $'Modules.Packed\{mn}.pas';
+            var release_fname :=  $'Release\bin\Lib\{mn}.pas';
+            var pf_fname :=       $'{pf_dir}\LibSource\{mn}.pas';
             Otp($'Packing {org_fname}');
             
             System.IO.Directory.CreateDirectory(Path.GetDirectoryName(release_fname));
@@ -358,9 +341,8 @@ self.SelectMany(mn->
           if copy_to_pf and (PackingStage.CurrentStages.Contains(CompileStr) or all_modules) then
             foreach var mn in mns do
             begin
-              var mn_path := mn.EndsWith('ABCBase') ? $'Internal\{mn}' : mn;
-              var org_fname := $'Modules.Packed\{mn_path}.pcu';
-              var pf_fname := $'{pf_dir}\Lib\{mn_path}.pcu';
+              var org_fname := $'Modules.Packed\{mn}.pcu';
+              var pf_fname := $'{pf_dir}\Lib\{mn}.pcu';
               
               if FileExists(org_fname) then
               try
@@ -490,7 +472,7 @@ begin
     {$region MiscClear}
     
     var c := 0;
-    var skip_pcu := AllModules.Except(PackingStage.CurrentStages).IncludeBaseModules.ToHashSet;
+    var skip_pcu := AllModules.Except(PackingStage.CurrentStages).ToHashSet;
     
     foreach var fname in |{'*.pcu',}'*.pdb'|.SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
     begin

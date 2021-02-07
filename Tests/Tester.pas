@@ -266,7 +266,7 @@ type
               
               DialogResult.Yes:
               begin
-                t.all_settings.Remove('#ExpErr');
+                if not t.all_settings.Remove('#ExpErr') then raise new System.InvalidOperationException;
                 t.resave_settings := true;
                 Otp($'%WARNING: Settings updated for "{fwoe}.td"');
               end;
@@ -484,8 +484,8 @@ type
       end;
       
       var (res, err) := ExecuteTestExe(GetFullPath(fwoe+'.exe'), $'Test[{GetRelativePath(fwoe)}]');
-      res := res?.Remove(#13)?.Trim(#10);
-      err := err?.Remove(#13)?.Trim(#10);
+      res := res?.Remove(#13).Trim(#10);
+      err := err?.Remove(#13).Trim(#10);
       
       if err<>nil then
       begin
@@ -523,7 +523,7 @@ type
         
         if expected_otp<>nil then
         begin
-          all_settings.Remove('#ExpOtp');
+          if not all_settings.Remove('#ExpOtp') then raise new System.InvalidOperationException;
           resave_settings := true;
         end;
         
@@ -535,7 +535,7 @@ type
             
             DialogResult.Yes:
             begin
-              all_settings.Remove('#ExpErr');
+              if not all_settings.Remove('#ExpExecErr') then raise new System.InvalidOperationException;
               resave_settings := true;
               Otp($'%WARNING: Settings updated for "{fwoe}.td"');
             end;

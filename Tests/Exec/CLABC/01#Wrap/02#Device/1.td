@@ -5,11 +5,11 @@
 OpenCLABC
 
 #ExpOtp
-OpenCLABCBase.Device
-OpenCLABCBase.DeviceProperties
+OpenCLABC.Device
+OpenCLABC.DeviceProperties
 True 
 True 
-OpenCLABCBase.Device
-OpenCLABCBase.DeviceProperties
+OpenCLABC.Device
+OpenCLABC.DeviceProperties
 
 

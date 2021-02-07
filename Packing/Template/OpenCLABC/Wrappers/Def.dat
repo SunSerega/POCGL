@@ -1,0 +1,11 @@
+
+
+
+Platform	: cl_platform_id
+Device		: cl_device_id
+Context		: cl_context
+Buffer		: cl_mem
+Kernel		: cl_kernel
+ProgramCode	: cl_program
+
+

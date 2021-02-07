@@ -1,0 +1,125 @@
+﻿  
+  
+  
+  Platform = partial class
+    
+    public property Native: cl_platform_id read ntv;
+    
+    private prop: PlatformProperties;
+    private function GetProperties: PlatformProperties;
+    begin
+      if prop=nil then prop := new PlatformProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: PlatformProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: Platform): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: Platform): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is Platform(var wr)) and (self = wr);
+    
+  end;
+  
+  Device = partial class
+    
+    public property Native: cl_device_id read ntv;
+    
+    private prop: DeviceProperties;
+    private function GetProperties: DeviceProperties;
+    begin
+      if prop=nil then prop := new DeviceProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: DeviceProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: Device): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: Device): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is Device(var wr)) and (self = wr);
+    
+  end;
+  
+  Context = partial class
+    
+    public property Native: cl_context read ntv;
+    
+    private prop: ContextProperties;
+    private function GetProperties: ContextProperties;
+    begin
+      if prop=nil then prop := new ContextProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: ContextProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: Context): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: Context): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is Context(var wr)) and (self = wr);
+    
+  end;
+  
+  Buffer = partial class
+    
+    public property Native: cl_mem read ntv;
+    
+    private prop: BufferProperties;
+    private function GetProperties: BufferProperties;
+    begin
+      if prop=nil then prop := new BufferProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: BufferProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: Buffer): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: Buffer): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is Buffer(var wr)) and (self = wr);
+    
+  end;
+  
+  Kernel = partial class
+    
+    public property Native: cl_kernel read ntv;
+    
+    private prop: KernelProperties;
+    private function GetProperties: KernelProperties;
+    begin
+      if prop=nil then prop := new KernelProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: KernelProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: Kernel): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: Kernel): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is Kernel(var wr)) and (self = wr);
+    
+  end;
+  
+  ProgramCode = partial class
+    
+    public property Native: cl_program read ntv;
+    
+    private prop: ProgramCodeProperties;
+    private function GetProperties: ProgramCodeProperties;
+    begin
+      if prop=nil then prop := new ProgramCodeProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: ProgramCodeProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: ProgramCode): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: ProgramCode): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is ProgramCode(var wr)) and (self = wr);
+    
+  end;
+  
+  
+  

@@ -1,0 +1,25 @@
+﻿
+
+
+constructor KernelCommandQueue.Create(o: Kernel) := inherited;
+constructor KernelCommandQueue.Create(q: CommandQueue<Kernel>) := inherited;
+constructor KernelCommandQueue.Create := inherited;
+
+{$region Special .Add's}
+
+function KernelCommandQueue.AddQueue(q: CommandQueueBase) := AddCommand(self, new QueueCommand<Kernel>(q));
+
+function KernelCommandQueue.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
+function KernelCommandQueue.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
+
+function KernelCommandQueue.AddWaitAll(params qs: array of CommandQueueBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(qs.ToArray)));
+function KernelCommandQueue.AddWaitAll(qs: sequence of CommandQueueBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(qs.ToArray)));
+
+function KernelCommandQueue.AddWaitAny(params qs: array of CommandQueueBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(qs.ToArray)));
+function KernelCommandQueue.AddWaitAny(qs: sequence of CommandQueueBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(qs.ToArray)));
+
+function KernelCommandQueue.AddWait(q: CommandQueueBase) := AddWaitAll(q);
+
+{$endregion Special .Add's}
+
+

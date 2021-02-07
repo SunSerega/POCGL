@@ -12,10 +12,12 @@ type
     
     procedure Write(l: string); abstract;
     static procedure operator+=(wr: Writer; l: string) := wr.Write(l);
+    static function operator*(wr1, wr2: Writer): Writer;
     
     procedure Close; abstract;
     
   end;
+  
   FileWriter = sealed class(Writer)
     sw: StreamWriter;
     
@@ -61,6 +63,8 @@ type
     procedure Close; override := exit;
   end;
   
+static function Writer.operator*(wr1, wr2: Writer) := new WriterArr(wr1, wr2);
+
 {$endregion Writer's}
 
 end.

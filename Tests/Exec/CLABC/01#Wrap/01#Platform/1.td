@@ -5,11 +5,11 @@
 OpenCLABC
 
 #ExpOtp
-OpenCLABCBase.Platform
-OpenCLABCBase.PlatformProperties
+OpenCLABC.Platform
+OpenCLABC.PlatformProperties
 True 
 True 
-OpenCLABCBase.Platform
-OpenCLABCBase.PlatformProperties
+OpenCLABC.Platform
+OpenCLABC.PlatformProperties
 
 

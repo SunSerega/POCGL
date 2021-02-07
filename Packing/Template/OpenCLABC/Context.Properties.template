@@ -1,9 +1,0 @@
-﻿    
-    
-    
-    public property ReferenceCount: UInt32                     read GetUInt32              (ContextInfo.CONTEXT_REFERENCE_COUNT);
-    public property NumDevices:     UInt32                     read GetUInt32              (ContextInfo.CONTEXT_NUM_DEVICES);
-    public property Properties:     array of ContextProperties read GetContextPropertiesArr(ContextInfo.CONTEXT_PROPERTIES);
-    
-    
-    

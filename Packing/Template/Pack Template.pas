@@ -106,11 +106,13 @@ type
       if wds.Length=0 then exit;
       if string.IsNullOrWhiteSpace(wds[0]) then exit;
       
-      Result := ProcessCommand(
-        GetFullPath(wds[0]+'.template', curr_path),
-        (wds.Length<2) or string.IsNullOrWhiteSpace(wds[1]) ? nil : GetFullPath(wds[1], curr_path),
-        wds?[2:]
-      );
+      Result := if wds[0].StartsWith('>') then
+        |new StrBlock(wds[0].SubString(1)) as FileBlock| else
+        ProcessCommand(
+          GetFullPath(wds[0]+'.template', curr_path),
+          (wds.Length<2) or string.IsNullOrWhiteSpace(wds[1]) ? nil : GetFullPath(wds[1], curr_path),
+          wds?[2:]
+        );
       
     end;
     

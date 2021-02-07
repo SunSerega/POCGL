@@ -1,0 +1,26 @@
+﻿    
+    
+    
+    public constructor(o: Buffer);
+    public constructor(q: CommandQueue<Buffer>);
+    private constructor;
+    
+    {$region Special .Add's}
+    
+    public function AddQueue(q: CommandQueueBase): BufferCommandQueue;
+    
+    public function AddProc(p: Buffer->()): BufferCommandQueue;
+    public function AddProc(p: (Buffer, Context)->()): BufferCommandQueue;
+    
+    public function AddWaitAll(params qs: array of CommandQueueBase): BufferCommandQueue;
+    public function AddWaitAll(qs: sequence of CommandQueueBase): BufferCommandQueue;
+    
+    public function AddWaitAny(params qs: array of CommandQueueBase): BufferCommandQueue;
+    public function AddWaitAny(qs: sequence of CommandQueueBase): BufferCommandQueue;
+    
+    public function AddWait(q: CommandQueueBase): BufferCommandQueue;
+    
+    {$endregion Special .Add's}
+    
+    
+    

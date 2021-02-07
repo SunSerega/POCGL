@@ -5,14 +5,14 @@
 OpenCLABC
 
 #ExpOtp
-OpenCLABCBase.Kernel
-OpenCLABCBase.KernelProperties
+OpenCLABC.Kernel
+OpenCLABC.KernelProperties
 TEST
 TEST
 True 
 True 
-OpenCLABCBase.Kernel
-OpenCLABCBase.KernelProperties
+OpenCLABC.Kernel
+OpenCLABC.KernelProperties
 TEST
 TEST
 

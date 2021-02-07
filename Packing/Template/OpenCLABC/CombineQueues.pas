@@ -1,8 +1,7 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-
-uses AOtp         in '..\..\..\Utils\AOtp';
-uses ATask        in '..\..\..\Utils\ATask';
 uses Fixers       in '..\..\..\Utils\Fixers';
+
+uses ATask        in '..\..\..\Utils\ATask';
 
 const exec_orders: array of string = ('Sync', 'Async');
 
@@ -15,11 +14,12 @@ const MaxQueueStaticArraySize = 7;
 
 begin
   try
+    System.IO.Directory.CreateDirectory(GetFullPathRTA('Global\CombineQueues'));
     
     (
       ProcTask(()->
       begin
-        var res := new System.IO.StreamWriter(GetFullPathRTA('CombineQueues.Interface.template'), false, enc);
+        var res := new System.IO.StreamWriter(GetFullPathRTA('Global\CombineQueues\Interface.template'), false, enc);
         loop 3 do res.WriteLine;
         
         foreach var exec_order in exec_orders do
@@ -86,7 +86,7 @@ begin
     *
       ProcTask(()->
       begin
-        var res := new System.IO.StreamWriter(GetFullPathRTA('CombineQueues.Implementation.template'), false, enc);
+        var res := new System.IO.StreamWriter(GetFullPathRTA('Global\CombineQueues\Implementation.template'), false, enc);
         loop 3 do res.WriteLine;
         
         foreach var exec_order in exec_orders do

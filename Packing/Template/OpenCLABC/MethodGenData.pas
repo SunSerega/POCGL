@@ -309,18 +309,21 @@ type
     begin
       self.t := t;
       
-      self.res_IIn := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Implicit.Interface.template'));
-      self.res_IIm := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Implicit.Implementation.template'));
-      self.res_EIn := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Explicit.Interface.template'));
-      self.res_EIm := new FileWriter(GetFullPathRTA($'{MakeOtpFileName(t)}.Explicit.Implementation.template'));
+      var dir := GetFullPathRTA($'ContainerMethods\{MakeOtpFileName(t)}');
+      System.IO.Directory.CreateDirectory(dir);
       
-      self.res_In := new WriterArr(res_IIn, res_EIn);
-      self.res_Im := new WriterArr(res_IIm, res_EIm);
+      self.res_IIn := new FileWriter(GetFullPath('Implicit.Interface.template',       dir));
+      self.res_IIm := new FileWriter(GetFullPath('Implicit.Implementation.template',  dir));
+      self.res_EIn := new FileWriter(GetFullPath('Explicit.Interface.template',       dir));
+      self.res_EIm := new FileWriter(GetFullPath('Explicit.Implementation.template',  dir));
       
-      self.res_I := new WriterArr(res_IIn, res_IIm);
-      self.res_E := new WriterArr(res_EIn, res_EIm);
+      self.res_In := res_IIn * res_EIn;
+      self.res_Im := res_IIm * res_EIm;
       
-      self.res := new WriterArr(res_I, res_E);
+      self.res_I := res_IIn * res_IIm;
+      self.res_E := res_EIn * res_EIm;
+      
+      self.res := res_I * res_E;
       
     end;
     private constructor := raise new System.InvalidOperationException;

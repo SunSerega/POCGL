@@ -67,7 +67,7 @@ type
   
   GetMethodGenerator = sealed class(MethodGenerator<GetMethodSettings>)
     
-    protected function MakeOtpFileName(t: string): string; override := $'{t}GetMethods';
+    protected function MakeOtpFileName(t: string): string; override := $'{t}.Get';
     
     protected procedure WriteInvokeHeader(settings: GetMethodSettings); override;
     begin
@@ -125,7 +125,7 @@ type
 begin
   try
     
-    EnumerateFiles(GetFullPathRTA('GetMethodDef'), '*.dat')
+    EnumerateFiles(GetFullPathRTA('ContainerMethods\GetDef'), '*.dat')
     .Select(fname->ProcTask(()->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);

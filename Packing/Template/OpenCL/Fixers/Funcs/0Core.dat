@@ -222,7 +222,7 @@ var Int32 = var ErrorCode
 
 # clGetProgramInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var cl_device_id +IntPtr +var UIntPtr +var Byte +var Bool +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var cl_device_id +var IntPtr +var UIntPtr +var Byte +var Bool +pointer	| -array of UIntPtr	|
 
 # clGetProgramBuildInfo
 !possible_par_types

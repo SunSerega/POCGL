@@ -1,0 +1,25 @@
+﻿
+
+
+constructor BufferCommandQueue.Create(o: Buffer) := inherited;
+constructor BufferCommandQueue.Create(q: CommandQueue<Buffer>) := inherited Create(q.ThenConvert(InitBuffer));
+constructor BufferCommandQueue.Create := inherited;
+
+{$region Special .Add's}
+
+function BufferCommandQueue.AddQueue(q: CommandQueueBase) := AddCommand(self, new QueueCommand<Buffer>(q));
+
+function BufferCommandQueue.AddProc(p: Buffer->()) := AddCommand(self, new ProcCommand<Buffer>((o,c)->p(o)));
+function BufferCommandQueue.AddProc(p: (Buffer, Context)->()) := AddCommand(self, new ProcCommand<Buffer>(p));
+
+function BufferCommandQueue.AddWaitAll(params qs: array of CommandQueueBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAll(qs.ToArray)));
+function BufferCommandQueue.AddWaitAll(qs: sequence of CommandQueueBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAll(qs.ToArray)));
+
+function BufferCommandQueue.AddWaitAny(params qs: array of CommandQueueBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAny(qs.ToArray)));
+function BufferCommandQueue.AddWaitAny(qs: sequence of CommandQueueBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAny(qs.ToArray)));
+
+function BufferCommandQueue.AddWait(q: CommandQueueBase) := AddWaitAll(q);
+
+{$endregion Special .Add's}
+
+

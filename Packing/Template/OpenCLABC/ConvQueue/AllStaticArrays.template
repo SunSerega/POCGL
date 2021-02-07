@@ -1,0 +1,41 @@
+﻿  
+  
+  
+  {$region [2]}
+  
+  {%StaticArray[2]%}
+  
+  {$endregion [2]}
+  
+  {$region [3]}
+  
+  {%StaticArray[3]%}
+  
+  {$endregion [3]}
+  
+  {$region [4]}
+  
+  {%StaticArray[4]%}
+  
+  {$endregion [4]}
+  
+  {$region [5]}
+  
+  {%StaticArray[5]%}
+  
+  {$endregion [5]}
+  
+  {$region [6]}
+  
+  {%StaticArray[6]%}
+  
+  {$endregion [6]}
+  
+  {$region [7]}
+  
+  {%StaticArray[7]%}
+  
+  {$endregion [7]}
+  
+  
+  

@@ -7,7 +7,6 @@ unit OpenGLABC;
 interface
 
 uses OpenGL;
-uses OpenGLABCBase in 'Internal\OpenGLABCBase';
 
 implementation
 

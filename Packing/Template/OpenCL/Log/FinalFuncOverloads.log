@@ -764,8 +764,8 @@
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_context	| IntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_device_id	| var UIntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var cl_device_id	| IntPtr	|
- ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
- ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var IntPtr	| IntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var UIntPtr	| var UIntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var UIntPtr	| IntPtr	|
  ErrorCode	| cl_program	| ProgramInfo	| UIntPtr	| var Byte	| var UIntPtr	|

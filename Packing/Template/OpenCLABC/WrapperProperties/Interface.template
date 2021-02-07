@@ -1,0 +1,315 @@
+﻿  
+  
+  
+  {$region Buffer}
+  
+  BufferProperties = sealed partial class
+    
+    public constructor(ntv: cl_mem);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetType: MemObjectType;
+    private function GetFlags: MemFlags;
+    private function GetSize: UIntPtr;
+    private function GetHostPtr: IntPtr;
+    private function GetMapCount: UInt32;
+    private function GetReferenceCount: UInt32;
+    private function GetUsesSvmPointer: Bool;
+    private function GetOffset: UIntPtr;
+    
+    public property &Type:          MemObjectType read GetType;
+    public property Flags:          MemFlags      read GetFlags;
+    public property Size:           UIntPtr       read GetSize;
+    public property HostPtr:        IntPtr        read GetHostPtr;
+    public property MapCount:       UInt32        read GetMapCount;
+    public property ReferenceCount: UInt32        read GetReferenceCount;
+    public property UsesSvmPointer: Bool          read GetUsesSvmPointer;
+    public property Offset:         UIntPtr       read GetOffset;
+    
+  end;
+  
+  {$endregion Buffer}
+  
+  {$region Context}
+  
+  ContextProperties = sealed partial class
+    
+    public constructor(ntv: cl_context);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetReferenceCount: UInt32;
+    private function GetNumDevices: UInt32;
+    private function GetProperties: array of ContextProperties;
+    
+    public property ReferenceCount: UInt32                     read GetReferenceCount;
+    public property NumDevices:     UInt32                     read GetNumDevices;
+    public property Properties:     array of ContextProperties read GetProperties;
+    
+  end;
+  
+  {$endregion Context}
+  
+  {$region Device}
+  
+  DeviceProperties = sealed partial class
+    
+    public constructor(ntv: cl_device_id);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetType: DeviceType;
+    private function GetVendorId: UInt32;
+    private function GetMaxComputeUnits: UInt32;
+    private function GetMaxWorkItemDimensions: UInt32;
+    private function GetMaxWorkItemSizes: array of UIntPtr;
+    private function GetMaxWorkGroupSize: UIntPtr;
+    private function GetPreferredVectorWidthChar: UInt32;
+    private function GetPreferredVectorWidthShort: UInt32;
+    private function GetPreferredVectorWidthInt: UInt32;
+    private function GetPreferredVectorWidthLong: UInt32;
+    private function GetPreferredVectorWidthFloat: UInt32;
+    private function GetPreferredVectorWidthDouble: UInt32;
+    private function GetPreferredVectorWidthHalf: UInt32;
+    private function GetNativeVectorWidthChar: UInt32;
+    private function GetNativeVectorWidthShort: UInt32;
+    private function GetNativeVectorWidthInt: UInt32;
+    private function GetNativeVectorWidthLong: UInt32;
+    private function GetNativeVectorWidthFloat: UInt32;
+    private function GetNativeVectorWidthDouble: UInt32;
+    private function GetNativeVectorWidthHalf: UInt32;
+    private function GetMaxClockFrequency: UInt32;
+    private function GetAddressBits: UInt32;
+    private function GetMaxMemAllocSize: UInt64;
+    private function GetImageSupport: Bool;
+    private function GetMaxReadImageArgs: UInt32;
+    private function GetMaxWriteImageArgs: UInt32;
+    private function GetMaxReadWriteImageArgs: UInt32;
+    private function GetIlVersion: String;
+    private function GetImage2dMaxWidth: UIntPtr;
+    private function GetImage2dMaxHeight: UIntPtr;
+    private function GetImage3dMaxWidth: UIntPtr;
+    private function GetImage3dMaxHeight: UIntPtr;
+    private function GetImage3dMaxDepth: UIntPtr;
+    private function GetImageMaxBufferSize: UIntPtr;
+    private function GetImageMaxArraySize: UIntPtr;
+    private function GetMaxSamplers: UInt32;
+    private function GetImagePitchAlignment: UInt32;
+    private function GetImageBaseAddressAlignment: UInt32;
+    private function GetMaxPipeArgs: UInt32;
+    private function GetPipeMaxActiveReservations: UInt32;
+    private function GetPipeMaxPacketSize: UInt32;
+    private function GetMaxParameterSize: UIntPtr;
+    private function GetMemBaseAddrAlign: UInt32;
+    private function GetSingleFpConfig: DeviceFPConfig;
+    private function GetDoubleFpConfig: DeviceFPConfig;
+    private function GetGlobalMemCacheType: DeviceMemCacheType;
+    private function GetGlobalMemCachelineSize: UInt32;
+    private function GetGlobalMemCacheSize: UInt64;
+    private function GetGlobalMemSize: UInt64;
+    private function GetMaxConstantBufferSize: UInt64;
+    private function GetMaxConstantArgs: UInt32;
+    private function GetMaxGlobalVariableSize: UIntPtr;
+    private function GetGlobalVariablePreferredTotalSize: UIntPtr;
+    private function GetLocalMemType: DeviceLocalMemType;
+    private function GetLocalMemSize: UInt64;
+    private function GetErrorCorrectionSupport: Bool;
+    private function GetProfilingTimerResolution: UIntPtr;
+    private function GetEndianLittle: Bool;
+    private function GetAvailable: Bool;
+    private function GetCompilerAvailable: Bool;
+    private function GetLinkerAvailable: Bool;
+    private function GetExecutionCapabilities: DeviceExecCapabilities;
+    private function GetQueueOnHostProperties: CommandQueueProperties;
+    private function GetQueueOnDeviceProperties: CommandQueueProperties;
+    private function GetQueueOnDevicePreferredSize: UInt32;
+    private function GetQueueOnDeviceMaxSize: UInt32;
+    private function GetMaxOnDeviceQueues: UInt32;
+    private function GetMaxOnDeviceEvents: UInt32;
+    private function GetBuiltInKernels: String;
+    private function GetName: String;
+    private function GetVendor: String;
+    private function GetProfile: String;
+    private function GetVersion: String;
+    private function GetOpenclCVersion: String;
+    private function GetExtensions: String;
+    private function GetPrintfBufferSize: UIntPtr;
+    private function GetPreferredInteropUserSync: Bool;
+    private function GetPartitionMaxSubDevices: UInt32;
+    private function GetPartitionProperties: array of DevicePartitionProperty;
+    private function GetPartitionAffinityDomain: DeviceAffinityDomain;
+    private function GetPartitionType: array of DevicePartitionProperty;
+    private function GetReferenceCount: UInt32;
+    private function GetSvmCapabilities: DeviceSVMCapabilities;
+    private function GetPreferredPlatformAtomicAlignment: UInt32;
+    private function GetPreferredGlobalAtomicAlignment: UInt32;
+    private function GetPreferredLocalAtomicAlignment: UInt32;
+    private function GetMaxNumSubGroups: UInt32;
+    private function GetSubGroupIndependentForwardProgress: Bool;
+    
+    public property &Type:                              DeviceType                       read GetType;
+    public property VendorId:                           UInt32                           read GetVendorId;
+    public property MaxComputeUnits:                    UInt32                           read GetMaxComputeUnits;
+    public property MaxWorkItemDimensions:              UInt32                           read GetMaxWorkItemDimensions;
+    public property MaxWorkItemSizes:                   array of UIntPtr                 read GetMaxWorkItemSizes;
+    public property MaxWorkGroupSize:                   UIntPtr                          read GetMaxWorkGroupSize;
+    public property PreferredVectorWidthChar:           UInt32                           read GetPreferredVectorWidthChar;
+    public property PreferredVectorWidthShort:          UInt32                           read GetPreferredVectorWidthShort;
+    public property PreferredVectorWidthInt:            UInt32                           read GetPreferredVectorWidthInt;
+    public property PreferredVectorWidthLong:           UInt32                           read GetPreferredVectorWidthLong;
+    public property PreferredVectorWidthFloat:          UInt32                           read GetPreferredVectorWidthFloat;
+    public property PreferredVectorWidthDouble:         UInt32                           read GetPreferredVectorWidthDouble;
+    public property PreferredVectorWidthHalf:           UInt32                           read GetPreferredVectorWidthHalf;
+    public property NativeVectorWidthChar:              UInt32                           read GetNativeVectorWidthChar;
+    public property NativeVectorWidthShort:             UInt32                           read GetNativeVectorWidthShort;
+    public property NativeVectorWidthInt:               UInt32                           read GetNativeVectorWidthInt;
+    public property NativeVectorWidthLong:              UInt32                           read GetNativeVectorWidthLong;
+    public property NativeVectorWidthFloat:             UInt32                           read GetNativeVectorWidthFloat;
+    public property NativeVectorWidthDouble:            UInt32                           read GetNativeVectorWidthDouble;
+    public property NativeVectorWidthHalf:              UInt32                           read GetNativeVectorWidthHalf;
+    public property MaxClockFrequency:                  UInt32                           read GetMaxClockFrequency;
+    public property AddressBits:                        UInt32                           read GetAddressBits;
+    public property MaxMemAllocSize:                    UInt64                           read GetMaxMemAllocSize;
+    public property ImageSupport:                       Bool                             read GetImageSupport;
+    public property MaxReadImageArgs:                   UInt32                           read GetMaxReadImageArgs;
+    public property MaxWriteImageArgs:                  UInt32                           read GetMaxWriteImageArgs;
+    public property MaxReadWriteImageArgs:              UInt32                           read GetMaxReadWriteImageArgs;
+    public property IlVersion:                          String                           read GetIlVersion;
+    public property Image2dMaxWidth:                    UIntPtr                          read GetImage2dMaxWidth;
+    public property Image2dMaxHeight:                   UIntPtr                          read GetImage2dMaxHeight;
+    public property Image3dMaxWidth:                    UIntPtr                          read GetImage3dMaxWidth;
+    public property Image3dMaxHeight:                   UIntPtr                          read GetImage3dMaxHeight;
+    public property Image3dMaxDepth:                    UIntPtr                          read GetImage3dMaxDepth;
+    public property ImageMaxBufferSize:                 UIntPtr                          read GetImageMaxBufferSize;
+    public property ImageMaxArraySize:                  UIntPtr                          read GetImageMaxArraySize;
+    public property MaxSamplers:                        UInt32                           read GetMaxSamplers;
+    public property ImagePitchAlignment:                UInt32                           read GetImagePitchAlignment;
+    public property ImageBaseAddressAlignment:          UInt32                           read GetImageBaseAddressAlignment;
+    public property MaxPipeArgs:                        UInt32                           read GetMaxPipeArgs;
+    public property PipeMaxActiveReservations:          UInt32                           read GetPipeMaxActiveReservations;
+    public property PipeMaxPacketSize:                  UInt32                           read GetPipeMaxPacketSize;
+    public property MaxParameterSize:                   UIntPtr                          read GetMaxParameterSize;
+    public property MemBaseAddrAlign:                   UInt32                           read GetMemBaseAddrAlign;
+    public property SingleFpConfig:                     DeviceFPConfig                   read GetSingleFpConfig;
+    public property DoubleFpConfig:                     DeviceFPConfig                   read GetDoubleFpConfig;
+    public property GlobalMemCacheType:                 DeviceMemCacheType               read GetGlobalMemCacheType;
+    public property GlobalMemCachelineSize:             UInt32                           read GetGlobalMemCachelineSize;
+    public property GlobalMemCacheSize:                 UInt64                           read GetGlobalMemCacheSize;
+    public property GlobalMemSize:                      UInt64                           read GetGlobalMemSize;
+    public property MaxConstantBufferSize:              UInt64                           read GetMaxConstantBufferSize;
+    public property MaxConstantArgs:                    UInt32                           read GetMaxConstantArgs;
+    public property MaxGlobalVariableSize:              UIntPtr                          read GetMaxGlobalVariableSize;
+    public property GlobalVariablePreferredTotalSize:   UIntPtr                          read GetGlobalVariablePreferredTotalSize;
+    public property LocalMemType:                       DeviceLocalMemType               read GetLocalMemType;
+    public property LocalMemSize:                       UInt64                           read GetLocalMemSize;
+    public property ErrorCorrectionSupport:             Bool                             read GetErrorCorrectionSupport;
+    public property ProfilingTimerResolution:           UIntPtr                          read GetProfilingTimerResolution;
+    public property EndianLittle:                       Bool                             read GetEndianLittle;
+    public property Available:                          Bool                             read GetAvailable;
+    public property CompilerAvailable:                  Bool                             read GetCompilerAvailable;
+    public property LinkerAvailable:                    Bool                             read GetLinkerAvailable;
+    public property ExecutionCapabilities:              DeviceExecCapabilities           read GetExecutionCapabilities;
+    public property QueueOnHostProperties:              CommandQueueProperties           read GetQueueOnHostProperties;
+    public property QueueOnDeviceProperties:            CommandQueueProperties           read GetQueueOnDeviceProperties;
+    public property QueueOnDevicePreferredSize:         UInt32                           read GetQueueOnDevicePreferredSize;
+    public property QueueOnDeviceMaxSize:               UInt32                           read GetQueueOnDeviceMaxSize;
+    public property MaxOnDeviceQueues:                  UInt32                           read GetMaxOnDeviceQueues;
+    public property MaxOnDeviceEvents:                  UInt32                           read GetMaxOnDeviceEvents;
+    public property BuiltInKernels:                     String                           read GetBuiltInKernels;
+    public property Name:                               String                           read GetName;
+    public property Vendor:                             String                           read GetVendor;
+    public property Profile:                            String                           read GetProfile;
+    public property Version:                            String                           read GetVersion;
+    public property OpenclCVersion:                     String                           read GetOpenclCVersion;
+    public property Extensions:                         String                           read GetExtensions;
+    public property PrintfBufferSize:                   UIntPtr                          read GetPrintfBufferSize;
+    public property PreferredInteropUserSync:           Bool                             read GetPreferredInteropUserSync;
+    public property PartitionMaxSubDevices:             UInt32                           read GetPartitionMaxSubDevices;
+    public property PartitionProperties:                array of DevicePartitionProperty read GetPartitionProperties;
+    public property PartitionAffinityDomain:            DeviceAffinityDomain             read GetPartitionAffinityDomain;
+    public property PartitionType:                      array of DevicePartitionProperty read GetPartitionType;
+    public property ReferenceCount:                     UInt32                           read GetReferenceCount;
+    public property SvmCapabilities:                    DeviceSVMCapabilities            read GetSvmCapabilities;
+    public property PreferredPlatformAtomicAlignment:   UInt32                           read GetPreferredPlatformAtomicAlignment;
+    public property PreferredGlobalAtomicAlignment:     UInt32                           read GetPreferredGlobalAtomicAlignment;
+    public property PreferredLocalAtomicAlignment:      UInt32                           read GetPreferredLocalAtomicAlignment;
+    public property MaxNumSubGroups:                    UInt32                           read GetMaxNumSubGroups;
+    public property SubGroupIndependentForwardProgress: Bool                             read GetSubGroupIndependentForwardProgress;
+    
+  end;
+  
+  {$endregion Device}
+  
+  {$region Kernel}
+  
+  KernelProperties = sealed partial class
+    
+    public constructor(ntv: cl_kernel);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetFunctionName: String;
+    private function GetNumArgs: UInt32;
+    private function GetReferenceCount: UInt32;
+    private function GetAttributes: String;
+    
+    public property FunctionName:   String read GetFunctionName;
+    public property NumArgs:        UInt32 read GetNumArgs;
+    public property ReferenceCount: UInt32 read GetReferenceCount;
+    public property Attributes:     String read GetAttributes;
+    
+  end;
+  
+  {$endregion Kernel}
+  
+  {$region Platform}
+  
+  PlatformProperties = sealed partial class
+    
+    public constructor(ntv: cl_platform_id);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetProfile: String;
+    private function GetVersion: String;
+    private function GetName: String;
+    private function GetVendor: String;
+    private function GetExtensions: String;
+    private function GetHostTimerResolution: UInt64;
+    
+    public property Profile:             String read GetProfile;
+    public property Version:             String read GetVersion;
+    public property Name:                String read GetName;
+    public property Vendor:              String read GetVendor;
+    public property Extensions:          String read GetExtensions;
+    public property HostTimerResolution: UInt64 read GetHostTimerResolution;
+    
+  end;
+  
+  {$endregion Platform}
+  
+  {$region ProgramCode}
+  
+  ProgramCodeProperties = sealed partial class
+    
+    public constructor(ntv: cl_program);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetReferenceCount: UInt32;
+    private function GetSource: String;
+    private function GetIl: array of Byte;
+    private function GetNumKernels: UIntPtr;
+    private function GetKernelNames: String;
+    private function GetScopeGlobalCtorsPresent: Bool;
+    private function GetScopeGlobalDtorsPresent: Bool;
+    
+    public property ReferenceCount:          UInt32        read GetReferenceCount;
+    public property Source:                  String        read GetSource;
+    public property Il:                      array of Byte read GetIl;
+    public property NumKernels:              UIntPtr       read GetNumKernels;
+    public property KernelNames:             String        read GetKernelNames;
+    public property ScopeGlobalCtorsPresent: Bool          read GetScopeGlobalCtorsPresent;
+    public property ScopeGlobalDtorsPresent: Bool          read GetScopeGlobalDtorsPresent;
+    
+  end;
+  
+  {$endregion ProgramCode}
+  
+  
+  

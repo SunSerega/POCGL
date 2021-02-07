@@ -6,8 +6,8 @@ OpenCLABC
 
 #ExpOtp
 1
-OpenCLABCBase.BufferProperties
+OpenCLABC.BufferProperties
 1
-OpenCLABCBase.BufferProperties
+OpenCLABC.BufferProperties
 
 

@@ -7140,13 +7140,13 @@ type
     external 'opencl.dll' name 'clGetProgramInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramInfo_ovr_5(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetProgramInfo_ovr_6(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_ovr_6(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramInfo_ovr_6(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    private static function z_GetProgramInfo_ovr_7(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_ovr_7(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramInfo_ovr_7(&program, param_name, param_value_size, param_value, param_value_size_ret);
     private static function z_GetProgramInfo_ovr_8(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramInfo';
