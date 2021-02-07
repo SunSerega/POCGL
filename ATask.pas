@@ -218,4 +218,7 @@ begin
   
 end;
 
+function TaskForEach<T>(self: sequence of T; p: T->()); extensionmethod :=
+self.Select(o->ProcTask(()->p(o))).CombineAsyncTask;
+
 end.

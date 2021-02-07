@@ -6,10 +6,15 @@ var assembly_dir: string;
 
 function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
-  if System.IO.Path.IsPathRooted(fname) then
-  begin
-    Result := fname;
-    exit;
+  try
+    if System.IO.Path.IsPathRooted(fname) then
+    begin
+      Result := fname;
+      exit;
+    end;
+  except
+    on e: System.ArgumentException do
+      raise new System.ArgumentException($'Строка "{fname}" содержала недопустимые символы', 'fname');
   end;
   
   var path := GetFullPath(base_folder);
