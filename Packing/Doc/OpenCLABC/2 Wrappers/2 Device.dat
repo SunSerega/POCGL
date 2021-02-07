@@ -24,6 +24,9 @@
 
 
 
+# Device.Can[%SplitEqually,SplitByCounts,SplitByAffinityDomain%]
+Указывает, поддерживает ли это устройство вызов метода .{%0%}
+
 # Device.SplitEqually(integer)
 Создаёт максимальное возможное количество виртуальных устройств,
 каждое из которых содержит CUCount ядер данного устройства

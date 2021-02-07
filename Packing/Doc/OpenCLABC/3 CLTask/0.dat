@@ -20,6 +20,14 @@
 Возвращает исключение, полученное при выполнении очереди
 Возвращает nil, если исключений не было
 
+# CLTaskBase.AddErr(Exception)
+Регестрирует ошибку выполнения очереди
+
+# CLTaskBase.AddErr(ErrorCode)
+# CLTaskBase.AddErr(CommandExecutionStatus)
+%CLTaskBase.AddErr(Exception)%
+Возвращает False если значение не было ошибкой. Иначе возвращает True
+
 
 
 # CLTask:AddEvent

@@ -46,3 +46,6 @@
 
 
 
+# Context.MakeNewDefaultContext
+# Context.CheckMainDevice(Device, IList<Device>)
+# Context.GetContextDevices(cl_context)

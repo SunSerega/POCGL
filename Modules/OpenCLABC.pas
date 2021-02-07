@@ -508,7 +508,7 @@ type
     
     {$region constructor's}
     
-    protected constructor(parent: Buffer; reg: cl_buffer_region);
+    private constructor(parent: Buffer; reg: cl_buffer_region);
     begin
       inherited Create(reg.size);
       
@@ -596,7 +596,7 @@ type
       
     end;
     
-    protected constructor(ntv: cl_program; c: Context);
+    private constructor(ntv: cl_program; c: Context);
     begin
       cl.RetainProgram(ntv).RaiseIfError;
       self._c := c;
@@ -736,7 +736,7 @@ type
       Result := cl.CreateKernel(code.ntv, k_name, ec);
       ec.RaiseIfError;
     end;
-    protected constructor(code: ProgramCode; name: string);
+    private constructor(code: ProgramCode; name: string);
     begin
       self.code := code;
       self.k_name := name;
@@ -779,7 +779,7 @@ type
     {$region UseExclusiveNative}
     
     private exclusive_ntv_lock := new object;
-    public procedure UseExclusiveNative(p: cl_kernel->());
+    protected procedure UseExclusiveNative(p: cl_kernel->());
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
       try
@@ -797,7 +797,7 @@ type
         if owned then Monitor.Exit(exclusive_ntv_lock);
       end;
     end;
-    public function UseExclusiveNative<T>(f: cl_kernel->T): T;
+    protected function UseExclusiveNative<T>(f: cl_kernel->T): T;
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
       try
@@ -955,7 +955,7 @@ type
     
     {$region ThenConvert}
     
-    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
+    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
     
     public function ThenConvert<TOtp>(f: object->TOtp           ) := ThenConvertBase((o,c)->f(o));
     public function ThenConvert<TOtp>(f: (object, Context)->TOtp) := ThenConvertBase(f);
@@ -964,8 +964,8 @@ type
     
     {$region +/*}
     
-    protected function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -977,7 +977,7 @@ type
     
     {$region Multiusable}
     
-    protected function MultiusableBase: ()->CommandQueueBase; abstract;
+    private function MultiusableBase: ()->CommandQueueBase; abstract;
     
     public function Multiusable := MultiusableBase;
     
@@ -985,8 +985,8 @@ type
     
     {$region ThenWait}
     
-    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
-    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    private function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    private function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
     
     public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
     public function ThenWaitForAll(qs: sequence of CommandQueueBase    ) := ThenWaitForAllBase(qs);
@@ -1007,7 +1007,7 @@ type
     public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
     
-    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
+    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
     ThenConvert(f as object as Func2<T, Context, TOtp>); //ToDo #2221
     
     {$endregion ThenConvert}
@@ -1017,8 +1017,8 @@ type
     public static function operator+(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
     public static function operator*(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
     
-    protected function AfterQueueSyncBase (q: CommandQueueBase): CommandQueueBase; override := q+self;
-    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
+    private function AfterQueueSyncBase (q: CommandQueueBase): CommandQueueBase; override := q+self;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
     
     public static procedure operator+=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1+q2;
     public static procedure operator*=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1*q2;
@@ -1029,7 +1029,7 @@ type
     
     public function Multiusable: ()->CommandQueue<T>;
     
-    protected function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //ToDo #2221
+    private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //ToDo #2221
     
     {$endregion Multiusable}
     
@@ -1043,8 +1043,8 @@ type
     
     public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
     
-    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
-    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
+    private function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
+    private function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
     
     {$endregion ThenWait}
     
@@ -1103,13 +1103,13 @@ type
     
     {$region CLTask event's}
     
-    protected procedure WhenDoneBase(cb: Action<CLTaskBase>); abstract;
+    private procedure WhenDoneBase(cb: Action<CLTaskBase>); abstract;
     public procedure WhenDone(cb: Action<CLTaskBase>) := WhenDoneBase(cb);
     
-    protected procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); abstract;
+    private procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); abstract;
     public procedure WhenComplete(cb: Action<CLTaskBase, object>) := WhenCompleteBase(cb);
     
-    protected procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); abstract;
+    private procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); abstract;
     public procedure WhenError(cb: Action<CLTaskBase, array of Exception>) := WhenErrorBase(cb);
     
     /// True если очередь уже завершилась
@@ -1143,14 +1143,14 @@ type
     
     protected procedure AddErr(e: Exception);
     
-    /// True если ошибка есть
+    {%!!Stub=} /// True если ошибка есть {%}
     protected function AddErr(ec: ErrorCode): boolean;
     begin
       if not ec.IS_ERROR then exit;
       AddErr(new OpenCLException(ec, $'Внутренняя ошибка OpenCLABC: {ec}{#10}{Environment.StackTrace}'));
       Result := true;
     end;
-    /// True если ошибка есть
+    {%!!Stub=} /// True если ошибка есть {%}
     protected function AddErr(st: CommandExecutionStatus) :=
     (st=AbortStatus) or (st.IS_ERROR and AddErr(ErrorCode(st)));
     
@@ -1165,7 +1165,7 @@ type
       if err<>nil then raise err;
     end;
     
-    protected function WaitResBase: object; abstract;
+    private function WaitResBase: object; abstract;
     public function WaitRes := WaitResBase;
     
     {$endregion Wait}
@@ -1187,22 +1187,22 @@ type
     
     {$region CLTask event's}
     
-    protected EvDone := new List<Action<CLTask<T>>>;
+    private EvDone := new List<Action<CLTask<T>>>;
     public procedure WhenDone(cb: Action<CLTask<T>>); reintroduce :=
     if AddEventHandler(EvDone, cb) then cb(self);
-    protected procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
+    private procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
     WhenDone(cb as object as Action<CLTask<T>>); //ToDo #2221
     
-    protected EvComplete := new List<Action<CLTask<T>, T>>;
+    private EvComplete := new List<Action<CLTask<T>, T>>;
     public procedure WhenComplete(cb: Action<CLTask<T>, T>); reintroduce :=
     if AddEventHandler(EvComplete, cb) then cb(self, q_res);
-    protected procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
+    private procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
     WhenComplete(cb as object as Action<CLTask<T>, T>); //ToDo #2221
     
-    protected EvError := new List<Action<CLTask<T>, array of Exception>>;
+    private EvError := new List<Action<CLTask<T>, array of Exception>>;
     public procedure WhenError(cb: Action<CLTask<T>, array of Exception>); reintroduce :=
     if AddEventHandler(EvError, cb) then cb(self, GetErrArr);
-    protected procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
+    private procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
     WhenError(cb as object as Action<CLTask<T>, array of Exception>); //ToDo #2221
     
     {$endregion CLTask event's}
@@ -1214,7 +1214,7 @@ type
       Wait;
       Result := self.q_res;
     end;
-    protected function WaitResBase: object; override := WaitRes;
+    private function WaitResBase: object; override := WaitRes;
     
     {$endregion Wait}
     

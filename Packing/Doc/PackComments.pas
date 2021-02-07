@@ -102,10 +102,7 @@ begin
     begin
       
       nick := 'OpenCLABC';
-      fls := Arr(
-        'Modules.Packed\OpenCLABC.pas',
-        'Modules.Packed\Internal\OpenCLABCBase.pas'
-      );
+      fls := | 'Modules.Packed\OpenCLABC.pas' |;
       
     end;
     
@@ -154,11 +151,11 @@ begin
           Result := true;
         end) do
         begin
+          if already_commented then continue;
           var key := c.FullName;
           
           if not CommentData.all.ContainsKey(key) then
             skipped.Enq(c) else
-          if not already_commented then
           begin
             var spaces := last_line.TakeWhile(ch->ch=' ').Count;
             foreach var l in CommentData.ApplyToKey(key).Split(#10) do

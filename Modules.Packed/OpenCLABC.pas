@@ -600,6 +600,8 @@ type
     end;
     private constructor := inherited;
     
+    ///Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override :=
     cl.ReleaseDevice(ntv).RaiseIfError;
     
@@ -669,6 +671,7 @@ type
     ///Но это свидетельствует скорее об отсутствии драйверов, чем отстутсвии устройств
     public static property &Default: Context read GetDefault write SetDefault;
     
+    ///
     protected static function MakeNewDefaultContext: Context;
     begin
       Result := nil;
@@ -698,6 +701,7 @@ type
     
     {$region constructor's}
     
+    ///
     protected static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
     if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'main_dvc должен быть в списке устройств контекста');
     
@@ -722,6 +726,7 @@ type
     ///В качестве MainDevice берётся первое устройство из массива
     public constructor(params dvcs: array of Device) := Create(dvcs, dvcs[0]);
     
+    ///
     protected static function GetContextDevices(ntv: cl_context): array of Device;
     begin
       
@@ -773,6 +778,8 @@ type
       cl.ReleaseContext(ntv).RaiseIfError;
       ntv := cl_context.Zero;
     end;
+    ///Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
@@ -1095,7 +1102,7 @@ type
     
     {$region constructor's}
     
-    protected constructor(parent: Buffer; reg: cl_buffer_region);
+    private constructor(parent: Buffer; reg: cl_buffer_region);
     begin
       inherited Create(reg.size);
       
@@ -1205,7 +1212,7 @@ type
       
     end;
     
-    protected constructor(ntv: cl_program; c: Context);
+    private constructor(ntv: cl_program; c: Context);
     begin
       cl.RetainProgram(ntv).RaiseIfError;
       self._c := c;
@@ -1235,6 +1242,8 @@ type
       cl.ReleaseProgram(ntv).RaiseIfError;
       ntv := cl_program.Zero;
     end;
+    ///Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
@@ -1341,6 +1350,7 @@ type
     private ntv: cl_kernel;
     
     private code: ProgramCode;
+    ///Возвращает контейнер кода, содержащий данную подпрограмму
     public property CodeContainer: ProgramCode read code;
     
     private k_name: string;
@@ -1353,13 +1363,15 @@ type
     
     {$region constructor's}
     
+    ///Создаёт независимый клон неуправляемого объекта
+    ///Внимание: Клон НЕ будет удалён автоматически при сборке мусора. Для него надо вручную вызывать cl.ReleaseKernel
     protected function MakeNewNtv: cl_kernel;
     begin
       var ec: ErrorCode;
       Result := cl.CreateKernel(code.ntv, k_name, ec);
       ec.RaiseIfError;
     end;
-    protected constructor(code: ProgramCode; name: string);
+    private constructor(code: ProgramCode; name: string);
     begin
       self.code := code;
       self.k_name := name;
@@ -1400,6 +1412,8 @@ type
       cl.ReleaseKernel(ntv).RaiseIfError;
       ntv := cl_kernel.Zero;
     end;
+    ///Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
@@ -1409,8 +1423,8 @@ type
     private exclusive_ntv_lock := new object;
     ///Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно
     ///Если неуправляемый объект данного kernel-а используется другим потоком - в процедурную переменную передаётся его независимый клон
-    ///Внимание, клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
-    public procedure UseExclusiveNative(p: cl_kernel->());
+    ///Внимание: Клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
+    protected procedure UseExclusiveNative(p: cl_kernel->());
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
       try
@@ -1430,8 +1444,8 @@ type
     end;
     ///Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно
     ///Если неуправляемый объект данного kernel-а используется другим потоком - в процедурную переменную передаётся его независимый клон
-    ///Внимание, клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
-    public function UseExclusiveNative<T>(f: cl_kernel->T): T;
+    ///Внимание: Клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
+    protected function UseExclusiveNative<T>(f: cl_kernel->T): T;
     begin
       var owned := Monitor.TryEnter(exclusive_ntv_lock);
       try
@@ -1516,6 +1530,7 @@ type
     public static function operator=(wr1, wr2: Platform): boolean := wr1.ntv = wr2.ntv;
     public static function operator<>(wr1, wr2: Platform): boolean := wr1.ntv <> wr2.ntv;
     
+    ///--
     public function Equals(obj: object): boolean; override :=
     (obj is Platform(var wr)) and (self = wr);
     
@@ -1539,6 +1554,7 @@ type
     public static function operator=(wr1, wr2: Device): boolean := wr1.ntv = wr2.ntv;
     public static function operator<>(wr1, wr2: Device): boolean := wr1.ntv <> wr2.ntv;
     
+    ///--
     public function Equals(obj: object): boolean; override :=
     (obj is Device(var wr)) and (self = wr);
     
@@ -1562,6 +1578,7 @@ type
     public static function operator=(wr1, wr2: Context): boolean := wr1.ntv = wr2.ntv;
     public static function operator<>(wr1, wr2: Context): boolean := wr1.ntv <> wr2.ntv;
     
+    ///--
     public function Equals(obj: object): boolean; override :=
     (obj is Context(var wr)) and (self = wr);
     
@@ -1585,6 +1602,7 @@ type
     public static function operator=(wr1, wr2: Buffer): boolean := wr1.ntv = wr2.ntv;
     public static function operator<>(wr1, wr2: Buffer): boolean := wr1.ntv <> wr2.ntv;
     
+    ///--
     public function Equals(obj: object): boolean; override :=
     (obj is Buffer(var wr)) and (self = wr);
     
@@ -1608,6 +1626,7 @@ type
     public static function operator=(wr1, wr2: Kernel): boolean := wr1.ntv = wr2.ntv;
     public static function operator<>(wr1, wr2: Kernel): boolean := wr1.ntv <> wr2.ntv;
     
+    ///--
     public function Equals(obj: object): boolean; override :=
     (obj is Kernel(var wr)) and (self = wr);
     
@@ -1631,6 +1650,7 @@ type
     public static function operator=(wr1, wr2: ProgramCode): boolean := wr1.ntv = wr2.ntv;
     public static function operator<>(wr1, wr2: ProgramCode): boolean := wr1.ntv <> wr2.ntv;
     
+    ///--
     public function Equals(obj: object): boolean; override :=
     (obj is ProgramCode(var wr)) and (self = wr);
     
@@ -1654,6 +1674,8 @@ type
       cl.ReleaseMemObject(ntv).RaiseIfError;
       ntv := cl_mem.Zero;
     end;
+    ///Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
     
   end;
@@ -1697,6 +1719,7 @@ type
       Result := res.ConvertAll(sdvc->new SubDevice(sdvc, self));
     end;
     
+    ///Указывает, поддерживает ли это устройство вызов метода .SplitEqually
     public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
     ///Создаёт максимальное возможное количество виртуальных устройств,
     ///каждое из которых содержит CUCount ядер данного устройства
@@ -1710,6 +1733,7 @@ type
       );
     end;
     
+    ///Указывает, поддерживает ли это устройство вызов метода .SplitByCounts
     public property CanSplitByCounts: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
     ///Создаёт массив виртуальных устройств, каждое из которых содержит указанное кол-во ядер
     public function SplitByCounts(params CUCounts: array of integer): array of SubDevice;
@@ -1726,6 +1750,7 @@ type
       Result := Split(props);
     end;
     
+    ///Указывает, поддерживает ли это устройство вызов метода .SplitByAffinityDomain
     public property CanSplitByAffinityDomain: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
     ///Разделяет данное устройство на отдельные группы ядер так,
     ///чтобы у каждой группы ядер был общий кэш указанного уровня
@@ -1759,7 +1784,7 @@ type
     
     {$region ThenConvert}
     
-    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
+    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; abstract;
     
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
@@ -1772,8 +1797,8 @@ type
     
     {$region +/*}
     
-    protected function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -1785,7 +1810,7 @@ type
     
     {$region Multiusable}
     
-    protected function MultiusableBase: ()->CommandQueueBase; abstract;
+    private function MultiusableBase: ()->CommandQueueBase; abstract;
     
     ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
     ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
@@ -1795,8 +1820,8 @@ type
     
     {$region ThenWait}
     
-    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
-    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    private function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
+    private function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
     
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от каждой из заданых очередей
     public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
@@ -1827,7 +1852,7 @@ type
     ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
     
-    protected function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
+    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
     ThenConvert(f as object as Func2<T, Context, TOtp>); //ToDo #2221
     
     {$endregion ThenConvert}
@@ -1837,8 +1862,8 @@ type
     public static function operator+(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
     public static function operator*(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
     
-    protected function AfterQueueSyncBase (q: CommandQueueBase): CommandQueueBase; override := q+self;
-    protected function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
+    private function AfterQueueSyncBase (q: CommandQueueBase): CommandQueueBase; override := q+self;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
     
     public static procedure operator+=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1+q2;
     public static procedure operator*=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1*q2;
@@ -1851,7 +1876,7 @@ type
     ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
     public function Multiusable: ()->CommandQueue<T>;
     
-    protected function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //ToDo #2221
+    private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //ToDo #2221
     
     {$endregion Multiusable}
     
@@ -1870,8 +1895,8 @@ type
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала выполненности от заданой очереди
     public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
     
-    protected function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
-    protected function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
+    private function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
+    private function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
     
     {$endregion ThenWait}
     
@@ -1942,15 +1967,15 @@ type
     
     {$region CLTask event's}
     
-    protected procedure WhenDoneBase(cb: Action<CLTaskBase>); abstract;
+    private procedure WhenDoneBase(cb: Action<CLTaskBase>); abstract;
     ///Добавляет подпрограмму-обработчик, которая будет вызвана когда выполнение очереди завершится (успешно или с ошибой)
     public procedure WhenDone(cb: Action<CLTaskBase>) := WhenDoneBase(cb);
     
-    protected procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); abstract;
+    private procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); abstract;
     ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если выполнение очереди завершится успешно
     public procedure WhenComplete(cb: Action<CLTaskBase, object>) := WhenCompleteBase(cb);
     
-    protected procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); abstract;
+    private procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); abstract;
     ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если при выполнении очереди будет вызвано исключение
     public procedure WhenError(cb: Action<CLTaskBase, array of Exception>) := WhenErrorBase(cb);
     
@@ -1985,16 +2010,21 @@ type
     {$region AddErr}
     protected static AbortStatus := new CommandExecutionStatus(integer.MinValue);
     
+    ///Регестрирует ошибку выполнения очереди
     protected procedure AddErr(e: Exception);
     
-    /// True если ошибка есть
+    
+    ///Регестрирует ошибку выполнения очереди
+    ///Возвращает False если значение не было ошибкой. Иначе возвращает True
     protected function AddErr(ec: ErrorCode): boolean;
     begin
       if not ec.IS_ERROR then exit;
       AddErr(new OpenCLException(ec, $'Внутренняя ошибка OpenCLABC: {ec}{#10}{Environment.StackTrace}'));
       Result := true;
     end;
-    /// True если ошибка есть
+    
+    ///Регестрирует ошибку выполнения очереди
+    ///Возвращает False если значение не было ошибкой. Иначе возвращает True
     protected function AddErr(st: CommandExecutionStatus) :=
     (st=AbortStatus) or (st.IS_ERROR and AddErr(ErrorCode(st)));
     
@@ -2011,7 +2041,7 @@ type
       if err<>nil then raise err;
     end;
     
-    protected function WaitResBase: object; abstract;
+    private function WaitResBase: object; abstract;
     ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
     ///Вызывает исключение, если оно было вызвано при выполнении очереди
     ///А затем возвращает результат выполнения
@@ -2038,25 +2068,25 @@ type
     
     {$region CLTask event's}
     
-    protected EvDone := new List<Action<CLTask<T>>>;
+    private EvDone := new List<Action<CLTask<T>>>;
     ///Добавляет подпрограмму-обработчик, которая будет вызвана когда выполнение очереди завершится (успешно или с ошибой)
     public procedure WhenDone(cb: Action<CLTask<T>>); reintroduce :=
     if AddEventHandler(EvDone, cb) then cb(self);
-    protected procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
+    private procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
     WhenDone(cb as object as Action<CLTask<T>>); //ToDo #2221
     
-    protected EvComplete := new List<Action<CLTask<T>, T>>;
+    private EvComplete := new List<Action<CLTask<T>, T>>;
     ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если выполнение очереди завершится успешно
     public procedure WhenComplete(cb: Action<CLTask<T>, T>); reintroduce :=
     if AddEventHandler(EvComplete, cb) then cb(self, q_res);
-    protected procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
+    private procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
     WhenComplete(cb as object as Action<CLTask<T>, T>); //ToDo #2221
     
-    protected EvError := new List<Action<CLTask<T>, array of Exception>>;
+    private EvError := new List<Action<CLTask<T>, array of Exception>>;
     ///Добавляет подпрограмму-обработчик, которая будет вызвана когда- и если при выполнении очереди будет вызвано исключение
     public procedure WhenError(cb: Action<CLTask<T>, array of Exception>); reintroduce :=
     if AddEventHandler(EvError, cb) then cb(self, GetErrArr);
-    protected procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
+    private procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
     WhenError(cb as object as Action<CLTask<T>, array of Exception>); //ToDo #2221
     
     {$endregion CLTask event's}
@@ -2071,7 +2101,7 @@ type
       Wait;
       Result := self.q_res;
     end;
-    protected function WaitResBase: object; override := WaitRes;
+    private function WaitResBase: object; override := WaitRes;
     
     {$endregion Wait}
     

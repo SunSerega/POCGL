@@ -45,6 +45,16 @@
 
 
 
+# SubDevice.Finalize
+# Context.Finalize
+# Buffer.Finalize
+# Kernel.Finalize
+# ProgramCode.Finalize
+Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
+Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
+
+
+
 # Platform.ToString
 # Device.ToString
 # SubDevice.ToString
@@ -54,5 +64,15 @@
 # Kernel.ToString
 # ProgramCode.ToString
 Возвращает строку с основными данными о данном объекте
+
+
+
+# Platform.Equals(object)
+# Device.Equals(object)
+# Context.Equals(object)
+# Buffer.Equals(object)
+# Kernel.Equals(object)
+# ProgramCode.Equals(object)
+--
 
 
