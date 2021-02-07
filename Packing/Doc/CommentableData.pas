@@ -252,7 +252,7 @@ begin
   
   var name := l.Substring(ind, ind2-ind).Trim;
   if name.Contains('operator') then exit;
-  if name.Contains('.') then exit; // явные реализации интерфейсов
+  if name.Contains('.') then exit; // Явные реализации интерфейсов
   
   Result := new CommentableMethod(t, name,
     GetArgs(l, ind2, '(', ')')
@@ -323,7 +323,7 @@ begin
   while true do
   begin
     
-    if l.Contains('end') then
+    if l.StartsWith('end') or l.Contains(' end') then
     begin
       bl_lvl -= 1;
       if bl_lvl=0 then break;
