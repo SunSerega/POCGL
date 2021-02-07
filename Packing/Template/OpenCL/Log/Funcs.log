@@ -7,6 +7,7 @@ Invalid ext name [3DKHR], replaced with [KHR]
 Invalid ext name [D3D11KHR], replaced with [KHR]
 Invalid ext name [ILKHR], replaced with [KHR]
 Invalid ext name [DX9INTEL], replaced with [INTEL]
+Ext group [LOADER] of ext [loader_layers] is not supported
 Struct [cl_dx9_surface_info_khr] was skipped
 Struct [cl_motion_estimation_desc_intel] was skipped
 Struct [cl_mem_ext_host_ptr] was skipped

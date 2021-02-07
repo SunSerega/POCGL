@@ -43,15 +43,13 @@ type
             
             self.def := enmr.Current.Text;
             if enmr.MoveNext then
-              Otp($'ERROR: Wrong definition of type [{name}]');
+              Otp($'ERROR: Wrong definition of type [{name}]: Multiple <type> tags');
             
           end else
           begin
-            if n.Text.Contains('struct _') and (ptr=1) then
-            begin
-              self.ptr := 0;
-            end else
-              Otp($'ERROR: Wrong definition of type [{name}]');
+            if n.Text.Contains('struct _') then
+              self.ptr -= 1 else
+              Otp($'ERROR: Wrong definition of type [{name}]: No <type> tags');
           end;
           
         end;

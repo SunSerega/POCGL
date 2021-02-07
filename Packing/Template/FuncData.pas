@@ -1736,6 +1736,7 @@ type
         display_name := name;
         if LogCache.invalid_ext_names.Add(ext_group) then
           log.Otp($'Ext group [{ext_group}] of ext [{name}] is not supported');
+        ext_group := '';
       end;
       
       display_name := api+display_name.Split('_').Select(w->

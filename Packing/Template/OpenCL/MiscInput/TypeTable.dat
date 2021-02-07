@@ -52,5 +52,6 @@ IDirect3DSurface9			= IntPtr
 VASurfaceID					= IntPtr
 cl_GLsync					= IntPtr
 cl_GLenum					= UInt32
+cl_icd_dispatch				= IntPtr
 
 

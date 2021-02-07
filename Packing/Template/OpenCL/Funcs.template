@@ -7181,6 +7181,83 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  clLoaderLayers = static class
+    public const _ExtStr = 'loader_layers';
+    
+    private static function z_GetLayerInfo_ovr_0(param_value_size: UIntPtr; param_name: LayerInfo; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetLayerInfo';
+    private static function z_GetLayerInfo_ovr_0_anh00001(param_value_size: UIntPtr; param_name: LayerInfo; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetLayerInfo';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_value_size: UIntPtr; param_name: LayerInfo; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
+      z_GetLayerInfo_ovr_0(param_value_size, param_name, param_value, param_value_size_ret[0]) else
+      z_GetLayerInfo_ovr_0_anh00001(param_value_size, param_name, param_value, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_value_size: UIntPtr; param_name: LayerInfo; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetLayerInfo_ovr_0(param_value_size, param_name, param_value, param_value_size_ret);
+    private static function z_GetLayerInfo_ovr_2(param_value_size: UIntPtr; param_name: LayerInfo; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetLayerInfo';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_value_size: UIntPtr; param_name: LayerInfo; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetLayerInfo_ovr_2(param_value_size, param_name, param_value, param_value_size_ret);
+    
+    private static function z_InitLayer_ovr_0(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; var layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    private static function z_InitLayer_ovr_0_anh00010(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    private static function z_InitLayer_ovr_0_anh00001(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    private static function z_InitLayer_ovr_0_anh00011(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: array of UInt32; layer_dispatch: array of IntPtr): ErrorCode :=
+    if (num_entries_ret<>nil) and (num_entries_ret.Length<>0) then
+      if (layer_dispatch<>nil) and (layer_dispatch.Length<>0) then
+        z_InitLayer_ovr_0(num_entries, target_dispatch, num_entries_ret[0], layer_dispatch[0]) else
+        z_InitLayer_ovr_0_anh00001(num_entries, target_dispatch, num_entries_ret[0], IntPtr.Zero) else
+      if (layer_dispatch<>nil) and (layer_dispatch.Length<>0) then
+        z_InitLayer_ovr_0_anh00010(num_entries, target_dispatch, IntPtr.Zero, layer_dispatch[0]) else
+        z_InitLayer_ovr_0_anh00011(num_entries, target_dispatch, IntPtr.Zero, IntPtr.Zero);
+    private static function z_InitLayer_ovr_1_anh00010(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: array of UInt32; var layer_dispatch: IntPtr): ErrorCode :=
+    if (num_entries_ret<>nil) and (num_entries_ret.Length<>0) then
+      z_InitLayer_ovr_0(num_entries, target_dispatch, num_entries_ret[0], layer_dispatch) else
+      z_InitLayer_ovr_0_anh00010(num_entries, target_dispatch, IntPtr.Zero, layer_dispatch);
+    private static function z_InitLayer_ovr_2(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: pointer): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    private static function z_InitLayer_ovr_2_anh00010(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: pointer): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: array of UInt32; layer_dispatch: pointer): ErrorCode :=
+    if (num_entries_ret<>nil) and (num_entries_ret.Length<>0) then
+      z_InitLayer_ovr_2(num_entries, target_dispatch, num_entries_ret[0], layer_dispatch) else
+      z_InitLayer_ovr_2_anh00010(num_entries, target_dispatch, IntPtr.Zero, layer_dispatch);
+    private static function z_InitLayer_ovr_3_anh00001(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: array of IntPtr): ErrorCode :=
+    if (layer_dispatch<>nil) and (layer_dispatch.Length<>0) then
+      z_InitLayer_ovr_0(num_entries, target_dispatch, num_entries_ret, layer_dispatch[0]) else
+      z_InitLayer_ovr_0_anh00001(num_entries, target_dispatch, num_entries_ret, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; var layer_dispatch: IntPtr): ErrorCode :=
+    z_InitLayer_ovr_0(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: pointer): ErrorCode :=
+    z_InitLayer_ovr_2(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
+    private static function z_InitLayer_ovr_6(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    private static function z_InitLayer_ovr_6_anh00001(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: array of IntPtr): ErrorCode :=
+    if (layer_dispatch<>nil) and (layer_dispatch.Length<>0) then
+      z_InitLayer_ovr_6(num_entries, target_dispatch, num_entries_ret, layer_dispatch[0]) else
+      z_InitLayer_ovr_6_anh00001(num_entries, target_dispatch, num_entries_ret, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch: IntPtr): ErrorCode :=
+    z_InitLayer_ovr_6(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
+    private static function z_InitLayer_ovr_8(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: pointer): ErrorCode;
+    external 'opencl.dll' name 'clInitLayer';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: pointer): ErrorCode :=
+    z_InitLayer_ovr_8(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
   clIlProgramKHR = static class
     public const _ExtStr = 'khr_il_program';
     

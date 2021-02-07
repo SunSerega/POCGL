@@ -1275,6 +1275,22 @@
  ErrorCode	| UInt32	| IntPtr	| var UInt32	|
  ErrorCode	| UInt32	| IntPtr	| IntPtr	|
 
+# clGetLayerInfo
+ ErrorCode	| UIntPtr	| LayerInfo	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| UIntPtr	| LayerInfo	| IntPtr	| var UIntPtr	|
+ ErrorCode	| UIntPtr	| LayerInfo	| IntPtr	| IntPtr	|
+
+# clInitLayer
+ ErrorCode	| UInt32	| IntPtr	| array of UInt32	| array of IntPtr	|
+ ErrorCode	| UInt32	| IntPtr	| array of UInt32	| var IntPtr	|
+ ErrorCode	| UInt32	| IntPtr	| array of UInt32	| pointer	|
+ ErrorCode	| UInt32	| IntPtr	| var UInt32	| array of IntPtr	|
+ ErrorCode	| UInt32	| IntPtr	| var UInt32	| var IntPtr	|
+ ErrorCode	| UInt32	| IntPtr	| var UInt32	| pointer	|
+ ErrorCode	| UInt32	| IntPtr	| IntPtr	| array of IntPtr	|
+ ErrorCode	| UInt32	| IntPtr	| IntPtr	| var IntPtr	|
+ ErrorCode	| UInt32	| IntPtr	| IntPtr	| pointer	|
+
 # clCreateProgramWithILKHR
  cl_program	| cl_context	| array of byte	| UIntPtr	| var ErrorCode	|
  cl_program	| cl_context	| var byte	| UIntPtr	| var ErrorCode	|
