@@ -1,6 +1,7 @@
-﻿  
-  
-  
+﻿
+
+
+type
   ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -24,6 +25,15 @@
       self.q2.RegisterWaitables(tsk, prev_hubs);
       self.q3.RegisterWaitables(tsk, prev_hubs);
       self.q4.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
+      self.q3.ToString(sb, tabs, index, delayed);
+      self.q4.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, c);

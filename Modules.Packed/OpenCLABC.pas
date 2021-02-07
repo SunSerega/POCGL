@@ -29,12 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo Убрать все "class;"
-
-//ToDo Разобраться с protected vs private
-// - В итоге решил проверить всё сразу
-// - Но ещё надо будет проверить чтоб всё в implementation было private
-
 //===================================
 // Запланированное:
 
@@ -115,9 +109,6 @@ unit OpenCLABC;
 // - Надо как то умнее это обрабатывать
 //ToDo И сделать наконец нормальный класс-контейнер состояния очереди, параметрами всё не передашь
 
-//ToDo CommmandQueueBase.ToString для дебага
-// - так же дублирующий protected метод (tabs: integer; index: Dictionary<CommandQueueBase,integer>)
-
 //ToDo .Cycle(integer)
 //ToDo .Cycle // бесконечность циклов
 //ToDo .CycleWhile(***->boolean)
@@ -140,14 +131,16 @@ unit OpenCLABC;
 //ToDo Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
 
+//===================================
+
 {$endregion ToDo}
 
 {$region Bugs}
 
 //ToDo Issue компилятора:
 //ToDo https://github.com/pascalabcnet/pascalabcnet/issues/{id}
-// - #2145
 // - #2221
+// - #2431
 
 //ToDo Баги NVidia
 //ToDo https://developer.nvidia.com/nvidia_bug/{id}
@@ -157,7 +150,7 @@ unit OpenCLABC;
 
 {$region Debug}{$ifdef DEBUG}
 
-{ $define EventDebug} // регистрация всех cl.RetainEvent и cl.ReleaseEvent
+{ $define EventDebug} // Регистрация всех cl.RetainEvent и cl.ReleaseEvent
 
 {$endif DEBUG}{$endregion Debug}
 
@@ -1838,6 +1831,54 @@ type
     
     {$endregion ThenWait}
     
+    {$region ToString}
+    
+    private function DisplayName: string; virtual := self.GetType.Name;
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    
+    private function ToStringHeader(sb: StringBuilder; index: Dictionary<CommandQueueBase,integer>): boolean;
+    begin
+      sb += DisplayName;
+      
+      var ind: integer;
+      Result := not index.TryGetValue(self, ind);
+      
+      if Result then
+      begin
+        ind := index.Count;
+        index[self] := ind;
+      end;
+      
+      sb += '[';
+      sb.Append(ind);
+      sb += ']';
+      
+    end;
+    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
+    begin
+      delayed.Remove(self);
+      
+      if write_tabs then sb.Append(#9, tabs);
+      ToStringHeader(sb, index);
+      ToStringImpl(sb, tabs+1, index, delayed);
+      
+      if tabs=0 then foreach var q in delayed do
+      begin
+        sb += #10;
+        q.ToString(sb, 0, index, new HashSet<CommandQueueBase>);
+      end;
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var sb := new StringBuilder;
+      ToString(sb, 0, new Dictionary<CommandQueueBase, integer>, new HashSet<CommandQueueBase>);
+      Result := sb.ToString;
+    end;
+    
+    {$endregion ToString}
+    
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
@@ -1924,6 +1965,14 @@ type
     public function IConstQueue.GetConstVal: object := self.res;
     ///Возвращает значение из которого была создана данная константная очередь
     public property Val: T read self.res;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      Writeln('ConstQueue.ToStringImpl');
+      sb += ' { ';
+      sb.Append(Val);
+      sb += ' }'#10;
+    end;
     
   end;
   
@@ -2172,6 +2221,35 @@ type
     public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromRecordPtr(ptr); end;
     
     {$endregion Ptr}
+    
+    {$region ToString}
+    
+    private function DisplayName: string; virtual := self.GetType.Name;
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    
+    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
+    begin
+      if write_tabs then sb.Append(#9, tabs);
+      sb += DisplayName;
+      
+      ToStringImpl(sb, tabs+1, index, delayed);
+      
+      if tabs=0 then foreach var q in delayed do
+      begin
+        sb += #10;
+        q.ToString(sb, 0, index, new HashSet<CommandQueueBase>);
+      end;
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var sb := new StringBuilder;
+      ToString(sb, 0, new Dictionary<CommandQueueBase, integer>, new HashSet<CommandQueueBase>);
+      Result := sb.ToString;
+    end;
+    
+    {$endregion ToString}
     
   end;
   
@@ -4109,6 +4187,13 @@ type
       last.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      foreach var q in GetQS do
+        q.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
   ISimpleSyncQueueArray = interface(ISimpleQueueArray) end;
@@ -4169,6 +4254,15 @@ type
     
     protected function ExecFunc(o: array of TInp; c: Context): TRes; override := f(o, c);
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(f);
+      sb += #10;
+      foreach var q in qs do
+        q.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
   ConvSyncQueueArray<TInp, TRes> = sealed class(ConvQueueArrayBase<TInp, TRes>)
@@ -4225,9 +4319,9 @@ type
   
 {$endregion Generic}
 
-//ToDo ?
 {$region [2]}
-  
+
+type
   ConvQueueArrayBase2<TInp1, TInp2, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -4245,6 +4339,13 @@ type
     begin
       self.q1.RegisterWaitables(tsk, prev_hubs);
       self.q2.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2>; c: Context): TRes; override := f(t.Item1, t.Item2, c);
@@ -4273,10 +4374,11 @@ type
     
   end;
   
-  {$endregion [2]}
-  
-  {$region [3]}
-  
+{$endregion [2]}
+
+{$region [3]}
+
+type
   ConvQueueArrayBase3<TInp1, TInp2, TInp3, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -4297,6 +4399,14 @@ type
       self.q1.RegisterWaitables(tsk, prev_hubs);
       self.q2.RegisterWaitables(tsk, prev_hubs);
       self.q3.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
+      self.q3.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, c);
@@ -4327,10 +4437,11 @@ type
     
   end;
   
-  {$endregion [3]}
-  
-  {$region [4]}
-  
+{$endregion [3]}
+
+{$region [4]}
+
+type
   ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -4354,6 +4465,15 @@ type
       self.q2.RegisterWaitables(tsk, prev_hubs);
       self.q3.RegisterWaitables(tsk, prev_hubs);
       self.q4.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
+      self.q3.ToString(sb, tabs, index, delayed);
+      self.q4.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, c);
@@ -4386,10 +4506,11 @@ type
     
   end;
   
-  {$endregion [4]}
-  
-  {$region [5]}
-  
+{$endregion [4]}
+
+{$region [5]}
+
+type
   ConvQueueArrayBase5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -4416,6 +4537,16 @@ type
       self.q3.RegisterWaitables(tsk, prev_hubs);
       self.q4.RegisterWaitables(tsk, prev_hubs);
       self.q5.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
+      self.q3.ToString(sb, tabs, index, delayed);
+      self.q4.ToString(sb, tabs, index, delayed);
+      self.q5.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5, c);
@@ -4450,10 +4581,11 @@ type
     
   end;
   
-  {$endregion [5]}
-  
-  {$region [6]}
-  
+{$endregion [5]}
+
+{$region [6]}
+
+type
   ConvQueueArrayBase6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -4483,6 +4615,17 @@ type
       self.q4.RegisterWaitables(tsk, prev_hubs);
       self.q5.RegisterWaitables(tsk, prev_hubs);
       self.q6.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
+      self.q3.ToString(sb, tabs, index, delayed);
+      self.q4.ToString(sb, tabs, index, delayed);
+      self.q5.ToString(sb, tabs, index, delayed);
+      self.q6.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5, t.Item6, c);
@@ -4519,10 +4662,11 @@ type
     
   end;
   
-  {$endregion [6]}
-  
-  {$region [7]}
-  
+{$endregion [6]}
+
+{$region [7]}
+
+type
   ConvQueueArrayBase7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>, TRes>)
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
@@ -4555,6 +4699,18 @@ type
       self.q5.RegisterWaitables(tsk, prev_hubs);
       self.q6.RegisterWaitables(tsk, prev_hubs);
       self.q7.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      self.q1.ToString(sb, tabs, index, delayed);
+      self.q2.ToString(sb, tabs, index, delayed);
+      self.q3.ToString(sb, tabs, index, delayed);
+      self.q4.ToString(sb, tabs, index, delayed);
+      self.q5.ToString(sb, tabs, index, delayed);
+      self.q6.ToString(sb, tabs, index, delayed);
+      self.q7.ToString(sb, tabs, index, delayed);
     end;
     
     protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5, t.Item6, t.Item7, c);
@@ -4593,7 +4749,7 @@ type
     
   end;
   
-  {$endregion [7]}
+{$endregion [7]}
 
 {$endregion Conv}
 
@@ -4893,6 +5049,19 @@ type
     
     public function GetWaitEv(tsk: CLTaskBase; c: Context): UserEvent; abstract;
     
+    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb.Append(#9, tabs);
+      sb += self.GetType.Name;
+      sb += #10;
+      foreach var q in waitables do
+      begin
+        sb.Append(#9, tabs+1);
+        if q.ToStringHeader(sb, index) then
+          delayed += q;
+      end;
+    end;
+    
   end;
   
   WCQWaiterAll = sealed class(WCQWaiter)
@@ -4962,9 +5131,18 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(typeof(T));
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
-function CommandQueueBase.Cast<T> := new CastQueue<T>(self);
+function CommandQueueBase.Cast<T>: CommandQueue<T> :=
+if self is CommandQueue<T>(var cq) then cq else new CastQueue<T>(self);
 
 {$endregion Cast}
 
@@ -4989,6 +5167,14 @@ type
     q.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
     
     protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o, c);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(f);
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
     
   end;
   
@@ -5044,6 +5230,14 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     if prev_hubs.Add(hub) then hub.q.RegisterWaitables(tsk, prev_hubs);
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      if hub.q.ToStringHeader(sb, index) then
+        delayed.Add(hub.q);
+      sb += #10;
+    end;
+    
   end;
   
 function MultiusableCommandQueueHub<T>.MakeNode :=
@@ -5076,6 +5270,12 @@ type
     begin
       q.RegisterWaitables(tsk, prev_hubs);
       waiter.RegisterWaitables(tsk);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      q.ToString(sb, tabs, index, delayed);
+      waiter.ToString(sb, tabs, index, delayed);
     end;
     
   end;
@@ -5141,6 +5341,13 @@ type
       cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), b.ntv).RaiseIfError; 
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(b);
+      sb += #10;
+    end;
+    
   end;
   
 static function KernelArg.FromBuffer(b: Buffer) := new KernelArgBuffer(b);
@@ -5162,6 +5369,14 @@ type
     
     public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
     cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
+    
+    private function DisplayName: string; override := $'KernelArgRecord<{typeof(TRecord)}>';
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(val^);
+      sb += #10;
+    end;
     
   end;
   
@@ -5185,6 +5400,15 @@ type
     
     public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
     cl.SetKernelArg(k, ind, sz, pointer(ptr)).RaiseIfError;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(ptr);
+      sb += '[';
+      sb.Append(sz);
+      sb += ']'#10;
+    end;
     
   end;
   
@@ -5216,6 +5440,12 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
     
   end;
   
@@ -5260,6 +5490,12 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
 static function KernelArg.FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>) :=
@@ -5293,6 +5529,13 @@ type
        sz_q.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      ptr_q.ToString(sb, tabs, index, delayed);
+       sz_q.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
 static function KernelArg.FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>) :=
@@ -5316,6 +5559,14 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb.Append(#9, tabs);
+      sb += self.GetType.Name;
+      self.ToStringImpl(sb, tabs+1, index, delayed);
+    end;
+    
   end;
   
 {$endregion Base}
@@ -5336,6 +5587,12 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
     
   end;
   
@@ -5365,6 +5622,13 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(p);
+      sb += #10;
+    end;
+    
   end;
   
 {$endregion Proc}
@@ -5391,6 +5655,12 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     waiter.RegisterWaitables(tsk);
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      waiter.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
 {$endregion Wait}
@@ -5414,15 +5684,21 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb.Append(#9, tabs);
+      sb += self.GetType.Name;
+      self.ToStringImpl(sb, tabs+1, index, delayed);
+    end;
+    
   end;
   
   GPUCommandContainer<T> = abstract partial class(CommandQueue<T>)
-    protected commands := new List<GPUCommand<T>>;
     protected core: GPUCommandContainerCore<T>;
+    protected commands := new List<GPUCommand<T>>;
     
     protected procedure InitObj(obj: T; c: Context); virtual := exit;
-    
-    {$region sub implementation}
     
     protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
     core.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
@@ -5433,7 +5709,13 @@ type
       foreach var comm in commands do comm.RegisterWaitables(tsk, prev_hubs);
     end;
     
-    {$endregion sub implementation}
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      core.ToString(sb, tabs, index, delayed);
+      foreach var comm in commands do
+        comm.ToString(sb, tabs, index, delayed);
+    end;
     
   end;
   
@@ -5470,6 +5752,13 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(o);
+      sb += #10;
+    end;
+    
   end;
   
   CCCQueue<T> = sealed class(GPUCommandContainerCore<T>)
@@ -5496,6 +5785,12 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     hub.q.RegisterWaitables(tsk, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      hub.q.ToString(sb, tabs, index, delayed);
+    end;
     
   end;
   
@@ -5729,7 +6024,6 @@ type
 {$region GetCommand}
 
 type
-  //ToDo Может отдельный тип для ForcePtrQr?
   EnqueueableGetCommandInvData<TObj, TRes> = record
     prev_qr: QueueRes<TObj>;
     tsk: CLTaskBase;
@@ -5967,6 +6261,15 @@ type
       ptr.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion WriteDataAutoSize}
@@ -6013,6 +6316,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       ptr.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6073,6 +6385,21 @@ type
               len.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion WriteData}
@@ -6129,6 +6456,21 @@ type
               ptr.RegisterWaitables(tsk, prev_hubs);
       buff_offset.RegisterWaitables(tsk, prev_hubs);
               len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6202,6 +6544,18 @@ type
       buff_offset.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'val: ';
+      sb.Append(val^);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion WriteValue}
@@ -6266,6 +6620,18 @@ type
       buff_offset.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'val: ';
+      val.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion WriteValueQ}
@@ -6314,6 +6680,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       a.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6366,6 +6741,15 @@ type
       a.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion WriteArray2AutoSize}
@@ -6414,6 +6798,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       a.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6466,6 +6859,15 @@ type
       a.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion ReadArray1AutoSize}
@@ -6516,6 +6918,15 @@ type
       a.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion ReadArray2AutoSize}
@@ -6564,6 +6975,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       a.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6629,6 +7049,24 @@ type
          a_offset.RegisterWaitables(tsk, prev_hubs);
               len.RegisterWaitables(tsk, prev_hubs);
       buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset: ';
+      a_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6699,6 +7137,27 @@ type
         a_offset2.RegisterWaitables(tsk, prev_hubs);
               len.RegisterWaitables(tsk, prev_hubs);
       buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset1: ';
+      a_offset1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset2: ';
+      a_offset2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6776,6 +7235,30 @@ type
       buff_offset.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset1: ';
+      a_offset1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset2: ';
+      a_offset2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset3: ';
+      a_offset3.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion WriteArray3}
@@ -6839,6 +7322,24 @@ type
          a_offset.RegisterWaitables(tsk, prev_hubs);
               len.RegisterWaitables(tsk, prev_hubs);
       buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset: ';
+      a_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6909,6 +7410,27 @@ type
         a_offset2.RegisterWaitables(tsk, prev_hubs);
               len.RegisterWaitables(tsk, prev_hubs);
       buff_offset.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset1: ';
+      a_offset1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset2: ';
+      a_offset2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -6986,6 +7508,30 @@ type
       buff_offset.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'a: ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset1: ';
+      a_offset1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset2: ';
+      a_offset2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'a_offset3: ';
+      a_offset3.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion ReadArray3}
@@ -7041,6 +7587,18 @@ type
     begin
               ptr.RegisterWaitables(tsk, prev_hubs);
       pattern_len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'pattern_len: ';
+      pattern_len.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -7106,6 +7664,24 @@ type
               len.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'pattern_len: ';
+      pattern_len.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion FillData}
@@ -7155,6 +7731,15 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'val: ';
+      sb.Append(val^);
+      
     end;
     
   end;
@@ -7218,6 +7803,21 @@ type
               len.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'val: ';
+      sb.Append(val^);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion FillValue}
@@ -7272,6 +7872,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       val.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'val: ';
+      val.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -7340,6 +7949,21 @@ type
               len.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'val: ';
+      val.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion FillValueQ}
@@ -7392,6 +8016,15 @@ type
       b.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'b: ';
+      b.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion CopyToAutoSize}
@@ -7438,6 +8071,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       b.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'b: ';
+      b.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -7503,6 +8145,24 @@ type
            len.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'b: ';
+      b.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'from_pos: ';
+      from_pos.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'to_pos: ';
+      to_pos.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion CopyTo}
@@ -7566,6 +8226,24 @@ type
            len.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'b: ';
+      b.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'from_pos: ';
+      from_pos.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'to_pos: ';
+      to_pos.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion CopyForm}
@@ -7615,6 +8293,8 @@ type
     end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
   end;
   
@@ -7670,6 +8350,18 @@ type
     begin
       buff_offset.RegisterWaitables(tsk, prev_hubs);
               len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -7734,6 +8426,15 @@ type
       buff_offset.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'buff_offset: ';
+      buff_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
   end;
   
 {$endregion GetValue}
@@ -7779,6 +8480,8 @@ type
     end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
   end;
   
@@ -7830,6 +8533,15 @@ type
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
       len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -7887,6 +8599,18 @@ type
     begin
       len1.RegisterWaitables(tsk, prev_hubs);
       len2.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'len1: ';
+      len1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len2: ';
+      len2.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -7949,6 +8673,21 @@ type
       len1.RegisterWaitables(tsk, prev_hubs);
       len2.RegisterWaitables(tsk, prev_hubs);
       len3.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'len1: ';
+      len1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len2: ';
+      len2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'len3: ';
+      len3.ToString(sb, tabs, index, delayed, false);
+      
     end;
     
   end;
@@ -8053,6 +8792,23 @@ type
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
   end;
   
 {$endregion Exec1}
@@ -8126,6 +8882,26 @@ type
        sz1.RegisterWaitables(tsk, prev_hubs);
        sz2.RegisterWaitables(tsk, prev_hubs);
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'sz2: ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
     end;
     
   end;
@@ -8208,6 +8984,29 @@ type
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'sz2: ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'sz3: ';
+      sz3.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
   end;
   
 {$endregion Exec3}
@@ -8288,6 +9087,29 @@ type
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'global_work_offset: ';
+      global_work_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'global_work_size: ';
+      global_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'local_work_size: ';
+      local_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
   end;
   
 {$endregion Exec}
@@ -8319,6 +9141,13 @@ type
     new QueueResConst<Object>(nil, prev_ev ?? new EventList);
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(f);
+      sb += #10;
+    end;
     
   end;
   
@@ -8367,6 +9196,12 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     waiter.RegisterWaitables(tsk);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      waiter.ToString(sb, tabs, index, delayed);
+    end;
     
   end;
   

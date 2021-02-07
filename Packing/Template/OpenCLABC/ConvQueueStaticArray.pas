@@ -12,7 +12,7 @@ begin
       Range(2, MaxQueueStaticArraySize).TaskForEach(c->
       begin
         var res := new System.IO.StreamWriter(GetFullPathRTA($'ConvQueue\StaticArray[{c}].template'), false, enc);
-        loop 3 do res.WriteLine('  ');
+        loop 3 do res.WriteLine;
         
         var WriteVTDef: Action0 := ()->
         begin
@@ -32,6 +32,7 @@ begin
         
         {$region ConvQueueArrayBase}
         
+        res.WriteLine('type');
         res.Write($'  ConvQueueArrayBase{c}<');
         for var i := 1 to c do
           res.Write($'TInp{i}, ');
@@ -69,6 +70,15 @@ begin
         res.WriteLine('    begin');
         for var i := 1 to c do
           res.WriteLine($'      self.q{i}.RegisterWaitables(tsk, prev_hubs);');
+        res.WriteLine('    end;');
+        
+        res.WriteLine('    ');
+        
+        res.WriteLine('    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;');
+        res.WriteLine('    begin');
+        res.WriteLine('      sb += #10;');
+        for var i := 1 to c do
+          res.WriteLine($'      self.q{i}.ToString(sb, tabs, index, delayed);');
         res.WriteLine('    end;');
         
         res.WriteLine('    ');
@@ -175,12 +185,12 @@ begin
         loop 3 do res.WriteLine('  ');
         for var c := 2 to MaxQueueStaticArraySize do
         begin
-          res.WriteLine($'  {{$region [{c}]}}');
+          res.WriteLine($'{{$region [{c}]}}');
+          res.WriteLine;
+          res.WriteLine($'{{%StaticArray[{c}]%}}');
           res.WriteLine($'  ');
-          res.WriteLine($'  {{%StaticArray[{c}]%}}');
-          res.WriteLine($'  ');
-          res.WriteLine($'  {{$endregion [{c}]}}');
-          res.WriteLine($'  ');
+          res.WriteLine($'{{$endregion [{c}]}}');
+          res.WriteLine;
         end;
         loop 1 do res.WriteLine('  ');
         res.Write('  ');

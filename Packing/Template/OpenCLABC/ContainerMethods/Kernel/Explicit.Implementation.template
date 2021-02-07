@@ -66,6 +66,23 @@ type
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
   end;
   
 {$endregion Exec1}
@@ -139,6 +156,26 @@ type
        sz1.RegisterWaitables(tsk, prev_hubs);
        sz2.RegisterWaitables(tsk, prev_hubs);
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'sz2: ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
     end;
     
   end;
@@ -221,6 +258,29 @@ type
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
     end;
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'sz2: ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'sz3: ';
+      sz3.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
   end;
   
 {$endregion Exec3}
@@ -299,6 +359,29 @@ type
         global_work_size.RegisterWaitables(tsk, prev_hubs);
          local_work_size.RegisterWaitables(tsk, prev_hubs);
       foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb += 'global_work_offset: ';
+      global_work_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'global_work_size: ';
+      global_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      sb += 'local_work_size: ';
+      local_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
     end;
     
   end;

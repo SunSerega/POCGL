@@ -731,9 +731,93 @@ type
         res_EIm += '    end;'#10;
       end;
       
+      res_EIm += '    '#10;
+      
       {$endregion RegisterWaitables}
       
+      {$region ToStringImpl}
+      
+      res_EIm += '    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override';
+      if settings.args = nil then
+        res_EIm += ' := sb += #10;'#10 else
+      begin
+        res_EIm += ';'#10;
+        res_EIm += '    begin'#10;
+        res_EIm += '      sb += #10;'#10;
+        res_EIm += '      '#10;
+        
+        foreach var arg in MethodSettings(settings).args do
+        begin
+          var vname := arg.name;
+          var arr_lvl := arg.t.ArrLvl;
+          var tab := '      ';
+          
+          for var i := 1 to arr_lvl do
+          begin
+            res_EIm += tab;
+            res_EIm += 'for var i';
+            if arr_lvl<>1 then
+              res_EIm += i.ToString;
+            res_EIm += ' := 0 to ';
+            res_EIm += vname;
+            res_EIm += '.Length-1 do ';
+            vname += if arr_lvl=1 then '[i]' else $'[i{i}]';
+            tab += '  ';
+          end;
+          if arr_lvl<>0 then
+          begin
+            res_EIm += #10;
+            res_EIm += tab.Substring(2);
+            res_EIm += 'begin'#10;
+          end;
+          
+          res_EIm += tab;
+          res_EIm += 'sb += ''';
+          res_EIm += arg.name;
+          for var i := 1 to arr_lvl do
+          begin
+            res_EIm += '['';'#10;
+            
+            res_EIm += tab;
+            res_EIm += 'sb.Append(i';
+            if arr_lvl<>1 then
+              res_EIm += i.ToString;
+            res_EIm += ');'#10;
+            
+            res_EIm += tab;
+            res_EIm += 'sb += '']';
+          end;
+          res_EIm += ': '';'#10;
+          
+          res_EIm += tab;
+          if arg.t.IsKA or arg.t.IsCQ then
+          begin
+            res_EIm += vname;
+            res_EIm += '.ToString(sb, tabs, index, delayed, false);'#10;
+          end else
+          begin
+            res_EIm += 'sb.Append(';
+            res_EIm += vname;
+            if arg.name in val_ptr_args then
+              res_EIm += '^';
+            res_EIm += ');'#10;
+          end;
+          
+          if arr_lvl<>0 then
+          begin
+            res_EIm += tab.Substring(2);
+            res_EIm += 'end;'#10;
+          end;
+          
+          res_EIm += '      '#10;
+        end;
+        
+        res_EIm += '    end;'#10;
+      end;
+      
       res_EIm += '    '#10;
+      
+      {$endregion ToStringImpl}
       
       res_EIm += '  end;'#10;
       res_EIm += '  '#10;
