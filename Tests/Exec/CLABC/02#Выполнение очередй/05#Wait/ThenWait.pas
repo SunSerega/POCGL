@@ -2,7 +2,7 @@
 
 begin
   var Q := HFQ(()->5);
-  var M: CommandQueueBase := nil as object;
+  var M := new MarkerQueue;
   
   var t := Context.Default.BeginInvoke(
     Q.ThenWaitFor(M)

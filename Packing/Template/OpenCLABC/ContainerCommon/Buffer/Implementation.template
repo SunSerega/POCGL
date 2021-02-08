@@ -7,7 +7,13 @@ constructor BufferCommandQueue.Create := inherited;
 
 {$region Special .Add's}
 
-function BufferCommandQueue.AddQueue(q: CommandQueueBase) := AddCommand(self, new QueueCommand<Buffer>(q));
+function BufferCommandQueue.AddQueue(q: CommandQueueBase): BufferCommandQueue;
+begin
+  Result := self;
+  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  commands.Add( new QueueCommand<Buffer>(q) );
+end;
 
 function BufferCommandQueue.AddProc(p: Buffer->()) := AddCommand(self, new ProcCommand<Buffer>((o,c)->p(o)));
 function BufferCommandQueue.AddProc(p: (Buffer, Context)->()) := AddCommand(self, new ProcCommand<Buffer>(p));

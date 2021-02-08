@@ -82,6 +82,8 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0.pas"
 Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1.pas"
+Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas"
@@ -150,6 +152,8 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
 Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#MarkerQueue\1.pas"
+Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -176,6 +180,9 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1]
+Tester: Done executing
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
@@ -232,6 +239,7 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
 Tester: Done executing
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\1]
@@ -244,7 +252,11 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#MarkerQueue\1]
+Tester: Done executing
 Tester: Cleanup
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1.td" updated
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

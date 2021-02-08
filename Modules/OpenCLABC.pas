@@ -19,13 +19,11 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo MarkerQueue
-// - Затем запретить ожидать константные очереди
-// - И оптимизировать так, чтоб константные очереди не добавлялись в .AddQueue и при сложении очередей
-
-//ToDo Написать в справке что вызов .Cast может оптимизировать так, что удалит очередь, для которой вызвали .Cast
-// - Проблема только если вызывать
-// - А может так же запретить ожидать и на .Cast очередях
+//ToDo Написать в справке:
+// - MarkerQueue
+// - Вызов .Cast может оптимизировать так, что удалит очередь, для которой вызвали .Cast
+// - Запрет ожидать ConstQueue и CastQueue
+// - Запрет на .AddQueue(ConstQueue)
 
 //===================================
 // Запланированное:
@@ -1169,6 +1167,18 @@ type
   end;
   
   {$endregion Const}
+  
+  {$region Marker}
+  
+  MarkerQueue = sealed partial class(CommandQueue<object>)
+    
+    public constructor := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
+    
+  end;
+  
+  {$endregion Marker}
   
   {$endregion CommandQueue}
   
@@ -2489,6 +2499,26 @@ type
   
 {$endregion Const}
 
+{$region Marker}
+
+type
+  MarkerQueue = sealed partial class(CommandQueue<object>)
+    
+    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
+    begin
+      if prev_ev=nil then prev_ev := new EventList;
+      {$ifdef DEBUG}
+      if need_ptr_qr then raise new System.InvalidOperationException;
+      {$endif DEBUG}
+      Result := new QueueResConst<object>(nil, prev_ev ?? new EventList);
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+  end;
+  
+{$endregion Marker}
+
 {$region Host}
 
 type
@@ -2678,40 +2708,6 @@ type
 {%ConvQueue\AllStaticArrays!ConvQueueStaticArray.pas%}
 
 {$endregion Conv}
-
-{$region Utils}
-
-type
-  QueueArrayUtils = static class
-    
-    public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: ISimpleQueueArray;
-    begin
-      var enmr := inp.GetEnumerator;
-      if not enmr.MoveNext then raise new InvalidOperationException('%Err:FlattenQueueArray:InpEmpty%');
-      
-      var res := new List<CommandQueueBase>;
-      while true do
-      begin
-        var curr := enmr.Current;
-        var next := enmr.MoveNext;
-        
-//        if not (curr is IConstQueue) or not next then
-          if curr is T(var sqa) then
-            res.AddRange(sqa.GetQS) else
-            res += curr;
-        
-        if not next then break;
-      end;
-      
-      Result := res.ToArray;
-    end;
-    
-    public static function  FlattenSyncQueueArray(inp: sequence of CommandQueueBase) := FlattenQueueArray&< ISimpleSyncQueueArray>(inp);
-    public static function FlattenAsyncQueueArray(inp: sequence of CommandQueueBase) := FlattenQueueArray&<ISimpleAsyncQueueArray>(inp);
-    
-  end;
-  
-{$endregion Utils}
 
 {$endregion Array}
 
@@ -2961,6 +2957,194 @@ static function UserEvent.MakeUserEvent(tsk: CLTaskBase; c: cl_context{$ifdef Ev
 
 {$endregion CLTask}
 
+{$region Queue converter's}
+
+{$region Cast}
+
+type
+  ICastQueue = interface
+    function GetQ: CommandQueueBase;
+  end;
+  CastQueue<T> = sealed class(CommandQueue<T>, ICastQueue)
+    private q: CommandQueueBase;
+    public function ICastQueue.GetQ := q;
+    
+    public constructor(q: CommandQueueBase) := self.q := q;
+    
+    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
+    q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).LazyQuickTransformBase(o->
+    try
+      Result := T(o);
+    except
+      on e: Exception do
+        tsk.AddErr(e);
+    end);
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+function CommandQueueBase.Cast<T>: CommandQueue<T>;
+begin
+  var q := self;
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  Result :=
+    if q is IConstQueue(var cq) then
+      new ConstQueue<T>(T(cq.GetConstVal)) else
+    if q is CommandQueue<T>(var tcq) then
+      tcq else
+      new CastQueue<T>(q);
+end;
+
+{$endregion Cast}
+
+{$region ThenConvert}
+
+type
+  CommandQueueThenConvert<TInp, TRes> = sealed class(HostQueue<TInp, TRes>)
+    protected q: CommandQueue<TInp>;
+    protected f: (TInp, Context)->TRes;
+    
+    public constructor(q: CommandQueue<TInp>; f: (TInp, Context)->TRes);
+    begin
+      self.q := q;
+      self.f := f;
+    end;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
+    
+    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TInp>; override :=
+    q.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
+    
+    protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o, c);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(f);
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
+new CommandQueueThenConvert<T, TOtp>(self, f);
+
+{$endregion ThenConvert}
+
+{$region QueueArray}
+
+type
+  QueueArrayUtils = static class
+    
+    public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: ISimpleQueueArray;
+    begin
+      var enmr := inp.GetEnumerator;
+      if not enmr.MoveNext then raise new InvalidOperationException('%Err:FlattenQueueArray:InpEmpty%');
+      
+      var res := new List<CommandQueueBase>;
+      while true do
+      begin
+        var curr := enmr.Current;
+        var next := enmr.MoveNext;
+        
+        if next then
+        begin
+          if curr is IConstQueue then continue;
+          if curr is ICastQueue(var cq) then curr := cq.GetQ;
+        end;
+        
+        if curr is T(var sqa) then
+          res.AddRange(sqa.GetQS) else
+          res += curr;
+        
+        if not next then break;
+      end;
+      
+      Result := res.ToArray;
+    end;
+    
+    public static function  FlattenSyncQueueArray(inp: sequence of CommandQueueBase) := FlattenQueueArray&< ISimpleSyncQueueArray>(inp);
+    public static function FlattenAsyncQueueArray(inp: sequence of CommandQueueBase) := FlattenQueueArray&<ISimpleAsyncQueueArray>(inp);
+    
+  end;
+  
+static function CommandQueue<T>.operator+(q1: CommandQueueBase; q2: CommandQueue<T>) := new  SimpleSyncQueueArray<T>(QueueArrayUtils. FlattenSyncQueueArray(|q1, q2|));
+static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(|q1, q2|));
+
+{$endregion QueueArray}
+
+{$region Multiusable}
+
+type
+  MultiusableCommandQueueHub<T> = sealed class(MultiusableCommandQueueHubBase)
+    public q: CommandQueue<T>;
+    public constructor(q: CommandQueue<T>) := self.q := q;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    public function OnNodeInvoked(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean): QueueRes<T>;
+    begin
+      
+      var res_o: QueueResBase;
+      if tsk.mu_res.TryGetValue(self, res_o) then
+        Result := QueueRes&<T>( res_o ) else
+      begin
+        Result := self.q.InvokeNewQ(tsk, c, main_dvc, need_ptr_qr, nil);
+        Result.can_set_ev := false;
+        tsk.mu_res[self] := Result;
+      end;
+      
+      Result.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
+    end;
+    
+    public function MakeNode: CommandQueue<T>;
+    
+  end;
+  
+  MultiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
+    public hub: MultiusableCommandQueueHub<T>;
+    public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
+    
+    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
+    begin
+      Result := hub.OnNodeInvoked(tsk, c, main_dvc, need_ptr_qr);
+      if prev_ev<>nil then Result := Result.TrySetEv( prev_ev + Result.ev );
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    if prev_hubs.Add(hub) then hub.q.RegisterWaitables(tsk, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      if hub.q.ToStringHeader(sb, index) then
+        delayed.Add(hub.q);
+      sb += #10;
+    end;
+    
+  end;
+  
+function MultiusableCommandQueueHub<T>.MakeNode :=
+new MultiusableCommandQueueNode<T>(self);
+
+function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQueueHub&<T>.Create(self).MakeNode;
+
+{$endregion Multiusable}
+
+{$endregion Queue converter's}
+
+{$region Wait}
+
 {$region WCQWaiter}
 
 type
@@ -2970,6 +3154,9 @@ type
     public constructor(waitables: array of CommandQueueBase);
     begin
       if waitables.Length = 0 then raise new System.ArgumentException($'%Err:0Waitables%');
+      foreach var q in waitables do
+        if (q is IConstQueue) or (q is ICastQueue) then
+          raise new System.ArgumentException($'%Err:Wait(Const/Cast)%');
       self.waitables := waitables;
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
@@ -3061,143 +3248,44 @@ type
   
 {$endregion WCQWaiter}
 
-{$region Queue converter's}
-
-{$region Cast}
+{$region WaitFor}
 
 type
-  ICastQueue = interface
-    function GetQ: CommandQueueBase;
-  end;
-  CastQueue<T> = sealed class(CommandQueue<T>, ICastQueue)
-    private q: CommandQueueBase;
-    public function ICastQueue.GetQ := q;
+  CommandQueueWaitFor = sealed class(CommandQueue<object>)
+    public waiter: WCQWaiter;
     
-    public constructor(q: CommandQueueBase) := self.q := q;
+    public constructor(waiter: WCQWaiter) :=
+    self.waiter := waiter;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
-    q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).LazyQuickTransformBase(o->T(o));
+    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
+    begin
+      {$ifdef DEBUG}
+      if need_ptr_qr then raise new System.InvalidOperationException;
+      {$endif DEBUG}
+      var wait_ev := waiter.GetWaitEv(tsk, c);
+      Result := new QueueResConst<object>(nil, prev_ev=nil ? wait_ev : prev_ev+wait_ev);
+    end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    q.RegisterWaitables(tsk, prev_hubs);
+    waiter.RegisterWaitables(tsk);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += #10;
-      q.ToString(sb, tabs, index, delayed);
+      waiter.ToString(sb, tabs, index, delayed);
     end;
     
   end;
   
-function CommandQueueBase.Cast<T>: CommandQueue<T>;
-begin
-  var q := self;
-  if q is ICastQueue(var cq) then q := cq.GetQ;
-  Result := if q is CommandQueue<T>(var tcq) then tcq else new CastQueue<T>(q);
-end;
+function WaitForAll(params qs: array of CommandQueueBase) := WaitForAll(qs.AsEnumerable);
+function WaitForAll(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
 
-{$endregion Cast}
+function WaitForAny(params qs: array of CommandQueueBase) := WaitForAny(qs.AsEnumerable);
+function WaitForAny(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
 
-{$region ThenConvert}
+function WaitFor(q: CommandQueueBase) := WaitForAll(q);
 
-type
-  CommandQueueThenConvert<TInp, TRes> = sealed class(HostQueue<TInp, TRes>)
-    protected q: CommandQueue<TInp>;
-    protected f: (TInp, Context)->TRes;
-    
-    public constructor(q: CommandQueue<TInp>; f: (TInp, Context)->TRes);
-    begin
-      self.q := q;
-      self.f := f;
-    end;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    q.RegisterWaitables(tsk, prev_hubs);
-    
-    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TInp>; override :=
-    q.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
-    
-    protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o, c);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ' => ';
-      sb.Append(f);
-      sb += #10;
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
-new CommandQueueThenConvert<T, TOtp>(self, f);
-
-{$endregion ThenConvert}
-
-{$region QueueArray}
-
-static function CommandQueue<T>.operator+(q1: CommandQueueBase; q2: CommandQueue<T>) := new  SimpleSyncQueueArray<T>(QueueArrayUtils. FlattenSyncQueueArray(|q1, q2|));
-static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(|q1, q2|));
-
-{$endregion QueueArray}
-
-{$region Multiusable}
-
-type
-  MultiusableCommandQueueHub<T> = sealed class(MultiusableCommandQueueHubBase)
-    public q: CommandQueue<T>;
-    public constructor(q: CommandQueue<T>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    public function OnNodeInvoked(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean): QueueRes<T>;
-    begin
-      
-      var res_o: QueueResBase;
-      if tsk.mu_res.TryGetValue(self, res_o) then
-        Result := QueueRes&<T>( res_o ) else
-      begin
-        Result := self.q.InvokeNewQ(tsk, c, main_dvc, need_ptr_qr, nil);
-        Result.can_set_ev := false;
-        tsk.mu_res[self] := Result;
-      end;
-      
-      Result.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
-    end;
-    
-    public function MakeNode: CommandQueue<T>;
-    
-  end;
-  
-  MultiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
-    public hub: MultiusableCommandQueueHub<T>;
-    public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
-    
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
-    begin
-      Result := hub.OnNodeInvoked(tsk, c, main_dvc, need_ptr_qr);
-      if prev_ev<>nil then Result := Result.TrySetEv( prev_ev + Result.ev );
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    if prev_hubs.Add(hub) then hub.q.RegisterWaitables(tsk, prev_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ' => ';
-      if hub.q.ToStringHeader(sb, index) then
-        delayed.Add(hub.q);
-      sb += #10;
-    end;
-    
-  end;
-  
-function MultiusableCommandQueueHub<T>.MakeNode :=
-new MultiusableCommandQueueNode<T>(self);
-
-function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQueueHub&<T>.Create(self).MakeNode;
-
-{$endregion Multiusable}
+{$endregion WaitFor}
 
 {$region ThenWait}
 
@@ -3241,7 +3329,7 @@ new CommandQueueThenWaitFor<T>(self, new WCQWaiterAny(qs.ToArray));
 
 {$endregion ThenWait}
 
-{$endregion Queue converter's}
+{$endregion Wait}
 
 {$region KernelArg}
 
@@ -4087,43 +4175,6 @@ function HPQ(p: Context->()) :=
 new CommandQueueHostProc(p);
 
 {$endregion HFQ/HPQ}
-
-{$region WaitFor}
-
-type
-  CommandQueueWaitFor = sealed class(CommandQueue<object>)
-    public waiter: WCQWaiter;
-    
-    public constructor(waiter: WCQWaiter) :=
-    self.waiter := waiter;
-    
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
-    begin
-      if need_ptr_qr then new System.InvalidOperationException;
-      var wait_ev := waiter.GetWaitEv(tsk, c);
-      Result := new QueueResConst<object>(nil, prev_ev=nil ? wait_ev : prev_ev+wait_ev);
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    waiter.RegisterWaitables(tsk);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      waiter.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-function WaitForAll(params qs: array of CommandQueueBase) := WaitForAll(qs.AsEnumerable);
-function WaitForAll(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
-
-function WaitForAny(params qs: array of CommandQueueBase) := WaitForAny(qs.AsEnumerable);
-function WaitForAny(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
-
-function WaitFor(q: CommandQueueBase) := WaitForAll(q);
-
-{$endregion WaitFor}
 
 {$region CombineQueue's}
 

@@ -40,5 +40,6 @@
 	- 07#HostExec
 	- 08#CombineQueues
 	- 09#KernelArg
+	- 10#MarkerQueue
 
 

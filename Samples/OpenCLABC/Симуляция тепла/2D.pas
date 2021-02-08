@@ -26,8 +26,7 @@ begin
     )
   ;
   
-  // В будущем сделаю более красивый способ делать маркеры
-  var Marker: CommandQueueBase := nil as object;
+  var Marker := new MarkerQueue;
   var Q_1CycleAndOtp: CommandQueueBase := k.NewQueue
     
     .AddExec2(W,W,

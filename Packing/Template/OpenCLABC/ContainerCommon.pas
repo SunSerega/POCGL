@@ -99,11 +99,20 @@ begin
       
       WriteHeader;
       res += 'AddQueue(q: CommandQueueBase)';
-      WriteResT;
-      res_Im += ' := AddCommand(self, new QueueCommand<';
+      res += ': ';
+      res += t;
+      res += 'CommandQueue;'#10;
+      res_Im += 'begin'#10;
+      res_Im += '  Result := self;'#10;
+      res_Im += '  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;
+      res_Im += '  if q is ICastQueue(var cq) then q := cq.GetQ;'#10;
+      
+      res_Im += '  commands.Add( new QueueCommand<';
       res_Im += t;
-      res_Im += '>(q));';
-      res += #10;
+      res_Im += '>(q) );';
+      res_Im += #10;
+      
+      res_Im += 'end;'#10;
       
       res_In += '    ';
       res += #10;

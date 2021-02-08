@@ -1,10 +1,10 @@
 ﻿uses OpenCLABC;
 
 begin
-  var cq := new ConstQueue<integer>(5);
+  var cq := new MarkerQueue;
   var qf := cq.Multiusable;
   
-  var mq: CommandQueueBase := nil as object;
+  var mq := new MarkerQueue;
   
   var t := Context.Default.BeginInvoke(
     WaitFor(cq) +

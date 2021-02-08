@@ -7,7 +7,13 @@ constructor KernelCommandQueue.Create := inherited;
 
 {$region Special .Add's}
 
-function KernelCommandQueue.AddQueue(q: CommandQueueBase) := AddCommand(self, new QueueCommand<Kernel>(q));
+function KernelCommandQueue.AddQueue(q: CommandQueueBase): KernelCommandQueue;
+begin
+  Result := self;
+  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  commands.Add( new QueueCommand<Kernel>(q) );
+end;
 
 function KernelCommandQueue.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
 function KernelCommandQueue.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
