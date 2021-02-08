@@ -110,7 +110,7 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wa
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Finished compiling: OK
@@ -125,6 +125,30 @@ Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#ThenConvert\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#Multiusable\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Wait\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#HostExec\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
+Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
 Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
@@ -180,7 +204,7 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\KernelArg1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
@@ -195,6 +219,30 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#ThenConvert\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#Multiusable\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing

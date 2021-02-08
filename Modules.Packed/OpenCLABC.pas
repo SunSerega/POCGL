@@ -29,8 +29,13 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo (Q1+Q2)+(Q3+Q4) почему то сейчас не инлайнится в Q1+Q2+Q3+Q4
-// - Уже инлайнится, но надо ещё добавить в тесты
+//ToDo MarkerQueue
+// - Затем запретить ожидать константные очереди
+// - И оптимизировать так, чтоб константные очереди не добавлялись в .AddQueue и при сложении очередей
+
+//ToDo Написать в справке что вызов .Cast может оптимизировать так, что удалит очередь, для которой вызвали .Cast
+// - Проблема только если вызывать
+// - А может так же запретить ожидать и на .Cast очередях
 
 //===================================
 // Запланированное:
@@ -1834,8 +1839,25 @@ type
     
     {$region ToString}
     
-    private function DisplayName: string; virtual := self.GetType.Name;
+    private static function DisplayNameForType(t: System.Type): string;
+    begin
+      Result := t.Name;
+      
+      if t.IsGenericType then
+      begin
+        var ind := Result.IndexOf('`');
+        Result := Result.Remove(ind) + '<' + t.GenericTypeArguments.JoinToString(', ') + '>';
+      end;
+      
+    end;
+    private function DisplayName: string; virtual := DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    
+    private static function GetValueRuntimeType<T>(val: T) :=
+    if typeof(T).IsValueType then
+      typeof(T) else
+    if val = default(T) then
+      nil else val.GetType;
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<CommandQueueBase,integer>): boolean;
     begin
@@ -1850,9 +1872,8 @@ type
         index[self] := ind;
       end;
       
-      sb += '[';
+      sb += '#';
       sb.Append(ind);
-      sb += ']';
       
     end;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -1878,6 +1899,19 @@ type
       var sb := new StringBuilder;
       ToString(sb, 0, new Dictionary<CommandQueueBase, integer>, new HashSet<CommandQueueBase>);
       Result := sb.ToString;
+    end;
+    
+    ///Вызывает Write(ToString) для данной очереди и возвращает её же
+    public function Print: CommandQueueBase;
+    begin
+      Write(self.ToString);
+      Result := self;
+    end;
+    ///Вызывает Writeln(ToString) для данной очереди и возвращает её же
+    public function Println: CommandQueueBase;
+    begin
+      Writeln(self.ToString);
+      Result := self;
     end;
     
     {$endregion ToString}
@@ -1971,9 +2005,14 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      Writeln('ConstQueue.ToStringImpl');
-      sb += ' { ';
-      sb.Append(Val);
+      sb += ' ';
+      var rt := GetValueRuntimeType(res);
+      if typeof(T) <> rt then
+        sb.Append(rt);
+      sb += '{ ';
+      if rt<>nil then
+        sb.Append(Val) else
+        sb += 'nil';
       sb += ' }'#10;
     end;
     
@@ -2227,7 +2266,18 @@ type
     
     {$region ToString}
     
-    private function DisplayName: string; virtual := self.GetType.Name;
+    private static function DisplayNameForType(t: System.Type): string;
+    begin
+      Result := t.Name;
+      
+      if t.IsGenericType then
+      begin
+        var ind := Result.IndexOf('`');
+        Result := Result.Remove(ind) + '<' + t.GenericTypeArguments.JoinToString(', ') + '>';
+      end;
+      
+    end;
+    private function DisplayName: string; virtual := DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -2252,6 +2302,19 @@ type
       var sb := new StringBuilder;
       ToString(sb, 0, new Dictionary<CommandQueueBase, integer>, new HashSet<CommandQueueBase>);
       Result := sb.ToString;
+    end;
+    
+    ///Вызывает Write(ToString) для данного объекта KernelArg и возвращает его же
+    public function Print: KernelArg;
+    begin
+      Write(self.ToString);
+      Result := self;
+    end;
+    ///Вызывает Writeln(ToString) для данного объекта KernelArg и возвращает его же
+    public function Println: KernelArg;
+    begin
+      Writeln(self.ToString);
+      Result := self;
     end;
     
     {$endregion ToString}
@@ -4774,7 +4837,7 @@ type
         var curr := enmr.Current;
         var next := enmr.MoveNext;
         
-        if not (curr is IConstQueue) or not next then
+//        if not (curr is IConstQueue) or not next then
           if curr is T(var sqa) then
             res.AddRange(sqa.GetQS) else
             res += curr;
@@ -5046,7 +5109,11 @@ type
   WCQWaiter = abstract class
     private waitables: array of CommandQueueBase;
     
-    public constructor(waitables: array of CommandQueueBase) := self.waitables := waitables;
+    public constructor(waitables: array of CommandQueueBase);
+    begin
+      if waitables.Length = 0 then raise new System.ArgumentException($'Wait очереди должны ожидать хотя бы одну очередь');
+      self.waitables := waitables;
+    end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public procedure RegisterWaitables(tsk: CLTaskBase) :=
@@ -5058,13 +5125,29 @@ type
     begin
       sb.Append(#9, tabs);
       sb += self.GetType.Name;
-      sb += #10;
-      foreach var q in waitables do
+      
+      if waitables.Length=1 then
       begin
-        sb.Append(#9, tabs+1);
-        if q.ToStringHeader(sb, index) then
-          delayed += q;
+        sb += ' => ';
+        
+        if waitables[0].ToStringHeader(sb, index) then
+          delayed += waitables[0];
+        
+        sb += #10;
+      end else
+      begin
+        sb += #10;
+        
+        foreach var q in waitables do
+        begin
+          sb.Append(#9, tabs+1);
+          if q.ToStringHeader(sb, index) then
+            delayed += q;
+          sb += #10;
+        end;
+        
       end;
+      
     end;
     
   end;
@@ -5125,8 +5208,12 @@ type
 {$region Cast}
 
 type
-  CastQueue<T> = sealed class(CommandQueue<T>)
+  ICastQueue = interface
+    function GetQ: CommandQueueBase;
+  end;
+  CastQueue<T> = sealed class(CommandQueue<T>, ICastQueue)
     private q: CommandQueueBase;
+    public function ICastQueue.GetQ := q;
     
     public constructor(q: CommandQueueBase) := self.q := q;
     
@@ -5138,16 +5225,18 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(typeof(T));
       sb += #10;
       q.ToString(sb, tabs, index, delayed);
     end;
     
   end;
   
-function CommandQueueBase.Cast<T>: CommandQueue<T> :=
-if self is CommandQueue<T>(var cq) then cq else new CastQueue<T>(self);
+function CommandQueueBase.Cast<T>: CommandQueue<T>;
+begin
+  var q := self;
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  Result := if q is CommandQueue<T>(var tcq) then tcq else new CastQueue<T>(q);
+end;
 
 {$endregion Cast}
 
@@ -5279,6 +5368,7 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
+      sb += #10;
       q.ToString(sb, tabs, index, delayed);
       waiter.ToString(sb, tabs, index, delayed);
     end;
@@ -5375,7 +5465,6 @@ type
     public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
     cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
     
-    private function DisplayName: string; override := $'KernelArgRecord<{typeof(TRecord)}>';
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += ' => ';
@@ -5564,12 +5653,24 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
+    private function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += self.GetType.Name;
+      sb += DisplayName;
       self.ToStringImpl(sb, tabs+1, index, delayed);
+    end;
+    
+  end;
+  
+  BasicGPUCommand<T> = abstract class(GPUCommand<T>)
+    
+    private function DisplayName: string; override;
+    begin
+      Result := self.GetType.Name;
+      Result := Result.Remove(Result.IndexOf('`'));
     end;
     
   end;
@@ -5579,7 +5680,7 @@ type
 {$region Queue}
 
 type
-  QueueCommand<T> = sealed class(GPUCommand<T>)
+  QueueCommand<T> = sealed class(BasicGPUCommand<T>)
     public q: CommandQueueBase;
     
     public constructor(q: CommandQueueBase) := self.q := q;
@@ -5606,7 +5707,7 @@ type
 {$region Proc}
 
 type
-  ProcCommand<T> = sealed class(GPUCommand<T>)
+  ProcCommand<T> = sealed class(BasicGPUCommand<T>)
     public p: (T,Context)->();
     
     public constructor(p: (T,Context)->()) := self.p := p;
@@ -5641,7 +5742,7 @@ type
 {$region Wait}
 
 type
-  WaitCommand<T> = sealed class(GPUCommand<T>)
+  WaitCommand<T> = sealed class(BasicGPUCommand<T>)
     public waiter: WCQWaiter;
     
     public constructor(waiter: WCQWaiter) := self.waiter := waiter;
@@ -5693,7 +5794,10 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += self.GetType.Name;
+      
+      var tn := self.GetType.Name;
+      sb += tn.Remove(tn.IndexOf('`'));
+      
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
@@ -6270,6 +6374,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'ptr: ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
@@ -6327,6 +6432,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'ptr: ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
@@ -6394,12 +6500,15 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'ptr: ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -6467,12 +6576,15 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'ptr: ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -6553,9 +6665,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'val: ';
       sb.Append(val^);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -6629,9 +6743,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'val: ';
       val.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -6691,6 +6807,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
@@ -6750,6 +6867,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
@@ -6809,6 +6927,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
@@ -6868,6 +6987,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
@@ -6927,6 +7047,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
@@ -6986,6 +7107,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
@@ -7060,15 +7182,19 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset: ';
       a_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -7148,18 +7274,23 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset1: ';
       a_offset1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset2: ';
       a_offset2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -7244,21 +7375,27 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset1: ';
       a_offset1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset2: ';
       a_offset2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset3: ';
       a_offset3.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -7333,15 +7470,19 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset: ';
       a_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -7421,18 +7562,23 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset1: ';
       a_offset1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset2: ';
       a_offset2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -7517,21 +7663,27 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'a: ';
       a.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset1: ';
       a_offset1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset2: ';
       a_offset2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'a_offset3: ';
       a_offset3.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -7598,9 +7750,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'ptr: ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'pattern_len: ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
@@ -7673,15 +7827,19 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'ptr: ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'pattern_len: ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -7742,6 +7900,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'val: ';
       sb.Append(val^);
       
@@ -7812,12 +7971,15 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'val: ';
       sb.Append(val^);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -7883,6 +8045,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'val: ';
       val.ToString(sb, tabs, index, delayed, false);
       
@@ -7958,12 +8121,15 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'val: ';
       val.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -8025,6 +8191,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'b: ';
       b.ToString(sb, tabs, index, delayed, false);
       
@@ -8082,6 +8249,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'b: ';
       b.ToString(sb, tabs, index, delayed, false);
       
@@ -8154,15 +8322,19 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'b: ';
       b.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'from_pos: ';
       from_pos.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'to_pos: ';
       to_pos.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -8235,15 +8407,19 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'b: ';
       b.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'from_pos: ';
       from_pos.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'to_pos: ';
       to_pos.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -8361,9 +8537,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -8435,6 +8613,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -8544,6 +8723,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -8610,9 +8790,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'len1: ';
       len1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len2: ';
       len2.ToString(sb, tabs, index, delayed, false);
       
@@ -8684,12 +8866,15 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'len1: ';
       len1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len2: ';
       len2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len3: ';
       len3.ToString(sb, tabs, index, delayed, false);
       
@@ -8801,11 +8986,13 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'sz1: ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';
@@ -8893,14 +9080,17 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'sz1: ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'sz2: ';
       sz2.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';
@@ -8993,17 +9183,21 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'sz1: ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'sz2: ';
       sz2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'sz3: ';
       sz3.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';
@@ -9096,17 +9290,21 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'global_work_offset: ';
       global_work_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'global_work_size: ';
       global_work_size.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'local_work_size: ';
       local_work_size.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';

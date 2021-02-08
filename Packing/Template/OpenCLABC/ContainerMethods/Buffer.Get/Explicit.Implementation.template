@@ -104,9 +104,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -178,6 +180,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'buff_offset: ';
       buff_offset.ToString(sb, tabs, index, delayed, false);
       
@@ -287,6 +290,7 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -353,9 +357,11 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'len1: ';
       len1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len2: ';
       len2.ToString(sb, tabs, index, delayed, false);
       
@@ -427,12 +433,15 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'len1: ';
       len1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len2: ';
       len2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'len3: ';
       len3.ToString(sb, tabs, index, delayed, false);
       

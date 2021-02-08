@@ -70,11 +70,13 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'sz1: ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';
@@ -162,14 +164,17 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'sz1: ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'sz2: ';
       sz2.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';
@@ -262,17 +267,21 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'sz1: ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'sz2: ';
       sz2.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'sz3: ';
       sz3.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';
@@ -365,17 +374,21 @@ type
     begin
       sb += #10;
       
+      sb.Append(#9, tabs);
       sb += 'global_work_offset: ';
       global_work_offset.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'global_work_size: ';
       global_work_size.ToString(sb, tabs, index, delayed, false);
       
+      sb.Append(#9, tabs);
       sb += 'local_work_size: ';
       local_work_size.ToString(sb, tabs, index, delayed, false);
       
       for var i := 0 to args.Length-1 do 
       begin
+        sb.Append(#9, tabs);
         sb += 'args[';
         sb.Append(i);
         sb += ']: ';

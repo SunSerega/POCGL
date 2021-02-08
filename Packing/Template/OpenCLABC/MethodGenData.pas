@@ -772,6 +772,8 @@ type
           end;
           
           res_EIm += tab;
+          res_EIm += 'sb.Append(#9, tabs);'#10;
+          res_EIm += tab;
           res_EIm += 'sb += ''';
           res_EIm += arg.name;
           for var i := 1 to arr_lvl do
