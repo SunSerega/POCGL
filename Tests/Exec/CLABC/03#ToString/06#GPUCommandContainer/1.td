@@ -6,7 +6,7 @@ OpenCLABC
 
 #ExpOtp
 KernelCommandQueue#0
-	CCCObj => Kernel[p1:472389424] from ProgramCode[470988880]
+	CCCObj => Kernel[p1:*] from ProgramCode[*]
 	KernelCommandExec2
 		sz1: ConstQueue<System.Int32>#1 { 1 }
 		sz2: ConstQueue<System.Int32>#2 { 1 }

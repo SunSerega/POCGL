@@ -14,7 +14,69 @@ type MessageBoxDefaultButton  = System.Windows.Forms.MessageBoxDefaultButton;
 type DialogResult             = System.Windows.Forms.DialogResult;
 
 type
-  TestCanceledException = class(Exception) end;
+  TestCanceledException = sealed class(Exception) end;
+  
+  ExpectedTextPart = sealed class
+    s: string;
+    constructor(s: string) := self.s := s;
+    
+    function NextInds(text: string; ind: integer): sequence of integer?;
+    begin
+      
+      while ind+s.Length <= text.Length do
+      begin
+        ind := text.IndexOf(s, ind);
+        if ind=-1 then exit;
+        yield ind+s.Length;
+        ind += 1;
+      end;
+      
+    end;
+    
+  end;
+  
+  ExpectedText = sealed class
+    parts: List<ExpectedTextPart>;
+    
+    constructor(text: string);
+    begin
+      if text=nil then exit;
+      parts := new List<ExpectedTextPart>;
+      var ind1 := 0;
+      while true do
+      begin
+        var ind2 := text.IndexOf('*', ind1);
+        if ind2=-1 then break;
+        parts += new ExpectedTextPart(text.SubString(ind1, ind2-ind1));
+        ind1 := ind2;
+        while text[ind1] = '*' do
+          ind1 += 1;
+      end;
+      parts += new ExpectedTextPart(text.Remove(0, ind1));
+    end;
+    
+    function Matches(text: string): boolean;
+    begin
+      if text=nil then
+      begin
+        Result := parts=nil;
+        exit;
+      end;
+      Result := false;
+      if parts=nil then exit;
+      var min_ind := 0;
+      for var i := 0 to parts.Count-2 do
+      begin
+        var next_min_ind := parts[i].NextInds(text, min_ind).FirstOrDefault;
+        if next_min_ind=nil then exit;
+        min_ind := next_min_ind.Value;
+      end;
+      Result := parts[parts.Count-1].NextInds(text, min_ind).LastOrDefault = text.Length;
+    end;
+    
+    public function ToString: string; override := parts?.Select(part->part.s).JoinToString('*');
+    
+  end;
   
   TestInfo = sealed class
     
@@ -48,9 +110,9 @@ type
     
     test_mode: HashSet<string>;
     req_modules: IList<string>;
-    expected_comp_err: string;
-    expected_otp: string;
-    expected_exec_err: string;
+    expected_comp_err: ExpectedText;
+    expected_otp: ExpectedText;
+    expected_exec_err: ExpectedText;
     wait_for_tests: array of string;
     
     {$endregion typed settings}
@@ -185,15 +247,15 @@ type
         if t.test_mode.Contains('Comp') then
         begin
           
-          t.expected_comp_err := t.ExtractSettingStr('#ExpErr');
+          t.expected_comp_err := new ExpectedText( t.ExtractSettingStr('#ExpErr') );
           
         end;
         
         if t.test_mode.Contains('Exec') then
         begin
           
-          t.expected_otp      := t.ExtractSettingStr('#ExpOtp');
-          t.expected_exec_err := t.ExtractSettingStr('#ExpExecErr');
+          t.expected_otp      := new ExpectedText( t.ExtractSettingStr('#ExpOtp') );
+          t.expected_exec_err := new ExpectedText( t.ExtractSettingStr('#ExpExecErr') );
           t.wait_for_tests    := t.ExtractSettingStr('#WaitForTests')?.Split(#10).ConvertAll(fname->GetFullPath(fname, t.test_dir));
           
         end;
@@ -242,7 +304,7 @@ type
               DialogResult.Cancel: Halt(-1);
             end else
             
-          if t.expected_comp_err<>comp_err then
+          if not t.expected_comp_err.Matches(comp_err) then
             case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
@@ -261,7 +323,7 @@ type
         end else
         begin
           
-          if t.expected_comp_err<>nil then
+          if t.expected_comp_err.parts<>nil then
             case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
@@ -413,40 +475,41 @@ type
     procedure RaiseWaitNotFound(wait_test, file_type: string) :=
     raise new MessageException($'ERROR: Wait {file_type} [{GetRelativePath(wait_test)}] of test [{GetRelativePath(self.td_fname)}] wasn''t found');
     
-    static function SmartIsTextDiff(text1, text2: string): boolean;
+    static function InsertAnyTextParts(text: string): string;
     begin
+      var res := new StringBuilder;
+      
       var anon_names := |'<>local_variables_class_', '<>lambda'|;
-      var skip_anon_names: string->sequence of char := s->
+      var inds := new integer[anon_names.Length];
+      var in_anon_name := false;
+      foreach var ch in text do
       begin
-        var inds := new integer[anon_names.Length];
-        var in_anon_name := false;
-        Result := s.Where(ch->
+        if in_anon_name then
         begin
-          if in_anon_name then
+          if ch.IsDigit then continue;
+          in_anon_name := false;
+          res += '*';
+        end;
+        
+        for var i := 0 to inds.Length-1 do
+        begin
+          if anon_names[i][inds[i]] = ch then
           begin
-            if ch.IsDigit then exit;
-            in_anon_name := false;
-          end;
-          
-          for var i := 0 to inds.Length-1 do
-          begin
-            if anon_names[i][inds[i]] = ch then
+            inds[i] += 1;
+            if inds[i] = anon_names[i].Length then
             begin
-              inds[i] += 1;
-              if inds[i] = anon_names[i].Length then
-              begin
-                in_anon_name := true;
-                inds.Fill(0);
-                break;
-              end;
-            end else
-              inds[i] := 0;
-          end;
-          
-          Result := true;
-        end);
+              in_anon_name := true;
+              inds.Fill(0);
+              break;
+            end;
+          end else
+            inds[i] := 0;
+        end;
+        
+        res += ch;
       end;
-      Result := not skip_anon_names(text1).SequenceEqual(skip_anon_names(text2));
+      
+      Result := res.ToString;
     end;
     
     procedure Execute(all_executed: HashSet<TestInfo>) :=
@@ -490,12 +553,12 @@ type
       if err<>nil then
       begin
         
-        if expected_exec_err=nil then
+        if expected_exec_err.parts=nil then
           case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
-              all_settings['#ExpExecErr'] := err;
+              all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
               used_settings += '#ExpExecErr';
               resave_settings := true;
               Otp($'%WARNING: Settings updated for "{fwoe}.td"');
@@ -506,12 +569,12 @@ type
             DialogResult.Cancel: Halt(-1);
           end else
           
-        if SmartIsTextDiff(expected_exec_err, err) then
+        if not expected_exec_err.Matches(err) then
           case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
-              all_settings['#ExpExecErr'] := err;
+              all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
               resave_settings := true;
               Otp($'%WARNING: Settings updated for "{fwoe}.td"');
             end;
@@ -521,7 +584,7 @@ type
             DialogResult.Cancel: Halt(-1);
           end;
         
-        if expected_otp<>nil then
+        if expected_otp.parts<>nil then
         begin
           if not all_settings.Remove('#ExpOtp') then raise new System.InvalidOperationException;
           resave_settings := true;
@@ -530,7 +593,7 @@ type
       end else
       begin
         
-        if expected_exec_err<>nil then
+        if expected_exec_err.parts<>nil then
           case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
@@ -545,21 +608,21 @@ type
             DialogResult.Cancel: Halt(-1);
           end;
         
-        if expected_otp=nil then
+        if expected_otp.parts=nil then
         begin
-          all_settings['#ExpOtp'] := res;
+          all_settings['#ExpOtp'] := InsertAnyTextParts(res);
           used_settings += '#ExpOtp';
           resave_settings := true;
           Otp($'WARNING: Settings updated for "{fwoe}.td"');
         end else
-        if SmartIsTextDiff(expected_otp, res) then
+        if not expected_otp.Matches(res) then
         begin
           
           case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
-              all_settings['#ExpOtp'] := res;
+              all_settings['#ExpOtp'] := InsertAnyTextParts(res);
               used_settings += '#ExpOtp';
               resave_settings := true;
               Otp($'%WARNING: Settings updated for "{fwoe}.td"');
