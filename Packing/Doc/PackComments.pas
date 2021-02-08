@@ -1,12 +1,12 @@
-﻿uses CommentableData;
-
-uses POCGL_Utils  in '..\..\POCGL_Utils';
+﻿uses POCGL_Utils  in '..\..\POCGL_Utils';
 
 uses AOtp         in '..\..\Utils\AOtp';
 uses ATask        in '..\..\Utils\ATask';
 uses AQueue       in '..\..\Utils\AQueue';
 uses CLArgs       in '..\..\Utils\CLArgs';
 uses Fixers       in '..\..\Utils\Fixers';
+
+uses CommentableData;
 
 type
   CommentData = sealed class

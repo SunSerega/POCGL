@@ -2035,8 +2035,12 @@ type
   
   {$region Marker}
   
+  ///Представляет очередь-маркер
+  ///Очереди-маркеры ничего не выполняют и возвращает object(nil)
+  ///Используйте такие очереди только для ожидания в Wait очередях
   MarkerQueue = sealed partial class(CommandQueue<object>)
     
+    ///Создаёт новую очередь-маркер
     public constructor := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;

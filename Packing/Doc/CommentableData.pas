@@ -261,7 +261,7 @@ begin
 end;
 
 static function CommentableConstructor.Parse(l: string; t: CommentableType): CommentableConstructor;
-const constructor_keywords: array of string = (' constructor(');
+const constructor_keywords: array of string = (' constructor');
 begin
   var ind := l.IndexOfAny(constructor_keywords);
   if ind=-1 then exit;
