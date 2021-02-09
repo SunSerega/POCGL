@@ -2,11 +2,11 @@
 
 procedure Test(Q1_exec_count: integer; err_text1, err_text2: string) :=
 try
-  var Q1 := HFQ(()->0);
+  var M := new MarkerQueue;
   
   var t1 := Context.Default.BeginInvoke(
-    WaitFor(Q1) +
-    WaitFor(Q1) +
+    WaitFor(M) +
+    WaitFor(M) +
     HPQ(()->
     begin
       Writeln('raise1');
@@ -14,7 +14,7 @@ try
     end)
   );
   var t2 := Context.Default.BeginInvoke(
-    CombineSyncQueue(ArrFill(Q1_exec_count,Q1)) +
+    CombineSyncQueueBase(ArrFill&<CommandQueueBase>(Q1_exec_count,M)) +
     HPQ(()->
     begin
       Sleep(10);
@@ -31,7 +31,7 @@ try
   begin
     err.PrintLines;
     first_err := false;
-    Context.Default.SyncInvoke(Q1);
+    Context.Default.SyncInvoke(M);
   end;
   
   t1.WhenError(on_err);

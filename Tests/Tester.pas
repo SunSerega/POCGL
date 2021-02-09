@@ -14,6 +14,8 @@ type MessageBoxDefaultButton  = System.Windows.Forms.MessageBoxDefaultButton;
 type DialogResult             = System.Windows.Forms.DialogResult;
 
 type
+  {$region Helper types}
+  
   TestCanceledException = sealed class(Exception) end;
   
   ExpectedTextPart = sealed class
@@ -64,19 +66,22 @@ type
       end;
       Result := false;
       if parts=nil then exit;
-      var min_ind := 0;
-      for var i := 0 to parts.Count-2 do
+      if not text.StartsWith(parts[0].s) then exit;
+      var min_ind := parts[0].s.Length;
+      for var i := 1 to parts.Count-2 do
       begin
         var next_min_ind := parts[i].NextInds(text, min_ind).FirstOrDefault;
         if next_min_ind=nil then exit;
         min_ind := next_min_ind.Value;
       end;
-      Result := parts[parts.Count-1].NextInds(text, min_ind).LastOrDefault = text.Length;
+      Result := text.Length = if parts.Count=1 then min_ind else parts[parts.Count-1].NextInds(text, min_ind).LastOrDefault;
     end;
     
     public function ToString: string; override := parts?.Select(part->part.s).JoinToString('*');
     
   end;
+  
+  {$endregion Helper types}
   
   TestInfo = sealed class
     
@@ -288,7 +293,7 @@ type
         begin
           Otp('Finished compiling: ERRОR');
           
-          if t.expected_comp_err=nil then
+          if t.expected_comp_err.parts=nil then
             case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
@@ -310,6 +315,7 @@ type
               DialogResult.Yes:
               begin
                 t.all_settings['#ExpErr'] := comp_err;
+                t.used_settings += '#ExpErr';
                 t.resave_settings := true;
                 Otp($'%WARNING: Settings updated for "{fwoe}.td"');
               end;
@@ -575,6 +581,7 @@ type
             DialogResult.Yes:
             begin
               all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
+              used_settings += '#ExpExecErr';
               resave_settings := true;
               Otp($'%WARNING: Settings updated for "{fwoe}.td"');
             end;

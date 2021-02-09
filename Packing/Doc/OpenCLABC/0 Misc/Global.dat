@@ -16,16 +16,16 @@
 # :WaitForDef
 Создаёт очередь, ожидающую
 
-# WaitFor(CommandQueueBase)
-%:WaitForDef% сигнала выполненности от указанной очереди
+# WaitFor(MarkerQueue)
+%:WaitForDef% сигнала выполненности от заданного маркера
 
-# WaitForAll(array of CommandQueueBase)
-# WaitForAll(sequence of CommandQueueBase)
-%:WaitForDef% сигнала выполненности от каждой из указанных очередей
+# WaitForAll(array of MarkerQueue)
+# WaitForAll(sequence of MarkerQueue)
+%:WaitForDef% сигнала выполненности от каждого из указанных маркеров
 
-# WaitForAny(array of CommandQueueBase)
-# WaitForAny(sequence of CommandQueueBase)
-%:WaitForDef% первого сигнала выполненности от любой из указанных очередей
+# WaitForAny(array of MarkerQueue)
+# WaitForAny(sequence of MarkerQueue)
+%:WaitForDef% первого сигнала выполненности от любого из указанных маркеров
 
 
 

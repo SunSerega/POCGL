@@ -15,18 +15,18 @@ begin
   //     F
   //
   
-  var A := NamedQ('A');
-  var B := NamedQ('B');
-  var C := NamedQ('C');
-  var D := NamedQ('D');
-  var E := NamedQ('E');
-  var F := NamedQ('F');
+  var A       := NamedQ('A')[0];
+  var (B, Bm) := NamedQ('B');
+  var (C, Cm) := NamedQ('C');
+  var D       := NamedQ('D')[0];
+  var E       := NamedQ('E')[0];
+  var F       := NamedQ('F')[0];
   
   Context.Default.SyncInvoke(
     A +
     (B+D) *
     (C+F) *
-    (WaitForAll(B,C) + E)
+    (WaitForAll(Bm,Cm) + E)
   );
   
 end.

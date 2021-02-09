@@ -33,14 +33,14 @@
 # CQ:ThenWaitDef
 Создаёт очередь, сначала выполняющую данную, а затем ожидающую
 
-# CommandQueue[%Base,<T>%].ThenWaitFor(CommandQueueBase)
-%CQ:ThenWaitDef% сигнала выполненности от заданой очереди
+# CommandQueue[%Base,<T>%].ThenWaitFor(MarkerQueue)
+%CQ:ThenWaitDef% сигнала выполненности от заданого маркера
 
-# CommandQueue[%Base,<T>%].ThenWaitForAll([%sequence,array%] of CommandQueueBase)
-%CQ:ThenWaitDef% сигнала выполненности от каждой из заданых очередей
+# CommandQueue[%Base,<T>%].ThenWaitForAll([%sequence,array%] of MarkerQueue)
+%CQ:ThenWaitDef% сигнала выполненности от каждого из заданых маркеров
 
-# CommandQueue[%Base,<T>%].ThenWaitForAny([%sequence,array%] of CommandQueueBase)
-%CQ:ThenWaitDef% первого сигнала выполненности от любой из заданных очередей
+# CommandQueue[%Base,<T>%].ThenWaitForAny([%sequence,array%] of MarkerQueue)
+%CQ:ThenWaitDef% первого сигнала выполненности от любого из заданных маркеров
 
 
 

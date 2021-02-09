@@ -148,7 +148,7 @@ begin
       foreach var order in |'All', 'Any'| do
       begin
         
-        foreach var arg_t in |'array of CommandQueueBase', 'sequence of CommandQueueBase'| do
+        foreach var arg_t in |'array of MarkerQueue', 'sequence of MarkerQueue'| do
         begin
           WriteHeader;
           res += 'AddWait';
@@ -172,7 +172,7 @@ begin
       end;
       
       WriteHeader;
-      res += 'AddWait(q: CommandQueueBase)';
+      res += 'AddWait(q: MarkerQueue)';
       WriteResT;
       res_Im += ' := AddWaitAll(q);';
       res += #10;

@@ -980,21 +980,6 @@ type
     
     {$endregion Multiusable}
     
-    {$region ThenWait}
-    
-    private function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
-    private function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; abstract;
-    
-    public function ThenWaitForAll(params qs: array of CommandQueueBase) := ThenWaitForAllBase(qs);
-    public function ThenWaitForAll(qs: sequence of CommandQueueBase    ) := ThenWaitForAllBase(qs);
-    
-    public function ThenWaitForAny(params qs: array of CommandQueueBase) := ThenWaitForAnyBase(qs);
-    public function ThenWaitForAny(qs: sequence of CommandQueueBase    ) := ThenWaitForAnyBase(qs);
-    
-    public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
-    
-    {$endregion ThenWait}
-    
     {$region ToString}
     
     private static function DisplayNameForType(t: System.Type): string;
@@ -1105,24 +1090,49 @@ type
     
     {$endregion Multiusable}
     
-    {$region ThenWait}
-    
-    public function ThenWaitForAll(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAll(qs.AsEnumerable);
-    public function ThenWaitForAll(qs: sequence of CommandQueueBase): CommandQueue<T>;
-    
-    public function ThenWaitForAny(params qs: array of CommandQueueBase): CommandQueue<T> := ThenWaitForAny(qs.AsEnumerable);
-    public function ThenWaitForAny(qs: sequence of CommandQueueBase): CommandQueue<T>;
-    
-    public function ThenWaitFor(q: CommandQueueBase) := ThenWaitForAll(q);
-    
-    private function ThenWaitForAllBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAll(qs);
-    private function ThenWaitForAnyBase(qs: sequence of CommandQueueBase): CommandQueueBase; override := ThenWaitForAny(qs);
-    
-    {$endregion ThenWait}
-    
   end;
   
   {$endregion Base}
+  
+  {$region Marker}
+  
+  MarkerQueue = sealed partial class
+    
+    public constructor := exit;
+    
+  end;
+  
+  CommandQueueBase = abstract partial class
+    
+    private function ThenWaitForAllBase(qs: sequence of MarkerQueue): CommandQueueBase; abstract;
+    private function ThenWaitForAnyBase(qs: sequence of MarkerQueue): CommandQueueBase; abstract;
+    
+    public function ThenWaitForAll(params qs: array of MarkerQueue) := ThenWaitForAllBase(qs);
+    public function ThenWaitForAll(    qs: sequence of MarkerQueue) := ThenWaitForAllBase(qs);
+    
+    public function ThenWaitForAny(params qs: array of MarkerQueue) := ThenWaitForAnyBase(qs);
+    public function ThenWaitForAny(    qs: sequence of MarkerQueue) := ThenWaitForAnyBase(qs);
+    
+    public function ThenWaitFor(q: MarkerQueue) := ThenWaitForAll(q);
+    
+  end;
+  
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
+    
+    public function ThenWaitForAll(params qs: array of MarkerQueue): CommandQueue<T> := ThenWaitForAll(qs.AsEnumerable);
+    public function ThenWaitForAll(    qs: sequence of MarkerQueue): CommandQueue<T>;
+    
+    public function ThenWaitForAny(params qs: array of MarkerQueue): CommandQueue<T> := ThenWaitForAny(qs.AsEnumerable);
+    public function ThenWaitForAny(    qs: sequence of MarkerQueue): CommandQueue<T>;
+    
+    public function ThenWaitFor(q: MarkerQueue) := ThenWaitForAll(q);
+    
+    private function ThenWaitForAllBase(qs: sequence of MarkerQueue): CommandQueueBase; override := ThenWaitForAll(qs);
+    private function ThenWaitForAnyBase(qs: sequence of MarkerQueue): CommandQueueBase; override := ThenWaitForAny(qs);
+    
+  end;
+  
+  {$endregion Marker}
   
   {$region Const}
   
@@ -1167,16 +1177,6 @@ type
   end;
   
   {$endregion Const}
-  
-  {$region Marker}
-  
-  MarkerQueue = sealed partial class
-    
-    public constructor := exit;
-    
-  end;
-  
-  {$endregion Marker}
   
   {$endregion CommandQueue}
   
@@ -1458,13 +1458,13 @@ function HPQ(p: Context->()): CommandQueueBase;
 
 {$region WaitFor}
 
-function WaitForAll(params qs: array of CommandQueueBase): CommandQueueBase;
-function WaitForAll(qs: sequence of CommandQueueBase): CommandQueueBase;
+function WaitForAll(params qs: array of MarkerQueue): CommandQueueBase;
+function WaitForAll(    qs: sequence of MarkerQueue): CommandQueueBase;
 
-function WaitForAny(params qs: array of CommandQueueBase): CommandQueueBase;
-function WaitForAny(qs: sequence of CommandQueueBase): CommandQueueBase;
+function WaitForAny(params qs: array of MarkerQueue): CommandQueueBase;
+function WaitForAny(    qs: sequence of MarkerQueue): CommandQueueBase;
 
-function WaitFor(q: CommandQueueBase): CommandQueueBase;
+function WaitFor(q: MarkerQueue): CommandQueueBase;
 
 {$endregion WaitFor}
 
@@ -2398,19 +2398,47 @@ type
     
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; abstract;
     
-    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase; abstract;
+    private procedure FinishAfterNewQ(cq: cl_command_queue; ev: EventList; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id);
+    begin
+      {$ifdef DEBUG}
+      if (ev.count<>0) and not ev.abortable then raise new System.NotSupportedException;
+      {$endif DEBUG}
+      if cq=cl_command_queue.Zero then exit;
+      
+      ev.AttachFinallyCallback(()->
+      begin
+        System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(cq)))
+      end, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'cl.ReleaseCommandQueue'{$endif});
+      
+    end;
+    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase;
+    begin
+      var cq := cl_command_queue.Zero;
+      Result := InvokeBase(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
+      FinishAfterNewQ(cq, Result.ev, tsk, c, main_dvc);
+    end;
     
     /// Добавление tsk в качестве ключа для всех ожидаемых очередей
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
     
   end;
+  CommandQueueResLess = abstract partial class(CommandQueueBase)
+    
+    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override := self.Cast&<object>.ThenConvert(f);
+    
+    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; override := q + self.Cast&<object>;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q * self.Cast&<object>;
+    
+    private function MultiusableBase: ()->CommandQueueBase; override := self.Cast&<object>.Multiusable as object as Func0<CommandQueueBase>; //ToDo #2221
+    
+    private function ThenWaitForAllBase(qs: sequence of MarkerQueue): CommandQueueBase; override := self.Cast&<object>.ThenWaitForAll(qs);
+    private function ThenWaitForAnyBase(qs: sequence of MarkerQueue): CommandQueueBase; override := self.Cast&<object>.ThenWaitForAny(qs);
+    
+  end;
   
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; abstract;
-    
-    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; virtual :=
-    InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; abstract;
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override :=
     Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
     
@@ -2418,73 +2446,19 @@ type
     begin
       var cq := cl_command_queue.Zero;
       Result := Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
-      
-      {$ifdef DEBUG}
-      if (Result.ev.count<>0) and not Result.ev.abortable then raise new System.NotSupportedException;
-      {$endif DEBUG}
-      
-      if cq<>cl_command_queue.Zero then
-        Result.ev.AttachFinallyCallback(()->
-        begin
-          System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(cq)))
-        end, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'cl.ReleaseCommandQueue'{$endif});
-      
+      FinishAfterNewQ(cq, Result.ev, tsk, c, main_dvc);
     end;
-    protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase; override :=
-    InvokeNewQ(tsk, c, main_dvc, need_ptr_qr, prev_ev);
     
   end;
   
 {$endregion Base}
-
-{$region Waitable}
-
-type
-  IWaitableCommandQueue = interface
-    procedure RegisterWaiterTask(tsk: CLTaskBase);
-    procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
-  end;
-  WaitableCommandQueue<T> = abstract class(CommandQueue<T>, IWaitableCommandQueue)
-    private mw_evs := new Dictionary<CLTaskBase, MWEventContainer>;
-    
-    public procedure IWaitableCommandQueue.RegisterWaiterTask(tsk: CLTaskBase) :=
-    lock mw_evs do if not mw_evs.ContainsKey(tsk) then
-    begin
-      mw_evs[tsk] := new MWEventContainer;
-      tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
-    end;
-    
-    public procedure IWaitableCommandQueue.AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
-    begin
-      var cont: MWEventContainer;
-      lock mw_evs do cont := mw_evs[tsk];
-      cont.AddHandler(handler);
-    end;
-    
-    private procedure ExecuteMWHandlers;
-    begin
-      if mw_evs.Count=0 then exit;
-      var conts: array of MWEventContainer;
-      lock mw_evs do conts := mw_evs.Values.ToArray;
-      for var i := 0 to conts.Length-1 do conts[i].ExecuteHandler;
-    end;
-    
-    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
-    begin
-      Result := InvokeImpl(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev).EnsureAbortability(tsk, c, main_dvc, cq);
-      Result.ev.AttachCallback(self.ExecuteMWHandlers, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
-    end;
-    
-  end;
-  
-{$endregion Waitable}
 
 {$region Const}
 
 type
   ConstQueue<T> = sealed partial class(CommandQueue<T>, IConstQueue)
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       if prev_ev=nil then prev_ev := new EventList;
       
@@ -2503,15 +2477,38 @@ type
 {$region Marker}
 
 type
-  MarkerQueue = sealed partial class(WaitableCommandQueue<object>)
+  MarkerQueue = sealed partial class(CommandQueueResLess)
+    private mw_evs := new Dictionary<CLTaskBase, MWEventContainer>;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
+    private procedure RegisterWaiterTask(tsk: CLTaskBase) :=
+    lock mw_evs do if not mw_evs.ContainsKey(tsk) then
     begin
-      if prev_ev=nil then prev_ev := new EventList;
+      mw_evs[tsk] := new MWEventContainer;
+      tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
+    end;
+    
+    private procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
+    begin
+      var cont: MWEventContainer;
+      lock mw_evs do cont := mw_evs[tsk];
+      cont.AddHandler(handler);
+    end;
+    
+    private procedure ExecuteMWHandlers;
+    begin
+      if mw_evs.Count=0 then exit;
+      var conts: array of MWEventContainer;
+      lock mw_evs do conts := mw_evs.Values.ToArray;
+      for var i := 0 to conts.Length-1 do conts[i].ExecuteHandler;
+    end;
+    
+    protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override;
+    begin
       {$ifdef DEBUG}
       if need_ptr_qr then raise new System.InvalidOperationException;
       {$endif DEBUG}
       Result := new QueueResConst<object>(nil, prev_ev ?? new EventList);
+      Result.ev.AttachCallback(self.ExecuteMWHandlers, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
     end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
@@ -2526,13 +2523,13 @@ type
 
 type
   /// очередь, выполняющая какую то работу на CPU, всегда в отдельном потоке
-  HostQueue<TInp,TRes> = abstract class(WaitableCommandQueue<TRes>)
+  HostQueue<TInp,TRes> = abstract class(CommandQueue<TRes>)
     
     protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TInp>; abstract;
     
     protected function ExecFunc(o: TInp; c: Context): TRes; abstract;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TRes>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TRes>; override;
     begin
       var prev_qr := InvokeSubQs(tsk, c, main_dvc, cq, prev_ev);
       
@@ -2556,7 +2553,7 @@ type
   ISimpleQueueArray = interface
     function GetQS: sequence of CommandQueueBase;
   end;
-  SimpleQueueArray<T> = abstract class(WaitableCommandQueue<T>, ISimpleQueueArray)
+  SimpleQueueArray<T> = abstract class(CommandQueue<T>, ISimpleQueueArray)
     protected qs: array of CommandQueueBase;
     protected last: CommandQueue<T>;
     
@@ -2588,7 +2585,7 @@ type
   ISimpleSyncQueueArray = interface(ISimpleQueueArray) end;
   SimpleSyncQueueArray<T> = sealed class(SimpleQueueArray<T>, ISimpleSyncQueueArray)
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       
       for var i := 0 to qs.Length-1 do
@@ -2602,7 +2599,7 @@ type
   ISimpleAsyncQueueArray = interface(ISimpleQueueArray) end;
   SimpleAsyncQueueArray<T> = sealed class(SimpleQueueArray<T>, ISimpleAsyncQueueArray)
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       if (prev_ev<>nil) and (prev_ev.count<>0) then
         loop qs.Length do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
@@ -2972,7 +2969,7 @@ type
     
     public constructor(q: CommandQueueBase) := self.q := q;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
     q.InvokeBase(tsk, c, main_dvc, false, cq, prev_ev).LazyQuickTransformBase(o->
     try
       Result := T(o);
@@ -3112,11 +3109,11 @@ type
     
   end;
   
-  MultiusableCommandQueueNode<T> = sealed class(WaitableCommandQueue<T>)
+  MultiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
     public hub: MultiusableCommandQueueHub<T>;
     public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       Result := hub.OnNodeInvoked(tsk, c, main_dvc, need_ptr_qr);
       if prev_ev<>nil then Result := Result.TrySetEv( prev_ev + Result.ev );
@@ -3150,20 +3147,15 @@ function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQ
 
 type
   WCQWaiter = abstract class
-    private waitables: array of IWaitableCommandQueue;
+    private waitables: array of MarkerQueue;
     
-    public constructor(waitables: array of CommandQueueBase);
+    public constructor(waitables: array of MarkerQueue);
     begin
       if waitables.Length = 0 then raise new System.ArgumentException($'%Err:0Waitables%');
-      self.waitables := new IWaitableCommandQueue[waitables.Length];
       for var i := 0 to waitables.Length-1 do
-      begin
-        if waitables[i] is IWaitableCommandQueue(var wcq) then
-          self.waitables[i] := wcq else
         if waitables[i] = nil then
-          raise new ArgumentNullException($'%Err:Wait(nil)%') else
-          raise new ArgumentException($'%Err:Wait(not IWaitableCommandQueue)%');
-      end;
+          raise new ArgumentNullException($'%Err:Wait(nil)%');
+      self.waitables := waitables;
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
@@ -3264,7 +3256,7 @@ type
     public constructor(waiter: WCQWaiter) :=
     self.waiter := waiter;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<object>; override;
     begin
       {$ifdef DEBUG}
       if need_ptr_qr then raise new System.InvalidOperationException;
@@ -3284,13 +3276,13 @@ type
     
   end;
   
-function WaitForAll(params qs: array of CommandQueueBase) := WaitForAll(qs.AsEnumerable);
-function WaitForAll(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
+function WaitForAll(params qs: array of MarkerQueue) := WaitForAll(qs.AsEnumerable);
+function WaitForAll(    qs: sequence of MarkerQueue) := new CommandQueueWaitFor(new WCQWaiterAll(qs.ToArray));
 
-function WaitForAny(params qs: array of CommandQueueBase) := WaitForAny(qs.AsEnumerable);
-function WaitForAny(qs: sequence of CommandQueueBase) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
+function WaitForAny(params qs: array of MarkerQueue) := WaitForAny(qs.AsEnumerable);
+function WaitForAny(    qs: sequence of MarkerQueue) := new CommandQueueWaitFor(new WCQWaiterAny(qs.ToArray));
 
-function WaitFor(q: CommandQueueBase) := WaitForAll(q);
+function WaitFor(q: MarkerQueue) := WaitForAll(q);
 
 {$endregion WaitFor}
 
@@ -3307,7 +3299,7 @@ type
       self.waiter := waiter;
     end;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       Result := q.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
       Result := Result.TrySetEv( Result.ev + waiter.GetWaitEv(tsk, c) );
@@ -3328,10 +3320,10 @@ type
     
   end;
   
-function CommandQueue<T>.ThenWaitForAll(qs: sequence of CommandQueueBase) :=
+function CommandQueue<T>.ThenWaitForAll(qs: sequence of MarkerQueue) :=
 new CommandQueueThenWaitFor<T>(self, new WCQWaiterAll(qs.ToArray));
 
-function CommandQueue<T>.ThenWaitForAny(qs: sequence of CommandQueueBase) :=
+function CommandQueue<T>.ThenWaitForAny(qs: sequence of MarkerQueue) :=
 new CommandQueueThenWaitFor<T>(self, new WCQWaiterAny(qs.ToArray));
 
 {$endregion ThenWait}
@@ -3756,13 +3748,13 @@ type
     
   end;
   
-  GPUCommandContainer<T> = abstract partial class(WaitableCommandQueue<T>)
+  GPUCommandContainer<T> = abstract partial class(CommandQueue<T>)
     protected core: GPUCommandContainerCore<T>;
     protected commands := new List<GPUCommand<T>>;
     
     protected procedure InitObj(obj: T; c: Context); virtual := exit;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
     core.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
@@ -4053,7 +4045,7 @@ type
     tsk: CLTaskBase;
     res_qr: QueueResDelayedBase<TRes>;
   end;
-  EnqueueableGetCommand<TObj, TRes> = abstract class(WaitableCommandQueue<TRes>, IEnqueueable<EnqueueableGetCommandInvData<TObj, TRes>>)
+  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>, IEnqueueable<EnqueueableGetCommandInvData<TObj, TRes>>)
     protected prev_commands: GPUCommandContainer<TObj>;
     
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
@@ -4075,7 +4067,7 @@ type
       Result := (lcq, ev, data)->enq_f(data.prev_qr.GetRes, lcq, data.tsk, ev, data.res_qr);
     end;
     
-    protected function InvokeImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TRes>; override;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<TRes>; override;
     begin
       var prev_qr := prev_commands.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
       

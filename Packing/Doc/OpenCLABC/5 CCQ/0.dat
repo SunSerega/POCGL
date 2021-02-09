@@ -27,20 +27,15 @@
 # KernelCommandQueue.AddProc((Kernel, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
 
-# BufferCommandQueue.AddWait(CommandQueueBase)
-# KernelCommandQueue.AddWait(CommandQueueBase)
-Добавляет ожидание сигнала выполненности от заданной очереди
+# [%Buffer,Kernel%]CommandQueue.AddWait(MarkerQueue)
+Добавляет ожидание сигнала выполненности от заданного маркера
 
-# BufferCommandQueue.AddWaitAll(array of CommandQueueBase)
-# BufferCommandQueue.AddWaitAll(sequence of CommandQueueBase)
-# KernelCommandQueue.AddWaitAll(array of CommandQueueBase)
-# KernelCommandQueue.AddWaitAll(sequence of CommandQueueBase)
-Добавляет ожидание сигнала выполненности от всех заданных очередей
+# [%Buffer,Kernel%]CommandQueue.AddWaitAll(array of MarkerQueue)
+# [%Buffer,Kernel%]CommandQueue.AddWaitAll(sequence of MarkerQueue)
+Добавляет ожидание сигнала выполненности от всех заданных маркеров
 
-# BufferCommandQueue.AddWaitAny(array of CommandQueueBase)
-# BufferCommandQueue.AddWaitAny(sequence of CommandQueueBase)
-# KernelCommandQueue.AddWaitAny(array of CommandQueueBase)
-# KernelCommandQueue.AddWaitAny(sequence of CommandQueueBase)
-Добавляет ожидание первого сигнала выполненности от одной из заданных очередей
+# [%Buffer,Kernel%]CommandQueue.AddWaitAny(array of MarkerQueue)
+# [%Buffer,Kernel%]CommandQueue.AddWaitAny(sequence of MarkerQueue)
+Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
 
 

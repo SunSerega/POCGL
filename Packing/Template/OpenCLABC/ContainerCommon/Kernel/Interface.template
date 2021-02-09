@@ -12,13 +12,13 @@
     public function AddProc(p: Kernel->()): KernelCommandQueue;
     public function AddProc(p: (Kernel, Context)->()): KernelCommandQueue;
     
-    public function AddWaitAll(params qs: array of CommandQueueBase): KernelCommandQueue;
-    public function AddWaitAll(qs: sequence of CommandQueueBase): KernelCommandQueue;
+    public function AddWaitAll(params qs: array of MarkerQueue): KernelCommandQueue;
+    public function AddWaitAll(qs: sequence of MarkerQueue): KernelCommandQueue;
     
-    public function AddWaitAny(params qs: array of CommandQueueBase): KernelCommandQueue;
-    public function AddWaitAny(qs: sequence of CommandQueueBase): KernelCommandQueue;
+    public function AddWaitAny(params qs: array of MarkerQueue): KernelCommandQueue;
+    public function AddWaitAny(qs: sequence of MarkerQueue): KernelCommandQueue;
     
-    public function AddWait(q: CommandQueueBase): KernelCommandQueue;
+    public function AddWait(q: MarkerQueue): KernelCommandQueue;
     
     {$endregion Special .Add's}
     
