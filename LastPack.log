@@ -114,6 +114,8 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wa
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1.pas"
 Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\2.pas"
+Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue.pas"
@@ -211,6 +213,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\2]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
