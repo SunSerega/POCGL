@@ -19,12 +19,19 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo Написать в справке:
-// - WaitMarker и псевдо-маркер
-// - Запрет на .AddQueue(ConstQueue)
+//ToDo .WhenDone после завершения выполнения странно себя вёл...
 
 //===================================
 // Запланированное:
+
+//ToDo Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
+//
+//ToDo И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
+// - Может даже можно синхронно выполнить "HPQ(...)+HPQ(...)", в некоторых случаях?
+//ToDo Enqueueabl-ы вызывают .Invoke для первого параметра и .InvokeNewQ для остальных
+// - А что если все параметры кроме последнего - константы?
+// - Надо как то умнее это обрабатывать
+//ToDo И сделать наконец нормальный класс-контейнер состояния очереди, параметрами всё не передашь
 
 //ToDo .Cast.ThenWaitMarker.Cast не оптимизируется - а можно было бы и оптимизировать
 // - Для этого надо создавать ещё один псевдо-маркер, но давать ему тот же маркер
@@ -95,15 +102,6 @@ unit OpenCLABC;
 //
 //ToDo Когда будут очереди-обработчики - удалить ивенты CLTask-ов. Они, по сути, ограниченная версия.
 // - И использование их тут изнутри - в целом говнокод...
-
-//ToDo Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
-//
-//ToDo И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
-// - Может даже можно синхронно выполнить "HPQ(...)+HPQ(...)", в некоторых случаях?
-//ToDo Enqueueabl-ы вызывают .Invoke для первого параметра и .InvokeNewQ для остальных
-// - А что если все параметры кроме последнего - константы?
-// - Надо как то умнее это обрабатывать
-//ToDo И сделать наконец нормальный класс-контейнер состояния очереди, параметрами всё не передашь
 
 //ToDo .Cycle(integer)
 //ToDo .Cycle // бесконечность циклов
@@ -1181,6 +1179,8 @@ type
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     public static function operator implicit(pmarker: PseudoWaitMarker<T>): WaitMarkerBase := pmarker.wrap;
+    
+    public procedure SendSignal := wrap.SendSignal;
     
   end;
   
@@ -2506,7 +2506,7 @@ type
   
 {$endregion Const}
 
-{$region Marker}
+{$region WaitMarker}
 
 type
   WaitMarkerBase = abstract partial class(CommandQueueBase)
@@ -2605,7 +2605,7 @@ end;
 
 function CommandQueueBase.ThenWaitMarkerBase := self.Cast&<object>.ThenWaitMarker.wrap;
 
-{$endregion Marker}
+{$endregion WaitMarker}
 
 {$region Host}
 

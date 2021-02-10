@@ -5,7 +5,7 @@
 Представляет базовый класс маркеров для Wait очередей
 
 # WaitMarkerBase.SendSignal
-Симулирует сигнал выполненности, равносильный выполнению данного маркера в Contex.SyncInvoke, но без лишних действий
+Посылает сигнал выполненности всем ожидающим Wait очередям
 
 
 
@@ -25,5 +25,8 @@
 
 # PseudoWaitMarker<T>.(CommandQueue<T>)
 Создаёт новый псевдо-маркер для Wait очередей
+
+# PseudoWaitMarker<T>.SendSignal
+%WaitMarkerBase.SendSignal%
 
 
