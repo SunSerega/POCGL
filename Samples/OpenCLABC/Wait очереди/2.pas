@@ -4,28 +4,36 @@ uses NamedQData;
 begin
   // График выполнения очередей:
   //
-  // A1--B--C1-----E1
-  //      \       /
-  //       \     /
-  // A2-----C2--D--E2
+  // A1--B1--C1------E1
+  //       \        /
+  //        \      /
+  // A2------C2--D2--E2
   //
   
-  var A1      := NamedQ('A1')[0];
-  var A2      := NamedQ('A2')[0];
+  var A1 := NamedQ('A1');
+  var A2 := NamedQ('A2');
   
-  var (B, Bm) := NamedQ('B');
+  var B1 := NamedQ('B1').ThenWaitMarker;
+  var Bw := WaitFor(B1);
   
-  var C1      := NamedQ('C1')[0];
-  var C2      := NamedQ('C2')[0];
+  var C1 := NamedQ('C1');
+  var C2 := NamedQ('C2');
   
-  var (D, Dm) := NamedQ('D');
+  var D2 := NamedQ('D2').ThenWaitMarker;
+  var Dw := WaitFor(D2);
   
-  var E1      := NamedQ('E1')[0];
-  var E2      := NamedQ('E2')[0];
+  var E1 := NamedQ('E1');
+  var E2 := NamedQ('E2');
   
+  // Дерево выполнения из данной программы может решать задачу такого типа:
+  // > Два парралельных процесса выполняются последовательно и иногда взаимодействуют
+  // Его можно расписать без Wait, к примеру как "A1*A2 + B1 + C1*C2 + D2 + E1*E2"
+  // И результат будет тот же, но такое дерево уже не похоже по форме на изначальную задачу
+  // Если между деревом и задачей сложно провести параллели - программу будет сложно улучшать
+  // (то есть будет сложно понять что делает что в очереди)
   Context.Default.SyncInvoke(
-    ( A1 + B           + C1 + WaitFor(Dm) + E1 ) *
-    ( A2 + WaitFor(Bm) + C2 + D           + E2 )
+    ( A1 + B1 + C1 + Dw + E1 ) *
+    ( A2 + Bw + C2 + D2 + E2 )
   );
   
 end.

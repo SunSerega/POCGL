@@ -12,13 +12,13 @@
     public function AddProc(p: Buffer->()): BufferCommandQueue;
     public function AddProc(p: (Buffer, Context)->()): BufferCommandQueue;
     
-    public function AddWaitAll(params qs: array of MarkerQueue): BufferCommandQueue;
-    public function AddWaitAll(qs: sequence of MarkerQueue): BufferCommandQueue;
+    public function AddWaitAll(params markers: array of WaitMarkerBase): BufferCommandQueue;
+    public function AddWaitAll(markers: sequence of WaitMarkerBase): BufferCommandQueue;
     
-    public function AddWaitAny(params qs: array of MarkerQueue): BufferCommandQueue;
-    public function AddWaitAny(qs: sequence of MarkerQueue): BufferCommandQueue;
+    public function AddWaitAny(params markers: array of WaitMarkerBase): BufferCommandQueue;
+    public function AddWaitAny(markers: sequence of WaitMarkerBase): BufferCommandQueue;
     
-    public function AddWait(q: MarkerQueue): BufferCommandQueue;
+    public function AddWait(marker: WaitMarkerBase): BufferCommandQueue;
     
     {$endregion Special .Add's}
     

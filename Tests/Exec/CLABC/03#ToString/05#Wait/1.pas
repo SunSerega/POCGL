@@ -1,8 +1,8 @@
 ﻿uses OpenCLABC;
 
 begin
-  var M1 := new MarkerQueue;
-  var M2 := new MarkerQueue;
+  var M1 := new WaitMarker;
+  var M2 := new WaitMarker;
   
   WaitFor(M1).Println;
   (M1+WaitFor(M1)).Println;

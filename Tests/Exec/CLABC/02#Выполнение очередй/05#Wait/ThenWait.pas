@@ -2,7 +2,7 @@
 
 begin
   var Q := HFQ(()->5);
-  var M := new MarkerQueue;
+  var M := new WaitMarker;
   
   var t := Context.Default.BeginInvoke(
     Q.ThenWaitFor(M)

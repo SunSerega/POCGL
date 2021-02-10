@@ -2,7 +2,7 @@
 
 procedure Test(Q1_exec_count: integer; err_text1, err_text2: string) :=
 try
-  var M := new MarkerQueue;
+  var M := new WaitMarker;
   
   var t1 := Context.Default.BeginInvoke(
     WaitFor(M) +
@@ -31,7 +31,7 @@ try
   begin
     err.PrintLines;
     first_err := false;
-    Context.Default.SyncInvoke(M);
+    M.SendSignal;
   end;
   
   t1.WhenError(on_err);

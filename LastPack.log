@@ -63,7 +63,7 @@ Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D +WPF.pas"
-Tester: Finished compiling: ERRОR
+Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
@@ -128,6 +128,8 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#Co
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.pas"
 Tester: Finished compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\10#WaitMarker\1.pas"
+Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
@@ -152,7 +154,7 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#MarkerQueue\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
 Tester: Finished compiling: OK
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
@@ -226,6 +228,8 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\10#WaitMarker\1]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
@@ -250,7 +254,7 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#MarkerQueue\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing

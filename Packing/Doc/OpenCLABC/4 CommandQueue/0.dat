@@ -30,16 +30,20 @@
 
 
 
+# CommandQueue[%Base,<T>%].ThenWaitMarker
+Создаёт новую обёртку-псевдо-маркер (PseudoWaitMarker<T>), которая работает как очередь,
+но разлогается в обычный маркер для Wait очередей при присвоении или передаче параметром
+
 # CQ:ThenWaitDef
 Создаёт очередь, сначала выполняющую данную, а затем ожидающую
 
-# CommandQueue[%Base,<T>%].ThenWaitFor(MarkerQueue)
+# CommandQueue[%Base,<T>%].ThenWaitFor(WaitMarkerBase)
 %CQ:ThenWaitDef% сигнала выполненности от заданого маркера
 
-# CommandQueue[%Base,<T>%].ThenWaitForAll([%sequence,array%] of MarkerQueue)
+# CommandQueue[%Base,<T>%].ThenWaitForAll([%sequence,array%] of WaitMarkerBase)
 %CQ:ThenWaitDef% сигнала выполненности от каждого из заданых маркеров
 
-# CommandQueue[%Base,<T>%].ThenWaitForAny([%sequence,array%] of MarkerQueue)
+# CommandQueue[%Base,<T>%].ThenWaitForAny([%sequence,array%] of WaitMarkerBase)
 %CQ:ThenWaitDef% первого сигнала выполненности от любого из заданных маркеров
 
 

@@ -1,26 +1,26 @@
 ﻿uses OpenCLABC;
 
 begin
-  var cq := new MarkerQueue;
-  var qf := cq.Multiusable;
+  var M1 := new WaitMarker;
+  var M1s := M1.Multiusable;
   
-  var mq := new MarkerQueue;
+  var M2 := new WaitMarker;
   
   var t := Context.Default.BeginInvoke(
-    WaitFor(cq) +
+    WaitFor(M1) +
     (
-      WaitFor(cq) +
+      WaitFor(M1) +
       HPQ(()->raise new Exception('TestERROR'))
     ) *
     (
-      WaitFor(mq) +
+      WaitFor(M2) +
       HPQ(()->raise new Exception('TestOK'))
     )
   );
   
-  Context.Default.SyncInvoke( qf()*qf() );
+  Context.Default.SyncInvoke( M1s()*M1s() );
   Sleep(10);
-  Context.Default.SyncInvoke(mq);
+  Context.Default.SyncInvoke(M2);
   
   t.Wait;
 end.

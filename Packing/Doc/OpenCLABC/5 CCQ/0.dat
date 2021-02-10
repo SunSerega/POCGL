@@ -27,15 +27,15 @@
 # KernelCommandQueue.AddProc((Kernel, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
 
-# [%Buffer,Kernel%]CommandQueue.AddWait(MarkerQueue)
+# [%Buffer,Kernel%]CommandQueue.AddWait(WaitMarkerBase)
 Добавляет ожидание сигнала выполненности от заданного маркера
 
-# [%Buffer,Kernel%]CommandQueue.AddWaitAll(array of MarkerQueue)
-# [%Buffer,Kernel%]CommandQueue.AddWaitAll(sequence of MarkerQueue)
+# [%Buffer,Kernel%]CommandQueue.AddWaitAll(array of WaitMarkerBase)
+# [%Buffer,Kernel%]CommandQueue.AddWaitAll(sequence of WaitMarkerBase)
 Добавляет ожидание сигнала выполненности от всех заданных маркеров
 
-# [%Buffer,Kernel%]CommandQueue.AddWaitAny(array of MarkerQueue)
-# [%Buffer,Kernel%]CommandQueue.AddWaitAny(sequence of MarkerQueue)
+# [%Buffer,Kernel%]CommandQueue.AddWaitAny(array of WaitMarkerBase)
+# [%Buffer,Kernel%]CommandQueue.AddWaitAny(sequence of WaitMarkerBase)
 Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
 
 

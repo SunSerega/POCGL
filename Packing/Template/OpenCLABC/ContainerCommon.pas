@@ -148,14 +148,14 @@ begin
       foreach var order in |'All', 'Any'| do
       begin
         
-        foreach var arg_t in |'array of MarkerQueue', 'sequence of MarkerQueue'| do
+        foreach var arg_t in |'array of WaitMarkerBase', 'sequence of WaitMarkerBase'| do
         begin
           WriteHeader;
           res += 'AddWait';
           res += order;
           res += '(';
           if arg_t.StartsWith('array') then res += 'params ';
-          res += 'qs: ';
+          res += 'markers: ';
           res += arg_t;
           res += ')';
           WriteResT;
@@ -163,7 +163,7 @@ begin
           res_Im += t;
           res_Im += '>(new WCQWaiter';
           res_Im += order;
-          res_Im += '(qs.ToArray)));';
+          res_Im += '(markers.ToArray)));';
           res += #10;
         end;
         
@@ -172,9 +172,9 @@ begin
       end;
       
       WriteHeader;
-      res += 'AddWait(q: MarkerQueue)';
+      res += 'AddWait(marker: WaitMarkerBase)';
       WriteResT;
-      res_Im += ' := AddWaitAll(q);';
+      res_Im += ' := AddWaitAll(marker);';
       res += #10;
       
       res_In += '    ';

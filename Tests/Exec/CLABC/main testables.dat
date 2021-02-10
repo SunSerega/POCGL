@@ -24,6 +24,7 @@
 		- AddProc
 	- 07#HostExec
 	- 08#CombineQueues
+	- 10#WaitMarker
 
 - 03#ToString
 	- 01#ConstQueue
@@ -40,6 +41,6 @@
 	- 07#HostExec
 	- 08#CombineQueues
 	- 09#KernelArg
-	- 10#MarkerQueue
+	- 10#WaitMarker
 
 

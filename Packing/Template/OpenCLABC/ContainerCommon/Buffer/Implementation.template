@@ -18,13 +18,13 @@ end;
 function BufferCommandQueue.AddProc(p: Buffer->()) := AddCommand(self, new ProcCommand<Buffer>((o,c)->p(o)));
 function BufferCommandQueue.AddProc(p: (Buffer, Context)->()) := AddCommand(self, new ProcCommand<Buffer>(p));
 
-function BufferCommandQueue.AddWaitAll(params qs: array of MarkerQueue) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAll(qs.ToArray)));
-function BufferCommandQueue.AddWaitAll(qs: sequence of MarkerQueue) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAll(qs.ToArray)));
+function BufferCommandQueue.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAll(markers.ToArray)));
+function BufferCommandQueue.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAll(markers.ToArray)));
 
-function BufferCommandQueue.AddWaitAny(params qs: array of MarkerQueue) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAny(qs.ToArray)));
-function BufferCommandQueue.AddWaitAny(qs: sequence of MarkerQueue) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAny(qs.ToArray)));
+function BufferCommandQueue.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAny(markers.ToArray)));
+function BufferCommandQueue.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Buffer>(new WCQWaiterAny(markers.ToArray)));
 
-function BufferCommandQueue.AddWait(q: MarkerQueue) := AddWaitAll(q);
+function BufferCommandQueue.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
 
 {$endregion Special .Add's}
 

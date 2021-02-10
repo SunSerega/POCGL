@@ -26,7 +26,7 @@ begin
     )
   ;
   
-  var Marker := new MarkerQueue;
+  var Marker := new WaitMarker;
   var Q_1CycleAndOtp: CommandQueueBase := k.NewQueue
     
     .AddExec2(W,W,
