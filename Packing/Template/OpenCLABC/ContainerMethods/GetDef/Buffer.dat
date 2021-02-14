@@ -8,7 +8,7 @@ IntPtr
 var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); !set_res!(res);
 //ToDo А что если результат уже получен и освобождёт сдедующей .ThenConvert
 // - Вообще .WhenError тут (и в +1 месте) - говнокод
-tsk.WhenError((tsk,err)->Marshal.FreeHGlobal(res));
+tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   UIntPtr.Zero, o.Size,
@@ -22,7 +22,7 @@ buff_offset, len: CommandQueue<integer>
 IntPtr
 !Enqueue
 var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); !set_res!(res);
-tsk.WhenError((tsk,err)->Marshal.FreeHGlobal(res));
+tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!buff_offset!), new UIntPtr(!len!),

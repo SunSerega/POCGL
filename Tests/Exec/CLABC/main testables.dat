@@ -25,6 +25,7 @@
 	- 07#HostExec
 	- 08#CombineQueues
 	- 10#WaitMarker
+	- 11#CLTask
 
 - 03#ToString
 	- 01#ConstQueue

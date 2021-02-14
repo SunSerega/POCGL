@@ -25,7 +25,7 @@ try
   
   var ev := new System.Threading.ManualResetEvent(false);
   var first_err := true;
-  var on_err: Action2<CLTaskBase, array of Exception> := (tsk,err)->
+  var on_err := procedure(tsk: CLTaskBase; err: array of Exception) ->
   if not first_err then
     ev.Set else
   begin
@@ -34,8 +34,8 @@ try
     M.SendSignal;
   end;
   
-  t1.WhenError(on_err);
-  t2.WhenError(on_err);
+  t1.WhenErrorBase(on_err);
+  t2.WhenErrorBase(on_err);
   
   ev.WaitOne;
 except

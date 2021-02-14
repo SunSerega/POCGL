@@ -19,8 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующего пула:
 
-//ToDo .WhenDone после завершения выполнения странно себя вёл...
-
 //===================================
 // Запланированное:
 
@@ -1243,14 +1241,11 @@ type
     
     {$region CLTask event's}
     
-    private procedure WhenDoneBase(cb: Action<CLTaskBase>); abstract;
-    public procedure WhenDone(cb: Action<CLTaskBase>) := WhenDoneBase(cb);
+    public procedure WhenDoneBase(cb: Action<CLTaskBase>); abstract;
     
-    private procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); abstract;
-    public procedure WhenComplete(cb: Action<CLTaskBase, object>) := WhenCompleteBase(cb);
+    public procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); abstract;
     
-    private procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); abstract;
-    public procedure WhenError(cb: Action<CLTaskBase, array of Exception>) := WhenErrorBase(cb);
+    public procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); abstract;
     
     /// True если очередь уже завершилась
     protected function AddEventHandler<T>(ev: List<T>; cb: T): boolean; where T: Delegate;
@@ -1330,19 +1325,19 @@ type
     private EvDone := new List<Action<CLTask<T>>>;
     public procedure WhenDone(cb: Action<CLTask<T>>); reintroduce :=
     if AddEventHandler(EvDone, cb) then cb(self);
-    private procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
+    public procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
     WhenDone(cb as object as Action<CLTask<T>>); //ToDo #2221
     
     private EvComplete := new List<Action<CLTask<T>, T>>;
     public procedure WhenComplete(cb: Action<CLTask<T>, T>); reintroduce :=
-    if AddEventHandler(EvComplete, cb) then cb(self, q_res);
-    private procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
-    WhenComplete(cb as object as Action<CLTask<T>, T>); //ToDo #2221
+    if AddEventHandler(EvComplete, cb) and (err_lst.Count=0) then cb(self, q_res);
+    public procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
+    WhenComplete((tsk,res)->cb(tsk,res)); //ToDo #2221
     
     private EvError := new List<Action<CLTask<T>, array of Exception>>;
     public procedure WhenError(cb: Action<CLTask<T>, array of Exception>); reintroduce :=
-    if AddEventHandler(EvError, cb) then cb(self, GetErrArr);
-    private procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
+    if AddEventHandler(EvError, cb) and (err_lst.Count<>0) then cb(self, GetErrArr);
+    public procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
     WhenError(cb as object as Action<CLTask<T>, array of Exception>); //ToDo #2221
     
     {$endregion CLTask event's}
@@ -2516,7 +2511,7 @@ type
     lock mw_evs do if not mw_evs.ContainsKey(tsk) then
     begin
       mw_evs[tsk] := new MWEventContainer;
-      tsk.WhenDone(tsk->lock mw_evs do mw_evs.Remove(tsk));
+      tsk.WhenDoneBase(tsk->lock mw_evs do mw_evs.Remove(tsk));
     end;
     
     private procedure AddMWHandler(tsk: CLTaskBase; handler: ()->boolean);
@@ -2782,16 +2777,16 @@ type
     {$region CLTask event's}
     
     protected EvDone := new List<Action<CLTaskBase>>;
-    protected procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
+    public procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
     if AddEventHandler(EvDone, cb) then cb(self);
     
     protected EvComplete := new List<Action<CLTaskBase, object>>;
-    protected procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
-    if AddEventHandler(EvComplete, cb) then cb(self, q_res);
+    public procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
+    if AddEventHandler(EvComplete, cb) and (err_lst.Count=0) then cb(self, q_res);
     
     protected EvError := new List<Action<CLTaskBase, array of Exception>>;
-    protected procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
-    if AddEventHandler(EvError, cb) then cb(self, GetErrArr);
+    public procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
+    if AddEventHandler(EvError, cb) and (err_lst.Count<>0) then cb(self, GetErrArr);
     
     {$endregion CLTask event's}
     
