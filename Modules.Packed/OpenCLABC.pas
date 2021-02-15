@@ -503,6 +503,7 @@ type
   {$endregion Properties}
   
   {$region Wrappers}
+  // Для параметров команд
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T> = abstract partial class end;
   ///Представляет аргумент, передаваемый в вызов kernel-а
@@ -1072,7 +1073,7 @@ type
     
   end;
   
-  //Buffer = MemorySegment;
+//  Buffer = MemorySegment;
   
   {$endregion MemorySegment}
   
@@ -2382,6 +2383,73 @@ type
   
   {$endregion KernelArg}
   
+  {$region KernelCCQ}
+  
+  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Kernel
+  KernelCCQ = sealed partial class
+    
+    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
+    public constructor(o: Kernel);
+    ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
+    ///За каждое одно выполнение контейнера - q выполнится ровно один раз
+    public constructor(q: CommandQueue<Kernel>);
+    private constructor;
+    
+    {$region Special .Add's}
+    
+    ///Добавляет выполнение очереди в список обычных команд для GPU
+    public function AddQueue(q: CommandQueueBase): KernelCCQ;
+    
+    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
+    public function AddProc(p: Kernel->()): KernelCCQ;
+    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
+    public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
+    
+    ///Добавляет ожидание сигнала выполненности от всех заданных маркеров
+    public function AddWaitAll(params markers: array of WaitMarkerBase): KernelCCQ;
+    ///Добавляет ожидание сигнала выполненности от всех заданных маркеров
+    public function AddWaitAll(markers: sequence of WaitMarkerBase): KernelCCQ;
+    
+    ///Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
+    public function AddWaitAny(params markers: array of WaitMarkerBase): KernelCCQ;
+    ///Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
+    public function AddWaitAny(markers: sequence of WaitMarkerBase): KernelCCQ;
+    
+    ///Добавляет ожидание сигнала выполненности от заданного маркера
+    public function AddWait(marker: WaitMarkerBase): KernelCCQ;
+    
+    {$endregion Special .Add's}
+    
+    {$region 1#Exec}
+    
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
+    public function AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
+    public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    
+    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
+    public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    
+    ///Выполняет kernel с расширенным набором параметров
+    ///Данная перегрузка используется в первую очередь для тонких оптимизаций
+    ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
+    public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+    
+    {$endregion 1#Exec}
+    
+  end;
+  
+//  KernelCommandQueue =  KernelCCQ;
+  
+  ///Представляет подпрограмму, выполняемую на GPU
+  Kernel = partial class
+    ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
+    public function NewQueue := new KernelCCQ(self);
+  end;
+  
+  {$endregion KernelCCQ}
+  
   {$region MemorySegmentCCQ}
   
   ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа MemorySegment
@@ -2636,73 +2704,6 @@ type
   end;
   
   {$endregion MemorySegmentCCQ}
-  
-  {$region KernelCCQ}
-  
-  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Kernel
-  KernelCCQ = sealed partial class
-    
-    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
-    public constructor(o: Kernel);
-    ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
-    ///За каждое одно выполнение контейнера - q выполнится ровно один раз
-    public constructor(q: CommandQueue<Kernel>);
-    private constructor;
-    
-    {$region Special .Add's}
-    
-    ///Добавляет выполнение очереди в список обычных команд для GPU
-    public function AddQueue(q: CommandQueueBase): KernelCCQ;
-    
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    public function AddProc(p: Kernel->()): KernelCCQ;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
-    
-    ///Добавляет ожидание сигнала выполненности от всех заданных маркеров
-    public function AddWaitAll(params markers: array of WaitMarkerBase): KernelCCQ;
-    ///Добавляет ожидание сигнала выполненности от всех заданных маркеров
-    public function AddWaitAll(markers: sequence of WaitMarkerBase): KernelCCQ;
-    
-    ///Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
-    public function AddWaitAny(params markers: array of WaitMarkerBase): KernelCCQ;
-    ///Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
-    public function AddWaitAny(markers: sequence of WaitMarkerBase): KernelCCQ;
-    
-    ///Добавляет ожидание сигнала выполненности от заданного маркера
-    public function AddWait(marker: WaitMarkerBase): KernelCCQ;
-    
-    {$endregion Special .Add's}
-    
-    {$region 1#Exec}
-    
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
-    
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
-    
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
-    
-    ///Выполняет kernel с расширенным набором параметров
-    ///Данная перегрузка используется в первую очередь для тонких оптимизаций
-    ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
-    public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
-    
-    {$endregion 1#Exec}
-    
-  end;
-  
-//  KernelCommandQueue =  KernelCCQ;
-  
-  ///Представляет подпрограмму, выполняемую на GPU
-  Kernel = partial class
-    ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
-    public function NewQueue := new KernelCCQ(self);
-  end;
-  
-  {$endregion KernelCCQ}
   
 {$region Global subprograms}
 
@@ -6121,6 +6122,42 @@ type
   
 {$endregion Core}
 
+{$region Kernel}
+
+type
+  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
+    
+  end;
+  
+constructor KernelCCQ.Create(o: Kernel) := inherited;
+constructor KernelCCQ.Create(q: CommandQueue<Kernel>) := inherited;
+constructor KernelCCQ.Create := inherited;
+
+{$region Special .Add's}
+
+function KernelCCQ.AddQueue(q: CommandQueueBase): KernelCCQ;
+begin
+  Result := self;
+  if q is IConstQueue then raise new System.ArgumentException($'В .AddQueue нельзя передавать константные очереди');
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  commands.Add( new QueueCommand<Kernel>(q) );
+end;
+
+function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
+function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
+
+function KernelCCQ.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
+function KernelCCQ.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
+
+function KernelCCQ.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
+function KernelCCQ.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
+
+function KernelCCQ.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
+
+{$endregion Special .Add's}
+
+{$endregion Kernel}
+
 {$region MemorySegment}
 
 type
@@ -6158,42 +6195,6 @@ function MemorySegmentCCQ.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
 {$endregion Special .Add's}
 
 {$endregion MemorySegment}
-
-{$region Kernel}
-
-type
-  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
-    
-  end;
-  
-constructor KernelCCQ.Create(o: Kernel) := inherited;
-constructor KernelCCQ.Create(q: CommandQueue<Kernel>) := inherited;
-constructor KernelCCQ.Create := inherited;
-
-{$region Special .Add's}
-
-function KernelCCQ.AddQueue(q: CommandQueueBase): KernelCCQ;
-begin
-  Result := self;
-  if q is IConstQueue then raise new System.ArgumentException($'В .AddQueue нельзя передавать константные очереди');
-  if q is ICastQueue(var cq) then q := cq.GetQ;
-  commands.Add( new QueueCommand<Kernel>(q) );
-end;
-
-function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
-function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
-
-function KernelCCQ.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
-function KernelCCQ.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
-
-function KernelCCQ.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
-function KernelCCQ.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
-
-function KernelCCQ.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
-
-{$endregion Special .Add's}
-
-{$endregion Kernel}
 
 {$endregion GPUCommandContainer}
 
@@ -6383,6 +6384,439 @@ type
   end;
   
 {$endregion GetCommand}
+
+{$region Kernel}
+
+{$region Implicit}
+
+{$region 1#Exec}
+
+function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec1(sz1, args) as CommandQueue<Kernel>);
+
+function Kernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec2(sz1, sz2, args) as CommandQueue<Kernel>);
+
+function Kernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec3(sz1, sz2, sz3, args) as CommandQueue<Kernel>);
+
+function Kernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel :=
+Context.Default.SyncInvoke(self.NewQueue.AddExec(global_work_offset, global_work_size, local_work_size, args) as CommandQueue<Kernel>);
+
+{$endregion 1#Exec}
+
+{$endregion Implicit}
+
+{$region Explicit}
+
+{$region 1#Exec}
+
+{$region Exec1}
+
+type
+  KernelCommandExec1 = sealed class(EnqueueableGPUCommand<Kernel>)
+    private  sz1: CommandQueue<integer>;
+    private args: array of KernelArg;
+    
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
+    begin
+      self. sz1 :=  sz1;
+      self.args := args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetRes;
+        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        var res_ev: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, ntv, 1,
+            nil,
+            new UIntPtr[](new UIntPtr(sz1)),
+            nil,
+            evs.count, evs.evs, res_ev
+          );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        end);
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+       sz1.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb.Append(#9, tabs);
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
+  end;
+  
+{$endregion Exec1}
+
+function KernelCCQ.AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
+AddCommand(self, new KernelCommandExec1(sz1, args));
+
+{$region Exec2}
+
+type
+  KernelCommandExec2 = sealed class(EnqueueableGPUCommand<Kernel>)
+    private  sz1: CommandQueue<integer>;
+    private  sz2: CommandQueue<integer>;
+    private args: array of KernelArg;
+    
+    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
+    begin
+      self. sz1 :=  sz1;
+      self. sz2 :=  sz2;
+      self.args := args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
+      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetRes;
+        var  sz2 :=  sz2_qr.GetRes;
+        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        var res_ev: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, ntv, 2,
+            nil,
+            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
+            nil,
+            evs.count, evs.evs, res_ev
+          );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        end);
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+       sz1.RegisterWaitables(tsk, prev_hubs);
+       sz2.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'sz2: ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb.Append(#9, tabs);
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
+  end;
+  
+{$endregion Exec2}
+
+function KernelCCQ.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
+AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
+
+{$region Exec3}
+
+type
+  KernelCommandExec3 = sealed class(EnqueueableGPUCommand<Kernel>)
+    private  sz1: CommandQueue<integer>;
+    private  sz2: CommandQueue<integer>;
+    private  sz3: CommandQueue<integer>;
+    private args: array of KernelArg;
+    
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
+    begin
+      self. sz1 :=  sz1;
+      self. sz2 :=  sz2;
+      self. sz3 :=  sz3;
+      self.args := args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
+      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
+      var  sz3_qr :=  sz3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz3_qr.ev);
+      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetRes;
+        var  sz2 :=  sz2_qr.GetRes;
+        var  sz3 :=  sz3_qr.GetRes;
+        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        var res_ev: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, ntv, 3,
+            nil,
+            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
+            nil,
+            evs.count, evs.evs, res_ev
+          );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        end);
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+       sz1.RegisterWaitables(tsk, prev_hubs);
+       sz2.RegisterWaitables(tsk, prev_hubs);
+       sz3.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'sz1: ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'sz2: ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'sz3: ';
+      sz3.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb.Append(#9, tabs);
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
+  end;
+  
+{$endregion Exec3}
+
+function KernelCCQ.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
+AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
+
+{$region Exec}
+
+type
+  KernelCommandExec = sealed class(EnqueueableGPUCommand<Kernel>)
+    private global_work_offset: CommandQueue<array of UIntPtr>;
+    private   global_work_size: CommandQueue<array of UIntPtr>;
+    private    local_work_size: CommandQueue<array of UIntPtr>;
+    private               args: array of KernelArg;
+    
+    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
+    begin
+      self.global_work_offset := global_work_offset;
+      self.  global_work_size :=   global_work_size;
+      self.   local_work_size :=    local_work_size;
+      self.              args :=               args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(global_work_offset_qr.ev);
+      var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(global_work_size_qr.ev);
+      var    local_work_size_qr :=    local_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(local_work_size_qr.ev);
+      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var global_work_offset := global_work_offset_qr.GetRes;
+        var   global_work_size :=   global_work_size_qr.GetRes;
+        var    local_work_size :=    local_work_size_qr.GetRes;
+        var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
+        var res_ev: cl_event;
+        
+        o.UseExclusiveNative(ntv->
+        begin
+          
+          for var i := 0 to args.Length-1 do
+            args[i].SetArg(ntv, i, c);
+          
+          cl.EnqueueNDRangeKernel(
+            cq, ntv, global_work_size.Length,
+            global_work_offset,
+            global_work_size,
+            local_work_size,
+            evs.count, evs.evs, res_ev
+          );
+          
+          cl.RetainKernel(ntv).RaiseIfError;
+          var args_hnd := GCHandle.Alloc(args);
+          
+          EventList.AttachFinallyCallback(res_ev, ()->
+          begin
+            cl.ReleaseKernel(ntv).RaiseIfError();
+            args_hnd.Free;
+          end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        end);
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      global_work_offset.RegisterWaitables(tsk, prev_hubs);
+        global_work_size.RegisterWaitables(tsk, prev_hubs);
+         local_work_size.RegisterWaitables(tsk, prev_hubs);
+      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'global_work_offset: ';
+      global_work_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'global_work_size: ';
+      global_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'local_work_size: ';
+      local_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      for var i := 0 to args.Length-1 do 
+      begin
+        sb.Append(#9, tabs);
+        sb += 'args[';
+        sb.Append(i);
+        sb += ']: ';
+        args[i].ToString(sb, tabs, index, delayed, false);
+      end;
+      
+    end;
+    
+  end;
+  
+{$endregion Exec}
+
+function KernelCCQ.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ :=
+AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
+
+{$endregion 1#Exec}
+
+{$endregion Explicit}
+
+{$endregion Kernel}
 
 {$region MemorySegment}
 
@@ -9099,439 +9533,6 @@ new MemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQue
 {$endregion Explicit}
 
 {$endregion MemorySegment}
-
-{$region Kernel}
-
-{$region Implicit}
-
-{$region 1#Exec}
-
-function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
-Context.Default.SyncInvoke(self.NewQueue.AddExec1(sz1, args) as CommandQueue<Kernel>);
-
-function Kernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
-Context.Default.SyncInvoke(self.NewQueue.AddExec2(sz1, sz2, args) as CommandQueue<Kernel>);
-
-function Kernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
-Context.Default.SyncInvoke(self.NewQueue.AddExec3(sz1, sz2, sz3, args) as CommandQueue<Kernel>);
-
-function Kernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel :=
-Context.Default.SyncInvoke(self.NewQueue.AddExec(global_work_offset, global_work_size, local_work_size, args) as CommandQueue<Kernel>);
-
-{$endregion 1#Exec}
-
-{$endregion Implicit}
-
-{$region Explicit}
-
-{$region 1#Exec}
-
-{$region Exec1}
-
-type
-  KernelCommandExec1 = sealed class(EnqueueableGPUCommand<Kernel>)
-    private  sz1: CommandQueue<integer>;
-    private args: array of KernelArg;
-    
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
-    
-    public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
-    begin
-      self. sz1 :=  sz1;
-      self.args := args;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
-    begin
-      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
-      
-      Result := (o, cq, tsk, c, evs)->
-      begin
-        var  sz1 :=  sz1_qr.GetRes;
-        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
-        var res_ev: cl_event;
-        
-        o.UseExclusiveNative(ntv->
-        begin
-          
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i, c);
-          
-          cl.EnqueueNDRangeKernel(
-            cq, ntv, 1,
-            nil,
-            new UIntPtr[](new UIntPtr(sz1)),
-            nil,
-            evs.count, evs.evs, res_ev
-          );
-          
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachFinallyCallback(res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        end);
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
-    begin
-       sz1.RegisterWaitables(tsk, prev_hubs);
-      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'sz1: ';
-      sz1.ToString(sb, tabs, index, delayed, false);
-      
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Exec1}
-
-function KernelCCQ.AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
-AddCommand(self, new KernelCommandExec1(sz1, args));
-
-{$region Exec2}
-
-type
-  KernelCommandExec2 = sealed class(EnqueueableGPUCommand<Kernel>)
-    private  sz1: CommandQueue<integer>;
-    private  sz2: CommandQueue<integer>;
-    private args: array of KernelArg;
-    
-    public function ParamCountL1: integer; override := 3;
-    public function ParamCountL2: integer; override := 0;
-    
-    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
-    begin
-      self. sz1 :=  sz1;
-      self. sz2 :=  sz2;
-      self.args := args;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
-    begin
-      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
-      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
-      
-      Result := (o, cq, tsk, c, evs)->
-      begin
-        var  sz1 :=  sz1_qr.GetRes;
-        var  sz2 :=  sz2_qr.GetRes;
-        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
-        var res_ev: cl_event;
-        
-        o.UseExclusiveNative(ntv->
-        begin
-          
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i, c);
-          
-          cl.EnqueueNDRangeKernel(
-            cq, ntv, 2,
-            nil,
-            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
-            nil,
-            evs.count, evs.evs, res_ev
-          );
-          
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachFinallyCallback(res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        end);
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
-    begin
-       sz1.RegisterWaitables(tsk, prev_hubs);
-       sz2.RegisterWaitables(tsk, prev_hubs);
-      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'sz1: ';
-      sz1.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'sz2: ';
-      sz2.ToString(sb, tabs, index, delayed, false);
-      
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Exec2}
-
-function KernelCCQ.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
-AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
-
-{$region Exec3}
-
-type
-  KernelCommandExec3 = sealed class(EnqueueableGPUCommand<Kernel>)
-    private  sz1: CommandQueue<integer>;
-    private  sz2: CommandQueue<integer>;
-    private  sz3: CommandQueue<integer>;
-    private args: array of KernelArg;
-    
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
-    
-    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
-    begin
-      self. sz1 :=  sz1;
-      self. sz2 :=  sz2;
-      self. sz3 :=  sz3;
-      self.args := args;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
-    begin
-      var  sz1_qr :=  sz1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(sz1_qr.ev);
-      var  sz2_qr :=  sz2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz2_qr.ev);
-      var  sz3_qr :=  sz3.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(sz3_qr.ev);
-      var args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
-      
-      Result := (o, cq, tsk, c, evs)->
-      begin
-        var  sz1 :=  sz1_qr.GetRes;
-        var  sz2 :=  sz2_qr.GetRes;
-        var  sz3 :=  sz3_qr.GetRes;
-        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
-        var res_ev: cl_event;
-        
-        o.UseExclusiveNative(ntv->
-        begin
-          
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i, c);
-          
-          cl.EnqueueNDRangeKernel(
-            cq, ntv, 3,
-            nil,
-            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
-            nil,
-            evs.count, evs.evs, res_ev
-          );
-          
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachFinallyCallback(res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        end);
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
-    begin
-       sz1.RegisterWaitables(tsk, prev_hubs);
-       sz2.RegisterWaitables(tsk, prev_hubs);
-       sz3.RegisterWaitables(tsk, prev_hubs);
-      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'sz1: ';
-      sz1.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'sz2: ';
-      sz2.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'sz3: ';
-      sz3.ToString(sb, tabs, index, delayed, false);
-      
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Exec3}
-
-function KernelCCQ.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
-AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
-
-{$region Exec}
-
-type
-  KernelCommandExec = sealed class(EnqueueableGPUCommand<Kernel>)
-    private global_work_offset: CommandQueue<array of UIntPtr>;
-    private   global_work_size: CommandQueue<array of UIntPtr>;
-    private    local_work_size: CommandQueue<array of UIntPtr>;
-    private               args: array of KernelArg;
-    
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
-    
-    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
-    begin
-      self.global_work_offset := global_work_offset;
-      self.  global_work_size :=   global_work_size;
-      self.   local_work_size :=    local_work_size;
-      self.              args :=               args;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
-    begin
-      var global_work_offset_qr := global_work_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(global_work_offset_qr.ev);
-      var   global_work_size_qr :=   global_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(global_work_size_qr.ev);
-      var    local_work_size_qr :=    local_work_size.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(local_work_size_qr.ev);
-      var               args_qr :=               args.ConvertAll(temp1->begin Result := temp1.Invoke(tsk, c, main_dvc); evs_l1.Add(Result.ev); end);
-      
-      Result := (o, cq, tsk, c, evs)->
-      begin
-        var global_work_offset := global_work_offset_qr.GetRes;
-        var   global_work_size :=   global_work_size_qr.GetRes;
-        var    local_work_size :=    local_work_size_qr.GetRes;
-        var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
-        var res_ev: cl_event;
-        
-        o.UseExclusiveNative(ntv->
-        begin
-          
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i, c);
-          
-          cl.EnqueueNDRangeKernel(
-            cq, ntv, global_work_size.Length,
-            global_work_offset,
-            global_work_size,
-            local_work_size,
-            evs.count, evs.evs, res_ev
-          );
-          
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachFinallyCallback(res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        end);
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
-    begin
-      global_work_offset.RegisterWaitables(tsk, prev_hubs);
-        global_work_size.RegisterWaitables(tsk, prev_hubs);
-         local_work_size.RegisterWaitables(tsk, prev_hubs);
-      foreach var temp1 in args do temp1.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'global_work_offset: ';
-      global_work_offset.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'global_work_size: ';
-      global_work_size.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'local_work_size: ';
-      local_work_size.ToString(sb, tabs, index, delayed, false);
-      
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Exec}
-
-function KernelCCQ.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ :=
-AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
-
-{$endregion 1#Exec}
-
-{$endregion Explicit}
-
-{$endregion Kernel}
 
 {$endregion Enqueueable's}
 

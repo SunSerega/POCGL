@@ -173,6 +173,7 @@ type
   {$endregion Properties}
   
   {$region Wrappers}
+  // Для параметров команд
   CommandQueue<T> = abstract partial class end;
   KernelArg = abstract partial class end;
   
@@ -475,7 +476,7 @@ type
     
   end;
   
-  //Buffer = MemorySegment;
+//  Buffer = MemorySegment;
   
   {$endregion MemorySegment}
   
@@ -1427,6 +1428,24 @@ type
   
   {$endregion KernelArg}
   
+  {$region KernelCCQ}
+  
+  KernelCCQ = sealed partial class
+    
+    {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
+    
+    {%ContainerMethods\Kernel\Explicit.Interface!MethodGen.pas%}
+    
+  end;
+  
+//  KernelCommandQueue =  KernelCCQ;
+  
+  Kernel = partial class
+    public function NewQueue := new KernelCCQ({%>self%});
+  end;
+  
+  {$endregion KernelCCQ}
+  
   {$region MemorySegmentCCQ}
   
   MemorySegmentCCQ = sealed partial class
@@ -1448,24 +1467,6 @@ type
   end;
   
   {$endregion MemorySegmentCCQ}
-  
-  {$region KernelCCQ}
-  
-  KernelCCQ = sealed partial class
-    
-    {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
-    
-    {%ContainerMethods\Kernel\Explicit.Interface!MethodGen.pas%}
-    
-  end;
-  
-//  KernelCommandQueue =  KernelCCQ;
-  
-  Kernel = partial class
-    public function NewQueue := new KernelCCQ({%>self%});
-  end;
-  
-  {$endregion KernelCCQ}
   
 {$region Global subprograms}
 
@@ -3929,6 +3930,17 @@ type
   
 {$endregion Core}
 
+{$region Kernel}
+
+type
+  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
+    
+  end;
+  
+{%ContainerCommon\Kernel\Implementation!ContainerCommon.pas%}
+
+{$endregion Kernel}
+
 {$region MemorySegment}
 
 type
@@ -3941,17 +3953,6 @@ static function KernelArg.operator implicit(bq: MemorySegmentCCQ): KernelArg := 
 {%ContainerCommon\MemorySegment\Implementation!ContainerCommon.pas%}
 
 {$endregion MemorySegment}
-
-{$region Kernel}
-
-type
-  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
-    
-  end;
-  
-{%ContainerCommon\Kernel\Implementation!ContainerCommon.pas%}
-
-{$endregion Kernel}
 
 {$endregion GPUCommandContainer}
 
@@ -4142,6 +4143,22 @@ type
   
 {$endregion GetCommand}
 
+{$region Kernel}
+
+{$region Implicit}
+
+{%ContainerMethods\Kernel\Implicit.Implementation!MethodGen.pas%}
+
+{$endregion Implicit}
+
+{$region Explicit}
+
+{%ContainerMethods\Kernel\Explicit.Implementation!MethodGen.pas%}
+
+{$endregion Explicit}
+
+{$endregion Kernel}
+
 {$region MemorySegment}
 
 {$region Implicit}
@@ -4161,22 +4178,6 @@ type
 {$endregion Explicit}
 
 {$endregion MemorySegment}
-
-{$region Kernel}
-
-{$region Implicit}
-
-{%ContainerMethods\Kernel\Implicit.Implementation!MethodGen.pas%}
-
-{$endregion Implicit}
-
-{$region Explicit}
-
-{%ContainerMethods\Kernel\Explicit.Implementation!MethodGen.pas%}
-
-{$endregion Explicit}
-
-{$endregion Kernel}
 
 {$endregion Enqueueable's}
 

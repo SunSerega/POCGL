@@ -174,7 +174,6 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.td"
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
@@ -258,7 +257,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
