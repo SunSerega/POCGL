@@ -418,102 +418,6 @@ type
   
   {$endregion Context}
   
-  {$region MemorySegment}
-  
-  MemorySegment = partial class
-    private ntv: cl_mem;
-    
-    private sz: UIntPtr;
-    public property Size: UIntPtr read sz;
-    public property Size32: UInt32 read sz.ToUInt32;
-    public property Size64: UInt64 read sz.ToUInt64;
-    
-    public function ToString: string; override :=
-    $'{self.GetType.Name}[{ntv.val}] of size {Size}';
-    
-    {$region constructor's}
-    
-    public constructor(size: UIntPtr; c: Context);
-    begin
-      
-      var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
-      ec.RaiseIfError;
-      
-      GC.AddMemoryPressure(size.ToUInt64);
-      
-      self.sz := size;
-    end;
-    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
-    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
-    
-    public constructor(size: UIntPtr) := Create(size, Context.Default);
-    public constructor(size: integer) := Create(new UIntPtr(size));
-    public constructor(size: int64)   := Create(new UIntPtr(size));
-    
-    private constructor(ntv: cl_mem; sz: UIntPtr);
-    begin
-      self.sz := sz;
-      self.ntv := ntv;
-    end;
-    private static function GetMemSize(ntv: cl_mem): UIntPtr;
-    begin
-      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError;
-    end;
-    public constructor(ntv: cl_mem);
-    begin
-      Create(ntv, GetMemSize(ntv));
-      cl.RetainMemObject(ntv).RaiseIfError;
-      GC.AddMemoryPressure(Size64);
-    end;
-    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
-    
-    {$endregion constructor's}
-    
-    {%ContainerMethods\MemorySegment\Implicit.Interface!MethodGen.pas%}
-    
-    {%ContainerMethods\MemorySegment.Get\Implicit.Interface!GetMethodGen.pas%}
-    
-  end;
-  
-//  Buffer = MemorySegment;
-  
-  {$endregion MemorySegment}
-  
-  {$region MemorySubSegment}
-  
-  MemorySubSegment = partial class(MemorySegment)
-    
-    private _parent: MemorySegment;
-    public property Parent: MemorySegment read _parent;
-    
-    public function ToString: string; override :=
-    $'{inherited ToString} inside {Parent}';
-    
-    {$region constructor's}
-    
-    private static function MakeSubNtv(ntv: cl_mem; reg: cl_buffer_region): cl_mem;
-    begin
-      var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
-      ec.RaiseIfError;
-    end;
-    private constructor(parent: MemorySegment; reg: cl_buffer_region);
-    begin
-      inherited Create(MakeSubNtv(parent.ntv, reg), reg.size);
-      self._parent := parent;
-    end;
-    public constructor(parent: MemorySegment; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
-    
-    public constructor(parent: MemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    public constructor(parent: MemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    
-    {$endregion constructor's}
-    
-  end;
-  
-  {$endregion MemorySubSegment}
-  
   {$region ProgramCode}
   
   ProgramCode = partial class
@@ -818,6 +722,102 @@ type
   end;
   
   {$endregion Kernel}
+  
+  {$region MemorySegment}
+  
+  MemorySegment = partial class
+    private ntv: cl_mem;
+    
+    private sz: UIntPtr;
+    public property Size: UIntPtr read sz;
+    public property Size32: UInt32 read sz.ToUInt32;
+    public property Size64: UInt64 read sz.ToUInt64;
+    
+    public function ToString: string; override :=
+    $'{self.GetType.Name}[{ntv.val}] of size {Size}';
+    
+    {$region constructor's}
+    
+    public constructor(size: UIntPtr; c: Context);
+    begin
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
+      ec.RaiseIfError;
+      
+      GC.AddMemoryPressure(size.ToUInt64);
+      
+      self.sz := size;
+    end;
+    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
+    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
+    
+    public constructor(size: UIntPtr) := Create(size, Context.Default);
+    public constructor(size: integer) := Create(new UIntPtr(size));
+    public constructor(size: int64)   := Create(new UIntPtr(size));
+    
+    private constructor(ntv: cl_mem; sz: UIntPtr);
+    begin
+      self.sz := sz;
+      self.ntv := ntv;
+    end;
+    private static function GetMemSize(ntv: cl_mem): UIntPtr;
+    begin
+      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError;
+    end;
+    public constructor(ntv: cl_mem);
+    begin
+      Create(ntv, GetMemSize(ntv));
+      cl.RetainMemObject(ntv).RaiseIfError;
+      GC.AddMemoryPressure(Size64);
+    end;
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    {$endregion constructor's}
+    
+    {%ContainerMethods\MemorySegment\Implicit.Interface!MethodGen.pas%}
+    
+    {%ContainerMethods\MemorySegment.Get\Implicit.Interface!GetMethodGen.pas%}
+    
+  end;
+  
+//  Buffer = MemorySegment;
+  
+  {$endregion MemorySegment}
+  
+  {$region MemorySubSegment}
+  
+  MemorySubSegment = partial class(MemorySegment)
+    
+    private _parent: MemorySegment;
+    public property Parent: MemorySegment read _parent;
+    
+    public function ToString: string; override :=
+    $'{inherited ToString} inside {Parent}';
+    
+    {$region constructor's}
+    
+    private static function MakeSubNtv(ntv: cl_mem; reg: cl_buffer_region): cl_mem;
+    begin
+      var ec: ErrorCode;
+      Result := cl.CreateSubBuffer(ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      ec.RaiseIfError;
+    end;
+    private constructor(parent: MemorySegment; reg: cl_buffer_region);
+    begin
+      inherited Create(MakeSubNtv(parent.ntv, reg), reg.size);
+      self._parent := parent;
+    end;
+    public constructor(parent: MemorySegment; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
+    
+    public constructor(parent: MemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    public constructor(parent: MemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    
+    {$endregion constructor's}
+    
+  end;
+  
+  {$endregion MemorySubSegment}
   
   {$region Common}
   

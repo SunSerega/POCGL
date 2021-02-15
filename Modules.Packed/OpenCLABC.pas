@@ -796,333 +796,6 @@ type
   
   {$endregion Context}
   
-  {$region MemorySegment}
-  
-  ///Представляет область памяти устройства OpenCL (обычно GPU)
-  MemorySegment = partial class
-    private ntv: cl_mem;
-    
-    private sz: UIntPtr;
-    ///Возвращает размер области памяти в байтах
-    public property Size: UIntPtr read sz;
-    ///Возвращает размер области памяти в байтах
-    public property Size32: UInt32 read sz.ToUInt32;
-    ///Возвращает размер области памяти в байтах
-    public property Size64: UInt64 read sz.ToUInt64;
-    
-    ///Возвращает строку с основными данными о данном объекте
-    public function ToString: string; override :=
-    $'{self.GetType.Name}[{ntv.val}] of size {Size}';
-    
-    {$region constructor's}
-    
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в указанном контексте
-    public constructor(size: UIntPtr; c: Context);
-    begin
-      
-      var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
-      ec.RaiseIfError;
-      
-      GC.AddMemoryPressure(size.ToUInt64);
-      
-      self.sz := size;
-    end;
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в указанном контексте
-    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в указанном контексте
-    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
-    
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в контексте Context.Default
-    public constructor(size: UIntPtr) := Create(size, Context.Default);
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в контексте Context.Default
-    public constructor(size: integer) := Create(new UIntPtr(size));
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в контексте Context.Default
-    public constructor(size: int64)   := Create(new UIntPtr(size));
-    
-    private constructor(ntv: cl_mem; sz: UIntPtr);
-    begin
-      self.sz := sz;
-      self.ntv := ntv;
-    end;
-    private static function GetMemSize(ntv: cl_mem): UIntPtr;
-    begin
-      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError;
-    end;
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    ///При успешном создании обёртки вызывается cl.Retain
-    ///А во время вызова .Dispose - cl.Release
-    public constructor(ntv: cl_mem);
-    begin
-      Create(ntv, GetMemSize(ntv));
-      cl.RetainMemObject(ntv).RaiseIfError;
-      GC.AddMemoryPressure(Size64);
-    end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
-    
-    {$endregion constructor's}
-    
-    {$region 1#Write&Read}
-    
-    ///Заполняет весь буфер данными, находящимися по указанному адресу в RAM
-    public function WriteData(ptr: CommandQueue<IntPtr>): MemorySegment;
-    
-    ///Копирует всё содержимое буфера в RAM, по указанному адресу
-    public function ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
-    
-    ///Заполняет часть буфер данными, находящимися по указанному адресу в RAM
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function WriteData(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>): MemorySegment;
-    
-    ///Копирует часть содержимого буфера в RAM, по указанному адресу
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function ReadData(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>): MemorySegment;
-    
-    ///Заполняет весь буфер данными, находящимися по указанному адресу в RAM
-    public function WriteData(ptr: pointer): MemorySegment;
-    
-    ///Копирует всё содержимое буфера в RAM, по указанному адресу
-    public function ReadData(ptr: pointer): MemorySegment;
-    
-    ///Заполняет часть буфер данными, находящимися по указанному адресу в RAM
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function WriteData(ptr: pointer; buff_offset, len: CommandQueue<integer>): MemorySegment;
-    
-    ///Копирует часть содержимого буфера в RAM, по указанному адресу
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function ReadData(ptr: pointer; buff_offset, len: CommandQueue<integer>): MemorySegment;
-    
-    ///Записывает указанное значение размерного типа в начало буфера
-    public function WriteValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
-    
-    ///Записывает указанное значение размерного типа в буфер
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    public function WriteValue<TRecord>(val: TRecord; buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Записывает указанное значение размерного типа в начало буфера
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Записывает указанное значение размерного типа в буфер
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Записывает весь массив в начало буфера
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Записывает весь массив в начало буфера
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Записывает весь массив в начало буфера
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Читает из буфера достаточно байт чтоб заполнить весь массив
-    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Читает из буфера достаточно байт чтоб заполнить весь массив
-    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Читает из буфера достаточно байт чтоб заполнить весь массив
-    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Записывает указанный участок массива в буфер
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Записывает указанный участок массива в буфер
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Записывает указанный участок массива в буфер
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Читает в буфер указанный участок массива
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Читает в буфер указанный участок массива
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Читает в буфер указанный участок массива
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    {$endregion 1#Write&Read}
-    
-    {$region 2#Fill}
-    
-    ///Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями весь буфер
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegment;
-    
-    ///Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями часть буфера
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, buff_offset, len: CommandQueue<integer>): MemorySegment;
-    
-    ///Заполняет весь буфер копиями указанного значения размерного типа
-    public function FillValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
-    
-    ///Заполняет часть буфера копиями указанного значения размерного типа
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function FillValue<TRecord>(val: TRecord; buff_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    ///Заполняет весь буфер копиями указанного значения размерного типа
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
-    
-    ///Заполняет часть буфера копиями указанного значения размерного типа
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>; buff_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
-    {$endregion 2#Fill}
-    
-    {$region 3#Copy}
-    
-    ///Копирует данные из текущего буфера в b
-    ///Если буферы имеют разный размер - в качестве объёма данных берётся размер меньшего буфера
-    public function CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment;
-    
-    ///Копирует данные из b в текущий буфер
-    ///Если буферы имеют разный размер - в качестве объёма данных берётся размер меньшего буфера
-    public function CopyForm(mem: CommandQueue<MemorySegment>): MemorySegment;
-    
-    ///Копирует данные из текущего буфера в b
-    ///from_pos указывает отступ в байтах от начала буфера, из которого копируют
-    ///to_pos указывает отступ в байтах от начала буфера, в который копируют
-    ///len указывает кол-во копируемых байт
-    public function CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
-    
-    ///Копирует данные из b в текущий буфер
-    ///from_pos указывает отступ в байтах от начала буфера, из которого копируют
-    ///to_pos указывает отступ в байтах от начала буфера, в который копируют
-    ///len указывает кол-во копируемых байт
-    public function CopyForm(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
-    
-    {$endregion 3#Copy}
-    
-    {$region Get}
-    
-    ///Выделяет область неуправляемой памяти и копирует в неё всё содержимое данного буфера
-    public function GetData: IntPtr;
-    
-    ///Выделяет область неуправляемой памяти и копирует в неё часть содержимого данного буфера
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    ///len указывает кол-во задействованных байт буфера
-    public function GetData(buff_offset, len: CommandQueue<integer>): IntPtr;
-    
-    ///Читает значение указанного размерного типа из начала буфера
-    public function GetValue<TRecord>: TRecord; where TRecord: record;
-    
-    ///Читает значение указанного размерного типа из буфера
-    ///buff_offset указывает отступ от начала буфера, в байтах
-    public function GetValue<TRecord>(buff_offset: CommandQueue<integer>): TRecord; where TRecord: record;
-    
-    ///Создаёт массив максимального размера (на сколько хватит байт буфера) и копирует в него содержимое буфера
-    public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
-    
-    ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
-    public function GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
-    
-    ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
-    public function GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
-    
-    ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
-    public function GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
-    
-    {$endregion Get}
-    
-  end;
-  
-//  Buffer = MemorySegment;
-  
-  {$endregion MemorySegment}
-  
-  {$region MemorySubSegment}
-  
-  ///Представляет виртуальную область памяти, выделенную внутри MemorySegment
-  MemorySubSegment = partial class(MemorySegment)
-    
-    private _parent: MemorySegment;
-    ///Возвращает родительскую область памяти
-    public property Parent: MemorySegment read _parent;
-    
-    ///Возвращает строку с основными данными о данном объекте
-    public function ToString: string; override :=
-    $'{inherited ToString} inside {Parent}';
-    
-    {$region constructor's}
-    
-    private static function MakeSubNtv(ntv: cl_mem; reg: cl_buffer_region): cl_mem;
-    begin
-      var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
-      ec.RaiseIfError;
-    end;
-    private constructor(parent: MemorySegment; reg: cl_buffer_region);
-    begin
-      inherited Create(MakeSubNtv(parent.ntv, reg), reg.size);
-      self._parent := parent;
-    end;
-    ///Создаёт виртуальную область памяти, использующую указанную область из parent
-    ///origin указывает отступ в байтах от начала parent
-    ///size указывает размер новой области памяти
-    public constructor(parent: MemorySegment; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
-    
-    ///Создаёт виртуальную область памяти, использующую указанную область из parent
-    ///origin указывает отступ в байтах от начала parent
-    ///size указывает размер новой области памяти
-    public constructor(parent: MemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    ///Создаёт виртуальную область памяти, использующую указанную область из parent
-    ///origin указывает отступ в байтах от начала parent
-    ///size указывает размер новой области памяти
-    public constructor(parent: MemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    
-    {$endregion constructor's}
-    
-  end;
-  
-  {$endregion MemorySubSegment}
-  
   {$region ProgramCode}
   
   ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
@@ -1486,6 +1159,333 @@ type
   end;
   
   {$endregion Kernel}
+  
+  {$region MemorySegment}
+  
+  ///Представляет область памяти устройства OpenCL (обычно GPU)
+  MemorySegment = partial class
+    private ntv: cl_mem;
+    
+    private sz: UIntPtr;
+    ///Возвращает размер области памяти в байтах
+    public property Size: UIntPtr read sz;
+    ///Возвращает размер области памяти в байтах
+    public property Size32: UInt32 read sz.ToUInt32;
+    ///Возвращает размер области памяти в байтах
+    public property Size64: UInt64 read sz.ToUInt64;
+    
+    ///Возвращает строку с основными данными о данном объекте
+    public function ToString: string; override :=
+    $'{self.GetType.Name}[{ntv.val}] of size {Size}';
+    
+    {$region constructor's}
+    
+    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
+    ///Память выделяется в указанном контексте
+    public constructor(size: UIntPtr; c: Context);
+    begin
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
+      ec.RaiseIfError;
+      
+      GC.AddMemoryPressure(size.ToUInt64);
+      
+      self.sz := size;
+    end;
+    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
+    ///Память выделяется в указанном контексте
+    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
+    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
+    ///Память выделяется в указанном контексте
+    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
+    
+    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
+    ///Память выделяется в контексте Context.Default
+    public constructor(size: UIntPtr) := Create(size, Context.Default);
+    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
+    ///Память выделяется в контексте Context.Default
+    public constructor(size: integer) := Create(new UIntPtr(size));
+    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
+    ///Память выделяется в контексте Context.Default
+    public constructor(size: int64)   := Create(new UIntPtr(size));
+    
+    private constructor(ntv: cl_mem; sz: UIntPtr);
+    begin
+      self.sz := sz;
+      self.ntv := ntv;
+    end;
+    private static function GetMemSize(ntv: cl_mem): UIntPtr;
+    begin
+      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError;
+    end;
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
+    public constructor(ntv: cl_mem);
+    begin
+      Create(ntv, GetMemSize(ntv));
+      cl.RetainMemObject(ntv).RaiseIfError;
+      GC.AddMemoryPressure(Size64);
+    end;
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    
+    {$endregion constructor's}
+    
+    {$region 1#Write&Read}
+    
+    ///Заполняет весь буфер данными, находящимися по указанному адресу в RAM
+    public function WriteData(ptr: CommandQueue<IntPtr>): MemorySegment;
+    
+    ///Копирует всё содержимое буфера в RAM, по указанному адресу
+    public function ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
+    
+    ///Заполняет часть буфер данными, находящимися по указанному адресу в RAM
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function WriteData(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    ///Копирует часть содержимого буфера в RAM, по указанному адресу
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function ReadData(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    ///Заполняет весь буфер данными, находящимися по указанному адресу в RAM
+    public function WriteData(ptr: pointer): MemorySegment;
+    
+    ///Копирует всё содержимое буфера в RAM, по указанному адресу
+    public function ReadData(ptr: pointer): MemorySegment;
+    
+    ///Заполняет часть буфер данными, находящимися по указанному адресу в RAM
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function WriteData(ptr: pointer; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    ///Копирует часть содержимого буфера в RAM, по указанному адресу
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function ReadData(ptr: pointer; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    ///Записывает указанное значение размерного типа в начало буфера
+    public function WriteValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
+    
+    ///Записывает указанное значение размерного типа в буфер
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    public function WriteValue<TRecord>(val: TRecord; buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Записывает указанное значение размерного типа в начало буфера
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Записывает указанное значение размерного типа в буфер
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Записывает весь массив в начало буфера
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Записывает весь массив в начало буфера
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Записывает весь массив в начало буфера
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Читает из буфера достаточно байт чтоб заполнить весь массив
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Читает из буфера достаточно байт чтоб заполнить весь массив
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Читает из буфера достаточно байт чтоб заполнить весь массив
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Записывает указанный участок массива в буфер
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Записывает указанный участок массива в буфер
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Записывает указанный участок массива в буфер
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Читает в буфер указанный участок массива
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Читает в буфер указанный участок массива
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Читает в буфер указанный участок массива
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    ///Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями весь буфер
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegment;
+    
+    ///Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями часть буфера
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, buff_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    ///Заполняет весь буфер копиями указанного значения размерного типа
+    public function FillValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
+    
+    ///Заполняет часть буфера копиями указанного значения размерного типа
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function FillValue<TRecord>(val: TRecord; buff_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    ///Заполняет весь буфер копиями указанного значения размерного типа
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
+    
+    ///Заполняет часть буфера копиями указанного значения размерного типа
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>; buff_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    ///Копирует данные из текущего буфера в b
+    ///Если буферы имеют разный размер - в качестве объёма данных берётся размер меньшего буфера
+    public function CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment;
+    
+    ///Копирует данные из b в текущий буфер
+    ///Если буферы имеют разный размер - в качестве объёма данных берётся размер меньшего буфера
+    public function CopyForm(mem: CommandQueue<MemorySegment>): MemorySegment;
+    
+    ///Копирует данные из текущего буфера в b
+    ///from_pos указывает отступ в байтах от начала буфера, из которого копируют
+    ///to_pos указывает отступ в байтах от начала буфера, в который копируют
+    ///len указывает кол-во копируемых байт
+    public function CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
+    
+    ///Копирует данные из b в текущий буфер
+    ///from_pos указывает отступ в байтах от начала буфера, из которого копируют
+    ///to_pos указывает отступ в байтах от начала буфера, в который копируют
+    ///len указывает кол-во копируемых байт
+    public function CopyForm(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
+    
+    {$endregion 3#Copy}
+    
+    {$region Get}
+    
+    ///Выделяет область неуправляемой памяти и копирует в неё всё содержимое данного буфера
+    public function GetData: IntPtr;
+    
+    ///Выделяет область неуправляемой памяти и копирует в неё часть содержимого данного буфера
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    ///len указывает кол-во задействованных байт буфера
+    public function GetData(buff_offset, len: CommandQueue<integer>): IntPtr;
+    
+    ///Читает значение указанного размерного типа из начала буфера
+    public function GetValue<TRecord>: TRecord; where TRecord: record;
+    
+    ///Читает значение указанного размерного типа из буфера
+    ///buff_offset указывает отступ от начала буфера, в байтах
+    public function GetValue<TRecord>(buff_offset: CommandQueue<integer>): TRecord; where TRecord: record;
+    
+    ///Создаёт массив максимального размера (на сколько хватит байт буфера) и копирует в него содержимое буфера
+    public function GetArray1<TRecord>: array of TRecord; where TRecord: record;
+    
+    ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
+    public function GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
+    
+    ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
+    public function GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
+    
+    ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое буфера
+    public function GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
+    
+    {$endregion Get}
+    
+  end;
+  
+//  Buffer = MemorySegment;
+  
+  {$endregion MemorySegment}
+  
+  {$region MemorySubSegment}
+  
+  ///Представляет виртуальную область памяти, выделенную внутри MemorySegment
+  MemorySubSegment = partial class(MemorySegment)
+    
+    private _parent: MemorySegment;
+    ///Возвращает родительскую область памяти
+    public property Parent: MemorySegment read _parent;
+    
+    ///Возвращает строку с основными данными о данном объекте
+    public function ToString: string; override :=
+    $'{inherited ToString} inside {Parent}';
+    
+    {$region constructor's}
+    
+    private static function MakeSubNtv(ntv: cl_mem; reg: cl_buffer_region): cl_mem;
+    begin
+      var ec: ErrorCode;
+      Result := cl.CreateSubBuffer(ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      ec.RaiseIfError;
+    end;
+    private constructor(parent: MemorySegment; reg: cl_buffer_region);
+    begin
+      inherited Create(MakeSubNtv(parent.ntv, reg), reg.size);
+      self._parent := parent;
+    end;
+    ///Создаёт виртуальную область памяти, использующую указанную область из parent
+    ///origin указывает отступ в байтах от начала parent
+    ///size указывает размер новой области памяти
+    public constructor(parent: MemorySegment; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
+    
+    ///Создаёт виртуальную область памяти, использующую указанную область из parent
+    ///origin указывает отступ в байтах от начала parent
+    ///size указывает размер новой области памяти
+    public constructor(parent: MemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    ///Создаёт виртуальную область памяти, использующую указанную область из parent
+    ///origin указывает отступ в байтах от начала parent
+    ///size указывает размер новой области памяти
+    public constructor(parent: MemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    
+    {$endregion constructor's}
+    
+  end;
+  
+  {$endregion MemorySubSegment}
   
   {$region Common}
   
