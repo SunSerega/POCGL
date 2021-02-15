@@ -104,44 +104,44 @@ WaitMarker#3
 
 ==============================
 
-BufferCommandQueue#0
-	CCCObj => Buffer[0] of size 1
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
 		WCQWaiterAll => WaitMarker#1
 
 WaitMarker#1
 
-SimpleSyncQueueArray<OpenCLABC.Buffer>#0
+SimpleSyncQueueArray<OpenCLABC.MemorySegment>#0
 	WaitMarker#1
-	BufferCommandQueue#2
-		CCCObj => Buffer[0] of size 1
+	MemorySegmentCCQ#2
+		CCCObj => MemorySegment[*] of size 1
 		WaitCommand
 			WCQWaiterAll => WaitMarker#1
 
 SimpleSyncQueueArray<System.Object>#0
-	BufferCommandQueue#1
-		CCCObj => Buffer[0] of size 1
+	MemorySegmentCCQ#1
+		CCCObj => MemorySegment[*] of size 1
 		WaitCommand
 			WCQWaiterAll => WaitMarker#2
 	CastQueue<System.Object>#3
 		WaitMarker#2
 
-BufferCommandQueue#0
-	CCCObj => Buffer[0] of size 1
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
 		WCQWaiterAll => WaitMarker#1
 
 WaitMarker#1
 
-BufferCommandQueue#0
-	CCCObj => Buffer[0] of size 1
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
 		WCQWaiterAny => WaitMarker#1
 
 WaitMarker#1
 
-BufferCommandQueue#0
-	CCCObj => Buffer[0] of size 1
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
 		WCQWaiterAll
 			WaitMarker#1
@@ -151,8 +151,8 @@ WaitMarker#1
 
 WaitMarker#2
 
-BufferCommandQueue#0
-	CCCObj => Buffer[0] of size 1
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
 		WCQWaiterAny
 			WaitMarker#1

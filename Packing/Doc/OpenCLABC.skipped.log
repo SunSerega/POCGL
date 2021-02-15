@@ -1,6 +1,7 @@
-﻿BufferProperties
-ContextProperties
+﻿PlatformProperties
 DeviceProperties
-KernelProperties
-PlatformProperties
+ContextProperties
 ProgramCodeProperties
+KernelProperties
+MemorySegmentProperties
+MemorySubSegmentProperties

@@ -4,7 +4,8 @@
  # PlatformProperties
  # DeviceProperties
  # ContextProperties
- # BufferProperties
+ # MemorySegmentProperties
+ # MemorySubSegmentProperties
  # KernelProperties
  # ProgramProperties
 

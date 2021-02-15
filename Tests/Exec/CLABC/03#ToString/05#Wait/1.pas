@@ -27,13 +27,13 @@ begin
   Writeln('='*30);
   Writeln;
   
-  var b := new Buffer(1);
-  b.NewQueue.AddWait(M1).Println;
-  (M1+b.NewQueue.AddWait(M1)).Println;
-  (b.NewQueue.AddWait(M1)+M1).Println;
-  b.NewQueue.AddWaitAll(M1).Println;
-  b.NewQueue.AddWaitAny(M1).Println;
-  b.NewQueue.AddWaitAll(M1,M2).Println;
-  b.NewQueue.AddWaitAny(M1,M2).Println;
+  var mem := new MemorySegment(1);
+  mem.NewQueue.AddWait(M1).Println;
+  (M1+mem.NewQueue.AddWait(M1)).Println;
+  (mem.NewQueue.AddWait(M1)+M1).Println;
+  mem.NewQueue.AddWaitAll(M1).Println;
+  mem.NewQueue.AddWaitAny(M1).Println;
+  mem.NewQueue.AddWaitAll(M1,M2).Println;
+  mem.NewQueue.AddWaitAny(M1,M2).Println;
   
 end.

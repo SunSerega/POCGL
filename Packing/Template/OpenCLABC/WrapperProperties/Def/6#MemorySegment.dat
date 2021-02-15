@@ -4,14 +4,10 @@ clGetMemObjectInfo
 
 
 
-# TYPE:				MemObjectType
 # FLAGS:			MemFlags
-# SIZE:				UIntPtr
 # HOST_PTR:			IntPtr
 # MAP_COUNT:		UInt32
 # REFERENCE_COUNT:	UInt32
 # USES_SVM_POINTER:	Bool
-
-# OFFSET:			UIntPtr
 
 

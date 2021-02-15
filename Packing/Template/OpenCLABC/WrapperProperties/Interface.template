@@ -1,57 +1,34 @@
 ﻿  
   
   
-  {$region Buffer}
+  {$region Platform}
   
-  BufferProperties = sealed partial class
+  PlatformProperties = partial class
     
-    public constructor(ntv: cl_mem);
+    public constructor(ntv: cl_platform_id);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
-    private function GetType: MemObjectType;
-    private function GetFlags: MemFlags;
-    private function GetSize: UIntPtr;
-    private function GetHostPtr: IntPtr;
-    private function GetMapCount: UInt32;
-    private function GetReferenceCount: UInt32;
-    private function GetUsesSvmPointer: Bool;
-    private function GetOffset: UIntPtr;
+    private function GetProfile: String;
+    private function GetVersion: String;
+    private function GetName: String;
+    private function GetVendor: String;
+    private function GetExtensions: String;
+    private function GetHostTimerResolution: UInt64;
     
-    public property &Type:          MemObjectType read GetType;
-    public property Flags:          MemFlags      read GetFlags;
-    public property Size:           UIntPtr       read GetSize;
-    public property HostPtr:        IntPtr        read GetHostPtr;
-    public property MapCount:       UInt32        read GetMapCount;
-    public property ReferenceCount: UInt32        read GetReferenceCount;
-    public property UsesSvmPointer: Bool          read GetUsesSvmPointer;
-    public property Offset:         UIntPtr       read GetOffset;
+    public property Profile:             String read GetProfile;
+    public property Version:             String read GetVersion;
+    public property Name:                String read GetName;
+    public property Vendor:              String read GetVendor;
+    public property Extensions:          String read GetExtensions;
+    public property HostTimerResolution: UInt64 read GetHostTimerResolution;
     
   end;
   
-  {$endregion Buffer}
-  
-  {$region Context}
-  
-  ContextProperties = sealed partial class
-    
-    public constructor(ntv: cl_context);
-    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
-    
-    private function GetReferenceCount: UInt32;
-    private function GetNumDevices: UInt32;
-    private function GetProperties: array of ContextProperties;
-    
-    public property ReferenceCount: UInt32                     read GetReferenceCount;
-    public property NumDevices:     UInt32                     read GetNumDevices;
-    public property Properties:     array of ContextProperties read GetProperties;
-    
-  end;
-  
-  {$endregion Context}
+  {$endregion Platform}
   
   {$region Device}
   
-  DeviceProperties = sealed partial class
+  DeviceProperties = partial class
     
     public constructor(ntv: cl_device_id);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -238,55 +215,28 @@
   
   {$endregion Device}
   
-  {$region Kernel}
+  {$region Context}
   
-  KernelProperties = sealed partial class
+  ContextProperties = partial class
     
-    public constructor(ntv: cl_kernel);
+    public constructor(ntv: cl_context);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
-    private function GetFunctionName: String;
-    private function GetNumArgs: UInt32;
     private function GetReferenceCount: UInt32;
-    private function GetAttributes: String;
+    private function GetNumDevices: UInt32;
+    private function GetProperties: array of ContextProperties;
     
-    public property FunctionName:   String read GetFunctionName;
-    public property NumArgs:        UInt32 read GetNumArgs;
-    public property ReferenceCount: UInt32 read GetReferenceCount;
-    public property Attributes:     String read GetAttributes;
-    
-  end;
-  
-  {$endregion Kernel}
-  
-  {$region Platform}
-  
-  PlatformProperties = sealed partial class
-    
-    public constructor(ntv: cl_platform_id);
-    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
-    
-    private function GetProfile: String;
-    private function GetVersion: String;
-    private function GetName: String;
-    private function GetVendor: String;
-    private function GetExtensions: String;
-    private function GetHostTimerResolution: UInt64;
-    
-    public property Profile:             String read GetProfile;
-    public property Version:             String read GetVersion;
-    public property Name:                String read GetName;
-    public property Vendor:              String read GetVendor;
-    public property Extensions:          String read GetExtensions;
-    public property HostTimerResolution: UInt64 read GetHostTimerResolution;
+    public property ReferenceCount: UInt32                     read GetReferenceCount;
+    public property NumDevices:     UInt32                     read GetNumDevices;
+    public property Properties:     array of ContextProperties read GetProperties;
     
   end;
   
-  {$endregion Platform}
+  {$endregion Context}
   
   {$region ProgramCode}
   
-  ProgramCodeProperties = sealed partial class
+  ProgramCodeProperties = partial class
     
     public constructor(ntv: cl_program);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -310,6 +260,65 @@
   end;
   
   {$endregion ProgramCode}
+  
+  {$region Kernel}
+  
+  KernelProperties = partial class
+    
+    public constructor(ntv: cl_kernel);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetFunctionName: String;
+    private function GetNumArgs: UInt32;
+    private function GetReferenceCount: UInt32;
+    private function GetAttributes: String;
+    
+    public property FunctionName:   String read GetFunctionName;
+    public property NumArgs:        UInt32 read GetNumArgs;
+    public property ReferenceCount: UInt32 read GetReferenceCount;
+    public property Attributes:     String read GetAttributes;
+    
+  end;
+  
+  {$endregion Kernel}
+  
+  {$region MemorySegment}
+  
+  MemorySegmentProperties = partial class
+    
+    public constructor(ntv: cl_mem);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetFlags: MemFlags;
+    private function GetHostPtr: IntPtr;
+    private function GetMapCount: UInt32;
+    private function GetReferenceCount: UInt32;
+    private function GetUsesSvmPointer: Bool;
+    
+    public property Flags:          MemFlags read GetFlags;
+    public property HostPtr:        IntPtr   read GetHostPtr;
+    public property MapCount:       UInt32   read GetMapCount;
+    public property ReferenceCount: UInt32   read GetReferenceCount;
+    public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
+    
+  end;
+  
+  {$endregion MemorySegment}
+  
+  {$region MemorySubSegment}
+  
+  MemorySubSegmentProperties = partial class(MemorySegmentProperties)
+    
+    public constructor(ntv: cl_mem);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetOffset: UIntPtr;
+    
+    public property Offset: UIntPtr read GetOffset;
+    
+  end;
+  
+  {$endregion MemorySubSegment}
   
   
   

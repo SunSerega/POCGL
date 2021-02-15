@@ -47,7 +47,7 @@ type
         
         impl_args_sb += 'ccq: ';
         impl_args_sb += t;
-        impl_args_sb += 'CommandQueue';
+        impl_args_sb += 'CCQ';
         
         if impl_args_str<>nil then
         begin

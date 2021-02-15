@@ -43,9 +43,12 @@ begin
       res += #10;
     end;
     
+    var base_t: string := nil;
+    
     foreach var fname in EnumerateFiles(GetFullPathRTA('WrapperProperties\Def'), '*.dat') do
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
+      if t.Contains('#') then t := t.Remove(0, t.IndexOf('#')+1);
       
       var ntv_t: string := nil;
       var info_t: string := nil;
@@ -53,7 +56,17 @@ begin
       var ps := new List<Prop>;
       foreach var (bl_name, bl_data) in FixerUtils.ReadBlocks(fname, false) do
         if bl_name=nil then
-          (ntv_t, info_t, ntv_proc_name) := bl_data else
+        begin
+          (ntv_t, info_t, ntv_proc_name) := bl_data;
+          foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl_data, '!', false) do
+            match setting_name with
+              nil: ;
+              
+              'Base': base_t := setting_data.Single;
+              
+              else raise new System.InvalidOperationException(setting_name);
+            end;
+        end else
           ps += new Prop(bl_name, bl_data);
       
       var max_type_len := ps.Max(p->p.t.Length);
@@ -75,12 +88,20 @@ begin
       res_Im += 'type'#10;
       res += '  ';
       res += t;
-      res += 'Properties = sealed partial class';
-      res_Im += '(NtvPropertiesBase<';
-      res_Im += ntv_t;
-      res_Im += ', ';
-      res_Im += info_t;
-      res_Im += '>)';
+      res += 'Properties = partial class';
+      if base_t=nil then
+      begin
+        res_Im += '(NtvPropertiesBase<';
+        res_Im += ntv_t;
+        res_Im += ', ';
+        res_Im += info_t;
+        res_Im += '>)';
+      end else
+      begin
+        res += '(';
+        res += base_t;
+        res += 'Properties)';
+      end;
       res += #10;
       
       res += '    '#10;

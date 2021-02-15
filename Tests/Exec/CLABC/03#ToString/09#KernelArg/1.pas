@@ -4,15 +4,15 @@ procedure TestArg(arg: KernelArg) := Write(arg);
 
 begin
   var i: byte;
-  var b := new Buffer(1);
+  var mem := new MemorySegment(1);
   
   
   
   Writeln(#10'>>> Const'#10);
   
-  Writeln('Buffer:');
-  TestArg(KernelArg.FromBuffer(b));
-  TestArg(b);
+  Writeln('MemorySegment:');
+  TestArg(KernelArg.FromMemorySegment(mem));
+  TestArg(mem);
   Writeln;
   
   Writeln('Record:');
@@ -30,9 +30,9 @@ begin
   Writeln;
   Writeln(#10'>>> Invokable'#10);
   
-  Writeln('Buffer:');
-  TestArg(KernelArg.FromBufferCQ(b.NewQueue));
-  TestArg(b.NewQueue);
+  Writeln('MemorySegment:');
+  TestArg(KernelArg.FromMemorySegmentCQ(mem.NewQueue));
+  TestArg(mem.NewQueue);
   Writeln;
   
   Writeln('Record:');

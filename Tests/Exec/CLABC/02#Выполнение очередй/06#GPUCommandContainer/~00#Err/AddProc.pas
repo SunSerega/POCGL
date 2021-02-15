@@ -1,10 +1,9 @@
 ﻿uses OpenCLABC;
 
 begin
-  var b := new Buffer(1);
+  var mem := new MemorySegment(1);
   Context.Default.SyncInvoke(
-    b.NewQueue
-    .AddProc(b->raise new Exception($'{b.Size}, TestOK'))
-    as CommandQueue<Buffer>
+    mem.NewQueue
+    .AddProc(b->raise new Exception($'{mem}, TestOK'))
   );
 end.

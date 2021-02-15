@@ -1,8 +1,7 @@
 
 
 
-# Buffer
-q.ThenConvert(InitBuffer)
+# MemorySegment
 
 # Kernel
 

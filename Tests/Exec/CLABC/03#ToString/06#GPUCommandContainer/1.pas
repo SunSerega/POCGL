@@ -6,7 +6,7 @@ begin
   
   k.NewQueue
   .AddExec2(1,1,
-    BufferCommandQueue.Create(HFQ(()->new Buffer(1)))
+    MemorySegmentCCQ.Create(HFQ(()->new MemorySegment(1)))
     .AddQueue(HFQ(()->5))
     .AddProc(b->exit()),
     5

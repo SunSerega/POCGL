@@ -13,8 +13,8 @@ SimpleAsyncQueueArray<System.Object>#0
 	CastQueue<System.Object>#2
 		CommandQueueHostFunc<System.Int32>#3 => System.Func`2[OpenCLABC.Context,System.Int32]
 
-BufferCommandQueue#0
-	CCCObj => Buffer[0] of size 1
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
 	QueueCommand
 		CommandQueueHostFunc<System.Int32>#1 => System.Func`2[OpenCLABC.Context,System.Int32]
 

@@ -19,6 +19,14 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующего пула:
 
+//ToDo Buffer переименовать в MemorySegment
+//ToDo И добавить типы как GPUArray - наверное с методом вроде .Flush, для более эффективной записи
+//
+//ToDo Инициалию буфера из BufferCommandQueue перенести в, собственно, вызовы GPUCommand.Invoke
+// - И там же вызывать GPUArray.Flush
+
+//ToDo Перепродумать SubBuffer, в случае перевыделения основного буфера - он плохо себя ведёт...
+
 //===================================
 // Запланированное:
 
@@ -51,12 +59,6 @@ unit OpenCLABC;
 //ToDo А что если вещи, которые могут привести к утечкам памяти при ThreadAbortException (как конструктор контекста) сувать в finally пустого try?
 // - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
 // - Обязательно сравнить скорость, перед тем как применять...
-
-//ToDo Buffer переименовать в GPUMem
-//ToDo И добавить типы как GPUArray - наверное с методом вроде .Flush, для более эффективной записи
-//
-//ToDo Инициалию буфера из BufferCommandQueue перенести в, собственно, вызовы GPUCommand.Invoke
-// - И там же вызывать GPUArray.Flush
 
 //ToDo Можно же сохранять неуправляемые очереди в список внутри CLTask, и затем использовать несколько раз
 // - И почему я раньше об этом не подумал...
@@ -112,8 +114,6 @@ unit OpenCLABC;
 
 //ToDo Интегрировать профайлинг очередей
 
-//ToDo Перепродумать SubBuffer, в случае перевыделения основного буфера - он плохо себя ведёт...
-
 //ToDo Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
 // - И в справке тогда убрать параграф...
 
@@ -158,6 +158,8 @@ uses OpenCL;
 type
   
   {$region Re-definition's}
+  
+  OpenCLException         = OpenCL.OpenCLException;
   
   DeviceType              = OpenCL.DeviceType;
   DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
@@ -415,9 +417,9 @@ type
   
   {$endregion Context}
   
-  {$region Buffer}
+  {$region MemorySegment}
   
-  Buffer = partial class
+  MemorySegment = partial class
     private ntv: cl_mem;
     
     private sz: UIntPtr;
@@ -430,107 +432,86 @@ type
     
     {$region constructor's}
     
-    public constructor(size: UIntPtr) := self.sz := size;
-    public constructor(size: integer) := Create(new UIntPtr(size));
-    public constructor(size: int64)   := Create(new UIntPtr(size));
-    
     public constructor(size: UIntPtr; c: Context);
     begin
-      Create(size);
-      Init(c);
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
+      ec.RaiseIfError;
+      
+      GC.AddMemoryPressure(size.ToUInt64);
+      
+      self.sz := size;
     end;
     public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
     public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
     
+    public constructor(size: UIntPtr) := Create(size, Context.Default);
+    public constructor(size: integer) := Create(new UIntPtr(size));
+    public constructor(size: int64)   := Create(new UIntPtr(size));
+    
+    private constructor(ntv: cl_mem; sz: UIntPtr);
+    begin
+      self.sz := sz;
+      self.ntv := ntv;
+    end;
+    private static function GetMemSize(ntv: cl_mem): UIntPtr;
+    begin
+      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError;
+    end;
     public constructor(ntv: cl_mem);
     begin
+      Create(ntv, GetMemSize(ntv));
       cl.RetainMemObject(ntv).RaiseIfError;
-      self.ntv := ntv;
-      
-      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), self.sz, IntPtr.Zero).RaiseIfError;
       GC.AddMemoryPressure(Size64);
-      
     end;
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
-    public procedure Init(c: Context); virtual :=
-    lock self do
-    begin
-      
-      var ec: ErrorCode;
-      var new_ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, sz, IntPtr.Zero, ec);
-      ec.RaiseIfError;
-      
-      if self.ntv=cl_mem.Zero then
-        GC.AddMemoryPressure(Size64) else
-        cl.ReleaseMemObject(self.ntv).RaiseIfError;
-      
-      self.ntv := new_ntv;
-    end;
-    
-    public procedure InitIfNeed(c: Context); virtual :=
-    if self.ntv=cl_mem.Zero then lock self do
-    begin
-      if self.ntv<>cl_mem.Zero then exit; // Во время ожидания lock могли инициализировать
-      
-      var ec: ErrorCode;
-      var new_ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, sz, IntPtr.Zero, ec);
-      ec.RaiseIfError;
-      
-      GC.AddMemoryPressure(Size64);
-      self.ntv := new_ntv;
-    end;
-    
     {$endregion constructor's}
     
-    {%ContainerMethods\Buffer\Implicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\MemorySegment\Implicit.Interface!MethodGen.pas%}
     
-    {%ContainerMethods\Buffer.Get\Implicit.Interface!GetMethodGen.pas%}
+    {%ContainerMethods\MemorySegment.Get\Implicit.Interface!GetMethodGen.pas%}
     
   end;
   
-  {$endregion Buffer}
+  //Buffer = MemorySegment;
   
-  {$region SubBuffer}
+  {$endregion MemorySegment}
   
-  SubBuffer = partial class(Buffer)
+  {$region MemorySubSegment}
+  
+  MemorySubSegment = partial class(MemorySegment)
     
-    private _parent: Buffer;
-    public property Parent: Buffer read _parent;
+    private _parent: MemorySegment;
+    public property Parent: MemorySegment read _parent;
     
     public function ToString: string; override :=
     $'{inherited ToString} inside {Parent}';
     
     {$region constructor's}
     
-    private constructor(parent: Buffer; reg: cl_buffer_region);
+    private static function MakeSubNtv(ntv: cl_mem; reg: cl_buffer_region): cl_mem;
     begin
-      inherited Create(reg.size);
-      
-      var parent_ntv := parent.ntv;
-      if parent_ntv=cl_mem.Zero then raise new InvalidOperationException($'%Err:Buffer:Empty%');
-      
       var ec: ErrorCode;
-      self.ntv := cl.CreateSubBuffer(parent_ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      Result := cl.CreateSubBuffer(ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       ec.RaiseIfError;
-      
+    end;
+    private constructor(parent: MemorySegment; reg: cl_buffer_region);
+    begin
+      inherited Create(MakeSubNtv(parent.ntv, reg), reg.size);
       self._parent := parent;
     end;
-    public constructor(parent: Buffer; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
+    public constructor(parent: MemorySegment; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
     
-    public constructor(parent: Buffer; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    public constructor(parent: Buffer; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    
-    private procedure InitIgnoreOrErr :=
-    if self.ntv=cl_mem.Zero then raise new NotSupportedException($'%Err:SubBuffer:InitCall%');
-    public procedure Init(c: Context); override := InitIgnoreOrErr;
-    public procedure InitIfNeed(c: Context); override := InitIgnoreOrErr;
+    public constructor(parent: MemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    public constructor(parent: MemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
     
     {$endregion constructor's}
     
   end;
   
-  {$endregion SubBuffer}
+  {$endregion MemorySubSegment}
   
   {$region ProgramCode}
   
@@ -579,17 +560,17 @@ type
       
     end;
     
-    public constructor(c: Context; params files_texts: array of string);
+    public constructor(c: Context; params file_texts: array of string);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateProgramWithSource(c.ntv, files_texts.Length, files_texts, nil, ec);
+      self.ntv := cl.CreateProgramWithSource(c.ntv, file_texts.Length, file_texts, nil, ec);
       ec.RaiseIfError;
       
       self._c := c;
       self.Build;
-      
     end;
+    public constructor(params file_texts: array of string) := Create(Context.Default, file_texts);
     
     private constructor(ntv: cl_program; c: Context);
     begin
@@ -845,7 +826,7 @@ type
   
   {$region Misc}
   
-  Buffer = partial class
+  MemorySegment = partial class
     
     public procedure Dispose; virtual :=
     if ntv<>cl_mem.Zero then lock self do
@@ -860,7 +841,7 @@ type
     
   end;
   
-  SubBuffer = partial class
+  MemorySubSegment = partial class
     
     public procedure Dispose; override :=
     if ntv<>cl_mem.Zero then lock self do
@@ -1371,15 +1352,15 @@ type
   
   KernelArg = abstract partial class
     
-    {$region Buffer}
+    {$region MemorySegment}
     
-    public static function FromBuffer(b: Buffer): KernelArg;
-    public static function operator implicit(b: Buffer): KernelArg := FromBuffer(b);
+    public static function FromMemorySegment(mem: MemorySegment): KernelArg;
+    public static function operator implicit(mem: MemorySegment): KernelArg := FromMemorySegment(mem);
     
-    public static function FromBufferCQ(bq: CommandQueue<Buffer>): KernelArg;
-    public static function operator implicit(bq: CommandQueue<Buffer>): KernelArg := FromBufferCQ(bq);
+    public static function FromMemorySegmentCQ(mem_q: CommandQueue<MemorySegment>): KernelArg;
+    public static function operator implicit(mem_q: CommandQueue<MemorySegment>): KernelArg := FromMemorySegmentCQ(mem_q);
     
-    {$endregion Buffer}
+    {$endregion MemorySegment}
     
     {$region Record}
     
@@ -1446,31 +1427,31 @@ type
   
   {$endregion KernelArg}
   
-  {$region BufferCommandQueue}
+  {$region MemorySegmentCCQ}
   
-  BufferCommandQueue = sealed partial class
+  MemorySegmentCCQ = sealed partial class
     
-    {%ContainerCommon\Buffer\Interface!ContainerCommon.pas%}
+    {%ContainerCommon\MemorySegment\Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\Buffer\Explicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\MemorySegment\Explicit.Interface!MethodGen.pas%}
     
-    {%ContainerMethods\Buffer.Get\Explicit.Interface!GetMethodGen.pas%}
+    {%ContainerMethods\MemorySegment.Get\Explicit.Interface!GetMethodGen.pas%}
     
   end;
   
-  Buffer = partial class
-    public function NewQueue := new BufferCommandQueue({%>self%});
+  MemorySegment = partial class
+    public function NewQueue := new MemorySegmentCCQ({%>self%});
   end;
   
   KernelArg = abstract partial class
-    public static function operator implicit(bq: BufferCommandQueue): KernelArg;
+    public static function operator implicit(bq: MemorySegmentCCQ): KernelArg;
   end;
   
-  {$endregion BufferCommandQueue}
+  {$endregion MemorySegmentCCQ}
   
-  {$region KernelCommandQueue}
+  {$region KernelCCQ}
   
-  KernelCommandQueue = sealed partial class
+  KernelCCQ = sealed partial class
     
     {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
     
@@ -1478,11 +1459,13 @@ type
     
   end;
   
+//  KernelCommandQueue =  KernelCCQ;
+  
   Kernel = partial class
-    public function NewQueue := new KernelCommandQueue({%>self%});
+    public function NewQueue := new KernelCCQ({%>self%});
   end;
   
-  {$endregion KernelCommandQueue}
+  {$endregion KernelCCQ}
   
 {$region Global subprograms}
 
@@ -3458,33 +3441,30 @@ type
   
 {$endregion Base}
 
-{$region Buffer}
+{$region MemorySegment}
 
 type
-  KernelArgBuffer = sealed class(ConstKernelArg)
-    private b: Buffer;
+  KernelArgMemorySegment = sealed class(ConstKernelArg)
+    private mem: MemorySegment;
     
-    public constructor(b: Buffer) := self.b := b;
+    public constructor(mem: MemorySegment) := self.mem := mem;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override;
-    begin
-      b.InitIfNeed(c);
-      cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), b.ntv).RaiseIfError; 
-    end;
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
+    cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), mem.ntv).RaiseIfError;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += ' => ';
-      sb.Append(b);
+      sb.Append(mem);
       sb += #10;
     end;
     
   end;
   
-static function KernelArg.FromBuffer(b: Buffer) := new KernelArgBuffer(b);
+static function KernelArg.FromMemorySegment(mem: MemorySegment) := new KernelArgMemorySegment(mem);
 
-{$endregion Buffer}
+{$endregion MemorySegment}
 
 {$region Record}
 
@@ -3558,16 +3538,16 @@ type
   
 {$endregion Base}
 
-{$region Buffer}
+{$region MemorySegment}
 
 type
-  KernelArgBufferCQ = sealed class(InvokeableKernelArg)
-    public q: CommandQueue<Buffer>;
-    public constructor(q: CommandQueue<Buffer>) := self.q := q;
+  KernelArgMemorySegmentCQ = sealed class(InvokeableKernelArg)
+    public q: CommandQueue<MemorySegment>;
+    public constructor(q: CommandQueue<MemorySegment>) := self.q := q;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override :=
-    q.InvokeNewQ(tsk, c, main_dvc, false, nil).LazyQuickTransform(b->new KernelArgBuffer(b) as ISetableKernelArg);
+    q.InvokeNewQ(tsk, c, main_dvc, false, nil).LazyQuickTransform(mem->new KernelArgMemorySegment(mem) as ISetableKernelArg);
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
@@ -3580,10 +3560,10 @@ type
     
   end;
   
-static function KernelArg.FromBufferCQ(bq: CommandQueue<Buffer>) :=
-new KernelArgBufferCQ(bq);
+static function KernelArg.FromMemorySegmentCQ(mem_q: CommandQueue<MemorySegment>) :=
+new KernelArgMemorySegmentCQ(mem_q);
 
-{$endregion Buffer}
+{$endregion MemorySegment}
 
 {$region Record}
 
@@ -3844,8 +3824,6 @@ type
     protected core: GPUCommandContainerCore<T>;
     protected commands := new List<GPUCommand<T>>;
     
-    protected procedure InitObj(obj: T; c: Context); virtual := exit;
-    
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override :=
     core.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
     
@@ -3888,7 +3866,6 @@ type
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       var res_obj := self.o;
-      cc.InitObj(res_obj, c);
       
       foreach var comm in cc.commands do
         prev_ev := comm.InvokeObj(res_obj, tsk, c, main_dvc, cq, prev_ev);
@@ -3952,40 +3929,29 @@ type
   
 {$endregion Core}
 
-{$region BufferCommandQueue}
+{$region MemorySegment}
 
 type
-  BufferCommandQueue = sealed partial class(GPUCommandContainer<Buffer>)
-    
-    {$region constructor's}
-    
-    protected procedure InitObj(obj: Buffer; c: Context); override := obj.InitIfNeed(c);
-    protected static function InitBuffer(b: Buffer; c: Context): Buffer;
-    begin
-      b.InitIfNeed(c);
-      Result := b;
-    end;
-    
-    {$endregion constructor's}
+  MemorySegmentCCQ = sealed partial class(GPUCommandContainer<MemorySegment>)
     
   end;
   
-static function KernelArg.operator implicit(bq: BufferCommandQueue): KernelArg := FromBufferCQ(bq);
+static function KernelArg.operator implicit(bq: MemorySegmentCCQ): KernelArg := FromMemorySegmentCQ(bq);
 
-{%ContainerCommon\Buffer\Implementation!ContainerCommon.pas%}
+{%ContainerCommon\MemorySegment\Implementation!ContainerCommon.pas%}
 
-{$endregion BufferCommandQueue}
+{$endregion MemorySegment}
 
-{$region KernelCommandQueue}
+{$region Kernel}
 
 type
-  KernelCommandQueue = sealed partial class(GPUCommandContainer<Kernel>)
+  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
     
   end;
   
 {%ContainerCommon\Kernel\Implementation!ContainerCommon.pas%}
 
-{$endregion KernelCommandQueue}
+{$endregion Kernel}
 
 {$endregion GPUCommandContainer}
 
@@ -4176,25 +4142,25 @@ type
   
 {$endregion GetCommand}
 
-{$region Buffer}
+{$region MemorySegment}
 
 {$region Implicit}
 
-{%ContainerMethods\Buffer\Implicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\MemorySegment\Implicit.Implementation!MethodGen.pas%}
 
-{%ContainerMethods\Buffer.Get\Implicit.Implementation!GetMethodGen.pas%}
+{%ContainerMethods\MemorySegment.Get\Implicit.Implementation!GetMethodGen.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\Buffer\Explicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\MemorySegment\Explicit.Implementation!MethodGen.pas%}
 
-{%ContainerMethods\Buffer.Get\Explicit.Implementation!GetMethodGen.pas%}
+{%ContainerMethods\MemorySegment.Get\Explicit.Implementation!GetMethodGen.pas%}
 
 {$endregion Explicit}
 
-{$endregion Buffer}
+{$endregion MemorySegment}
 
 {$region Kernel}
 

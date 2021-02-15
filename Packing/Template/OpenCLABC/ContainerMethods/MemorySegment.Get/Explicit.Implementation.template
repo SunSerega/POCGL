@@ -6,18 +6,18 @@
 {$region GetDataAutoSize}
 
 type
-  BufferCommandGetDataAutoSize = sealed class(EnqueueableGetCommand<Buffer, IntPtr>)
+  MemorySegmentCommandGetDataAutoSize = sealed class(EnqueueableGetCommand<MemorySegment, IntPtr>)
     
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue);
+    public constructor(ccq: MemorySegmentCCQ);
     begin
       inherited Create(ccq);
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
       
       Result := (o, cq, tsk, evs, own_qr)->
@@ -48,20 +48,20 @@ type
   
 {$endregion GetDataAutoSize}
 
-function BufferCommandQueue.AddGetData: CommandQueue<IntPtr> :=
-new BufferCommandGetDataAutoSize(self) as CommandQueue<IntPtr>;
+function MemorySegmentCCQ.AddGetData: CommandQueue<IntPtr> :=
+new MemorySegmentCommandGetDataAutoSize(self) as CommandQueue<IntPtr>;
 
 {$region GetData}
 
 type
-  BufferCommandGetData = sealed class(EnqueueableGetCommand<Buffer, IntPtr>)
+  MemorySegmentCommandGetData = sealed class(EnqueueableGetCommand<MemorySegment, IntPtr>)
     private buff_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue; buff_offset, len: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; buff_offset, len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.buff_offset := buff_offset;
@@ -69,7 +69,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
       var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
       var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
@@ -118,16 +118,16 @@ type
   
 {$endregion GetData}
 
-function BufferCommandQueue.AddGetData(buff_offset, len: CommandQueue<integer>): CommandQueue<IntPtr> :=
-new BufferCommandGetData(self, buff_offset, len) as CommandQueue<IntPtr>;
+function MemorySegmentCCQ.AddGetData(buff_offset, len: CommandQueue<integer>): CommandQueue<IntPtr> :=
+new MemorySegmentCommandGetData(self, buff_offset, len) as CommandQueue<IntPtr>;
 
-function BufferCommandQueue.AddGetValue<TRecord>: CommandQueue<TRecord> :=
+function MemorySegmentCCQ.AddGetValue<TRecord>: CommandQueue<TRecord> :=
 AddGetValue&<TRecord>(0);
 
 {$region GetValue}
 
 type
-  BufferCommandGetValue<TRecord> = sealed class(EnqueueableGetCommand<Buffer, TRecord>)
+  MemorySegmentCommandGetValue<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, TRecord>)
   where TRecord: record;
     private buff_offset: CommandQueue<integer>;
     
@@ -136,14 +136,14 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue; buff_offset: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; buff_offset: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.buff_offset := buff_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
     begin
       var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
       
@@ -190,13 +190,13 @@ type
   
 {$endregion GetValue}
 
-function BufferCommandQueue.AddGetValue<TRecord>(buff_offset: CommandQueue<integer>): CommandQueue<TRecord> :=
-new BufferCommandGetValue<TRecord>(self, buff_offset) as CommandQueue<TRecord>;
+function MemorySegmentCCQ.AddGetValue<TRecord>(buff_offset: CommandQueue<integer>): CommandQueue<TRecord> :=
+new MemorySegmentCommandGetValue<TRecord>(self, buff_offset) as CommandQueue<TRecord>;
 
 {$region GetArray1AutoSize}
 
 type
-  BufferCommandGetArray1AutoSize<TRecord> = sealed class(EnqueueableGetCommand<Buffer, array of TRecord>)
+  MemorySegmentCommandGetArray1AutoSize<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, array of TRecord>)
   where TRecord: record;
     
     public function NeedThread: boolean; override := true;
@@ -204,13 +204,13 @@ type
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue);
+    public constructor(ccq: MemorySegmentCCQ);
     begin
       inherited Create(ccq);
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       
       Result := (o, cq, tsk, evs, own_qr)->
@@ -238,13 +238,13 @@ type
   
 {$endregion GetArray1AutoSize}
 
-function BufferCommandQueue.AddGetArray1<TRecord>: CommandQueue<array of TRecord> :=
-new BufferCommandGetArray1AutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
+function MemorySegmentCCQ.AddGetArray1<TRecord>: CommandQueue<array of TRecord> :=
+new MemorySegmentCommandGetArray1AutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 
 {$region GetArray1}
 
 type
-  BufferCommandGetArray1<TRecord> = sealed class(EnqueueableGetCommand<Buffer, array of TRecord>)
+  MemorySegmentCommandGetArray1<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, array of TRecord>)
   where TRecord: record;
     private len: CommandQueue<integer>;
     
@@ -253,14 +253,14 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue; len: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len := len;
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       var len_qr := len.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(len_qr.ev);
       
@@ -300,13 +300,13 @@ type
   
 {$endregion GetArray1}
 
-function BufferCommandQueue.AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord> :=
-new BufferCommandGetArray1<TRecord>(self, len) as CommandQueue<array of TRecord>;
+function MemorySegmentCCQ.AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord> :=
+new MemorySegmentCommandGetArray1<TRecord>(self, len) as CommandQueue<array of TRecord>;
 
 {$region GetArray2}
 
 type
-  BufferCommandGetArray2<TRecord> = sealed class(EnqueueableGetCommand<Buffer, array[,] of TRecord>)
+  MemorySegmentCommandGetArray2<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, array[,] of TRecord>)
   where TRecord: record;
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
@@ -316,7 +316,7 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue; len1,len2: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; len1,len2: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len1 := len1;
@@ -324,7 +324,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,] of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,] of TRecord>)->cl_event; override;
     begin
       var len1_qr := len1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(len1_qr.ev);
       var len2_qr := len2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len2_qr.ev);
@@ -371,13 +371,13 @@ type
   
 {$endregion GetArray2}
 
-function BufferCommandQueue.AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord> :=
-new BufferCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
+function MemorySegmentCCQ.AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord> :=
+new MemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
 
 {$region GetArray3}
 
 type
-  BufferCommandGetArray3<TRecord> = sealed class(EnqueueableGetCommand<Buffer, array[,,] of TRecord>)
+  MemorySegmentCommandGetArray3<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, array[,,] of TRecord>)
   where TRecord: record;
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
@@ -388,7 +388,7 @@ type
     public function ParamCountL1: integer; override := 3;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: BufferCommandQueue; len1,len2,len3: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; len1,len2,len3: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len1 := len1;
@@ -397,7 +397,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (Buffer, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,,] of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array[,,] of TRecord>)->cl_event; override;
     begin
       var len1_qr := len1.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(len1_qr.ev);
       var len2_qr := len2.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len2_qr.ev);
@@ -451,8 +451,8 @@ type
   
 {$endregion GetArray3}
 
-function BufferCommandQueue.AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord> :=
-new BufferCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
+function MemorySegmentCCQ.AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord> :=
+new MemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
 
 {$endregion Get}
 

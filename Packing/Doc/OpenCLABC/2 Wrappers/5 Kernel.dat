@@ -14,11 +14,6 @@
 
 
 
-# Kernel.NewQueue
-Создаёт новую очередь-контейнер для команд GPU, применяемых к данному kernel-у
-
-
-
 # Kernel.UseExclusiveNative(cl_kernel->())
 # Kernel.UseExclusiveNative<T>(cl_kernel->T)
 Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно

@@ -12,13 +12,13 @@ Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapPropGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\MethodGen.pas"
 Template[OpenCLABC]: Finished compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\MethodGen.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Buffer]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Kernel]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\MethodGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\GetMethodGen.pas"
 Template[OpenCLABC]: Finished compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [Buffer]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapGen.pas"
 Template[OpenCLABC]: Finished compiling: OK
@@ -51,30 +51,30 @@ Runing Tester
 Tester: Testing selected modules:
 Tester: OpenCLABC
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D +WPF.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D.pas"
-Tester: Finished compiling: OK
+Tester: Finished compiling: ERRОR
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1.pas"
 Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
 Tester: Finished compiling: OK
@@ -106,7 +106,6 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wa
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3.pas"
 Tester: Finished compiling: OK
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3.td"
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec4.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5.pas"
@@ -133,7 +132,6 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\10#Wa
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone.pas"
 Tester: Finished compiling: OK
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone.td"
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
@@ -160,26 +158,23 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
 Tester: Finished compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
 Tester: Finished compiling: OK
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
-Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
-Tester: Done executing
+Tester: WARNING: Test[C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\MatrMlt] wasn't executed because of prior errоrs
+Tester: WARNING: Test[C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition] wasn't executed because of prior errоrs
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
-Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Симуляция тепла\2D]
-Tester: Done executing
+Tester: WARNING: Test[C:\0Prog\POCGL\Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать] wasn't executed because of prior errоrs
+Tester: WARNING: Test[C:\0Prog\POCGL\Samples\OpenCLABC\Симуляция тепла\2D] wasn't executed because of prior errоrs
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1]
 Tester: Done executing
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.td"
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
@@ -236,7 +231,6 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\1
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone]
 Tester: Done executing
-Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
@@ -264,8 +258,7 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone.td" updated
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

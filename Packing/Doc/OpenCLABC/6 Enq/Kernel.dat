@@ -4,13 +4,13 @@
 # Kernel.Exec1(CommandQueue<integer>, array of KernelArg)
 # Kernel.Exec2(CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
 # Kernel.Exec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
-# KernelCommandQueue.AddExec1(CommandQueue<integer>, array of KernelArg)
-# KernelCommandQueue.AddExec2(CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
-# KernelCommandQueue.AddExec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
+# KernelCCQ.AddExec1(CommandQueue<integer>, array of KernelArg)
+# KernelCCQ.AddExec2(CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
+# KernelCCQ.AddExec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
 Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
 
 # Kernel.Exec(CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, array of KernelArg)
-# KernelCommandQueue.AddExec(CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, array of KernelArg)
+# KernelCCQ.AddExec(CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, array of KernelArg)
 Выполняет kernel с расширенным набором параметров
 Данная перегрузка используется в первую очередь для тонких оптимизаций
 Если она вам понадобилась по другой причина - пожалуйста, напишите в issue

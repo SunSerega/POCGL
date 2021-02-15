@@ -1,0 +1,26 @@
+﻿    
+    
+    
+    public constructor(o: MemorySegment);
+    public constructor(q: CommandQueue<MemorySegment>);
+    private constructor;
+    
+    {$region Special .Add's}
+    
+    public function AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
+    
+    public function AddProc(p: MemorySegment->()): MemorySegmentCCQ;
+    public function AddProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
+    
+    public function AddWaitAll(params markers: array of WaitMarkerBase): MemorySegmentCCQ;
+    public function AddWaitAll(markers: sequence of WaitMarkerBase): MemorySegmentCCQ;
+    
+    public function AddWaitAny(params markers: array of WaitMarkerBase): MemorySegmentCCQ;
+    public function AddWaitAny(markers: sequence of WaitMarkerBase): MemorySegmentCCQ;
+    
+    public function AddWait(marker: WaitMarkerBase): MemorySegmentCCQ;
+    
+    {$endregion Special .Add's}
+    
+    
+    

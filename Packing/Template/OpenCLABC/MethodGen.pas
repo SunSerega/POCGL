@@ -32,7 +32,7 @@ type
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: MethodSettings); override;
     begin
       l_res += t;
-      l_res_E += 'CommandQueue';
+      l_res_E += 'CCQ';
     end;
     protected procedure WriteMethodEImBody(write_new_ct: Action0; settings: MethodSettings); override;
     begin

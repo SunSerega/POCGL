@@ -8,13 +8,13 @@ Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapPropGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\MethodGen.pas"
 Template[OpenCLABC]: Finished compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\MethodGen.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Buffer]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Kernel]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\MethodGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\GetMethodGen.pas"
 Template[OpenCLABC]: Finished compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [Buffer]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapGen.pas"
 Template[OpenCLABC]: Finished compiling: OK

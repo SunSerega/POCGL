@@ -1,0 +1,31 @@
+
+
+
+# MemorySegment
+Представляет область памяти устройства OpenCL (обычно GPU)
+
+
+
+# MemorySegment.Size
+# MemorySegment.Size32
+# MemorySegment.Size64
+Возвращает размер области памяти в байтах
+
+
+
+# MemorySegment:ctor
+Выделяет область памяти устройства OpenCL указанного в байтах размера
+
+# MemorySegment.(UIntPtr)
+# MemorySegment.(integer)
+# MemorySegment.(int64)
+%MemorySegment:ctor%
+Память выделяется в контексте Context.Default
+
+# MemorySegment.(UIntPtr, Context)
+# MemorySegment.(integer, Context)
+# MemorySegment.(int64, Context)
+%MemorySegment:ctor%
+Память выделяется в указанном контексте
+
+

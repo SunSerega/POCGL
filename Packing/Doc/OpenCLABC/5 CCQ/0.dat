@@ -1,41 +1,41 @@
 
 
 
-# [%t:Buffer,Kernel%]CommandQueue
+# [%t:MemorySegment,Kernel%]CCQ
 Представляет очередь-контейнер для команд GPU, применяемых к объекту типа {%t%}
 
 
 
-# BufferCommandQueue.(Buffer)
-# KernelCommandQueue.(Kernel)
+# MemorySegmentCCQ.(MemorySegment)
+# KernelCCQ.(Kernel)
 Создаёт контейнер команд, который будет применять команды к указанному объекту
 
-# BufferCommandQueue.(CommandQueue<Buffer>)
-# KernelCommandQueue.(CommandQueue<Kernel>)
+# MemorySegmentCCQ.(CommandQueue<MemorySegment>)
+# KernelCCQ.(CommandQueue<Kernel>)
 Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
 За каждое одно выполнение контейнера - q выполнится ровно один раз
 
 
 
-# BufferCommandQueue.AddQueue(CommandQueueBase)
-# KernelCommandQueue.AddQueue(CommandQueueBase)
+# MemorySegmentCCQ.AddQueue(CommandQueueBase)
+# KernelCCQ.AddQueue(CommandQueueBase)
 Добавляет выполнение очереди в список обычных команд для GPU
 
-# BufferCommandQueue.AddProc(Buffer->())
-# KernelCommandQueue.AddProc(Kernel->())
-# BufferCommandQueue.AddProc((Buffer, Context)->())
-# KernelCommandQueue.AddProc((Kernel, Context)->())
+# MemorySegmentCCQ.AddProc(MemorySegment->())
+# KernelCCQ.AddProc(Kernel->())
+# MemorySegmentCCQ.AddProc((MemorySegment, Context)->())
+# KernelCCQ.AddProc((Kernel, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
 
-# [%Buffer,Kernel%]CommandQueue.AddWait(WaitMarkerBase)
+# [%MemorySegment,Kernel%]CCQ.AddWait(WaitMarkerBase)
 Добавляет ожидание сигнала выполненности от заданного маркера
 
-# [%Buffer,Kernel%]CommandQueue.AddWaitAll(array of WaitMarkerBase)
-# [%Buffer,Kernel%]CommandQueue.AddWaitAll(sequence of WaitMarkerBase)
+# [%MemorySegment,Kernel%]CCQ.AddWaitAll(array of WaitMarkerBase)
+# [%MemorySegment,Kernel%]CCQ.AddWaitAll(sequence of WaitMarkerBase)
 Добавляет ожидание сигнала выполненности от всех заданных маркеров
 
-# [%Buffer,Kernel%]CommandQueue.AddWaitAny(array of WaitMarkerBase)
-# [%Buffer,Kernel%]CommandQueue.AddWaitAny(sequence of WaitMarkerBase)
+# [%MemorySegment,Kernel%]CCQ.AddWaitAny(array of WaitMarkerBase)
+# [%MemorySegment,Kernel%]CCQ.AddWaitAny(sequence of WaitMarkerBase)
 Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
 
 

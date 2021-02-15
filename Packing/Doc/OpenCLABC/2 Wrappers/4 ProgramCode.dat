@@ -11,9 +11,16 @@
 
 
 
-# ProgramCode.(Context, array of string)
-Компилирует указанные тексты программ на указанном контексте
+# ProgramCode:ctor
 Внимание! Именно тексты, Не имена файлов
+
+# ProgramCode.(Context, array of string)
+Компилирует указанные тексты программ в указанном контексте
+%ProgramCode:ctor%
+
+# ProgramCode.(array of string)
+Компилирует указанные тексты программ в контексте Context.Default
+%ProgramCode:ctor%
 
 
 

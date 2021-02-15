@@ -1,13 +1,13 @@
 ﻿
 
 
-constructor KernelCommandQueue.Create(o: Kernel) := inherited;
-constructor KernelCommandQueue.Create(q: CommandQueue<Kernel>) := inherited;
-constructor KernelCommandQueue.Create := inherited;
+constructor KernelCCQ.Create(o: Kernel) := inherited;
+constructor KernelCCQ.Create(q: CommandQueue<Kernel>) := inherited;
+constructor KernelCCQ.Create := inherited;
 
 {$region Special .Add's}
 
-function KernelCommandQueue.AddQueue(q: CommandQueueBase): KernelCommandQueue;
+function KernelCCQ.AddQueue(q: CommandQueueBase): KernelCCQ;
 begin
   Result := self;
   if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
@@ -15,16 +15,16 @@ begin
   commands.Add( new QueueCommand<Kernel>(q) );
 end;
 
-function KernelCommandQueue.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
-function KernelCommandQueue.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
+function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
+function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
 
-function KernelCommandQueue.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
-function KernelCommandQueue.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
+function KernelCCQ.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
+function KernelCCQ.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAll(markers.ToArray)));
 
-function KernelCommandQueue.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
-function KernelCommandQueue.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
+function KernelCCQ.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
+function KernelCCQ.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<Kernel>(new WCQWaiterAny(markers.ToArray)));
 
-function KernelCommandQueue.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
+function KernelCCQ.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
 
 {$endregion Special .Add's}
 

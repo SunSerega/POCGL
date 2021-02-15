@@ -33,14 +33,14 @@ begin
         res_In += 'public ';
         res += 'function ';
         res_Im += t;
-        res_Im += 'CommandQueue.';
+        res_Im += 'CCQ.';
       end;
       
       var WriteResT := procedure->
       begin
         res_In += ': ';
         res_In += t;
-        res_In += 'CommandQueue;';
+        res_In += 'CCQ;';
       end;
       
       {$region constructor's}
@@ -50,7 +50,7 @@ begin
       res += 'constructor';
       res_Im += ' ';
       res_Im += t;
-      res_Im += 'CommandQueue.Create';
+      res_Im += 'CCQ.Create';
       res += '(o: ';
       res += t;
       res += ')';
@@ -62,7 +62,7 @@ begin
       res += 'constructor';
       res_Im += ' ';
       res_Im += t;
-      res_Im += 'CommandQueue.Create';
+      res_Im += 'CCQ.Create';
       res += '(q: CommandQueue<';
       res += t;
       res += '>)';
@@ -80,7 +80,7 @@ begin
       res += 'constructor';
       res_Im += ' ';
       res_Im += t;
-      res_Im += 'CommandQueue.Create';
+      res_Im += 'CCQ.Create';
       res_Im += ' := inherited';
       res += ';'#10;
       
@@ -101,7 +101,7 @@ begin
       res += 'AddQueue(q: CommandQueueBase)';
       res += ': ';
       res += t;
-      res += 'CommandQueue;'#10;
+      res += 'CCQ;'#10;
       res_Im += 'begin'#10;
       res_Im += '  Result := self;'#10;
       res_Im += '  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;

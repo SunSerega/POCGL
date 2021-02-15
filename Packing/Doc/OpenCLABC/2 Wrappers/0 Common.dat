@@ -4,9 +4,9 @@
 # Platform.Native
 # Device.Native
 # Context.Native
-# Buffer.Native
-# Kernel.Native
 # ProgramCode.Native
+# Kernel.Native
+# MemorySegment.Native
 Возвращает имя (дескриптор) неуправляемого объекта
 
 
@@ -18,18 +18,26 @@
 
 # Context.(cl_context, Device)
 # Context.(cl_context)
-# Buffer.(cl_mem)
-# Kernel.(cl_kernel, boolean)
 # ProgramCode.(cl_program)
+# Kernel.(cl_kernel, boolean)
+# MemorySegment.(cl_mem)
 %Wrap:NtvCtor%
 При успешном создании обёртки вызывается cl.Retain
 А во время вызова .Dispose - cl.Release
 
 
 
+# Kernel.NewQueue
+# MemorySegment.NewQueue
+Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
+
+
+
 # Context.Dispose
-# Kernel.Dispose
 # ProgramCode.Dispose
+# Kernel.Dispose
+# MemorySegment.Dispose
+# MemorySubSegment.Dispose
 Позволяет OpenCL удалить неуправляемый объект
 Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
 
@@ -38,18 +46,19 @@
 # Platform.Properties
 # Device.Properties
 # Context.Properties
-# Buffer.Properties
-# Kernel.Properties
 # ProgramCode.Properties
+# Kernel.Properties
+# MemorySegment.Properties
+# MemorySubSegment.Properties
 Возвращает контейнер свойств неуправляемого объекта
 
 
 
 # SubDevice.Finalize
 # Context.Finalize
-# Buffer.Finalize
-# Kernel.Finalize
 # ProgramCode.Finalize
+# Kernel.Finalize
+# MemorySegment.Finalize
 Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
 Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
 
@@ -59,10 +68,10 @@
 # Device.ToString
 # SubDevice.ToString
 # Context.ToString
-# Buffer.ToString
-# SubBuffer.ToString
-# Kernel.ToString
 # ProgramCode.ToString
+# Kernel.ToString
+# MemorySegment.ToString
+# MemorySubSegment.ToString
 Возвращает строку с основными данными о данном объекте
 
 
@@ -70,9 +79,9 @@
 # Platform.Equals(object)
 # Device.Equals(object)
 # Context.Equals(object)
-# Buffer.Equals(object)
-# Kernel.Equals(object)
 # ProgramCode.Equals(object)
+# Kernel.Equals(object)
+# MemorySegment.Equals(object)
 --
 
 

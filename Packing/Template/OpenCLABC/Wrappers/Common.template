@@ -61,23 +61,23 @@
     
   end;
   
-  Buffer = partial class
+  ProgramCode = partial class
     
-    public property Native: cl_mem read ntv;
+    public property Native: cl_program read ntv;
     
-    private prop: BufferProperties;
-    private function GetProperties: BufferProperties;
+    private prop: ProgramCodeProperties;
+    private function GetProperties: ProgramCodeProperties;
     begin
-      if prop=nil then prop := new BufferProperties(ntv);
+      if prop=nil then prop := new ProgramCodeProperties(ntv);
       Result := prop;
     end;
-    public property Properties: BufferProperties read GetProperties;
+    public property Properties: ProgramCodeProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Buffer): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Buffer): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: ProgramCode): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: ProgramCode): boolean := wr1.ntv <> wr2.ntv;
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Buffer(var wr)) and (self = wr);
+    (obj is ProgramCode(var wr)) and (self = wr);
     
   end;
   
@@ -101,23 +101,35 @@
     
   end;
   
-  ProgramCode = partial class
+  MemorySegment = partial class
     
-    public property Native: cl_program read ntv;
+    public property Native: cl_mem read ntv;
     
-    private prop: ProgramCodeProperties;
-    private function GetProperties: ProgramCodeProperties;
+    private prop: MemorySegmentProperties;
+    private function GetProperties: MemorySegmentProperties;
     begin
-      if prop=nil then prop := new ProgramCodeProperties(ntv);
+      if prop=nil then prop := new MemorySegmentProperties(ntv);
       Result := prop;
     end;
-    public property Properties: ProgramCodeProperties read GetProperties;
+    public property Properties: MemorySegmentProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: ProgramCode): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: ProgramCode): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: MemorySegment): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: MemorySegment): boolean := wr1.ntv <> wr2.ntv;
     
     public function Equals(obj: object): boolean; override :=
-    (obj is ProgramCode(var wr)) and (self = wr);
+    (obj is MemorySegment(var wr)) and (self = wr);
+    
+  end;
+  
+  MemorySubSegment = partial class(MemorySegment)
+    
+    private prop: MemorySubSegmentProperties;
+    private function GetProperties: MemorySubSegmentProperties;
+    begin
+      if prop=nil then prop := new MemorySubSegmentProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: MemorySubSegmentProperties read GetProperties;
     
   end;
   

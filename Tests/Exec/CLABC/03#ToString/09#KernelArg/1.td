@@ -7,9 +7,9 @@ OpenCLABC
 #ExpOtp
 >>> Const
 
-Buffer:
-KernelArgBuffer => Buffer[0] of size 1
-KernelArgBuffer => Buffer[0] of size 1
+MemorySegment:
+KernelArgMemorySegment => MemorySegment[*] of size 1
+KernelArgMemorySegment => MemorySegment[*] of size 1
 
 Record:
 KernelArgRecord<System.Int32> => 1
@@ -23,13 +23,13 @@ KernelArgPtr => 3[4]
 
 >>> Invokable
 
-Buffer:
-KernelArgBufferCQ
-	BufferCommandQueue#0
-		CCCObj => Buffer[0] of size 1
-KernelArgBufferCQ
-	BufferCommandQueue#0
-		CCCObj => Buffer[0] of size 1
+MemorySegment:
+KernelArgMemorySegmentCQ
+	MemorySegmentCCQ#0
+		CCCObj => MemorySegment[*] of size 1
+KernelArgMemorySegmentCQ
+	MemorySegmentCCQ#0
+		CCCObj => MemorySegment[*] of size 1
 
 Record:
 KernelArgRecordCQ<System.Int32>

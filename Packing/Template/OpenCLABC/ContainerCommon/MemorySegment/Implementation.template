@@ -1,0 +1,31 @@
+﻿
+
+
+constructor MemorySegmentCCQ.Create(o: MemorySegment) := inherited;
+constructor MemorySegmentCCQ.Create(q: CommandQueue<MemorySegment>) := inherited;
+constructor MemorySegmentCCQ.Create := inherited;
+
+{$region Special .Add's}
+
+function MemorySegmentCCQ.AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
+begin
+  Result := self;
+  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  commands.Add( new QueueCommand<MemorySegment>(q) );
+end;
+
+function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, new ProcCommand<MemorySegment>((o,c)->p(o)));
+function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, new ProcCommand<MemorySegment>(p));
+
+function MemorySegmentCCQ.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<MemorySegment>(new WCQWaiterAll(markers.ToArray)));
+function MemorySegmentCCQ.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<MemorySegment>(new WCQWaiterAll(markers.ToArray)));
+
+function MemorySegmentCCQ.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<MemorySegment>(new WCQWaiterAny(markers.ToArray)));
+function MemorySegmentCCQ.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<MemorySegment>(new WCQWaiterAny(markers.ToArray)));
+
+function MemorySegmentCCQ.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
+
+{$endregion Special .Add's}
+
+

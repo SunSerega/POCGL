@@ -862,7 +862,7 @@ type
         l_res_In += '    public ';
         l_res += 'function ';
         l_res_Im += t;
-        l_res_EIm += 'CommandQueue';
+        l_res_EIm += 'CCQ';
         l_res_Im += '.';
         l_res_E += 'Add';
         l_res += fn;

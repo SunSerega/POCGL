@@ -5,7 +5,8 @@
 	- 01#Platform
 	- 02#Device
 	- 03#Context
-	- 04#Buffer
+	- 04#Memory
+		- MemorySegment
 	- 05#Kernel
 	- 06#ProgramCode
 

@@ -4,7 +4,7 @@ begin
   Writeln(new ConstQueue<byte>(0) * (new ConstQueue<byte>(5)).Cast&<object>);
   Writeln(HFQ(()->5).Cast&<object> * HFQ(()->5).Cast&<object>);
   
-  Buffer.Create(1).NewQueue
+  MemorySegment.Create(1).NewQueue
   .AddQueue(HFQ(()->5).Cast&<object>)
   .Println;
   

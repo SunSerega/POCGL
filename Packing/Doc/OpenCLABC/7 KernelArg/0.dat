@@ -6,8 +6,8 @@
 
 
 
-# KernelArg.FromBuffer(Buffer)
-# KernelArg.FromBufferCQ(CommandQueue<Buffer>)
+# KernelArg.FromMemorySegment(MemorySegment)
+# KernelArg.FromMemorySegmentCQ(CommandQueue<MemorySegment>)
 Создаёт аргумент kernel-а, представляющий буфер
 
 # KernelArg.FromRecord<TRecord>(TRecord)
