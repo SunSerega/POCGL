@@ -369,32 +369,55 @@ begin
   
   if t[0][0]=t[0][1] then
   begin
-    res +=    $'    '+#10;
+    res += '    '#10;
     
-    res +=    $'    public function Det: {t[2]} :='+#10;
-    res +=    $'    ';
-    
-    var skip_col := new Stack<integer>;
-    var ElAt: function(y,x: integer): string :=
-    (y,x)->$'val{y+skip_col.Count}{Range(0,t[0][0]).Where(i->not skip_col.Contains(i)).ElementAt(x)}';
-    
-    var AddDet: procedure;
-    AddDet := ()->
-    if skip_col.Count+2=t[0][0] then
-      res += $'{ElAt(0,0)}*{ElAt(1,1)} - {ElAt(1,0)}*{ElAt(0,1)}' else
-    for var i := 0 to t[0][0]-skip_col.Count-1 do
-    begin
-      if i<>0 then res += i.IsEven ? ' + ' : ' - ';
-      res += $'{ElAt(0,i)} * (';
-      skip_col.Push(i);
-      AddDet;
-      skip_col.Pop;
-      res += ')';
-    end;
-    
-    AddDet();
-    
+    res += '    public function Det: ';
+    res += t[2];
     res += ';'#10;
+    res += '    begin'#10;
+    for var w := 2 to t[0][1] do
+    begin
+      foreach var xs in Range(0, t[0][1]-1).Permutations(w).Where(xs->xs.Pairwise.All(p->p[0]<p[1])) do
+      begin
+        if w = t[0][1] then
+          res += '      Result' else
+        begin
+          res += '      var det';
+          res += w.ToString;
+          res += '_';
+          res += xs.JoinToString('');
+        end;
+        for var i := 0 to xs.Length-1 do
+        begin
+          res +=
+            if i=0 then
+              ' := ' else
+            if i.IsEven then
+              ' + ' else
+              ' - ';
+          res += 'val';
+          res += (t[0][0]-w).ToString;
+          res += xs[i].ToString;
+          res += ' * ';
+          if w=2 then
+          begin
+            res += 'val';
+            res += (t[0][0]-1).ToString;
+            res += xs[(i+1) and 1].ToString;
+          end else
+          begin
+            res += 'det';
+            res += (w-1).ToString;
+            res += '_';
+            res += xs.Except(|xs[i]|).JoinToString('');
+          end;
+        end;
+        res += ';'#10;
+        if w = t[0][1] then break;
+      end;
+    end;
+    res += '    end;'#10;
+    
   end;
   {$endregion function Det}
   

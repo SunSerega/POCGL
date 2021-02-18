@@ -63,8 +63,10 @@
       );
     end;
     
-    public function Det: single :=
-    val00*val11 - val10*val01;
+    public function Det: single;
+    begin
+      Result := val00 * val11 - val01 * val10;
+    end;
     
     public static function Random(min, max: single): Mtr2x2f;
     begin
@@ -301,8 +303,13 @@
       
     end;
     
-    public function Det: single :=
-    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
+    public function Det: single;
+    begin
+      var det2_01 := val10 * val21 - val11 * val20;
+      var det2_02 := val10 * val22 - val12 * val20;
+      var det2_12 := val11 * val22 - val12 * val21;
+      Result := val00 * det2_12 - val01 * det2_02 + val02 * det2_01;
+    end;
     
     public static function Random(min, max: single): Mtr3x3f;
     begin
@@ -590,8 +597,20 @@
       Result.val33 := 1;
     end;
     
-    public function Det: single :=
-    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
+    public function Det: single;
+    begin
+      var det2_01 := val20 * val31 - val21 * val30;
+      var det2_02 := val20 * val32 - val22 * val30;
+      var det2_03 := val20 * val33 - val23 * val30;
+      var det2_12 := val21 * val32 - val22 * val31;
+      var det2_13 := val21 * val33 - val23 * val31;
+      var det2_23 := val22 * val33 - val23 * val32;
+      var det3_012 := val10 * det2_12 - val11 * det2_02 + val12 * det2_01;
+      var det3_013 := val10 * det2_13 - val11 * det2_03 + val13 * det2_01;
+      var det3_023 := val10 * det2_23 - val12 * det2_03 + val13 * det2_02;
+      var det3_123 := val11 * det2_23 - val12 * det2_13 + val13 * det2_12;
+      Result := val00 * det3_123 - val01 * det3_023 + val02 * det3_013 - val03 * det3_012;
+    end;
     
     public static function Random(min, max: single): Mtr4x4f;
     begin
@@ -2126,8 +2145,10 @@
       );
     end;
     
-    public function Det: double :=
-    val00*val11 - val10*val01;
+    public function Det: double;
+    begin
+      Result := val00 * val11 - val01 * val10;
+    end;
     
     public static function Random(min, max: double): Mtr2x2d;
     begin
@@ -2391,8 +2412,13 @@
       
     end;
     
-    public function Det: double :=
-    val00 * (val11*val22 - val21*val12) - val01 * (val10*val22 - val20*val12) + val02 * (val10*val21 - val20*val11);
+    public function Det: double;
+    begin
+      var det2_01 := val10 * val21 - val11 * val20;
+      var det2_02 := val10 * val22 - val12 * val20;
+      var det2_12 := val11 * val22 - val12 * val21;
+      Result := val00 * det2_12 - val01 * det2_02 + val02 * det2_01;
+    end;
     
     public static function Random(min, max: double): Mtr3x3d;
     begin
@@ -2707,8 +2733,20 @@
       Result.val33 := 1;
     end;
     
-    public function Det: double :=
-    val00 * (val11 * (val21*val32 - val31*val22) - val12 * (val22*val33 - val32*val23) + val13 * (val21*val33 - val31*val23)) - val01 * (val10 * (val22*val33 - val32*val23) - val12 * (val20*val32 - val30*val22) + val13 * (val20*val33 - val30*val23)) + val02 * (val10 * (val21*val33 - val31*val23) - val11 * (val20*val33 - val30*val23) + val13 * (val20*val31 - val30*val21)) - val03 * (val10 * (val21*val32 - val31*val22) - val11 * (val20*val32 - val30*val22) + val12 * (val20*val31 - val30*val21));
+    public function Det: double;
+    begin
+      var det2_01 := val20 * val31 - val21 * val30;
+      var det2_02 := val20 * val32 - val22 * val30;
+      var det2_03 := val20 * val33 - val23 * val30;
+      var det2_12 := val21 * val32 - val22 * val31;
+      var det2_13 := val21 * val33 - val23 * val31;
+      var det2_23 := val22 * val33 - val23 * val32;
+      var det3_012 := val10 * det2_12 - val11 * det2_02 + val12 * det2_01;
+      var det3_013 := val10 * det2_13 - val11 * det2_03 + val13 * det2_01;
+      var det3_023 := val10 * det2_23 - val12 * det2_03 + val13 * det2_02;
+      var det3_123 := val11 * det2_23 - val12 * det2_13 + val13 * det2_12;
+      Result := val00 * det3_123 - val01 * det3_023 + val02 * det3_013 - val03 * det3_012;
+    end;
     
     public static function Random(min, max: double): Mtr4x4d;
     begin
