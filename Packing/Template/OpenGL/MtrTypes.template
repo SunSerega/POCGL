@@ -70,9 +70,10 @@
     
     public static function Random(min, max: single): Mtr2x2f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr2x2f;
@@ -313,10 +314,11 @@
     
     public static function Random(min, max: single): Mtr3x3f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr3x3f;
@@ -614,11 +616,12 @@
     
     public static function Random(min, max: single): Mtr4x4f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r; Result.val03 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r; Result.val13 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r; Result.val23 := min + PABCSystem.Random*r;
-      Result.val30 := min + PABCSystem.Random*r; Result.val31 := min + PABCSystem.Random*r; Result.val32 := min + PABCSystem.Random*r; Result.val33 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r); Result.val03 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r); Result.val13 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r); Result.val23 := min + PABCSystem.Random(r);
+      Result.val30 := min + PABCSystem.Random(r); Result.val31 := min + PABCSystem.Random(r); Result.val32 := min + PABCSystem.Random(r); Result.val33 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr4x4f;
@@ -825,9 +828,10 @@
     
     public static function Random(min, max: single): Mtr2x3f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr2x3f;
@@ -989,10 +993,11 @@
     
     public static function Random(min, max: single): Mtr3x2f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr3x2f;
@@ -1175,9 +1180,10 @@
     
     public static function Random(min, max: single): Mtr2x4f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r; Result.val03 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r; Result.val13 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r); Result.val03 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r); Result.val13 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr2x4f;
@@ -1359,11 +1365,12 @@
     
     public static function Random(min, max: single): Mtr4x2f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r;
-      Result.val30 := min + PABCSystem.Random*r; Result.val31 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r);
+      Result.val30 := min + PABCSystem.Random(r); Result.val31 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr4x2f;
@@ -1645,10 +1652,11 @@
     
     public static function Random(min, max: single): Mtr3x4f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r; Result.val03 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r; Result.val13 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r; Result.val23 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r); Result.val03 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r); Result.val13 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r); Result.val23 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr3x4f;
@@ -1945,11 +1953,12 @@
     
     public static function Random(min, max: single): Mtr4x3f;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r;
-      Result.val30 := min + PABCSystem.Random*r; Result.val31 := min + PABCSystem.Random*r; Result.val32 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r);
+      Result.val30 := min + PABCSystem.Random(r); Result.val31 := min + PABCSystem.Random(r); Result.val32 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr4x3f;
@@ -2152,9 +2161,10 @@
     
     public static function Random(min, max: double): Mtr2x2d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr2x2d;
@@ -2422,10 +2432,11 @@
     
     public static function Random(min, max: double): Mtr3x3d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr3x3d;
@@ -2750,11 +2761,12 @@
     
     public static function Random(min, max: double): Mtr4x4d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r; Result.val03 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r; Result.val13 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r; Result.val23 := min + PABCSystem.Random*r;
-      Result.val30 := min + PABCSystem.Random*r; Result.val31 := min + PABCSystem.Random*r; Result.val32 := min + PABCSystem.Random*r; Result.val33 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r); Result.val03 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r); Result.val13 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r); Result.val23 := min + PABCSystem.Random(r);
+      Result.val30 := min + PABCSystem.Random(r); Result.val31 := min + PABCSystem.Random(r); Result.val32 := min + PABCSystem.Random(r); Result.val33 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr4x4d;
@@ -2988,9 +3000,10 @@
     
     public static function Random(min, max: double): Mtr2x3d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr2x3d;
@@ -3179,10 +3192,11 @@
     
     public static function Random(min, max: double): Mtr3x2d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr3x2d;
@@ -3392,9 +3406,10 @@
     
     public static function Random(min, max: double): Mtr2x4d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r; Result.val03 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r; Result.val13 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r); Result.val03 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r); Result.val13 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr2x4d;
@@ -3603,11 +3618,12 @@
     
     public static function Random(min, max: double): Mtr4x2d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r;
-      Result.val30 := min + PABCSystem.Random*r; Result.val31 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r);
+      Result.val30 := min + PABCSystem.Random(r); Result.val31 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr4x2d;
@@ -3916,10 +3932,11 @@
     
     public static function Random(min, max: double): Mtr3x4d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r; Result.val03 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r; Result.val13 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r; Result.val23 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r); Result.val03 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r); Result.val13 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r); Result.val23 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr3x4d;
@@ -4243,11 +4260,12 @@
     
     public static function Random(min, max: double): Mtr4x3d;
     begin
+      if min>max then Swap(min,max);
       var r := max-min;
-      Result.val00 := min + PABCSystem.Random*r; Result.val01 := min + PABCSystem.Random*r; Result.val02 := min + PABCSystem.Random*r;
-      Result.val10 := min + PABCSystem.Random*r; Result.val11 := min + PABCSystem.Random*r; Result.val12 := min + PABCSystem.Random*r;
-      Result.val20 := min + PABCSystem.Random*r; Result.val21 := min + PABCSystem.Random*r; Result.val22 := min + PABCSystem.Random*r;
-      Result.val30 := min + PABCSystem.Random*r; Result.val31 := min + PABCSystem.Random*r; Result.val32 := min + PABCSystem.Random*r;
+      Result.val00 := min + PABCSystem.Random(r); Result.val01 := min + PABCSystem.Random(r); Result.val02 := min + PABCSystem.Random(r);
+      Result.val10 := min + PABCSystem.Random(r); Result.val11 := min + PABCSystem.Random(r); Result.val12 := min + PABCSystem.Random(r);
+      Result.val20 := min + PABCSystem.Random(r); Result.val21 := min + PABCSystem.Random(r); Result.val22 := min + PABCSystem.Random(r);
+      Result.val30 := min + PABCSystem.Random(r); Result.val31 := min + PABCSystem.Random(r); Result.val32 := min + PABCSystem.Random(r);
     end;
     
     public static function ReadRows(prompt: string := nil): Mtr4x3d;

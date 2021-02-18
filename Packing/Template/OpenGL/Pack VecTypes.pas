@@ -249,6 +249,29 @@ begin
   
   {$endregion static function Cross}
   
+  {$region static function Random}
+  
+  res += '    public static function Random(min, max: ';
+  res += t[2];
+  res += '): ';
+  res += t.GetName;
+  res += ';'#10;
+  res += '    begin'#10;
+  res += '      if min>max then Swap(min,max);'#10;
+  res += '      var r := max-min;'#10;
+  for var i := 0 to t[0]-1 do
+  begin
+    res += '      Result.val';
+    res += i.ToString;
+    res += ' := ';
+    res += 'min + PABCSystem.Random(r);';
+    res += #10;
+  end;
+  res += '    end;'#10;
+  res += '    '#10;
+  
+  {$endregion static function Random}
+  
   {$region static function Read}
   
   foreach var ln in |'', 'ln'| do

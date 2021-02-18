@@ -431,6 +431,7 @@ begin
   res += t.GetName;
   res += ';'#10;
   res += '    begin'#10;
+  res += '      if min>max then Swap(min,max);'#10;
   res += '      var r := max-min;'#10;
   for var i1 := 0 to t[0][0]-1 do
   begin
@@ -440,7 +441,7 @@ begin
       res += 'Result.val';
       res += i1.ToString;
       res += i2.ToString;
-      res += ' := min + PABCSystem.Random*r;';
+      res += ' := min + PABCSystem.Random(r);';
       res += if i2=t[0][1]-1 then #10 else ' ';
     end;
   end;
