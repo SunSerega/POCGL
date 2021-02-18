@@ -398,6 +398,33 @@ begin
   end;
   {$endregion function Det}
   
+  {$region static function Random}
+  
+  res += '    '#10;
+  
+  res += '    public static function Random(min, max: ';
+  res += t[2];
+  res += '): ';
+  res += t.GetName;
+  res += ';'#10;
+  res += '    begin'#10;
+  res += '      var r := max-min;'#10;
+  for var i1 := 0 to t[0][0]-1 do
+  begin
+    res += '      ';
+    for var i2 := 0 to t[0][1]-1 do
+    begin
+      res += 'Result.val';
+      res += i1.ToString;
+      res += i2.ToString;
+      res += ' := min + PABCSystem.Random*r;';
+      res += if i2=t[0][1]-1 then #10 else ' ';
+    end;
+  end;
+  res += '    end;'#10;
+  
+  {$endregion static function Random}
+  
   {$region static function Read}
   
   res +=          $'    '+#10;
