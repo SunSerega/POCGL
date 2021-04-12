@@ -12,7 +12,7 @@ type
     public function GetEnumerator: System.Collections.IEnumerator := self;
     
     protected function GetCurrentBase: object; abstract;
-    public property IEnumerator.Current: object read GetCurrentBase;
+    public property System.Collections.IEnumerator.Current: object read GetCurrentBase;
     
     public function MoveNext: boolean; abstract;
     
