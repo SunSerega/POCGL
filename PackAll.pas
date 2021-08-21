@@ -98,7 +98,7 @@ var AllStages := HSet(
       
       if self.log_name<>nil then
       begin
-        self.log := new FileLogger($'Log\{log_name}.log');
+        self.log := new FileLogger($'Log\{log_name}.log', false, true);
         Result := new AsyncTaskOtpHandler(Result, self.log.Otp) + ProcTask(self.log.Close);
       end;
       

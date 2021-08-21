@@ -287,7 +287,7 @@ type
         var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
         
         var comp_err: string := nil;
-        CompilePasFile(t.pas_fname, Otp, err->begin comp_err := err end, GetFullPath('Modules.Packed'));
+        CompilePasFile(t.pas_fname, Otp, err->begin comp_err := err end, false, GetFullPath('Modules.Packed'));
         
         if comp_err<>nil then
         begin
@@ -473,7 +473,7 @@ type
     begin
       if not FileExists(pas_fname) then exit;
       
-      CompilePasFile(pas_fname);
+      CompilePasFile(pas_fname, false);
       
       Result := true;
     end;
