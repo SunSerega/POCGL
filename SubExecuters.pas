@@ -159,7 +159,8 @@ begin
           1:
           thr_otp.Enq(new OtpLine(
             br.ReadString,
-            start_time_mark + br.ReadInt64
+            start_time_mark + br.ReadInt64,
+            false
           ));
           
           2:
@@ -228,7 +229,7 @@ begin
   if not pipe_connection_established then pipe.Close;
 end;
 
-procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); params search_paths: array of string);
+procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); general_task: boolean; params search_paths: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then
@@ -268,7 +269,7 @@ begin
     
   end;
   
-  l_otp($'Compiling "{GetRelativePath(fname)}"');
+  l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', general_task));
   
   var psi := new ProcessStartInfo(
     'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe',
@@ -296,7 +297,7 @@ begin
   var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
     err(res) else
-    l_otp($'Finished compiling: {res}');
+    l_otp(new OtpLine($'Finished compiling: {res}', general_task));
   
 end;
 
@@ -308,7 +309,7 @@ begin
     
     '.pas':
     begin
-      CompilePasFile(fname, l_otp, nil);
+      CompilePasFile(fname, l_otp, nil, false);
       fname := System.IO.Path.ChangeExtension(fname, '.exe');
     end;
     
@@ -327,8 +328,8 @@ end;
 procedure RunFile(fname, nick: string; params pars: array of string) :=
 RunFile(fname, nick, nil, pars);
 
-procedure CompilePasFile(fname: string) :=
-CompilePasFile(fname, nil, nil);
+procedure CompilePasFile(fname: string; general_task: boolean) :=
+CompilePasFile(fname, nil, nil, general_task);
 
 procedure ExecuteFile(fname, nick: string; params pars: array of string) :=
 ExecuteFile(fname, nick, nil, pars);

@@ -33,18 +33,20 @@ type
   OtpLine = class
     s: string;
     t: int64;
+    general: boolean;
     
-    constructor(s: string; t: int64);
+    constructor(s: string; t: int64; general: boolean);
     begin
       self.s := s;
       self.t := t;
+      self.general := general;
     end;
-    constructor(s: string) := Create(s, pack_timer.ElapsedTicks);
+    constructor(s: string; general: boolean := false) := Create(s, pack_timer.ElapsedTicks, general);
     
     static function operator implicit(s: string): OtpLine := new OtpLine(s);
     static function operator implicit(s: char): OtpLine := new OtpLine(s);
     
-    function ConvStr(f: string->string) := new OtpLine(f(self.s), self.t);
+    function ConvStr(f: string->string) := new OtpLine(f(self.s), self.t, self.general);
     
     function GetTimedStr :=
     $'{t/System.TimeSpan.TicksPerSecond,15:N7} | {s}';
@@ -165,20 +167,22 @@ type
     private bu_fname: string;
     private main_sw: System.IO.StreamWriter;
     private backup_sw: System.IO.StreamWriter;
-    private timed: boolean;
+    private timed, individual: boolean;
     
-    public constructor(fname: string; timed: boolean := false);
+    public constructor(fname: string; timed: boolean := false; individual: boolean := false);
     begin
       self.bu_fname   := fname+'.backup';
       self.main_sw    := new System.IO.StreamWriter(fname, false, enc);
       self.backup_sw  := new System.IO.StreamWriter(bu_fname, false, enc);
       self.timed      := timed;
+      self.individual := individual;
     end;
     
     public property IsTimed: boolean read timed;
     
     public procedure OtpImpl(l: OtpLine); override;
     begin
+      if l.general and self.individual then exit; 
       var s := timed ? l.GetTimedStr : l.s;
       
       main_sw.WriteLine(s);
