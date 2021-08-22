@@ -33,16 +33,30 @@ function GetFullPathRTA(fname: string) := GetFullPath(fname, assembly_dir);
 
 function GetRelativePath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
-  fname := GetFullPath(fname);
-  base_folder := GetFullPath(base_folder);
+  fname := GetFullPath(fname).Replace('/','\');
+  base_folder := GetFullPath(base_folder).Replace('/','\');
+  
+  if fname=base_folder then
+  begin
+    Result := '';
+    exit;
+  end;
   
   var ind := 0;
-  while true do
   begin
-    if ind=fname.Length then break;
-    if ind=base_folder.Length then break;
-    if fname[ind]<>base_folder[ind] then break;
-    ind += 1;
+    var ch_ind := 0;
+    while true do
+    begin
+      if ch_ind=fname.Length then break;
+      if ch_ind=base_folder.Length then
+      begin
+        ind := ch_ind;
+        break;
+      end;
+      if fname[ch_ind]<>base_folder[ch_ind] then break;
+      if fname[ch_ind]='\' then ind := ch_ind+1;
+      ch_ind += 1;
+    end;
   end;
   
   if ind=0 then
@@ -54,7 +68,7 @@ begin
   var res := new StringBuilder;
   
   if ind <> base_folder.Length then
-    loop base_folder.Skip(ind).Count(ch->ch='\') + 1 do
+    loop base_folder.Skip(ind).CountOf('\') + 1 do
       res += '..\';
   
   if ind <> fname.Length then
