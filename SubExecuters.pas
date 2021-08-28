@@ -279,25 +279,33 @@ begin
   psi.UseShellExecute := false;
   psi.CreateNoWindow := true;
   psi.RedirectStandardOutput := true;
-  psi.RedirectStandardInput := true;
   
   var p := new Process;
   p.StartInfo := psi;
   
+  var res_sb := new StringBuilder;
+  var p_otp := new AsyncProcOtp(AsyncProcOtp.curr);
   Timer.main.pas_comp[nick].MeasureTime(()->
   begin
+    p.OutputDataReceived += (o,e)->
+      if e.Data=nil then
+        p_otp.Finish else
+      begin
+        p_otp.Enq(new OtpLine($'Compiling: {e.Data}', general_task));
+        res_sb.AppendLine(e.Data);
+      end;
     p.Start;
-    p.StandardInput.WriteLine;
+    p.BeginOutputReadLine;
+    foreach var l in p_otp do l_otp(l);
     p.WaitForExit;
   end);
   
   foreach var l in locks do
     l.Close;
   
-  var res := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10' '.ToArray);
+  var res := res_sb.ToString.Remove(#13).Trim(#10' '.ToArray);
   if res.ToLower.Contains('error') then
-    err(res) else
-    l_otp(new OtpLine($'Finished compiling: {res}', general_task));
+    err(res);
   
 end;
 
