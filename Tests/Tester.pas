@@ -287,11 +287,15 @@ type
         var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
         
         var comp_err: string := nil;
-        CompilePasFile(t.pas_fname, Otp, err->begin comp_err := err end, false, GetFullPath('Modules.Packed'));
+        CompilePasFile(t.pas_fname,
+          // to not hilight errors
+          l->Otp(l.ConvStr(s->s.Replace('o','о'))),
+          err->(comp_err := err),
+          false, GetFullPath('Modules.Packed')
+        );
         
         if comp_err<>nil then
         begin
-          Otp('Finished compiling: ERRОR');
           
           if t.expected_comp_err.parts=nil then
             case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
@@ -712,11 +716,16 @@ type
   
 begin
   try
+    (**)
     TestInfo.LoadCLA;
     
     TestInfo.LoadAll('Tests\Comp',  HSet('Comp'));
     TestInfo.LoadAll('Samples',     HSet('Comp'));
     TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
+    (*)
+    TestInfo.allowed_modules += 'OpenCLABC';
+    TestInfo.LoadAll('Tests\Exec\CLABC\03#ToString\09#KernelArg',  HSet('Comp','Exec'));
+    (**)
     
     try
       TestInfo.CompAll;

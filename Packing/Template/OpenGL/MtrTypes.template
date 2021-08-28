@@ -85,9 +85,9 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr2x2f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11);
     end;
     public static function ReadCols(prompt: string := nil): Mtr2x2f;
@@ -99,9 +99,9 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr2x2f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11);
     end;
     
@@ -331,11 +331,11 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr3x3f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
     end;
     public static function ReadCols(prompt: string := nil): Mtr3x3f;
@@ -348,11 +348,11 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr3x3f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
     end;
     
@@ -635,13 +635,13 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr4x4f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
-      row_prompt(3).Print;
+      if row_prompt <> nil then row_prompt(3).Print;
       PABCSystem.Readln(Result.val30, Result.val31, Result.val32, Result.val33);
     end;
     public static function ReadCols(prompt: string := nil): Mtr4x4f;
@@ -655,13 +655,13 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr4x4f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
-      col_prompt(3).Print;
+      if col_prompt <> nil then col_prompt(3).Print;
       PABCSystem.Readln(Result.val03, Result.val13, Result.val23, Result.val33);
     end;
     
@@ -843,9 +843,9 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr2x3f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
     end;
     public static function ReadCols(prompt: string := nil): Mtr2x3f;
@@ -858,11 +858,11 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr2x3f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12);
     end;
     
@@ -1010,11 +1010,11 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr3x2f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21);
     end;
     public static function ReadCols(prompt: string := nil): Mtr3x2f;
@@ -1026,9 +1026,9 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr3x2f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
     end;
     
@@ -1195,9 +1195,9 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr2x4f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
     end;
     public static function ReadCols(prompt: string := nil): Mtr2x4f;
@@ -1211,13 +1211,13 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr2x4f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12);
-      col_prompt(3).Print;
+      if col_prompt <> nil then col_prompt(3).Print;
       PABCSystem.Readln(Result.val03, Result.val13);
     end;
     
@@ -1384,13 +1384,13 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr4x2f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21);
-      row_prompt(3).Print;
+      if row_prompt <> nil then row_prompt(3).Print;
       PABCSystem.Readln(Result.val30, Result.val31);
     end;
     public static function ReadCols(prompt: string := nil): Mtr4x2f;
@@ -1402,9 +1402,9 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr4x2f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
     end;
     
@@ -1669,11 +1669,11 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr3x4f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
     end;
     public static function ReadCols(prompt: string := nil): Mtr3x4f;
@@ -1687,13 +1687,13 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr3x4f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
-      col_prompt(3).Print;
+      if col_prompt <> nil then col_prompt(3).Print;
       PABCSystem.Readln(Result.val03, Result.val13, Result.val23);
     end;
     
@@ -1972,13 +1972,13 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr4x3f;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
-      row_prompt(3).Print;
+      if row_prompt <> nil then row_prompt(3).Print;
       PABCSystem.Readln(Result.val30, Result.val31, Result.val32);
     end;
     public static function ReadCols(prompt: string := nil): Mtr4x3f;
@@ -1991,11 +1991,11 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr4x3f;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
     end;
     
@@ -2176,9 +2176,9 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr2x2d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11);
     end;
     public static function ReadCols(prompt: string := nil): Mtr2x2d;
@@ -2190,9 +2190,9 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr2x2d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11);
     end;
     
@@ -2449,11 +2449,11 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr3x3d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
     end;
     public static function ReadCols(prompt: string := nil): Mtr3x3d;
@@ -2466,11 +2466,11 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr3x3d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
     end;
     
@@ -2780,13 +2780,13 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr4x4d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
-      row_prompt(3).Print;
+      if row_prompt <> nil then row_prompt(3).Print;
       PABCSystem.Readln(Result.val30, Result.val31, Result.val32, Result.val33);
     end;
     public static function ReadCols(prompt: string := nil): Mtr4x4d;
@@ -2800,13 +2800,13 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr4x4d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
-      col_prompt(3).Print;
+      if col_prompt <> nil then col_prompt(3).Print;
       PABCSystem.Readln(Result.val03, Result.val13, Result.val23, Result.val33);
     end;
     
@@ -3015,9 +3015,9 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr2x3d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
     end;
     public static function ReadCols(prompt: string := nil): Mtr2x3d;
@@ -3030,11 +3030,11 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr2x3d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12);
     end;
     
@@ -3209,11 +3209,11 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr3x2d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21);
     end;
     public static function ReadCols(prompt: string := nil): Mtr3x2d;
@@ -3225,9 +3225,9 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr3x2d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
     end;
     
@@ -3421,9 +3421,9 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr2x4d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
     end;
     public static function ReadCols(prompt: string := nil): Mtr2x4d;
@@ -3437,13 +3437,13 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr2x4d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12);
-      col_prompt(3).Print;
+      if col_prompt <> nil then col_prompt(3).Print;
       PABCSystem.Readln(Result.val03, Result.val13);
     end;
     
@@ -3637,13 +3637,13 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr4x2d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21);
-      row_prompt(3).Print;
+      if row_prompt <> nil then row_prompt(3).Print;
       PABCSystem.Readln(Result.val30, Result.val31);
     end;
     public static function ReadCols(prompt: string := nil): Mtr4x2d;
@@ -3655,9 +3655,9 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr4x2d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
     end;
     
@@ -3949,11 +3949,11 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr3x4d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02, Result.val03);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12, Result.val13);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22, Result.val23);
     end;
     public static function ReadCols(prompt: string := nil): Mtr3x4d;
@@ -3967,13 +3967,13 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr3x4d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22);
-      col_prompt(3).Print;
+      if col_prompt <> nil then col_prompt(3).Print;
       PABCSystem.Readln(Result.val03, Result.val13, Result.val23);
     end;
     
@@ -4279,13 +4279,13 @@
     public static function ReadlnRows(prompt: string := nil; row_prompt: integer->string := nil): Mtr4x3d;
     begin
       if prompt <> nil then prompt.Println;
-      row_prompt(0).Print;
+      if row_prompt <> nil then row_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val01, Result.val02);
-      row_prompt(1).Print;
+      if row_prompt <> nil then row_prompt(1).Print;
       PABCSystem.Readln(Result.val10, Result.val11, Result.val12);
-      row_prompt(2).Print;
+      if row_prompt <> nil then row_prompt(2).Print;
       PABCSystem.Readln(Result.val20, Result.val21, Result.val22);
-      row_prompt(3).Print;
+      if row_prompt <> nil then row_prompt(3).Print;
       PABCSystem.Readln(Result.val30, Result.val31, Result.val32);
     end;
     public static function ReadCols(prompt: string := nil): Mtr4x3d;
@@ -4298,11 +4298,11 @@
     public static function ReadlnCols(prompt: string := nil; col_prompt: integer->string := nil): Mtr4x3d;
     begin
       if prompt <> nil then prompt.Println;
-      col_prompt(0).Print;
+      if col_prompt <> nil then col_prompt(0).Print;
       PABCSystem.Readln(Result.val00, Result.val10, Result.val20, Result.val30);
-      col_prompt(1).Print;
+      if col_prompt <> nil then col_prompt(1).Print;
       PABCSystem.Readln(Result.val01, Result.val11, Result.val21, Result.val31);
-      col_prompt(2).Print;
+      if col_prompt <> nil then col_prompt(2).Print;
       PABCSystem.Readln(Result.val02, Result.val12, Result.val22, Result.val32);
     end;
     

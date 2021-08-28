@@ -66,7 +66,9 @@ Group [TextureFilterFuncSGIS] was skipped
 Group [LightModelColorControl] was skipped
 Group [VertexBufferObjectParameter] was skipped
 Group [PixelStoreResampleMode] was skipped
+Group [RegisterCombinerPname] was skipped
 Group [PixelStoreSubsampleRate] was skipped
+Group [ContainerType] was skipped
 Group [CheckFramebufferStatusTarget] was skipped
 Group [DrawBufferModeATI] was skipped
 Group [FramebufferFetchNoncoherent] was skipped

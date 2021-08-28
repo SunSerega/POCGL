@@ -66,17 +66,17 @@ type
         res.t := 'GLuint';
         
         var group_t: (gt_any, gt_enum, gt_bitmask, gt_error) := gt_any;
-        foreach var enum in all[gname].enums do
+        foreach var (ename, eval, is_bitmask) in all[gname].enums do
         begin
-          if res.enums.ContainsKey(enum[0]) then
+          if res.enums.ContainsKey(ename) then
           begin
-            log.WriteLine($'enum [{enum[0]}] used multiple times in group [{gname}] of api [{api_name}]');
+            log.WriteLine($'enum [{ename}] used multiple times in group [{gname}] of api [{api_name}]');
             continue;
           end;
           
-          res.enums.Add(enum[0], enum[1]);
+          res.enums.Add(ename, eval);
           
-          if enum[1]=0 then
+          if eval=0 then
           begin
             if gname in |'EmptyFlags'| then
             begin
@@ -87,9 +87,9 @@ type
             end;
           end else
             case group_t of
-              gt_any:     group_t := enum[2] ? gt_bitmask : gt_enum;
-              gt_enum:    if     enum[2] then group_t := gt_error;
-              gt_bitmask: if not enum[2] then group_t := gt_error;
+              gt_any:     group_t := is_bitmask ? gt_bitmask : gt_enum;
+              gt_enum:    if     is_bitmask then group_t := gt_error;
+              gt_bitmask: if not is_bitmask then group_t := gt_error;
               gt_error:   ;
             end;
           
@@ -366,8 +366,12 @@ begin
         var val_str := enum['value'];
         var val: int64;
         
+        var groups := enum['group'].ToWords(',').ToList;
+        if groups.Remove('SpecialNumbers') then log.WriteLine($'Enum "{enum[''name'']}" was in SpecialNumbers');
+        if groups.Count=0 then continue;
+        
         // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
-        if enum['type']<>nil then raise new System.NotImplementedException;
+        if enum['type']<>nil then raise new System.NotImplementedException(enum['name']);
         
 //        var enum_t := enum['type'];
 //        if enum_t=nil then enum_t := 'u' else
@@ -381,7 +385,7 @@ begin
           on e: Exception do log.WriteLine($'Error registering value [{val}] of token [{enum[''name'']}] in api [{api_name}]: {e}');
         end;
         
-        foreach var gname in enum['group'].ToWords(',') do
+        foreach var gname in groups do
         begin
           var gb := GroupBuilder[gname];
           gb += (enum['name'], val, bitmask);
@@ -411,16 +415,16 @@ begin
     extensions += ext;
   end;
   
-  foreach var gr in Group.All.Values do
-    if not Group.Used.Contains(gr.name) then
-      log.WriteLine($'Group [{gr.name}] wasn''t used in any function');
-  
 end;
 
 procedure SaveBin;
 begin
   Otp($'Saving as binary');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\funcs.bin', GetEXEFileName)));
+  
+  foreach var gr in Group.All.Keys do
+    if not Group.Used.Contains(gr) then
+      log.WriteLine($'Group [{gr}] wasn''t used in any function');
   
   var grs := Group.All.Values.ToArray;
   var funcs := (

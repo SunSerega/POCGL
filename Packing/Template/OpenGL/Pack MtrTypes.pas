@@ -472,7 +472,9 @@ begin
       begin
         if ln <> '' then
         begin
-          res +=  $'      ';
+          res +=  '      if ';
+          res += rows ? 'row' : 'col';
+          res += '_prompt <> nil then ';
           res += rows ? 'row' : 'col';
           res += '_prompt(';
           res += i1.ToString;

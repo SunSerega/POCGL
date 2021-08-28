@@ -1,10 +1,10 @@
 ﻿Runing Template[OpenGL]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
-Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
-Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
@@ -48,15 +48,15 @@ Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) 
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glXQueryChannelDeltasSGIX]
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
-Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
-Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
-Template[OpenGL]: Finished compiling: OK
+Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
 Finished runing Template[OpenGL]

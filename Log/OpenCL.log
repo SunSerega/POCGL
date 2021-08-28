@@ -1,12 +1,11 @@
-﻿Compiling "Packing\Template\Pack Template.pas"
-Finished compiling: OK
+﻿Compiling: OK
 Runing Template[OpenCL]
 Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
-Template[OpenCL]: Finished compiling: OK
+Template[OpenCL]: Compiling: OK
 Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
 Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
-Template[OpenCL]: Finished compiling: OK
+Template[OpenCL]: Compiling: OK
 Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
@@ -36,5 +35,6 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) 
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueAcquireGLObjects]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clEnqueueReleaseGLObjects]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (81) overloads of func [clEnqueueGenerateMipmapIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetKernelSuggestedLocalWorkSizeKHR]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]

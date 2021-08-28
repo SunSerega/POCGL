@@ -43,13 +43,19 @@ type
             
             self.def := enmr.Current.Text;
             if enmr.MoveNext then
+            begin
               Otp($'ERROR: Wrong definition of type [{name}]: Multiple <type> tags');
+              exit;
+            end;
             
           end else
           begin
             if n.Text.Contains('struct _') then
               self.ptr -= 1 else
+            begin
               Otp($'ERROR: Wrong definition of type [{name}]: No <type> tags');
+              exit;
+            end;
           end;
           
         end;
@@ -60,10 +66,20 @@ type
           struct_nodes += n;
         end;
         
-        else Otp($'ERROR: Invalid TypeDef category: [{category}]');
+        else
+        begin
+          Otp($'ERROR: Invalid TypeDef category: [{category}]');
+          exit;
+        end;
       end;
       
       All.Add(self.name, self);
+    end;
+    
+    public constructor(name: string);
+    begin
+      self.name := name;
+      TypeDef.All.Add(name, self);
     end;
     
     public procedure UnRollDef;
@@ -295,7 +311,10 @@ type
       begin
         var td: TypeDef;
         if not TypeDef.All.TryGetValue(self.t, td) then
-          raise new MessageException($'ERROR: Type [{self.t}] is not defined');
+        begin
+          Otp($'WARNING: Type [{self.t}] is not manually defined');
+          td := new TypeDef(self.t);
+        end;
         self.ptr += td.ptr;
         self.t := td.name;
       end;
@@ -559,7 +578,7 @@ end;
 
 begin
   try
-    xmls := System.IO.Directory.EnumerateFiles(GetFullPath($'..\..\..\Reps\OpenCL-Docs\xml', GetEXEFileName), '*.xml').ToHashSet;
+    xmls := EnumerateFiles(GetFullPathRTA('..\..\Reps\OpenCL-Docs\xml'), '*.xml').ToHashSet;
     
     ScrapFile('cl');
     

@@ -1523,6 +1523,7 @@
     public static property PRIMITIVE_RESTART_FIXED_INDEX:           EnableCap read new EnableCap($8D69);
     public static property FRAMEBUFFER_SRGB:                        EnableCap read new EnableCap($8DB9);
     public static property SAMPLE_MASK:                             EnableCap read new EnableCap($8E51);
+    public static property FETCH_PER_SAMPLE_ARM:                    EnableCap read new EnableCap($8F65);
     public static property PRIMITIVE_RESTART:                       EnableCap read new EnableCap($8F9D);
     public static property DEBUG_OUTPUT:                            EnableCap read new EnableCap($92E0);
     public static property SHADING_RATE_IMAGE_PER_PRIMITIVE_NV:     EnableCap read new EnableCap($95B1);
@@ -1660,6 +1661,7 @@
       if self.val = UInt32($8D69) then Result := 'PRIMITIVE_RESTART_FIXED_INDEX' else
       if self.val = UInt32($8DB9) then Result := 'FRAMEBUFFER_SRGB' else
       if self.val = UInt32($8E51) then Result := 'SAMPLE_MASK' else
+      if self.val = UInt32($8F65) then Result := 'FETCH_PER_SAMPLE_ARM' else
       if self.val = UInt32($8F9D) then Result := 'PRIMITIVE_RESTART' else
       if self.val = UInt32($92E0) then Result := 'DEBUG_OUTPUT' else
       if self.val = UInt32($95B1) then Result := 'SHADING_RATE_IMAGE_PER_PRIMITIVE_NV' else
@@ -2779,6 +2781,8 @@
     public static property MAX_SAMPLE_MASK_WORDS:                          GetPName read new GetPName($8E59);
     public static property MAX_TESS_CONTROL_UNIFORM_BLOCKS:                GetPName read new GetPName($8E89);
     public static property MAX_TESS_EVALUATION_UNIFORM_BLOCKS:             GetPName read new GetPName($8E8A);
+    public static property FETCH_PER_SAMPLE_ARM:                           GetPName read new GetPName($8F65);
+    public static property FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT_ARM:      GetPName read new GetPName($8F66);
     public static property PRIMITIVE_RESTART_INDEX:                        GetPName read new GetPName($8F9E);
     public static property MIN_MAP_BUFFER_ALIGNMENT:                       GetPName read new GetPName($90BC);
     public static property SHADER_STORAGE_BUFFER_BINDING:                  GetPName read new GetPName($90D3);
@@ -3344,6 +3348,8 @@
       if self.val = UInt32($8E59) then Result := 'MAX_SAMPLE_MASK_WORDS' else
       if self.val = UInt32($8E89) then Result := 'MAX_TESS_CONTROL_UNIFORM_BLOCKS' else
       if self.val = UInt32($8E8A) then Result := 'MAX_TESS_EVALUATION_UNIFORM_BLOCKS' else
+      if self.val = UInt32($8F65) then Result := 'FETCH_PER_SAMPLE_ARM' else
+      if self.val = UInt32($8F66) then Result := 'FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT_ARM' else
       if self.val = UInt32($8F9E) then Result := 'PRIMITIVE_RESTART_INDEX' else
       if self.val = UInt32($90BC) then Result := 'MIN_MAP_BUFFER_ALIGNMENT' else
       if self.val = UInt32($90D3) then Result := 'SHADER_STORAGE_BUFFER_BINDING' else
@@ -3800,304 +3806,399 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property STENCIL_INDEX:                             InternalFormat read new InternalFormat($1901);
-    public static property STENCIL_INDEX_OES:                         InternalFormat read new InternalFormat($1901);
-    public static property DEPTH_COMPONENT:                           InternalFormat read new InternalFormat($1902);
-    public static property RED:                                       InternalFormat read new InternalFormat($1903);
-    public static property RED_EXT:                                   InternalFormat read new InternalFormat($1903);
-    public static property RGB:                                       InternalFormat read new InternalFormat($1907);
-    public static property RGBA:                                      InternalFormat read new InternalFormat($1908);
-    public static property R3_G3_B2:                                  InternalFormat read new InternalFormat($2A10);
-    public static property ALPHA4:                                    InternalFormat read new InternalFormat($803B);
-    public static property ALPHA8:                                    InternalFormat read new InternalFormat($803C);
-    public static property ALPHA12:                                   InternalFormat read new InternalFormat($803D);
-    public static property ALPHA16:                                   InternalFormat read new InternalFormat($803E);
-    public static property LUMINANCE4:                                InternalFormat read new InternalFormat($803F);
-    public static property LUMINANCE8:                                InternalFormat read new InternalFormat($8040);
-    public static property LUMINANCE12:                               InternalFormat read new InternalFormat($8041);
-    public static property LUMINANCE16:                               InternalFormat read new InternalFormat($8042);
-    public static property LUMINANCE4_ALPHA4:                         InternalFormat read new InternalFormat($8043);
-    public static property LUMINANCE6_ALPHA2:                         InternalFormat read new InternalFormat($8044);
-    public static property LUMINANCE8_ALPHA8:                         InternalFormat read new InternalFormat($8045);
-    public static property LUMINANCE12_ALPHA4:                        InternalFormat read new InternalFormat($8046);
-    public static property LUMINANCE12_ALPHA12:                       InternalFormat read new InternalFormat($8047);
-    public static property LUMINANCE16_ALPHA16:                       InternalFormat read new InternalFormat($8048);
-    public static property INTENSITY:                                 InternalFormat read new InternalFormat($8049);
-    public static property INTENSITY4:                                InternalFormat read new InternalFormat($804A);
-    public static property INTENSITY8:                                InternalFormat read new InternalFormat($804B);
-    public static property INTENSITY12:                               InternalFormat read new InternalFormat($804C);
-    public static property INTENSITY16:                               InternalFormat read new InternalFormat($804D);
-    public static property RGB2_EXT:                                  InternalFormat read new InternalFormat($804E);
-    public static property RGB4:                                      InternalFormat read new InternalFormat($804F);
-    public static property RGB4_EXT:                                  InternalFormat read new InternalFormat($804F);
-    public static property RGB5:                                      InternalFormat read new InternalFormat($8050);
-    public static property RGB5_EXT:                                  InternalFormat read new InternalFormat($8050);
-    public static property RGB8:                                      InternalFormat read new InternalFormat($8051);
-    public static property RGB8_EXT:                                  InternalFormat read new InternalFormat($8051);
-    public static property RGB8_OES:                                  InternalFormat read new InternalFormat($8051);
-    public static property RGB10:                                     InternalFormat read new InternalFormat($8052);
-    public static property RGB10_EXT:                                 InternalFormat read new InternalFormat($8052);
-    public static property RGB12:                                     InternalFormat read new InternalFormat($8053);
-    public static property RGB12_EXT:                                 InternalFormat read new InternalFormat($8053);
-    public static property RGB16:                                     InternalFormat read new InternalFormat($8054);
-    public static property RGB16_EXT:                                 InternalFormat read new InternalFormat($8054);
-    public static property RGBA4:                                     InternalFormat read new InternalFormat($8056);
-    public static property RGBA4_EXT:                                 InternalFormat read new InternalFormat($8056);
-    public static property RGBA4_OES:                                 InternalFormat read new InternalFormat($8056);
-    public static property RGB5_A1:                                   InternalFormat read new InternalFormat($8057);
-    public static property RGB5_A1_EXT:                               InternalFormat read new InternalFormat($8057);
-    public static property RGB5_A1_OES:                               InternalFormat read new InternalFormat($8057);
-    public static property RGBA8:                                     InternalFormat read new InternalFormat($8058);
-    public static property RGBA8_EXT:                                 InternalFormat read new InternalFormat($8058);
-    public static property RGBA8_OES:                                 InternalFormat read new InternalFormat($8058);
-    public static property RGB10_A2:                                  InternalFormat read new InternalFormat($8059);
-    public static property RGB10_A2_EXT:                              InternalFormat read new InternalFormat($8059);
-    public static property RGBA12:                                    InternalFormat read new InternalFormat($805A);
-    public static property RGBA12_EXT:                                InternalFormat read new InternalFormat($805A);
-    public static property RGBA16:                                    InternalFormat read new InternalFormat($805B);
-    public static property RGBA16_EXT:                                InternalFormat read new InternalFormat($805B);
-    public static property DUAL_ALPHA4_SGIS:                          InternalFormat read new InternalFormat($8110);
-    public static property DUAL_ALPHA8_SGIS:                          InternalFormat read new InternalFormat($8111);
-    public static property DUAL_ALPHA12_SGIS:                         InternalFormat read new InternalFormat($8112);
-    public static property DUAL_ALPHA16_SGIS:                         InternalFormat read new InternalFormat($8113);
-    public static property DUAL_LUMINANCE4_SGIS:                      InternalFormat read new InternalFormat($8114);
-    public static property DUAL_LUMINANCE8_SGIS:                      InternalFormat read new InternalFormat($8115);
-    public static property DUAL_LUMINANCE12_SGIS:                     InternalFormat read new InternalFormat($8116);
-    public static property DUAL_LUMINANCE16_SGIS:                     InternalFormat read new InternalFormat($8117);
-    public static property DUAL_INTENSITY4_SGIS:                      InternalFormat read new InternalFormat($8118);
-    public static property DUAL_INTENSITY8_SGIS:                      InternalFormat read new InternalFormat($8119);
-    public static property DUAL_INTENSITY12_SGIS:                     InternalFormat read new InternalFormat($811A);
-    public static property DUAL_INTENSITY16_SGIS:                     InternalFormat read new InternalFormat($811B);
-    public static property DUAL_LUMINANCE_ALPHA4_SGIS:                InternalFormat read new InternalFormat($811C);
-    public static property DUAL_LUMINANCE_ALPHA8_SGIS:                InternalFormat read new InternalFormat($811D);
-    public static property QUAD_ALPHA4_SGIS:                          InternalFormat read new InternalFormat($811E);
-    public static property QUAD_ALPHA8_SGIS:                          InternalFormat read new InternalFormat($811F);
-    public static property QUAD_LUMINANCE4_SGIS:                      InternalFormat read new InternalFormat($8120);
-    public static property QUAD_LUMINANCE8_SGIS:                      InternalFormat read new InternalFormat($8121);
-    public static property QUAD_INTENSITY4_SGIS:                      InternalFormat read new InternalFormat($8122);
-    public static property QUAD_INTENSITY8_SGIS:                      InternalFormat read new InternalFormat($8123);
-    public static property DEPTH_COMPONENT16:                         InternalFormat read new InternalFormat($81A5);
-    public static property DEPTH_COMPONENT16_ARB:                     InternalFormat read new InternalFormat($81A5);
-    public static property DEPTH_COMPONENT16_OES:                     InternalFormat read new InternalFormat($81A5);
-    public static property DEPTH_COMPONENT16_SGIX:                    InternalFormat read new InternalFormat($81A5);
-    public static property DEPTH_COMPONENT24_ARB:                     InternalFormat read new InternalFormat($81A6);
-    public static property DEPTH_COMPONENT24_OES:                     InternalFormat read new InternalFormat($81A6);
-    public static property DEPTH_COMPONENT24_SGIX:                    InternalFormat read new InternalFormat($81A6);
-    public static property DEPTH_COMPONENT32_ARB:                     InternalFormat read new InternalFormat($81A7);
-    public static property DEPTH_COMPONENT32_OES:                     InternalFormat read new InternalFormat($81A7);
-    public static property DEPTH_COMPONENT32_SGIX:                    InternalFormat read new InternalFormat($81A7);
-    public static property COMPRESSED_RED:                            InternalFormat read new InternalFormat($8225);
-    public static property COMPRESSED_RG:                             InternalFormat read new InternalFormat($8226);
-    public static property RG:                                        InternalFormat read new InternalFormat($8227);
-    public static property R8:                                        InternalFormat read new InternalFormat($8229);
-    public static property R8_EXT:                                    InternalFormat read new InternalFormat($8229);
-    public static property R16:                                       InternalFormat read new InternalFormat($822A);
-    public static property R16_EXT:                                   InternalFormat read new InternalFormat($822A);
-    public static property RG8:                                       InternalFormat read new InternalFormat($822B);
-    public static property RG8_EXT:                                   InternalFormat read new InternalFormat($822B);
-    public static property RG16:                                      InternalFormat read new InternalFormat($822C);
-    public static property RG16_EXT:                                  InternalFormat read new InternalFormat($822C);
-    public static property R16F:                                      InternalFormat read new InternalFormat($822D);
-    public static property R16F_EXT:                                  InternalFormat read new InternalFormat($822D);
-    public static property R32F:                                      InternalFormat read new InternalFormat($822E);
-    public static property R32F_EXT:                                  InternalFormat read new InternalFormat($822E);
-    public static property RG16F:                                     InternalFormat read new InternalFormat($822F);
-    public static property RG16F_EXT:                                 InternalFormat read new InternalFormat($822F);
-    public static property RG32F:                                     InternalFormat read new InternalFormat($8230);
-    public static property RG32F_EXT:                                 InternalFormat read new InternalFormat($8230);
-    public static property R8I:                                       InternalFormat read new InternalFormat($8231);
-    public static property R8UI:                                      InternalFormat read new InternalFormat($8232);
-    public static property R16I:                                      InternalFormat read new InternalFormat($8233);
-    public static property R16UI:                                     InternalFormat read new InternalFormat($8234);
-    public static property R32I:                                      InternalFormat read new InternalFormat($8235);
-    public static property R32UI:                                     InternalFormat read new InternalFormat($8236);
-    public static property RG8I:                                      InternalFormat read new InternalFormat($8237);
-    public static property RG8UI:                                     InternalFormat read new InternalFormat($8238);
-    public static property RG16I:                                     InternalFormat read new InternalFormat($8239);
-    public static property RG16UI:                                    InternalFormat read new InternalFormat($823A);
-    public static property RG32I:                                     InternalFormat read new InternalFormat($823B);
-    public static property RG32UI:                                    InternalFormat read new InternalFormat($823C);
-    public static property COMPRESSED_RGB_S3TC_DXT1_EXT:              InternalFormat read new InternalFormat($83F0);
-    public static property COMPRESSED_RGBA_S3TC_DXT1_EXT:             InternalFormat read new InternalFormat($83F1);
-    public static property COMPRESSED_RGBA_S3TC_DXT3_EXT:             InternalFormat read new InternalFormat($83F2);
-    public static property COMPRESSED_RGBA_S3TC_DXT5_EXT:             InternalFormat read new InternalFormat($83F3);
-    public static property COMPRESSED_RGB:                            InternalFormat read new InternalFormat($84ED);
-    public static property COMPRESSED_RGBA:                           InternalFormat read new InternalFormat($84EE);
-    public static property DEPTH_STENCIL:                             InternalFormat read new InternalFormat($84F9);
-    public static property DEPTH_STENCIL_EXT:                         InternalFormat read new InternalFormat($84F9);
-    public static property DEPTH_STENCIL_NV:                          InternalFormat read new InternalFormat($84F9);
-    public static property DEPTH_STENCIL_OES:                         InternalFormat read new InternalFormat($84F9);
-    public static property DEPTH_STENCIL_MESA:                        InternalFormat read new InternalFormat($8750);
-    public static property RGBA32F:                                   InternalFormat read new InternalFormat($8814);
-    public static property RGBA32F_ARB:                               InternalFormat read new InternalFormat($8814);
-    public static property RGBA32F_EXT:                               InternalFormat read new InternalFormat($8814);
-    public static property RGB32F:                                    InternalFormat read new InternalFormat($8815);
-    public static property RGBA16F:                                   InternalFormat read new InternalFormat($881A);
-    public static property RGBA16F_ARB:                               InternalFormat read new InternalFormat($881A);
-    public static property RGBA16F_EXT:                               InternalFormat read new InternalFormat($881A);
-    public static property RGB16F:                                    InternalFormat read new InternalFormat($881B);
-    public static property RGB16F_ARB:                                InternalFormat read new InternalFormat($881B);
-    public static property RGB16F_EXT:                                InternalFormat read new InternalFormat($881B);
-    public static property DEPTH24_STENCIL8:                          InternalFormat read new InternalFormat($88F0);
-    public static property DEPTH24_STENCIL8_EXT:                      InternalFormat read new InternalFormat($88F0);
-    public static property DEPTH24_STENCIL8_OES:                      InternalFormat read new InternalFormat($88F0);
-    public static property R11F_G11F_B10F:                            InternalFormat read new InternalFormat($8C3A);
-    public static property R11F_G11F_B10F_APPLE:                      InternalFormat read new InternalFormat($8C3A);
-    public static property R11F_G11F_B10F_EXT:                        InternalFormat read new InternalFormat($8C3A);
-    public static property RGB9_E5:                                   InternalFormat read new InternalFormat($8C3D);
-    public static property RGB9_E5_APPLE:                             InternalFormat read new InternalFormat($8C3D);
-    public static property RGB9_E5_EXT:                               InternalFormat read new InternalFormat($8C3D);
-    public static property SRGB:                                      InternalFormat read new InternalFormat($8C40);
-    public static property SRGB_EXT:                                  InternalFormat read new InternalFormat($8C40);
-    public static property SRGB8:                                     InternalFormat read new InternalFormat($8C41);
-    public static property SRGB8_EXT:                                 InternalFormat read new InternalFormat($8C41);
-    public static property SRGB8_NV:                                  InternalFormat read new InternalFormat($8C41);
-    public static property SRGB_ALPHA:                                InternalFormat read new InternalFormat($8C42);
-    public static property SRGB_ALPHA_EXT:                            InternalFormat read new InternalFormat($8C42);
-    public static property SRGB8_ALPHA8:                              InternalFormat read new InternalFormat($8C43);
-    public static property SRGB8_ALPHA8_EXT:                          InternalFormat read new InternalFormat($8C43);
-    public static property COMPRESSED_SRGB:                           InternalFormat read new InternalFormat($8C48);
-    public static property COMPRESSED_SRGB_ALPHA:                     InternalFormat read new InternalFormat($8C49);
-    public static property COMPRESSED_SRGB_S3TC_DXT1_EXT:             InternalFormat read new InternalFormat($8C4C);
-    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:       InternalFormat read new InternalFormat($8C4D);
-    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:       InternalFormat read new InternalFormat($8C4E);
-    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:       InternalFormat read new InternalFormat($8C4F);
-    public static property DEPTH_COMPONENT32F:                        InternalFormat read new InternalFormat($8CAC);
-    public static property DEPTH32F_STENCIL8:                         InternalFormat read new InternalFormat($8CAD);
-    public static property STENCIL_INDEX1:                            InternalFormat read new InternalFormat($8D46);
-    public static property STENCIL_INDEX1_EXT:                        InternalFormat read new InternalFormat($8D46);
-    public static property STENCIL_INDEX1_OES:                        InternalFormat read new InternalFormat($8D46);
-    public static property STENCIL_INDEX4:                            InternalFormat read new InternalFormat($8D47);
-    public static property STENCIL_INDEX4_EXT:                        InternalFormat read new InternalFormat($8D47);
-    public static property STENCIL_INDEX4_OES:                        InternalFormat read new InternalFormat($8D47);
-    public static property STENCIL_INDEX8:                            InternalFormat read new InternalFormat($8D48);
-    public static property STENCIL_INDEX8_EXT:                        InternalFormat read new InternalFormat($8D48);
-    public static property STENCIL_INDEX8_OES:                        InternalFormat read new InternalFormat($8D48);
-    public static property STENCIL_INDEX16:                           InternalFormat read new InternalFormat($8D49);
-    public static property STENCIL_INDEX16_EXT:                       InternalFormat read new InternalFormat($8D49);
-    public static property RGBA32UI:                                  InternalFormat read new InternalFormat($8D70);
-    public static property RGB32UI:                                   InternalFormat read new InternalFormat($8D71);
-    public static property RGBA16UI:                                  InternalFormat read new InternalFormat($8D76);
-    public static property RGB16UI:                                   InternalFormat read new InternalFormat($8D77);
-    public static property RGBA8UI:                                   InternalFormat read new InternalFormat($8D7C);
-    public static property RGB8UI:                                    InternalFormat read new InternalFormat($8D7D);
-    public static property RGBA32I:                                   InternalFormat read new InternalFormat($8D82);
-    public static property RGB32I:                                    InternalFormat read new InternalFormat($8D83);
-    public static property RGBA16I:                                   InternalFormat read new InternalFormat($8D88);
-    public static property RGB16I:                                    InternalFormat read new InternalFormat($8D89);
-    public static property RGBA8I:                                    InternalFormat read new InternalFormat($8D8E);
-    public static property RGB8I:                                     InternalFormat read new InternalFormat($8D8F);
-    public static property DEPTH_COMPONENT32F_NV:                     InternalFormat read new InternalFormat($8DAB);
-    public static property DEPTH32F_STENCIL8_NV:                      InternalFormat read new InternalFormat($8DAC);
-    public static property COMPRESSED_RED_RGTC1:                      InternalFormat read new InternalFormat($8DBB);
-    public static property COMPRESSED_RED_RGTC1_EXT:                  InternalFormat read new InternalFormat($8DBB);
-    public static property COMPRESSED_SIGNED_RED_RGTC1:               InternalFormat read new InternalFormat($8DBC);
-    public static property COMPRESSED_SIGNED_RED_RGTC1_EXT:           InternalFormat read new InternalFormat($8DBC);
-    public static property COMPRESSED_RG_RGTC2:                       InternalFormat read new InternalFormat($8DBD);
-    public static property COMPRESSED_SIGNED_RG_RGTC2:                InternalFormat read new InternalFormat($8DBE);
-    public static property COMPRESSED_RGBA_BPTC_UNORM:                InternalFormat read new InternalFormat($8E8C);
-    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM:          InternalFormat read new InternalFormat($8E8D);
-    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT:          InternalFormat read new InternalFormat($8E8E);
-    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT:        InternalFormat read new InternalFormat($8E8F);
-    public static property R8_SNORM:                                  InternalFormat read new InternalFormat($8F94);
-    public static property RG8_SNORM:                                 InternalFormat read new InternalFormat($8F95);
-    public static property RGB8_SNORM:                                InternalFormat read new InternalFormat($8F96);
-    public static property RGBA8_SNORM:                               InternalFormat read new InternalFormat($8F97);
-    public static property R16_SNORM:                                 InternalFormat read new InternalFormat($8F98);
-    public static property R16_SNORM_EXT:                             InternalFormat read new InternalFormat($8F98);
-    public static property RG16_SNORM:                                InternalFormat read new InternalFormat($8F99);
-    public static property RG16_SNORM_EXT:                            InternalFormat read new InternalFormat($8F99);
-    public static property RGB16_SNORM:                               InternalFormat read new InternalFormat($8F9A);
-    public static property RGB16_SNORM_EXT:                           InternalFormat read new InternalFormat($8F9A);
-    public static property SR8_EXT:                                   InternalFormat read new InternalFormat($8FBD);
-    public static property SRG8_EXT:                                  InternalFormat read new InternalFormat($8FBE);
-    public static property RGB10_A2UI:                                InternalFormat read new InternalFormat($906F);
-    public static property COMPRESSED_R11_EAC:                        InternalFormat read new InternalFormat($9270);
-    public static property COMPRESSED_SIGNED_R11_EAC:                 InternalFormat read new InternalFormat($9271);
-    public static property COMPRESSED_RG11_EAC:                       InternalFormat read new InternalFormat($9272);
-    public static property COMPRESSED_SIGNED_RG11_EAC:                InternalFormat read new InternalFormat($9273);
-    public static property COMPRESSED_RGB8_ETC2:                      InternalFormat read new InternalFormat($9274);
-    public static property COMPRESSED_SRGB8_ETC2:                     InternalFormat read new InternalFormat($9275);
-    public static property COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:  InternalFormat read new InternalFormat($9276);
-    public static property COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: InternalFormat read new InternalFormat($9277);
-    public static property COMPRESSED_RGBA8_ETC2_EAC:                 InternalFormat read new InternalFormat($9278);
-    public static property COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:          InternalFormat read new InternalFormat($9279);
-    public static property COMPRESSED_RGBA_ASTC_4x4:                  InternalFormat read new InternalFormat($93B0);
-    public static property COMPRESSED_RGBA_ASTC_4x4_KHR:              InternalFormat read new InternalFormat($93B0);
-    public static property COMPRESSED_RGBA_ASTC_5x4:                  InternalFormat read new InternalFormat($93B1);
-    public static property COMPRESSED_RGBA_ASTC_5x4_KHR:              InternalFormat read new InternalFormat($93B1);
-    public static property COMPRESSED_RGBA_ASTC_5x5:                  InternalFormat read new InternalFormat($93B2);
-    public static property COMPRESSED_RGBA_ASTC_5x5_KHR:              InternalFormat read new InternalFormat($93B2);
-    public static property COMPRESSED_RGBA_ASTC_6x5:                  InternalFormat read new InternalFormat($93B3);
-    public static property COMPRESSED_RGBA_ASTC_6x5_KHR:              InternalFormat read new InternalFormat($93B3);
-    public static property COMPRESSED_RGBA_ASTC_6x6:                  InternalFormat read new InternalFormat($93B4);
-    public static property COMPRESSED_RGBA_ASTC_6x6_KHR:              InternalFormat read new InternalFormat($93B4);
-    public static property COMPRESSED_RGBA_ASTC_8x5:                  InternalFormat read new InternalFormat($93B5);
-    public static property COMPRESSED_RGBA_ASTC_8x5_KHR:              InternalFormat read new InternalFormat($93B5);
-    public static property COMPRESSED_RGBA_ASTC_8x6:                  InternalFormat read new InternalFormat($93B6);
-    public static property COMPRESSED_RGBA_ASTC_8x6_KHR:              InternalFormat read new InternalFormat($93B6);
-    public static property COMPRESSED_RGBA_ASTC_8x8:                  InternalFormat read new InternalFormat($93B7);
-    public static property COMPRESSED_RGBA_ASTC_8x8_KHR:              InternalFormat read new InternalFormat($93B7);
-    public static property COMPRESSED_RGBA_ASTC_10x5:                 InternalFormat read new InternalFormat($93B8);
-    public static property COMPRESSED_RGBA_ASTC_10x5_KHR:             InternalFormat read new InternalFormat($93B8);
-    public static property COMPRESSED_RGBA_ASTC_10x6:                 InternalFormat read new InternalFormat($93B9);
-    public static property COMPRESSED_RGBA_ASTC_10x6_KHR:             InternalFormat read new InternalFormat($93B9);
-    public static property COMPRESSED_RGBA_ASTC_10x8:                 InternalFormat read new InternalFormat($93BA);
-    public static property COMPRESSED_RGBA_ASTC_10x8_KHR:             InternalFormat read new InternalFormat($93BA);
-    public static property COMPRESSED_RGBA_ASTC_10x10:                InternalFormat read new InternalFormat($93BB);
-    public static property COMPRESSED_RGBA_ASTC_10x10_KHR:            InternalFormat read new InternalFormat($93BB);
-    public static property COMPRESSED_RGBA_ASTC_12x10:                InternalFormat read new InternalFormat($93BC);
-    public static property COMPRESSED_RGBA_ASTC_12x10_KHR:            InternalFormat read new InternalFormat($93BC);
-    public static property COMPRESSED_RGBA_ASTC_12x12:                InternalFormat read new InternalFormat($93BD);
-    public static property COMPRESSED_RGBA_ASTC_12x12_KHR:            InternalFormat read new InternalFormat($93BD);
-    public static property COMPRESSED_RGBA_ASTC_3x3x3_OES:            InternalFormat read new InternalFormat($93C0);
-    public static property COMPRESSED_RGBA_ASTC_4x3x3_OES:            InternalFormat read new InternalFormat($93C1);
-    public static property COMPRESSED_RGBA_ASTC_4x4x3_OES:            InternalFormat read new InternalFormat($93C2);
-    public static property COMPRESSED_RGBA_ASTC_4x4x4_OES:            InternalFormat read new InternalFormat($93C3);
-    public static property COMPRESSED_RGBA_ASTC_5x4x4_OES:            InternalFormat read new InternalFormat($93C4);
-    public static property COMPRESSED_RGBA_ASTC_5x5x4_OES:            InternalFormat read new InternalFormat($93C5);
-    public static property COMPRESSED_RGBA_ASTC_5x5x5_OES:            InternalFormat read new InternalFormat($93C6);
-    public static property COMPRESSED_RGBA_ASTC_6x5x5_OES:            InternalFormat read new InternalFormat($93C7);
-    public static property COMPRESSED_RGBA_ASTC_6x6x5_OES:            InternalFormat read new InternalFormat($93C8);
-    public static property COMPRESSED_RGBA_ASTC_6x6x6_OES:            InternalFormat read new InternalFormat($93C9);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4:          InternalFormat read new InternalFormat($93D0);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:      InternalFormat read new InternalFormat($93D0);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4:          InternalFormat read new InternalFormat($93D1);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:      InternalFormat read new InternalFormat($93D1);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5:          InternalFormat read new InternalFormat($93D2);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:      InternalFormat read new InternalFormat($93D2);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5:          InternalFormat read new InternalFormat($93D3);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:      InternalFormat read new InternalFormat($93D3);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6:          InternalFormat read new InternalFormat($93D4);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:      InternalFormat read new InternalFormat($93D4);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x5:          InternalFormat read new InternalFormat($93D5);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:      InternalFormat read new InternalFormat($93D5);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x6:          InternalFormat read new InternalFormat($93D6);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:      InternalFormat read new InternalFormat($93D6);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x8:          InternalFormat read new InternalFormat($93D7);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:      InternalFormat read new InternalFormat($93D7);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x5:         InternalFormat read new InternalFormat($93D8);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:     InternalFormat read new InternalFormat($93D8);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x6:         InternalFormat read new InternalFormat($93D9);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:     InternalFormat read new InternalFormat($93D9);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x8:         InternalFormat read new InternalFormat($93DA);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:     InternalFormat read new InternalFormat($93DA);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x10:        InternalFormat read new InternalFormat($93DB);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:    InternalFormat read new InternalFormat($93DB);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x10:        InternalFormat read new InternalFormat($93DC);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:    InternalFormat read new InternalFormat($93DC);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x12:        InternalFormat read new InternalFormat($93DD);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:    InternalFormat read new InternalFormat($93DD);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_OES:    InternalFormat read new InternalFormat($93E0);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_OES:    InternalFormat read new InternalFormat($93E1);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_OES:    InternalFormat read new InternalFormat($93E2);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_OES:    InternalFormat read new InternalFormat($93E3);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_OES:    InternalFormat read new InternalFormat($93E4);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_OES:    InternalFormat read new InternalFormat($93E5);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_OES:    InternalFormat read new InternalFormat($93E6);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES:    InternalFormat read new InternalFormat($93E7);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES:    InternalFormat read new InternalFormat($93E8);
-    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES:    InternalFormat read new InternalFormat($93E9);
+    public static property STENCIL_INDEX:                                 InternalFormat read new InternalFormat($1901);
+    public static property STENCIL_INDEX_OES:                             InternalFormat read new InternalFormat($1901);
+    public static property DEPTH_COMPONENT:                               InternalFormat read new InternalFormat($1902);
+    public static property RED:                                           InternalFormat read new InternalFormat($1903);
+    public static property RED_EXT:                                       InternalFormat read new InternalFormat($1903);
+    public static property RGB:                                           InternalFormat read new InternalFormat($1907);
+    public static property RGBA:                                          InternalFormat read new InternalFormat($1908);
+    public static property R3_G3_B2:                                      InternalFormat read new InternalFormat($2A10);
+    public static property ALPHA4:                                        InternalFormat read new InternalFormat($803B);
+    public static property ALPHA4_EXT:                                    InternalFormat read new InternalFormat($803B);
+    public static property ALPHA8:                                        InternalFormat read new InternalFormat($803C);
+    public static property ALPHA8_EXT:                                    InternalFormat read new InternalFormat($803C);
+    public static property ALPHA8_OES:                                    InternalFormat read new InternalFormat($803C);
+    public static property ALPHA12:                                       InternalFormat read new InternalFormat($803D);
+    public static property ALPHA12_EXT:                                   InternalFormat read new InternalFormat($803D);
+    public static property ALPHA16:                                       InternalFormat read new InternalFormat($803E);
+    public static property ALPHA16_EXT:                                   InternalFormat read new InternalFormat($803E);
+    public static property LUMINANCE4:                                    InternalFormat read new InternalFormat($803F);
+    public static property LUMINANCE4_EXT:                                InternalFormat read new InternalFormat($803F);
+    public static property LUMINANCE8:                                    InternalFormat read new InternalFormat($8040);
+    public static property LUMINANCE8_EXT:                                InternalFormat read new InternalFormat($8040);
+    public static property LUMINANCE8_OES:                                InternalFormat read new InternalFormat($8040);
+    public static property LUMINANCE12:                                   InternalFormat read new InternalFormat($8041);
+    public static property LUMINANCE12_EXT:                               InternalFormat read new InternalFormat($8041);
+    public static property LUMINANCE16:                                   InternalFormat read new InternalFormat($8042);
+    public static property LUMINANCE16_EXT:                               InternalFormat read new InternalFormat($8042);
+    public static property LUMINANCE4_ALPHA4:                             InternalFormat read new InternalFormat($8043);
+    public static property LUMINANCE4_ALPHA4_EXT:                         InternalFormat read new InternalFormat($8043);
+    public static property LUMINANCE4_ALPHA4_OES:                         InternalFormat read new InternalFormat($8043);
+    public static property LUMINANCE6_ALPHA2:                             InternalFormat read new InternalFormat($8044);
+    public static property LUMINANCE6_ALPHA2_EXT:                         InternalFormat read new InternalFormat($8044);
+    public static property LUMINANCE8_ALPHA8:                             InternalFormat read new InternalFormat($8045);
+    public static property LUMINANCE8_ALPHA8_EXT:                         InternalFormat read new InternalFormat($8045);
+    public static property LUMINANCE8_ALPHA8_OES:                         InternalFormat read new InternalFormat($8045);
+    public static property LUMINANCE12_ALPHA4:                            InternalFormat read new InternalFormat($8046);
+    public static property LUMINANCE12_ALPHA4_EXT:                        InternalFormat read new InternalFormat($8046);
+    public static property LUMINANCE12_ALPHA12:                           InternalFormat read new InternalFormat($8047);
+    public static property LUMINANCE12_ALPHA12_EXT:                       InternalFormat read new InternalFormat($8047);
+    public static property LUMINANCE16_ALPHA16:                           InternalFormat read new InternalFormat($8048);
+    public static property LUMINANCE16_ALPHA16_EXT:                       InternalFormat read new InternalFormat($8048);
+    public static property INTENSITY:                                     InternalFormat read new InternalFormat($8049);
+    public static property INTENSITY4:                                    InternalFormat read new InternalFormat($804A);
+    public static property INTENSITY4_EXT:                                InternalFormat read new InternalFormat($804A);
+    public static property INTENSITY8:                                    InternalFormat read new InternalFormat($804B);
+    public static property INTENSITY8_EXT:                                InternalFormat read new InternalFormat($804B);
+    public static property INTENSITY12:                                   InternalFormat read new InternalFormat($804C);
+    public static property INTENSITY12_EXT:                               InternalFormat read new InternalFormat($804C);
+    public static property INTENSITY16:                                   InternalFormat read new InternalFormat($804D);
+    public static property INTENSITY16_EXT:                               InternalFormat read new InternalFormat($804D);
+    public static property RGB2_EXT:                                      InternalFormat read new InternalFormat($804E);
+    public static property RGB4:                                          InternalFormat read new InternalFormat($804F);
+    public static property RGB4_EXT:                                      InternalFormat read new InternalFormat($804F);
+    public static property RGB5:                                          InternalFormat read new InternalFormat($8050);
+    public static property RGB5_EXT:                                      InternalFormat read new InternalFormat($8050);
+    public static property RGB8:                                          InternalFormat read new InternalFormat($8051);
+    public static property RGB8_EXT:                                      InternalFormat read new InternalFormat($8051);
+    public static property RGB8_OES:                                      InternalFormat read new InternalFormat($8051);
+    public static property RGB10:                                         InternalFormat read new InternalFormat($8052);
+    public static property RGB10_EXT:                                     InternalFormat read new InternalFormat($8052);
+    public static property RGB12:                                         InternalFormat read new InternalFormat($8053);
+    public static property RGB12_EXT:                                     InternalFormat read new InternalFormat($8053);
+    public static property RGB16:                                         InternalFormat read new InternalFormat($8054);
+    public static property RGB16_EXT:                                     InternalFormat read new InternalFormat($8054);
+    public static property RGBA2:                                         InternalFormat read new InternalFormat($8055);
+    public static property RGBA2_EXT:                                     InternalFormat read new InternalFormat($8055);
+    public static property RGBA4:                                         InternalFormat read new InternalFormat($8056);
+    public static property RGBA4_EXT:                                     InternalFormat read new InternalFormat($8056);
+    public static property RGBA4_OES:                                     InternalFormat read new InternalFormat($8056);
+    public static property RGB5_A1:                                       InternalFormat read new InternalFormat($8057);
+    public static property RGB5_A1_EXT:                                   InternalFormat read new InternalFormat($8057);
+    public static property RGB5_A1_OES:                                   InternalFormat read new InternalFormat($8057);
+    public static property RGBA8:                                         InternalFormat read new InternalFormat($8058);
+    public static property RGBA8_EXT:                                     InternalFormat read new InternalFormat($8058);
+    public static property RGBA8_OES:                                     InternalFormat read new InternalFormat($8058);
+    public static property RGB10_A2:                                      InternalFormat read new InternalFormat($8059);
+    public static property RGB10_A2_EXT:                                  InternalFormat read new InternalFormat($8059);
+    public static property RGBA12:                                        InternalFormat read new InternalFormat($805A);
+    public static property RGBA12_EXT:                                    InternalFormat read new InternalFormat($805A);
+    public static property RGBA16:                                        InternalFormat read new InternalFormat($805B);
+    public static property RGBA16_EXT:                                    InternalFormat read new InternalFormat($805B);
+    public static property DUAL_ALPHA4_SGIS:                              InternalFormat read new InternalFormat($8110);
+    public static property DUAL_ALPHA8_SGIS:                              InternalFormat read new InternalFormat($8111);
+    public static property DUAL_ALPHA12_SGIS:                             InternalFormat read new InternalFormat($8112);
+    public static property DUAL_ALPHA16_SGIS:                             InternalFormat read new InternalFormat($8113);
+    public static property DUAL_LUMINANCE4_SGIS:                          InternalFormat read new InternalFormat($8114);
+    public static property DUAL_LUMINANCE8_SGIS:                          InternalFormat read new InternalFormat($8115);
+    public static property DUAL_LUMINANCE12_SGIS:                         InternalFormat read new InternalFormat($8116);
+    public static property DUAL_LUMINANCE16_SGIS:                         InternalFormat read new InternalFormat($8117);
+    public static property DUAL_INTENSITY4_SGIS:                          InternalFormat read new InternalFormat($8118);
+    public static property DUAL_INTENSITY8_SGIS:                          InternalFormat read new InternalFormat($8119);
+    public static property DUAL_INTENSITY12_SGIS:                         InternalFormat read new InternalFormat($811A);
+    public static property DUAL_INTENSITY16_SGIS:                         InternalFormat read new InternalFormat($811B);
+    public static property DUAL_LUMINANCE_ALPHA4_SGIS:                    InternalFormat read new InternalFormat($811C);
+    public static property DUAL_LUMINANCE_ALPHA8_SGIS:                    InternalFormat read new InternalFormat($811D);
+    public static property QUAD_ALPHA4_SGIS:                              InternalFormat read new InternalFormat($811E);
+    public static property QUAD_ALPHA8_SGIS:                              InternalFormat read new InternalFormat($811F);
+    public static property QUAD_LUMINANCE4_SGIS:                          InternalFormat read new InternalFormat($8120);
+    public static property QUAD_LUMINANCE8_SGIS:                          InternalFormat read new InternalFormat($8121);
+    public static property QUAD_INTENSITY4_SGIS:                          InternalFormat read new InternalFormat($8122);
+    public static property QUAD_INTENSITY8_SGIS:                          InternalFormat read new InternalFormat($8123);
+    public static property DEPTH_COMPONENT16:                             InternalFormat read new InternalFormat($81A5);
+    public static property DEPTH_COMPONENT16_ARB:                         InternalFormat read new InternalFormat($81A5);
+    public static property DEPTH_COMPONENT16_OES:                         InternalFormat read new InternalFormat($81A5);
+    public static property DEPTH_COMPONENT16_SGIX:                        InternalFormat read new InternalFormat($81A5);
+    public static property DEPTH_COMPONENT24:                             InternalFormat read new InternalFormat($81A6);
+    public static property DEPTH_COMPONENT24_ARB:                         InternalFormat read new InternalFormat($81A6);
+    public static property DEPTH_COMPONENT24_OES:                         InternalFormat read new InternalFormat($81A6);
+    public static property DEPTH_COMPONENT24_SGIX:                        InternalFormat read new InternalFormat($81A6);
+    public static property DEPTH_COMPONENT32:                             InternalFormat read new InternalFormat($81A7);
+    public static property DEPTH_COMPONENT32_ARB:                         InternalFormat read new InternalFormat($81A7);
+    public static property DEPTH_COMPONENT32_OES:                         InternalFormat read new InternalFormat($81A7);
+    public static property DEPTH_COMPONENT32_SGIX:                        InternalFormat read new InternalFormat($81A7);
+    public static property COMPRESSED_RED:                                InternalFormat read new InternalFormat($8225);
+    public static property COMPRESSED_RG:                                 InternalFormat read new InternalFormat($8226);
+    public static property RG:                                            InternalFormat read new InternalFormat($8227);
+    public static property R8:                                            InternalFormat read new InternalFormat($8229);
+    public static property R8_EXT:                                        InternalFormat read new InternalFormat($8229);
+    public static property R16:                                           InternalFormat read new InternalFormat($822A);
+    public static property R16_EXT:                                       InternalFormat read new InternalFormat($822A);
+    public static property RG8:                                           InternalFormat read new InternalFormat($822B);
+    public static property RG8_EXT:                                       InternalFormat read new InternalFormat($822B);
+    public static property RG16:                                          InternalFormat read new InternalFormat($822C);
+    public static property RG16_EXT:                                      InternalFormat read new InternalFormat($822C);
+    public static property R16F:                                          InternalFormat read new InternalFormat($822D);
+    public static property R16F_EXT:                                      InternalFormat read new InternalFormat($822D);
+    public static property R32F:                                          InternalFormat read new InternalFormat($822E);
+    public static property R32F_EXT:                                      InternalFormat read new InternalFormat($822E);
+    public static property RG16F:                                         InternalFormat read new InternalFormat($822F);
+    public static property RG16F_EXT:                                     InternalFormat read new InternalFormat($822F);
+    public static property RG32F:                                         InternalFormat read new InternalFormat($8230);
+    public static property RG32F_EXT:                                     InternalFormat read new InternalFormat($8230);
+    public static property R8I:                                           InternalFormat read new InternalFormat($8231);
+    public static property R8UI:                                          InternalFormat read new InternalFormat($8232);
+    public static property R16I:                                          InternalFormat read new InternalFormat($8233);
+    public static property R16UI:                                         InternalFormat read new InternalFormat($8234);
+    public static property R32I:                                          InternalFormat read new InternalFormat($8235);
+    public static property R32UI:                                         InternalFormat read new InternalFormat($8236);
+    public static property RG8I:                                          InternalFormat read new InternalFormat($8237);
+    public static property RG8UI:                                         InternalFormat read new InternalFormat($8238);
+    public static property RG16I:                                         InternalFormat read new InternalFormat($8239);
+    public static property RG16UI:                                        InternalFormat read new InternalFormat($823A);
+    public static property RG32I:                                         InternalFormat read new InternalFormat($823B);
+    public static property RG32UI:                                        InternalFormat read new InternalFormat($823C);
+    public static property COMPRESSED_RGB_S3TC_DXT1_EXT:                  InternalFormat read new InternalFormat($83F0);
+    public static property COMPRESSED_RGBA_S3TC_DXT1_EXT:                 InternalFormat read new InternalFormat($83F1);
+    public static property COMPRESSED_RGBA_S3TC_DXT3_ANGLE:               InternalFormat read new InternalFormat($83F2);
+    public static property COMPRESSED_RGBA_S3TC_DXT3_EXT:                 InternalFormat read new InternalFormat($83F2);
+    public static property COMPRESSED_RGBA_S3TC_DXT5_ANGLE:               InternalFormat read new InternalFormat($83F3);
+    public static property COMPRESSED_RGBA_S3TC_DXT5_EXT:                 InternalFormat read new InternalFormat($83F3);
+    public static property COMPRESSED_RGB:                                InternalFormat read new InternalFormat($84ED);
+    public static property COMPRESSED_RGBA:                               InternalFormat read new InternalFormat($84EE);
+    public static property DEPTH_STENCIL:                                 InternalFormat read new InternalFormat($84F9);
+    public static property DEPTH_STENCIL_EXT:                             InternalFormat read new InternalFormat($84F9);
+    public static property DEPTH_STENCIL_NV:                              InternalFormat read new InternalFormat($84F9);
+    public static property DEPTH_STENCIL_OES:                             InternalFormat read new InternalFormat($84F9);
+    public static property DEPTH_STENCIL_MESA:                            InternalFormat read new InternalFormat($8750);
+    public static property RGBA32F:                                       InternalFormat read new InternalFormat($8814);
+    public static property RGBA32F_ARB:                                   InternalFormat read new InternalFormat($8814);
+    public static property RGBA32F_EXT:                                   InternalFormat read new InternalFormat($8814);
+    public static property RGB32F:                                        InternalFormat read new InternalFormat($8815);
+    public static property RGB32F_ARB:                                    InternalFormat read new InternalFormat($8815);
+    public static property RGB32F_EXT:                                    InternalFormat read new InternalFormat($8815);
+    public static property RGBA16F:                                       InternalFormat read new InternalFormat($881A);
+    public static property RGBA16F_ARB:                                   InternalFormat read new InternalFormat($881A);
+    public static property RGBA16F_EXT:                                   InternalFormat read new InternalFormat($881A);
+    public static property RGB16F:                                        InternalFormat read new InternalFormat($881B);
+    public static property RGB16F_ARB:                                    InternalFormat read new InternalFormat($881B);
+    public static property RGB16F_EXT:                                    InternalFormat read new InternalFormat($881B);
+    public static property DEPTH24_STENCIL8:                              InternalFormat read new InternalFormat($88F0);
+    public static property DEPTH24_STENCIL8_EXT:                          InternalFormat read new InternalFormat($88F0);
+    public static property DEPTH24_STENCIL8_OES:                          InternalFormat read new InternalFormat($88F0);
+    public static property R11F_G11F_B10F:                                InternalFormat read new InternalFormat($8C3A);
+    public static property R11F_G11F_B10F_APPLE:                          InternalFormat read new InternalFormat($8C3A);
+    public static property R11F_G11F_B10F_EXT:                            InternalFormat read new InternalFormat($8C3A);
+    public static property RGB9_E5:                                       InternalFormat read new InternalFormat($8C3D);
+    public static property RGB9_E5_APPLE:                                 InternalFormat read new InternalFormat($8C3D);
+    public static property RGB9_E5_EXT:                                   InternalFormat read new InternalFormat($8C3D);
+    public static property SRGB:                                          InternalFormat read new InternalFormat($8C40);
+    public static property SRGB_EXT:                                      InternalFormat read new InternalFormat($8C40);
+    public static property SRGB8:                                         InternalFormat read new InternalFormat($8C41);
+    public static property SRGB8_EXT:                                     InternalFormat read new InternalFormat($8C41);
+    public static property SRGB8_NV:                                      InternalFormat read new InternalFormat($8C41);
+    public static property SRGB_ALPHA:                                    InternalFormat read new InternalFormat($8C42);
+    public static property SRGB_ALPHA_EXT:                                InternalFormat read new InternalFormat($8C42);
+    public static property SRGB8_ALPHA8:                                  InternalFormat read new InternalFormat($8C43);
+    public static property SRGB8_ALPHA8_EXT:                              InternalFormat read new InternalFormat($8C43);
+    public static property COMPRESSED_SRGB:                               InternalFormat read new InternalFormat($8C48);
+    public static property COMPRESSED_SRGB_ALPHA:                         InternalFormat read new InternalFormat($8C49);
+    public static property COMPRESSED_SRGB_S3TC_DXT1_EXT:                 InternalFormat read new InternalFormat($8C4C);
+    public static property COMPRESSED_SRGB_S3TC_DXT1_NV:                  InternalFormat read new InternalFormat($8C4C);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:           InternalFormat read new InternalFormat($8C4D);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT1_NV:            InternalFormat read new InternalFormat($8C4D);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:           InternalFormat read new InternalFormat($8C4E);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT3_NV:            InternalFormat read new InternalFormat($8C4E);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:           InternalFormat read new InternalFormat($8C4F);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT5_NV:            InternalFormat read new InternalFormat($8C4F);
+    public static property DEPTH_COMPONENT32F:                            InternalFormat read new InternalFormat($8CAC);
+    public static property DEPTH32F_STENCIL8:                             InternalFormat read new InternalFormat($8CAD);
+    public static property STENCIL_INDEX1:                                InternalFormat read new InternalFormat($8D46);
+    public static property STENCIL_INDEX1_EXT:                            InternalFormat read new InternalFormat($8D46);
+    public static property STENCIL_INDEX1_OES:                            InternalFormat read new InternalFormat($8D46);
+    public static property STENCIL_INDEX4:                                InternalFormat read new InternalFormat($8D47);
+    public static property STENCIL_INDEX4_EXT:                            InternalFormat read new InternalFormat($8D47);
+    public static property STENCIL_INDEX4_OES:                            InternalFormat read new InternalFormat($8D47);
+    public static property STENCIL_INDEX8:                                InternalFormat read new InternalFormat($8D48);
+    public static property STENCIL_INDEX8_EXT:                            InternalFormat read new InternalFormat($8D48);
+    public static property STENCIL_INDEX8_OES:                            InternalFormat read new InternalFormat($8D48);
+    public static property STENCIL_INDEX16:                               InternalFormat read new InternalFormat($8D49);
+    public static property STENCIL_INDEX16_EXT:                           InternalFormat read new InternalFormat($8D49);
+    public static property RGB565:                                        InternalFormat read new InternalFormat($8D62);
+    public static property RGB565_OES:                                    InternalFormat read new InternalFormat($8D62);
+    public static property ETC1_RGB8_OES:                                 InternalFormat read new InternalFormat($8D64);
+    public static property RGBA32UI:                                      InternalFormat read new InternalFormat($8D70);
+    public static property RGBA32UI_EXT:                                  InternalFormat read new InternalFormat($8D70);
+    public static property RGB32UI:                                       InternalFormat read new InternalFormat($8D71);
+    public static property RGB32UI_EXT:                                   InternalFormat read new InternalFormat($8D71);
+    public static property ALPHA32UI_EXT:                                 InternalFormat read new InternalFormat($8D72);
+    public static property INTENSITY32UI_EXT:                             InternalFormat read new InternalFormat($8D73);
+    public static property LUMINANCE32UI_EXT:                             InternalFormat read new InternalFormat($8D74);
+    public static property LUMINANCE_ALPHA32UI_EXT:                       InternalFormat read new InternalFormat($8D75);
+    public static property RGBA16UI:                                      InternalFormat read new InternalFormat($8D76);
+    public static property RGBA16UI_EXT:                                  InternalFormat read new InternalFormat($8D76);
+    public static property RGB16UI:                                       InternalFormat read new InternalFormat($8D77);
+    public static property RGB16UI_EXT:                                   InternalFormat read new InternalFormat($8D77);
+    public static property ALPHA16UI_EXT:                                 InternalFormat read new InternalFormat($8D78);
+    public static property INTENSITY16UI_EXT:                             InternalFormat read new InternalFormat($8D79);
+    public static property LUMINANCE16UI_EXT:                             InternalFormat read new InternalFormat($8D7A);
+    public static property LUMINANCE_ALPHA16UI_EXT:                       InternalFormat read new InternalFormat($8D7B);
+    public static property RGBA8UI:                                       InternalFormat read new InternalFormat($8D7C);
+    public static property RGBA8UI_EXT:                                   InternalFormat read new InternalFormat($8D7C);
+    public static property RGB8UI:                                        InternalFormat read new InternalFormat($8D7D);
+    public static property RGB8UI_EXT:                                    InternalFormat read new InternalFormat($8D7D);
+    public static property ALPHA8UI_EXT:                                  InternalFormat read new InternalFormat($8D7E);
+    public static property INTENSITY8UI_EXT:                              InternalFormat read new InternalFormat($8D7F);
+    public static property LUMINANCE8UI_EXT:                              InternalFormat read new InternalFormat($8D80);
+    public static property LUMINANCE_ALPHA8UI_EXT:                        InternalFormat read new InternalFormat($8D81);
+    public static property RGBA32I:                                       InternalFormat read new InternalFormat($8D82);
+    public static property RGBA32I_EXT:                                   InternalFormat read new InternalFormat($8D82);
+    public static property RGB32I:                                        InternalFormat read new InternalFormat($8D83);
+    public static property RGB32I_EXT:                                    InternalFormat read new InternalFormat($8D83);
+    public static property ALPHA32I_EXT:                                  InternalFormat read new InternalFormat($8D84);
+    public static property INTENSITY32I_EXT:                              InternalFormat read new InternalFormat($8D85);
+    public static property LUMINANCE32I_EXT:                              InternalFormat read new InternalFormat($8D86);
+    public static property LUMINANCE_ALPHA32I_EXT:                        InternalFormat read new InternalFormat($8D87);
+    public static property RGBA16I:                                       InternalFormat read new InternalFormat($8D88);
+    public static property RGBA16I_EXT:                                   InternalFormat read new InternalFormat($8D88);
+    public static property RGB16I:                                        InternalFormat read new InternalFormat($8D89);
+    public static property RGB16I_EXT:                                    InternalFormat read new InternalFormat($8D89);
+    public static property ALPHA16I_EXT:                                  InternalFormat read new InternalFormat($8D8A);
+    public static property INTENSITY16I_EXT:                              InternalFormat read new InternalFormat($8D8B);
+    public static property LUMINANCE16I_EXT:                              InternalFormat read new InternalFormat($8D8C);
+    public static property LUMINANCE_ALPHA16I_EXT:                        InternalFormat read new InternalFormat($8D8D);
+    public static property RGBA8I:                                        InternalFormat read new InternalFormat($8D8E);
+    public static property RGBA8I_EXT:                                    InternalFormat read new InternalFormat($8D8E);
+    public static property RGB8I:                                         InternalFormat read new InternalFormat($8D8F);
+    public static property RGB8I_EXT:                                     InternalFormat read new InternalFormat($8D8F);
+    public static property ALPHA8I_EXT:                                   InternalFormat read new InternalFormat($8D90);
+    public static property INTENSITY8I_EXT:                               InternalFormat read new InternalFormat($8D91);
+    public static property LUMINANCE8I_EXT:                               InternalFormat read new InternalFormat($8D92);
+    public static property LUMINANCE_ALPHA8I_EXT:                         InternalFormat read new InternalFormat($8D93);
+    public static property DEPTH_COMPONENT32F_NV:                         InternalFormat read new InternalFormat($8DAB);
+    public static property DEPTH32F_STENCIL8_NV:                          InternalFormat read new InternalFormat($8DAC);
+    public static property COMPRESSED_RED_RGTC1:                          InternalFormat read new InternalFormat($8DBB);
+    public static property COMPRESSED_RED_RGTC1_EXT:                      InternalFormat read new InternalFormat($8DBB);
+    public static property COMPRESSED_SIGNED_RED_RGTC1:                   InternalFormat read new InternalFormat($8DBC);
+    public static property COMPRESSED_SIGNED_RED_RGTC1_EXT:               InternalFormat read new InternalFormat($8DBC);
+    public static property COMPRESSED_RED_GREEN_RGTC2_EXT:                InternalFormat read new InternalFormat($8DBD);
+    public static property COMPRESSED_RG_RGTC2:                           InternalFormat read new InternalFormat($8DBD);
+    public static property COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:         InternalFormat read new InternalFormat($8DBE);
+    public static property COMPRESSED_SIGNED_RG_RGTC2:                    InternalFormat read new InternalFormat($8DBE);
+    public static property COMPRESSED_RGBA_BPTC_UNORM:                    InternalFormat read new InternalFormat($8E8C);
+    public static property COMPRESSED_RGBA_BPTC_UNORM_ARB:                InternalFormat read new InternalFormat($8E8C);
+    public static property COMPRESSED_RGBA_BPTC_UNORM_EXT:                InternalFormat read new InternalFormat($8E8C);
+    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM:              InternalFormat read new InternalFormat($8E8D);
+    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB:          InternalFormat read new InternalFormat($8E8D);
+    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT:          InternalFormat read new InternalFormat($8E8D);
+    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT:              InternalFormat read new InternalFormat($8E8E);
+    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB:          InternalFormat read new InternalFormat($8E8E);
+    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT:          InternalFormat read new InternalFormat($8E8E);
+    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT:            InternalFormat read new InternalFormat($8E8F);
+    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB:        InternalFormat read new InternalFormat($8E8F);
+    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT:        InternalFormat read new InternalFormat($8E8F);
+    public static property R8_SNORM:                                      InternalFormat read new InternalFormat($8F94);
+    public static property RG8_SNORM:                                     InternalFormat read new InternalFormat($8F95);
+    public static property RGB8_SNORM:                                    InternalFormat read new InternalFormat($8F96);
+    public static property RGBA8_SNORM:                                   InternalFormat read new InternalFormat($8F97);
+    public static property R16_SNORM:                                     InternalFormat read new InternalFormat($8F98);
+    public static property R16_SNORM_EXT:                                 InternalFormat read new InternalFormat($8F98);
+    public static property RG16_SNORM:                                    InternalFormat read new InternalFormat($8F99);
+    public static property RG16_SNORM_EXT:                                InternalFormat read new InternalFormat($8F99);
+    public static property RGB16_SNORM:                                   InternalFormat read new InternalFormat($8F9A);
+    public static property RGB16_SNORM_EXT:                               InternalFormat read new InternalFormat($8F9A);
+    public static property RGBA16_SNORM:                                  InternalFormat read new InternalFormat($8F9B);
+    public static property RGBA16_SNORM_EXT:                              InternalFormat read new InternalFormat($8F9B);
+    public static property SR8_EXT:                                       InternalFormat read new InternalFormat($8FBD);
+    public static property SRG8_EXT:                                      InternalFormat read new InternalFormat($8FBE);
+    public static property RGB10_A2UI:                                    InternalFormat read new InternalFormat($906F);
+    public static property COMPRESSED_R11_EAC:                            InternalFormat read new InternalFormat($9270);
+    public static property COMPRESSED_R11_EAC_OES:                        InternalFormat read new InternalFormat($9270);
+    public static property COMPRESSED_SIGNED_R11_EAC:                     InternalFormat read new InternalFormat($9271);
+    public static property COMPRESSED_SIGNED_R11_EAC_OES:                 InternalFormat read new InternalFormat($9271);
+    public static property COMPRESSED_RG11_EAC:                           InternalFormat read new InternalFormat($9272);
+    public static property COMPRESSED_RG11_EAC_OES:                       InternalFormat read new InternalFormat($9272);
+    public static property COMPRESSED_SIGNED_RG11_EAC:                    InternalFormat read new InternalFormat($9273);
+    public static property COMPRESSED_SIGNED_RG11_EAC_OES:                InternalFormat read new InternalFormat($9273);
+    public static property COMPRESSED_RGB8_ETC2:                          InternalFormat read new InternalFormat($9274);
+    public static property COMPRESSED_RGB8_ETC2_OES:                      InternalFormat read new InternalFormat($9274);
+    public static property COMPRESSED_SRGB8_ETC2:                         InternalFormat read new InternalFormat($9275);
+    public static property COMPRESSED_SRGB8_ETC2_OES:                     InternalFormat read new InternalFormat($9275);
+    public static property COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:      InternalFormat read new InternalFormat($9276);
+    public static property COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES:  InternalFormat read new InternalFormat($9276);
+    public static property COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:     InternalFormat read new InternalFormat($9277);
+    public static property COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES: InternalFormat read new InternalFormat($9277);
+    public static property COMPRESSED_RGBA8_ETC2_EAC:                     InternalFormat read new InternalFormat($9278);
+    public static property COMPRESSED_RGBA8_ETC2_EAC_OES:                 InternalFormat read new InternalFormat($9278);
+    public static property COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:              InternalFormat read new InternalFormat($9279);
+    public static property COMPRESSED_SRGB8_ALPHA8_ETC2_EAC_OES:          InternalFormat read new InternalFormat($9279);
+    public static property COMPRESSED_RGBA_ASTC_4x4:                      InternalFormat read new InternalFormat($93B0);
+    public static property COMPRESSED_RGBA_ASTC_4x4_KHR:                  InternalFormat read new InternalFormat($93B0);
+    public static property COMPRESSED_RGBA_ASTC_5x4:                      InternalFormat read new InternalFormat($93B1);
+    public static property COMPRESSED_RGBA_ASTC_5x4_KHR:                  InternalFormat read new InternalFormat($93B1);
+    public static property COMPRESSED_RGBA_ASTC_5x5:                      InternalFormat read new InternalFormat($93B2);
+    public static property COMPRESSED_RGBA_ASTC_5x5_KHR:                  InternalFormat read new InternalFormat($93B2);
+    public static property COMPRESSED_RGBA_ASTC_6x5:                      InternalFormat read new InternalFormat($93B3);
+    public static property COMPRESSED_RGBA_ASTC_6x5_KHR:                  InternalFormat read new InternalFormat($93B3);
+    public static property COMPRESSED_RGBA_ASTC_6x6:                      InternalFormat read new InternalFormat($93B4);
+    public static property COMPRESSED_RGBA_ASTC_6x6_KHR:                  InternalFormat read new InternalFormat($93B4);
+    public static property COMPRESSED_RGBA_ASTC_8x5:                      InternalFormat read new InternalFormat($93B5);
+    public static property COMPRESSED_RGBA_ASTC_8x5_KHR:                  InternalFormat read new InternalFormat($93B5);
+    public static property COMPRESSED_RGBA_ASTC_8x6:                      InternalFormat read new InternalFormat($93B6);
+    public static property COMPRESSED_RGBA_ASTC_8x6_KHR:                  InternalFormat read new InternalFormat($93B6);
+    public static property COMPRESSED_RGBA_ASTC_8x8:                      InternalFormat read new InternalFormat($93B7);
+    public static property COMPRESSED_RGBA_ASTC_8x8_KHR:                  InternalFormat read new InternalFormat($93B7);
+    public static property COMPRESSED_RGBA_ASTC_10x5:                     InternalFormat read new InternalFormat($93B8);
+    public static property COMPRESSED_RGBA_ASTC_10x5_KHR:                 InternalFormat read new InternalFormat($93B8);
+    public static property COMPRESSED_RGBA_ASTC_10x6:                     InternalFormat read new InternalFormat($93B9);
+    public static property COMPRESSED_RGBA_ASTC_10x6_KHR:                 InternalFormat read new InternalFormat($93B9);
+    public static property COMPRESSED_RGBA_ASTC_10x8:                     InternalFormat read new InternalFormat($93BA);
+    public static property COMPRESSED_RGBA_ASTC_10x8_KHR:                 InternalFormat read new InternalFormat($93BA);
+    public static property COMPRESSED_RGBA_ASTC_10x10:                    InternalFormat read new InternalFormat($93BB);
+    public static property COMPRESSED_RGBA_ASTC_10x10_KHR:                InternalFormat read new InternalFormat($93BB);
+    public static property COMPRESSED_RGBA_ASTC_12x10:                    InternalFormat read new InternalFormat($93BC);
+    public static property COMPRESSED_RGBA_ASTC_12x10_KHR:                InternalFormat read new InternalFormat($93BC);
+    public static property COMPRESSED_RGBA_ASTC_12x12:                    InternalFormat read new InternalFormat($93BD);
+    public static property COMPRESSED_RGBA_ASTC_12x12_KHR:                InternalFormat read new InternalFormat($93BD);
+    public static property COMPRESSED_RGBA_ASTC_3x3x3_OES:                InternalFormat read new InternalFormat($93C0);
+    public static property COMPRESSED_RGBA_ASTC_4x3x3_OES:                InternalFormat read new InternalFormat($93C1);
+    public static property COMPRESSED_RGBA_ASTC_4x4x3_OES:                InternalFormat read new InternalFormat($93C2);
+    public static property COMPRESSED_RGBA_ASTC_4x4x4_OES:                InternalFormat read new InternalFormat($93C3);
+    public static property COMPRESSED_RGBA_ASTC_5x4x4_OES:                InternalFormat read new InternalFormat($93C4);
+    public static property COMPRESSED_RGBA_ASTC_5x5x4_OES:                InternalFormat read new InternalFormat($93C5);
+    public static property COMPRESSED_RGBA_ASTC_5x5x5_OES:                InternalFormat read new InternalFormat($93C6);
+    public static property COMPRESSED_RGBA_ASTC_6x5x5_OES:                InternalFormat read new InternalFormat($93C7);
+    public static property COMPRESSED_RGBA_ASTC_6x6x5_OES:                InternalFormat read new InternalFormat($93C8);
+    public static property COMPRESSED_RGBA_ASTC_6x6x6_OES:                InternalFormat read new InternalFormat($93C9);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4:              InternalFormat read new InternalFormat($93D0);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:          InternalFormat read new InternalFormat($93D0);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4:              InternalFormat read new InternalFormat($93D1);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:          InternalFormat read new InternalFormat($93D1);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5:              InternalFormat read new InternalFormat($93D2);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:          InternalFormat read new InternalFormat($93D2);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5:              InternalFormat read new InternalFormat($93D3);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:          InternalFormat read new InternalFormat($93D3);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6:              InternalFormat read new InternalFormat($93D4);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:          InternalFormat read new InternalFormat($93D4);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x5:              InternalFormat read new InternalFormat($93D5);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:          InternalFormat read new InternalFormat($93D5);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x6:              InternalFormat read new InternalFormat($93D6);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:          InternalFormat read new InternalFormat($93D6);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x8:              InternalFormat read new InternalFormat($93D7);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:          InternalFormat read new InternalFormat($93D7);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x5:             InternalFormat read new InternalFormat($93D8);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:         InternalFormat read new InternalFormat($93D8);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x6:             InternalFormat read new InternalFormat($93D9);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:         InternalFormat read new InternalFormat($93D9);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x8:             InternalFormat read new InternalFormat($93DA);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:         InternalFormat read new InternalFormat($93DA);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x10:            InternalFormat read new InternalFormat($93DB);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:        InternalFormat read new InternalFormat($93DB);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x10:            InternalFormat read new InternalFormat($93DC);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:        InternalFormat read new InternalFormat($93DC);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x12:            InternalFormat read new InternalFormat($93DD);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:        InternalFormat read new InternalFormat($93DD);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_OES:        InternalFormat read new InternalFormat($93E0);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_OES:        InternalFormat read new InternalFormat($93E1);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_OES:        InternalFormat read new InternalFormat($93E2);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_OES:        InternalFormat read new InternalFormat($93E3);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_OES:        InternalFormat read new InternalFormat($93E4);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_OES:        InternalFormat read new InternalFormat($93E5);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_OES:        InternalFormat read new InternalFormat($93E6);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES:        InternalFormat read new InternalFormat($93E7);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES:        InternalFormat read new InternalFormat($93E8);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES:        InternalFormat read new InternalFormat($93E9);
     
     public function ToString: string; override;
     begin
@@ -4110,24 +4211,46 @@
       if self.val = UInt32($1908) then Result := 'RGBA' else
       if self.val = UInt32($2A10) then Result := 'R3_G3_B2' else
       if self.val = UInt32($803B) then Result := 'ALPHA4' else
+      if self.val = UInt32($803B) then Result := 'ALPHA4_EXT' else
       if self.val = UInt32($803C) then Result := 'ALPHA8' else
+      if self.val = UInt32($803C) then Result := 'ALPHA8_EXT' else
+      if self.val = UInt32($803C) then Result := 'ALPHA8_OES' else
       if self.val = UInt32($803D) then Result := 'ALPHA12' else
+      if self.val = UInt32($803D) then Result := 'ALPHA12_EXT' else
       if self.val = UInt32($803E) then Result := 'ALPHA16' else
+      if self.val = UInt32($803E) then Result := 'ALPHA16_EXT' else
       if self.val = UInt32($803F) then Result := 'LUMINANCE4' else
+      if self.val = UInt32($803F) then Result := 'LUMINANCE4_EXT' else
       if self.val = UInt32($8040) then Result := 'LUMINANCE8' else
+      if self.val = UInt32($8040) then Result := 'LUMINANCE8_EXT' else
+      if self.val = UInt32($8040) then Result := 'LUMINANCE8_OES' else
       if self.val = UInt32($8041) then Result := 'LUMINANCE12' else
+      if self.val = UInt32($8041) then Result := 'LUMINANCE12_EXT' else
       if self.val = UInt32($8042) then Result := 'LUMINANCE16' else
+      if self.val = UInt32($8042) then Result := 'LUMINANCE16_EXT' else
       if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4' else
+      if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4_EXT' else
+      if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4_OES' else
       if self.val = UInt32($8044) then Result := 'LUMINANCE6_ALPHA2' else
+      if self.val = UInt32($8044) then Result := 'LUMINANCE6_ALPHA2_EXT' else
       if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8' else
+      if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8_EXT' else
+      if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8_OES' else
       if self.val = UInt32($8046) then Result := 'LUMINANCE12_ALPHA4' else
+      if self.val = UInt32($8046) then Result := 'LUMINANCE12_ALPHA4_EXT' else
       if self.val = UInt32($8047) then Result := 'LUMINANCE12_ALPHA12' else
+      if self.val = UInt32($8047) then Result := 'LUMINANCE12_ALPHA12_EXT' else
       if self.val = UInt32($8048) then Result := 'LUMINANCE16_ALPHA16' else
+      if self.val = UInt32($8048) then Result := 'LUMINANCE16_ALPHA16_EXT' else
       if self.val = UInt32($8049) then Result := 'INTENSITY' else
       if self.val = UInt32($804A) then Result := 'INTENSITY4' else
+      if self.val = UInt32($804A) then Result := 'INTENSITY4_EXT' else
       if self.val = UInt32($804B) then Result := 'INTENSITY8' else
+      if self.val = UInt32($804B) then Result := 'INTENSITY8_EXT' else
       if self.val = UInt32($804C) then Result := 'INTENSITY12' else
+      if self.val = UInt32($804C) then Result := 'INTENSITY12_EXT' else
       if self.val = UInt32($804D) then Result := 'INTENSITY16' else
+      if self.val = UInt32($804D) then Result := 'INTENSITY16_EXT' else
       if self.val = UInt32($804E) then Result := 'RGB2_EXT' else
       if self.val = UInt32($804F) then Result := 'RGB4' else
       if self.val = UInt32($804F) then Result := 'RGB4_EXT' else
@@ -4142,6 +4265,8 @@
       if self.val = UInt32($8053) then Result := 'RGB12_EXT' else
       if self.val = UInt32($8054) then Result := 'RGB16' else
       if self.val = UInt32($8054) then Result := 'RGB16_EXT' else
+      if self.val = UInt32($8055) then Result := 'RGBA2' else
+      if self.val = UInt32($8055) then Result := 'RGBA2_EXT' else
       if self.val = UInt32($8056) then Result := 'RGBA4' else
       if self.val = UInt32($8056) then Result := 'RGBA4_EXT' else
       if self.val = UInt32($8056) then Result := 'RGBA4_OES' else
@@ -4181,9 +4306,11 @@
       if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16_ARB' else
       if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16_OES' else
       if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16_SGIX' else
+      if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24' else
       if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24_ARB' else
       if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24_OES' else
       if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24_SGIX' else
+      if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32' else
       if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32_ARB' else
       if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32_OES' else
       if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32_SGIX' else
@@ -4220,7 +4347,9 @@
       if self.val = UInt32($823C) then Result := 'RG32UI' else
       if self.val = UInt32($83F0) then Result := 'COMPRESSED_RGB_S3TC_DXT1_EXT' else
       if self.val = UInt32($83F1) then Result := 'COMPRESSED_RGBA_S3TC_DXT1_EXT' else
+      if self.val = UInt32($83F2) then Result := 'COMPRESSED_RGBA_S3TC_DXT3_ANGLE' else
       if self.val = UInt32($83F2) then Result := 'COMPRESSED_RGBA_S3TC_DXT3_EXT' else
+      if self.val = UInt32($83F3) then Result := 'COMPRESSED_RGBA_S3TC_DXT5_ANGLE' else
       if self.val = UInt32($83F3) then Result := 'COMPRESSED_RGBA_S3TC_DXT5_EXT' else
       if self.val = UInt32($84ED) then Result := 'COMPRESSED_RGB' else
       if self.val = UInt32($84EE) then Result := 'COMPRESSED_RGBA' else
@@ -4233,6 +4362,8 @@
       if self.val = UInt32($8814) then Result := 'RGBA32F_ARB' else
       if self.val = UInt32($8814) then Result := 'RGBA32F_EXT' else
       if self.val = UInt32($8815) then Result := 'RGB32F' else
+      if self.val = UInt32($8815) then Result := 'RGB32F_ARB' else
+      if self.val = UInt32($8815) then Result := 'RGB32F_EXT' else
       if self.val = UInt32($881A) then Result := 'RGBA16F' else
       if self.val = UInt32($881A) then Result := 'RGBA16F_ARB' else
       if self.val = UInt32($881A) then Result := 'RGBA16F_EXT' else
@@ -4260,9 +4391,13 @@
       if self.val = UInt32($8C48) then Result := 'COMPRESSED_SRGB' else
       if self.val = UInt32($8C49) then Result := 'COMPRESSED_SRGB_ALPHA' else
       if self.val = UInt32($8C4C) then Result := 'COMPRESSED_SRGB_S3TC_DXT1_EXT' else
+      if self.val = UInt32($8C4C) then Result := 'COMPRESSED_SRGB_S3TC_DXT1_NV' else
       if self.val = UInt32($8C4D) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT' else
+      if self.val = UInt32($8C4D) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT1_NV' else
       if self.val = UInt32($8C4E) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT' else
+      if self.val = UInt32($8C4E) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT3_NV' else
       if self.val = UInt32($8C4F) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT' else
+      if self.val = UInt32($8C4F) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT5_NV' else
       if self.val = UInt32($8CAC) then Result := 'DEPTH_COMPONENT32F' else
       if self.val = UInt32($8CAD) then Result := 'DEPTH32F_STENCIL8' else
       if self.val = UInt32($8D46) then Result := 'STENCIL_INDEX1' else
@@ -4276,30 +4411,79 @@
       if self.val = UInt32($8D48) then Result := 'STENCIL_INDEX8_OES' else
       if self.val = UInt32($8D49) then Result := 'STENCIL_INDEX16' else
       if self.val = UInt32($8D49) then Result := 'STENCIL_INDEX16_EXT' else
+      if self.val = UInt32($8D62) then Result := 'RGB565' else
+      if self.val = UInt32($8D62) then Result := 'RGB565_OES' else
+      if self.val = UInt32($8D64) then Result := 'ETC1_RGB8_OES' else
       if self.val = UInt32($8D70) then Result := 'RGBA32UI' else
+      if self.val = UInt32($8D70) then Result := 'RGBA32UI_EXT' else
       if self.val = UInt32($8D71) then Result := 'RGB32UI' else
+      if self.val = UInt32($8D71) then Result := 'RGB32UI_EXT' else
+      if self.val = UInt32($8D72) then Result := 'ALPHA32UI_EXT' else
+      if self.val = UInt32($8D73) then Result := 'INTENSITY32UI_EXT' else
+      if self.val = UInt32($8D74) then Result := 'LUMINANCE32UI_EXT' else
+      if self.val = UInt32($8D75) then Result := 'LUMINANCE_ALPHA32UI_EXT' else
       if self.val = UInt32($8D76) then Result := 'RGBA16UI' else
+      if self.val = UInt32($8D76) then Result := 'RGBA16UI_EXT' else
       if self.val = UInt32($8D77) then Result := 'RGB16UI' else
+      if self.val = UInt32($8D77) then Result := 'RGB16UI_EXT' else
+      if self.val = UInt32($8D78) then Result := 'ALPHA16UI_EXT' else
+      if self.val = UInt32($8D79) then Result := 'INTENSITY16UI_EXT' else
+      if self.val = UInt32($8D7A) then Result := 'LUMINANCE16UI_EXT' else
+      if self.val = UInt32($8D7B) then Result := 'LUMINANCE_ALPHA16UI_EXT' else
       if self.val = UInt32($8D7C) then Result := 'RGBA8UI' else
+      if self.val = UInt32($8D7C) then Result := 'RGBA8UI_EXT' else
       if self.val = UInt32($8D7D) then Result := 'RGB8UI' else
+      if self.val = UInt32($8D7D) then Result := 'RGB8UI_EXT' else
+      if self.val = UInt32($8D7E) then Result := 'ALPHA8UI_EXT' else
+      if self.val = UInt32($8D7F) then Result := 'INTENSITY8UI_EXT' else
+      if self.val = UInt32($8D80) then Result := 'LUMINANCE8UI_EXT' else
+      if self.val = UInt32($8D81) then Result := 'LUMINANCE_ALPHA8UI_EXT' else
       if self.val = UInt32($8D82) then Result := 'RGBA32I' else
+      if self.val = UInt32($8D82) then Result := 'RGBA32I_EXT' else
       if self.val = UInt32($8D83) then Result := 'RGB32I' else
+      if self.val = UInt32($8D83) then Result := 'RGB32I_EXT' else
+      if self.val = UInt32($8D84) then Result := 'ALPHA32I_EXT' else
+      if self.val = UInt32($8D85) then Result := 'INTENSITY32I_EXT' else
+      if self.val = UInt32($8D86) then Result := 'LUMINANCE32I_EXT' else
+      if self.val = UInt32($8D87) then Result := 'LUMINANCE_ALPHA32I_EXT' else
       if self.val = UInt32($8D88) then Result := 'RGBA16I' else
+      if self.val = UInt32($8D88) then Result := 'RGBA16I_EXT' else
       if self.val = UInt32($8D89) then Result := 'RGB16I' else
+      if self.val = UInt32($8D89) then Result := 'RGB16I_EXT' else
+      if self.val = UInt32($8D8A) then Result := 'ALPHA16I_EXT' else
+      if self.val = UInt32($8D8B) then Result := 'INTENSITY16I_EXT' else
+      if self.val = UInt32($8D8C) then Result := 'LUMINANCE16I_EXT' else
+      if self.val = UInt32($8D8D) then Result := 'LUMINANCE_ALPHA16I_EXT' else
       if self.val = UInt32($8D8E) then Result := 'RGBA8I' else
+      if self.val = UInt32($8D8E) then Result := 'RGBA8I_EXT' else
       if self.val = UInt32($8D8F) then Result := 'RGB8I' else
+      if self.val = UInt32($8D8F) then Result := 'RGB8I_EXT' else
+      if self.val = UInt32($8D90) then Result := 'ALPHA8I_EXT' else
+      if self.val = UInt32($8D91) then Result := 'INTENSITY8I_EXT' else
+      if self.val = UInt32($8D92) then Result := 'LUMINANCE8I_EXT' else
+      if self.val = UInt32($8D93) then Result := 'LUMINANCE_ALPHA8I_EXT' else
       if self.val = UInt32($8DAB) then Result := 'DEPTH_COMPONENT32F_NV' else
       if self.val = UInt32($8DAC) then Result := 'DEPTH32F_STENCIL8_NV' else
       if self.val = UInt32($8DBB) then Result := 'COMPRESSED_RED_RGTC1' else
       if self.val = UInt32($8DBB) then Result := 'COMPRESSED_RED_RGTC1_EXT' else
       if self.val = UInt32($8DBC) then Result := 'COMPRESSED_SIGNED_RED_RGTC1' else
       if self.val = UInt32($8DBC) then Result := 'COMPRESSED_SIGNED_RED_RGTC1_EXT' else
+      if self.val = UInt32($8DBD) then Result := 'COMPRESSED_RED_GREEN_RGTC2_EXT' else
       if self.val = UInt32($8DBD) then Result := 'COMPRESSED_RG_RGTC2' else
+      if self.val = UInt32($8DBE) then Result := 'COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT' else
       if self.val = UInt32($8DBE) then Result := 'COMPRESSED_SIGNED_RG_RGTC2' else
       if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM' else
+      if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM_ARB' else
+      if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM_EXT' else
       if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM' else
+      if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB' else
+      if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT' else
       if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT' else
+      if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB' else
+      if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT' else
       if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT' else
+      if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB' else
+      if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT' else
       if self.val = UInt32($8F94) then Result := 'R8_SNORM' else
       if self.val = UInt32($8F95) then Result := 'RG8_SNORM' else
       if self.val = UInt32($8F96) then Result := 'RGB8_SNORM' else
@@ -4310,19 +4494,31 @@
       if self.val = UInt32($8F99) then Result := 'RG16_SNORM_EXT' else
       if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM' else
       if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM_EXT' else
+      if self.val = UInt32($8F9B) then Result := 'RGBA16_SNORM' else
+      if self.val = UInt32($8F9B) then Result := 'RGBA16_SNORM_EXT' else
       if self.val = UInt32($8FBD) then Result := 'SR8_EXT' else
       if self.val = UInt32($8FBE) then Result := 'SRG8_EXT' else
       if self.val = UInt32($906F) then Result := 'RGB10_A2UI' else
       if self.val = UInt32($9270) then Result := 'COMPRESSED_R11_EAC' else
+      if self.val = UInt32($9270) then Result := 'COMPRESSED_R11_EAC_OES' else
       if self.val = UInt32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC' else
+      if self.val = UInt32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC_OES' else
       if self.val = UInt32($9272) then Result := 'COMPRESSED_RG11_EAC' else
+      if self.val = UInt32($9272) then Result := 'COMPRESSED_RG11_EAC_OES' else
       if self.val = UInt32($9273) then Result := 'COMPRESSED_SIGNED_RG11_EAC' else
+      if self.val = UInt32($9273) then Result := 'COMPRESSED_SIGNED_RG11_EAC_OES' else
       if self.val = UInt32($9274) then Result := 'COMPRESSED_RGB8_ETC2' else
+      if self.val = UInt32($9274) then Result := 'COMPRESSED_RGB8_ETC2_OES' else
       if self.val = UInt32($9275) then Result := 'COMPRESSED_SRGB8_ETC2' else
+      if self.val = UInt32($9275) then Result := 'COMPRESSED_SRGB8_ETC2_OES' else
       if self.val = UInt32($9276) then Result := 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
+      if self.val = UInt32($9276) then Result := 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES' else
       if self.val = UInt32($9277) then Result := 'COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
+      if self.val = UInt32($9277) then Result := 'COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES' else
       if self.val = UInt32($9278) then Result := 'COMPRESSED_RGBA8_ETC2_EAC' else
+      if self.val = UInt32($9278) then Result := 'COMPRESSED_RGBA8_ETC2_EAC_OES' else
       if self.val = UInt32($9279) then Result := 'COMPRESSED_SRGB8_ALPHA8_ETC2_EAC' else
+      if self.val = UInt32($9279) then Result := 'COMPRESSED_SRGB8_ALPHA8_ETC2_EAC_OES' else
       if self.val = UInt32($93B0) then Result := 'COMPRESSED_RGBA_ASTC_4x4' else
       if self.val = UInt32($93B0) then Result := 'COMPRESSED_RGBA_ASTC_4x4_KHR' else
       if self.val = UInt32($93B1) then Result := 'COMPRESSED_RGBA_ASTC_5x4' else
@@ -7111,6 +7307,712 @@
     
   end;
   
+  SizedInternalFormat = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property R3_G3_B2:                                      SizedInternalFormat read new SizedInternalFormat($2A10);
+    public static property ALPHA4:                                        SizedInternalFormat read new SizedInternalFormat($803B);
+    public static property ALPHA4_EXT:                                    SizedInternalFormat read new SizedInternalFormat($803B);
+    public static property ALPHA8:                                        SizedInternalFormat read new SizedInternalFormat($803C);
+    public static property ALPHA8_EXT:                                    SizedInternalFormat read new SizedInternalFormat($803C);
+    public static property ALPHA8_OES:                                    SizedInternalFormat read new SizedInternalFormat($803C);
+    public static property ALPHA12:                                       SizedInternalFormat read new SizedInternalFormat($803D);
+    public static property ALPHA12_EXT:                                   SizedInternalFormat read new SizedInternalFormat($803D);
+    public static property ALPHA16:                                       SizedInternalFormat read new SizedInternalFormat($803E);
+    public static property ALPHA16_EXT:                                   SizedInternalFormat read new SizedInternalFormat($803E);
+    public static property LUMINANCE4:                                    SizedInternalFormat read new SizedInternalFormat($803F);
+    public static property LUMINANCE4_EXT:                                SizedInternalFormat read new SizedInternalFormat($803F);
+    public static property LUMINANCE8:                                    SizedInternalFormat read new SizedInternalFormat($8040);
+    public static property LUMINANCE8_EXT:                                SizedInternalFormat read new SizedInternalFormat($8040);
+    public static property LUMINANCE8_OES:                                SizedInternalFormat read new SizedInternalFormat($8040);
+    public static property LUMINANCE12:                                   SizedInternalFormat read new SizedInternalFormat($8041);
+    public static property LUMINANCE12_EXT:                               SizedInternalFormat read new SizedInternalFormat($8041);
+    public static property LUMINANCE16:                                   SizedInternalFormat read new SizedInternalFormat($8042);
+    public static property LUMINANCE16_EXT:                               SizedInternalFormat read new SizedInternalFormat($8042);
+    public static property LUMINANCE4_ALPHA4:                             SizedInternalFormat read new SizedInternalFormat($8043);
+    public static property LUMINANCE4_ALPHA4_EXT:                         SizedInternalFormat read new SizedInternalFormat($8043);
+    public static property LUMINANCE4_ALPHA4_OES:                         SizedInternalFormat read new SizedInternalFormat($8043);
+    public static property LUMINANCE6_ALPHA2:                             SizedInternalFormat read new SizedInternalFormat($8044);
+    public static property LUMINANCE6_ALPHA2_EXT:                         SizedInternalFormat read new SizedInternalFormat($8044);
+    public static property LUMINANCE8_ALPHA8:                             SizedInternalFormat read new SizedInternalFormat($8045);
+    public static property LUMINANCE8_ALPHA8_EXT:                         SizedInternalFormat read new SizedInternalFormat($8045);
+    public static property LUMINANCE8_ALPHA8_OES:                         SizedInternalFormat read new SizedInternalFormat($8045);
+    public static property LUMINANCE12_ALPHA4:                            SizedInternalFormat read new SizedInternalFormat($8046);
+    public static property LUMINANCE12_ALPHA4_EXT:                        SizedInternalFormat read new SizedInternalFormat($8046);
+    public static property LUMINANCE12_ALPHA12:                           SizedInternalFormat read new SizedInternalFormat($8047);
+    public static property LUMINANCE12_ALPHA12_EXT:                       SizedInternalFormat read new SizedInternalFormat($8047);
+    public static property LUMINANCE16_ALPHA16:                           SizedInternalFormat read new SizedInternalFormat($8048);
+    public static property LUMINANCE16_ALPHA16_EXT:                       SizedInternalFormat read new SizedInternalFormat($8048);
+    public static property INTENSITY4:                                    SizedInternalFormat read new SizedInternalFormat($804A);
+    public static property INTENSITY4_EXT:                                SizedInternalFormat read new SizedInternalFormat($804A);
+    public static property INTENSITY8:                                    SizedInternalFormat read new SizedInternalFormat($804B);
+    public static property INTENSITY8_EXT:                                SizedInternalFormat read new SizedInternalFormat($804B);
+    public static property INTENSITY12:                                   SizedInternalFormat read new SizedInternalFormat($804C);
+    public static property INTENSITY12_EXT:                               SizedInternalFormat read new SizedInternalFormat($804C);
+    public static property INTENSITY16:                                   SizedInternalFormat read new SizedInternalFormat($804D);
+    public static property INTENSITY16_EXT:                               SizedInternalFormat read new SizedInternalFormat($804D);
+    public static property RGB2_EXT:                                      SizedInternalFormat read new SizedInternalFormat($804E);
+    public static property RGB4:                                          SizedInternalFormat read new SizedInternalFormat($804F);
+    public static property RGB4_EXT:                                      SizedInternalFormat read new SizedInternalFormat($804F);
+    public static property RGB5:                                          SizedInternalFormat read new SizedInternalFormat($8050);
+    public static property RGB5_EXT:                                      SizedInternalFormat read new SizedInternalFormat($8050);
+    public static property RGB8:                                          SizedInternalFormat read new SizedInternalFormat($8051);
+    public static property RGB8_EXT:                                      SizedInternalFormat read new SizedInternalFormat($8051);
+    public static property RGB8_OES:                                      SizedInternalFormat read new SizedInternalFormat($8051);
+    public static property RGB10:                                         SizedInternalFormat read new SizedInternalFormat($8052);
+    public static property RGB10_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8052);
+    public static property RGB12:                                         SizedInternalFormat read new SizedInternalFormat($8053);
+    public static property RGB12_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8053);
+    public static property RGB16:                                         SizedInternalFormat read new SizedInternalFormat($8054);
+    public static property RGB16_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8054);
+    public static property RGBA2:                                         SizedInternalFormat read new SizedInternalFormat($8055);
+    public static property RGBA2_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8055);
+    public static property RGBA4:                                         SizedInternalFormat read new SizedInternalFormat($8056);
+    public static property RGBA4_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8056);
+    public static property RGBA4_OES:                                     SizedInternalFormat read new SizedInternalFormat($8056);
+    public static property RGB5_A1:                                       SizedInternalFormat read new SizedInternalFormat($8057);
+    public static property RGB5_A1_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8057);
+    public static property RGB5_A1_OES:                                   SizedInternalFormat read new SizedInternalFormat($8057);
+    public static property RGBA8:                                         SizedInternalFormat read new SizedInternalFormat($8058);
+    public static property RGBA8_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8058);
+    public static property RGBA8_OES:                                     SizedInternalFormat read new SizedInternalFormat($8058);
+    public static property RGB10_A2:                                      SizedInternalFormat read new SizedInternalFormat($8059);
+    public static property RGB10_A2_EXT:                                  SizedInternalFormat read new SizedInternalFormat($8059);
+    public static property RGBA12:                                        SizedInternalFormat read new SizedInternalFormat($805A);
+    public static property RGBA12_EXT:                                    SizedInternalFormat read new SizedInternalFormat($805A);
+    public static property RGBA16:                                        SizedInternalFormat read new SizedInternalFormat($805B);
+    public static property RGBA16_EXT:                                    SizedInternalFormat read new SizedInternalFormat($805B);
+    public static property DEPTH_COMPONENT16:                             SizedInternalFormat read new SizedInternalFormat($81A5);
+    public static property DEPTH_COMPONENT16_ARB:                         SizedInternalFormat read new SizedInternalFormat($81A5);
+    public static property DEPTH_COMPONENT16_OES:                         SizedInternalFormat read new SizedInternalFormat($81A5);
+    public static property DEPTH_COMPONENT16_SGIX:                        SizedInternalFormat read new SizedInternalFormat($81A5);
+    public static property DEPTH_COMPONENT24:                             SizedInternalFormat read new SizedInternalFormat($81A6);
+    public static property DEPTH_COMPONENT24_ARB:                         SizedInternalFormat read new SizedInternalFormat($81A6);
+    public static property DEPTH_COMPONENT24_OES:                         SizedInternalFormat read new SizedInternalFormat($81A6);
+    public static property DEPTH_COMPONENT24_SGIX:                        SizedInternalFormat read new SizedInternalFormat($81A6);
+    public static property DEPTH_COMPONENT32:                             SizedInternalFormat read new SizedInternalFormat($81A7);
+    public static property DEPTH_COMPONENT32_ARB:                         SizedInternalFormat read new SizedInternalFormat($81A7);
+    public static property DEPTH_COMPONENT32_OES:                         SizedInternalFormat read new SizedInternalFormat($81A7);
+    public static property DEPTH_COMPONENT32_SGIX:                        SizedInternalFormat read new SizedInternalFormat($81A7);
+    public static property R8:                                            SizedInternalFormat read new SizedInternalFormat($8229);
+    public static property R8_EXT:                                        SizedInternalFormat read new SizedInternalFormat($8229);
+    public static property R16:                                           SizedInternalFormat read new SizedInternalFormat($822A);
+    public static property R16_EXT:                                       SizedInternalFormat read new SizedInternalFormat($822A);
+    public static property RG8:                                           SizedInternalFormat read new SizedInternalFormat($822B);
+    public static property RG8_EXT:                                       SizedInternalFormat read new SizedInternalFormat($822B);
+    public static property RG16:                                          SizedInternalFormat read new SizedInternalFormat($822C);
+    public static property RG16_EXT:                                      SizedInternalFormat read new SizedInternalFormat($822C);
+    public static property R16F:                                          SizedInternalFormat read new SizedInternalFormat($822D);
+    public static property R16F_EXT:                                      SizedInternalFormat read new SizedInternalFormat($822D);
+    public static property R32F:                                          SizedInternalFormat read new SizedInternalFormat($822E);
+    public static property R32F_EXT:                                      SizedInternalFormat read new SizedInternalFormat($822E);
+    public static property RG16F:                                         SizedInternalFormat read new SizedInternalFormat($822F);
+    public static property RG16F_EXT:                                     SizedInternalFormat read new SizedInternalFormat($822F);
+    public static property RG32F:                                         SizedInternalFormat read new SizedInternalFormat($8230);
+    public static property RG32F_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8230);
+    public static property R8I:                                           SizedInternalFormat read new SizedInternalFormat($8231);
+    public static property R8UI:                                          SizedInternalFormat read new SizedInternalFormat($8232);
+    public static property R16I:                                          SizedInternalFormat read new SizedInternalFormat($8233);
+    public static property R16UI:                                         SizedInternalFormat read new SizedInternalFormat($8234);
+    public static property R32I:                                          SizedInternalFormat read new SizedInternalFormat($8235);
+    public static property R32UI:                                         SizedInternalFormat read new SizedInternalFormat($8236);
+    public static property RG8I:                                          SizedInternalFormat read new SizedInternalFormat($8237);
+    public static property RG8UI:                                         SizedInternalFormat read new SizedInternalFormat($8238);
+    public static property RG16I:                                         SizedInternalFormat read new SizedInternalFormat($8239);
+    public static property RG16UI:                                        SizedInternalFormat read new SizedInternalFormat($823A);
+    public static property RG32I:                                         SizedInternalFormat read new SizedInternalFormat($823B);
+    public static property RG32UI:                                        SizedInternalFormat read new SizedInternalFormat($823C);
+    public static property COMPRESSED_RGB_S3TC_DXT1_EXT:                  SizedInternalFormat read new SizedInternalFormat($83F0);
+    public static property COMPRESSED_RGBA_S3TC_DXT1_EXT:                 SizedInternalFormat read new SizedInternalFormat($83F1);
+    public static property COMPRESSED_RGBA_S3TC_DXT3_ANGLE:               SizedInternalFormat read new SizedInternalFormat($83F2);
+    public static property COMPRESSED_RGBA_S3TC_DXT3_EXT:                 SizedInternalFormat read new SizedInternalFormat($83F2);
+    public static property COMPRESSED_RGBA_S3TC_DXT5_ANGLE:               SizedInternalFormat read new SizedInternalFormat($83F3);
+    public static property COMPRESSED_RGBA_S3TC_DXT5_EXT:                 SizedInternalFormat read new SizedInternalFormat($83F3);
+    public static property RGBA32F:                                       SizedInternalFormat read new SizedInternalFormat($8814);
+    public static property RGBA32F_ARB:                                   SizedInternalFormat read new SizedInternalFormat($8814);
+    public static property RGBA32F_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8814);
+    public static property RGB32F:                                        SizedInternalFormat read new SizedInternalFormat($8815);
+    public static property RGB32F_ARB:                                    SizedInternalFormat read new SizedInternalFormat($8815);
+    public static property RGB32F_EXT:                                    SizedInternalFormat read new SizedInternalFormat($8815);
+    public static property RGBA16F:                                       SizedInternalFormat read new SizedInternalFormat($881A);
+    public static property RGBA16F_ARB:                                   SizedInternalFormat read new SizedInternalFormat($881A);
+    public static property RGBA16F_EXT:                                   SizedInternalFormat read new SizedInternalFormat($881A);
+    public static property RGB16F:                                        SizedInternalFormat read new SizedInternalFormat($881B);
+    public static property RGB16F_ARB:                                    SizedInternalFormat read new SizedInternalFormat($881B);
+    public static property RGB16F_EXT:                                    SizedInternalFormat read new SizedInternalFormat($881B);
+    public static property DEPTH24_STENCIL8:                              SizedInternalFormat read new SizedInternalFormat($88F0);
+    public static property DEPTH24_STENCIL8_EXT:                          SizedInternalFormat read new SizedInternalFormat($88F0);
+    public static property DEPTH24_STENCIL8_OES:                          SizedInternalFormat read new SizedInternalFormat($88F0);
+    public static property R11F_G11F_B10F:                                SizedInternalFormat read new SizedInternalFormat($8C3A);
+    public static property R11F_G11F_B10F_APPLE:                          SizedInternalFormat read new SizedInternalFormat($8C3A);
+    public static property R11F_G11F_B10F_EXT:                            SizedInternalFormat read new SizedInternalFormat($8C3A);
+    public static property RGB9_E5:                                       SizedInternalFormat read new SizedInternalFormat($8C3D);
+    public static property RGB9_E5_APPLE:                                 SizedInternalFormat read new SizedInternalFormat($8C3D);
+    public static property RGB9_E5_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8C3D);
+    public static property SRGB8:                                         SizedInternalFormat read new SizedInternalFormat($8C41);
+    public static property SRGB8_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8C41);
+    public static property SRGB8_NV:                                      SizedInternalFormat read new SizedInternalFormat($8C41);
+    public static property SRGB8_ALPHA8:                                  SizedInternalFormat read new SizedInternalFormat($8C43);
+    public static property SRGB8_ALPHA8_EXT:                              SizedInternalFormat read new SizedInternalFormat($8C43);
+    public static property COMPRESSED_SRGB_S3TC_DXT1_EXT:                 SizedInternalFormat read new SizedInternalFormat($8C4C);
+    public static property COMPRESSED_SRGB_S3TC_DXT1_NV:                  SizedInternalFormat read new SizedInternalFormat($8C4C);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT:           SizedInternalFormat read new SizedInternalFormat($8C4D);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT1_NV:            SizedInternalFormat read new SizedInternalFormat($8C4D);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT:           SizedInternalFormat read new SizedInternalFormat($8C4E);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT3_NV:            SizedInternalFormat read new SizedInternalFormat($8C4E);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT:           SizedInternalFormat read new SizedInternalFormat($8C4F);
+    public static property COMPRESSED_SRGB_ALPHA_S3TC_DXT5_NV:            SizedInternalFormat read new SizedInternalFormat($8C4F);
+    public static property DEPTH_COMPONENT32F:                            SizedInternalFormat read new SizedInternalFormat($8CAC);
+    public static property DEPTH32F_STENCIL8:                             SizedInternalFormat read new SizedInternalFormat($8CAD);
+    public static property STENCIL_INDEX1:                                SizedInternalFormat read new SizedInternalFormat($8D46);
+    public static property STENCIL_INDEX1_EXT:                            SizedInternalFormat read new SizedInternalFormat($8D46);
+    public static property STENCIL_INDEX1_OES:                            SizedInternalFormat read new SizedInternalFormat($8D46);
+    public static property STENCIL_INDEX4:                                SizedInternalFormat read new SizedInternalFormat($8D47);
+    public static property STENCIL_INDEX4_EXT:                            SizedInternalFormat read new SizedInternalFormat($8D47);
+    public static property STENCIL_INDEX4_OES:                            SizedInternalFormat read new SizedInternalFormat($8D47);
+    public static property STENCIL_INDEX8:                                SizedInternalFormat read new SizedInternalFormat($8D48);
+    public static property STENCIL_INDEX8_EXT:                            SizedInternalFormat read new SizedInternalFormat($8D48);
+    public static property STENCIL_INDEX8_OES:                            SizedInternalFormat read new SizedInternalFormat($8D48);
+    public static property STENCIL_INDEX16:                               SizedInternalFormat read new SizedInternalFormat($8D49);
+    public static property STENCIL_INDEX16_EXT:                           SizedInternalFormat read new SizedInternalFormat($8D49);
+    public static property RGB565:                                        SizedInternalFormat read new SizedInternalFormat($8D62);
+    public static property RGB565_OES:                                    SizedInternalFormat read new SizedInternalFormat($8D62);
+    public static property ETC1_RGB8_OES:                                 SizedInternalFormat read new SizedInternalFormat($8D64);
+    public static property RGBA32UI:                                      SizedInternalFormat read new SizedInternalFormat($8D70);
+    public static property RGBA32UI_EXT:                                  SizedInternalFormat read new SizedInternalFormat($8D70);
+    public static property RGB32UI:                                       SizedInternalFormat read new SizedInternalFormat($8D71);
+    public static property RGB32UI_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8D71);
+    public static property ALPHA32UI_EXT:                                 SizedInternalFormat read new SizedInternalFormat($8D72);
+    public static property INTENSITY32UI_EXT:                             SizedInternalFormat read new SizedInternalFormat($8D73);
+    public static property LUMINANCE32UI_EXT:                             SizedInternalFormat read new SizedInternalFormat($8D74);
+    public static property LUMINANCE_ALPHA32UI_EXT:                       SizedInternalFormat read new SizedInternalFormat($8D75);
+    public static property RGBA16UI:                                      SizedInternalFormat read new SizedInternalFormat($8D76);
+    public static property RGBA16UI_EXT:                                  SizedInternalFormat read new SizedInternalFormat($8D76);
+    public static property RGB16UI:                                       SizedInternalFormat read new SizedInternalFormat($8D77);
+    public static property RGB16UI_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8D77);
+    public static property ALPHA16UI_EXT:                                 SizedInternalFormat read new SizedInternalFormat($8D78);
+    public static property INTENSITY16UI_EXT:                             SizedInternalFormat read new SizedInternalFormat($8D79);
+    public static property LUMINANCE16UI_EXT:                             SizedInternalFormat read new SizedInternalFormat($8D7A);
+    public static property LUMINANCE_ALPHA16UI_EXT:                       SizedInternalFormat read new SizedInternalFormat($8D7B);
+    public static property RGBA8UI:                                       SizedInternalFormat read new SizedInternalFormat($8D7C);
+    public static property RGBA8UI_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8D7C);
+    public static property RGB8UI:                                        SizedInternalFormat read new SizedInternalFormat($8D7D);
+    public static property RGB8UI_EXT:                                    SizedInternalFormat read new SizedInternalFormat($8D7D);
+    public static property ALPHA8UI_EXT:                                  SizedInternalFormat read new SizedInternalFormat($8D7E);
+    public static property INTENSITY8UI_EXT:                              SizedInternalFormat read new SizedInternalFormat($8D7F);
+    public static property LUMINANCE8UI_EXT:                              SizedInternalFormat read new SizedInternalFormat($8D80);
+    public static property LUMINANCE_ALPHA8UI_EXT:                        SizedInternalFormat read new SizedInternalFormat($8D81);
+    public static property RGBA32I:                                       SizedInternalFormat read new SizedInternalFormat($8D82);
+    public static property RGBA32I_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8D82);
+    public static property RGB32I:                                        SizedInternalFormat read new SizedInternalFormat($8D83);
+    public static property RGB32I_EXT:                                    SizedInternalFormat read new SizedInternalFormat($8D83);
+    public static property ALPHA32I_EXT:                                  SizedInternalFormat read new SizedInternalFormat($8D84);
+    public static property INTENSITY32I_EXT:                              SizedInternalFormat read new SizedInternalFormat($8D85);
+    public static property LUMINANCE32I_EXT:                              SizedInternalFormat read new SizedInternalFormat($8D86);
+    public static property LUMINANCE_ALPHA32I_EXT:                        SizedInternalFormat read new SizedInternalFormat($8D87);
+    public static property RGBA16I:                                       SizedInternalFormat read new SizedInternalFormat($8D88);
+    public static property RGBA16I_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8D88);
+    public static property RGB16I:                                        SizedInternalFormat read new SizedInternalFormat($8D89);
+    public static property RGB16I_EXT:                                    SizedInternalFormat read new SizedInternalFormat($8D89);
+    public static property ALPHA16I_EXT:                                  SizedInternalFormat read new SizedInternalFormat($8D8A);
+    public static property INTENSITY16I_EXT:                              SizedInternalFormat read new SizedInternalFormat($8D8B);
+    public static property LUMINANCE16I_EXT:                              SizedInternalFormat read new SizedInternalFormat($8D8C);
+    public static property LUMINANCE_ALPHA16I_EXT:                        SizedInternalFormat read new SizedInternalFormat($8D8D);
+    public static property RGBA8I:                                        SizedInternalFormat read new SizedInternalFormat($8D8E);
+    public static property RGBA8I_EXT:                                    SizedInternalFormat read new SizedInternalFormat($8D8E);
+    public static property RGB8I:                                         SizedInternalFormat read new SizedInternalFormat($8D8F);
+    public static property RGB8I_EXT:                                     SizedInternalFormat read new SizedInternalFormat($8D8F);
+    public static property ALPHA8I_EXT:                                   SizedInternalFormat read new SizedInternalFormat($8D90);
+    public static property INTENSITY8I_EXT:                               SizedInternalFormat read new SizedInternalFormat($8D91);
+    public static property LUMINANCE8I_EXT:                               SizedInternalFormat read new SizedInternalFormat($8D92);
+    public static property LUMINANCE_ALPHA8I_EXT:                         SizedInternalFormat read new SizedInternalFormat($8D93);
+    public static property DEPTH_COMPONENT32F_NV:                         SizedInternalFormat read new SizedInternalFormat($8DAB);
+    public static property DEPTH32F_STENCIL8_NV:                          SizedInternalFormat read new SizedInternalFormat($8DAC);
+    public static property COMPRESSED_RED_RGTC1:                          SizedInternalFormat read new SizedInternalFormat($8DBB);
+    public static property COMPRESSED_RED_RGTC1_EXT:                      SizedInternalFormat read new SizedInternalFormat($8DBB);
+    public static property COMPRESSED_SIGNED_RED_RGTC1:                   SizedInternalFormat read new SizedInternalFormat($8DBC);
+    public static property COMPRESSED_SIGNED_RED_RGTC1_EXT:               SizedInternalFormat read new SizedInternalFormat($8DBC);
+    public static property COMPRESSED_RED_GREEN_RGTC2_EXT:                SizedInternalFormat read new SizedInternalFormat($8DBD);
+    public static property COMPRESSED_RG_RGTC2:                           SizedInternalFormat read new SizedInternalFormat($8DBD);
+    public static property COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:         SizedInternalFormat read new SizedInternalFormat($8DBE);
+    public static property COMPRESSED_SIGNED_RG_RGTC2:                    SizedInternalFormat read new SizedInternalFormat($8DBE);
+    public static property COMPRESSED_RGBA_BPTC_UNORM:                    SizedInternalFormat read new SizedInternalFormat($8E8C);
+    public static property COMPRESSED_RGBA_BPTC_UNORM_ARB:                SizedInternalFormat read new SizedInternalFormat($8E8C);
+    public static property COMPRESSED_RGBA_BPTC_UNORM_EXT:                SizedInternalFormat read new SizedInternalFormat($8E8C);
+    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM:              SizedInternalFormat read new SizedInternalFormat($8E8D);
+    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB:          SizedInternalFormat read new SizedInternalFormat($8E8D);
+    public static property COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT:          SizedInternalFormat read new SizedInternalFormat($8E8D);
+    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT:              SizedInternalFormat read new SizedInternalFormat($8E8E);
+    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB:          SizedInternalFormat read new SizedInternalFormat($8E8E);
+    public static property COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT:          SizedInternalFormat read new SizedInternalFormat($8E8E);
+    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT:            SizedInternalFormat read new SizedInternalFormat($8E8F);
+    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB:        SizedInternalFormat read new SizedInternalFormat($8E8F);
+    public static property COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT:        SizedInternalFormat read new SizedInternalFormat($8E8F);
+    public static property R8_SNORM:                                      SizedInternalFormat read new SizedInternalFormat($8F94);
+    public static property RG8_SNORM:                                     SizedInternalFormat read new SizedInternalFormat($8F95);
+    public static property RGB8_SNORM:                                    SizedInternalFormat read new SizedInternalFormat($8F96);
+    public static property RGBA8_SNORM:                                   SizedInternalFormat read new SizedInternalFormat($8F97);
+    public static property R16_SNORM:                                     SizedInternalFormat read new SizedInternalFormat($8F98);
+    public static property R16_SNORM_EXT:                                 SizedInternalFormat read new SizedInternalFormat($8F98);
+    public static property RG16_SNORM:                                    SizedInternalFormat read new SizedInternalFormat($8F99);
+    public static property RG16_SNORM_EXT:                                SizedInternalFormat read new SizedInternalFormat($8F99);
+    public static property RGB16_SNORM:                                   SizedInternalFormat read new SizedInternalFormat($8F9A);
+    public static property RGB16_SNORM_EXT:                               SizedInternalFormat read new SizedInternalFormat($8F9A);
+    public static property RGBA16_SNORM:                                  SizedInternalFormat read new SizedInternalFormat($8F9B);
+    public static property RGBA16_SNORM_EXT:                              SizedInternalFormat read new SizedInternalFormat($8F9B);
+    public static property RGB10_A2UI:                                    SizedInternalFormat read new SizedInternalFormat($906F);
+    public static property COMPRESSED_R11_EAC:                            SizedInternalFormat read new SizedInternalFormat($9270);
+    public static property COMPRESSED_R11_EAC_OES:                        SizedInternalFormat read new SizedInternalFormat($9270);
+    public static property COMPRESSED_SIGNED_R11_EAC:                     SizedInternalFormat read new SizedInternalFormat($9271);
+    public static property COMPRESSED_SIGNED_R11_EAC_OES:                 SizedInternalFormat read new SizedInternalFormat($9271);
+    public static property COMPRESSED_RG11_EAC:                           SizedInternalFormat read new SizedInternalFormat($9272);
+    public static property COMPRESSED_RG11_EAC_OES:                       SizedInternalFormat read new SizedInternalFormat($9272);
+    public static property COMPRESSED_SIGNED_RG11_EAC:                    SizedInternalFormat read new SizedInternalFormat($9273);
+    public static property COMPRESSED_SIGNED_RG11_EAC_OES:                SizedInternalFormat read new SizedInternalFormat($9273);
+    public static property COMPRESSED_RGB8_ETC2:                          SizedInternalFormat read new SizedInternalFormat($9274);
+    public static property COMPRESSED_RGB8_ETC2_OES:                      SizedInternalFormat read new SizedInternalFormat($9274);
+    public static property COMPRESSED_SRGB8_ETC2:                         SizedInternalFormat read new SizedInternalFormat($9275);
+    public static property COMPRESSED_SRGB8_ETC2_OES:                     SizedInternalFormat read new SizedInternalFormat($9275);
+    public static property COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:      SizedInternalFormat read new SizedInternalFormat($9276);
+    public static property COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES:  SizedInternalFormat read new SizedInternalFormat($9276);
+    public static property COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:     SizedInternalFormat read new SizedInternalFormat($9277);
+    public static property COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES: SizedInternalFormat read new SizedInternalFormat($9277);
+    public static property COMPRESSED_RGBA8_ETC2_EAC:                     SizedInternalFormat read new SizedInternalFormat($9278);
+    public static property COMPRESSED_RGBA8_ETC2_EAC_OES:                 SizedInternalFormat read new SizedInternalFormat($9278);
+    public static property COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:              SizedInternalFormat read new SizedInternalFormat($9279);
+    public static property COMPRESSED_SRGB8_ALPHA8_ETC2_EAC_OES:          SizedInternalFormat read new SizedInternalFormat($9279);
+    public static property COMPRESSED_RGBA_ASTC_4x4:                      SizedInternalFormat read new SizedInternalFormat($93B0);
+    public static property COMPRESSED_RGBA_ASTC_4x4_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B0);
+    public static property COMPRESSED_RGBA_ASTC_5x4:                      SizedInternalFormat read new SizedInternalFormat($93B1);
+    public static property COMPRESSED_RGBA_ASTC_5x4_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B1);
+    public static property COMPRESSED_RGBA_ASTC_5x5:                      SizedInternalFormat read new SizedInternalFormat($93B2);
+    public static property COMPRESSED_RGBA_ASTC_5x5_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B2);
+    public static property COMPRESSED_RGBA_ASTC_6x5:                      SizedInternalFormat read new SizedInternalFormat($93B3);
+    public static property COMPRESSED_RGBA_ASTC_6x5_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B3);
+    public static property COMPRESSED_RGBA_ASTC_6x6:                      SizedInternalFormat read new SizedInternalFormat($93B4);
+    public static property COMPRESSED_RGBA_ASTC_6x6_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B4);
+    public static property COMPRESSED_RGBA_ASTC_8x5:                      SizedInternalFormat read new SizedInternalFormat($93B5);
+    public static property COMPRESSED_RGBA_ASTC_8x5_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B5);
+    public static property COMPRESSED_RGBA_ASTC_8x6:                      SizedInternalFormat read new SizedInternalFormat($93B6);
+    public static property COMPRESSED_RGBA_ASTC_8x6_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B6);
+    public static property COMPRESSED_RGBA_ASTC_8x8:                      SizedInternalFormat read new SizedInternalFormat($93B7);
+    public static property COMPRESSED_RGBA_ASTC_8x8_KHR:                  SizedInternalFormat read new SizedInternalFormat($93B7);
+    public static property COMPRESSED_RGBA_ASTC_10x5:                     SizedInternalFormat read new SizedInternalFormat($93B8);
+    public static property COMPRESSED_RGBA_ASTC_10x5_KHR:                 SizedInternalFormat read new SizedInternalFormat($93B8);
+    public static property COMPRESSED_RGBA_ASTC_10x6:                     SizedInternalFormat read new SizedInternalFormat($93B9);
+    public static property COMPRESSED_RGBA_ASTC_10x6_KHR:                 SizedInternalFormat read new SizedInternalFormat($93B9);
+    public static property COMPRESSED_RGBA_ASTC_10x8:                     SizedInternalFormat read new SizedInternalFormat($93BA);
+    public static property COMPRESSED_RGBA_ASTC_10x8_KHR:                 SizedInternalFormat read new SizedInternalFormat($93BA);
+    public static property COMPRESSED_RGBA_ASTC_10x10:                    SizedInternalFormat read new SizedInternalFormat($93BB);
+    public static property COMPRESSED_RGBA_ASTC_10x10_KHR:                SizedInternalFormat read new SizedInternalFormat($93BB);
+    public static property COMPRESSED_RGBA_ASTC_12x10:                    SizedInternalFormat read new SizedInternalFormat($93BC);
+    public static property COMPRESSED_RGBA_ASTC_12x10_KHR:                SizedInternalFormat read new SizedInternalFormat($93BC);
+    public static property COMPRESSED_RGBA_ASTC_12x12:                    SizedInternalFormat read new SizedInternalFormat($93BD);
+    public static property COMPRESSED_RGBA_ASTC_12x12_KHR:                SizedInternalFormat read new SizedInternalFormat($93BD);
+    public static property COMPRESSED_RGBA_ASTC_3x3x3_OES:                SizedInternalFormat read new SizedInternalFormat($93C0);
+    public static property COMPRESSED_RGBA_ASTC_4x3x3_OES:                SizedInternalFormat read new SizedInternalFormat($93C1);
+    public static property COMPRESSED_RGBA_ASTC_4x4x3_OES:                SizedInternalFormat read new SizedInternalFormat($93C2);
+    public static property COMPRESSED_RGBA_ASTC_4x4x4_OES:                SizedInternalFormat read new SizedInternalFormat($93C3);
+    public static property COMPRESSED_RGBA_ASTC_5x4x4_OES:                SizedInternalFormat read new SizedInternalFormat($93C4);
+    public static property COMPRESSED_RGBA_ASTC_5x5x4_OES:                SizedInternalFormat read new SizedInternalFormat($93C5);
+    public static property COMPRESSED_RGBA_ASTC_5x5x5_OES:                SizedInternalFormat read new SizedInternalFormat($93C6);
+    public static property COMPRESSED_RGBA_ASTC_6x5x5_OES:                SizedInternalFormat read new SizedInternalFormat($93C7);
+    public static property COMPRESSED_RGBA_ASTC_6x6x5_OES:                SizedInternalFormat read new SizedInternalFormat($93C8);
+    public static property COMPRESSED_RGBA_ASTC_6x6x6_OES:                SizedInternalFormat read new SizedInternalFormat($93C9);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4:              SizedInternalFormat read new SizedInternalFormat($93D0);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:          SizedInternalFormat read new SizedInternalFormat($93D0);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4:              SizedInternalFormat read new SizedInternalFormat($93D1);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:          SizedInternalFormat read new SizedInternalFormat($93D1);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5:              SizedInternalFormat read new SizedInternalFormat($93D2);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:          SizedInternalFormat read new SizedInternalFormat($93D2);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5:              SizedInternalFormat read new SizedInternalFormat($93D3);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:          SizedInternalFormat read new SizedInternalFormat($93D3);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6:              SizedInternalFormat read new SizedInternalFormat($93D4);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:          SizedInternalFormat read new SizedInternalFormat($93D4);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x5:              SizedInternalFormat read new SizedInternalFormat($93D5);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:          SizedInternalFormat read new SizedInternalFormat($93D5);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x6:              SizedInternalFormat read new SizedInternalFormat($93D6);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:          SizedInternalFormat read new SizedInternalFormat($93D6);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x8:              SizedInternalFormat read new SizedInternalFormat($93D7);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:          SizedInternalFormat read new SizedInternalFormat($93D7);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x5:             SizedInternalFormat read new SizedInternalFormat($93D8);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:         SizedInternalFormat read new SizedInternalFormat($93D8);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x6:             SizedInternalFormat read new SizedInternalFormat($93D9);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:         SizedInternalFormat read new SizedInternalFormat($93D9);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x8:             SizedInternalFormat read new SizedInternalFormat($93DA);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:         SizedInternalFormat read new SizedInternalFormat($93DA);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x10:            SizedInternalFormat read new SizedInternalFormat($93DB);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:        SizedInternalFormat read new SizedInternalFormat($93DB);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x10:            SizedInternalFormat read new SizedInternalFormat($93DC);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:        SizedInternalFormat read new SizedInternalFormat($93DC);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x12:            SizedInternalFormat read new SizedInternalFormat($93DD);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:        SizedInternalFormat read new SizedInternalFormat($93DD);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_OES:        SizedInternalFormat read new SizedInternalFormat($93E0);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_OES:        SizedInternalFormat read new SizedInternalFormat($93E1);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_OES:        SizedInternalFormat read new SizedInternalFormat($93E2);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_OES:        SizedInternalFormat read new SizedInternalFormat($93E3);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_OES:        SizedInternalFormat read new SizedInternalFormat($93E4);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_OES:        SizedInternalFormat read new SizedInternalFormat($93E5);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_OES:        SizedInternalFormat read new SizedInternalFormat($93E6);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES:        SizedInternalFormat read new SizedInternalFormat($93E7);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES:        SizedInternalFormat read new SizedInternalFormat($93E8);
+    public static property COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES:        SizedInternalFormat read new SizedInternalFormat($93E9);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($2A10) then Result := 'R3_G3_B2' else
+      if self.val = UInt32($803B) then Result := 'ALPHA4' else
+      if self.val = UInt32($803B) then Result := 'ALPHA4_EXT' else
+      if self.val = UInt32($803C) then Result := 'ALPHA8' else
+      if self.val = UInt32($803C) then Result := 'ALPHA8_EXT' else
+      if self.val = UInt32($803C) then Result := 'ALPHA8_OES' else
+      if self.val = UInt32($803D) then Result := 'ALPHA12' else
+      if self.val = UInt32($803D) then Result := 'ALPHA12_EXT' else
+      if self.val = UInt32($803E) then Result := 'ALPHA16' else
+      if self.val = UInt32($803E) then Result := 'ALPHA16_EXT' else
+      if self.val = UInt32($803F) then Result := 'LUMINANCE4' else
+      if self.val = UInt32($803F) then Result := 'LUMINANCE4_EXT' else
+      if self.val = UInt32($8040) then Result := 'LUMINANCE8' else
+      if self.val = UInt32($8040) then Result := 'LUMINANCE8_EXT' else
+      if self.val = UInt32($8040) then Result := 'LUMINANCE8_OES' else
+      if self.val = UInt32($8041) then Result := 'LUMINANCE12' else
+      if self.val = UInt32($8041) then Result := 'LUMINANCE12_EXT' else
+      if self.val = UInt32($8042) then Result := 'LUMINANCE16' else
+      if self.val = UInt32($8042) then Result := 'LUMINANCE16_EXT' else
+      if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4' else
+      if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4_EXT' else
+      if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4_OES' else
+      if self.val = UInt32($8044) then Result := 'LUMINANCE6_ALPHA2' else
+      if self.val = UInt32($8044) then Result := 'LUMINANCE6_ALPHA2_EXT' else
+      if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8' else
+      if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8_EXT' else
+      if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8_OES' else
+      if self.val = UInt32($8046) then Result := 'LUMINANCE12_ALPHA4' else
+      if self.val = UInt32($8046) then Result := 'LUMINANCE12_ALPHA4_EXT' else
+      if self.val = UInt32($8047) then Result := 'LUMINANCE12_ALPHA12' else
+      if self.val = UInt32($8047) then Result := 'LUMINANCE12_ALPHA12_EXT' else
+      if self.val = UInt32($8048) then Result := 'LUMINANCE16_ALPHA16' else
+      if self.val = UInt32($8048) then Result := 'LUMINANCE16_ALPHA16_EXT' else
+      if self.val = UInt32($804A) then Result := 'INTENSITY4' else
+      if self.val = UInt32($804A) then Result := 'INTENSITY4_EXT' else
+      if self.val = UInt32($804B) then Result := 'INTENSITY8' else
+      if self.val = UInt32($804B) then Result := 'INTENSITY8_EXT' else
+      if self.val = UInt32($804C) then Result := 'INTENSITY12' else
+      if self.val = UInt32($804C) then Result := 'INTENSITY12_EXT' else
+      if self.val = UInt32($804D) then Result := 'INTENSITY16' else
+      if self.val = UInt32($804D) then Result := 'INTENSITY16_EXT' else
+      if self.val = UInt32($804E) then Result := 'RGB2_EXT' else
+      if self.val = UInt32($804F) then Result := 'RGB4' else
+      if self.val = UInt32($804F) then Result := 'RGB4_EXT' else
+      if self.val = UInt32($8050) then Result := 'RGB5' else
+      if self.val = UInt32($8050) then Result := 'RGB5_EXT' else
+      if self.val = UInt32($8051) then Result := 'RGB8' else
+      if self.val = UInt32($8051) then Result := 'RGB8_EXT' else
+      if self.val = UInt32($8051) then Result := 'RGB8_OES' else
+      if self.val = UInt32($8052) then Result := 'RGB10' else
+      if self.val = UInt32($8052) then Result := 'RGB10_EXT' else
+      if self.val = UInt32($8053) then Result := 'RGB12' else
+      if self.val = UInt32($8053) then Result := 'RGB12_EXT' else
+      if self.val = UInt32($8054) then Result := 'RGB16' else
+      if self.val = UInt32($8054) then Result := 'RGB16_EXT' else
+      if self.val = UInt32($8055) then Result := 'RGBA2' else
+      if self.val = UInt32($8055) then Result := 'RGBA2_EXT' else
+      if self.val = UInt32($8056) then Result := 'RGBA4' else
+      if self.val = UInt32($8056) then Result := 'RGBA4_EXT' else
+      if self.val = UInt32($8056) then Result := 'RGBA4_OES' else
+      if self.val = UInt32($8057) then Result := 'RGB5_A1' else
+      if self.val = UInt32($8057) then Result := 'RGB5_A1_EXT' else
+      if self.val = UInt32($8057) then Result := 'RGB5_A1_OES' else
+      if self.val = UInt32($8058) then Result := 'RGBA8' else
+      if self.val = UInt32($8058) then Result := 'RGBA8_EXT' else
+      if self.val = UInt32($8058) then Result := 'RGBA8_OES' else
+      if self.val = UInt32($8059) then Result := 'RGB10_A2' else
+      if self.val = UInt32($8059) then Result := 'RGB10_A2_EXT' else
+      if self.val = UInt32($805A) then Result := 'RGBA12' else
+      if self.val = UInt32($805A) then Result := 'RGBA12_EXT' else
+      if self.val = UInt32($805B) then Result := 'RGBA16' else
+      if self.val = UInt32($805B) then Result := 'RGBA16_EXT' else
+      if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16' else
+      if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16_ARB' else
+      if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16_OES' else
+      if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16_SGIX' else
+      if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24' else
+      if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24_ARB' else
+      if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24_OES' else
+      if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24_SGIX' else
+      if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32' else
+      if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32_ARB' else
+      if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32_OES' else
+      if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32_SGIX' else
+      if self.val = UInt32($8229) then Result := 'R8' else
+      if self.val = UInt32($8229) then Result := 'R8_EXT' else
+      if self.val = UInt32($822A) then Result := 'R16' else
+      if self.val = UInt32($822A) then Result := 'R16_EXT' else
+      if self.val = UInt32($822B) then Result := 'RG8' else
+      if self.val = UInt32($822B) then Result := 'RG8_EXT' else
+      if self.val = UInt32($822C) then Result := 'RG16' else
+      if self.val = UInt32($822C) then Result := 'RG16_EXT' else
+      if self.val = UInt32($822D) then Result := 'R16F' else
+      if self.val = UInt32($822D) then Result := 'R16F_EXT' else
+      if self.val = UInt32($822E) then Result := 'R32F' else
+      if self.val = UInt32($822E) then Result := 'R32F_EXT' else
+      if self.val = UInt32($822F) then Result := 'RG16F' else
+      if self.val = UInt32($822F) then Result := 'RG16F_EXT' else
+      if self.val = UInt32($8230) then Result := 'RG32F' else
+      if self.val = UInt32($8230) then Result := 'RG32F_EXT' else
+      if self.val = UInt32($8231) then Result := 'R8I' else
+      if self.val = UInt32($8232) then Result := 'R8UI' else
+      if self.val = UInt32($8233) then Result := 'R16I' else
+      if self.val = UInt32($8234) then Result := 'R16UI' else
+      if self.val = UInt32($8235) then Result := 'R32I' else
+      if self.val = UInt32($8236) then Result := 'R32UI' else
+      if self.val = UInt32($8237) then Result := 'RG8I' else
+      if self.val = UInt32($8238) then Result := 'RG8UI' else
+      if self.val = UInt32($8239) then Result := 'RG16I' else
+      if self.val = UInt32($823A) then Result := 'RG16UI' else
+      if self.val = UInt32($823B) then Result := 'RG32I' else
+      if self.val = UInt32($823C) then Result := 'RG32UI' else
+      if self.val = UInt32($83F0) then Result := 'COMPRESSED_RGB_S3TC_DXT1_EXT' else
+      if self.val = UInt32($83F1) then Result := 'COMPRESSED_RGBA_S3TC_DXT1_EXT' else
+      if self.val = UInt32($83F2) then Result := 'COMPRESSED_RGBA_S3TC_DXT3_ANGLE' else
+      if self.val = UInt32($83F2) then Result := 'COMPRESSED_RGBA_S3TC_DXT3_EXT' else
+      if self.val = UInt32($83F3) then Result := 'COMPRESSED_RGBA_S3TC_DXT5_ANGLE' else
+      if self.val = UInt32($83F3) then Result := 'COMPRESSED_RGBA_S3TC_DXT5_EXT' else
+      if self.val = UInt32($8814) then Result := 'RGBA32F' else
+      if self.val = UInt32($8814) then Result := 'RGBA32F_ARB' else
+      if self.val = UInt32($8814) then Result := 'RGBA32F_EXT' else
+      if self.val = UInt32($8815) then Result := 'RGB32F' else
+      if self.val = UInt32($8815) then Result := 'RGB32F_ARB' else
+      if self.val = UInt32($8815) then Result := 'RGB32F_EXT' else
+      if self.val = UInt32($881A) then Result := 'RGBA16F' else
+      if self.val = UInt32($881A) then Result := 'RGBA16F_ARB' else
+      if self.val = UInt32($881A) then Result := 'RGBA16F_EXT' else
+      if self.val = UInt32($881B) then Result := 'RGB16F' else
+      if self.val = UInt32($881B) then Result := 'RGB16F_ARB' else
+      if self.val = UInt32($881B) then Result := 'RGB16F_EXT' else
+      if self.val = UInt32($88F0) then Result := 'DEPTH24_STENCIL8' else
+      if self.val = UInt32($88F0) then Result := 'DEPTH24_STENCIL8_EXT' else
+      if self.val = UInt32($88F0) then Result := 'DEPTH24_STENCIL8_OES' else
+      if self.val = UInt32($8C3A) then Result := 'R11F_G11F_B10F' else
+      if self.val = UInt32($8C3A) then Result := 'R11F_G11F_B10F_APPLE' else
+      if self.val = UInt32($8C3A) then Result := 'R11F_G11F_B10F_EXT' else
+      if self.val = UInt32($8C3D) then Result := 'RGB9_E5' else
+      if self.val = UInt32($8C3D) then Result := 'RGB9_E5_APPLE' else
+      if self.val = UInt32($8C3D) then Result := 'RGB9_E5_EXT' else
+      if self.val = UInt32($8C41) then Result := 'SRGB8' else
+      if self.val = UInt32($8C41) then Result := 'SRGB8_EXT' else
+      if self.val = UInt32($8C41) then Result := 'SRGB8_NV' else
+      if self.val = UInt32($8C43) then Result := 'SRGB8_ALPHA8' else
+      if self.val = UInt32($8C43) then Result := 'SRGB8_ALPHA8_EXT' else
+      if self.val = UInt32($8C4C) then Result := 'COMPRESSED_SRGB_S3TC_DXT1_EXT' else
+      if self.val = UInt32($8C4C) then Result := 'COMPRESSED_SRGB_S3TC_DXT1_NV' else
+      if self.val = UInt32($8C4D) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT' else
+      if self.val = UInt32($8C4D) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT1_NV' else
+      if self.val = UInt32($8C4E) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT' else
+      if self.val = UInt32($8C4E) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT3_NV' else
+      if self.val = UInt32($8C4F) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT' else
+      if self.val = UInt32($8C4F) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT5_NV' else
+      if self.val = UInt32($8CAC) then Result := 'DEPTH_COMPONENT32F' else
+      if self.val = UInt32($8CAD) then Result := 'DEPTH32F_STENCIL8' else
+      if self.val = UInt32($8D46) then Result := 'STENCIL_INDEX1' else
+      if self.val = UInt32($8D46) then Result := 'STENCIL_INDEX1_EXT' else
+      if self.val = UInt32($8D46) then Result := 'STENCIL_INDEX1_OES' else
+      if self.val = UInt32($8D47) then Result := 'STENCIL_INDEX4' else
+      if self.val = UInt32($8D47) then Result := 'STENCIL_INDEX4_EXT' else
+      if self.val = UInt32($8D47) then Result := 'STENCIL_INDEX4_OES' else
+      if self.val = UInt32($8D48) then Result := 'STENCIL_INDEX8' else
+      if self.val = UInt32($8D48) then Result := 'STENCIL_INDEX8_EXT' else
+      if self.val = UInt32($8D48) then Result := 'STENCIL_INDEX8_OES' else
+      if self.val = UInt32($8D49) then Result := 'STENCIL_INDEX16' else
+      if self.val = UInt32($8D49) then Result := 'STENCIL_INDEX16_EXT' else
+      if self.val = UInt32($8D62) then Result := 'RGB565' else
+      if self.val = UInt32($8D62) then Result := 'RGB565_OES' else
+      if self.val = UInt32($8D64) then Result := 'ETC1_RGB8_OES' else
+      if self.val = UInt32($8D70) then Result := 'RGBA32UI' else
+      if self.val = UInt32($8D70) then Result := 'RGBA32UI_EXT' else
+      if self.val = UInt32($8D71) then Result := 'RGB32UI' else
+      if self.val = UInt32($8D71) then Result := 'RGB32UI_EXT' else
+      if self.val = UInt32($8D72) then Result := 'ALPHA32UI_EXT' else
+      if self.val = UInt32($8D73) then Result := 'INTENSITY32UI_EXT' else
+      if self.val = UInt32($8D74) then Result := 'LUMINANCE32UI_EXT' else
+      if self.val = UInt32($8D75) then Result := 'LUMINANCE_ALPHA32UI_EXT' else
+      if self.val = UInt32($8D76) then Result := 'RGBA16UI' else
+      if self.val = UInt32($8D76) then Result := 'RGBA16UI_EXT' else
+      if self.val = UInt32($8D77) then Result := 'RGB16UI' else
+      if self.val = UInt32($8D77) then Result := 'RGB16UI_EXT' else
+      if self.val = UInt32($8D78) then Result := 'ALPHA16UI_EXT' else
+      if self.val = UInt32($8D79) then Result := 'INTENSITY16UI_EXT' else
+      if self.val = UInt32($8D7A) then Result := 'LUMINANCE16UI_EXT' else
+      if self.val = UInt32($8D7B) then Result := 'LUMINANCE_ALPHA16UI_EXT' else
+      if self.val = UInt32($8D7C) then Result := 'RGBA8UI' else
+      if self.val = UInt32($8D7C) then Result := 'RGBA8UI_EXT' else
+      if self.val = UInt32($8D7D) then Result := 'RGB8UI' else
+      if self.val = UInt32($8D7D) then Result := 'RGB8UI_EXT' else
+      if self.val = UInt32($8D7E) then Result := 'ALPHA8UI_EXT' else
+      if self.val = UInt32($8D7F) then Result := 'INTENSITY8UI_EXT' else
+      if self.val = UInt32($8D80) then Result := 'LUMINANCE8UI_EXT' else
+      if self.val = UInt32($8D81) then Result := 'LUMINANCE_ALPHA8UI_EXT' else
+      if self.val = UInt32($8D82) then Result := 'RGBA32I' else
+      if self.val = UInt32($8D82) then Result := 'RGBA32I_EXT' else
+      if self.val = UInt32($8D83) then Result := 'RGB32I' else
+      if self.val = UInt32($8D83) then Result := 'RGB32I_EXT' else
+      if self.val = UInt32($8D84) then Result := 'ALPHA32I_EXT' else
+      if self.val = UInt32($8D85) then Result := 'INTENSITY32I_EXT' else
+      if self.val = UInt32($8D86) then Result := 'LUMINANCE32I_EXT' else
+      if self.val = UInt32($8D87) then Result := 'LUMINANCE_ALPHA32I_EXT' else
+      if self.val = UInt32($8D88) then Result := 'RGBA16I' else
+      if self.val = UInt32($8D88) then Result := 'RGBA16I_EXT' else
+      if self.val = UInt32($8D89) then Result := 'RGB16I' else
+      if self.val = UInt32($8D89) then Result := 'RGB16I_EXT' else
+      if self.val = UInt32($8D8A) then Result := 'ALPHA16I_EXT' else
+      if self.val = UInt32($8D8B) then Result := 'INTENSITY16I_EXT' else
+      if self.val = UInt32($8D8C) then Result := 'LUMINANCE16I_EXT' else
+      if self.val = UInt32($8D8D) then Result := 'LUMINANCE_ALPHA16I_EXT' else
+      if self.val = UInt32($8D8E) then Result := 'RGBA8I' else
+      if self.val = UInt32($8D8E) then Result := 'RGBA8I_EXT' else
+      if self.val = UInt32($8D8F) then Result := 'RGB8I' else
+      if self.val = UInt32($8D8F) then Result := 'RGB8I_EXT' else
+      if self.val = UInt32($8D90) then Result := 'ALPHA8I_EXT' else
+      if self.val = UInt32($8D91) then Result := 'INTENSITY8I_EXT' else
+      if self.val = UInt32($8D92) then Result := 'LUMINANCE8I_EXT' else
+      if self.val = UInt32($8D93) then Result := 'LUMINANCE_ALPHA8I_EXT' else
+      if self.val = UInt32($8DAB) then Result := 'DEPTH_COMPONENT32F_NV' else
+      if self.val = UInt32($8DAC) then Result := 'DEPTH32F_STENCIL8_NV' else
+      if self.val = UInt32($8DBB) then Result := 'COMPRESSED_RED_RGTC1' else
+      if self.val = UInt32($8DBB) then Result := 'COMPRESSED_RED_RGTC1_EXT' else
+      if self.val = UInt32($8DBC) then Result := 'COMPRESSED_SIGNED_RED_RGTC1' else
+      if self.val = UInt32($8DBC) then Result := 'COMPRESSED_SIGNED_RED_RGTC1_EXT' else
+      if self.val = UInt32($8DBD) then Result := 'COMPRESSED_RED_GREEN_RGTC2_EXT' else
+      if self.val = UInt32($8DBD) then Result := 'COMPRESSED_RG_RGTC2' else
+      if self.val = UInt32($8DBE) then Result := 'COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT' else
+      if self.val = UInt32($8DBE) then Result := 'COMPRESSED_SIGNED_RG_RGTC2' else
+      if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM' else
+      if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM_ARB' else
+      if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM_EXT' else
+      if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM' else
+      if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB' else
+      if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT' else
+      if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT' else
+      if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB' else
+      if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT' else
+      if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT' else
+      if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB' else
+      if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT' else
+      if self.val = UInt32($8F94) then Result := 'R8_SNORM' else
+      if self.val = UInt32($8F95) then Result := 'RG8_SNORM' else
+      if self.val = UInt32($8F96) then Result := 'RGB8_SNORM' else
+      if self.val = UInt32($8F97) then Result := 'RGBA8_SNORM' else
+      if self.val = UInt32($8F98) then Result := 'R16_SNORM' else
+      if self.val = UInt32($8F98) then Result := 'R16_SNORM_EXT' else
+      if self.val = UInt32($8F99) then Result := 'RG16_SNORM' else
+      if self.val = UInt32($8F99) then Result := 'RG16_SNORM_EXT' else
+      if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM' else
+      if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM_EXT' else
+      if self.val = UInt32($8F9B) then Result := 'RGBA16_SNORM' else
+      if self.val = UInt32($8F9B) then Result := 'RGBA16_SNORM_EXT' else
+      if self.val = UInt32($906F) then Result := 'RGB10_A2UI' else
+      if self.val = UInt32($9270) then Result := 'COMPRESSED_R11_EAC' else
+      if self.val = UInt32($9270) then Result := 'COMPRESSED_R11_EAC_OES' else
+      if self.val = UInt32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC' else
+      if self.val = UInt32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC_OES' else
+      if self.val = UInt32($9272) then Result := 'COMPRESSED_RG11_EAC' else
+      if self.val = UInt32($9272) then Result := 'COMPRESSED_RG11_EAC_OES' else
+      if self.val = UInt32($9273) then Result := 'COMPRESSED_SIGNED_RG11_EAC' else
+      if self.val = UInt32($9273) then Result := 'COMPRESSED_SIGNED_RG11_EAC_OES' else
+      if self.val = UInt32($9274) then Result := 'COMPRESSED_RGB8_ETC2' else
+      if self.val = UInt32($9274) then Result := 'COMPRESSED_RGB8_ETC2_OES' else
+      if self.val = UInt32($9275) then Result := 'COMPRESSED_SRGB8_ETC2' else
+      if self.val = UInt32($9275) then Result := 'COMPRESSED_SRGB8_ETC2_OES' else
+      if self.val = UInt32($9276) then Result := 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
+      if self.val = UInt32($9276) then Result := 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES' else
+      if self.val = UInt32($9277) then Result := 'COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
+      if self.val = UInt32($9277) then Result := 'COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2_OES' else
+      if self.val = UInt32($9278) then Result := 'COMPRESSED_RGBA8_ETC2_EAC' else
+      if self.val = UInt32($9278) then Result := 'COMPRESSED_RGBA8_ETC2_EAC_OES' else
+      if self.val = UInt32($9279) then Result := 'COMPRESSED_SRGB8_ALPHA8_ETC2_EAC' else
+      if self.val = UInt32($9279) then Result := 'COMPRESSED_SRGB8_ALPHA8_ETC2_EAC_OES' else
+      if self.val = UInt32($93B0) then Result := 'COMPRESSED_RGBA_ASTC_4x4' else
+      if self.val = UInt32($93B0) then Result := 'COMPRESSED_RGBA_ASTC_4x4_KHR' else
+      if self.val = UInt32($93B1) then Result := 'COMPRESSED_RGBA_ASTC_5x4' else
+      if self.val = UInt32($93B1) then Result := 'COMPRESSED_RGBA_ASTC_5x4_KHR' else
+      if self.val = UInt32($93B2) then Result := 'COMPRESSED_RGBA_ASTC_5x5' else
+      if self.val = UInt32($93B2) then Result := 'COMPRESSED_RGBA_ASTC_5x5_KHR' else
+      if self.val = UInt32($93B3) then Result := 'COMPRESSED_RGBA_ASTC_6x5' else
+      if self.val = UInt32($93B3) then Result := 'COMPRESSED_RGBA_ASTC_6x5_KHR' else
+      if self.val = UInt32($93B4) then Result := 'COMPRESSED_RGBA_ASTC_6x6' else
+      if self.val = UInt32($93B4) then Result := 'COMPRESSED_RGBA_ASTC_6x6_KHR' else
+      if self.val = UInt32($93B5) then Result := 'COMPRESSED_RGBA_ASTC_8x5' else
+      if self.val = UInt32($93B5) then Result := 'COMPRESSED_RGBA_ASTC_8x5_KHR' else
+      if self.val = UInt32($93B6) then Result := 'COMPRESSED_RGBA_ASTC_8x6' else
+      if self.val = UInt32($93B6) then Result := 'COMPRESSED_RGBA_ASTC_8x6_KHR' else
+      if self.val = UInt32($93B7) then Result := 'COMPRESSED_RGBA_ASTC_8x8' else
+      if self.val = UInt32($93B7) then Result := 'COMPRESSED_RGBA_ASTC_8x8_KHR' else
+      if self.val = UInt32($93B8) then Result := 'COMPRESSED_RGBA_ASTC_10x5' else
+      if self.val = UInt32($93B8) then Result := 'COMPRESSED_RGBA_ASTC_10x5_KHR' else
+      if self.val = UInt32($93B9) then Result := 'COMPRESSED_RGBA_ASTC_10x6' else
+      if self.val = UInt32($93B9) then Result := 'COMPRESSED_RGBA_ASTC_10x6_KHR' else
+      if self.val = UInt32($93BA) then Result := 'COMPRESSED_RGBA_ASTC_10x8' else
+      if self.val = UInt32($93BA) then Result := 'COMPRESSED_RGBA_ASTC_10x8_KHR' else
+      if self.val = UInt32($93BB) then Result := 'COMPRESSED_RGBA_ASTC_10x10' else
+      if self.val = UInt32($93BB) then Result := 'COMPRESSED_RGBA_ASTC_10x10_KHR' else
+      if self.val = UInt32($93BC) then Result := 'COMPRESSED_RGBA_ASTC_12x10' else
+      if self.val = UInt32($93BC) then Result := 'COMPRESSED_RGBA_ASTC_12x10_KHR' else
+      if self.val = UInt32($93BD) then Result := 'COMPRESSED_RGBA_ASTC_12x12' else
+      if self.val = UInt32($93BD) then Result := 'COMPRESSED_RGBA_ASTC_12x12_KHR' else
+      if self.val = UInt32($93C0) then Result := 'COMPRESSED_RGBA_ASTC_3x3x3_OES' else
+      if self.val = UInt32($93C1) then Result := 'COMPRESSED_RGBA_ASTC_4x3x3_OES' else
+      if self.val = UInt32($93C2) then Result := 'COMPRESSED_RGBA_ASTC_4x4x3_OES' else
+      if self.val = UInt32($93C3) then Result := 'COMPRESSED_RGBA_ASTC_4x4x4_OES' else
+      if self.val = UInt32($93C4) then Result := 'COMPRESSED_RGBA_ASTC_5x4x4_OES' else
+      if self.val = UInt32($93C5) then Result := 'COMPRESSED_RGBA_ASTC_5x5x4_OES' else
+      if self.val = UInt32($93C6) then Result := 'COMPRESSED_RGBA_ASTC_5x5x5_OES' else
+      if self.val = UInt32($93C7) then Result := 'COMPRESSED_RGBA_ASTC_6x5x5_OES' else
+      if self.val = UInt32($93C8) then Result := 'COMPRESSED_RGBA_ASTC_6x6x5_OES' else
+      if self.val = UInt32($93C9) then Result := 'COMPRESSED_RGBA_ASTC_6x6x6_OES' else
+      if self.val = UInt32($93D0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4' else
+      if self.val = UInt32($93D0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR' else
+      if self.val = UInt32($93D1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4' else
+      if self.val = UInt32($93D1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR' else
+      if self.val = UInt32($93D2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5' else
+      if self.val = UInt32($93D2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR' else
+      if self.val = UInt32($93D3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5' else
+      if self.val = UInt32($93D3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR' else
+      if self.val = UInt32($93D4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6' else
+      if self.val = UInt32($93D4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR' else
+      if self.val = UInt32($93D5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x5' else
+      if self.val = UInt32($93D5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR' else
+      if self.val = UInt32($93D6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x6' else
+      if self.val = UInt32($93D6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR' else
+      if self.val = UInt32($93D7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x8' else
+      if self.val = UInt32($93D7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR' else
+      if self.val = UInt32($93D8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x5' else
+      if self.val = UInt32($93D8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR' else
+      if self.val = UInt32($93D9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x6' else
+      if self.val = UInt32($93D9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR' else
+      if self.val = UInt32($93DA) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x8' else
+      if self.val = UInt32($93DA) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR' else
+      if self.val = UInt32($93DB) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x10' else
+      if self.val = UInt32($93DB) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR' else
+      if self.val = UInt32($93DC) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x10' else
+      if self.val = UInt32($93DC) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR' else
+      if self.val = UInt32($93DD) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x12' else
+      if self.val = UInt32($93DD) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR' else
+      if self.val = UInt32($93E0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3_OES' else
+      if self.val = UInt32($93E1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3_OES' else
+      if self.val = UInt32($93E2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3_OES' else
+      if self.val = UInt32($93E3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4_OES' else
+      if self.val = UInt32($93E4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4_OES' else
+      if self.val = UInt32($93E5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4_OES' else
+      if self.val = UInt32($93E6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5_OES' else
+      if self.val = UInt32($93E7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5_OES' else
+      if self.val = UInt32($93E8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5_OES' else
+      if self.val = UInt32($93E9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6_OES' else
+        Result := $'SizedInternalFormat[{self.val}]';
+    end;
+    
+  end;
+  
   StencilFaceDirection = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -7634,6 +8536,7 @@
     public static property PROXY_TEXTURE_2D_ARRAY:             TextureTarget read new TextureTarget($8C1B);
     public static property PROXY_TEXTURE_2D_ARRAY_EXT:         TextureTarget read new TextureTarget($8C1B);
     public static property TEXTURE_BUFFER:                     TextureTarget read new TextureTarget($8C2A);
+    public static property RENDERBUFFER:                       TextureTarget read new TextureTarget($8D41);
     public static property TEXTURE_CUBE_MAP_ARRAY:             TextureTarget read new TextureTarget($9009);
     public static property TEXTURE_CUBE_MAP_ARRAY_ARB:         TextureTarget read new TextureTarget($9009);
     public static property TEXTURE_CUBE_MAP_ARRAY_EXT:         TextureTarget read new TextureTarget($9009);
@@ -7682,6 +8585,7 @@
       if self.val = UInt32($8C1B) then Result := 'PROXY_TEXTURE_2D_ARRAY' else
       if self.val = UInt32($8C1B) then Result := 'PROXY_TEXTURE_2D_ARRAY_EXT' else
       if self.val = UInt32($8C2A) then Result := 'TEXTURE_BUFFER' else
+      if self.val = UInt32($8D41) then Result := 'RENDERBUFFER' else
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY' else
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY_ARB' else
       if self.val = UInt32($9009) then Result := 'TEXTURE_CUBE_MAP_ARRAY_EXT' else

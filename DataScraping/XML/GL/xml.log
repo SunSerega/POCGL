@@ -1,4 +1,20 @@
-﻿Enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
+﻿Enum "GL_FALSE" was in SpecialNumbers
+Enum "GL_NO_ERROR" was in SpecialNumbers
+Enum "GL_ZERO" was in SpecialNumbers
+Enum "GL_NONE" was in SpecialNumbers
+Enum "GL_NONE_OES" was in SpecialNumbers
+Enum "GL_TRUE" was in SpecialNumbers
+Enum "GL_ONE" was in SpecialNumbers
+Enum "GL_INVALID_INDEX" was in SpecialNumbers
+Enum "GL_ALL_PIXELS_AMD" was in SpecialNumbers
+Enum "GL_TIMEOUT_IGNORED" was in SpecialNumbers
+Enum "GL_TIMEOUT_IGNORED_APPLE" was in SpecialNumbers
+Enum "GL_VERSION_ES_CL_1_0" was in SpecialNumbers
+Enum "GL_VERSION_ES_CM_1_1" was in SpecialNumbers
+Enum "GL_VERSION_ES_CL_1_1" was in SpecialNumbers
+Enum "GL_UUID_SIZE_EXT" was in SpecialNumbers
+Enum "GL_LUID_SIZE_EXT" was in SpecialNumbers
+Enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
 Empty group [SyncBehaviorFlags] in api [gl]
 Skipped group attrib for type [GLfloat]
 Skipped group attrib for type [GLint]
@@ -66,89 +82,9 @@ Group [TextureFilterFuncSGIS] wasn't used in any function
 Group [LightModelColorControl] wasn't used in any function
 Group [VertexBufferObjectParameter] wasn't used in any function
 Group [PixelStoreResampleMode] wasn't used in any function
+Group [RegisterCombinerPname] wasn't used in any function
 Group [PixelStoreSubsampleRate] wasn't used in any function
-Group [CheckFramebufferStatusTarget] wasn't used in any function
-Group [DrawBufferModeATI] wasn't used in any function
-Group [FramebufferFetchNoncoherent] wasn't used in any function
-Group [ContextFlagMask] wasn't used in any function
-Group [ContextProfileMask] wasn't used in any function
-Group [SubgroupSupportedFeatures] wasn't used in any function
-Group [FragmentShaderDestMaskATI] wasn't used in any function
-Group [FragmentShaderDestModMaskATI] wasn't used in any function
-Group [FragmentShaderColorModMaskATI] wasn't used in any function
-Group [TraceMaskMESA] wasn't used in any function
-Group [PerformanceQueryCapsMaskINTEL] wasn't used in any function
-Group [VertexHintsMaskPGI] wasn't used in any function
-Group [FoveationConfigBitQCOM] wasn't used in any function
-Group [CommandOpcodesNV] wasn't used in any function
-Group [MapTextureFormatINTEL] wasn't used in any function
-Group [TransformFeedbackTokenNV] wasn't used in any function
-Group [TriangleListSUN] wasn't used in any function
-Group [TextureSwizzle] wasn't used in any function
-Group [TextureCompareMode] wasn't used in any function
-Group [PixelTexGenMode] wasn't used in any function
-Group [TextureEnvMode] wasn't used in any function
-Group [LightEnvModeSGIX] wasn't used in any function
-Group [ColorMaterialFace] wasn't used in any function
-Group [FeedBackToken] wasn't used in any function
-Group [FogMode] wasn't used in any function
-Group [GetPixelMap] wasn't used in any function
-Group [GlslTypeToken] wasn't used in any function
-Group [TextureGenMode] wasn't used in any function
-Group [TextureMagFilter] wasn't used in any function
-Group [TextureMinFilter] wasn't used in any function
-Group [TextureWrapMode] wasn't used in any function
-Group [GetConvolutionParameter] wasn't used in any function
-Group [ConvolutionBorderModeEXT] wasn't used in any function
-Group [GetColorTableParameterPName] wasn't used in any function
-Group [ColorTableParameterPName] wasn't used in any function
-Group [PointParameterNameSGIS] wasn't used in any function
-Group [TextureFilterFuncSGIS] wasn't used in any function
-Group [LightModelColorControl] wasn't used in any function
-Group [VertexBufferObjectParameter] wasn't used in any function
-Group [PixelStoreResampleMode] wasn't used in any function
-Group [PixelStoreSubsampleRate] wasn't used in any function
-Group [CheckFramebufferStatusTarget] wasn't used in any function
-Group [DrawBufferModeATI] wasn't used in any function
-Group [FramebufferFetchNoncoherent] wasn't used in any function
-Group [ContextFlagMask] wasn't used in any function
-Group [ContextProfileMask] wasn't used in any function
-Group [SubgroupSupportedFeatures] wasn't used in any function
-Group [FragmentShaderDestMaskATI] wasn't used in any function
-Group [FragmentShaderDestModMaskATI] wasn't used in any function
-Group [FragmentShaderColorModMaskATI] wasn't used in any function
-Group [TraceMaskMESA] wasn't used in any function
-Group [PerformanceQueryCapsMaskINTEL] wasn't used in any function
-Group [VertexHintsMaskPGI] wasn't used in any function
-Group [FoveationConfigBitQCOM] wasn't used in any function
-Group [CommandOpcodesNV] wasn't used in any function
-Group [MapTextureFormatINTEL] wasn't used in any function
-Group [TransformFeedbackTokenNV] wasn't used in any function
-Group [TriangleListSUN] wasn't used in any function
-Group [TextureSwizzle] wasn't used in any function
-Group [TextureCompareMode] wasn't used in any function
-Group [PixelTexGenMode] wasn't used in any function
-Group [TextureEnvMode] wasn't used in any function
-Group [LightEnvModeSGIX] wasn't used in any function
-Group [ColorMaterialFace] wasn't used in any function
-Group [FeedBackToken] wasn't used in any function
-Group [FogMode] wasn't used in any function
-Group [GetPixelMap] wasn't used in any function
-Group [GlslTypeToken] wasn't used in any function
-Group [TextureGenMode] wasn't used in any function
-Group [TextureMagFilter] wasn't used in any function
-Group [TextureMinFilter] wasn't used in any function
-Group [TextureWrapMode] wasn't used in any function
-Group [GetConvolutionParameter] wasn't used in any function
-Group [ConvolutionBorderModeEXT] wasn't used in any function
-Group [GetColorTableParameterPName] wasn't used in any function
-Group [ColorTableParameterPName] wasn't used in any function
-Group [PointParameterNameSGIS] wasn't used in any function
-Group [TextureFilterFuncSGIS] wasn't used in any function
-Group [LightModelColorControl] wasn't used in any function
-Group [VertexBufferObjectParameter] wasn't used in any function
-Group [PixelStoreResampleMode] wasn't used in any function
-Group [PixelStoreSubsampleRate] wasn't used in any function
+Group [ContainerType] wasn't used in any function
 Group [CheckFramebufferStatusTarget] wasn't used in any function
 Group [DrawBufferModeATI] wasn't used in any function
 Group [FramebufferFetchNoncoherent] wasn't used in any function

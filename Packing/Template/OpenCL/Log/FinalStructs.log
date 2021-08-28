@@ -5,6 +5,12 @@
 	origin: UIntPtr
 	size: UIntPtr
 
+# cl_device_pci_bus_info_khr
+	pci_domain: UInt32
+	pci_bus: UInt32
+	pci_device: UInt32
+	pci_function: UInt32
+
 # cl_dx9_surface_info_khr
 	resource: ^IntPtr
 	shared_handle: IntPtr
@@ -53,6 +59,12 @@
 
 # cl_name_version_khr
 	version: UInt32
+	name: _ValueString_64
+
+# cl_queue_family_properties_intel
+	properties: cl_command_queue_properties
+	capabilities: cl_command_queue_capabilities_intel
+	count: UInt32
 	name: _ValueString_64
 
 

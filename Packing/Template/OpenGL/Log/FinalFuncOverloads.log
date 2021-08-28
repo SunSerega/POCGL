@@ -206,7 +206,7 @@
  ClearBufferMask	|
 
 # glClearBufferData
- BufferStorageTarget	| InternalFormat	| PixelFormat	| PixelType	| IntPtr	|
+ BufferStorageTarget	| SizedInternalFormat	| PixelFormat	| PixelType	| IntPtr	|
 
 # glClearBufferfi
  Buffer	| Int32	| single	| Int32	|
@@ -222,7 +222,7 @@
  Buffer	| Int32	| IntPtr	|
 
 # glClearBufferSubData
- BufferTargetARB	| InternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
+ BufferTargetARB	| SizedInternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
 
 # glClearBufferuiv
  Buffer	| Int32	| array of UInt32	|
@@ -239,10 +239,10 @@
  single	|
 
 # glClearNamedBufferData
- gl_buffer	| InternalFormat	| PixelFormat	| PixelType	| IntPtr	|
+ gl_buffer	| SizedInternalFormat	| PixelFormat	| PixelType	| IntPtr	|
 
 # glClearNamedBufferSubData
- gl_buffer	| InternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
+ gl_buffer	| SizedInternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
 
 # glClearNamedFramebufferfi
  gl_framebuffer	| Buffer	| Int32	| single	| Int32	|
@@ -310,22 +310,22 @@
  TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| Int32	| Int32	| IntPtr	|
 
 # glCompressedTexSubImage1D
- TextureTarget	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureTarget	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTexSubImage2D
- TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTexSubImage3D
- TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTextureSubImage1D
- gl_texture	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ gl_texture	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTextureSubImage2D
- gl_texture	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ gl_texture	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTextureSubImage3D
- gl_texture	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ gl_texture	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCopyBufferSubData
  CopyBufferSubDataTarget	| CopyBufferSubDataTarget	| IntPtr	| IntPtr	| IntPtr	|
@@ -2023,10 +2023,10 @@
  StencilFaceDirection	| StencilOp	| StencilOp	| StencilOp	|
 
 # glTexBuffer
- TextureTarget	| InternalFormat	| gl_buffer	|
+ TextureTarget	| SizedInternalFormat	| gl_buffer	|
 
 # glTexBufferRange
- TextureTarget	| InternalFormat	| gl_buffer	| IntPtr	| IntPtr	|
+ TextureTarget	| SizedInternalFormat	| gl_buffer	| IntPtr	| IntPtr	|
 
 # glTexCoordP1ui
  TexCoordPointerType	| UInt32	|
@@ -2098,19 +2098,19 @@
  TextureTarget	| TextureParameterName	| IntPtr	|
 
 # glTexStorage1D
- TextureTarget	| Int32	| InternalFormat	| Int32	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	|
 
 # glTexStorage2D
- TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	|
 
 # glTexStorage2DMultisample
- TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| boolean	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| boolean	|
 
 # glTexStorage3D
- TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	|
 
 # glTexStorage3DMultisample
- TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| boolean	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| boolean	|
 
 # glTexSubImage1D
  TextureTarget	| Int32	| Int32	| Int32	| PixelFormat	| PixelType	| IntPtr	|
@@ -2122,10 +2122,10 @@
  TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| PixelType	| IntPtr	|
 
 # glTextureBuffer
- gl_texture	| InternalFormat	| gl_buffer	|
+ gl_texture	| SizedInternalFormat	| gl_buffer	|
 
 # glTextureBufferRange
- gl_texture	| InternalFormat	| gl_buffer	| IntPtr	| IntPtr	|
+ gl_texture	| SizedInternalFormat	| gl_buffer	| IntPtr	| IntPtr	|
 
 # glTextureParameterf
  gl_texture	| TextureParameterName	| single	|
@@ -2154,19 +2154,19 @@
  gl_texture	| TextureParameterName	| IntPtr	|
 
 # glTextureStorage1D
- gl_texture	| Int32	| InternalFormat	| Int32	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	|
 
 # glTextureStorage2D
- gl_texture	| Int32	| InternalFormat	| Int32	| Int32	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	|
 
 # glTextureStorage2DMultisample
- gl_texture	| Int32	| InternalFormat	| Int32	| Int32	| boolean	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| boolean	|
 
 # glTextureStorage3D
- gl_texture	| Int32	| InternalFormat	| Int32	| Int32	| Int32	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	|
 
 # glTextureStorage3DMultisample
- gl_texture	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| boolean	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| boolean	|
 
 # glTextureSubImage1D
  gl_texture	| Int32	| Int32	| Int32	| PixelFormat	| PixelType	| IntPtr	|
@@ -2178,7 +2178,7 @@
  gl_texture	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| PixelType	| IntPtr	|
 
 # glTextureView
- gl_texture	| TextureTarget	| gl_texture	| InternalFormat	| UInt32	| UInt32	| UInt32	| UInt32	|
+ gl_texture	| TextureTarget	| gl_texture	| SizedInternalFormat	| UInt32	| UInt32	| UInt32	| UInt32	|
 
 # glTransformFeedbackBufferBase
  gl_transform_feedback	| UInt32	| gl_buffer	|
@@ -4747,10 +4747,10 @@
  DummyEnum	| UInt32	| IntPtr	|
 
 # glTexStorageSparseAMD
- TextureTarget	| InternalFormat	| Int32	| Int32	| Int32	| Int32	| TextureStorageMaskAMD	|
+ TextureTarget	| SizedInternalFormat	| Int32	| Int32	| Int32	| Int32	| TextureStorageMaskAMD	|
 
 # glTextureStorageSparseAMD
- gl_texture	| DummyEnum	| InternalFormat	| Int32	| Int32	| Int32	| Int32	| TextureStorageMaskAMD	|
+ gl_texture	| DummyEnum	| SizedInternalFormat	| Int32	| Int32	| Int32	| Int32	| TextureStorageMaskAMD	|
 
 # glStencilOpValueAMD
  StencilFaceDirection	| UInt32	|
@@ -5916,7 +5916,7 @@
  DummyEnum	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| boolean	|
 
 # glTexBufferARB
- TextureTarget	| InternalFormat	| gl_buffer	|
+ TextureTarget	| SizedInternalFormat	| gl_buffer	|
 
 # glCompressedTexImage3DARB
  TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| Int32	| Int32	| IntPtr	|
@@ -5928,13 +5928,13 @@
  TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| IntPtr	|
 
 # glCompressedTexSubImage3DARB
- TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTexSubImage2DARB
- TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTexSubImage1DARB
- TextureTarget	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureTarget	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glGetCompressedTexImageARB
  TextureTarget	| Int32	| IntPtr	|
@@ -7172,13 +7172,13 @@
  gl_texture	| TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| IntPtr	|
 
 # glCompressedTextureSubImage3DEXT
- gl_texture	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ gl_texture	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTextureSubImage2DEXT
- gl_texture	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ gl_texture	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedTextureSubImage1DEXT
- gl_texture	| TextureTarget	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ gl_texture	| TextureTarget	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glGetCompressedTextureImageEXT
  gl_texture	| TextureTarget	| Int32	| IntPtr	|
@@ -7193,13 +7193,13 @@
  TextureUnit	| TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| IntPtr	|
 
 # glCompressedMultiTexSubImage3DEXT
- TextureUnit	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureUnit	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedMultiTexSubImage2DEXT
- TextureUnit	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureUnit	| TextureTarget	| Int32	| Int32	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glCompressedMultiTexSubImage1DEXT
- TextureUnit	| TextureTarget	| Int32	| Int32	| Int32	| PixelFormat	| Int32	| IntPtr	|
+ TextureUnit	| TextureTarget	| Int32	| Int32	| Int32	| InternalFormat	| Int32	| IntPtr	|
 
 # glGetCompressedMultiTexImageEXT
  TextureUnit	| TextureTarget	| Int32	| IntPtr	|
@@ -7358,10 +7358,10 @@
  gl_program	| Int32	| Int32	| boolean	| IntPtr	|
 
 # glTextureBufferEXT
- gl_texture	| TextureTarget	| InternalFormat	| gl_buffer	|
+ gl_texture	| TextureTarget	| SizedInternalFormat	| gl_buffer	|
 
 # glMultiTexBufferEXT
- TextureUnit	| TextureTarget	| DummyEnum	| gl_buffer	|
+ TextureUnit	| TextureTarget	| InternalFormat	| gl_buffer	|
 
 # glTextureParameterIivEXT
  gl_texture	| TextureTarget	| TextureParameterName	| array of Int32	|
@@ -7679,10 +7679,10 @@
  gl_buffer	| IntPtr	| IntPtr	| BufferStorageMask	|
 
 # glClearNamedBufferDataEXT
- gl_buffer	| InternalFormat	| PixelFormat	| PixelType	| IntPtr	|
+ gl_buffer	| SizedInternalFormat	| PixelFormat	| PixelType	| IntPtr	|
 
 # glClearNamedBufferSubDataEXT
- gl_buffer	| DummyEnum	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
+ gl_buffer	| SizedInternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
 
 # glNamedFramebufferParameteriEXT
  gl_framebuffer	| FramebufferParameterName	| Int32	|
@@ -7770,22 +7770,22 @@
  gl_program	| Int32	| Int32	| boolean	| IntPtr	|
 
 # glTextureBufferRangeEXT
- gl_texture	| TextureTarget	| InternalFormat	| gl_buffer	| IntPtr	| IntPtr	|
+ gl_texture	| TextureTarget	| SizedInternalFormat	| gl_buffer	| IntPtr	| IntPtr	|
 
 # glTextureStorage1DEXT
- gl_texture	| DummyEnum	| Int32	| InternalFormat	| Int32	|
+ gl_texture	| DummyEnum	| Int32	| SizedInternalFormat	| Int32	|
 
 # glTextureStorage2DEXT
- gl_texture	| DummyEnum	| Int32	| InternalFormat	| Int32	| Int32	|
+ gl_texture	| DummyEnum	| Int32	| SizedInternalFormat	| Int32	| Int32	|
 
 # glTextureStorage3DEXT
- gl_texture	| DummyEnum	| Int32	| InternalFormat	| Int32	| Int32	| Int32	|
+ gl_texture	| DummyEnum	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	|
 
 # glTextureStorage2DMultisampleEXT
- gl_texture	| TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| boolean	|
+ gl_texture	| TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| boolean	|
 
 # glTextureStorage3DMultisampleEXT
- gl_texture	| DummyEnum	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| boolean	|
+ gl_texture	| DummyEnum	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| boolean	|
 
 # glVertexArrayBindVertexBufferEXT
  gl_vertex_array	| UInt32	| gl_buffer	| IntPtr	| Int32	|
@@ -7976,6 +7976,99 @@
  Int32	| Int32	| var UInt32	|
  Int32	| Int32	| IntPtr	|
 
+# glVertexAttribI1iEXT
+ UInt32	| Int32	|
+
+# glVertexAttribI2iEXT
+ UInt32	| Int32	| Int32	|
+
+# glVertexAttribI3iEXT
+ UInt32	| Int32	| Int32	| Int32	|
+
+# glVertexAttribI4iEXT
+ UInt32	| Int32	| Int32	| Int32	| Int32	|
+
+# glVertexAttribI1uiEXT
+ UInt32	| UInt32	|
+
+# glVertexAttribI2uiEXT
+ UInt32	| UInt32	| UInt32	|
+
+# glVertexAttribI3uiEXT
+ UInt32	| UInt32	| UInt32	| UInt32	|
+
+# glVertexAttribI4uiEXT
+ UInt32	| UInt32	| UInt32	| UInt32	| UInt32	|
+
+# glVertexAttribI1ivEXT
+ UInt32	| var Int32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI2ivEXT
+ UInt32	| array of Int32	|
+ UInt32	| var Int32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI3ivEXT
+ UInt32	| array of Int32	|
+ UInt32	| var Int32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI4ivEXT
+ UInt32	| array of Int32	|
+ UInt32	| var Int32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI1uivEXT
+ UInt32	| var UInt32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI2uivEXT
+ UInt32	| array of UInt32	|
+ UInt32	| var UInt32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI3uivEXT
+ UInt32	| array of UInt32	|
+ UInt32	| var UInt32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI4uivEXT
+ UInt32	| array of UInt32	|
+ UInt32	| var UInt32	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI4bvEXT
+ UInt32	| array of SByte	|
+ UInt32	| var SByte	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI4svEXT
+ UInt32	| array of Int16	|
+ UInt32	| var Int16	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI4ubvEXT
+ UInt32	| array of Byte	|
+ UInt32	| var Byte	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribI4usvEXT
+ UInt32	| array of UInt16	|
+ UInt32	| var UInt16	|
+ UInt32	| IntPtr	|
+
+# glVertexAttribIPointerEXT
+ UInt32	| Int32	| VertexAttribIType	| Int32	| IntPtr	|
+
+# glGetVertexAttribIivEXT
+ UInt32	| VertexAttribEnum	| var Int32	|
+ UInt32	| VertexAttribEnum	| IntPtr	|
+
+# glGetVertexAttribIuivEXT
+ UInt32	| VertexAttribEnum	| var UInt32	|
+ UInt32	| VertexAttribEnum	| IntPtr	|
+
 # glGetHistogramEXT
  HistogramTargetEXT	| boolean	| PixelFormat	| PixelType	| IntPtr	|
 
@@ -8063,40 +8156,40 @@
  UInt32	| MemoryObjectParameterName	| IntPtr	|
 
 # glTexStorageMem2DEXT
- TextureTarget	| Int32	| DummyEnum	| Int32	| Int32	| UInt32	| UInt64	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| UInt32	| UInt64	|
 
 # glTexStorageMem2DMultisampleEXT
- TextureTarget	| Int32	| DummyEnum	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
 
 # glTexStorageMem3DEXT
- TextureTarget	| Int32	| DummyEnum	| Int32	| Int32	| Int32	| UInt32	| UInt64	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| UInt32	| UInt64	|
 
 # glTexStorageMem3DMultisampleEXT
- TextureTarget	| Int32	| DummyEnum	| Int32	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
 
 # glBufferStorageMemEXT
  BufferTargetARB	| IntPtr	| UInt32	| UInt64	|
 
 # glTextureStorageMem2DEXT
- gl_texture	| Int32	| DummyEnum	| Int32	| Int32	| UInt32	| UInt64	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| UInt32	| UInt64	|
 
 # glTextureStorageMem2DMultisampleEXT
- gl_texture	| Int32	| DummyEnum	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
 
 # glTextureStorageMem3DEXT
- gl_texture	| Int32	| DummyEnum	| Int32	| Int32	| Int32	| UInt32	| UInt64	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| UInt32	| UInt64	|
 
 # glTextureStorageMem3DMultisampleEXT
- gl_texture	| Int32	| DummyEnum	| Int32	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
 
 # glNamedBufferStorageMemEXT
  gl_buffer	| IntPtr	| UInt32	| UInt64	|
 
 # glTexStorageMem1DEXT
- TextureTarget	| Int32	| DummyEnum	| Int32	| UInt32	| UInt64	|
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| UInt32	| UInt64	|
 
 # glTextureStorageMem1DEXT
- gl_texture	| Int32	| DummyEnum	| Int32	| UInt32	| UInt64	|
+ gl_texture	| Int32	| SizedInternalFormat	| Int32	| UInt32	| UInt64	|
 
 # glImportMemoryFdEXT
  UInt32	| UInt64	| ExternalHandleType	| Int32	|
@@ -8390,7 +8483,7 @@
  FramebufferTarget	| FramebufferAttachment	| gl_texture	| Int32	| Int32	|
 
 # glTexBufferEXT
- TextureTarget	| InternalFormat	| gl_buffer	|
+ TextureTarget	| SizedInternalFormat	| gl_buffer	|
 
 # glTexParameterIivEXT
  TextureTarget	| TextureParameterName	| array of Int32	|
@@ -11320,99 +11413,6 @@
  UInt32	| Int32	| array of Byte	|
  UInt32	| Int32	| var Byte	|
  UInt32	| Int32	| IntPtr	|
-
-# glVertexAttribI1iEXT
- UInt32	| Int32	|
-
-# glVertexAttribI2iEXT
- UInt32	| Int32	| Int32	|
-
-# glVertexAttribI3iEXT
- UInt32	| Int32	| Int32	| Int32	|
-
-# glVertexAttribI4iEXT
- UInt32	| Int32	| Int32	| Int32	| Int32	|
-
-# glVertexAttribI1uiEXT
- UInt32	| UInt32	|
-
-# glVertexAttribI2uiEXT
- UInt32	| UInt32	| UInt32	|
-
-# glVertexAttribI3uiEXT
- UInt32	| UInt32	| UInt32	| UInt32	|
-
-# glVertexAttribI4uiEXT
- UInt32	| UInt32	| UInt32	| UInt32	| UInt32	|
-
-# glVertexAttribI1ivEXT
- UInt32	| var Int32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI2ivEXT
- UInt32	| array of Int32	|
- UInt32	| var Int32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI3ivEXT
- UInt32	| array of Int32	|
- UInt32	| var Int32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI4ivEXT
- UInt32	| array of Int32	|
- UInt32	| var Int32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI1uivEXT
- UInt32	| var UInt32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI2uivEXT
- UInt32	| array of UInt32	|
- UInt32	| var UInt32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI3uivEXT
- UInt32	| array of UInt32	|
- UInt32	| var UInt32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI4uivEXT
- UInt32	| array of UInt32	|
- UInt32	| var UInt32	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI4bvEXT
- UInt32	| array of SByte	|
- UInt32	| var SByte	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI4svEXT
- UInt32	| array of Int16	|
- UInt32	| var Int16	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI4ubvEXT
- UInt32	| array of Byte	|
- UInt32	| var Byte	|
- UInt32	| IntPtr	|
-
-# glVertexAttribI4usvEXT
- UInt32	| array of UInt16	|
- UInt32	| var UInt16	|
- UInt32	| IntPtr	|
-
-# glVertexAttribIPointerEXT
- UInt32	| Int32	| VertexAttribIType	| Int32	| IntPtr	|
-
-# glGetVertexAttribIivEXT
- UInt32	| VertexAttribEnum	| var Int32	|
- UInt32	| VertexAttribEnum	| IntPtr	|
-
-# glGetVertexAttribIuivEXT
- UInt32	| VertexAttribEnum	| var UInt32	|
- UInt32	| VertexAttribEnum	| IntPtr	|
 
 # glBeginVideoCaptureNV
  UInt32	|

@@ -11,8 +11,8 @@ unsigned char				= Byte
 int							= Int32
 int32_t						= Int32
 UINT						= UInt32
-cl_GLuint					= UInt32
 uint32_t					= UInt32
+unsigned int				= UInt32
 
 uint64_t					= UInt64
 
@@ -42,6 +42,10 @@ cl_kernel					= cl_kernel
 cl_event					= cl_event
 cl_accelerator_intel		= cl_accelerator_intel
 
+//--------------------------------------------------
+//                     Untested
+//--------------------------------------------------
+
 ID3D10Buffer				= IntPtr
 ID3D10Texture2D				= IntPtr
 ID3D10Texture3D				= IntPtr
@@ -49,9 +53,11 @@ ID3D11Buffer				= IntPtr
 ID3D11Texture2D				= IntPtr
 ID3D11Texture3D				= IntPtr
 IDirect3DSurface9			= IntPtr
+D3DFORMAT					= IntPtr -
+DXGI_FORMAT					= IntPtr -
+VAImageFormat				= IntPtr -
 VASurfaceID					= IntPtr
 cl_GLsync					= IntPtr
-cl_GLenum					= UInt32
 cl_icd_dispatch				= IntPtr
 
 

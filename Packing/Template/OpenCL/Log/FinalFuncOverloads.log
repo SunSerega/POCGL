@@ -1714,12 +1714,6 @@
 # clCreateFromGLTexture
  cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
 
-# clCreateFromGLTexture2D
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
-
-# clCreateFromGLTexture3D
- cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
-
 # clCreateFromGLRenderbuffer
  cl_mem	| cl_context	| MemFlags	| UInt32	| var ErrorCode	|
 
@@ -1797,6 +1791,12 @@
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
 
+# clCreateFromGLTexture2D
+ cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
+
+# clCreateFromGLTexture3D
+ cl_mem	| cl_context	| MemFlags	| UInt32	| Int32	| UInt32	| var ErrorCode	|
+
 # clHostMemAllocINTEL
  IntPtr	| cl_context	| array of MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
  IntPtr	| cl_context	| var MemPropertiesIntel	| UIntPtr	| UInt32	| var ErrorCode	|
@@ -1813,6 +1813,9 @@
  IntPtr	| cl_context	| cl_device_id	| IntPtr	| UIntPtr	| UInt32	| var ErrorCode	|
 
 # clMemFreeINTEL
+ ErrorCode	| cl_context	| IntPtr	|
+
+# clMemBlockingFreeINTEL
  ErrorCode	| cl_context	| IntPtr	|
 
 # clGetMemAllocInfoINTEL
@@ -1965,5 +1968,65 @@
  ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| IntPtr	| array of cl_event	|
  ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| IntPtr	| var cl_event	|
  ErrorCode	| cl_command_queue	| cl_mem	| cl_mem	| MipmapFilterModeImg	| IntPtr	| IntPtr	| UInt32	| IntPtr	| IntPtr	|
+
+# clGetKernelSuggestedLocalWorkSizeKHR
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| array of UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| array of UIntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| var UIntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| array of UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| array of UIntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| array of UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| array of UIntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| var UIntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| var UIntPtr	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| array of UIntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| array of UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| array of UIntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| var UIntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| var UIntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| var UIntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| cl_command_queue	| cl_kernel	| UInt32	| IntPtr	| IntPtr	| IntPtr	|
+
+# clGetSupportedGLTextureFormatsINTEL
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| array of UInt32	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| array of UInt32	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| array of UInt32	| IntPtr	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| var UInt32	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| var UInt32	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| var UInt32	| IntPtr	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| IntPtr	|
+
+# clGetSupportedDX9MediaSurfaceFormatsINTEL
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+
+# clGetSupportedD3D10TextureFormatsINTEL
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| IntPtr	| IntPtr	|
+
+# clGetSupportedD3D11TextureFormatsINTEL
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| IntPtr	|
+
+# clGetSupportedVA_APIMediaSurfaceFormatsINTEL
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| array of UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| var UInt32	|
+ ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| IntPtr	|
 
 
