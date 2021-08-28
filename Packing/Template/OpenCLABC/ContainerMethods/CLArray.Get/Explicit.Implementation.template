@@ -1,0 +1,195 @@
+﻿
+
+
+{$region Get}
+
+{$region GetItem}
+
+type
+  CLArrayCommandGetItem<T> = sealed class(EnqueueableGetCommand<CLArray<T>, &T>)
+  where T: record;
+    private ind: CommandQueue<integer>;
+    
+    public function ForcePtrQr: boolean; override := true;
+    
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(ccq: CLArrayCCQ<T>; ind: CommandQueue<integer>);
+    begin
+      inherited Create(ccq);
+      self.ind := ind;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<&T>)->cl_event; override;
+    begin
+      var ind_qr := ind.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ind_qr.ev);
+      
+      Result := (o, cq, tsk, evs, own_qr)->
+      begin
+        var ind := ind_qr.GetRes;
+        var res_ev: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+          new IntPtr((own_qr as QueueResDelayedPtr<&T>).ptr),
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        var own_qr_hnd := GCHandle.Alloc(own_qr);
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          own_qr_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      ind.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'ind: ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+{$endregion GetItem}
+
+function CLArrayCCQ<T>.AddGetItem(ind: CommandQueue<integer>): CommandQueue<&T> :=
+new CLArrayCommandGetItem<T>(self, ind) as CommandQueue<&T>;
+
+{$region GetArrayAutoSize}
+
+type
+  CLArrayCommandGetArrayAutoSize<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
+  where T: record;
+    
+    public function NeedThread: boolean; override := true;
+    
+    public function ParamCountL1: integer; override := 0;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(ccq: CLArrayCCQ<T>);
+    begin
+      inherited Create(ccq);
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
+    begin
+      
+      Result := (o, cq, tsk, evs, own_qr)->
+      begin
+        
+        var res := new T[o.Length]; own_qr.SetRes(res);
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          UIntPtr.Zero, new UIntPtr(o.ByteSize),
+          res[0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
+        
+        Result := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
+    
+  end;
+  
+{$endregion GetArrayAutoSize}
+
+function CLArrayCCQ<T>.AddGetArray: CommandQueue<array of &T> :=
+new CLArrayCommandGetArrayAutoSize<T>(self) as CommandQueue<array of &T>;
+
+{$region GetArray}
+
+type
+  CLArrayCommandGetArray<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
+  where T: record;
+    private offset: CommandQueue<integer>;
+    private    len: CommandQueue<integer>;
+    
+    public function NeedThread: boolean; override := true;
+    
+    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(ccq: CLArrayCCQ<T>; offset, len: CommandQueue<integer>);
+    begin
+      inherited Create(ccq);
+      self.offset := offset;
+      self.   len :=    len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
+    begin
+      var offset_qr := offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(offset_qr.ev);
+      var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
+      
+      Result := (o, cq, tsk, evs, own_qr)->
+      begin
+        var offset := offset_qr.GetRes;
+        var    len :=    len_qr.GetRes;
+        
+        var res := new T[len]; own_qr.SetRes(res);
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.BLOCKING,
+          new UIntPtr(int64(offset) * Marshal.SizeOf&<T>), new UIntPtr(int64(len) * Marshal.SizeOf&<T>),
+          res[0],
+          evs.count, evs.evs, IntPtr.Zero
+        ).RaiseIfError;
+        
+        Result := cl_event.Zero;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      offset.RegisterWaitables(tsk, prev_hubs);
+         len.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'offset: ';
+      offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'len: ';
+      len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+{$endregion GetArray}
+
+function CLArrayCCQ<T>.AddGetArray(offset, len: CommandQueue<integer>): CommandQueue<array of &T> :=
+new CLArrayCommandGetArray<T>(self, offset, len) as CommandQueue<array of &T>;
+
+{$endregion Get}
+
+

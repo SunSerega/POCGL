@@ -12,34 +12,34 @@ cl.EnqueueFillBuffer(
 ).RaiseIfError;
 
 # FillData
-ptr: CommandQueue<IntPtr>; pattern_len, buff_offset, len: CommandQueue<integer>
+ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>
 !Enqueue
 cl.EnqueueFillBuffer(
   cq, o.ntv,
   !ptr!, new UIntPtr(!pattern_len!),
-  new UIntPtr(!buff_offset!), new UIntPtr(!len!),
+  new UIntPtr(!mem_offset!), new UIntPtr(!len!),
   !evs!
 ).RaiseIfError;
 
 
 
 # FillValue[%auto sz: !AutoSize, %]
-val: TRecord{%auto sz?:; buff_offset, len\: CommandQueue<integer>%}
+val: TRecord{%auto sz?:; mem_offset, len\: CommandQueue<integer>%}
 !Enqueue
 cl.EnqueueFillBuffer(
   cq, o.ntv,
   new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<TRecord>),
-  {%auto sz? UIntPtr.Zero, o.Size : new UIntPtr(!buff_offset!), new UIntPtr(!len!) %},
+  {%auto sz? UIntPtr.Zero, o.Size : new UIntPtr(!mem_offset!), new UIntPtr(!len!) %},
   !evs!
 ).RaiseIfError;
 
 # FillValue![%auto sz: AutoSize, %]Q
-val: CommandQueue<TRecord>{%auto sz?:; buff_offset, len\: CommandQueue<integer>%}
+val: CommandQueue<TRecord>{%auto sz?:; mem_offset, len\: CommandQueue<integer>%}
 !Enqueue
 cl.EnqueueFillBuffer(
   cq, o.ntv,
   new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<TRecord>),
-  {%auto sz? UIntPtr.Zero, o.Size : new UIntPtr(!buff_offset!), new UIntPtr(!len!) %},
+  {%auto sz? UIntPtr.Zero, o.Size : new UIntPtr(!mem_offset!), new UIntPtr(!len!) %},
   !evs!
 ).RaiseIfError;
 

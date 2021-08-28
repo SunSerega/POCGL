@@ -17,7 +17,7 @@ cl.EnqueueReadBuffer(
 );
 
 # GetData
-buff_offset, len: CommandQueue<integer>
+mem_offset, len: CommandQueue<integer>
 !ResultType
 IntPtr
 !Enqueue
@@ -25,7 +25,7 @@ var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); !set_res!(res);
 tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(!len!),
+  new UIntPtr(!mem_offset!), new UIntPtr(!len!),
   res,
   !evs!
 ).RaiseIfError;
@@ -39,13 +39,13 @@ TRecord
 GetValue&<TRecord>(0);
 
 # GetValue
-buff_offset: CommandQueue<integer>
+mem_offset: CommandQueue<integer>
 !ResultType
 TRecord
 !Enqueue
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
+  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
   new IntPtr(!res_ptr!),
   !evs!
 ).RaiseIfError;

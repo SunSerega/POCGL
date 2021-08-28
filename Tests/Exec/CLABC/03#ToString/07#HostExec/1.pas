@@ -2,5 +2,6 @@
 
 begin
   HFQ(()->1).Println;
-  HPQ(()->exit()).Println;
+  //ToDo Почему без begin не работает?
+  HPQ(()->begin exit() end).Println;
 end.

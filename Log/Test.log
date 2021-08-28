@@ -1,124 +1,130 @@
-﻿Compiling "Tests\Tester.pas"
-Finished compiling: OK
-Runing Tester
+﻿Runing Tester
 Tester: Testing selected modules:
 Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
 Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D +WPF.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Симуляция тепла\2D.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec2.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec4.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~02#Cast\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\10#WaitMarker\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#ThenConvert\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#Multiusable\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Wait\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#HostExec\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
-Tester: Finished compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#MarkerQueue\1.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Det.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Random.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\GL\Vec.Cross.pas"
-Tester: Finished compiling: OK
+Tester: Compiling: OK
 Tester: Executing Test[Samples\OpenCL\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCL\SimpleAddition]
@@ -139,9 +145,9 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Buffer\SubBuffer1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
 Tester: Done executing
@@ -195,6 +201,10 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\10#WaitMarker\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
@@ -207,7 +217,6 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\1]
@@ -220,15 +229,18 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#MarkerQueue\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Det]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Random]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.td" updated
 Tester: Done testing
 Finished runing Tester

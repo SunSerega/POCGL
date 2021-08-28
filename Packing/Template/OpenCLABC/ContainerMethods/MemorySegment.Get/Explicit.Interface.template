@@ -5,11 +5,11 @@
     
     public function AddGetData: CommandQueue<IntPtr>;
     
-    public function AddGetData(buff_offset, len: CommandQueue<integer>): CommandQueue<IntPtr>;
+    public function AddGetData(mem_offset, len: CommandQueue<integer>): CommandQueue<IntPtr>;
     
     public function AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
     
-    public function AddGetValue<TRecord>(buff_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+    public function AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
     
     public function AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
     

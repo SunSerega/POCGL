@@ -133,5 +133,25 @@
     
   end;
   
+  CLArray<T> = partial class
+    
+    public property Native: cl_mem read ntv;
+    
+    private prop: CLArrayProperties;
+    private function GetProperties: CLArrayProperties;
+    begin
+      if prop=nil then prop := new CLArrayProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: CLArrayProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: CLArray<T>): boolean := wr1.ntv = wr2.ntv;
+    public static function operator<>(wr1, wr2: CLArray<T>): boolean := wr1.ntv <> wr2.ntv;
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is CLArray<T>(var wr)) and (self = wr);
+    
+  end;
+  
   
   

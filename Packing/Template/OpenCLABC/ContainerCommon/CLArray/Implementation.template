@@ -1,0 +1,31 @@
+﻿
+
+
+constructor CLArrayCCQ<T>.Create(o: CLArray<T>) := inherited;
+constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
+constructor CLArrayCCQ<T>.Create := inherited;
+
+{$region Special .Add's}
+
+function CLArrayCCQ<T>.AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
+begin
+  Result := self;
+  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
+  if q is ICastQueue(var cq) then q := cq.GetQ;
+  commands.Add( new QueueCommand<CLArray<T>>(q) );
+end;
+
+function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, new ProcCommand<CLArray<T>>((o,c)->p(o)));
+function CLArrayCCQ<T>.AddProc(p: (CLArray<T>, Context)->()) := AddCommand(self, new ProcCommand<CLArray<T>>(p));
+
+function CLArrayCCQ<T>.AddWaitAll(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<CLArray<T>>(new WCQWaiterAll(markers.ToArray)));
+function CLArrayCCQ<T>.AddWaitAll(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<CLArray<T>>(new WCQWaiterAll(markers.ToArray)));
+
+function CLArrayCCQ<T>.AddWaitAny(params markers: array of WaitMarkerBase) := AddCommand(self, new WaitCommand<CLArray<T>>(new WCQWaiterAny(markers.ToArray)));
+function CLArrayCCQ<T>.AddWaitAny(markers: sequence of WaitMarkerBase) := AddCommand(self, new WaitCommand<CLArray<T>>(new WCQWaiterAny(markers.ToArray)));
+
+function CLArrayCCQ<T>.AddWait(marker: WaitMarkerBase) := AddWaitAll(marker);
+
+{$endregion Special .Add's}
+
+

@@ -12,11 +12,11 @@ cl.Enqueue{%mode%}Buffer(
 ).RaiseIfError;
 
 # [%mode:Write,Read%]Data
-ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>
+ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(!len!),
+  new UIntPtr(!mem_offset!), new UIntPtr(!len!),
   !ptr!,
   !evs!
 ).RaiseIfError;
@@ -27,9 +27,9 @@ ptr: pointer
 {%mode%}Data(IntPtr(ptr));
 
 # [%mode:Write,Read%]Data
-ptr: pointer; buff_offset, len: CommandQueue<integer>
+ptr: pointer; mem_offset, len: CommandQueue<integer>
 !ShortDef
-{%mode%}Data(IntPtr(ptr), buff_offset, len);
+{%mode%}Data(IntPtr(ptr), mem_offset, len);
 
 
 
@@ -39,11 +39,11 @@ val: TRecord
 WriteValue(val, 0);
 
 # WriteValue
-val: TRecord; buff_offset: CommandQueue<integer>
+val: TRecord; mem_offset: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
+  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
   new IntPtr(!val:ptr!),
   !evs!
 ).RaiseIfError;
@@ -54,11 +54,11 @@ val: CommandQueue<TRecord>
 WriteValue(val, 0);
 
 # WriteValue!Q
-val: CommandQueue<TRecord>; buff_offset: CommandQueue<integer>
+val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
+  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
   new IntPtr(!val:ptr!),
   !evs!
 ).RaiseIfError;
@@ -77,11 +77,11 @@ cl.Enqueue{%mode%}Buffer(
 !NeedThread
 
 # [%mode:Write,Read%]Array[%rank:1,2,3%]
-a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}, len, buff_offset: CommandQueue<integer>
+a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}, len, mem_offset: CommandQueue<integer>
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.BLOCKING,
-  new UIntPtr(!buff_offset!), new UIntPtr(!len!*Marshal.SizeOf&<TRecord>),
+  new UIntPtr(!mem_offset!), new UIntPtr(!len!*Marshal.SizeOf&<TRecord>),
   !a![{%rank? !a_offset! : !a_offset1!,!a_offset2! : !a_offset1!,!a_offset2!,!a_offset3! %}],
   !evs!
 ).RaiseIfError;

@@ -1,0 +1,26 @@
+﻿    
+    
+    
+    public constructor(o: CLArray<T>);
+    public constructor(q: CommandQueue<CLArray<T>>);
+    private constructor;
+    
+    {$region Special .Add's}
+    
+    public function AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
+    
+    public function AddProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    public function AddProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    
+    public function AddWaitAll(params markers: array of WaitMarkerBase): CLArrayCCQ<T>;
+    public function AddWaitAll(markers: sequence of WaitMarkerBase): CLArrayCCQ<T>;
+    
+    public function AddWaitAny(params markers: array of WaitMarkerBase): CLArrayCCQ<T>;
+    public function AddWaitAny(markers: sequence of WaitMarkerBase): CLArrayCCQ<T>;
+    
+    public function AddWait(marker: WaitMarkerBase): CLArrayCCQ<T>;
+    
+    {$endregion Special .Add's}
+    
+    
+    

@@ -7,25 +7,25 @@
     
     public function ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
     
-    public function WriteData(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    public function WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
     
-    public function ReadData(ptr: CommandQueue<IntPtr>; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    public function ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
     
     public function WriteData(ptr: pointer): MemorySegment;
     
     public function ReadData(ptr: pointer): MemorySegment;
     
-    public function WriteData(ptr: pointer; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    public function WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegment;
     
-    public function ReadData(ptr: pointer; buff_offset, len: CommandQueue<integer>): MemorySegment;
+    public function ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegment;
     
     public function WriteValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
     
-    public function WriteValue<TRecord>(val: TRecord; buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
     public function WriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
     
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
     public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
     
@@ -39,17 +39,17 @@
     
     public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
     
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
-    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
-    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
-    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, buff_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
@@ -57,15 +57,15 @@
     
     public function FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegment;
     
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, buff_offset, len: CommandQueue<integer>): MemorySegment;
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegment;
     
     public function FillValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
     
-    public function FillValue<TRecord>(val: TRecord; buff_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
     public function FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
     
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>; buff_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
     {$endregion 2#Fill}
     

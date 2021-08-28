@@ -1,8 +1,8 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 uses Fixers       in '..\..\..\Utils\Fixers';
+uses CodeGen      in '..\..\..\Utils\CodeGen';
 
 uses PackingUtils in '..\PackingUtils';
-uses CodeGenUtils in '..\CodeGenUtils';
 
 function FixWord(w: string): string;
 begin
@@ -43,8 +43,6 @@ begin
       res += #10;
     end;
     
-    var base_t: string := nil;
-    
     foreach var fname in EnumerateFiles(GetFullPathRTA('WrapperProperties\Def'), '*.dat') do
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
@@ -54,20 +52,20 @@ begin
       var info_t: string := nil;
       var ntv_proc_name: string := nil;
       var ps := new List<Prop>;
+      
+      var base_t: string := nil;
+      
       foreach var (bl_name, bl_data) in FixerUtils.ReadBlocks(fname, false) do
-        if bl_name=nil then
-        begin
-          (ntv_t, info_t, ntv_proc_name) := bl_data;
+        if bl_name<>nil then
+          ps += new Prop(bl_name, bl_data) else
           foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl_data, '!', false) do
             match setting_name with
-              nil: ;
+              nil: (ntv_t, info_t, ntv_proc_name) := setting_data;
               
               'Base': base_t := setting_data.Single;
               
               else raise new System.InvalidOperationException(setting_name);
             end;
-        end else
-          ps += new Prop(bl_name, bl_data);
       
       var max_type_len := ps.Max(p->p.t.Length);
       var max_name_len := ps.Max(p->p.name.Length);

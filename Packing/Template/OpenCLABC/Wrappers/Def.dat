@@ -6,7 +6,8 @@ Device				: cl_device_id
 Context				: cl_context
 ProgramCode			: cl_program
 Kernel				: cl_kernel
-MemorySegment	: cl_mem
+MemorySegment		: cl_mem
 MemorySubSegment	: MemorySegment
+CLArray				: cl_mem			: T=record
 
 

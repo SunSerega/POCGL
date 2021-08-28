@@ -1,0 +1,48 @@
+
+
+
+# WriteItem
+val: &T; offset: CommandQueue<integer>
+!Enqueue
+cl.EnqueueWriteBuffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!offset! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  new IntPtr(!val:ptr!),
+  !evs!
+).RaiseIfError;
+
+# WriteItem!Q
+val: CommandQueue<&T>; offset: CommandQueue<integer>
+!Enqueue
+cl.EnqueueWriteBuffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!offset! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  new IntPtr(!val:ptr!),
+  !evs!
+).RaiseIfError;
+
+
+
+# [%mode:Write,Read%]Array!AutoSize
+a: CommandQueue<array of &T>
+!Enqueue
+cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.BLOCKING,
+  UIntPtr.Zero, new UIntPtr(!a!.Length*Marshal.SizeOf&<T>),
+  !a![0],
+  !evs!
+).RaiseIfError;
+!NeedThread
+
+# [%mode:Write,Read%]Array
+a: CommandQueue<array of &T>; offset, len, a_offset: CommandQueue<integer>
+!Enqueue
+cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.BLOCKING,
+  new UIntPtr(!offset!*Marshal.SizeOf&<T>), new UIntPtr(!len!*Marshal.SizeOf&<T>),
+  !a![!a_offset!],
+  !evs!
+).RaiseIfError;
+!NeedThread
+
+

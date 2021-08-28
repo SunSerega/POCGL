@@ -55,36 +55,36 @@ new MemorySegmentCommandGetDataAutoSize(self) as CommandQueue<IntPtr>;
 
 type
   MemorySegmentCommandGetData = sealed class(EnqueueableGetCommand<MemorySegment, IntPtr>)
-    private buff_offset: CommandQueue<integer>;
-    private         len: CommandQueue<integer>;
+    private mem_offset: CommandQueue<integer>;
+    private        len: CommandQueue<integer>;
     
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: MemorySegmentCCQ; buff_offset, len: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; mem_offset, len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
-      self.buff_offset := buff_offset;
-      self.        len :=         len;
+      self.mem_offset := mem_offset;
+      self.       len :=        len;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
-      var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
-      var         len_qr :=         len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
+      var mem_offset_qr := mem_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(mem_offset_qr.ev);
+      var        len_qr :=        len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
       
       Result := (o, cq, tsk, evs, own_qr)->
       begin
-        var buff_offset := buff_offset_qr.GetRes;
-        var         len :=         len_qr.GetRes;
+        var mem_offset := mem_offset_qr.GetRes;
+        var        len :=        len_qr.GetRes;
         var res_ev: cl_event;
         
         var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); own_qr.SetRes(res);
         tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(len),
+          new UIntPtr(mem_offset), new UIntPtr(len),
           res,
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
@@ -96,8 +96,8 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
-      buff_offset.RegisterWaitables(tsk, prev_hubs);
-              len.RegisterWaitables(tsk, prev_hubs);
+      mem_offset.RegisterWaitables(tsk, prev_hubs);
+             len.RegisterWaitables(tsk, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -105,8 +105,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'buff_offset: ';
-      buff_offset.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset: ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
       sb += 'len: ';
@@ -118,8 +118,8 @@ type
   
 {$endregion GetData}
 
-function MemorySegmentCCQ.AddGetData(buff_offset, len: CommandQueue<integer>): CommandQueue<IntPtr> :=
-new MemorySegmentCommandGetData(self, buff_offset, len) as CommandQueue<IntPtr>;
+function MemorySegmentCCQ.AddGetData(mem_offset, len: CommandQueue<integer>): CommandQueue<IntPtr> :=
+new MemorySegmentCommandGetData(self, mem_offset, len) as CommandQueue<IntPtr>;
 
 function MemorySegmentCCQ.AddGetValue<TRecord>: CommandQueue<TRecord> :=
 AddGetValue&<TRecord>(0);
@@ -129,32 +129,32 @@ AddGetValue&<TRecord>(0);
 type
   MemorySegmentCommandGetValue<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, TRecord>)
   where TRecord: record;
-    private buff_offset: CommandQueue<integer>;
+    private mem_offset: CommandQueue<integer>;
     
     public function ForcePtrQr: boolean; override := true;
     
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: MemorySegmentCCQ; buff_offset: CommandQueue<integer>);
+    public constructor(ccq: MemorySegmentCCQ; mem_offset: CommandQueue<integer>);
     begin
       inherited Create(ccq);
-      self.buff_offset := buff_offset;
+      self.mem_offset := mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
     begin
-      var buff_offset_qr := buff_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(buff_offset_qr.ev);
+      var mem_offset_qr := mem_offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(mem_offset_qr.ev);
       
       Result := (o, cq, tsk, evs, own_qr)->
       begin
-        var buff_offset := buff_offset_qr.GetRes;
+        var mem_offset := mem_offset_qr.GetRes;
         var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(buff_offset), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf&<TRecord>),
           new IntPtr((own_qr as QueueResDelayedPtr<TRecord>).ptr),
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
@@ -173,7 +173,7 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
-      buff_offset.RegisterWaitables(tsk, prev_hubs);
+      mem_offset.RegisterWaitables(tsk, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -181,8 +181,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'buff_offset: ';
-      buff_offset.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset: ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
@@ -190,8 +190,8 @@ type
   
 {$endregion GetValue}
 
-function MemorySegmentCCQ.AddGetValue<TRecord>(buff_offset: CommandQueue<integer>): CommandQueue<TRecord> :=
-new MemorySegmentCommandGetValue<TRecord>(self, buff_offset) as CommandQueue<TRecord>;
+function MemorySegmentCCQ.AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord> :=
+new MemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
 
 {$region GetArray1AutoSize}
 

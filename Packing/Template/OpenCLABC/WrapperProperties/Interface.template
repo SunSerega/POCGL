@@ -320,5 +320,28 @@
   
   {$endregion MemorySubSegment}
   
+  {$region CLArray}
+  
+  CLArrayProperties = partial class
+    
+    public constructor(ntv: cl_mem);
+    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    
+    private function GetFlags: MemFlags;
+    private function GetHostPtr: IntPtr;
+    private function GetMapCount: UInt32;
+    private function GetReferenceCount: UInt32;
+    private function GetUsesSvmPointer: Bool;
+    
+    public property Flags:          MemFlags read GetFlags;
+    public property HostPtr:        IntPtr   read GetHostPtr;
+    public property MapCount:       UInt32   read GetMapCount;
+    public property ReferenceCount: UInt32   read GetReferenceCount;
+    public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
+    
+  end;
+  
+  {$endregion CLArray}
+  
   
   

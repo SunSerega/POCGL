@@ -1,7 +1,7 @@
 ﻿unit MethodGenData;
 {$savepcu false} //ToDo #2394
 
-uses CodeGenUtils in '..\CodeGenUtils';
+uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 uses Fixers       in '..\..\..\Utils\Fixers';
 
@@ -158,6 +158,7 @@ type
     public need_thread := false;
     public implicit_only := false;
     
+    // generics метода
     public generics := new HashSet<string>;
     public where_record := new HashSet<string>;
     
@@ -248,7 +249,7 @@ type
     protected function GetArgTNames: sequence of string; virtual :=
     args=nil? System.Array.Empty&<string> : args.Select(arg->arg.t.Enmr.Last.org_text);
     
-    public procedure Seal(t: string; debug_tn: string); virtual;
+    public procedure Seal(t: string; type_generics: sequence of string; debug_tn: string); virtual;
     begin
       
       if def=nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
@@ -300,6 +301,9 @@ type
     protected res: Writer;
     
     protected t: string;
+    
+    // generics типа
+    protected generics := new List<(string,string)>;
     
     {$region Global}
     
@@ -568,11 +572,25 @@ type
       res_EIm += t;
       res_EIm += 'Command';
       res_EIm += tn;
-      res_EIm += settings.generics_str;
+      if generics.Count+settings.generics.Count <> 0 then
+      begin
+        res_EIm += '<';
+        res_EIm += generics.Select(g->g[0]).Concat(settings.generics).JoinToString(', ');
+        res_EIm += '>';
+      end;
       res_EIm += ' = sealed class(';
       WriteCommandBaseTypeName(t, settings);
       res_EIm += ')'#10;
       
+      foreach var g in generics do
+      begin
+        if g[1]=nil then continue;
+        res_EIm += '  where ';
+        res_EIm += g[0];
+        res_EIm += ': ';
+        res_EIm += g[1];
+        res_EIm += ';'#10
+      end;
       if settings.where_record_str<>nil then
       begin
         res_EIm += '  ';
@@ -840,9 +858,9 @@ type
       var tn := name_separator_ind=-1 ? bl[0] : bl[0].Remove(name_separator_ind,1);
       
       var settings := new TSettings;
-      foreach var setting in FixerUtils.ReadBlocks(bl[1], '!', false) do
-        settings.Apply(setting[0], setting[1], tn);
-      settings.Seal(t, tn);
+      foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl[1], '!', false) do
+        settings.Apply(setting_name, setting_data, tn);
+      settings.Seal(t, generics.Select(g->g[0]), tn);
       
       if not settings.is_short_def then
         WriteCommandType(fn, tn, settings);
@@ -863,6 +881,12 @@ type
         l_res += 'function ';
         l_res_Im += t;
         l_res_EIm += 'CCQ';
+        if generics.Count <> 0 then
+        begin
+          l_res_Im += '<';
+          l_res_Im += generics.Select(g->g[0]).JoinToString(', ');
+          l_res_Im += '>';
+        end;
         l_res_Im += '.';
         l_res_E += 'Add';
         l_res += fn;
@@ -902,6 +926,7 @@ type
       end else
       begin
         
+        res_IIm += '//ToDo #2510'#10;
         res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Add';
         res_IIm += fn;
         if settings.generics_str <> nil then
@@ -915,9 +940,13 @@ type
           res_IIm += settings.args.Select(arg->arg.name).JoinToString(', ');
           res_IIm += ')';
         end;
-        res_IIm += ' as CommandQueue<';
-        res_IIm += GetIImResT(settings);
-        res_IIm += '>);'#10;
+        //ToDo #2510
+        begin
+          res_IIm += ' as object as CommandQueue<';
+          WriteMethodResT(res_IIm, new WriterEmpty, settings);
+          res_IIm += '>';
+        end;
+        res_IIm += ');'#10;
         
         WriteMethodEImBody(()->
         begin
@@ -925,7 +954,12 @@ type
           res_EIm += t;
           res_EIm += 'Command';
           res_EIm += tn;
-          res_EIm += settings.generics_str;
+          if generics.Count+settings.generics.Count <> 0 then
+          begin
+            res_EIm += '<';
+            res_EIm += generics.Select(g->g[0]).Concat(settings.generics).JoinToString(', ');
+            res_EIm += '>';
+          end;
           if settings.impl_args<>nil then
           begin
             res_EIm += '(';
@@ -945,23 +979,48 @@ type
     
     public procedure WriteMethodGroup(fname, nick: string);
     begin
-      
-      res_In += '    ';
-      res += '{$region ';
-      res += nick;
-      res += '}'#10;
-      res_In += '    ';
-      res += #10;
+      var reg_defined := false;
       
       foreach var bl in FixerUtils.ReadBlocks(fname, false) do
-        WriteMethod(bl);
+        if bl[0]<>nil then
+        begin
+          if not reg_defined then
+          begin
+            res_In += '    ';
+            res += '{$region ';
+            res += nick;
+            res += '}'#10;
+            res_In += '    ';
+            res += #10;
+            reg_defined := true;
+          end;
+          WriteMethod(bl);
+        end else
+          foreach var (special_name, special_data) in FixerUtils.ReadBlocks(bl[1], '!', false) do
+            match special_name with
+              
+              'Generics':
+              foreach var l in special_data do
+              begin
+                var ind := l.IndexOf(':');
+                self.generics += (
+                  (if ind=-1 then l else l.Remove(ind)).Trim,
+                  if ind=-1 then nil else l.Substring(ind+1).Trim
+                );
+              end;
+              
+              else raise new System.InvalidOperationException(special_name);
+            end;
       
-      res_In += '    ';
-      res += '{$endregion ';
-      res += nick;
-      res += '}'#10;
-      res_In += '    ';
-      res += #10;
+      if reg_defined then
+      begin
+        res_In += '    ';
+        res += '{$endregion ';
+        res += nick;
+        res += '}'#10;
+        res_In += '    ';
+        res += #10;
+      end;
       
     end;
     

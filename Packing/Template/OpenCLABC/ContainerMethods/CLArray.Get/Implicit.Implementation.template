@@ -1,0 +1,20 @@
+﻿
+
+
+{$region Get}
+
+function CLArray<T>.GetItem(ind: CommandQueue<integer>): &T :=
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetItem(ind) as object as CommandQueue<&T>);
+
+function CLArray<T>.GetArray: array of &T :=
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray as object as CommandQueue<array of &T>);
+
+function CLArray<T>.GetArray(offset, len: CommandQueue<integer>): array of &T :=
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray(offset, len) as object as CommandQueue<array of &T>);
+
+{$endregion Get}
+
+

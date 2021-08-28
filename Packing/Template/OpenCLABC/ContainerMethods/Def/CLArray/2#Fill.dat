@@ -1,0 +1,24 @@
+
+
+
+# Fill[%auto sz: !AutoSize, %]
+val: &T{%auto sz?:; mem_offset, len\: CommandQueue<integer>%}
+!Enqueue
+cl.EnqueueFillBuffer(
+  cq, o.ntv,
+  new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<&T>),
+  {%auto sz? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!mem_offset!), new UIntPtr(!len!) %},
+  !evs!
+).RaiseIfError;
+
+# Fill![%auto sz: AutoSize, %]Q
+val: CommandQueue<&T>{%auto sz?:; mem_offset, len\: CommandQueue<integer>%}
+!Enqueue
+cl.EnqueueFillBuffer(
+  cq, o.ntv,
+  new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<&T>),
+  {%auto sz? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!mem_offset!), new UIntPtr(!len!) %},
+  !evs!
+).RaiseIfError;
+
+

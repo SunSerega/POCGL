@@ -1,0 +1,26 @@
+
+
+
+# Copy[%direction:To,Form%]!AutoSize
+a: CommandQueue<CLArray<T>>
+!Enqueue
+cl.EnqueueCopyBuffer(
+  cq, {%direction? o.ntv,!a!.ntv : !a!.ntv,o.ntv %},
+  UIntPtr.Zero, UIntPtr.Zero,
+  new UIntPtr(Min(o.ByteSize, a.ByteSize)),
+  !evs!
+).RaiseIfError;
+
+
+
+# Copy[%direction:To,Form%]
+a: CommandQueue<CLArray<T>>; from_pos, to_pos, len: CommandQueue<integer>
+!Enqueue
+cl.EnqueueCopyBuffer(
+  cq, {%direction? o.ntv,!a!.ntv : !a!.ntv,o.ntv %},
+  new UIntPtr(!from_pos!*Marshal.SizeOf&<T>), new UIntPtr(!to_pos!*Marshal.SizeOf&<T>),
+  new UIntPtr(!len!*Marshal.SizeOf&<T>),
+  !evs!
+).RaiseIfError;
+
+

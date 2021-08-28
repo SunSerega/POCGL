@@ -1,9 +1,9 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 uses ATask        in '..\..\..\Utils\ATask';
 uses Fixers       in '..\..\..\Utils\Fixers';
+uses CodeGen      in '..\..\..\Utils\CodeGen';
 
 uses PackingUtils in '..\PackingUtils';
-uses CodeGenUtils in '..\CodeGenUtils';
 
 begin
   try
@@ -11,7 +11,26 @@ begin
     FixerUtils.ReadBlocks(GetFullPathRTA('ContainerCommon\Def.dat'), false).TaskForEach(bl->
     begin
       var t := bl[0];
-      var expl_constructor_arg := bl[1].SingleOrDefault;
+      
+      // (name, where)
+      // Вообще where ни на что не используется, потому что эта программа не описывает свои классы
+      var generics := new List<(string,string)>;
+      
+      foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl[1], '!', false) do
+      match setting_name with
+        
+        'Generic':
+        foreach var l in setting_data do
+        begin
+          var ind := l.IndexOf(':');
+          generics += (
+            (if ind=-1 then l else l.Remove(ind)).Trim,
+            if ind=-1 then nil else l.Substring(ind+1).Trim
+          );
+        end;
+        
+        else raise new System.InvalidOperationException(setting_name);
+      end;
       
       var dir := GetFullPathRTA($'ContainerCommon\{t}');
       System.IO.Directory.CreateDirectory(dir);
@@ -27,60 +46,56 @@ begin
         res += #10;
       end;
       
-      var WriteHeader := procedure->
+      var WriteGenerics := procedure(wr: Writer)->
+      if generics.Count<>0 then
       begin
-        res_In += '    ';
-        res_In += 'public ';
-        res += 'function ';
-        res_Im += t;
-        res_Im += 'CCQ.';
+        wr += '<';
+        wr += generics.Select(g->g[0]).JoinToString(', ');
+        wr += '>';
       end;
       
-      var WriteResT := procedure->
+      var WriteCCQ := procedure(wr: Writer)->
       begin
-        res_In += ': ';
-        res_In += t;
-        res_In += 'CCQ;';
+        wr += t;
+        wr += 'CCQ';
+        WriteGenerics(wr);
+      end;
+      
+      var WriteHeader := procedure(keyword, vis: string)->
+      begin
+        res_In += '    ';
+        res_In += vis;
+        res_In += ' ';
+        res += keyword;
+        res_Im += ' ';
+        if keyword<>'constructor' then
+          res_In += ' ';
+        WriteCCQ(res_Im);
+        res_Im += '.';
       end;
       
       {$region constructor's}
       
-      res_In += '    ';
-      res_In += 'public ';
-      res += 'constructor';
-      res_Im += ' ';
-      res_Im += t;
-      res_Im += 'CCQ.Create';
+      WriteHeader('constructor', 'public');
+      res_Im += 'Create';
       res += '(o: ';
       res += t;
+      WriteGenerics(res);
       res += ')';
       res_Im += ' := inherited';
       res += ';'#10;
       
-      res_In += '    ';
-      res_In += 'public ';
-      res += 'constructor';
-      res_Im += ' ';
-      res_Im += t;
-      res_Im += 'CCQ.Create';
+      WriteHeader('constructor', 'public');
+      res_Im += 'Create';
       res += '(q: CommandQueue<';
       res += t;
+      WriteGenerics(res);
       res += '>)';
       res_Im += ' := inherited';
-      if expl_constructor_arg <> nil then
-      begin
-        res_Im += ' Create(';
-        res_Im += expl_constructor_arg;
-        res_Im += ')';
-      end;
       res += ';'#10;
       
-      res_In += '    ';
-      res_In += 'private ';
-      res += 'constructor';
-      res_Im += ' ';
-      res_Im += t;
-      res_Im += 'CCQ.Create';
+      WriteHeader('constructor', 'private');
+      res_Im += 'Create';
       res_Im += ' := inherited';
       res += ';'#10;
       
@@ -97,11 +112,10 @@ begin
       
       {$region AddQueue}
       
-      WriteHeader;
-      res += 'AddQueue(q: CommandQueueBase)';
-      res += ': ';
-      res += t;
-      res += 'CCQ;'#10;
+      WriteHeader('function', 'public');
+      res += 'AddQueue(q: CommandQueueBase): ';
+      WriteCCQ(res);
+      res += ';'#10;
       res_Im += 'begin'#10;
       res_Im += '  Result := self;'#10;
       res_Im += '  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;
@@ -109,8 +123,8 @@ begin
       
       res_Im += '  commands.Add( new QueueCommand<';
       res_Im += t;
-      res_Im += '>(q) );';
-      res_Im += #10;
+      WriteGenerics(res_Im);
+      res_Im += '>(q) );'#10;
       
       res_Im += 'end;'#10;
       
@@ -123,19 +137,22 @@ begin
       
       for var need_c := false to true do
       begin
-        WriteHeader;
+        WriteHeader('function', 'public');
         res += 'AddProc(p: ';
         if need_c then res += '(';
         res += t;
+        WriteGenerics(res);
         if need_c then res += ', Context)';
         res += '->())';
-        WriteResT;
+        res_In += ': ';
+        WriteCCQ(res_In);
         res_Im += ' := AddCommand(self, new ProcCommand<';
         res_Im += t;
+        WriteGenerics(res_Im);
         res_Im += '>(';
         res_Im += if need_c then 'p' else '(o,c)->p(o)';
-        res_Im += '));';
-        res += #10;
+        res_Im += '))';
+        res += ';'#10;
       end;
       
       res_In += '    ';
@@ -150,7 +167,7 @@ begin
         
         foreach var arg_t in |'array of WaitMarkerBase', 'sequence of WaitMarkerBase'| do
         begin
-          WriteHeader;
+          WriteHeader('function', 'public');
           res += 'AddWait';
           res += order;
           res += '(';
@@ -158,24 +175,27 @@ begin
           res += 'markers: ';
           res += arg_t;
           res += ')';
-          WriteResT;
+          res_In += ': ';
+          WriteCCQ(res_In);
           res_Im += ' := AddCommand(self, new WaitCommand<';
           res_Im += t;
+          WriteGenerics(res_Im);
           res_Im += '>(new WCQWaiter';
           res_Im += order;
-          res_Im += '(markers.ToArray)));';
-          res += #10;
+          res_Im += '(markers.ToArray)))';
+          res += ';'#10;
         end;
         
         res_In += '    ';
         res += #10;
       end;
       
-      WriteHeader;
+      WriteHeader('function', 'public');
       res += 'AddWait(marker: WaitMarkerBase)';
-      WriteResT;
-      res_Im += ' := AddWaitAll(marker);';
-      res += #10;
+      res_In += ': ';
+      WriteCCQ(res_In);
+      res_Im += ' := AddWaitAll(marker)';
+      res += ';'#10;
       
       res_In += '    ';
       res += #10;

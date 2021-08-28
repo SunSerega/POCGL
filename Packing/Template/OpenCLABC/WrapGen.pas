@@ -1,8 +1,8 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 uses Fixers       in '..\..\..\Utils\Fixers';
+uses CodeGen      in '..\..\..\Utils\CodeGen';
 
 uses PackingUtils in '..\PackingUtils';
-uses CodeGenUtils in '..\CodeGenUtils';
 
 begin
   try
@@ -18,13 +18,36 @@ begin
       var t := sl[0].Trim;
       var base_t := sl[1].Trim;
       
+      // (name, where)
+      var generics := new List<(string,string)>;
+      
+      foreach var g_str in sl.Skip(2) do
+      begin
+        var ind := g_str.IndexOf('=');
+        generics += (
+          (if ind=-1 then g_str else g_str.Remove(ind)).Trim,
+          if ind=-1 then nil else g_str.Substring(ind+1).Trim
+        );
+      end;
+      
       prev.Add(t);
       var is_wrap := not prev.Contains(base_t);
       
       
       
+      var WriteGenerics := procedure->
+      if generics.Count<>0 then
+      begin
+        res += '<';
+        res += generics.Select(g->g[0]).JoinToString(', ');
+        res += '>';
+      end;
+      
+      
+      
       res += '  ';
       res += t;
+      WriteGenerics;
       res += ' = partial class';
       if not is_wrap then
       begin
@@ -33,6 +56,16 @@ begin
         res += ')';
       end;
       res += #10;
+      
+//      foreach var g in generics do
+//      begin
+//        if g[1]=nil then continue;
+//        res += '  where ';
+//        res += g[0];
+//        res += ': ';
+//        res += g[1];
+//        res += ';'#10
+//      end;
       
       res += '    '#10;
       
@@ -81,10 +114,12 @@ begin
         
         res += '    public static function operator=(wr1, wr2: ';
         res += t;
+        WriteGenerics;
         res += '): boolean := wr1.ntv = wr2.ntv;'#10;
         
         res += '    public static function operator<>(wr1, wr2: ';
         res += t;
+        WriteGenerics;
         res += '): boolean := wr1.ntv <> wr2.ntv;'#10;
         
         res += '    '#10;
@@ -99,6 +134,7 @@ begin
         
         res += '    (obj is ';
         res += t;
+        WriteGenerics;
         res += '(var wr)) and (self = wr);'#10;
         
         res += '    '#10;

@@ -1,0 +1,45 @@
+﻿    
+    
+    
+    {$region 1#Write&Read}
+    
+    public function WriteItem(val: &T; offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteItem(val: CommandQueue<&T>; offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
+    
+    public function ReadArray(a: CommandQueue<array of &T>): CLArray<T>;
+    
+    public function WriteArray(a: CommandQueue<array of &T>; offset, len, a_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadArray(a: CommandQueue<array of &T>; offset, len, a_offset: CommandQueue<integer>): CLArray<T>;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    public function Fill(val: &T): CLArray<T>;
+    
+    public function Fill(val: &T; mem_offset, len: CommandQueue<integer>): CLArray<T>;
+    
+    public function Fill(val: CommandQueue<&T>): CLArray<T>;
+    
+    public function Fill(val: CommandQueue<&T>; mem_offset, len: CommandQueue<integer>): CLArray<T>;
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    public function CopyTo(a: CommandQueue<CLArray<T>>): CLArray<T>;
+    
+    public function CopyForm(a: CommandQueue<CLArray<T>>): CLArray<T>;
+    
+    public function CopyTo(a: CommandQueue<CLArray<T>>; from_pos, to_pos, len: CommandQueue<integer>): CLArray<T>;
+    
+    public function CopyForm(a: CommandQueue<CLArray<T>>; from_pos, to_pos, len: CommandQueue<integer>): CLArray<T>;
+    
+    {$endregion 3#Copy}
+    
+    
+    

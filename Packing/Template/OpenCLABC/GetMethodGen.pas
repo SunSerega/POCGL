@@ -38,7 +38,7 @@ type
     end;
     protected function GetArgTNames: sequence of string; override := args=nil? Seq(result_type.Enmr.Last.org_text) : args.Select(arg->arg.t.Enmr.Last.org_text).Append(result_type.Enmr.Last.org_text);
     
-    public procedure Seal(t: string; debug_tn: string); override;
+    public procedure Seal(t: string; type_generics: sequence of string; debug_tn: string); override;
     begin
       inherited;
       
@@ -48,6 +48,12 @@ type
         impl_args_sb += 'ccq: ';
         impl_args_sb += t;
         impl_args_sb += 'CCQ';
+        if type_generics.Any then
+        begin
+          impl_args_sb += '<';
+          impl_args_sb += type_generics.JoinToString(', ');
+          impl_args_sb += '>';
+        end;
         
         if impl_args_str<>nil then
         begin
@@ -73,6 +79,12 @@ type
     begin
       res_EIm += '    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (';
       res_EIm += t;
+      if generics.Count <> 0 then
+      begin
+        res_EIm += '<';
+        res_EIm += generics.Select(g->g[0]).JoinToString(', ');
+        res_EIm += '>';
+      end;
       res_EIm += ', cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<';
       res_EIm += settings.result_type.org_text;
       res_EIm += '>)->cl_event; override;'#10;
@@ -88,6 +100,12 @@ type
     begin
       res_EIm += 'EnqueueableGetCommand<';
       res_EIm += t;
+      if generics.Count <> 0 then
+      begin
+        res_EIm += '<';
+        res_EIm += generics.Select(g->g[0]).JoinToString(', ');
+        res_EIm += '>';
+      end;
       res_EIm += ', ';
       res_EIm += settings.result_type.org_text;
       res_EIm += '>';

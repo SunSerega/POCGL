@@ -1,0 +1,13 @@
+cl_mem
+MemInfo
+clGetMemObjectInfo
+
+
+
+# FLAGS:			MemFlags
+# HOST_PTR:			IntPtr
+# MAP_COUNT:		UInt32
+# REFERENCE_COUNT:	UInt32
+# USES_SVM_POINTER:	Bool
+
+

@@ -11,11 +11,12 @@ begin
   
   // Дальше всё так же как в "0Простейшие примеры\SimpleAddition"
   
-  var A := new Buffer( 10 * sizeof(integer) );
+  var A := new MemorySegment( 10 * sizeof(integer) );
   
   prog['TEST'].Exec1(10,
     
-    A.NewQueue.AddFillValue(1)
+    //ToDo #2511
+    KernelArg.FromMemorySegmentCQ(A.NewQueue.AddFillValue(1))
     
   );
   

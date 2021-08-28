@@ -8,7 +8,8 @@ begin
   
   // Подготовка параметров
   
-  var A := new Buffer( 10 * sizeof(integer) ); // Буфер достаточного размера, чтобы хранить 10 элементов типа "integer"
+  //ToDo #2511 - Использовать CLArray
+  var A := new MemorySegment( 10 * sizeof(integer) ); // Буфер достаточного размера, чтобы хранить 10 элементов типа "integer"
   
   // Выполнение
   
@@ -16,7 +17,8 @@ begin
     
     // Заполняем весь буфер значениями (1), прямо перед выполнением
     // Тип значения integer, потому что это тип по-умолчанию для целых чисел
-    A.NewQueue.AddFillValue(1)
+    //ToDo #2511
+    KernelArg.FromMemorySegmentCQ(A.NewQueue.AddFillValue(1))
     
   );
   

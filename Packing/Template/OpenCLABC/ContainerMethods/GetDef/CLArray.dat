@@ -1,0 +1,49 @@
+
+!Generics
+T: record
+
+
+
+# GetItem
+ind: CommandQueue<integer>
+!ResultType
+&T
+!Enqueue
+cl.EnqueueReadBuffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(int64(!ind!) * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  new IntPtr(!res_ptr!),
+  !evs!
+).RaiseIfError;
+!ForcePtrQr
+
+
+
+# GetArray!AutoSize
+!ResultType
+array of &T
+!Enqueue
+var res := new T[o.Length]; !set_res!(res);
+cl.EnqueueReadBuffer(
+  cq, o.Native, Bool.BLOCKING,
+  UIntPtr.Zero, new UIntPtr(o.ByteSize),
+  res[0],
+  !evs!
+).RaiseIfError;
+!NeedThread
+
+# GetArray
+offset, len: CommandQueue<integer>
+!ResultType
+array of &T
+!Enqueue
+var res := new T[!len!]; !set_res!(res);
+cl.EnqueueReadBuffer(
+  cq, o.Native, Bool.BLOCKING,
+  new UIntPtr(int64(!offset!) * Marshal.SizeOf&<T>), new UIntPtr(int64(!len!) * Marshal.SizeOf&<T>),
+  res[0],
+  !evs!
+).RaiseIfError;
+!NeedThread
+
+

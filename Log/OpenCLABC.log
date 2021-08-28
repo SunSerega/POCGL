@@ -1,39 +1,37 @@
-﻿Compiling "Packing\Template\Pack Template.pas"
-Finished compiling: OK
-Runing Template[OpenCLABC]
+﻿Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapPropGen.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapPropGen.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapPropGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\MethodGen.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\MethodGen.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [CLArray]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Kernel]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\MethodGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\GetMethodGen.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [CLArray]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapGen.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapGen.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapGen.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerCommon.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ConvQueueStaticArray.pas"
-Template[OpenCLABC]: Finished compiling: OK
+Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
 Finished runing Template[OpenCLABC]
-Compiling "Packing\Doc\PackComments.pas"
-Finished compiling: OK
 Runing Comments[OpenCLABC]
 Finished runing Comments[OpenCLABC]

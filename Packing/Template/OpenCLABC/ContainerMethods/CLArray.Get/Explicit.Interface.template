@@ -1,0 +1,15 @@
+﻿    
+    
+    
+    {$region Get}
+    
+    public function AddGetItem(ind: CommandQueue<integer>): CommandQueue<&T>;
+    
+    public function AddGetArray: CommandQueue<array of &T>;
+    
+    public function AddGetArray(offset, len: CommandQueue<integer>): CommandQueue<array of &T>;
+    
+    {$endregion Get}
+    
+    
+    

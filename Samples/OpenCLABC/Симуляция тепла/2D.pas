@@ -5,23 +5,24 @@ const W = 10;
 begin
   Randomize(0);
   
-  var B := new Buffer(W*W*sizeof(real));
+  var B := new MemorySegment(W*W*sizeof(real));
   B.WriteArray2&<real>(MatrRandomReal(W,W).Println);
   
-  var BRes := new Buffer(B.Size);
+  var BRes := new MemorySegment(B.Size);
   
   var code := new ProgramCode(Context.Default, ReadAllText('2D.cl'));
   var k := code['CalcTick'];
   
+  //ToDo #2511 - убрать все KernelArg.From
   var Q_1Cycle: CommandQueueBase := k.NewQueue
     // Сначала читаем предыдущее состояние из B и пишем результат в BRes
     .AddExec2(W,W,
-      B, BRes,
+      KernelArg.FromMemorySegment(B), KernelArg.FromMemorySegment(BRes),
       KernelArg.FromRecord(W)
     )
     // А затем то же самое в обратную сторону
     .AddExec2(W,W,
-      BRes, B,
+      KernelArg.FromMemorySegment(BRes), KernelArg.FromMemorySegment(B),
       KernelArg.FromRecord(W)
     )
   ;
@@ -30,13 +31,13 @@ begin
   var Q_1CycleAndOtp: CommandQueueBase := k.NewQueue
     
     .AddExec2(W,W,
-      B, BRes,
+      KernelArg.FromMemorySegment(B), KernelArg.FromMemorySegment(BRes),
       KernelArg.FromRecord(W)
     )
     
     .AddQueue(Marker)
     .AddExec2(W,W,
-      BRes, B,
+      KernelArg.FromMemorySegment(BRes), KernelArg.FromMemorySegment(B),
       KernelArg.FromRecord(W)
     )
   * // Читаем паралельно с вторым выполнением

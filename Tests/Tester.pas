@@ -288,8 +288,7 @@ type
         
         var comp_err: string := nil;
         CompilePasFile(t.pas_fname,
-          // to not hilight errors
-          l->Otp(l.ConvStr(s->s.Replace('o','о'))),
+          l->Otp(l.ConvStr(s->s.Replace('error','errоr'))),
           err->(comp_err := err),
           false, GetFullPath('Modules.Packed')
         );

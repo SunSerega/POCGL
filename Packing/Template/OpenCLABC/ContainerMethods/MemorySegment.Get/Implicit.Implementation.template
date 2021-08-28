@@ -4,28 +4,35 @@
 {$region Get}
 
 function MemorySegment.GetData: IntPtr :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetData as CommandQueue<IntPtr>);
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetData as object as CommandQueue<IntPtr>);
 
-function MemorySegment.GetData(buff_offset, len: CommandQueue<integer>): IntPtr :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetData(buff_offset, len) as CommandQueue<IntPtr>);
+function MemorySegment.GetData(mem_offset, len: CommandQueue<integer>): IntPtr :=
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetData(mem_offset, len) as object as CommandQueue<IntPtr>);
 
 function MemorySegment.GetValue<TRecord>: TRecord :=
 GetValue&<TRecord>(0);
 
-function MemorySegment.GetValue<TRecord>(buff_offset: CommandQueue<integer>): TRecord :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetValue&<TRecord>(buff_offset) as CommandQueue<TRecord>);
+function MemorySegment.GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord :=
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetValue&<TRecord>(mem_offset) as object as CommandQueue<TRecord>);
 
 function MemorySegment.GetArray1<TRecord>: array of TRecord :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord> as CommandQueue<array of TRecord>);
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord> as object as CommandQueue<array of TRecord>);
 
 function MemorySegment.GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord>(len) as CommandQueue<array of TRecord>);
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord>(len) as object as CommandQueue<array of TRecord>);
 
 function MemorySegment.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetArray2&<TRecord>(len1, len2) as CommandQueue<array[,] of TRecord>);
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray2&<TRecord>(len1, len2) as object as CommandQueue<array[,] of TRecord>);
 
 function MemorySegment.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetArray3&<TRecord>(len1, len2, len3) as CommandQueue<array[,,] of TRecord>);
+//ToDo #2510
+Context.Default.SyncInvoke(self.NewQueue.AddGetArray3&<TRecord>(len1, len2, len3) as object as CommandQueue<array[,,] of TRecord>);
 
 {$endregion Get}
 

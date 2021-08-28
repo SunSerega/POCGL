@@ -15,6 +15,12 @@ type
     begin
       res_EIm += '    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (';
       res_EIm += t;
+      if generics.Count <> 0 then
+      begin
+        res_EIm += '<';
+        res_EIm += generics.Select(g->g[0]).JoinToString(', ');
+        res_EIm += '>';
+      end;
       res_EIm += ', cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
@@ -26,6 +32,12 @@ type
     begin
       res_EIm += 'EnqueueableGPUCommand<';
       res_EIm += t;
+      if generics.Count <> 0 then
+      begin
+        res_EIm += '<';
+        res_EIm += generics.Select(g->g[0]).JoinToString(', ');
+        res_EIm += '>';
+      end;
       res_EIm += '>';
     end;
     
@@ -33,6 +45,12 @@ type
     begin
       l_res += t;
       l_res_E += 'CCQ';
+      if generics.Count <> 0 then
+      begin
+        l_res += '<';
+        l_res += generics.Select(g->g[0]).JoinToString(', ');
+        l_res += '>';
+      end;
     end;
     protected procedure WriteMethodEImBody(write_new_ct: Action0; settings: MethodSettings); override;
     begin
