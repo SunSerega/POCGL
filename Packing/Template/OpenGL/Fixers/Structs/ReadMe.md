@@ -63,13 +63,14 @@ y = 'abc'
 ```
 
 ---
-### comment
+### !comment
 
 Adds comment to end of field definition line
 
 Syntax:
 ```
 # StructName
+!comment
 x = Поле x содержащее Byte
 y = Строка
 ```

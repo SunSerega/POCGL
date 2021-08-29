@@ -82,6 +82,7 @@ type
       otp  := GetFullPathRTA(otp);
       
       var sw := new StreamWriter(otp, false, enc);
+      sw.WriteLine('<!DOCTYPE html>');
       sw.WriteLine('<html>');
       sw.WriteLine('<head>');
       sw.WriteLine('<meta charset="utf-8">');
