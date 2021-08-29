@@ -1,15 +1,15 @@
 ﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Finished compiling: OK
 Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
+SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
+SubReps Update: OpenCL Docs : [Info] 1606dc8..915227d  master     -> origin/master
+SubReps Update: OpenCL Docs : [Info] * [new branch]      update-refpages-2.2-from-0a92eee -> origin/update-refpages-2.2-from-0a92eee
+SubReps Update: OpenCL Docs : Submodule path 'DataScraping/Reps/OpenCL-Docs': checked out '915227d0752537a3501368bd15b296b798a07a53'
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\CL\ScrapXML.pas"
-Finished compiling: OK
 Runing ScrapXML[CL]
 ScrapXML[CL]: Parsing "cl"
 ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MAJOR_MASK_KHR]: No <type> tags
@@ -19,13 +19,8 @@ ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MAJOR_KHR]: No <type> 
 ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MINOR_KHR]: No <type> tags
 ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_PATCH_KHR]: No <type> tags
 ScrapXML[CL]: ERROR: Wrong definition of type [CL_MAKE_VERSION_KHR]: No <type> tags
-ScrapXML[CL]: WARNING: Type [D3DFORMAT] is not manually defined
-ScrapXML[CL]: WARNING: Type [DXGI_FORMAT] is not manually defined
-ScrapXML[CL]: WARNING: Type [VAImageFormat] is not manually defined
 ScrapXML[CL]: Saving as binary
 Finished runing ScrapXML[CL]
-Compiling "DataScraping\XML\GL\ScrapXML.pas"
-Finished compiling: OK
 Runing ScrapXML[GL]
 ScrapXML[GL]: Parsing "gl"
 ScrapXML[GL]: Parsing "wgl"
