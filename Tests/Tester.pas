@@ -723,7 +723,7 @@ begin
     TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
     (*)
     TestInfo.allowed_modules += 'OpenCLABC';
-    TestInfo.LoadAll('Tests\Exec\CLABC\03#ToString\09#KernelArg',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('Tests\Exec\CLABC\04#Samples\Игра жизнь',  HSet('Comp','Exec'));
     (**)
     
     try

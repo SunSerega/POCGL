@@ -39,6 +39,8 @@ unit OpenCLABC;
 //ToDo boolean в CLArray<T>
 // - Его пытается маршлить как BOOL из C++, который имеет размер 4 байта
 // - Проверить происходит ли собственно конверция
+//ToDo CLBoolean?
+// - boolean запретить не только в CLArray - во всех TRecord
 
 //ToDo Инициалию буфера из MemorySegmentCCQ перенести в, собственно, вызовы GPUCommand.Invoke
 // - И там же вызывать CLArray<T>.Flush
@@ -54,6 +56,8 @@ unit OpenCLABC;
 
 //===================================
 // Запланированное:
+
+//ToDo HFQ(()->S) не работает как ссылка на S:MemorySegment?
 
 //ToDo Пройтись по интерфейсу, порасставлять кидание исключений
 //ToDo Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
@@ -4742,6 +4746,8 @@ type
   
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
+    //ToDo Нет никакой гарантии что Result.ev.abortable будет установлено
+    // - Но в нескольких местах, как в FinishAfterNewQ и CLTask.Create, стоит проверка и NotSupportedException
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; abstract;
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override :=
     Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);

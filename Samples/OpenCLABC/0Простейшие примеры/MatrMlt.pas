@@ -50,12 +50,11 @@ begin
     
     // Подготовка очередей выполнения
     
-    //ToDo #2511 - убрать все KernelArg.From
     var Calc_C_Q :=
       code['MatrMltMatr'].NewQueue.AddExec2(MatrW, MatrW, // Выделяем ядра в форме квадрата, всего MatrW*MatrW ядер
-        KernelArg.FromMemorySegmentCQ(A.NewQueue.AddWriteArray2&<real>(A_Matr)), // Тип в &<> надо указывать явно, потому что компилятор не может вычислить его из типа элементов массива
-        KernelArg.FromMemorySegmentCQ(B.NewQueue.AddWriteArray2&<real>(B_Mart)),
-        KernelArg.FromMemorySegment(C),
+        A.NewQueue.AddWriteArray2&<real>(A_Matr), // Тип в &<> надо указывать явно, потому что компилятор не может вычислить его из типа элементов массива
+        B.NewQueue.AddWriteArray2&<real>(B_Mart),
+        C,
         W
       );
     
@@ -70,9 +69,9 @@ begin
     
     var Calc_V2_Q :=
       code['MatrMltVec'].NewQueue.AddExec1(MatrW,
-        KernelArg.FromMemorySegment(C),
-        KernelArg.FromMemorySegmentCQ(V1.NewQueue.AddWriteArray1&<real>(V1_Arr)),
-        KernelArg.FromMemorySegment(V2),
+        C,
+        V1.NewQueue.AddWriteArray1&<real>(V1_Arr),
+        V2,
         W
       );
     
