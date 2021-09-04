@@ -68,10 +68,10 @@ type
     
   end;
   
-{$endregion WriteItem}
-
 function CLArrayCCQ<T>.AddWriteItem(val: &T; offset: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandWriteItem<T>(val, offset));
+
+{$endregion WriteItem}
 
 {$region WriteItemQ}
 
@@ -143,10 +143,10 @@ type
     
   end;
   
-{$endregion WriteItemQ}
-
 function CLArrayCCQ<T>.AddWriteItem(val: CommandQueue<&T>; offset: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandWriteItemQ<T>(val, offset));
+
+{$endregion WriteItemQ}
 
 {$region WriteArrayAutoSize}
 
@@ -203,10 +203,10 @@ type
     
   end;
   
-{$endregion WriteArrayAutoSize}
-
 function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandWriteArrayAutoSize<T>(a));
+
+{$endregion WriteArrayAutoSize}
 
 {$region ReadArrayAutoSize}
 
@@ -263,10 +263,10 @@ type
     
   end;
   
-{$endregion ReadArrayAutoSize}
-
 function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandReadArrayAutoSize<T>(a));
+
+{$endregion ReadArrayAutoSize}
 
 {$region WriteArray}
 
@@ -350,10 +350,10 @@ type
     
   end;
   
-{$endregion WriteArray}
-
 function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>; offset, len, a_offset: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandWriteArray<T>(a, offset, len, a_offset));
+
+{$endregion WriteArray}
 
 {$region ReadArray}
 
@@ -437,10 +437,10 @@ type
     
   end;
   
-{$endregion ReadArray}
-
 function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>; offset, len, a_offset: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandReadArray<T>(a, offset, len, a_offset));
+
+{$endregion ReadArray}
 
 {$endregion 1#Write&Read}
 
@@ -502,10 +502,10 @@ type
     
   end;
   
-{$endregion FillAutoSize}
-
 function CLArrayCCQ<T>.AddFill(val: &T): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandFillAutoSize<T>(val));
+
+{$endregion FillAutoSize}
 
 {$region Fill}
 
@@ -581,10 +581,10 @@ type
     
   end;
   
-{$endregion Fill}
-
 function CLArrayCCQ<T>.AddFill(val: &T; mem_offset, len: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandFill<T>(val, mem_offset, len));
+
+{$endregion Fill}
 
 {$region FillAutoSizeQ}
 
@@ -647,10 +647,10 @@ type
     
   end;
   
-{$endregion FillAutoSizeQ}
-
 function CLArrayCCQ<T>.AddFill(val: CommandQueue<&T>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandFillAutoSizeQ<T>(val));
+
+{$endregion FillAutoSizeQ}
 
 {$region FillQ}
 
@@ -731,10 +731,10 @@ type
     
   end;
   
-{$endregion FillQ}
-
 function CLArrayCCQ<T>.AddFill(val: CommandQueue<&T>; mem_offset, len: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandFillQ<T>(val, mem_offset, len));
+
+{$endregion FillQ}
 
 {$endregion 2#Fill}
 
@@ -794,10 +794,10 @@ type
     
   end;
   
-{$endregion CopyToAutoSize}
-
 function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandCopyToAutoSize<T>(a));
+
+{$endregion CopyToAutoSize}
 
 {$region CopyFormAutoSize}
 
@@ -853,10 +853,10 @@ type
     
   end;
   
-{$endregion CopyFormAutoSize}
-
 function CLArrayCCQ<T>.AddCopyForm(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandCopyFormAutoSize<T>(a));
+
+{$endregion CopyFormAutoSize}
 
 {$region CopyTo}
 
@@ -939,10 +939,10 @@ type
     
   end;
   
-{$endregion CopyTo}
-
 function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>; from_pos, to_pos, len: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandCopyTo<T>(a, from_pos, to_pos, len));
+
+{$endregion CopyTo}
 
 {$region CopyForm}
 
@@ -1025,10 +1025,10 @@ type
     
   end;
   
-{$endregion CopyForm}
-
 function CLArrayCCQ<T>.AddCopyForm(a: CommandQueue<CLArray<T>>; from_pos, to_pos, len: CommandQueue<integer>): CLArrayCCQ<T> :=
 AddCommand(self, new CLArrayCommandCopyForm<T>(a, from_pos, to_pos, len));
+
+{$endregion CopyForm}
 
 {$endregion 3#Copy}
 

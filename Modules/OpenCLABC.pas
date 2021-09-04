@@ -19,35 +19,33 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//ToDo CLArray<T>.Flush и CCQ.AddFlush
-// - Сейчас есть только обрубок функционала
-// - Да и поиск блоков там фигня
-// --- Надо добавлять по 1 блоку и проверять на пересечение с предыдущими блоками
-// --- А затем объединять отдельные группы блоков, которые пересеклись друг с другом
-// --- Точнее проверять на пересечение лучше с группами блоков
+//===================================
+// Запланированное:
+
+//ToDo q*4 - Повторение очереди 4 раза
+// - Всегда можно использовать Combine(ArrFill(4,q))
+// - Но тогда внутри будет хранится массив - это лишнее, если все очереди одинаковые
+
+//ToDo Порядок Wait очередей в Wait группах
+// - Проверить сочетание с каждой другой фичей
+
+//ToDo Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
 
 //ToDo boolean в CLArray<T>
 // - Его пытается маршлить как BOOL из C++, который имеет размер 4 байта
 // - Проверить происходит ли собственно конверция
 //ToDo CLBoolean?
 // - boolean запретить не только в CLArray - во всех TRecord
-
-//ToDo Инициалию буфера из MemorySegmentCCQ перенести в, собственно, вызовы GPUCommand.Invoke
-// - И там же вызывать CLArray<T>.Flush
-
-//ToDo Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
+//ToDo С char то же самое
+//ToDO А для DateTime и размер посчитать не даёт
 
 //ToDo Преобразование array of T => KernelArg, используя CL_MEM_USE_HOST_PTR
-
-//ToDo Справка:
-// - Переименование Buffer в MemorySegment
-// - CLArray<T>
-// - KernelCommandQueue => KernelCCQ (Kernel ContainerCommandQueue)
-
-//===================================
-// Запланированное:
+// - #2478
 
 //ToDo HFQ(()->S) не работает как ссылка на S:MemorySegment?
+
+//ToDo Использовать cl.EnqueueMapBuffer
+// - В виде .AddMap((MappedArray,Context)->())
 
 //ToDo Пройтись по интерфейсу, порасставлять кидание исключений
 //ToDo Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
@@ -796,8 +794,6 @@ type
     
   end;
   
-//  Buffer = MemorySegment;
-  
   {$endregion MemorySegment}
   
   {$region MemorySubSegment}
@@ -875,12 +871,12 @@ type
     end;
     public constructor(len: integer) := Create(Context.Default, len);
     
-    public constructor(c: Context; params els: array of T);
+    public constructor(c: Context; els: array of T);
     begin
       self.len := els.Length;
       InitByVal(c, els[0]);
     end;
-    public constructor(params els: array of T) := Create(Context.Default, els);
+    public constructor(els: array of T) := Create(Context.Default, els);
     
     public constructor(c: Context; els_from, len: integer; params els: array of T);
     begin
@@ -907,17 +903,11 @@ type
     
     private function GetItemProp(ind: integer): T;
     private procedure SetItemProp(ind: integer; value: T);
-    public property Item[ind: integer]: T read GetItemProp write SetItemProp;
+    public property Item[ind: integer]: T read GetItemProp write SetItemProp; default;
     
     private function GetSectionProp(range: IntRange): array of T;
     private procedure SetSectionProp(range: IntRange; value: array of T);
     public property Section[range: IntRange]: array of T read GetSectionProp write SetSectionProp;
-    
-    private procedure AddCacheItem(ind: integer; value: T);
-    public property ItemCache[ind: integer]: T write AddCacheItem; default;
-    
-    private procedure AddCacheSection(range: IntRange; value: array of T);
-    public property SectionCache[range: IntRange]: array of T write AddCacheSection;
     
     {%ContainerMethods\CLArray\Implicit.Interface!MethodGen.pas%}
     
@@ -1748,181 +1738,6 @@ type
 
 {$region CLArray}
 
-type
-  CLArrayCacheUnit<T> = abstract class
-    
-    procedure FlushTo(all_items: array of T; written: array of boolean); abstract;
-    
-  end;
-  CLArrayCacheUnitItem<T> = sealed class(CLArrayCacheUnit<T>)
-    ind: integer;
-    item: T;
-    
-    constructor(ind: integer; item: T);
-    begin
-      self.ind := ind;
-      self.item := item;
-    end;
-    
-    procedure FlushTo(all_items: array of T; written: array of boolean); override :=
-    if not written[ind] then
-    begin
-      all_items[ind] := item;
-      written[ind] := true;
-    end;
-    
-  end;
-  CLArrayCacheUnitSection<T> = sealed class(CLArrayCacheUnit<T>)
-    range_l, range_h: integer;
-    items: array of T;
-    
-    constructor(range: IntRange; items: array of T);
-    begin
-      self.range_l := range.Low;
-      self.range_h := range.High;
-      self.items := items;
-    end;
-    
-    procedure FlushTo(all_items: array of T; written: array of boolean); override :=
-    for var i := range_l to range_h do
-      if not written[i] then
-      begin
-        all_items[i] := items[i-range_l];
-        written[i] := true;
-      end;
-    
-  end;
-  
-  CLArrayCacheBlock = record
-    ind, len: integer;
-    
-    static function FindAll(written: array of boolean): List<CLArrayCacheBlock>;
-    begin
-      Result := new List<CLArrayCacheBlock>;
-      
-      var bl: CLArrayCacheBlock;
-      bl.ind := 0; // Потому что bound_l
-      
-      var i := 0;
-      while true do
-      begin
-        
-        while true do
-        begin
-          i += 1;
-          if i = written.Length then
-          begin
-            bl.len := i - bl.ind;
-            Result += bl;
-            exit;
-          end;
-          if not written[i] then break;
-        end;
-        
-        bl.len := i - bl.ind;
-        Result += bl;
-        
-        while true do
-        begin
-          i += 1;
-          if i = written.Length then
-          begin
-            bl.len := i - bl.ind;
-            Result += bl;
-            exit;
-          end;
-          if written[i] then break;
-        end;
-        
-        bl.ind := i;
-      end;
-      
-    end;
-    
-  end;
-  
-  CLArrayCache<T> = sealed partial class
-    units := new List<CLArrayCacheUnit<T>>;
-    bound_l, bound_h: integer;
-    
-    procedure AddCacheItem(ind: integer; value: T) :=
-    lock self do
-    begin
-      if units.Count=0 then
-      begin
-        bound_l := ind;
-        bound_h := ind;
-      end else
-      begin
-        bound_l := Min(bound_l, ind);
-        bound_h := Max(bound_h, ind);
-      end;
-      units.Add( new CLArrayCacheUnitItem<T>(ind, value) );
-    end;
-    
-    procedure AddCacheSection(range: IntRange; value: array of T) :=
-    lock self do
-    begin
-      if units.Count=0 then
-      begin
-        bound_l := range.Low;
-        bound_h := range.High;
-      end else
-      begin
-        bound_l := Min(bound_l, range.Low);
-        bound_h := Max(bound_h, range.High);
-      end;
-      units.Add( new CLArrayCacheUnitSection<T>(range, value) );
-    end;
-    
-    function Flush: array of array of T;
-    begin
-      if units.Count=0 then exit;
-      
-      var all_items := new T[bound_h-bound_l+1];
-      var written := new boolean[Result.Length];
-      
-      for var i := units.Count-1 downto 0 do
-        units[i].FlushTo(all_items, written);
-      
-      var blocks := CLArrayCacheBlock.FindAll(written);
-      SetLength(Result, blocks.Count);
-      for var bl_i := 0 to blocks.Count-1 do
-      begin
-        var bl := blocks[bl_i];
-        var res := new T[bl.len];
-        for var i := 0 to bl.len-1 do
-          res[i] := all_items[i+bl.ind];
-        Result[bl_i] := res;
-      end;
-      
-    end;
-    
-  end;
-  
-  CLArray<T> = partial class
-    
-    private cache: CLArrayCache<T>;
-    private function GetCache: CLArrayCache<T>;
-    begin
-      lock self do
-      begin
-        if cache=nil then cache := new CLArrayCache<T>;
-        Result := cache;
-      end;
-    end;
-    private function Flush: array of array of T;
-    begin
-      lock self do
-      begin
-        if cache=nil then exit;
-        Result := cache.Flush;
-        cache := nil;
-      end;
-    end;
-    
-  end;
-  
 function CLArray<T>.GetItemProp(ind: integer): T :=
 {%>GetItem(ind)!!} default(T) {%};
 procedure CLArray<T>.SetItemProp(ind: integer; value: T) :=
@@ -1932,10 +1747,6 @@ function CLArray<T>.GetSectionProp(range: IntRange): array of T :=
 {%>GetArray(range.Low, range.High-range.Low+1)!!} nil {%};
 procedure CLArray<T>.SetSectionProp(range: IntRange; value: array of T) :=
 {%>WriteArray(value, range.Low, range.High-range.Low+1, 0)!!} exit() {%};
-
-procedure CLArray<T>.AddCacheItem(ind: integer; value: T) := GetCache.AddCacheItem(ind, value);
-
-procedure CLArray<T>.AddCacheSection(range: IntRange; value: array of T) := GetCache.AddCacheSection(range, value);
 
 {$endregion CLArray}
 
@@ -3012,7 +2823,8 @@ type
       mu_res := nil;
       
       {$ifdef DEBUG}
-      if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
+      //ToDo
+//      if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
       {$endif DEBUG}
       
       //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно

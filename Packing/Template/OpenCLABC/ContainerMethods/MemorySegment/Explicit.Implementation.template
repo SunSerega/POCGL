@@ -56,10 +56,10 @@ type
     
   end;
   
-{$endregion WriteDataAutoSize}
-
 function MemorySegmentCCQ.AddWriteData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteDataAutoSize(ptr));
+
+{$endregion WriteDataAutoSize}
 
 {$region ReadDataAutoSize}
 
@@ -114,10 +114,10 @@ type
     
   end;
   
-{$endregion ReadDataAutoSize}
-
 function MemorySegmentCCQ.AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadDataAutoSize(ptr));
+
+{$endregion ReadDataAutoSize}
 
 {$region WriteData}
 
@@ -190,10 +190,10 @@ type
     
   end;
   
-{$endregion WriteData}
-
 function MemorySegmentCCQ.AddWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteData(ptr, mem_offset, len));
+
+{$endregion WriteData}
 
 {$region ReadData}
 
@@ -266,25 +266,45 @@ type
     
   end;
   
-{$endregion ReadData}
-
 function MemorySegmentCCQ.AddReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadData(ptr, mem_offset, len));
+
+{$endregion ReadData}
+
+{$region WriteData}
 
 function MemorySegmentCCQ.AddWriteData(ptr: pointer): MemorySegmentCCQ :=
 AddWriteData(IntPtr(ptr));
 
+{$endregion WriteData}
+
+{$region ReadData}
+
 function MemorySegmentCCQ.AddReadData(ptr: pointer): MemorySegmentCCQ :=
 AddReadData(IntPtr(ptr));
+
+{$endregion ReadData}
+
+{$region WriteData}
 
 function MemorySegmentCCQ.AddWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddWriteData(IntPtr(ptr), mem_offset, len);
 
+{$endregion WriteData}
+
+{$region ReadData}
+
 function MemorySegmentCCQ.AddReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddReadData(IntPtr(ptr), mem_offset, len);
 
+{$endregion ReadData}
+
+{$region WriteValue}
+
 function MemorySegmentCCQ.AddWriteValue<TRecord>(val: TRecord): MemorySegmentCCQ :=
 AddWriteValue(val, 0);
+
+{$endregion WriteValue}
 
 {$region WriteValue}
 
@@ -351,13 +371,17 @@ type
     
   end;
   
-{$endregion WriteValue}
-
 function MemorySegmentCCQ.AddWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteValue<TRecord>(val, mem_offset));
 
+{$endregion WriteValue}
+
+{$region WriteValueQ}
+
 function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ :=
 AddWriteValue(val, 0);
+
+{$endregion WriteValueQ}
 
 {$region WriteValueQ}
 
@@ -429,10 +453,10 @@ type
     
   end;
   
-{$endregion WriteValueQ}
-
 function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteValueQ<TRecord>(val, mem_offset));
+
+{$endregion WriteValueQ}
 
 {$region WriteArray1AutoSize}
 
@@ -489,10 +513,10 @@ type
     
   end;
   
-{$endregion WriteArray1AutoSize}
-
 function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteArray1AutoSize<TRecord>(a));
+
+{$endregion WriteArray1AutoSize}
 
 {$region WriteArray2AutoSize}
 
@@ -549,10 +573,10 @@ type
     
   end;
   
-{$endregion WriteArray2AutoSize}
-
 function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteArray2AutoSize<TRecord>(a));
+
+{$endregion WriteArray2AutoSize}
 
 {$region WriteArray3AutoSize}
 
@@ -609,10 +633,10 @@ type
     
   end;
   
-{$endregion WriteArray3AutoSize}
-
 function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteArray3AutoSize<TRecord>(a));
+
+{$endregion WriteArray3AutoSize}
 
 {$region ReadArray1AutoSize}
 
@@ -669,10 +693,10 @@ type
     
   end;
   
-{$endregion ReadArray1AutoSize}
-
 function MemorySegmentCCQ.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadArray1AutoSize<TRecord>(a));
+
+{$endregion ReadArray1AutoSize}
 
 {$region ReadArray2AutoSize}
 
@@ -729,10 +753,10 @@ type
     
   end;
   
-{$endregion ReadArray2AutoSize}
-
 function MemorySegmentCCQ.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadArray2AutoSize<TRecord>(a));
+
+{$endregion ReadArray2AutoSize}
 
 {$region ReadArray3AutoSize}
 
@@ -789,10 +813,10 @@ type
     
   end;
   
-{$endregion ReadArray3AutoSize}
-
 function MemorySegmentCCQ.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadArray3AutoSize<TRecord>(a));
+
+{$endregion ReadArray3AutoSize}
 
 {$region WriteArray1}
 
@@ -876,10 +900,10 @@ type
     
   end;
   
-{$endregion WriteArray1}
-
 function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteArray1<TRecord>(a, a_offset, len, mem_offset));
+
+{$endregion WriteArray1}
 
 {$region WriteArray2}
 
@@ -972,10 +996,10 @@ type
     
   end;
   
-{$endregion WriteArray2}
-
 function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteArray2<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
+
+{$endregion WriteArray2}
 
 {$region WriteArray3}
 
@@ -1077,10 +1101,10 @@ type
     
   end;
   
-{$endregion WriteArray3}
-
 function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandWriteArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
+
+{$endregion WriteArray3}
 
 {$region ReadArray1}
 
@@ -1164,10 +1188,10 @@ type
     
   end;
   
-{$endregion ReadArray1}
-
 function MemorySegmentCCQ.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadArray1<TRecord>(a, a_offset, len, mem_offset));
+
+{$endregion ReadArray1}
 
 {$region ReadArray2}
 
@@ -1260,10 +1284,10 @@ type
     
   end;
   
-{$endregion ReadArray2}
-
 function MemorySegmentCCQ.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadArray2<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
+
+{$endregion ReadArray2}
 
 {$region ReadArray3}
 
@@ -1365,10 +1389,10 @@ type
     
   end;
   
-{$endregion ReadArray3}
-
 function MemorySegmentCCQ.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandReadArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
+
+{$endregion ReadArray3}
 
 {$endregion 1#Write&Read}
 
@@ -1436,10 +1460,10 @@ type
     
   end;
   
-{$endregion FillDataAutoSize}
-
 function MemorySegmentCCQ.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandFillDataAutoSize(ptr, pattern_len));
+
+{$endregion FillDataAutoSize}
 
 {$region FillData}
 
@@ -1521,10 +1545,10 @@ type
     
   end;
   
-{$endregion FillData}
-
 function MemorySegmentCCQ.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandFillData(ptr, pattern_len, mem_offset, len));
+
+{$endregion FillData}
 
 {$region FillValueAutoSize}
 
@@ -1582,10 +1606,10 @@ type
     
   end;
   
-{$endregion FillValueAutoSize}
-
 function MemorySegmentCCQ.AddFillValue<TRecord>(val: TRecord): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandFillValueAutoSize<TRecord>(val));
+
+{$endregion FillValueAutoSize}
 
 {$region FillValue}
 
@@ -1661,10 +1685,10 @@ type
     
   end;
   
-{$endregion FillValue}
-
 function MemorySegmentCCQ.AddFillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandFillValue<TRecord>(val, mem_offset, len));
+
+{$endregion FillValue}
 
 {$region FillValueAutoSizeQ}
 
@@ -1727,10 +1751,10 @@ type
     
   end;
   
-{$endregion FillValueAutoSizeQ}
-
 function MemorySegmentCCQ.AddFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandFillValueAutoSizeQ<TRecord>(val));
+
+{$endregion FillValueAutoSizeQ}
 
 {$region FillValueQ}
 
@@ -1811,10 +1835,10 @@ type
     
   end;
   
-{$endregion FillValueQ}
-
 function MemorySegmentCCQ.AddFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandFillValueQ<TRecord>(val, mem_offset, len));
+
+{$endregion FillValueQ}
 
 {$endregion 2#Fill}
 
@@ -1873,10 +1897,10 @@ type
     
   end;
   
-{$endregion CopyToAutoSize}
-
 function MemorySegmentCCQ.AddCopyTo(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandCopyToAutoSize(mem));
+
+{$endregion CopyToAutoSize}
 
 {$region CopyFormAutoSize}
 
@@ -1931,10 +1955,10 @@ type
     
   end;
   
-{$endregion CopyFormAutoSize}
-
 function MemorySegmentCCQ.AddCopyForm(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandCopyFormAutoSize(mem));
+
+{$endregion CopyFormAutoSize}
 
 {$region CopyTo}
 
@@ -2016,10 +2040,10 @@ type
     
   end;
   
-{$endregion CopyTo}
-
 function MemorySegmentCCQ.AddCopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandCopyTo(mem, from_pos, to_pos, len));
+
+{$endregion CopyTo}
 
 {$region CopyForm}
 
@@ -2101,10 +2125,10 @@ type
     
   end;
   
-{$endregion CopyForm}
-
 function MemorySegmentCCQ.AddCopyForm(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ :=
 AddCommand(self, new MemorySegmentCommandCopyForm(mem, from_pos, to_pos, len));
+
+{$endregion CopyForm}
 
 {$endregion 3#Copy}
 

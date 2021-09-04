@@ -562,10 +562,6 @@ type
     protected procedure WriteMiscMethods(settings: TSettings); virtual := exit;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin
-      res_EIm += '{$region ';
-      res_EIm += tn;
-      res_EIm += '}'#10;
-      res_EIm += #10;
       
       res_EIm += 'type'#10;
       res_EIm += '  ';
@@ -842,10 +838,6 @@ type
       res_EIm += '  end;'#10;
       res_EIm += '  '#10;
       
-      res_EIm += '{$endregion ';
-      res_EIm += tn;
-      res_EIm += '}'#10;
-      res_EIm += #10;
     end;
     
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: TSettings); abstract;
@@ -861,6 +853,11 @@ type
       foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl[1], '!', false) do
         settings.Apply(setting_name, setting_data, tn);
       settings.Seal(t, generics.Select(g->g[0]), tn);
+      
+      res_EIm += '{$region ';
+      res_EIm += tn;
+      res_EIm += '}'#10;
+      res_EIm += #10;
       
       if not settings.is_short_def then
         WriteCommandType(fn, tn, settings);
@@ -974,6 +971,11 @@ type
       
       res_In += '    ';
       res += #10;
+      
+      res_EIm += '{$endregion ';
+      res_EIm += tn;
+      res_EIm += '}'#10;
+      res_EIm += #10;
       
     end;
     

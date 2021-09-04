@@ -87,10 +87,10 @@ type
     
   end;
   
-{$endregion Exec1}
-
 function KernelCCQ.AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
 AddCommand(self, new KernelCommandExec1(sz1, args));
+
+{$endregion Exec1}
 
 {$region Exec2}
 
@@ -185,10 +185,10 @@ type
     
   end;
   
-{$endregion Exec2}
-
 function KernelCCQ.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
 AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
+
+{$endregion Exec2}
 
 {$region Exec3}
 
@@ -292,10 +292,10 @@ type
     
   end;
   
-{$endregion Exec3}
-
 function KernelCCQ.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ :=
 AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
+
+{$endregion Exec3}
 
 {$region Exec}
 
@@ -399,10 +399,10 @@ type
     
   end;
   
-{$endregion Exec}
-
 function KernelCCQ.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ :=
 AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
+
+{$endregion Exec}
 
 {$endregion 1#Exec}
 
