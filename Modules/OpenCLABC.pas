@@ -19,8 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//ToDo Тесты .ToString
-
 //===================================
 // Запланированное:
 
@@ -845,7 +843,7 @@ type
     public property ByteSize: int64 read int64(len) * Marshal.SizeOf&<T>;
     
     public function ToString: string; override :=
-    $'{self.GetType.Name}[{ntv.val}] of size {Length}';
+    $'{self.GetType.Name.Remove(self.GetType.Name.IndexOf(''`''))}<{typeof(T).Name}>[{ntv.val}] of size {Length}';
     
     {$region constructor's}
     

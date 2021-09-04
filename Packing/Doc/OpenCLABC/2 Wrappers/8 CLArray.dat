@@ -1,0 +1,43 @@
+
+
+
+# CLArray<T>
+Представляет массив записей, содержимое которого хранится на устройстве OpenCL (обычно GPU)
+
+
+
+# CLArray<T>.Length
+Возвращает длину массива
+
+# CLArray<T>.ByteSize
+Возвращает размер области памяти, занимаемой массивом, в байтах
+
+# CLArray<T>:implicit queue
+Внимание! Данные свойство использует неявные очереди при каждом обращение, поэтому может быть очень не эффективным
+
+# CLArray<T>.Item[integer]
+Возвращает или задаёт один элемент массива
+%CLArray<T>:implicit queue%
+
+# CLArray<T>.Section[IntRange]
+Возвращает или задаёт элементы массива в заданном диапазоне
+%CLArray<T>:implicit queue%
+
+
+
+# CLArray<T>:ctor(length)
+Создаёт массив, указанной длины
+# CLArray<T>:ctor(array)
+Создаёт массив-копию указанного массива
+# CLArray<T>:ctor(range,array)
+Создаёт массив-копию участка указанного массива
+
+# CLArray<T>.([%t:integer,array of T,integer\, integer\, array of T%])
+%CLArray<T>:ctor({%t?length:array:range,array%})%
+Память выделяется в контексте Context.Default
+
+# CLArray<T>.(Context, [%t:integer,array of T,integer\, integer\, array of T%])
+%CLArray<T>:ctor({%t?length:array:range,array%})%
+Память выделяется в указанном контексте
+
+

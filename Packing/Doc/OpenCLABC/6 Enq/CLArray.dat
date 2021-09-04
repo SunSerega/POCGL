@@ -1,0 +1,82 @@
+
+
+
+# CLArray<T>.WriteItem(&T, CommandQueue<integer>)
+# CLArray<T>.WriteItem(CommandQueue<&T>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteItem(&T, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteItem(CommandQueue<&T>, CommandQueue<integer>)
+Записывает указанное значение по индексу ind
+
+
+
+# CLArray<T>.WriteArray(CommandQueue<array of &T>)
+# CLArrayCCQ<T>.AddWriteArray(CommandQueue<array of &T>)
+Записывает весь указанный массив в начало данного объекта CLArray<T>
+
+# CLArray<T>.WriteArray(CommandQueue<array of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteArray(CommandQueue<array of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Записывает len элементов массива a, начиная с индекса a_ind, в данный объект CLArray<T> по индексу ind
+
+
+
+# CLArray<T>.ReadArray(CommandQueue<array of &T>)
+# CLArrayCCQ<T>.AddReadArray(CommandQueue<array of &T>)
+Читает начало данного объекта CLArray<T> в указанный массив
+
+# CLArray<T>.ReadArray(CommandQueue<array of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddReadArray(CommandQueue<array of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Читает len элементов данного объекта CLArray<T>, начиная с индекса ind, в массив a по индексу a_ind
+
+
+
+
+# CLArray<T>.Fill(&T)
+# CLArray<T>.Fill(CommandQueue<&T>)
+# CLArrayCCQ<T>.AddFill(&T)
+# CLArrayCCQ<T>.AddFill(CommandQueue<&T>)
+Заполняет весь массив копиями указанного значения
+
+# CLArray<T>.Fill(&T, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.Fill(CommandQueue<&T>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFill(&T, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFill(CommandQueue<&T>, CommandQueue<integer>, CommandQueue<integer>)
+Заполняет len элементов начиная с индекса ind копиями указанного значения
+
+
+
+# CLArray<T>:CopyToDef
+Копирует данные из текущего массива в a
+# CLArray<T>:CopyFromDef
+Копирует данные из a в текущий массив
+
+
+
+# CLArray<T>.Copy[%dir:From,To%](CommandQueue<CLArray<T>>)
+# CLArrayCCQ<T>.AddCopy[%dir:From,To%](CommandQueue<CLArray<T>>)
+%CLArray<T>:Copy{%dir%}Def%
+Если у массивов разный размер - копируется кол-во элементов меньшего массива
+
+# CLArray<T>.Copy[%dir:From,To%](CommandQueue<CLArray<T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddCopy[%dir:From,To%](CommandQueue<CLArray<T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLArray<T>:Copy{%dir%}Def%
+from_ind указывает индекс в массиве, из которого копируют
+to_ind указывает индекс в массиве, в который копируют
+len указывает кол-во копируемых элементов
+
+
+
+# CLArray<T>.GetItem(CommandQueue<integer>)
+# CLArrayCCQ<T>.AddGetItem(CommandQueue<integer>)
+Читает элемент по указанному индексу
+
+
+
+# CLArray<T>.GetArray
+# CLArrayCCQ<T>.AddGetArray
+Читает весь CLArray<T> как обычный массив array of T
+
+# CLArray<T>.GetArray(CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddGetArray(CommandQueue<integer>, CommandQueue<integer>)
+Читает len элементов начиная с индекса ind из CLArray<T> как обычный массив array of T
+
+

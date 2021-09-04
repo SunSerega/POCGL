@@ -6,6 +6,7 @@
 	- 02#Device
 	- 03#Context
 	- 04#Memory
+		- CLArray
 		- MemorySegment
 	- 05#Kernel
 	- 06#ProgramCode
@@ -44,5 +45,15 @@
 	- 08#CombineQueues
 	- 09#KernelArg
 	- 10#WaitMarker
+	- 11#Wrap
+		- 01#Platform
+		- 02#Device
+		- 03#Context
+		- 04#Memory
+			- CLArray
+			- MemorySegment
+		- 05#Kernel
+		- 06#ProgramCode
 
+- 04#Samples
 

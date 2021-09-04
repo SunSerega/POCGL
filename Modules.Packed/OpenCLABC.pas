@@ -1538,7 +1538,7 @@ type
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{self.GetType.Name}[{ntv.val}] of size {Length}';
+    $'{self.GetType.Name.Remove(self.GetType.Name.IndexOf(''`''))}<{typeof(T).Name}>[{ntv.val}] of size {Length}';
     
     {$region constructor's}
     
