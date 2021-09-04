@@ -7,7 +7,7 @@
     
     public function AddGetArray: CommandQueue<array of &T>;
     
-    public function AddGetArray(offset, len: CommandQueue<integer>): CommandQueue<array of &T>;
+    public function AddGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
     
     {$endregion Get}
     

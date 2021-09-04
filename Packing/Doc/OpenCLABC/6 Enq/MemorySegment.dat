@@ -143,30 +143,17 @@ a_offset(-ы) указывают индекс в массиве
 # MemorySegment:CopyFromDef
 Копирует данные из b в текущий буфер
 
-# MemorySegment:CopyAutoSizeDef
+# MemorySegment.Copy[%dir:From,To%](CommandQueue<MemorySegment>)
+# MemorySegmentCCQ.AddCopy[%dir:From,To%](CommandQueue<MemorySegment>)
+%MemorySegment:Copy{%dir%}Def%
 Если буферы имеют разный размер - в качестве объёма данных берётся размер меньшего буфера
-# MemorySegment:CopyManualSizeDef
+
+# MemorySegment.Copy[%dir:From,To%](CommandQueue<MemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddCopy[%dir:From,To%](CommandQueue<MemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%MemorySegment:Copy{%dir%}Def%
 from_pos указывает отступ в байтах от начала буфера, из которого копируют
 to_pos указывает отступ в байтах от начала буфера, в который копируют
 len указывает кол-во копируемых байт
-
-# MemorySegment.CopyTo(CommandQueue<MemorySegment>)
-# MemorySegmentCCQ.AddCopyTo(CommandQueue<MemorySegment>)
-%MemorySegment:CopyToDef%
-%MemorySegment:CopyAutoSizeDef%
-# MemorySegment.CopyForm(CommandQueue<MemorySegment>)
-# MemorySegmentCCQ.AddCopyForm(CommandQueue<MemorySegment>)
-%MemorySegment:CopyFromDef%
-%MemorySegment:CopyAutoSizeDef%
-
-# MemorySegment.CopyTo(CommandQueue<MemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddCopyTo(CommandQueue<MemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%MemorySegment:CopyToDef%
-%MemorySegment:CopyManualSizeDef%
-# MemorySegment.CopyForm(CommandQueue<MemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddCopyForm(CommandQueue<MemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%MemorySegment:CopyFromDef%
-%MemorySegment:CopyManualSizeDef%
 
 
 

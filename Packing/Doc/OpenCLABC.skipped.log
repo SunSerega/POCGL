@@ -5,3 +5,4 @@ ProgramCodeProperties
 KernelProperties
 MemorySegmentProperties
 MemorySubSegmentProperties
+CLArrayProperties

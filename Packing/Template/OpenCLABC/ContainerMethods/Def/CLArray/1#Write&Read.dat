@@ -2,21 +2,21 @@
 
 
 # WriteItem
-val: &T; offset: CommandQueue<integer>
+val: &T; ind: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!offset! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
   new IntPtr(!val:ptr!),
   !evs!
 ).RaiseIfError;
 
 # WriteItem!Q
-val: CommandQueue<&T>; offset: CommandQueue<integer>
+val: CommandQueue<&T>; ind: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!offset! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
   new IntPtr(!val:ptr!),
   !evs!
 ).RaiseIfError;
@@ -35,12 +35,12 @@ cl.Enqueue{%mode%}Buffer(
 !NeedThread
 
 # [%mode:Write,Read%]Array
-a: CommandQueue<array of &T>; offset, len, a_offset: CommandQueue<integer>
+a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.BLOCKING,
-  new UIntPtr(!offset!*Marshal.SizeOf&<T>), new UIntPtr(!len!*Marshal.SizeOf&<T>),
-  !a![!a_offset!],
+  new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!len!*Marshal.SizeOf&<T>),
+  !a![!a_ind!],
   !evs!
 ).RaiseIfError;
 !NeedThread

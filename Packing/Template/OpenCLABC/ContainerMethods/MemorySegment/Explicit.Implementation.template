@@ -1902,10 +1902,10 @@ AddCommand(self, new MemorySegmentCommandCopyToAutoSize(mem));
 
 {$endregion CopyToAutoSize}
 
-{$region CopyFormAutoSize}
+{$region CopyFromAutoSize}
 
 type
-  MemorySegmentCommandCopyFormAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
+  MemorySegmentCommandCopyFromAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
     private mem: CommandQueue<MemorySegment>;
     
     public function ParamCountL1: integer; override := 1;
@@ -1955,10 +1955,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddCopyForm(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ :=
-AddCommand(self, new MemorySegmentCommandCopyFormAutoSize(mem));
+function MemorySegmentCCQ.AddCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ :=
+AddCommand(self, new MemorySegmentCommandCopyFromAutoSize(mem));
 
-{$endregion CopyFormAutoSize}
+{$endregion CopyFromAutoSize}
 
 {$region CopyTo}
 
@@ -2045,10 +2045,10 @@ AddCommand(self, new MemorySegmentCommandCopyTo(mem, from_pos, to_pos, len));
 
 {$endregion CopyTo}
 
-{$region CopyForm}
+{$region CopyFrom}
 
 type
-  MemorySegmentCommandCopyForm = sealed class(EnqueueableGPUCommand<MemorySegment>)
+  MemorySegmentCommandCopyFrom = sealed class(EnqueueableGPUCommand<MemorySegment>)
     private      mem: CommandQueue<MemorySegment>;
     private from_pos: CommandQueue<integer>;
     private   to_pos: CommandQueue<integer>;
@@ -2125,10 +2125,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddCopyForm(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ :=
-AddCommand(self, new MemorySegmentCommandCopyForm(mem, from_pos, to_pos, len));
+function MemorySegmentCCQ.AddCopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ :=
+AddCommand(self, new MemorySegmentCommandCopyFrom(mem, from_pos, to_pos, len));
 
-{$endregion CopyForm}
+{$endregion CopyFrom}
 
 {$endregion 3#Copy}
 

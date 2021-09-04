@@ -73,11 +73,11 @@
     
     public function CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment;
     
-    public function CopyForm(mem: CommandQueue<MemorySegment>): MemorySegment;
+    public function CopyFrom(mem: CommandQueue<MemorySegment>): MemorySegment;
     
     public function CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
     
-    public function CopyForm(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
+    public function CopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
     
     {$endregion 3#Copy}
     

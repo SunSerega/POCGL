@@ -6,9 +6,13 @@
 
 
 
+# KernelArg.FromCLArray<T>(CLArray<T>)
+# KernelArg.FromCLArrayCQ<T>(CommandQueue<CLArray<T>>)
+Создаёт агрумент kernel-а, представляющий массив данных, хранимых на GPU
+
 # KernelArg.FromMemorySegment(MemorySegment)
 # KernelArg.FromMemorySegmentCQ(CommandQueue<MemorySegment>)
-Создаёт аргумент kernel-а, представляющий буфер
+Создаёт аргумент kernel-а, представляющий область памяти GPU
 
 # KernelArg.FromRecord<TRecord>(TRecord)
 # KernelArg.FromRecordCQ<TRecord>(CommandQueue<TRecord>)

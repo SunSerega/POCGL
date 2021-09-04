@@ -7,6 +7,7 @@
 # ProgramCode.Native
 # Kernel.Native
 # MemorySegment.Native
+# CLArray<T>.Native
 Возвращает имя (дескриптор) неуправляемого объекта
 
 
@@ -21,6 +22,7 @@
 # ProgramCode.(cl_program)
 # Kernel.(cl_kernel, boolean)
 # MemorySegment.(cl_mem)
+# CLArray<T>.(cl_mem)
 %Wrap:NtvCtor%
 При успешном создании обёртки вызывается cl.Retain
 А во время вызова .Dispose - cl.Release
@@ -29,6 +31,7 @@
 
 # Kernel.NewQueue
 # MemorySegment.NewQueue
+# CLArray<T>.NewQueue
 Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
 
 
@@ -38,6 +41,7 @@
 # Kernel.Dispose
 # MemorySegment.Dispose
 # MemorySubSegment.Dispose
+# CLArray<T>.Dispose
 Позволяет OpenCL удалить неуправляемый объект
 Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
 
@@ -50,6 +54,7 @@
 # Kernel.Properties
 # MemorySegment.Properties
 # MemorySubSegment.Properties
+# CLArray<T>.Properties
 Возвращает контейнер свойств неуправляемого объекта
 
 
@@ -59,6 +64,7 @@
 # ProgramCode.Finalize
 # Kernel.Finalize
 # MemorySegment.Finalize
+# CLArray<T>.Finalize
 Освобождает неуправляемые ресурсы. Данный метод вызывается автоматически во время сборки мусора
 Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
 
@@ -72,6 +78,7 @@
 # Kernel.ToString
 # MemorySegment.ToString
 # MemorySubSegment.ToString
+# CLArray<T>.ToString
 Возвращает строку с основными данными о данном объекте
 
 
@@ -82,6 +89,7 @@
 # ProgramCode.Equals(object)
 # Kernel.Equals(object)
 # MemorySegment.Equals(object)
+# CLArray<T>.Equals(object)
 --
 
 

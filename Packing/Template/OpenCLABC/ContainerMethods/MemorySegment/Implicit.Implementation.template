@@ -129,17 +129,17 @@ function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment :
 //ToDo #2510
 Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem) as object as CommandQueue<MemorySegment>);
 
-function MemorySegment.CopyForm(mem: CommandQueue<MemorySegment>): MemorySegment :=
+function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>): MemorySegment :=
 //ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(mem) as object as CommandQueue<MemorySegment>);
+Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem) as object as CommandQueue<MemorySegment>);
 
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment :=
 //ToDo #2510
 Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem, from_pos, to_pos, len) as object as CommandQueue<MemorySegment>);
 
-function MemorySegment.CopyForm(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment :=
+function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment :=
 //ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddCopyForm(mem, from_pos, to_pos, len) as object as CommandQueue<MemorySegment>);
+Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem, from_pos, to_pos, len) as object as CommandQueue<MemorySegment>);
 
 {$endregion 3#Copy}
 

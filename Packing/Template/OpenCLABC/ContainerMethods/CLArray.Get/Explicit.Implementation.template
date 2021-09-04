@@ -124,36 +124,36 @@ new CLArrayCommandGetArrayAutoSize<T>(self) as CommandQueue<array of &T>;
 type
   CLArrayCommandGetArray<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
   where T: record;
-    private offset: CommandQueue<integer>;
-    private    len: CommandQueue<integer>;
+    private ind: CommandQueue<integer>;
+    private len: CommandQueue<integer>;
     
     public function NeedThread: boolean; override := true;
     
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
-    public constructor(ccq: CLArrayCCQ<T>; offset, len: CommandQueue<integer>);
+    public constructor(ccq: CLArrayCCQ<T>; ind, len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
-      self.offset := offset;
-      self.   len :=    len;
+      self.ind := ind;
+      self.len := len;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
     begin
-      var offset_qr := offset.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(offset_qr.ev);
-      var    len_qr :=    len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
+      var ind_qr := ind.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ind_qr.ev);
+      var len_qr := len.InvokeNewQ(tsk, c, main_dvc, False,     nil); evs_l1.Add(len_qr.ev);
       
       Result := (o, cq, tsk, evs, own_qr)->
       begin
-        var offset := offset_qr.GetRes;
-        var    len :=    len_qr.GetRes;
+        var ind := ind_qr.GetRes;
+        var len := len_qr.GetRes;
         
         var res := new T[len]; own_qr.SetRes(res);
         cl.EnqueueReadBuffer(
           cq, o.Native, Bool.BLOCKING,
-          new UIntPtr(int64(offset) * Marshal.SizeOf&<T>), new UIntPtr(int64(len) * Marshal.SizeOf&<T>),
+          new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(int64(len) * Marshal.SizeOf&<T>),
           res[0],
           evs.count, evs.evs, IntPtr.Zero
         ).RaiseIfError;
@@ -165,8 +165,8 @@ type
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
-      offset.RegisterWaitables(tsk, prev_hubs);
-         len.RegisterWaitables(tsk, prev_hubs);
+      ind.RegisterWaitables(tsk, prev_hubs);
+      len.RegisterWaitables(tsk, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -174,8 +174,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'offset: ';
-      offset.ToString(sb, tabs, index, delayed, false);
+      sb += 'ind: ';
+      ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
       sb += 'len: ';
@@ -185,8 +185,8 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetArray(offset, len: CommandQueue<integer>): CommandQueue<array of &T> :=
-new CLArrayCommandGetArray<T>(self, offset, len) as CommandQueue<array of &T>;
+function CLArrayCCQ<T>.AddGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T> :=
+new CLArrayCommandGetArray<T>(self, ind, len) as CommandQueue<array of &T>;
 
 {$endregion GetArray}
 

@@ -1,7 +1,7 @@
 
 
 
-# Copy[%direction:To,Form%]!AutoSize
+# Copy[%direction:To,From%]!AutoSize
 mem: CommandQueue<MemorySegment>
 !Enqueue
 cl.EnqueueCopyBuffer(
@@ -13,7 +13,7 @@ cl.EnqueueCopyBuffer(
 
 
 
-# Copy[%direction:To,Form%]
+# Copy[%direction:To,From%]
 mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>
 !Enqueue
 cl.EnqueueCopyBuffer(

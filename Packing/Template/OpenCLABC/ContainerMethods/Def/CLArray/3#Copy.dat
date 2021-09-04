@@ -1,7 +1,7 @@
 
 
 
-# Copy[%direction:To,Form%]!AutoSize
+# Copy[%direction:To,From%]!AutoSize
 a: CommandQueue<CLArray<T>>
 !Enqueue
 cl.EnqueueCopyBuffer(
@@ -13,12 +13,12 @@ cl.EnqueueCopyBuffer(
 
 
 
-# Copy[%direction:To,Form%]
-a: CommandQueue<CLArray<T>>; from_pos, to_pos, len: CommandQueue<integer>
+# Copy[%direction:To,From%]
+a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>
 !Enqueue
 cl.EnqueueCopyBuffer(
   cq, {%direction? o.ntv,!a!.ntv : !a!.ntv,o.ntv %},
-  new UIntPtr(!from_pos!*Marshal.SizeOf&<T>), new UIntPtr(!to_pos!*Marshal.SizeOf&<T>),
+  new UIntPtr(!from_ind!*Marshal.SizeOf&<T>), new UIntPtr(!to_ind!*Marshal.SizeOf&<T>),
   new UIntPtr(!len!*Marshal.SizeOf&<T>),
   !evs!
 ).RaiseIfError;

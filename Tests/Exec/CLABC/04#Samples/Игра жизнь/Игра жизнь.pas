@@ -47,7 +47,7 @@ try
     .AddExec2(W,W,
       B, B_temp, W
     ) +
-    B.NewQueue.AddCopyForm(B_temp)
+    B.NewQueue.AddCopyFrom(B_temp)
  ;
  var Q_Otp :=
     B.NewQueue
