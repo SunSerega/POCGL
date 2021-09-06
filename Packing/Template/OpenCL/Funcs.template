@@ -11766,6 +11766,18 @@
     
   end;
   
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  clPoclContentSize = static class
+    public const _ExtStr = 'pocl_content_size';
+    
+    private static function z_SetContentSizeBufferPoCL_ovr_0(buffer: cl_mem; content_size_buffer: cl_mem): ErrorCode;
+    external 'opencl.dll' name 'clSetContentSizeBufferPoCL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetContentSizeBufferPoCL(buffer: cl_mem; content_size_buffer: cl_mem): ErrorCode :=
+    z_SetContentSizeBufferPoCL_ovr_0(buffer, content_size_buffer);
+    
+  end;
+  
   {$endregion Extensions}
   
   

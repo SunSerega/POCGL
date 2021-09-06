@@ -7,7 +7,9 @@ Invalid ext name [3DKHR], replaced with [KHR]
 Invalid ext name [D3D11KHR], replaced with [KHR]
 Invalid ext name [ILKHR], replaced with [KHR]
 Invalid ext name [DX9INTEL], replaced with [INTEL]
+Invalid ext name [CL], replaced with []
 Ext group [LOADER] of ext [loader_layers] is not supported
+Ext group [POCL] of ext [pocl_content_size] is not supported
 Struct [cl_dx9_surface_info_khr] was skipped
 Struct [cl_motion_estimation_desc_intel] was skipped
 Struct [cl_mem_ext_host_ptr] was skipped
@@ -17,6 +19,7 @@ Struct [cl_name_version] was skipped
 Struct [cl_name_version_khr] was skipped
 Struct [cl_device_pci_bus_info_khr] was skipped
 Struct [cl_queue_family_properties_intel] was skipped
+Struct [cl_device_integer_dot_product_acceleration_properties_khr] was skipped
 Group [DeviceAtomicCapabilities] was skipped
 Group [DeviceEnqueueCapabilities] was skipped
 Group [QueuePriorityKhr] was skipped

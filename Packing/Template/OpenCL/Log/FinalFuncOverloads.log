@@ -2029,4 +2029,7 @@
  ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| var UInt32	|
  ErrorCode	| cl_context	| MemFlags	| MemObjectType	| UInt32	| UInt32	| IntPtr	| IntPtr	|
 
+# clSetContentSizeBufferPoCL
+ ErrorCode	| cl_mem	| cl_mem	|
+
 
