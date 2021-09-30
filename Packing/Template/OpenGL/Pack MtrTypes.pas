@@ -376,8 +376,7 @@ begin
     res += ';'#10;
     res += '    begin'#10;
     for var w := 2 to t[0][1] do
-    begin
-      foreach var xs in Range(0, t[0][1]-1).Permutations(w).Where(xs->xs.Pairwise.All(p->p[0]<p[1])) do
+      foreach var xs in Range(0, t[0][1]-1).Combinations(w) do
       begin
         if w = t[0][1] then
           res += '      Result' else
@@ -415,7 +414,6 @@ begin
         res += ';'#10;
         if w = t[0][1] then break;
       end;
-    end;
     res += '    end;'#10;
     
   end;
