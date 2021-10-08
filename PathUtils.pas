@@ -1,5 +1,5 @@
 ﻿unit PathUtils;
-{$string_nullbased+}
+{$zerobasedstrings}
 
 var assembly_file_name: string;
 var assembly_dir: string;
@@ -33,50 +33,32 @@ function GetFullPathRTA(fname: string) := GetFullPath(fname, assembly_dir);
 
 function GetRelativePath(fname: string; base_folder: string := System.Environment.CurrentDirectory): string;
 begin
-  fname := GetFullPath(fname).Replace('/','\');
-  base_folder := GetFullPath(base_folder).Replace('/','\');
+  var split_path: string->array of string :=
+  path->GetFullPath(path).Split('/', '\');
   
-  if fname=base_folder then
+  var fname_parts: array of string := split_path(fname);
+  
+  var base_folder_parts := split_path(base_folder);
+  if string.IsNullOrWhiteSpace( base_folder_parts[^1] ) then
+    base_folder_parts := base_folder_parts[:^1];
+  
+  if fname_parts.SequenceEqual(base_folder_parts) then
   begin
     Result := '';
     exit;
   end;
   
-  var ind := 0;
-  begin
-    var ch_ind := 0;
-    while true do
-    begin
-      if ch_ind=fname.Length then break;
-      if ch_ind=base_folder.Length then
-      begin
-        ind := ch_ind;
-        break;
-      end;
-      if fname[ch_ind]<>base_folder[ch_ind] then break;
-      if fname[ch_ind]='\' then ind := ch_ind+1;
-      ch_ind += 1;
-    end;
-  end;
-  
-  if ind=0 then
+  var c := fname_parts.ZipTuple(base_folder_parts).Count(\(part1, part2)->part1=part2);
+  if c=0 then
   begin
     Result := fname;
     exit;
   end;
   
   var res := new StringBuilder;
-  
-  if ind <> base_folder.Length then
-    loop base_folder.Skip(ind).CountOf('\') + 1 do
-      res += '..\';
-  
-  if ind <> fname.Length then
-  begin
-    if fname[ind]='\' then ind += 1;
-    res.Append(fname, ind, fname.Length-ind);
-  end;
-  
+  loop base_folder_parts.Length-c do
+    res.Append('..\');
+  res += fname_parts.Skip(c).JoinToString('\');
   Result := res.ToString;
 end;
 function GetRelativePathRTA(fname: string) := GetRelativePath(fname, assembly_dir);
