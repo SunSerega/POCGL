@@ -1,0 +1,140 @@
+
+
+
+#temp
+"abc"
+
+# DefNameChar
+letter/digit/"_"
+
+# line_break_literal
+"
+"
+
+
+
+# >LiteralDef
+"\""
+{text}[
+	[
+		~"\""
+		char
+	]/[
+		"\\\""
+	]
+]:
+"\""
+
+
+
+# ?OptionalDefHeader
+"+"
+
+# >OptionalDef
+OptionalDefHeader
++space:
+{sub_def}[
+	LiteralDef/NameRef/
+	ArrayDef/
+	PaletteDef/NamelessBlockDef
+]
+
+# >NegateDef
+"~"
++space:
+{sub_def}[
+	LiteralDef/NameRef/
+	NegateDef/ArrayDef/
+	PaletteDef/NamelessBlockDef
+]
+
+# ?ArrayDefCustomValue
+~char
+
+# >ArrayDef
+{sub_def}[
+	LiteralDef/NameRef/
+	NamelessBlockDef
+]
++space:
+":"
+{separator}+[
+	+[~line_break_literal space]:
+	~line_break_literal
+	[
+		LiteralDef/NameRef/
+		OptionalDef/NegateDef/
+		NamelessBlockDef
+	]
+]
+{arr_val}+ArrayDefCustomValue
+
+
+
+# ItemName
+"{"
+{value}DefNameChar:
+"}"
+
+# PaletteDefItem
+LiteralDef/NameRef/
+NamelessBlockDef
+
+# PaletteDefSeparator
++space:
+"/"
++space:
+
+# >PaletteDef
+~~[
+	PaletteDefItem
+	PaletteDefSeparator
+]
+[
+	{name}+ItemName
+	{item}PaletteDefItem
+]:PaletteDefSeparator
+
+# BlockDefBody
+[
+	{origin_marker}+[
+		"=>"
+		+space:
+	]
+	~"#"
+	{name}+ItemName
+	{item}[
+		LiteralDef/NameRef/
+		OptionalDef/NegateDef/ArrayDef/
+		PaletteDef/NamelessBlockDef
+	]
+	+space:
+]:
+
+# >NamedBlockDef
+=> "#"
++space:
++[
+	"?"/">"
+	+space:
+]
+DefNameChar:
+space:
+BlockDefBody
+
+# NameRef
+DefNameChar:
+
+# >NamelessBlockDef
+"["
++space:
+BlockDefBody
+"]"
+
+
+
+# >KEPFile
++space:
++NamedBlockDef:
+
+
