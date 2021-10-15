@@ -4,68 +4,54 @@
 {$region 1#Write&Read}
 
 function CLArray<T>.WriteItem(val: &T; ind: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind));
 
 function CLArray<T>.WriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind));
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a));
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a));
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a, ind, len, a_ind) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a, ind, len, a_ind));
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, ind, len, a_ind) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, ind, len, a_ind));
 
 {$endregion 1#Write&Read}
 
 {$region 2#Fill}
 
 function CLArray<T>.Fill(val: &T): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddFill(val));
 
 function CLArray<T>.Fill(val: &T; ind, len: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
 
 function CLArray<T>.Fill(val: CommandQueue<&T>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddFill(val));
 
 function CLArray<T>.Fill(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
 
 {$endregion 2#Fill}
 
 {$region 3#Copy}
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<T>>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a));
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a));
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a, from_ind, to_ind, len) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a, from_ind, to_ind, len));
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T> :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a, from_ind, to_ind, len) as object as CommandQueue<CLArray<T>>);
+Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a, from_ind, to_ind, len));
 
 {$endregion 3#Copy}
 

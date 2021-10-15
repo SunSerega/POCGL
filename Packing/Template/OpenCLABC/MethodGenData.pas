@@ -923,7 +923,6 @@ type
       end else
       begin
         
-        res_IIm += '//ToDo #2510'#10;
         res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Add';
         res_IIm += fn;
         if settings.generics_str <> nil then
@@ -936,12 +935,6 @@ type
           res_IIm += '(';
           res_IIm += settings.args.Select(arg->arg.name).JoinToString(', ');
           res_IIm += ')';
-        end;
-        //ToDo #2510
-        begin
-          res_IIm += ' as object as CommandQueue<';
-          WriteMethodResT(res_IIm, new WriterEmpty, settings);
-          res_IIm += '>';
         end;
         res_IIm += ');'#10;
         

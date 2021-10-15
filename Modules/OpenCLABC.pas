@@ -141,7 +141,6 @@ unit OpenCLABC;
 //ToDo https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
 // - #2431
-// - #2510
 
 //ToDo Баги NVidia
 //ToDo https://developer.nvidia.com/nvidia_bug/{id}

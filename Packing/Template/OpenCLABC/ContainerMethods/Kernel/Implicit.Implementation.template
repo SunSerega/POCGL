@@ -4,20 +4,16 @@
 {$region 1#Exec}
 
 function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddExec1(sz1, args) as object as CommandQueue<Kernel>);
+Context.Default.SyncInvoke(self.NewQueue.AddExec1(sz1, args));
 
 function Kernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddExec2(sz1, sz2, args) as object as CommandQueue<Kernel>);
+Context.Default.SyncInvoke(self.NewQueue.AddExec2(sz1, sz2, args));
 
 function Kernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): Kernel :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddExec3(sz1, sz2, sz3, args) as object as CommandQueue<Kernel>);
+Context.Default.SyncInvoke(self.NewQueue.AddExec3(sz1, sz2, sz3, args));
 
 function Kernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel :=
-//ToDo #2510
-Context.Default.SyncInvoke(self.NewQueue.AddExec(global_work_offset, global_work_size, local_work_size, args) as object as CommandQueue<Kernel>);
+Context.Default.SyncInvoke(self.NewQueue.AddExec(global_work_offset, global_work_size, local_work_size, args));
 
 {$endregion 1#Exec}
 
