@@ -295,7 +295,7 @@ end;
 
 procedure ProcessPdf(fname, v: string);
 begin
-  var Main_ToDo := 0; //ToDo в заголовке описывающем разделы - не должны быть #0-ов. Ну и лишние пробелы тоже убрать
+  var Main_TODO := 0; //TODO в заголовке описывающем разделы - не должны быть #0-ов. Ну и лишние пробелы тоже убрать
   
   Otp($'Formating version {v}');
 //  lock output do Writeln($'%%%Formating version {v}');

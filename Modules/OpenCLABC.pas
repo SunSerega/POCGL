@@ -14,58 +14,62 @@
 ///
 unit OpenCLABC;
 
-{$region ToDo}
+{$region TODO}
 
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Можно же сохранять неуправляемые очереди в список внутри CLTask, и затем использовать несколько раз
+// - И почему я раньше об этом не подумал...
+
 //===================================
 // Запланированное:
 
-//ToDo Порядок Wait очередей в Wait группах
+//TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
 
-//ToDo Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
+//TODO Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
 
-//ToDo boolean в CLArray<T>
+//TODO boolean в CLArray<T>
 // - Его пытается маршлить как BOOL из C++, который имеет размер 4 байта
 // - Проверить происходит ли собственно конверция
-//ToDo CLBoolean?
+//TODO CLBoolean?
 // - boolean запретить не только в CLArray - во всех TRecord
-//ToDo С char то же самое
-//ToDO А для DateTime и размер посчитать не даёт
+//TODO С char то же самое
+//TODO А для DateTime и размер посчитать не даёт
 
-//ToDo Преобразование array of T => KernelArg, используя CL_MEM_USE_HOST_PTR
+//TODO Преобразование array of T => KernelArg, используя CL_MEM_USE_HOST_PTR
 // - #2478
 
-//ToDo HFQ(()->S) не работает как ссылка на S:MemorySegment?
+//TODO HFQ(()->S) не работает как ссылка на S:MemorySegment?
 
-//ToDo Использовать cl.EnqueueMapBuffer
+//TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
 
-//ToDo Пройтись по интерфейсу, порасставлять кидание исключений
-//ToDo Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
+//TODO Пройтись по интерфейсу, порасставлять кидание исключений
+//TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 // - В том числе проверки с помощью BlittableHelper
 
-//ToDo Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
+//TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
 //
-//ToDo И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
+//TODO И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 // - Может даже можно синхронно выполнить "HPQ(...)+HPQ(...)", в некоторых случаях?
-//ToDo Enqueueabl-ы вызывают .Invoke для первого параметра и .InvokeNewQ для остальных
+//TODO Enqueueabl-ы вызывают .Invoke для первого параметра и .InvokeNewQ для остальных
 // - А что если все параметры кроме последнего - константы?
 // - Надо как то умнее это обрабатывать
-//ToDo И сделать наконец нормальный класс-контейнер состояния очереди, параметрами всё не передашь
+//TODO И сделать наконец нормальный класс-контейнер состояния очереди, параметрами всё не передашь
 
-//ToDo .Cast.ThenWaitMarker.Cast не оптимизируется - а можно было бы и оптимизировать
+//TODO .Cast.ThenWaitMarker.Cast не оптимизируется - а можно было бы и оптимизировать
 // - Для этого надо создавать ещё один псевдо-маркер, но давать ему тот же маркер
 // - Но тогда маркер будет активироваться даже если первое преобразование неправильное...
 
-//ToDo Проверять ".IsReadOnly" перед запасным копированием коллекций
+//TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
 
-//ToDo В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
+//TODO В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
 
-//ToDo Подумать как об этом можно написать в справке (или не в справке):
+//TODO Подумать как об этом можно написать в справке (или не в справке):
 // - ReadValue отсутствует
+// - (но есть GetValue)
 // --- В объяснении KernelArg из указателя всё уже сказано
 // --- Надо только как то объединить, чтоб текст был не только про KernelArg...
 // - FillArray отсутствует
@@ -73,20 +77,18 @@ unit OpenCLABC;
 // --- Вообще в теории можно написать отдельную мелкую неуправляемую .dll и $resource её
 // --- Но это жесть сколько усложнений ради 1 метода...
 
-//ToDo А что если вещи, которые могут привести к утечкам памяти при ThreadAbortException (как конструктор контекста) сувать в finally пустого try?
+//TODO А что если вещи, которые могут привести к утечкам памяти при ThreadAbortException (как конструктор контекста) сувать в finally пустого try?
 // - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
 // - Обязательно сравнить скорость, перед тем как применять...
+// - Вообще нет, лучше избавится от ThreadAbortException, и передавать токены отмены в HPQ и т.п.
 
-//ToDo Можно же сохранять неуправляемые очереди в список внутри CLTask, и затем использовать несколько раз
-// - И почему я раньше об этом не подумал...
-
-//ToDo Заполнение Platform.All сейчас вылетит на компе с 0 платформ...
+//TODO Заполнение Platform.All сейчас вылетит на компе с 0 платформ...
 // - Сразу не забыть исправить описание
 
-//ToDo Всё же стоит добавить .ThenUse - аналог .ThenConvert, не изменяющий значение, а только использующий
+//TODO Всё же стоит добавить .ThenUse - аналог .ThenConvert, не изменяющий значение, а только использующий
 
-//ToDo IWaitQueue.CancelWait
-//ToDo WaitAny(aborter, WaitAll(...));
+//TODO IWaitQueue.CancelWait
+//TODO WaitAny(aborter, WaitAll(...));
 // - Что случится с WaitAll если aborter будет первым?
 // - Очереди переданные в Wait - вообще не запускаются так
 // - Поэтому я и думал про что то типа CancelWait
@@ -97,53 +99,53 @@ unit OpenCLABC;
 // - И только в WaitAll, другим Wait-ам это не нужно
 // - Или можно забыть про всё это и сделать+использовать AbortQueue чтоб убивать и Wait-ы, и всё остальное
 
-//ToDo Создание SubDevice из cl_device_id
+//TODO Создание SubDevice из cl_device_id
 
-//ToDo Очередь-обработчик ошибок
+//TODO Очередь-обработчик ошибок
 // - .HandleExceptions
 // - Сделать легко, надо только вставить свой промежуточный CLTaskBase
 // - Единственное - для Wait очереди надо хранить так же оригинальный CLTaskBase
-//ToDo И какой то аналог try-finally
+//TODO И какой то аналог try-finally
 // - .ThenFinally ?
-//ToDo Раздел справки про обработку ошибок
+//TODO Раздел справки про обработку ошибок
 // - Написать что аналог try-finally стоит использовать на Wait-маркерах для потоко-безопастности
 //
-//ToDo Когда будут очереди-обработчики - удалить ивенты CLTask-ов. Они, по сути, ограниченная версия.
+//TODO Когда будут очереди-обработчики - удалить ивенты CLTask-ов. Они, по сути, ограниченная версия.
 // - И использование их тут изнутри - в целом говнокод...
 
-//ToDo .Cycle(integer)
-//ToDo .Cycle // бесконечность циклов
-//ToDo .CycleWhile(***->boolean)
+//TODO .Cycle(integer)
+//TODO .Cycle // бесконечность циклов
+//TODO .CycleWhile(***->boolean)
 // - Возможность передать свой обработчик ошибок как Exception->Exception
-//ToDo В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
+//TODO В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
-//ToDo И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
+//TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
 // - Или может метод MarkerQueue.Abort?
 
-//ToDo Интегрировать профайлинг очередей
+//TODO Интегрировать профайлинг очередей
 
-//ToDo Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
+//TODO Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
 // - И в справке тогда убрать параграф...
 
 //===================================
 // Сделать когда-нибуть:
 
-//ToDo Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
+//TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
 
 //===================================
 
-{$endregion ToDo}
+{$endregion TODO}
 
 {$region Bugs}
 
-//ToDo Issue компилятора:
-//ToDo https://github.com/pascalabcnet/pascalabcnet/issues/{id}
+//TODO Issue компилятора:
+//TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
 // - #2431
 
-//ToDo Баги NVidia
-//ToDo https://developer.nvidia.com/nvidia_bug/{id}
+//TODO Баги NVidia
+//TODO https://developer.nvidia.com/nvidia_bug/{id}
 // - NV#3035203
 
 {$endregion}
@@ -367,7 +369,7 @@ type
         ntv_dvcs[i] := dvcs[i].ntv;
       
       var ec: ErrorCode;
-      //ToDo позволить использовать CL_CONTEXT_INTEROP_USER_SYNC в свойствах
+      //TODO позволить использовать CL_CONTEXT_INTEROP_USER_SYNC в свойствах
       self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
       ec.RaiseIfError;
       
@@ -1184,7 +1186,7 @@ type
   CommandQueue<T> = partial abstract class(CommandQueueBase)
     
     private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
-    ThenConvert(f as object as Func2<T, Context, TOtp>); //ToDo #2221
+    ThenConvert(f as object as Func2<T, Context, TOtp>); //TODO #2221
     
     public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
@@ -1235,7 +1237,7 @@ type
   
   CommandQueue<T> = partial abstract class(CommandQueueBase)
     
-    private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //ToDo #2221
+    private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //TODO #2221
     
     public function Multiusable: ()->CommandQueue<T>;
     
@@ -1416,19 +1418,19 @@ type
     public procedure WhenDone(cb: Action<CLTask<T>>); reintroduce :=
     if AddEventHandler(EvDone, cb) then cb(self);
     public procedure WhenDoneBase(cb: Action<CLTaskBase>); override :=
-    WhenDone(cb as object as Action<CLTask<T>>); //ToDo #2221
+    WhenDone(cb as object as Action<CLTask<T>>); //TODO #2221
     
     private EvComplete := new List<Action<CLTask<T>, T>>;
     public procedure WhenComplete(cb: Action<CLTask<T>, T>); reintroduce :=
     if AddEventHandler(EvComplete, cb) and (err_lst.Count=0) then cb(self, q_res);
     public procedure WhenCompleteBase(cb: Action<CLTaskBase, object>); override :=
-    WhenComplete((tsk,res)->cb(tsk,res)); //ToDo #2221
+    WhenComplete((tsk,res)->cb(tsk,res)); //TODO #2221
     
     private EvError := new List<Action<CLTask<T>, array of Exception>>;
     public procedure WhenError(cb: Action<CLTask<T>, array of Exception>); reintroduce :=
     if AddEventHandler(EvError, cb) and (err_lst.Count<>0) then cb(self, GetErrArr);
     public procedure WhenErrorBase(cb: Action<CLTaskBase, array of Exception>); override :=
-    WhenError(cb as object as Action<CLTask<T>, array of Exception>); //ToDo #2221
+    WhenError(cb as object as Action<CLTask<T>, array of Exception>); //TODO #2221
     
     {$endregion CLTask event's}
     
@@ -1887,7 +1889,7 @@ type
         exit;
       end;
       
-      //ToDo Протестировать - может быстрее будет без blittable_cache, потому что всё заинлайнится?
+      //TODO Протестировать - может быстрее будет без blittable_cache, потому что всё заинлайнится?
       if blittable_cache.TryGetValue(t, Result) then exit;
       
       foreach var fld in t.GetFields(System.Reflection.BindingFlags.Instance or System.Reflection.BindingFlags.Public or System.Reflection.BindingFlags.NonPublic) do
@@ -2072,8 +2074,8 @@ type
     
     private function SmartStatusErr(tsk: CLTaskBase; org_st: CommandExecutionStatus; save_err: boolean; need_release: boolean): boolean;
     begin
-      //ToDo NV#3035203
-      //ToDo И добавить использование save_err, когда раскомметирую
+      //TODO NV#3035203
+      //TODO И добавить использование save_err, когда раскомметирую
 //      if not org_st.IS_ERROR then exit;
 //      if org_st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
 //        Result := tsk.AddErr(org_st) else
@@ -2099,7 +2101,7 @@ type
         {$ifdef EventDebug}$'after use in SmartStatusErr'{$endif}
       );
       
-      //ToDo NV#3035203 - без бага эта часть не нужна
+      //TODO NV#3035203 - без бага эта часть не нужна
       if org_st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
         if save_err ? tsk.AddErr(org_st) : org_st.IS_ERROR then Result := true;
     end;
@@ -2328,7 +2330,7 @@ type
         Result.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, c, main_dvc, cq
           {$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif}
         );
-        Result += uev.uev; //ToDo #2431 // Result += uev; и abortable не надо ручками
+        Result += uev.uev; //TODO #2431 // Result += uev; и abortable не надо ручками
         Result.abortable := true;
       end;
       
@@ -2412,7 +2414,7 @@ type
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
     public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; override :=
-    LazyQuickTransform(o->f(o)); //ToDo #2221
+    LazyQuickTransform(o->f(o)); //TODO #2221
     
     /// Должно выполнятся только после ожидания ивентов
     public function ToPtr: IPtrQueueRes<T>; abstract;
@@ -2608,7 +2610,7 @@ type
   
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    //ToDo Нет никакой гарантии что Result.ev.abortable будет установлено
+    //TODO Нет никакой гарантии что Result.ev.abortable будет установлено
     // - Но в нескольких местах, как в FinishAfterNewQ и CLTask.Create, стоит проверка и NotSupportedException
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; abstract;
     protected function InvokeBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueResBase; override :=
@@ -2818,7 +2820,7 @@ type
       mu_res := nil;
       
       {$ifdef DEBUG}
-      //ToDo
+      //TODO
 //      if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
       {$endif DEBUG}
       
@@ -3372,7 +3374,7 @@ type
     
   end;
   
-function CommandQueueBase.MultiusableBase := self.Cast&<object>.Multiusable() as object as Func<CommandQueueBase>; //ToDo #2221
+function CommandQueueBase.MultiusableBase := self.Cast&<object>.Multiusable() as object as Func<CommandQueueBase>; //TODO #2221
 function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQueueHub&<T>.Create(self).MakeNode;
 
 {$endregion Multiusable}

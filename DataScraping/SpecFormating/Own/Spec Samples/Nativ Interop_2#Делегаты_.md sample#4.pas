@@ -15,7 +15,7 @@ begin
   end;
   gc_hnd := GCHandle.Alloc(cb);
   
-  var ev: cl_event; //ToDo := ...
+  var ev: cl_event; //TODO := ...
   
   cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, nil).RaiseIfError;
 end.

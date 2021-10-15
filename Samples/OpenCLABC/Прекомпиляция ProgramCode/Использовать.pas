@@ -15,7 +15,7 @@ begin
   
   prog['TEST'].Exec1(10, // Используем 10 ядер
     
-    //ToDo Разобраться почему надо KernelArg.From
+    //TODO Разобраться почему надо KernelArg.From
     KernelArg.FromCLArrayCQ(A.NewQueue.AddFill(1))
     
   );

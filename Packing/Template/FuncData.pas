@@ -73,7 +73,7 @@ type
   
   {$region Group}
   
-  //ToDo #2264
+  //TODO #2264
   // - сделать конструктор, принемающий фиксер
 //  GroupFixer = class;
   Group = sealed class
@@ -784,7 +784,7 @@ type
           for var ptr := 0 to par.ptr-1 do
             res += new FuncParamT(false, ptr, 'IntPtr');
           
-          var ToDo := 0; //ToDo костыль, надо маршлинг нормально настроить
+          var TODO := 0; //TODO костыль, надо маршлинг нормально настроить
           // Но проблема в том, что для "array of boolean" не работает копирование в неуправляемую память
           // Очевидное решение - через указатели получить "array of Byte". Только как покрасивше?
           if can_be_arr then

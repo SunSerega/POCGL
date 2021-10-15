@@ -81,8 +81,8 @@ type
             if gname in |'EmptyFlags'| then
             begin
               group_t := gt_bitmask;
-              var ToDo := 0;
-              //ToDo костыль, надо определять тип групы по тому, как она использована в функциях
+              var TODO := 0;
+              //TODO костыль, надо определять тип групы по тому, как она использована в функциях
               log.WriteLine($'Group {gname} was autoset to gt_bitmask, because of GL_NONE in enums, need fixing');
             end;
           end else
@@ -191,7 +191,7 @@ type
 //            Otp(func_name);
 //            log.WriteLine($'Command [{func_name}] has enum parameter without group');
       
-      var ToDo := 0; //ToDo расскоментировать когда группы приведут в кое-какой порядк
+      var TODO := 0; //TODO расскоментировать когда группы приведут в кое-какой порядк
       
     end;
     
