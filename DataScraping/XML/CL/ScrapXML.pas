@@ -52,6 +52,8 @@ type
           begin
             if n.Text.Contains('struct _') then
               self.ptr -= 1 else
+            if name.StartsWith('CL_VERSION') or name.StartsWith('CL_MAKE_VERSION') then
+              Otp($'WARNING: Weird XML for [{name}]') else
             begin
               Otp($'ERROR: Wrong definition of type [{name}]: No <type> tags');
               exit;

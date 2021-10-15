@@ -30,6 +30,7 @@ Group [MemAllocFlagsImg] was skipped
 Group [DeviceSchedulingControlsCapabilitiesArm] was skipped
 Group [DeviceControlledTerminationCapabilitiesArm] was skipped
 Group [CommandQueueCapabilitiesIntel] was skipped
+Group [DeviceFeatureCapabilitiesIntel] was skipped
 Group [DeviceIntegerDotProductCapabilitiesKhr] was skipped
 Group [KhronosVendorId] was skipped
 Group [DeviceSvmCapabilitiesArm] was skipped

@@ -1,6 +1,38 @@
-﻿Executing default stages:
-Spec + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+﻿Executing selected stages:
+FirstPack + Spec + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
+=================================== First Pack ===================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\Reps\PullReps.pas"
+Compiling: OK
+Runing SubReps Update
+SubReps Update: Pulling OpenCL Docs
+SubReps Update: Done pulling OpenCL Docs
+SubReps Update: Pulling OpenGL Registry
+SubReps Update: Done pulling OpenGL Registry
+Finished runing SubReps Update
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\XML\CL\ScrapXML.pas"
+Compiling: OK
+Runing ScrapXML[CL]
+ScrapXML[CL]: Parsing "cl"
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_MAKE_VERSION_KHR]
+ScrapXML[CL]: Saving as binary
+Finished runing ScrapXML[CL]
+Compiling "DataScraping\XML\GL\ScrapXML.pas"
+Compiling: OK
+Runing ScrapXML[GL]
+ScrapXML[GL]: Parsing "gl"
+ScrapXML[GL]: Parsing "wgl"
+ScrapXML[GL]: Parsing "glx"
+ScrapXML[GL]: Saving as binary
+Finished runing ScrapXML[GL]
 ====================================== Specs =====================================
 Compiling "Packing\Spec\SpecPacker.pas"
 Compiling: OK

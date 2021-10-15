@@ -1,10 +1,6 @@
 ﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] 915227d..71a50f4  master     -> origin/master
-SubReps Update: OpenCL Docs : [Info] 2549e54..c85dd45  update-refpages-2.2-from-0a92eee -> origin/update-refpages-2.2-from-0a92eee
-SubReps Update: OpenCL Docs : Submodule path 'DataScraping/Reps/OpenCL-Docs': checked out '71a50f453334a3161405bc3b78c4f1281662cee0'
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
 SubReps Update: Done pulling OpenGL Registry
@@ -12,13 +8,13 @@ Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runing ScrapXML[CL]
 ScrapXML[CL]: Parsing "cl"
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MAJOR_MASK_KHR]: No <type> tags
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MINOR_MASK_KHR]: No <type> tags
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_PATCH_MASK_KHR]: No <type> tags
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MAJOR_KHR]: No <type> tags
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_MINOR_KHR]: No <type> tags
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_VERSION_PATCH_KHR]: No <type> tags
-ScrapXML[CL]: ERROR: Wrong definition of type [CL_MAKE_VERSION_KHR]: No <type> tags
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_MAKE_VERSION_KHR]
 ScrapXML[CL]: Saving as binary
 Finished runing ScrapXML[CL]
 Runing ScrapXML[GL]
