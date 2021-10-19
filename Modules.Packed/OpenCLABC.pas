@@ -29,9 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Можно же сохранять неуправляемые очереди в список внутри CLTask, и затем использовать несколько раз
-// - И почему я раньше об этом не подумал...
-
 //===================================
 // Запланированное:
 
@@ -91,11 +88,6 @@ unit OpenCLABC;
 // - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
 // - Обязательно сравнить скорость, перед тем как применять...
 // - Вообще нет, лучше избавится от ThreadAbortException, и передавать токены отмены в HPQ и т.п.
-
-//TODO Заполнение Platform.All сейчас вылетит на компе с 0 платформ...
-// - Сразу не забыть исправить описание
-
-//TODO Всё же стоит добавить .ThenUse - аналог .ThenConvert, не изменяющий значение, а только использующий
 
 //TODO IWaitQueue.CancelWait
 //TODO WaitAny(aborter, WaitAll(...));
@@ -552,18 +544,25 @@ type
     public constructor(ntv: cl_platform_id) := self.ntv := ntv;
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
+    private static all_need_init := true;
     private static _all: IList<Platform>;
     private static function GetAll: IList<Platform>;
     begin
-      if _all=nil then
+      if all_need_init then
       begin
         var c: UInt32;
         cl.GetPlatformIDs(0, IntPtr.Zero, c).RaiseIfError;
         
-        var all_arr := new cl_platform_id[c];
-        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero).RaiseIfError;
+        if c<>0 then
+        begin
+          var all_arr := new cl_platform_id[c];
+          cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero).RaiseIfError;
+          
+          _all := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+        end else
+          _all := nil;
         
-        _all := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+        all_need_init := false;
       end;
       Result := _all;
     end;
@@ -2191,6 +2190,13 @@ type
     ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
     public function ThenConvert<TOtp>(f: (object, Context)->TOtp) := ThenConvertBase(f);
     
+    ///Создаёт очередь, которая выполнит данную и вернёт её результат
+    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
+    public function ThenUse(p: object->()           ) := ThenConvert( o   ->begin p(o  ); Result := o; end);
+    ///Создаёт очередь, которая выполнит данную и вернёт её результат
+    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат и контекст выполнения
+    public function ThenUse(p: (object, Context)->()) := ThenConvert((o,c)->begin p(o,c); Result := o; end);
+    
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
@@ -2205,6 +2211,13 @@ type
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    
+    ///Создаёт очередь, которая выполнит данную и вернёт её результат
+    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
+    public function ThenUse(p: T->()           ) := ThenConvert( o   ->begin p(o  ); Result := o; end);
+    ///Создаёт очередь, которая выполнит данную и вернёт её результат
+    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат и контекст выполнения
+    public function ThenUse(p: (T, Context)->()) := ThenConvert((o,c)->begin p(o,c); Result := o; end);
     
   end;
   
@@ -3793,6 +3806,28 @@ WriteArray(value, range.Low, range.High-range.Low+1, 0);
 
 {$region Util type's}
 
+{$region CLTask Misc}
+
+type
+  CLTaskBase = partial abstract class
+    
+    protected qs := new System.Collections.Concurrent.ConcurrentBag<cl_command_queue>;
+    
+    protected procedure EnsureCQ(var cq: cl_command_queue);
+    begin
+      if cq <> cl_command_queue.Zero then exit;
+      if qs.TryTake(cq) then exit;
+      
+      var ec: ErrorCode;
+      cq := cl.CreateCommandQueue(self.org_c.ntv, self.org_c.MainDevice.ntv, CommandQueueProperties.NONE, ec);
+      ec.RaiseIfError;
+      
+    end;
+    
+  end;
+  
+{$endregion CLTask Misc}
+
 {$region EventDebug}{$ifdef EventDebug}
 
 type
@@ -3898,14 +3933,6 @@ type
       Result := new Thread(p);
       Result.IsBackground := true;
       Result.Start;
-    end;
-    
-    protected static procedure FixCQ(c: cl_context; dvc: cl_device_id; var cq: cl_command_queue);
-    begin
-      if cq <> cl_command_queue.Zero then exit;
-      var ec: ErrorCode;
-      cq := cl.CreateCommandQueue(c, dvc, CommandQueueProperties.NONE, ec);
-      ec.RaiseIfError;
     end;
     
   end;
@@ -4097,13 +4124,13 @@ type
     
     {$region EventList.AttachCallback}
     
-    private function ToMarker(c: cl_context; dvc: cl_device_id; var cq: cl_command_queue; expect_smart_status_err: boolean): cl_event;
+    private function ToMarker(tsk: CLTaskBase; var cq: cl_command_queue; expect_smart_status_err: boolean): cl_event;
     begin
       {$ifdef DEBUG}
       if count <= 1 then raise new System.NotSupportedException;
       {$endif DEBUG}
       
-      NativeUtils.FixCQ(c, dvc, cq);
+      tsk.EnsureCQ(cq);
       cl.EnqueueMarkerWithWaitList(cq, self.count, self.evs, Result).RaiseIfError;
       {$ifdef EventDebug}
       EventDebug.RegisterEventRetain(Result, $'enq''ed marker for evs: {evs.JoinToString}');
@@ -4148,18 +4175,18 @@ type
         if save_err ? tsk.AddErr(org_st) : org_st.IS_ERROR then Result := true;
     end;
     
-    public procedure AttachCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue{$ifdef EventDebug}; reason: string{$endif}; save_err: boolean := true) :=
+    public procedure AttachCallback(work: Action; tsk: CLTaskBase; var cq: cl_command_queue{$ifdef EventDebug}; reason: string{$endif}; save_err: boolean := true) :=
     case self.count of
       0: work;
       1: AttachCallback(self.evs[0], work, tsk, false{$ifdef EventDebug}, nil{$endif}, DefaultStatusErr, save_err);
-      else AttachCallback(self.ToMarker(c, dvc, cq, true), work, tsk, true{$ifdef EventDebug}, reason{$endif}, (tsk,st,save_err)->SmartStatusErr(tsk,st,save_err,true), save_err);
+      else AttachCallback(self.ToMarker(tsk, cq, true), work, tsk, true{$ifdef EventDebug}, reason{$endif}, (tsk,st,save_err)->SmartStatusErr(tsk,st,save_err,true), save_err);
     end;
     
-    public procedure AttachFinallyCallback(work: Action; tsk: CLTaskBase; c: cl_context; dvc: cl_device_id; var cq: cl_command_queue{$ifdef EventDebug}; reason: string{$endif}) :=
+    public procedure AttachFinallyCallback(work: Action; tsk: CLTaskBase; var cq: cl_command_queue{$ifdef EventDebug}; reason: string{$endif}) :=
     case self.count of
       0: work;
       1: AttachFinallyCallback(self.evs[0], work, tsk, false{$ifdef EventDebug}, nil{$endif});
-      else AttachFinallyCallback(self.ToMarker(c, dvc, cq, false), work, tsk, true{$ifdef EventDebug}, reason{$endif});
+      else AttachFinallyCallback(self.ToMarker(tsk, cq, false), work, tsk, true{$ifdef EventDebug}, reason{$endif});
     end;
     
     {$endregion EventList.AttachCallback}
@@ -4369,7 +4396,7 @@ type
         var uev := UserEvent.MakeUserEvent(tsk, c
           {$ifdef EventDebug}, $'abortability of EventList.Combine of: {Result.evs.Take(Result.count).JoinToString}'{$endif}
         );
-        Result.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, c, main_dvc, cq
+        Result.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, cq
           {$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif}
         );
         Result += uev.uev; //TODO #2431 // Result += uev; и abortable не надо ручками
@@ -4449,7 +4476,7 @@ type
         var uev := UserEvent.MakeUserEvent(tsk, c.ntv
           {$ifdef EventDebug}, $'abortability of QueueRes with .ev: {ev.evs.JoinToString}'{$endif}
         );
-        ev.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif});
+        ev.AttachFinallyCallback(()->uev.SetStatus(CommandExecutionStatus.COMPLETE), tsk, cq{$ifdef EventDebug}, $'setting abort ev: {uev.uev}'{$endif});
         Result := Result.TrySetEv(ev + uev);
       end;
     end;
@@ -4632,10 +4659,7 @@ type
       {$endif DEBUG}
       if cq=cl_command_queue.Zero then exit;
       
-      ev.AttachFinallyCallback(()->
-      begin
-        System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(cq)))
-      end, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'cl.ReleaseCommandQueue'{$endif});
+      ev.AttachFinallyCallback(()->tsk.qs.Add(cq), tsk, cq{$ifdef EventDebug}, $'return cq to bag'{$endif});
       
     end;
     protected function InvokeNewQBase(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; prev_ev: EventList): QueueResBase;
@@ -4720,7 +4744,7 @@ type
       if need_ptr_qr then raise new System.InvalidOperationException;
       {$endif DEBUG}
       Result := new QueueResConst<object>(nil, prev_ev ?? new EventList);
-      Result.ev.AttachCallback(self.SendSignal, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
+      Result.ev.AttachCallback(self.SendSignal, tsk, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
     end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
@@ -4754,7 +4778,7 @@ type
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       Result := self.q.Invoke(tsk, c, main_dvc, need_ptr_qr, cq, prev_ev);
-      Result.ev.AttachCallback(wrap.SendSignal, tsk, c.ntv, main_dvc, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
+      Result.ev.AttachCallback(wrap.SendSignal, tsk, cq{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -4867,13 +4891,15 @@ type
       {$endif DEBUG}
       
       //CQ.Invoke всегда выполняет UserEvent.EnsureAbortability, поэтому тут оно не нужно
-      qr.ev.AttachFinallyCallback(()->
+      qr.ev.AttachFinallyCallback(()->System.Threading.Tasks.Task.Run(()->
       begin
         qr.ev.Release({$ifdef EventDebug}$'last ev of CLTask'{$endif});
         if cq<>cl_command_queue.Zero then
-          System.Threading.Tasks.Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
+          self.qs.Add(cq);
+        foreach var q in self.qs do
+          self.AddErr( cl.ReleaseCommandQueue(q) );
         OnQDone(qr);
-      end, self, c.ntv, c.MainDevice.ntv, cq{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+      end), self, cq{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
       
     end;
     
@@ -4954,13 +4980,15 @@ type
       if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
       {$endif DEBUG}
       
-      qr.ev.AttachFinallyCallback(()->
+      qr.ev.AttachFinallyCallback(()->System.Threading.Tasks.Task.Run(()->
       begin
         qr.ev.Release({$ifdef EventDebug}$'last ev of CLTask'{$endif});
         if cq<>cl_command_queue.Zero then
-          System.Threading.Tasks.Task.Run(()->self.AddErr( cl.ReleaseCommandQueue(cq) ));
+          self.qs.Add(cq);
+        foreach var q in self.qs do
+          self.AddErr( cl.ReleaseCommandQueue(q) );
         OnQDone(qr);
-      end, self, c.ntv, c.MainDevice.ntv, cq{$ifdef EventDebug}, $'CLTaskResLess.OnQDone'{$endif});
+      end), self, cq{$ifdef EventDebug}, $'CLTaskResLess.OnQDone'{$endif});
       
     end;
     
@@ -6771,7 +6799,7 @@ type
       var ev_l1 := EventList.Combine(evs_l1, tsk, c.ntv, main_dvc, cq);
       var ev_l2 := EventList.Combine(evs_l2, tsk, c.ntv, main_dvc, cq) ?? new EventList;
       
-      NativeUtils.FixCQ(c.ntv, main_dvc, cq);
+      tsk.EnsureCQ(cq);
       
       if not need_thread and (ev_l1=nil) then
       begin
@@ -6814,15 +6842,12 @@ type
             begin
               final_ev.Release({$ifdef EventDebug}$'after waiting to set {res_ev.uev} of nested AttachCallback in Enq of {q.GetType}'{$endif});
               res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
-            end, tsk, c.ntv, main_dvc, lcq{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
-          end, tsk, c.ntv, main_dvc, lcq{$ifdef EventDebug}, $'calling Enq of {q.GetType}'{$endif});
+            end, tsk, lcq{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
+          end, tsk, lcq{$ifdef EventDebug}, $'calling Enq of {q.GetType}'{$endif});
           
         end;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          System.Threading.Tasks.Task.Run(()->tsk.AddErr(cl.ReleaseCommandQueue(lcq)));
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        EventList.AttachFinallyCallback(res_ev, ()->tsk.qs.Add(lcq), tsk, false{$ifdef EventDebug}, nil{$endif});
         Result := res_ev;
       end;
       

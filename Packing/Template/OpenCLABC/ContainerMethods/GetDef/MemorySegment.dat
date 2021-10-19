@@ -6,7 +6,7 @@
 IntPtr
 !Enqueue
 var res := Marshal.AllocHGlobal(IntPtr(pointer(o.Size))); !set_res!(res);
-//ToDo А что если результат уже получен и освобождёт сдедующей .ThenConvert
+//TODO А что если результат уже получен и освобождёт сдедующей .ThenConvert
 // - Вообще .WhenError тут (и в +1 месте) - говнокод
 tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(

@@ -24,6 +24,18 @@
 
 
 
+# CommandQueueBase.ThenUse(object->())
+# CommandQueue<T>.ThenUse(T->())
+# CQ:ThenUseDef
+Создаёт очередь, которая выполнит данную и вернёт её результат
+Но перед этим выполнит на CPU процедуру p, используя полученный результат
+
+# CommandQueueBase.ThenUse((object, Context)->())
+# CommandQueue<T>.ThenUse((T, Context)->())
+%CQ:ThenUseDef% и контекст выполнения
+
+
+
 # CommandQueue[%Base,<T>%].Multiusable
 Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
 Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
