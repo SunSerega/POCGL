@@ -78,7 +78,7 @@ x_dm_params						= IntPtr
 x_dm_buffer						= IntPtr
 x_colormap						= IntPtr
 
-//ToDo что это вообще за типы? я не могу найти ничего про них
+//TODO что это вообще за типы? я не могу найти ничего про них
 x_vl_server						= IntPtr
 x_vl_path						= IntPtr
 x_vl_node						= IntPtr

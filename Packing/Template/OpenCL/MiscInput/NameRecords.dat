@@ -7,6 +7,7 @@ cl_device_id				= IntPtr
 cl_context					= IntPtr
 cl_command_queue			= IntPtr
 cl_sampler					= IntPtr
+cl_semaphore				= IntPtr
 cl_program					= IntPtr
 cl_kernel					= IntPtr
 cl_event					= IntPtr

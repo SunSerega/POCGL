@@ -32,7 +32,9 @@ Group [DeviceControlledTerminationCapabilitiesArm] was skipped
 Group [CommandQueueCapabilitiesIntel] was skipped
 Group [DeviceFeatureCapabilitiesIntel] was skipped
 Group [DeviceIntegerDotProductCapabilitiesKhr] was skipped
+Group [SemaphoreTypeKhr] was skipped
 Group [KhronosVendorId] was skipped
 Group [DeviceSvmCapabilitiesArm] was skipped
 Group [UnifiedSharedMemoryTypeIntel] was skipped
+Group [ExternalMemoryHandleTypeKhr] was skipped
 done

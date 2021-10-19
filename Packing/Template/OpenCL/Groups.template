@@ -359,6 +359,10 @@
     public static property COMMAND_GL_FENCE_SYNC_OBJECT_KHR:            CommandType read new CommandType($200D);
     public static property COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR:      CommandType read new CommandType($202B);
     public static property COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR:      CommandType read new CommandType($202C);
+    public static property COMMAND_SEMAPHORE_WAIT_KHR:                  CommandType read new CommandType($2042);
+    public static property COMMAND_SEMAPHORE_SIGNAL_KHR:                CommandType read new CommandType($2043);
+    public static property COMMAND_ACQUIRE_EXTERNAL_MEM_OBJECTS_KHR:    CommandType read new CommandType($2047);
+    public static property COMMAND_RELEASE_EXTERNAL_MEM_OBJECTS_KHR:    CommandType read new CommandType($2048);
     public static property COMMAND_ACQUIRE_D3D10_OBJECTS_KHR:           CommandType read new CommandType($4017);
     public static property COMMAND_RELEASE_D3D10_OBJECTS_KHR:           CommandType read new CommandType($4018);
     public static property COMMAND_ACQUIRE_D3D11_OBJECTS_KHR:           CommandType read new CommandType($4020);
@@ -417,6 +421,10 @@
       if self.val = UInt32($200D) then Result := 'COMMAND_GL_FENCE_SYNC_OBJECT_KHR' else
       if self.val = UInt32($202B) then Result := 'COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR' else
       if self.val = UInt32($202C) then Result := 'COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR' else
+      if self.val = UInt32($2042) then Result := 'COMMAND_SEMAPHORE_WAIT_KHR' else
+      if self.val = UInt32($2043) then Result := 'COMMAND_SEMAPHORE_SIGNAL_KHR' else
+      if self.val = UInt32($2047) then Result := 'COMMAND_ACQUIRE_EXTERNAL_MEM_OBJECTS_KHR' else
+      if self.val = UInt32($2048) then Result := 'COMMAND_RELEASE_EXTERNAL_MEM_OBJECTS_KHR' else
       if self.val = UInt32($4017) then Result := 'COMMAND_ACQUIRE_D3D10_OBJECTS_KHR' else
       if self.val = UInt32($4018) then Result := 'COMMAND_RELEASE_D3D10_OBJECTS_KHR' else
       if self.val = UInt32($4020) then Result := 'COMMAND_ACQUIRE_D3D11_OBJECTS_KHR' else
@@ -838,6 +846,10 @@
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED_KHR: DeviceInfo read new DeviceInfo($1075);
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                                      DeviceInfo read new DeviceInfo($2031);
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                                   DeviceInfo read new DeviceInfo($2035);
+    public static property DEVICE_SEMAPHORE_TYPES_KHR:                                           DeviceInfo read new DeviceInfo($204C);
+    public static property DEVICE_SEMAPHORE_IMPORT_HANDLE_TYPES_KHR:                             DeviceInfo read new DeviceInfo($204D);
+    public static property DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES_KHR:                             DeviceInfo read new DeviceInfo($204E);
+    public static property DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES_KHR:                       DeviceInfo read new DeviceInfo($204F);
     public static property DEVICE_COMPUTE_CAPABILITY_MAJOR_NV:                                   DeviceInfo read new DeviceInfo($4000);
     public static property DEVICE_COMPUTE_CAPABILITY_MINOR_NV:                                   DeviceInfo read new DeviceInfo($4001);
     public static property DEVICE_REGISTERS_PER_BLOCK_NV:                                        DeviceInfo read new DeviceInfo($4002);
@@ -1034,6 +1046,10 @@
       if self.val = UInt32($1075) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED_KHR' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY_KHR' else
       if self.val = UInt32($2035) then Result := 'DEVICE_MAX_NAMED_BARRIER_COUNT_KHR' else
+      if self.val = UInt32($204C) then Result := 'DEVICE_SEMAPHORE_TYPES_KHR' else
+      if self.val = UInt32($204D) then Result := 'DEVICE_SEMAPHORE_IMPORT_HANDLE_TYPES_KHR' else
+      if self.val = UInt32($204E) then Result := 'DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES_KHR' else
+      if self.val = UInt32($204F) then Result := 'DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES_KHR' else
       if self.val = UInt32($4000) then Result := 'DEVICE_COMPUTE_CAPABILITY_MAJOR_NV' else
       if self.val = UInt32($4001) then Result := 'DEVICE_COMPUTE_CAPABILITY_MINOR_NV' else
       if self.val = UInt32($4002) then Result := 'DEVICE_REGISTERS_PER_BLOCK_NV' else
@@ -1426,6 +1442,7 @@
     public static property ERROR_RESERVED1_IMG:                         ErrorCode read new ErrorCode(-1123);
     public static property ERROR_RESERVED2_IMG:                         ErrorCode read new ErrorCode(-1124);
     public static property ERROR_RESERVED3_IMG:                         ErrorCode read new ErrorCode(-1125);
+    public static property INVALID_SEMAPHORE_KHR:                       ErrorCode read new ErrorCode(-1142);
     public static property NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE:         ErrorCode read new ErrorCode(-9999);
     
     public function ToString: string; override;
@@ -1532,6 +1549,7 @@
       if self.val = Int32(-1123) then Result := 'ERROR_RESERVED1_IMG' else
       if self.val = Int32(-1124) then Result := 'ERROR_RESERVED2_IMG' else
       if self.val = Int32(-1125) then Result := 'ERROR_RESERVED3_IMG' else
+      if self.val = Int32(-1142) then Result := 'INVALID_SEMAPHORE_KHR' else
       if self.val = Int32(-9999) then Result := 'NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
         Result := $'ErrorCode[{self.val}]';
     end;
@@ -1565,6 +1583,28 @@
       if self.val = UInt32($11D4) then Result := 'EVENT_CONTEXT' else
       if self.val = UInt32($41ED) then Result := 'EVENT_COMMAND_TERMINATION_REASON_ARM' else
         Result := $'EventInfo[{self.val}]';
+    end;
+    
+  end;
+  
+  ExternalSemaphoreHandleTypeKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property SEMAPHORE_HANDLE_OPAQUE_FD_KHR:        ExternalSemaphoreHandleTypeKhr read new ExternalSemaphoreHandleTypeKhr($2055);
+    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_KHR:     ExternalSemaphoreHandleTypeKhr read new ExternalSemaphoreHandleTypeKhr($2056);
+    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT_KHR: ExternalSemaphoreHandleTypeKhr read new ExternalSemaphoreHandleTypeKhr($2057);
+    public static property SEMAPHORE_HANDLE_SYNC_FD_KHR:          ExternalSemaphoreHandleTypeKhr read new ExternalSemaphoreHandleTypeKhr($2058);
+    public static property SEMAPHORE_HANDLE_D3D12_FENCE_KHR:      ExternalSemaphoreHandleTypeKhr read new ExternalSemaphoreHandleTypeKhr($2059);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($2055) then Result := 'SEMAPHORE_HANDLE_OPAQUE_FD_KHR' else
+      if self.val = UInt32($2056) then Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_KHR' else
+      if self.val = UInt32($2057) then Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT_KHR' else
+      if self.val = UInt32($2058) then Result := 'SEMAPHORE_HANDLE_SYNC_FD_KHR' else
+      if self.val = UInt32($2059) then Result := 'SEMAPHORE_HANDLE_D3D12_FENCE_KHR' else
+        Result := $'ExternalSemaphoreHandleTypeKhr[{self.val}]';
     end;
     
   end;
@@ -2219,10 +2259,14 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property MEM_ALLOC_FLAGS_IMG: MemProperties read new MemProperties($40D7);
+    public static property DEVICE_HANDLE_LIST_END_KHR: MemProperties read new MemProperties($0000);
+    public static property DEVICE_HANDLE_LIST_KHR:     MemProperties read new MemProperties($2051);
+    public static property MEM_ALLOC_FLAGS_IMG:        MemProperties read new MemProperties($40D7);
     
     public function ToString: string; override;
     begin
+      if self.val = UInt64($0000) then Result := 'DEVICE_HANDLE_LIST_END_KHR' else
+      if self.val = UInt64($2051) then Result := 'DEVICE_HANDLE_LIST_KHR' else
       if self.val = UInt64($40D7) then Result := 'MEM_ALLOC_FLAGS_IMG' else
         Result := $'MemProperties[{self.val}]';
     end;
@@ -2283,17 +2327,21 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property PLATFORM_PROFILE:                     PlatformInfo read new PlatformInfo($0900);
-    public static property PLATFORM_VERSION:                     PlatformInfo read new PlatformInfo($0901);
-    public static property PLATFORM_NAME:                        PlatformInfo read new PlatformInfo($0902);
-    public static property PLATFORM_VENDOR:                      PlatformInfo read new PlatformInfo($0903);
-    public static property PLATFORM_EXTENSIONS:                  PlatformInfo read new PlatformInfo($0904);
-    public static property PLATFORM_HOST_TIMER_RESOLUTION:       PlatformInfo read new PlatformInfo($0905);
-    public static property PLATFORM_NUMERIC_VERSION:             PlatformInfo read new PlatformInfo($0906);
-    public static property PLATFORM_NUMERIC_VERSION_KHR:         PlatformInfo read new PlatformInfo($0906);
-    public static property PLATFORM_EXTENSIONS_WITH_VERSION:     PlatformInfo read new PlatformInfo($0907);
-    public static property PLATFORM_EXTENSIONS_WITH_VERSION_KHR: PlatformInfo read new PlatformInfo($0907);
-    public static property PLATFORM_ICD_SUFFIX_KHR:              PlatformInfo read new PlatformInfo($0920);
+    public static property PLATFORM_PROFILE:                                 PlatformInfo read new PlatformInfo($0900);
+    public static property PLATFORM_VERSION:                                 PlatformInfo read new PlatformInfo($0901);
+    public static property PLATFORM_NAME:                                    PlatformInfo read new PlatformInfo($0902);
+    public static property PLATFORM_VENDOR:                                  PlatformInfo read new PlatformInfo($0903);
+    public static property PLATFORM_EXTENSIONS:                              PlatformInfo read new PlatformInfo($0904);
+    public static property PLATFORM_HOST_TIMER_RESOLUTION:                   PlatformInfo read new PlatformInfo($0905);
+    public static property PLATFORM_NUMERIC_VERSION:                         PlatformInfo read new PlatformInfo($0906);
+    public static property PLATFORM_NUMERIC_VERSION_KHR:                     PlatformInfo read new PlatformInfo($0906);
+    public static property PLATFORM_EXTENSIONS_WITH_VERSION:                 PlatformInfo read new PlatformInfo($0907);
+    public static property PLATFORM_EXTENSIONS_WITH_VERSION_KHR:             PlatformInfo read new PlatformInfo($0907);
+    public static property PLATFORM_ICD_SUFFIX_KHR:                          PlatformInfo read new PlatformInfo($0920);
+    public static property PLATFORM_SEMAPHORE_TYPES_KHR:                     PlatformInfo read new PlatformInfo($2036);
+    public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES_KHR:       PlatformInfo read new PlatformInfo($2037);
+    public static property PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES_KHR:       PlatformInfo read new PlatformInfo($2038);
+    public static property PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES_KHR: PlatformInfo read new PlatformInfo($2044);
     
     public function ToString: string; override;
     begin
@@ -2308,6 +2356,10 @@
       if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION_KHR' else
       if self.val = UInt32($0920) then Result := 'PLATFORM_ICD_SUFFIX_KHR' else
+      if self.val = UInt32($2036) then Result := 'PLATFORM_SEMAPHORE_TYPES_KHR' else
+      if self.val = UInt32($2037) then Result := 'PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES_KHR' else
+      if self.val = UInt32($2038) then Result := 'PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES_KHR' else
+      if self.val = UInt32($2044) then Result := 'PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES_KHR' else
         Result := $'PlatformInfo[{self.val}]';
     end;
     
@@ -2485,6 +2537,54 @@
       if self.val = UInt64($1156) then Result := 'SAMPLER_LOD_MIN_KHR' else
       if self.val = UInt64($1157) then Result := 'SAMPLER_LOD_MAX_KHR' else
         Result := $'SamplerProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  SemaphoreInfoKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property DEVICE_HANDLE_LIST_END_KHR:    SemaphoreInfoKhr read new SemaphoreInfoKhr($0000);
+    public static property SEMAPHORE_CONTEXT_KHR:         SemaphoreInfoKhr read new SemaphoreInfoKhr($2039);
+    public static property SEMAPHORE_REFERENCE_COUNT_KHR: SemaphoreInfoKhr read new SemaphoreInfoKhr($203A);
+    public static property SEMAPHORE_PROPERTIES_KHR:      SemaphoreInfoKhr read new SemaphoreInfoKhr($203B);
+    public static property SEMAPHORE_PAYLOAD_KHR:         SemaphoreInfoKhr read new SemaphoreInfoKhr($203C);
+    public static property SEMAPHORE_TYPE_KHR:            SemaphoreInfoKhr read new SemaphoreInfoKhr($203D);
+    public static property DEVICE_HANDLE_LIST_KHR:        SemaphoreInfoKhr read new SemaphoreInfoKhr($2051);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0000) then Result := 'DEVICE_HANDLE_LIST_END_KHR' else
+      if self.val = UInt32($2039) then Result := 'SEMAPHORE_CONTEXT_KHR' else
+      if self.val = UInt32($203A) then Result := 'SEMAPHORE_REFERENCE_COUNT_KHR' else
+      if self.val = UInt32($203B) then Result := 'SEMAPHORE_PROPERTIES_KHR' else
+      if self.val = UInt32($203C) then Result := 'SEMAPHORE_PAYLOAD_KHR' else
+      if self.val = UInt32($203D) then Result := 'SEMAPHORE_TYPE_KHR' else
+      if self.val = UInt32($2051) then Result := 'DEVICE_HANDLE_LIST_KHR' else
+        Result := $'SemaphoreInfoKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  SemaphorePropertiesKhr = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property DEVICE_HANDLE_LIST_END_KHR:                 SemaphorePropertiesKhr read new SemaphorePropertiesKhr($0000);
+    public static property SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END_KHR: SemaphorePropertiesKhr read new SemaphorePropertiesKhr($0000);
+    public static property SEMAPHORE_TYPE_KHR:                         SemaphorePropertiesKhr read new SemaphorePropertiesKhr($203D);
+    public static property SEMAPHORE_EXPORT_HANDLE_TYPES_KHR:          SemaphorePropertiesKhr read new SemaphorePropertiesKhr($203F);
+    public static property DEVICE_HANDLE_LIST_KHR:                     SemaphorePropertiesKhr read new SemaphorePropertiesKhr($2051);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($0000) then Result := 'DEVICE_HANDLE_LIST_END_KHR' else
+      if self.val = UInt64($0000) then Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END_KHR' else
+      if self.val = UInt64($203D) then Result := 'SEMAPHORE_TYPE_KHR' else
+      if self.val = UInt64($203F) then Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES_KHR' else
+      if self.val = UInt64($2051) then Result := 'DEVICE_HANDLE_LIST_KHR' else
+        Result := $'SemaphorePropertiesKhr[{self.val}]';
     end;
     
   end;

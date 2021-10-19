@@ -294,7 +294,7 @@
     public function ToString: string; override := $'x_colormap[{val}]';
   end;
   
-  //ToDo что это вообще за типы? я не могу найти ничего про них
+  //TODO что это вообще за типы? я не могу найти ничего про них
   x_vl_server = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;

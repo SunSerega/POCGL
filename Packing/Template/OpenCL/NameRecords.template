@@ -43,6 +43,13 @@
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
     public function ToString: string; override := $'cl_sampler[{val}]';
   end;
+  cl_semaphore = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: cl_semaphore read default(cl_semaphore);
+    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_semaphore[{val}]';
+  end;
   cl_program = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
