@@ -1,5 +1,4 @@
 ﻿unit MethodGenData;
-{$savepcu false} //TODO #2394
 
 uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
