@@ -675,6 +675,28 @@ type
       
       {$region constructor}
       
+      if settings.where_record.Count<>0 then
+      begin
+        res_EIm += '    static constructor;'#10;
+        res_EIm += '    begin'#10;
+        foreach var r in settings.where_record do
+        begin
+          res_EIm += '      BlittableHelper.RaiseIfBad(typeof(';
+          res_EIm += r;
+          res_EIm += '), ''%Err:Blittable:Source:';
+          res_EIm += t;
+          res_EIm += ':';
+          res_EIm += tn;
+          if settings.where_record.Count<>1 then
+          begin
+            res_EIm += ':';
+            res_EIm += r;
+          end;
+          res_EIm += '%'');'#10;
+        end;
+        res_EIm += '    end;'#10;
+      end;
+      
       res_EIm += '    public constructor';
       if settings.impl_args_str = nil then
         res_EIm += ' := exit;'#10 else

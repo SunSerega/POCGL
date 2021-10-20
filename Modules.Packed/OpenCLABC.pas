@@ -29,16 +29,7 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO boolean в CLArray<T>
-// - Его пытается маршлить как BOOL из C++, который имеет размер 4 байта
-// - Проверить происходит ли собственно конверция
-// - Да, происходит, при чём:
-// --- Передача var-параметром - преобразовывает всего 1 значение из всего массива
-// --- Передача массивом - не маршлит значение назад, таким образом теряя неуправляемые данные
-//TODO CLBoolean?
-// - boolean запретить не только в CLArray - во всех TRecord
-//TODO С char то же самое
-//TODO А для DateTime и размер посчитать не даёт
+//TODO GCHandle таки можно использовать, раз не Blittable типы и так не работают
 
 //===================================
 // Запланированное:
@@ -3917,7 +3908,7 @@ type
 type
   BlittableException = sealed class(Exception)
     public constructor(t, blame: System.Type; source_name: string) :=
-    inherited Create(t=blame ? $'Значения типа {t} нельзя использовать {source_name}' : $'Значения типа {t} нельзя использовать {source_name}, потому что он содержит тип {blame}' );
+    inherited Create(t=blame ? $'Значения типа {t} нельзя {source_name}' : $'Значения типа {t} нельзя {source_name}, потому что он содержит тип {blame}' );
   end;
   BlittableHelper = static class
     
@@ -3969,7 +3960,7 @@ type
 //  end;
   
 static constructor CLArray<T>.Create :=
-BlittableHelper.RaiseIfBad(typeof(T), 'как элементы CLArray<>');
+BlittableHelper.RaiseIfBad(typeof(T), 'использовать как элементы CLArray<>');
 
 {$endregion Blittable}
 
@@ -6190,7 +6181,7 @@ type
     private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
     
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'для передачи в качестве параметров kernel''а');
+    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
     
     public constructor(val: TRecord) := self.val^ := val;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -6246,7 +6237,7 @@ static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(
 
 static function KernelArg.FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg;
 begin
-  BlittableHelper.RaiseIfBad(typeof(TRecord), 'для передачи в качестве параметров kernel''а');
+  BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
   Result := KernelArg.FromPtr(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>));
 end;
 
@@ -6345,7 +6336,7 @@ type
     public q: CommandQueue<TRecord>;
     
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'для передачи в качестве параметров kernel''а');
+    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
     
     public constructor(q: CommandQueue<TRecord>) := self.q := q;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -7890,6 +7881,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(val: TRecord; mem_offset: CommandQueue<integer>);
     begin
       self.       val^ :=        val;
@@ -7962,6 +7957,10 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 1;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>);
     begin
       self.       val :=        val;
@@ -8038,6 +8037,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array of TRecord>);
     begin
       self.a := a;
@@ -8098,6 +8101,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>);
     begin
       self.a := a;
@@ -8158,6 +8165,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>);
     begin
       self.a := a;
@@ -8218,6 +8229,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array of TRecord>);
     begin
       self.a := a;
@@ -8278,6 +8293,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>);
     begin
       self.a := a;
@@ -8338,6 +8357,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>);
     begin
       self.a := a;
@@ -8401,6 +8424,10 @@ type
     public function ParamCountL1: integer; override := 4;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -8489,6 +8516,10 @@ type
     public function ParamCountL1: integer; override := 5;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -8586,6 +8617,10 @@ type
     public function ParamCountL1: integer; override := 6;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -8689,6 +8724,10 @@ type
     public function ParamCountL1: integer; override := 4;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -8777,6 +8816,10 @@ type
     public function ParamCountL1: integer; override := 5;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -8874,6 +8917,10 @@ type
     public function ParamCountL1: integer; override := 6;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -9133,6 +9180,10 @@ type
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(val: TRecord);
     begin
       self.val^ := val;
@@ -9196,6 +9247,10 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(val: TRecord; mem_offset, len: CommandQueue<integer>);
     begin
       self.       val^ :=        val;
@@ -9268,6 +9323,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 1;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(val: CommandQueue<TRecord>);
     begin
       self.val := val;
@@ -9336,6 +9395,10 @@ type
     public function ParamCountL1: integer; override := 3;
     public function ParamCountL2: integer; override := 1;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
     public constructor(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>);
     begin
       self.       val :=        val;
@@ -9839,6 +9902,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(ccq: MemorySegmentCCQ; mem_offset: CommandQueue<integer>);
     begin
       inherited Create(ccq);
@@ -9907,6 +9974,10 @@ type
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(ccq: MemorySegmentCCQ);
     begin
       inherited Create(ccq);
@@ -9956,6 +10027,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(ccq: MemorySegmentCCQ; len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
@@ -10019,6 +10094,10 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(ccq: MemorySegmentCCQ; len1,len2: CommandQueue<integer>);
     begin
       inherited Create(ccq);
@@ -10091,6 +10170,10 @@ type
     public function ParamCountL1: integer; override := 3;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
     public constructor(ccq: MemorySegmentCCQ; len1,len2,len3: CommandQueue<integer>);
     begin
       inherited Create(ccq);

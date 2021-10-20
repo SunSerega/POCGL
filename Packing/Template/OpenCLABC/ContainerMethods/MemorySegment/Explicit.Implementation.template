@@ -322,6 +322,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteValue%');
+    end;
     public constructor(val: TRecord; mem_offset: CommandQueue<integer>);
     begin
       self.       val^ :=        val;
@@ -394,6 +398,10 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 1;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteValueQ%');
+    end;
     public constructor(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>);
     begin
       self.       val :=        val;
@@ -470,6 +478,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteArray1AutoSize%');
+    end;
     public constructor(a: CommandQueue<array of TRecord>);
     begin
       self.a := a;
@@ -530,6 +542,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteArray2AutoSize%');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>);
     begin
       self.a := a;
@@ -590,6 +606,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteArray3AutoSize%');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>);
     begin
       self.a := a;
@@ -650,6 +670,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:ReadArray1AutoSize%');
+    end;
     public constructor(a: CommandQueue<array of TRecord>);
     begin
       self.a := a;
@@ -710,6 +734,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:ReadArray2AutoSize%');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>);
     begin
       self.a := a;
@@ -770,6 +798,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:ReadArray3AutoSize%');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>);
     begin
       self.a := a;
@@ -833,6 +865,10 @@ type
     public function ParamCountL1: integer; override := 4;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteArray1%');
+    end;
     public constructor(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -921,6 +957,10 @@ type
     public function ParamCountL1: integer; override := 5;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteArray2%');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -1018,6 +1058,10 @@ type
     public function ParamCountL1: integer; override := 6;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:WriteArray3%');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -1121,6 +1165,10 @@ type
     public function ParamCountL1: integer; override := 4;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:ReadArray1%');
+    end;
     public constructor(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -1209,6 +1257,10 @@ type
     public function ParamCountL1: integer; override := 5;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:ReadArray2%');
+    end;
     public constructor(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -1306,6 +1358,10 @@ type
     public function ParamCountL1: integer; override := 6;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:ReadArray3%');
+    end;
     public constructor(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>);
     begin
       self.         a :=          a;
@@ -1565,6 +1621,10 @@ type
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:FillValueAutoSize%');
+    end;
     public constructor(val: TRecord);
     begin
       self.val^ := val;
@@ -1628,6 +1688,10 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:FillValue%');
+    end;
     public constructor(val: TRecord; mem_offset, len: CommandQueue<integer>);
     begin
       self.       val^ :=        val;
@@ -1700,6 +1764,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 1;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:FillValueAutoSizeQ%');
+    end;
     public constructor(val: CommandQueue<TRecord>);
     begin
       self.val := val;
@@ -1768,6 +1836,10 @@ type
     public function ParamCountL1: integer; override := 3;
     public function ParamCountL2: integer; override := 1;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:FillValueQ%');
+    end;
     public constructor(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>);
     begin
       self.       val :=        val;

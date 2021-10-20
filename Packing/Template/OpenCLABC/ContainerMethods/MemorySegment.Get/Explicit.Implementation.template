@@ -140,6 +140,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:GetValue%');
+    end;
     public constructor(ccq: MemorySegmentCCQ; mem_offset: CommandQueue<integer>);
     begin
       inherited Create(ccq);
@@ -208,6 +212,10 @@ type
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:GetArray1AutoSize%');
+    end;
     public constructor(ccq: MemorySegmentCCQ);
     begin
       inherited Create(ccq);
@@ -257,6 +265,10 @@ type
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:GetArray1%');
+    end;
     public constructor(ccq: MemorySegmentCCQ; len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
@@ -320,6 +332,10 @@ type
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:GetArray2%');
+    end;
     public constructor(ccq: MemorySegmentCCQ; len1,len2: CommandQueue<integer>);
     begin
       inherited Create(ccq);
@@ -392,6 +408,10 @@ type
     public function ParamCountL1: integer; override := 3;
     public function ParamCountL2: integer; override := 0;
     
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:GetArray3%');
+    end;
     public constructor(ccq: MemorySegmentCCQ; len1,len2,len3: CommandQueue<integer>);
     begin
       inherited Create(ccq);

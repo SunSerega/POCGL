@@ -30,16 +30,43 @@ main_dvc должен быть в списке устройств контекс
 
 
 # Err:Blittable:Main
-Значения типа {t} нельзя использовать {source_name}
+Значения типа {t} нельзя {source_name}
 
 # Err:Blittable:Blame
 %Err:Blittable:Main%, потому что он содержит тип {blame}
 
 # Err:Blittable:Source:CLArray
-как элементы CLArray<>
+использовать как элементы CLArray<>
 
 # Err:Blittable:Source:KernelArg
-для передачи в качестве параметров kernel''а
+передавать в качестве параметров kernel''а
+
+# Err:Blittable:Source:MemorySegment:WriteValue
+# Err:Blittable:Source:MemorySegment:WriteValueQ
+# Err:Blittable:Source:MemorySegment:WriteArray1AutoSize
+# Err:Blittable:Source:MemorySegment:WriteArray2AutoSize
+# Err:Blittable:Source:MemorySegment:WriteArray3AutoSize
+# Err:Blittable:Source:MemorySegment:WriteArray1
+# Err:Blittable:Source:MemorySegment:WriteArray2
+# Err:Blittable:Source:MemorySegment:WriteArray3
+# Err:Blittable:Source:MemorySegment:FillValueAutoSize
+# Err:Blittable:Source:MemorySegment:FillValue
+# Err:Blittable:Source:MemorySegment:FillValueAutoSizeQ
+# Err:Blittable:Source:MemorySegment:FillValueQ
+записывать в область памяти OpenCL
+
+# Err:Blittable:Source:MemorySegment:ReadArray1AutoSize
+# Err:Blittable:Source:MemorySegment:ReadArray2AutoSize
+# Err:Blittable:Source:MemorySegment:ReadArray3AutoSize
+# Err:Blittable:Source:MemorySegment:ReadArray1
+# Err:Blittable:Source:MemorySegment:ReadArray2
+# Err:Blittable:Source:MemorySegment:ReadArray3
+# Err:Blittable:Source:MemorySegment:GetValue
+# Err:Blittable:Source:MemorySegment:GetArray1AutoSize
+# Err:Blittable:Source:MemorySegment:GetArray1
+# Err:Blittable:Source:MemorySegment:GetArray2
+# Err:Blittable:Source:MemorySegment:GetArray3
+читать из области памяти OpenCL
 
 
 
