@@ -30,10 +30,16 @@ main_dvc должен быть в списке устройств контекс
 
 
 # Err:Blittable:Main
-Тип {t} нельзя использовать в {source_name}
+Значения типа {t} нельзя использовать {source_name}
 
 # Err:Blittable:Blame
 %Err:Blittable:Main%, потому что он содержит тип {blame}
+
+# Err:Blittable:Source:CLArray
+как элементы CLArray<>
+
+# Err:Blittable:Source:KernelArg
+для передачи в качестве параметров kernel''а
 
 
 

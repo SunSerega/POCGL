@@ -29,6 +29,17 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO boolean в CLArray<T>
+// - Его пытается маршлить как BOOL из C++, который имеет размер 4 байта
+// - Проверить происходит ли собственно конверция
+// - Да, происходит, при чём:
+// --- Передача var-параметром - преобразовывает всего 1 значение из всего массива
+// --- Передача массивом - не маршлит значение назад, таким образом теряя неуправляемые данные
+//TODO CLBoolean?
+// - boolean запретить не только в CLArray - во всех TRecord
+//TODO С char то же самое
+//TODO А для DateTime и размер посчитать не даёт
+
 //===================================
 // Запланированное:
 
@@ -37,16 +48,9 @@ unit OpenCLABC;
 
 //TODO Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
 
-//TODO boolean в CLArray<T>
-// - Его пытается маршлить как BOOL из C++, который имеет размер 4 байта
-// - Проверить происходит ли собственно конверция
-//TODO CLBoolean?
-// - boolean запретить не только в CLArray - во всех TRecord
-//TODO С char то же самое
-//TODO А для DateTime и размер посчитать не даёт
-
 //TODO Преобразование array of T => KernelArg, используя CL_MEM_USE_HOST_PTR
 // - #2478
+// - При чём тут CL_MEM_USE_HOST_PTR???
 
 //TODO HFQ(()->S) не работает как ссылка на S:MemorySegment?
 
@@ -145,6 +149,7 @@ unit OpenCLABC;
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
 // - #2431
+// - #2545
 
 //TODO Баги NVidia
 //TODO https://developer.nvidia.com/nvidia_bug/{id}
@@ -1536,6 +1541,8 @@ type
     
     {$region constructor's}
     
+    static constructor;
+    
     private procedure InitByLen(c: Context);
     begin
       
@@ -2613,7 +2620,7 @@ type
     ///Создаёт аргумент kernel-а, представляющий адрес размерного значения со стека
     ///Внимание! Адрес должен ссылаться именно на стек, иначе программа может время от времени падать с ошибками доступа к памяти
     ///Это значит, что передавать можно только адрес локальной переменной, не захваченной ни одной лямбдой
-    public static function FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromPtr(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>)); end;
+    public static function FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromRecordPtr(ptr); end;
     
     {$endregion Ptr}
@@ -3905,6 +3912,67 @@ type
   
 {$endif EventDebug}{$endregion EventDebug}
 
+{$region Blittable}
+
+type
+  BlittableException = sealed class(Exception)
+    public constructor(t, blame: System.Type; source_name: string) :=
+    inherited Create(t=blame ? $'Значения типа {t} нельзя использовать {source_name}' : $'Значения типа {t} нельзя использовать {source_name}, потому что он содержит тип {blame}' );
+  end;
+  BlittableHelper = static class
+    
+    private static blittable_cache := new Dictionary<System.Type, System.Type>;
+    public static function Blame(t: System.Type): System.Type;
+    begin
+      if t.IsPointer then exit;
+      if t.IsClass then
+      begin
+        Result := t;
+        exit;
+      end;
+      
+      foreach var fld in t.GetFields(System.Reflection.BindingFlags.Instance or System.Reflection.BindingFlags.Public or System.Reflection.BindingFlags.NonPublic) do
+        if fld.FieldType<>t then
+        begin
+          Result := Blame(fld.FieldType);
+          if Result<>nil then break;
+        end;
+      
+      if Result=nil then
+      begin
+        var o := System.Activator.CreateInstance(t);
+        try
+          GCHandle.Alloc(o, GCHandleType.Pinned).Free;
+        except
+          on System.ArgumentException do
+            Result := t;
+        end;
+      end;
+      
+      blittable_cache[t] := Result;
+    end;
+    
+//    public static function IsBlittable(t: System.Type) := Blame(t)=nil;
+    public static procedure RaiseIfBad(t: System.Type; source_name: string);
+    begin
+      var blame := BlittableHelper.Blame(t);
+      if blame=nil then exit;
+      raise new BlittableException(t, blame, source_name);
+    end;
+    
+  end;
+  
+  //TODO #2545
+//  CLArray<T> = partial class
+//    static constructor :=
+//    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLArray%');
+//  end;
+  
+static constructor CLArray<T>.Create :=
+BlittableHelper.RaiseIfBad(typeof(T), 'как элементы CLArray<>');
+
+{$endregion Blittable}
+
 {$region NativeUtils}
 
 type
@@ -3938,50 +4006,6 @@ type
   end;
   
 {$endregion NativeUtils}
-
-{$region Blittable}
-
-type
-  BlittableException = sealed class(Exception)
-    public constructor(t, blame: System.Type; source_name: string) :=
-    inherited Create(t=blame ? $'Тип {t} нельзя использовать в {source_name}' : $'Тип {t} нельзя использовать в {source_name}, потому что он содержит тип {blame}' );
-  end;
-  BlittableHelper = static class
-    
-    private static blittable_cache := new Dictionary<System.Type, System.Type>;
-    public static function Blame(t: System.Type): System.Type;
-    begin
-      if t.IsPointer then exit;
-      if t.IsClass then
-      begin
-        Result := t;
-        exit;
-      end;
-      
-      //TODO Протестировать - может быстрее будет без blittable_cache, потому что всё заинлайнится?
-      if blittable_cache.TryGetValue(t, Result) then exit;
-      
-      foreach var fld in t.GetFields(System.Reflection.BindingFlags.Instance or System.Reflection.BindingFlags.Public or System.Reflection.BindingFlags.NonPublic) do
-        if fld.FieldType<>t then
-        begin
-          Result := Blame(fld.FieldType);
-          if Result<>nil then break;
-        end;
-      
-      blittable_cache[t] := Result;
-    end;
-    
-//    public static function IsBlittable(t: System.Type) := Blame(t)=nil;
-    public static procedure RaiseIfNeed(t: System.Type; source_name: string);
-    begin
-      var blame := BlittableHelper.Blame(t);
-      if blame=nil then exit;
-      raise new BlittableException(t, blame, source_name);
-    end;
-    
-  end;
-  
-{$endregion Blittable}
 
 {$region EventList}
 
@@ -6165,6 +6189,9 @@ type
   where TRecord: record;
     private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
     
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(TRecord), 'для передачи в качестве параметров kernel''а');
+    
     public constructor(val: TRecord) := self.val^ := val;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
@@ -6216,6 +6243,12 @@ type
   end;
   
 static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(ptr, sz);
+
+static function KernelArg.FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg;
+begin
+  BlittableHelper.RaiseIfBad(typeof(TRecord), 'для передачи в качестве параметров kernel''а');
+  Result := KernelArg.FromPtr(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>));
+end;
 
 {$endregion Ptr}
 
@@ -6291,6 +6324,7 @@ type
   KernelArgRecordQR<TRecord> = sealed class(ISetableKernelArg)
   where TRecord: record;
     public qr: QueueRes<TRecord>;
+    
     public constructor(qr: QueueRes<TRecord>) := self.qr := qr;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
@@ -6309,6 +6343,10 @@ type
   KernelArgRecordCQ<TRecord> = sealed class(InvokeableKernelArg)
   where TRecord: record;
     public q: CommandQueue<TRecord>;
+    
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(TRecord), 'для передачи в качестве параметров kernel''а');
+    
     public constructor(q: CommandQueue<TRecord>) := self.q := q;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
