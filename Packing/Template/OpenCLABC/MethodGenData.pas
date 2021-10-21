@@ -154,7 +154,6 @@ type
     public def: sequence of string;
     public is_short_def: boolean;
     
-    public need_thread := false;
     public implicit_only := false;
     
     // generics метода
@@ -167,7 +166,14 @@ type
     public procedure Apply(setting_name: string; setting_lns: sequence of string; debug_tn: string); virtual :=
     match setting_name with
       
-      nil: args_str := setting_lns.Single;
+      nil:
+      begin
+        args_str := setting_lns.Single;
+        impl_args_str := args_str;
+        
+        args := MethodArg.AllFromString(args_str).ToArray;
+        impl_args := args.ConvertAll(arg->arg.name).ToList;
+      end;
       
       'ShortDef':
       begin
@@ -183,10 +189,9 @@ type
         is_short_def := false;
       end;
       
-      'NeedThread': need_thread := true;
       'ImplicitOnly': implicit_only := true;
       
-      else raise new System.InvalidOperationException(setting_name);
+      else raise new System.InvalidOperationException($'!{setting_name} in {debug_tn}');
     end;
     
     protected procedure ProcessSpecialDefVar(sb: StringBuilder; arg_name, usage: string; debug_tn: string); virtual :=
@@ -195,8 +200,7 @@ type
       'evs':
       begin
         if usage<>nil then raise new System.NotSupportedException;
-        sb += 'evs.count, evs.evs, ';
-        sb += need_thread ? 'IntPtr.Zero' : 'res_ev';
+        sb += 'evs.count, evs.evs, res_ev';
       end;
       
       else
@@ -215,12 +219,14 @@ type
           
           'ptr': if args.Single(arg->arg.name=arg_name).t.IsCQ then sb += '.GetPtr';
           
+          'pinn': ;
+          
           else raise new System.InvalidOperationException;
         end;
         
       end;
     end;
-    private function ProcessDefLine(l: string; debug_tn: string): string;
+    protected function ProcessDefLine(l: string; debug_tn: string): string;
     begin
       var sb := new StringBuilder;
       
@@ -253,16 +259,7 @@ type
       
       if def=nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
       
-      if implicit_only and need_thread then raise new System.NotSupportedException($'{debug_tn}({args_str})');
       if implicit_only and not is_short_def then raise new System.NotSupportedException($'{debug_tn}({args_str})');
-      
-      if args_str<>nil then
-      begin
-        impl_args_str := args_str;
-        
-        args := MethodArg.AllFromString(args_str).ToArray;
-        impl_args := args.Select(arg->arg.name).ToList;
-      end;
       
       foreach var arg_t in GetArgTNames do
       begin
@@ -356,7 +353,8 @@ type
     
     protected procedure WriteInvokeHeader(settings: TSettings); abstract;
     protected procedure WriteInvokeFHeader; abstract;
-    protected procedure AddGCHandleArgs(args_with_GCHandle: List<string>; settings: TSettings); virtual := exit;
+    protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
+    protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
     
     private procedure WriteCommandTypeInvoke(fn: string; max_arg_w: integer; settings: TSettings);
     begin
@@ -446,6 +444,7 @@ type
       {$region param .GetRes's}
       
       var args_with_GCHandle := new List<string>;
+      var args_with_pinn := new List<string>;
       if settings.args <> nil then
         foreach var arg in settings.args do
           if settings.arg_usage.ContainsKey(arg.name) then
@@ -476,7 +475,14 @@ type
               'ptr':
               begin
                 res_EIm += '.ToPtr';
-                if not settings.need_thread then args_with_GCHandle += arg.name;
+                args_with_GCHandle += arg.name;
+              end;
+              
+              'pinn':
+              begin
+                if not (arg.t.Enmr.SkipWhile(t->t is MethodArgTypeCQ).First is MethodArgTypeArray) then raise new System.NotSupportedException(arg.name);
+                res_EIm += '.GetRes';
+                args_with_pinn += arg.name;
               end;
               
               else raise new System.NotImplementedException;
@@ -486,11 +492,33 @@ type
             res_EIm += ';'#10;
             
           end;
+      AddGCHandleArgs(args_with_GCHandle, args_with_pinn, settings);
       
       {$endregion param .GetRes's}
       
-      if not settings.need_thread then
-        res_EIm += '        var res_ev: cl_event;'#10;
+      WriteResInit(res_EIm, settings);
+      
+      {$region GCHandle for arrays}
+      
+      var max_awp_w := args_with_pinn.Select(arg->arg.Length).DefaultIfEmpty(0).Max;
+      if args_with_pinn.Count<>0 then
+      begin
+        
+        foreach var arg in args_with_pinn do
+        begin
+          res_EIm += '        var ';
+          res_EIm += arg.PadLeft(max_awp_w);
+          res_EIm += '_hnd := GCHandle.Alloc(';
+          res_EIm += arg.PadLeft(max_awp_w);
+          res_EIm += ', GCHandleType.Pinned);'#10;
+        end;
+        res_EIm += '        '#10;
+        
+      end;
+      
+      {$endregion GCHandle for arrays}
+      
+      res_EIm += '        var res_ev: cl_event;'#10;
       res_EIm += '        '#10;
       
       foreach var l in settings.def do
@@ -502,9 +530,7 @@ type
       
       res_EIm += '        '#10;
       
-      {$region GCHandle.Free for PtrRes's}
-      
-      AddGCHandleArgs(args_with_GCHandle, settings);
+      {$region GCHandle for ptrs}
       
       var max_awg_w := args_with_GCHandle.Select(arg->arg.Length).DefaultIfEmpty(0).Max;
       if args_with_GCHandle.Count<>0 then
@@ -522,10 +548,11 @@ type
         
       end;
       
-      {$endregion GCHandle.Free for PtrRes's}
+      {$endregion GCHandle for ptrs}
       
       {$region FinallyCallback}
       
+      args_with_GCHandle.AddRange(args_with_pinn);
       if args_with_GCHandle.Count<>0 then
       begin
         res_EIm += '        EventList.AttachFinallyCallback(res_ev, ()->'#10;
@@ -545,9 +572,7 @@ type
       
       {$endregion FinallyCallback}
       
-      res_EIm += '        Result := ';
-      res_EIm += settings.need_thread ? 'cl_event.Zero' : 'res_ev';
-      res_EIm += ';'#10;
+      res_EIm += '        Result := res_ev;'#10;
       res_EIm += '      end;'#10;
       
       res_EIm += '      '#10;
@@ -645,11 +670,6 @@ type
         res_EIm += '    '#10;
       end;
       
-      if settings.need_thread then
-      begin
-        res_EIm += '    public function NeedThread: boolean; override := true;'#10;
-        res_EIm += '    '#10;
-      end;
       WriteMiscMethods(settings);
       
       var param_count_l1 := 0;

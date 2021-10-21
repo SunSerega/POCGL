@@ -69,22 +69,20 @@ cl.EnqueueWriteBuffer(
 a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.BLOCKING,
-  UIntPtr.Zero, new UIntPtr(!a!.Length*Marshal.SizeOf&<TRecord>),
-  !a![{%rank? 0 : 0,0 : 0,0,0 %}],
+  cq, o.Native, Bool.NON_BLOCKING,
+  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length*Marshal.SizeOf&<TRecord>),
+  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
 ).RaiseIfError;
-!NeedThread
 
 # [%mode:Write,Read%]Array[%rank:1,2,3%]
 a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}, len, mem_offset: CommandQueue<integer>
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.BLOCKING,
+  cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), new UIntPtr(!len!*Marshal.SizeOf&<TRecord>),
-  !a![{%rank? !a_offset! : !a_offset1!,!a_offset2! : !a_offset1!,!a_offset2!,!a_offset3! %}],
+  !a:pinn![{%rank? !a_offset! : !a_offset1!,!a_offset2! : !a_offset1!,!a_offset2!,!a_offset3! %}],
   !evs!
 ).RaiseIfError;
-!NeedThread
 
 

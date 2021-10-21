@@ -8,6 +8,7 @@ T: record
 ind: CommandQueue<integer>
 !ResultType
 &T
+!ForcePtrQr
 !Enqueue
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
@@ -15,35 +16,36 @@ cl.EnqueueReadBuffer(
   new IntPtr(!res_ptr!),
   !evs!
 ).RaiseIfError;
-!ForcePtrQr
 
 
 
 # GetArray!AutoSize
 !ResultType
 array of &T
+!SetRes
+new T[o.Length]
+!PinnRes
 !Enqueue
-var res := new T[o.Length]; !set_res!(res);
 cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.BLOCKING,
+  cq, o.Native, Bool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(o.ByteSize),
-  res[0],
+  !res_pinn_adr!,
   !evs!
 ).RaiseIfError;
-!NeedThread
 
 # GetArray
 ind, len: CommandQueue<integer>
 !ResultType
 array of &T
+!SetRes
+new T[!len!]
+!PinnRes
 !Enqueue
-var res := new T[!len!]; !set_res!(res);
 cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.BLOCKING,
+  cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(int64(!ind!) * Marshal.SizeOf&<T>), new UIntPtr(int64(!len!) * Marshal.SizeOf&<T>),
-  res[0],
+  !res_pinn_adr!,
   !evs!
 ).RaiseIfError;
-!NeedThread
 
 

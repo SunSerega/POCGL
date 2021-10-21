@@ -19,17 +19,30 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO GCHandle таки можно использовать, раз не Blittable типы и так не работают
-
 //===================================
 // Запланированное:
+
+//TODO Компиляция модуля с дебагом, специально для тестировщика
+
+//TODO Подумать как об этом можно написать в справке (или не в справке):
+// - ReadValue отсутствует
+// - (но есть GetValue)
+// --- В объяснении KernelArg из указателя всё уже сказано
+// --- Надо только как то объединить, чтоб текст был не только про KernelArg...
+// --- На самом деле в объяснении KernelArg не запрет, а объяснение
+//     что нельзя чтоб переменная выходила с области видимости
+// --- Поэтому можно и разрешить
+// - FillArray отсутствует
+// --- Проблема в том, что нет блокирующего варианта cl.FillArray
+// --- Вообще в теории можно написать отдельную мелкую неуправляемую .dll и $resource её
+// --- Но это жесть сколько усложнений ради 1 метода...
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
 
 //TODO Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
 
-//TODO Преобразование array of T => KernelArg, используя CL_MEM_USE_HOST_PTR
+//TODO Преобразование array of TRecord => KernelArg, используя CL_MEM_USE_HOST_PTR
 // - #2478
 // - При чём тут CL_MEM_USE_HOST_PTR???
 
@@ -58,16 +71,6 @@ unit OpenCLABC;
 //TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
 
 //TODO В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
-
-//TODO Подумать как об этом можно написать в справке (или не в справке):
-// - ReadValue отсутствует
-// - (но есть GetValue)
-// --- В объяснении KernelArg из указателя всё уже сказано
-// --- Надо только как то объединить, чтоб текст был не только про KernelArg...
-// - FillArray отсутствует
-// --- Проблема в том, что нет блокирующего варианта cl.FillArray
-// --- Вообще в теории можно написать отдельную мелкую неуправляемую .dll и $resource её
-// --- Но это жесть сколько усложнений ради 1 метода...
 
 //TODO А что если вещи, которые могут привести к утечкам памяти при ThreadAbortException (как конструктор контекста) сувать в finally пустого try?
 // - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
@@ -1893,7 +1896,6 @@ type
       blittable_cache[t] := Result;
     end;
     
-//    public static function IsBlittable(t: System.Type) := Blame(t)=nil;
     public static procedure RaiseIfBad(t: System.Type; source_name: string);
     begin
       var blame := BlittableHelper.Blame(t);
@@ -4165,7 +4167,7 @@ type
     protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; need_ptr_qr: boolean; var cq: cl_command_queue; prev_ev: EventList): QueueRes<T>; override;
     begin
       var new_plug: ()->CommandQueue<T> := hub.MakeNode;
-      // new_plub всегда делает mu ноду, а она не использует prev_ev
+      // new_plug всегда делает mu ноду, а она не использует prev_ev
       // это тут, чтобы хаб передал need_ptr_qr. Он делает это при первом Invoke
       Result := new_plug().Invoke(tsk, c, main_dvc, need_ptr_qr, cq, nil);
       
@@ -4245,8 +4247,6 @@ begin Result := FromCLArrayCQ(a_q); end;
 type
   IEnqueueable<TInvData> = interface
     
-    function NeedThread: boolean;
-    
     function ParamCountL1: integer;
     function ParamCountL2: integer;
     
@@ -4264,18 +4264,22 @@ type
     
     public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; l1_start_ev, l2_start_ev: EventList): EventList; where TEnq: IEnqueueable<TInvData>;
     begin
-      var need_thread := q.NeedThread;
       
       var evs_l1 := MakeEvList(q.ParamCountL1, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
       var evs_l2 := MakeEvList(q.ParamCountL2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
       
       var enq_f := q.InvokeParams(tsk, c, main_dvc, cq, evs_l1, evs_l2);
+      {$ifdef DEBUG}
+      //TODO Сейчас тестировщик тестирует без дебага, поэтому это не ловит, но не всё гладко
+      if evs_l1.Count<>q.ParamCountL1 then raise new System.InvalidOperationException(typeof(TEnq).ToString);
+      if evs_l2.Count<>q.ParamCountL2 then raise new System.InvalidOperationException(typeof(TEnq).ToString);
+      {$endif DEBUG}
       var ev_l1 := EventList.Combine(evs_l1, tsk, c.ntv, main_dvc, cq);
       var ev_l2 := EventList.Combine(evs_l2, tsk, c.ntv, main_dvc, cq) ?? new EventList;
       
       tsk.EnsureCQ(cq);
       
-      if not need_thread and (ev_l1=nil) then
+      if ev_l1=nil then
       begin
         var enq_ev := enq_f(cq, ev_l2, inv_data);
         {$ifdef EventDebug}
@@ -4286,40 +4290,28 @@ type
         Result := ev_l2 + enq_ev;
       end else
       begin
-        var res_ev: UserEvent;
-        
         // Асинхронное Enqueue, придётся пересоздать cq
         var lcq := cq;
         cq := cl_command_queue.Zero;
         
-        if need_thread then
-          res_ev := UserEvent.StartBackgroundWork(ev_l1, ()->
-          begin
-            enq_f(lcq, ev_l2, inv_data);
-            ev_l2.Release({$ifdef EventDebug}$'after using in blocking enq of {q.GetType}'{$endif});
-          end, c.ntv, tsk{$ifdef EventDebug}, $'blocking enq of {q.GetType}, ev_l2 = [{ev_l2.evs?.JoinToString}]'{$endif}) else
+        var res_ev := tsk.MakeUserEvent(c.ntv
+          {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+        );
+        
+        ev_l1.AttachCallback(()->
         begin
-          res_ev := tsk.MakeUserEvent(c.ntv
-            {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
-          );
-          
-          //ВНИМАНИЕ "ev_l1=nil" не может случится, из за условий выше
-          ev_l1.AttachCallback(()->
+          ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {q.GetType}'{$endif});
+          var enq_ev := enq_f(lcq, ev_l2, inv_data);
+          {$ifdef EventDebug}
+          EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+          {$endif EventDebug}
+          var final_ev := ev_l2+enq_ev;
+          final_ev.AttachCallback(()->
           begin
-            ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {q.GetType}'{$endif});
-            var enq_ev := enq_f(lcq, ev_l2, inv_data);
-            {$ifdef EventDebug}
-            EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-            {$endif EventDebug}
-            var final_ev := ev_l2+enq_ev;
-            final_ev.AttachCallback(()->
-            begin
-              final_ev.Release({$ifdef EventDebug}$'after waiting to set {res_ev.uev} of nested AttachCallback in Enq of {q.GetType}'{$endif});
-              res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
-            end, tsk, lcq{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
-          end, tsk, lcq{$ifdef EventDebug}, $'calling Enq of {q.GetType}'{$endif});
-          
-        end;
+            final_ev.Release({$ifdef EventDebug}$'after waiting to set {res_ev.uev} of nested AttachCallback in Enq of {q.GetType}'{$endif});
+            res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
+          end, tsk, lcq{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
+        end, tsk, lcq{$ifdef EventDebug}, $'calling Enq of {q.GetType}'{$endif});
         
         EventList.AttachFinallyCallback(res_ev, ()->tsk.qs.Add(lcq), tsk, false{$ifdef EventDebug}, nil{$endif});
         Result := res_ev;
@@ -4340,10 +4332,6 @@ type
     c: Context;
   end;
   EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>, IEnqueueable<EnqueueableGPUCommandInvData<T>>)
-    
-    // Если это True - InvokeParamsImpl должен возращать (...)->cl_event.Zero
-    // Иначе останется ивент, который никто не удалил
-    public function NeedThread: boolean; virtual := false;
     
     public function ParamCountL1: integer; abstract;
     public function ParamCountL2: integer; abstract;
@@ -4388,10 +4376,6 @@ type
     
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
-    
-    // Если это True - InvokeParamsImpl должен возращать (...)->cl_event.Zero
-    // Иначе останется ивент, который никто не удалил
-    public function NeedThread: boolean; virtual := false;
     
     public function ParamCountL1: integer; abstract;
     public function ParamCountL2: integer; abstract;

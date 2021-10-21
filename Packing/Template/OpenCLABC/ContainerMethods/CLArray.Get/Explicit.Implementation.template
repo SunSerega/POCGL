@@ -78,8 +78,6 @@ type
   CLArrayCommandGetArrayAutoSize<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
   where T: record;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 0;
     
@@ -94,16 +92,25 @@ type
       
       Result := (o, cq, tsk, evs, own_qr)->
       begin
+        var res := new T[o.Length];
+        own_qr.SetRes(res);
+        var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);
         
-        var res := new T[o.Length]; own_qr.SetRes(res);
+        var res_ev: cl_event;
+        
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
-          res[0],
-          evs.count, evs.evs, IntPtr.Zero
+          res_hnd.AddrOfPinnedObject,
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          res_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -127,8 +134,6 @@ type
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 0;
     
@@ -149,16 +154,25 @@ type
       begin
         var ind := ind_qr.GetRes;
         var len := len_qr.GetRes;
+        var res := new T[len];
+        own_qr.SetRes(res);
+        var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);
         
-        var res := new T[len]; own_qr.SetRes(res);
+        var res_ev: cl_event;
+        
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(int64(len) * Marshal.SizeOf&<T>),
-          res[0],
-          evs.count, evs.evs, IntPtr.Zero
+          res_hnd.AddrOfPinnedObject,
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          res_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;

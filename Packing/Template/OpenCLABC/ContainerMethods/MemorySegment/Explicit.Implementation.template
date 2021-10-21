@@ -473,8 +473,6 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
@@ -495,15 +493,23 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var a := a_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -537,8 +543,6 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
@@ -559,15 +563,23 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var a := a_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -601,8 +613,6 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
@@ -623,15 +633,23 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var a := a_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0,0],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -665,8 +683,6 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
@@ -687,15 +703,23 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var a := a_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -729,8 +753,6 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
@@ -751,15 +773,23 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var a := a_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -793,8 +823,6 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 0;
     
@@ -815,15 +843,23 @@ type
       Result := (o, cq, tsk, c, evs)->
       begin
         var a := a_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
           a[0,0,0],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -860,8 +896,6 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 4;
     public function ParamCountL2: integer; override := 0;
     
@@ -891,15 +925,23 @@ type
         var   a_offset :=   a_offset_qr.GetRes;
         var        len :=        len_qr.GetRes;
         var mem_offset := mem_offset_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -952,8 +994,6 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 5;
     public function ParamCountL2: integer; override := 0;
     
@@ -986,15 +1026,23 @@ type
         var  a_offset2 :=  a_offset2_qr.GetRes;
         var        len :=        len_qr.GetRes;
         var mem_offset := mem_offset_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -1053,8 +1101,6 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 6;
     public function ParamCountL2: integer; override := 0;
     
@@ -1090,15 +1136,23 @@ type
         var  a_offset3 :=  a_offset3_qr.GetRes;
         var        len :=        len_qr.GetRes;
         var mem_offset := mem_offset_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -1160,8 +1214,6 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 4;
     public function ParamCountL2: integer; override := 0;
     
@@ -1191,15 +1243,23 @@ type
         var   a_offset :=   a_offset_qr.GetRes;
         var        len :=        len_qr.GetRes;
         var mem_offset := mem_offset_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -1252,8 +1312,6 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 5;
     public function ParamCountL2: integer; override := 0;
     
@@ -1286,15 +1344,23 @@ type
         var  a_offset2 :=  a_offset2_qr.GetRes;
         var        len :=        len_qr.GetRes;
         var mem_offset := mem_offset_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
@@ -1353,8 +1419,6 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function NeedThread: boolean; override := true;
-    
     public function ParamCountL1: integer; override := 6;
     public function ParamCountL2: integer; override := 0;
     
@@ -1390,15 +1454,23 @@ type
         var  a_offset3 :=  a_offset3_qr.GetRes;
         var        len :=        len_qr.GetRes;
         var mem_offset := mem_offset_qr.GetRes;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
         
         cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.BLOCKING,
+          cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len*Marshal.SizeOf&<TRecord>),
           a[a_offset1,a_offset2,a_offset3],
-          evs.count, evs.evs, IntPtr.Zero
+          evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        Result := cl_event.Zero;
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          a_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
       end;
       
     end;
