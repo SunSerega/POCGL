@@ -160,7 +160,7 @@ begin
           thr_otp.Enq(new OtpLine(
             br.ReadString,
             start_time_mark + br.ReadInt64,
-            false
+            br.ReadBoolean
           ));
           
           2:
@@ -229,11 +229,11 @@ begin
   if not pipe_connection_established then pipe.Close;
 end;
 
-procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); general_task: boolean; params search_paths: array of string);
+procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); general_task: boolean; args: string; params search_paths: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then
-    raise new System.IO.FileNotFoundException($'Файл "{GetRelativePath(fname)}" не найден');
+    raise new System.IO.FileNotFoundException($'File "{GetRelativePath(fname)}" not found');
   
   var nick := System.IO.Path.GetFileNameWithoutExtension(fname);
   
@@ -271,9 +271,12 @@ begin
   
   l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', general_task));
   
+  var args_strs := search_paths.Select(spath->$'/SearchDir:"{spath}"');
+  if args<>nil then args_strs := args_strs.Append(args);
+  args_strs := args_strs.Append($'"{fname}"');
   var psi := new ProcessStartInfo(
     'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe',
-    search_paths.Select(spath->$'/SearchDir:"{spath}"').Append($'"{fname}"').JoinToString
+    args_strs.JoinToString
   );
 //  Otp(psi.Arguments);
   psi.UseShellExecute := false;
@@ -317,7 +320,7 @@ begin
     
     '.pas':
     begin
-      CompilePasFile(fname, l_otp, nil, false);
+      CompilePasFile(fname, l_otp, nil, false, nil);
       fname := System.IO.Path.ChangeExtension(fname, '.exe');
     end;
     
@@ -336,8 +339,8 @@ end;
 procedure RunFile(fname, nick: string; params pars: array of string) :=
 RunFile(fname, nick, nil, pars);
 
-procedure CompilePasFile(fname: string; general_task: boolean) :=
-CompilePasFile(fname, nil, nil, general_task);
+procedure CompilePasFile(fname: string; general_task: boolean; args: string := nil) :=
+CompilePasFile(fname, nil, nil, general_task, args);
 
 procedure ExecuteFile(fname, nick: string; params pars: array of string) :=
 ExecuteFile(fname, nick, nil, pars);
