@@ -2622,7 +2622,8 @@ type
     private procedure FinishAfterNewQ(cq: cl_command_queue; ev: EventList; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id);
     begin
       {$ifdef DEBUG}
-      if (ev.count<>0) and not ev.abortable then raise new System.NotSupportedException;
+      //TODO
+      //if (ev.count<>0) and not ev.abortable then raise new System.NotSupportedException;
       {$endif DEBUG}
       if cq=cl_command_queue.Zero then exit;
       
@@ -2944,7 +2945,8 @@ type
       mu_res := nil;
       
       {$ifdef DEBUG}
-      if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
+      //TODO
+      //if (qr.ev.count<>0) and not qr.ev.abortable then raise new NotSupportedException;
       {$endif DEBUG}
       
       qr.ev.AttachFinallyCallback(()->System.Threading.Tasks.Task.Run(()->
@@ -4264,15 +4266,25 @@ type
     
     public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; l1_start_ev, l2_start_ev: EventList): EventList; where TEnq: IEnqueueable<TInvData>;
     begin
+      var param_count_l1 := q.ParamCountL1;
+      var param_count_l2 := q.ParamCountL2;
       
-      var evs_l1 := MakeEvList(q.ParamCountL1, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
-      var evs_l2 := MakeEvList(q.ParamCountL2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
+      // +param_count_l2, потому что, к примеру, .Cast может вернуть не QueueResDelayedPtr, даже при need_ptr_qr
+      var evs_l1 := MakeEvList(param_count_l1+param_count_l2, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
+      var evs_l2 := MakeEvList(               param_count_l2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
       
       var enq_f := q.InvokeParams(tsk, c, main_dvc, cq, evs_l1, evs_l2);
       {$ifdef DEBUG}
-      //TODO Сейчас тестировщик тестирует без дебага, поэтому это не ловит, но не всё гладко
-      if evs_l1.Count<>q.ParamCountL1 then raise new System.InvalidOperationException(typeof(TEnq).ToString);
-      if evs_l2.Count<>q.ParamCountL2 then raise new System.InvalidOperationException(typeof(TEnq).ToString);
+      begin
+        var r1,r2: integer;
+        var ev_exists := function(ev: EventList): integer -> integer((ev<>nil) and (ev.count<>0));
+        r1 := param_count_l1                  + ev_exists(l1_start_ev);
+        r2 := param_count_l1 + param_count_l2 + ev_exists(l1_start_ev);
+        if not evs_l1.Count.InRange(r1, r2) then raise new System.InvalidOperationException($'{q.GetType.Name}[L1]: {evs_l1.Count}.InRange({r1}, {r2})');
+        r1 :=                  ev_exists(l2_start_ev);
+        r2 := param_count_l2 + ev_exists(l2_start_ev);
+        if not evs_l2.Count.InRange(r1, r2) then raise new System.InvalidOperationException($'{q.GetType.Name}[L2]: {evs_l2.Count}.InRange({r1}, {r2})');
+      end;
       {$endif DEBUG}
       var ev_l1 := EventList.Combine(evs_l1, tsk, c.ntv, main_dvc, cq);
       var ev_l2 := EventList.Combine(evs_l2, tsk, c.ntv, main_dvc, cq) ?? new EventList;

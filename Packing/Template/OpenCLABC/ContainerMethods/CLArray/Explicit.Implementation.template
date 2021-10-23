@@ -81,7 +81,7 @@ type
     private val: CommandQueue<&T>;
     private ind: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 1;
     
     public constructor(val: CommandQueue<&T>; ind: CommandQueue<integer>);
@@ -617,7 +617,7 @@ type
   where T: record;
     private val: CommandQueue<&T>;
     
-    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 1;
     
     public constructor(val: CommandQueue<&T>);
@@ -685,7 +685,7 @@ type
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 1;
     
     public constructor(val: CommandQueue<&T>; ind, len: CommandQueue<integer>);

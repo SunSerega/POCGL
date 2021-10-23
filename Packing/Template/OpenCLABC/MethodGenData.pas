@@ -140,6 +140,71 @@ type
   
   {$endregion MethodArg}
   
+  {$region MethodArgEvCount}
+  
+  MethodArgEvCount = sealed class
+    arg: MethodArg;
+    conv := new List<boolean>; // need_cast
+    
+    constructor(arg: MethodArg);
+    begin
+      self.arg := arg;
+      var t := arg.t;
+      while true do
+        if t is MethodArgTypeArray(var ta) then
+        begin
+          conv += ta.rank<>1;
+          t := ta.next;
+        end else
+          break;
+    end;
+    
+    static procedure WriteAll(wr: Writer; l: List<MethodArgEvCount>);
+    begin
+      var prev := false;
+      
+      begin
+        var c := l.Count(ec->ec.conv.Count=0);
+        if c<>0 then
+        begin
+          prev := true;
+          wr += c.ToString;
+        end;
+      end;
+      
+      foreach var ec in l do
+      begin
+        if ec.conv.Count=0 then continue;
+        if prev then wr += ' + ';
+        prev := true;
+        wr += ec.arg.name;
+        var ta := ec.arg.t as MethodArgTypeArray;
+        for var i := 0 to ec.conv.Count-2 do
+        begin
+          if ec.conv[i] then
+          begin
+            wr += '.Cast&<';
+            wr += ta.org_text;
+            wr += '>';
+          end;
+          ta := ta.next as MethodArgTypeArray;
+          wr += '.Sum(temp';
+          wr += i.ToString;
+          wr += '->temp';
+          wr += i.ToString;
+        end;
+        wr += '.Length';
+        loop ec.conv.Count-1 do
+          wr += ')';
+      end;
+      
+      if not prev then wr += '0';
+    end;
+    
+  end;
+  
+  {$endregion MethodArgEvCount}
+  
   {$region MethodSettings}
   
   MethodSettings = abstract class
@@ -672,22 +737,27 @@ type
       
       WriteMiscMethods(settings);
       
-      var param_count_l1 := 0;
-      var param_count_l2 := 0;
+      var param_count_l1 := new List<MethodArgEvCount>;
+      var param_count_l2 := new List<MethodArgEvCount>;
       if settings.args<>nil then
         foreach var arg in settings.args do
           if settings.arg_usage.ContainsKey(arg.name) then
           begin
             if not arg.t.IsCQ and not arg.t.IsKA then continue;
             
+            var c := new MethodArgEvCount(arg);
+            
             if settings.arg_usage[arg.name] = 'ptr' then
-              param_count_l2 += 1 else
-              param_count_l1 += 1;
+              param_count_l2 += c else
+              param_count_l1 += c;
             
           end;
-      // +param_count_l2, потому что, к примеру, .Cast может вернуть не QueueResDelayedPtr, даже при need_ptr_qr
-      res_EIm += $'    public function ParamCountL1: integer; override := {param_count_l1+param_count_l2};'+#10;
-      res_EIm += $'    public function ParamCountL2: integer; override := {param_count_l2};'+#10;
+      res_EIm += '    public function ParamCountL1: integer; override := ';
+      MethodArgEvCount.WriteAll(res_EIm, param_count_l1);
+      res_EIm += ';'+#10;
+      res_EIm += '    public function ParamCountL2: integer; override := ';
+      MethodArgEvCount.WriteAll(res_EIm, param_count_l2);
+      res_EIm += ';'+#10;
       
       res_EIm += '    '#10;
       

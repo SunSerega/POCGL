@@ -29,6 +29,8 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\CLArray\1.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\CLArray\err1.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
@@ -162,6 +164,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\CLArray\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\CLArray\err1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\MemorySegment\1]
 Tester: Done executing

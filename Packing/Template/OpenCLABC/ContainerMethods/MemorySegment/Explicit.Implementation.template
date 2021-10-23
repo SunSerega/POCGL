@@ -395,7 +395,7 @@ type
     private        val: CommandQueue<TRecord>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL1: integer; override := 1;
     public function ParamCountL2: integer; override := 1;
     
     static constructor;
@@ -1833,7 +1833,7 @@ type
   where TRecord: record;
     private val: CommandQueue<TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL1: integer; override := 0;
     public function ParamCountL2: integer; override := 1;
     
     static constructor;
@@ -1905,7 +1905,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL1: integer; override := 2;
     public function ParamCountL2: integer; override := 1;
     
     static constructor;

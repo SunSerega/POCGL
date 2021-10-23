@@ -10,7 +10,7 @@ type
     private  sz1: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 2;
+    public function ParamCountL1: integer; override := 1 + args.Length;
     public function ParamCountL2: integer; override := 0;
     
     public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
@@ -100,7 +100,7 @@ type
     private  sz2: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 3;
+    public function ParamCountL1: integer; override := 2 + args.Length;
     public function ParamCountL2: integer; override := 0;
     
     public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
@@ -199,7 +199,7 @@ type
     private  sz3: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL1: integer; override := 3 + args.Length;
     public function ParamCountL2: integer; override := 0;
     
     public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
@@ -306,7 +306,7 @@ type
     private    local_work_size: CommandQueue<array of UIntPtr>;
     private               args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 4;
+    public function ParamCountL1: integer; override := 3 + args.Length;
     public function ParamCountL2: integer; override := 0;
     
     public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);

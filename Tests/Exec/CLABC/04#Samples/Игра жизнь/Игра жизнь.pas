@@ -73,9 +73,5 @@ try
   field_states_q.Last.ConvertAll(b->b<>0?#9608:' ').Println(0);
   
 except
-  on e: Exception do
-  begin
-    Writeln(e);
-    Halt;
-  end;
+  on e: Exception do Writeln(e);
 end;

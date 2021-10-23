@@ -51,10 +51,11 @@ type
         if ind2=-1 then break;
         parts += new ExpectedTextPart(text.SubString(ind1, ind2-ind1));
         ind1 := ind2;
-        while text[ind1] = '*' do
+        while (ind1<text.Length) and (text[ind1] = '*') do
           ind1 += 1;
       end;
-      parts += new ExpectedTextPart(text.Remove(0, ind1));
+      if ind1<>text.Length then
+        parts += new ExpectedTextPart(text.Remove(0, ind1));
     end;
     
     function Matches(text: string): boolean;
@@ -66,6 +67,11 @@ type
       end;
       Result := false;
       if parts=nil then exit;
+      if parts.Count=0 then
+      begin
+        Result := text.Length=0;
+        exit;
+      end;
       if not text.StartsWith(parts[0].s) then exit;
       var min_ind := parts[0].s.Length;
       for var i := 1 to parts.Count-2 do
@@ -140,6 +146,24 @@ type
       end else
         Otp($'Testing selected modules:');
       Otp(allowed_modules.JoinToString(' + '));
+    end;
+    static procedure MakeDebugPCU;
+    begin
+      
+      System.IO.Directory.CreateDirectory('Tests\DebugPCU');
+      var used_units := allowed_modules.ToHashSet;
+      used_units.UnionWith(valid_modules.Where(u->u+'ABC' in allowed_modules));
+      
+      foreach var mn in used_units do
+        System.IO.File.Copy($'Modules.Packed\{mn}.pas', $'Tests\DebugPCU\{mn}.pas', true);
+      used_units
+        .Where(mn->not used_units.Contains(mn+'ABC'))
+        .Select(mn->CompTask($'Tests\DebugPCU\{mn}.pas', false, '/Debug:1'))
+        .CombineAsyncTask
+      .SyncExec;
+      foreach var mn in used_units do
+        System.IO.File.Delete($'Tests\DebugPCU\{mn}.pas');
+      
     end;
     
     procedure LoadSettingsDict;
@@ -290,7 +314,7 @@ type
         CompilePasFile(t.pas_fname,
           l->Otp(l.ConvStr(s->s.Replace('error','errоr'))),
           err->(comp_err := err),
-          false, GetFullPath('Modules.Packed')
+          false, '/Debug:1', GetFullPath('Tests\DebugPCU')
         );
         
         if comp_err<>nil then
@@ -304,7 +328,7 @@ type
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
               end;
               
               DialogResult.No: ;
@@ -320,7 +344,7 @@ type
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
               end;
               
               DialogResult.No: ;
@@ -339,7 +363,7 @@ type
               begin
                 if not t.all_settings.Remove('#ExpErr') then raise new System.InvalidOperationException;
                 t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
               end;
               
               DialogResult.No: ;
@@ -382,11 +406,11 @@ type
         var res := new System.IO.StringWriter;
         Console.SetOut(res);
         
+        var prev_path := System.Environment.CurrentDirectory;
         var thr := new System.Threading.Thread(()->
         try
           var sw := System.Diagnostics.Stopwatch.StartNew;
           try
-            var prev_path := System.Environment.CurrentDirectory;
             try
               System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(fname);
               ep.Invoke(nil, new object[0]);
@@ -406,6 +430,7 @@ type
         if not thr.Join(MaxExecTime) then
         begin
           thr.Abort;
+          System.Environment.CurrentDirectory := prev_path;
           dom.SetData('exec_time', MaxExecTime*System.TimeSpan.TicksPerMillisecond);
           dom.SetData('fatal_err', $'ERROR: Execution took too long for "{GetFullPathRTA(fname)}"');
         end else
@@ -416,7 +441,7 @@ type
       end);
       
       if dom.GetData('fatal_err') is string(var fatal_err) then
-        raise new MessageException(fatal_err);
+        raise new Exception(fatal_err);
       
       otp_l.s := $'Done executing';
       otp_l.t += int64(dom.GetData('exec_time'));
@@ -484,11 +509,12 @@ type
     procedure RaiseWaitNotFound(wait_test, file_type: string) :=
     raise new MessageException($'ERROR: Wait {file_type} [{GetRelativePath(wait_test)}] of test [{GetRelativePath(self.td_fname)}] wasn''t found');
     
+    internal static pocgl_base_dir := System.IO.Path.GetDirectoryName(GetCurrentDir);
     static function InsertAnyTextParts(text: string): string;
     begin
       var res := new StringBuilder;
       
-      var anon_names := |'<>local_variables_class_', '<>lambda', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode['|;
+      var anon_names := |'<>local_variables_class_', '<>lambda', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[', 'строка '|;
       var inds := new integer[anon_names.Length];
       var in_anon_name := false;
       foreach var ch in text do
@@ -517,8 +543,10 @@ type
         
         res += ch;
       end;
+      if in_anon_name then
+        res += '*';
       
-      Result := res.ToString;
+      Result := res.ToString.Replace(pocgl_base_dir, '*').Replace(pocgl_base_dir.ToLower, '*');
     end;
     
     procedure Execute(all_executed: HashSet<TestInfo>) :=
@@ -570,7 +598,7 @@ type
               all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
               used_settings += '#ExpExecErr';
               resave_settings := true;
-              Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
             end;
             
             DialogResult.No: ;
@@ -586,7 +614,7 @@ type
               all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
               used_settings += '#ExpExecErr';
               resave_settings := true;
-              Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
             end;
             
             DialogResult.No: ;
@@ -610,7 +638,7 @@ type
             begin
               if not all_settings.Remove('#ExpExecErr') then raise new System.InvalidOperationException;
               resave_settings := true;
-              Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
             end;
             
             DialogResult.No: ;
@@ -623,7 +651,7 @@ type
           all_settings['#ExpOtp'] := InsertAnyTextParts(res);
           used_settings += '#ExpOtp';
           resave_settings := true;
-          Otp($'WARNING: Settings updated for "{fwoe}.td"');
+          Otp(new OtpLine($'WARNING: Settings updated for "{fwoe}.td"', true));
         end else
         if not expected_otp.Matches(res) then
         begin
@@ -635,7 +663,7 @@ type
               all_settings['#ExpOtp'] := InsertAnyTextParts(res);
               used_settings += '#ExpOtp';
               resave_settings := true;
-              Otp($'%WARNING: Settings updated for "{fwoe}.td"');
+              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
             end;
             
             DialogResult.No: ;
@@ -668,6 +696,7 @@ type
     static procedure Cleanup;
     begin
       Otp('Cleanup');
+      System.IO.Directory.Delete('Tests\DebugPCU', true);
       
       foreach var t in all_loaded do
         if t.resave_settings then
@@ -679,7 +708,7 @@ type
           var used_settings := t.used_settings.ToHashSet;
           foreach var key in t.all_settings.Keys do
             if not used_settings.Contains(key) then
-              Otp($'WARNING: Setting {key} was deleted from "{t.td_fname}"') else
+              Otp(new OtpLine($'WARNING: Setting {key} was deleted from "{t.td_fname}"', true)) else
             begin
               var val := t.all_settings[key];
               sw.WriteLine;
@@ -691,7 +720,7 @@ type
           sw.WriteLine;
           sw.WriteLine;
           sw.Close;
-          Otp($'WARNING: File "{t.td_fname}" updated');
+          Otp(new OtpLine($'WARNING: File "{t.td_fname}" updated', true));
         end;
       
       foreach var td_fname in unused_test_files do
@@ -717,13 +746,16 @@ begin
   try
     (**)
     TestInfo.LoadCLA;
+    TestInfo.MakeDebugPCU;
     
     TestInfo.LoadAll('Tests\Comp',  HSet('Comp'));
     TestInfo.LoadAll('Samples',     HSet('Comp'));
     TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
     (*)
+    TestInfo.allowed_modules += 'OpenCL';
     TestInfo.allowed_modules += 'OpenCLABC';
-    TestInfo.LoadAll('Tests\Exec\CLABC\04#Samples\Игра жизнь',  HSet('Comp','Exec'));
+    TestInfo.MakeDebugPCU;
+    TestInfo.LoadAll('Samples\OpenCLABC\Прекомпиляция ProgramCode',  HSet('Comp','Exec'));
     (**)
     
     try
