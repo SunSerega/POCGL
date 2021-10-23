@@ -5,17 +5,17 @@
     
     public function AddWriteData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
     
-    public function AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
-    
     public function AddWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    
+    public function AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
     
     public function AddReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     public function AddWriteData(ptr: pointer): MemorySegmentCCQ;
     
-    public function AddReadData(ptr: pointer): MemorySegmentCCQ;
-    
     public function AddWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    
+    public function AddReadData(ptr: pointer): MemorySegmentCCQ;
     
     public function AddReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     

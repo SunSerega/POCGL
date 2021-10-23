@@ -6,11 +6,11 @@
 function MemorySegment.WriteData(ptr: CommandQueue<IntPtr>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr));
 
-function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>): MemorySegment :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr));
-
 function MemorySegment.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, mem_offset, len));
+
+function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr));
 
 function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, mem_offset, len));
@@ -18,11 +18,11 @@ Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, mem_offset, len));
 function MemorySegment.WriteData(ptr: pointer): MemorySegment :=
 WriteData(IntPtr(ptr));
 
-function MemorySegment.ReadData(ptr: pointer): MemorySegment :=
-ReadData(IntPtr(ptr));
-
 function MemorySegment.WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegment :=
 WriteData(IntPtr(ptr), mem_offset, len);
+
+function MemorySegment.ReadData(ptr: pointer): MemorySegment :=
+ReadData(IntPtr(ptr));
 
 function MemorySegment.ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegment :=
 ReadData(IntPtr(ptr), mem_offset, len);

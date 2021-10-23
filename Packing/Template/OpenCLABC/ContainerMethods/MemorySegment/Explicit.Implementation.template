@@ -61,64 +61,6 @@ AddCommand(self, new MemorySegmentCommandWriteDataAutoSize(ptr));
 
 {$endregion WriteDataAutoSize}
 
-{$region ReadDataAutoSize}
-
-type
-  MemorySegmentCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
-    private ptr: CommandQueue<IntPtr>;
-    
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
-    
-    public constructor(ptr: CommandQueue<IntPtr>);
-    begin
-      self.ptr := ptr;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
-    begin
-      var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
-      
-      Result := (o, cq, tsk, c, evs)->
-      begin
-        var ptr := ptr_qr.GetRes;
-        var res_ev: cl_event;
-        
-        cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, o.Size,
-          ptr,
-          evs.count, evs.evs, res_ev
-        ).RaiseIfError;
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
-    begin
-      ptr.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'ptr: ';
-      ptr.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function MemorySegmentCCQ.AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ :=
-AddCommand(self, new MemorySegmentCommandReadDataAutoSize(ptr));
-
-{$endregion ReadDataAutoSize}
-
 {$region WriteData}
 
 type
@@ -194,6 +136,64 @@ function MemorySegmentCCQ.AddWriteData(ptr: CommandQueue<IntPtr>; mem_offset, le
 AddCommand(self, new MemorySegmentCommandWriteData(ptr, mem_offset, len));
 
 {$endregion WriteData}
+
+{$region ReadDataAutoSize}
+
+type
+  MemorySegmentCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
+    private ptr: CommandQueue<IntPtr>;
+    
+    public function ParamCountL1: integer; override := 1;
+    public function ParamCountL2: integer; override := 0;
+    
+    public constructor(ptr: CommandQueue<IntPtr>);
+    begin
+      self.ptr := ptr;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var ptr_qr := ptr.Invoke    (tsk, c, main_dvc, False, cq, nil); evs_l1.Add(ptr_qr.ev);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var ptr := ptr_qr.GetRes;
+        var res_ev: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          UIntPtr.Zero, o.Size,
+          ptr,
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      ptr.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'ptr: ';
+      ptr.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function MemorySegmentCCQ.AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ :=
+AddCommand(self, new MemorySegmentCommandReadDataAutoSize(ptr));
+
+{$endregion ReadDataAutoSize}
 
 {$region ReadData}
 
@@ -271,19 +271,12 @@ AddCommand(self, new MemorySegmentCommandReadData(ptr, mem_offset, len));
 
 {$endregion ReadData}
 
-{$region WriteData}
+{$region WriteDataAutoSize}
 
 function MemorySegmentCCQ.AddWriteData(ptr: pointer): MemorySegmentCCQ :=
 AddWriteData(IntPtr(ptr));
 
-{$endregion WriteData}
-
-{$region ReadData}
-
-function MemorySegmentCCQ.AddReadData(ptr: pointer): MemorySegmentCCQ :=
-AddReadData(IntPtr(ptr));
-
-{$endregion ReadData}
+{$endregion WriteDataAutoSize}
 
 {$region WriteData}
 
@@ -291,6 +284,13 @@ function MemorySegmentCCQ.AddWriteData(ptr: pointer; mem_offset, len: CommandQue
 AddWriteData(IntPtr(ptr), mem_offset, len);
 
 {$endregion WriteData}
+
+{$region ReadDataAutoSize}
+
+function MemorySegmentCCQ.AddReadData(ptr: pointer): MemorySegmentCCQ :=
+AddReadData(IntPtr(ptr));
+
+{$endregion ReadDataAutoSize}
 
 {$region ReadData}
 

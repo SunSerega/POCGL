@@ -5,17 +5,17 @@
     
     public function WriteData(ptr: CommandQueue<IntPtr>): MemorySegment;
     
-    public function ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
-    
     public function WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    public function ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
     
     public function ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
     
     public function WriteData(ptr: pointer): MemorySegment;
     
-    public function ReadData(ptr: pointer): MemorySegment;
-    
     public function WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegment;
+    
+    public function ReadData(ptr: pointer): MemorySegment;
     
     public function ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegment;
     

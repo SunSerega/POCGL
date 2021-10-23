@@ -1,35 +1,20 @@
 
 
 
-# [%mode:Write,Read%]Data!AutoSize
-ptr: CommandQueue<IntPtr>
+# [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
+ptr: CommandQueue<IntPtr>{%AutoSize?:; mem_offset, len\: CommandQueue<integer>%}
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, o.Size,
+  {%AutoSize? UIntPtr.Zero, o.Size : new UIntPtr(!mem_offset!), new UIntPtr(!len!) %},
   !ptr!,
   !evs!
 ).RaiseIfError;
 
-# [%mode:Write,Read%]Data
-ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>
-!Enqueue
-cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!mem_offset!), new UIntPtr(!len!),
-  !ptr!,
-  !evs!
-).RaiseIfError;
-
-# [%mode:Write,Read%]Data
-ptr: pointer
+# [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
+ptr: pointer{%AutoSize?:; mem_offset, len\: CommandQueue<integer>%}
 !ShortDef
-{%mode%}Data(IntPtr(ptr));
-
-# [%mode:Write,Read%]Data
-ptr: pointer; mem_offset, len: CommandQueue<integer>
-!ShortDef
-{%mode%}Data(IntPtr(ptr), mem_offset, len);
+{%mode%}Data(IntPtr(ptr){%AutoSize?:, mem_offset, len%});
 
 
 
