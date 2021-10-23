@@ -73,9 +73,9 @@
     
     public function AddCopyTo(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
     
-    public function AddCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
-    
     public function AddCopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
+    
+    public function AddCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
     
     public function AddCopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
     

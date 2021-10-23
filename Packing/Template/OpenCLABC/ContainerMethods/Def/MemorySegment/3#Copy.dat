@@ -1,25 +1,13 @@
 
 
 
-# Copy[%direction:To,From%]!AutoSize
-mem: CommandQueue<MemorySegment>
+# Copy[%direction:To,From%]![%AutoSize:AutoSize,%]
+mem: CommandQueue<MemorySegment>{%AutoSize?:; from_pos, to_pos, len\: CommandQueue<integer>%}
 !Enqueue
 cl.EnqueueCopyBuffer(
   cq, {%direction? o.ntv,!mem!.ntv : !mem!.ntv,o.ntv %},
-  UIntPtr.Zero, UIntPtr.Zero,
-  o.Size64<!mem!.Size64 ? o.Size : !mem!.Size,
-  !evs!
-).RaiseIfError;
-
-
-
-# Copy[%direction:To,From%]
-mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>
-!Enqueue
-cl.EnqueueCopyBuffer(
-  cq, {%direction? o.ntv,!mem!.ntv : !mem!.ntv,o.ntv %},
-  new UIntPtr(!from_pos!), new UIntPtr(!to_pos!),
-  new UIntPtr(!len!),
+  {%AutoSize? UIntPtr.Zero, UIntPtr.Zero : new UIntPtr(!from_pos!), new UIntPtr(!to_pos!) %},
+  {%AutoSize? o.Size64<!mem!.Size64 ? o.Size \: !mem!.Size : new UIntPtr(!len!) %},
   !evs!
 ).RaiseIfError;
 

@@ -104,11 +104,11 @@ Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset,
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem));
 
-function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>): MemorySegment :=
-Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem));
-
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem, from_pos, to_pos, len));
+
+function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem));
 
 function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem, from_pos, to_pos, len));

@@ -38,6 +38,7 @@ cl.EnqueueWriteBuffer(
 # [%mode:Write,Read%]Array[%rank:1,2,3%]!AutoSize
 a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 !Enqueue
+//TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(!a:pinn!.Length*Marshal.SizeOf&<TRecord>),
