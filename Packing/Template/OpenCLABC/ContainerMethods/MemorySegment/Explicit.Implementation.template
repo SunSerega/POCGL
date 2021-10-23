@@ -306,6 +306,13 @@ AddWriteValue(val, 0);
 
 {$endregion WriteValue}
 
+{$region WriteValueQ}
+
+function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ :=
+AddWriteValue(val, 0);
+
+{$endregion WriteValueQ}
+
 {$region WriteValue}
 
 type
@@ -379,13 +386,6 @@ function MemorySegmentCCQ.AddWriteValue<TRecord>(val: TRecord; mem_offset: Comma
 AddCommand(self, new MemorySegmentCommandWriteValue<TRecord>(val, mem_offset));
 
 {$endregion WriteValue}
-
-{$region WriteValueQ}
-
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ :=
-AddWriteValue(val, 0);
-
-{$endregion WriteValueQ}
 
 {$region WriteValueQ}
 

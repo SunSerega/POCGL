@@ -30,11 +30,11 @@ ReadData(IntPtr(ptr), mem_offset, len);
 function MemorySegment.WriteValue<TRecord>(val: TRecord): MemorySegment :=
 WriteValue(val, 0);
 
-function MemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegment :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
-
 function MemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment :=
 WriteValue(val, 0);
+
+function MemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
 
 function MemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));

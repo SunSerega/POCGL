@@ -18,28 +18,13 @@ ptr: pointer{%AutoSize?:; mem_offset, len\: CommandQueue<integer>%}
 
 
 
-# WriteValue
-val: TRecord
+# WriteValue![%Q:,Q%]
+val: {%Q?TRecord:CommandQueue<TRecord>%}
 !ShortDef
 WriteValue(val, 0);
 
-# WriteValue
-val: TRecord; mem_offset: CommandQueue<integer>
-!Enqueue
-cl.EnqueueWriteBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
-  new IntPtr(!val:ptr!),
-  !evs!
-).RaiseIfError;
-
-# WriteValue!Q
-val: CommandQueue<TRecord>
-!ShortDef
-WriteValue(val, 0);
-
-# WriteValue!Q
-val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>
+# WriteValue![%Q:,Q%]
+val: {%Q?TRecord:CommandQueue<TRecord>%}; mem_offset: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
