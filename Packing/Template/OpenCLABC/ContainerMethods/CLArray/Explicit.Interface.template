@@ -3,6 +3,22 @@
     
     {$region 1#Write&Read}
     
+    public function AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+    
+    public function AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+    
+    public function AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddWriteData(ptr: pointer): CLArrayCCQ<T>;
+    
+    public function AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddReadData(ptr: pointer): CLArrayCCQ<T>;
+    
+    public function AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
     public function AddWriteItem(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     public function AddWriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
@@ -19,13 +35,25 @@
     
     {$region 2#Fill}
     
-    public function AddFill(val: &T): CLArrayCCQ<T>;
+    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFill(val: CommandQueue<&T>): CLArrayCCQ<T>;
+    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFill(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFill(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddFillValue(val: &T): CLArrayCCQ<T>;
+    
+    public function AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
+    
+    public function AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    
+    public function AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 2#Fill}
     

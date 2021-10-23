@@ -3,6 +3,30 @@
 
 {$region 1#Write&Read}
 
+function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr));
+
+function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, ind, len));
+
+function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr));
+
+function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, ind, len));
+
+function CLArray<T>.WriteData(ptr: pointer): CLArray<T> :=
+WriteData(IntPtr(ptr));
+
+function CLArray<T>.WriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T> :=
+WriteData(IntPtr(ptr), ind, len);
+
+function CLArray<T>.ReadData(ptr: pointer): CLArray<T> :=
+ReadData(IntPtr(ptr));
+
+function CLArray<T>.ReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T> :=
+ReadData(IntPtr(ptr), ind, len);
+
 function CLArray<T>.WriteItem(val: &T; ind: CommandQueue<integer>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind));
 
@@ -25,17 +49,35 @@ Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, ind, len, a_ind));
 
 {$region 2#Fill}
 
-function CLArray<T>.Fill(val: &T): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val));
+function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len));
 
-function CLArray<T>.Fill(val: CommandQueue<&T>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val));
+function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len, ind, len));
 
-function CLArray<T>.Fill(val: &T; ind, len: CommandQueue<integer>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
+function CLArray<T>.FillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArray<T> :=
+FillData(IntPtr(ptr), pattern_len);
 
-function CLArray<T>.Fill(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
+function CLArray<T>.FillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArray<T> :=
+FillData(IntPtr(ptr), pattern_len, ind, len);
+
+function CLArray<T>.FillValue(val: &T): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val));
+
+function CLArray<T>.FillValue(val: CommandQueue<&T>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val));
+
+function CLArray<T>.FillValue(val: &T; ind, len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, ind, len));
+
+function CLArray<T>.FillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, ind, len));
+
+function CLArray<T>.FillArray(a: CommandQueue<array of &T>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray(a));
+
+function CLArray<T>.FillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray(a, a_offset, pattern_len, ind, len));
 
 {$endregion 2#Fill}
 

@@ -53,6 +53,12 @@ main_dvc должен быть в списке устройств контекс
 # Err:Blittable:Source:MemorySegment:FillValue
 # Err:Blittable:Source:MemorySegment:FillValueAutoSizeQ
 # Err:Blittable:Source:MemorySegment:FillValueQ
+# Err:Blittable:Source:MemorySegment:FillArray1AutoSize
+# Err:Blittable:Source:MemorySegment:FillArray2AutoSize
+# Err:Blittable:Source:MemorySegment:FillArray3AutoSize
+# Err:Blittable:Source:MemorySegment:FillArray1
+# Err:Blittable:Source:MemorySegment:FillArray2
+# Err:Blittable:Source:MemorySegment:FillArray3
 записывать в область памяти OpenCL
 
 # Err:Blittable:Source:MemorySegment:ReadArray1AutoSize

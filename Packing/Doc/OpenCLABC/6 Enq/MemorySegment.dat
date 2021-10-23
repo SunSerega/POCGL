@@ -139,6 +139,33 @@ len указывает кол-во задействованных элемент
 
 
 
+# MemorySegment.FillArray1<TRecord>(CommandQueue<array of TRecord>)
+# MemorySegment.FillArray2<TRecord>(CommandQueue<array[,] of TRecord>)
+# MemorySegment.FillArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
+# MemorySegmentCCQ.AddFillArray1<TRecord>(CommandQueue<array of TRecord>)
+# MemorySegmentCCQ.AddFillArray2<TRecord>(CommandQueue<array[,] of TRecord>)
+# MemorySegmentCCQ.AddFillArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
+Заполняет всю область памяти копиями указанного массива
+
+# MemorySegment.FillArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddFillArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment:FillArrayDef
+Заполняет часть области памяти копиями части указанного массива
+%MemorySegment:ArrOffsetDef%
+pattern_%MemorySegment:ArrLenDef%
+%MemorySegment:LenDef%
+%MemorySegment:OffsetDef%
+
+# MemorySegment.FillArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment.FillArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddFillArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddFillArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%MemorySegment:FillArrayDef%
+
+%MemorySegment:ArrOffsetWarning%
+
+
+
 # MemorySegment:CopyToDef
 Копирует данные из текущей области памяти в mem
 # MemorySegment:CopyFromDef

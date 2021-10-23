@@ -1,6 +1,31 @@
 
 
 
+# CLArray<T>.WriteData(CommandQueue<IntPtr>)
+# CLArray<T>.WriteData(pointer)
+# CLArrayCCQ<T>.AddWriteData(CommandQueue<IntPtr>)
+# CLArrayCCQ<T>.AddWriteData(pointer)
+Заполняет весь данный объект CLArray<T> данными, находящимися по указанному адресу в RAM
+# CLArray<T>.ReadData(CommandQueue<IntPtr>)
+# CLArray<T>.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.ReadData(pointer)
+# CLArray<T>.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+Читает всё содержимое данного объекта CLArray<T> в RAM, по указанному адресу
+
+# CLArray<T>.WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+Заполняет len элементов начиная с индекса ind данного объекта CLArray<T> данными, находящимися по указанному адресу в RAM
+# CLArrayCCQ<T>.AddReadData(CommandQueue<IntPtr>)
+# CLArrayCCQ<T>.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddReadData(pointer)
+# CLArrayCCQ<T>.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+Читает len элементов начиная с индекса ind данного объекта CLArray<T> в RAM, по указанному адресу
+
+
+
+
 # CLArray<T>.WriteItem(&T, CommandQueue<integer>)
 # CLArray<T>.WriteItem(CommandQueue<&T>, CommandQueue<integer>)
 # CLArrayCCQ<T>.AddWriteItem(&T, CommandQueue<integer>)
@@ -29,18 +54,42 @@
 
 
 
+# CLArray<T>.FillData(CommandQueue<IntPtr>, CommandQueue<integer>)
+# CLArray<T>.FillData(pointer, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillData(pointer, CommandQueue<integer>)
+Чиатет pattern_len элементов из RAM по указанному адресу и заполняет их копиями весь данный объект CLArray<T>
 
-# CLArray<T>.Fill(&T)
-# CLArray<T>.Fill(CommandQueue<&T>)
-# CLArrayCCQ<T>.AddFill(&T)
-# CLArrayCCQ<T>.AddFill(CommandQueue<&T>)
+# CLArray<T>.FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.FillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Чиатет pattern_len элементов из RAM по указанному адресу и заполняет их копиями len элементов начиная с индекса ind данного объекта CLArray<T>
+
+
+
+# CLArray<T>.FillValue(&T)
+# CLArray<T>.FillValue(CommandQueue<&T>)
+# CLArrayCCQ<T>.AddFillValue(&T)
+# CLArrayCCQ<T>.AddFillValue(CommandQueue<&T>)
 Заполняет весь массив копиями указанного значения
 
-# CLArray<T>.Fill(&T, CommandQueue<integer>, CommandQueue<integer>)
-# CLArray<T>.Fill(CommandQueue<&T>, CommandQueue<integer>, CommandQueue<integer>)
-# CLArrayCCQ<T>.AddFill(&T, CommandQueue<integer>, CommandQueue<integer>)
-# CLArrayCCQ<T>.AddFill(CommandQueue<&T>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.FillValue(&T, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.FillValue(CommandQueue<&T>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillValue(&T, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillValue(CommandQueue<&T>, CommandQueue<integer>, CommandQueue<integer>)
 Заполняет len элементов начиная с индекса ind копиями указанного значения
+
+
+
+# CLArray<T>.FillArray(CommandQueue<array of &T>)
+# CLArrayCCQ<T>.AddFillArray(CommandQueue<array of &T>)
+Заполняет данный объект CLArray<T> компиями указанного массива
+
+# CLArray<T>.FillArray(CommandQueue<array of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddFillArray(CommandQueue<array of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+Заполняет len элементов начиная с индекса ind компиями части указанного массива
+Из указанного массива берётся pattern_len элементов, начиная с индекса a_offset
 
 
 

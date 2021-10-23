@@ -5,7 +5,7 @@
 mem: CommandQueue<MemorySegment>{%AutoSize?:; from_pos, to_pos, len\: CommandQueue<integer>%}
 !Enqueue
 cl.EnqueueCopyBuffer(
-  cq, {%direction? o.ntv,!mem!.ntv : !mem!.ntv,o.ntv %},
+  cq, {%direction? o.Native,!mem!.Native : !mem!.Native,o.Native %},
   {%AutoSize? UIntPtr.Zero, UIntPtr.Zero : new UIntPtr(!from_pos!), new UIntPtr(!to_pos!) %},
   {%AutoSize? o.Size64<!mem!.Size64 ? o.Size \: !mem!.Size : new UIntPtr(!len!) %},
   !evs!

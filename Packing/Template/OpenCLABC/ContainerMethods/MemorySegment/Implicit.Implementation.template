@@ -97,6 +97,24 @@ Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset,
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
 
+function MemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray1&<TRecord>(a));
+
+function MemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray2&<TRecord>(a));
+
+function MemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray3&<TRecord>(a));
+
+function MemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray1&<TRecord>(a, a_offset, pattern_len, len, mem_offset));
+
+function MemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray2&<TRecord>(a, a_offset1, a_offset2, pattern_len, len, mem_offset));
+
+function MemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, pattern_len, len, mem_offset));
+
 {$endregion 2#Fill}
 
 {$region 3#Copy}

@@ -16,7 +16,7 @@ begin
     
     // Заполняем весь массив значениями (1), прямо перед выполнением
     //TODO Разобраться почему надо KernelArg.From
-    KernelArg.FromCLArrayCQ(A.NewQueue.AddFill(1))
+    KernelArg.FromCLArrayCQ(A.NewQueue.AddFillValue(1))
     
   );
   

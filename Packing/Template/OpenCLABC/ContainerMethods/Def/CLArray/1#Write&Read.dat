@@ -1,6 +1,23 @@
 
 
 
+# [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
+ptr: CommandQueue<IntPtr>{%AutoSize?:; ind, len\: CommandQueue<integer>%}
+!Enqueue
+cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr({%AutoSize? 0 : !ind! * Marshal.SizeOf&<T> %}), new UIntPtr({%AutoSize? o.ByteSize : !len!*Marshal.SizeOf&<T> %}),
+  !ptr!,
+  !evs!
+).RaiseIfError;
+
+# [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
+ptr: pointer{%AutoSize?:; ind, len\: CommandQueue<integer>%}
+!ShortDef
+{%mode%}Data(IntPtr(ptr){%AutoSize?:, ind, len%});
+
+
+
 # WriteItem![%Q:,Q%]
 val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
 !Enqueue
