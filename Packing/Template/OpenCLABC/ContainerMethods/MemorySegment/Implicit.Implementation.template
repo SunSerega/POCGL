@@ -88,11 +88,11 @@ Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len, mem_offse
 function MemorySegment.FillValue<TRecord>(val: TRecord): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val));
 
-function MemorySegment.FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment :=
-Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
-
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val));
+
+function MemorySegment.FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment :=
+Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
 
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegment :=
 Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));

@@ -1743,6 +1743,76 @@ AddCommand(self, new MemorySegmentCommandFillValueAutoSize<TRecord>(val));
 
 {$endregion FillValueAutoSize}
 
+{$region FillValueAutoSizeQ}
+
+type
+  MemorySegmentCommandFillValueAutoSizeQ<TRecord> = sealed class(EnqueueableGPUCommand<MemorySegment>)
+  where TRecord: record;
+    private val: CommandQueue<TRecord>;
+    
+    public function ParamCountL1: integer; override := 0;
+    public function ParamCountL2: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:FillValueAutoSizeQ%');
+    end;
+    public constructor(val: CommandQueue<TRecord>);
+    begin
+      self.val := val;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
+    begin
+      var val_qr := val.Invoke    (tsk, c, main_dvc,  True, cq, nil); (val_qr is QueueResDelayedPtr&<TRecord>?evs_l2:evs_l1).Add(val_qr.ev);
+      
+      Result := (o, cq, tsk, c, evs)->
+      begin
+        var val := val_qr.ToPtr;
+        var res_ev: cl_event;
+        
+        cl.EnqueueFillBuffer(
+          cq, o.ntv,
+          new IntPtr(val.GetPtr), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        var val_hnd := GCHandle.Alloc(val);
+        
+        EventList.AttachFinallyCallback(res_ev, ()->
+        begin
+          val_hnd.Free;
+        end, tsk, false{$ifdef EventDebug}, nil{$endif});
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+      val.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'val: ';
+      val.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function MemorySegmentCCQ.AddFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ :=
+AddCommand(self, new MemorySegmentCommandFillValueAutoSizeQ<TRecord>(val));
+
+{$endregion FillValueAutoSizeQ}
+
 {$region FillValue}
 
 type
@@ -1825,76 +1895,6 @@ function MemorySegmentCCQ.AddFillValue<TRecord>(val: TRecord; mem_offset, len: C
 AddCommand(self, new MemorySegmentCommandFillValue<TRecord>(val, mem_offset, len));
 
 {$endregion FillValue}
-
-{$region FillValueAutoSizeQ}
-
-type
-  MemorySegmentCommandFillValueAutoSizeQ<TRecord> = sealed class(EnqueueableGPUCommand<MemorySegment>)
-  where TRecord: record;
-    private val: CommandQueue<TRecord>;
-    
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 1;
-    
-    static constructor;
-    begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:MemorySegment:FillValueAutoSizeQ%');
-    end;
-    public constructor(val: CommandQueue<TRecord>);
-    begin
-      self.val := val;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskBase, Context, EventList)->cl_event; override;
-    begin
-      var val_qr := val.Invoke    (tsk, c, main_dvc,  True, cq, nil); (val_qr is QueueResDelayedPtr&<TRecord>?evs_l2:evs_l1).Add(val_qr.ev);
-      
-      Result := (o, cq, tsk, c, evs)->
-      begin
-        var val := val_qr.ToPtr;
-        var res_ev: cl_event;
-        
-        cl.EnqueueFillBuffer(
-          cq, o.ntv,
-          new IntPtr(val.GetPtr), new UIntPtr(Marshal.SizeOf&<TRecord>),
-          UIntPtr.Zero, o.Size,
-          evs.count, evs.evs, res_ev
-        ).RaiseIfError;
-        
-        var val_hnd := GCHandle.Alloc(val);
-        
-        EventList.AttachFinallyCallback(res_ev, ()->
-        begin
-          val_hnd.Free;
-        end, tsk, false{$ifdef EventDebug}, nil{$endif});
-        
-        Result := res_ev;
-      end;
-      
-    end;
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
-    begin
-      val.RegisterWaitables(tsk, prev_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function MemorySegmentCCQ.AddFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ :=
-AddCommand(self, new MemorySegmentCommandFillValueAutoSizeQ<TRecord>(val));
-
-{$endregion FillValueAutoSizeQ}
 
 {$region FillValueQ}
 

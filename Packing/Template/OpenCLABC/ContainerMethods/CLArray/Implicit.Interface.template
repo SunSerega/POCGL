@@ -9,9 +9,9 @@
     
     public function WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
     
-    public function ReadArray(a: CommandQueue<array of &T>): CLArray<T>;
-    
     public function WriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadArray(a: CommandQueue<array of &T>): CLArray<T>;
     
     public function ReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T>;
     
@@ -21,9 +21,9 @@
     
     public function Fill(val: &T): CLArray<T>;
     
-    public function Fill(val: &T; ind, len: CommandQueue<integer>): CLArray<T>;
-    
     public function Fill(val: CommandQueue<&T>): CLArray<T>;
+    
+    public function Fill(val: &T; ind, len: CommandQueue<integer>): CLArray<T>;
     
     public function Fill(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T>;
     

@@ -12,11 +12,11 @@ Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind));
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a));
 
-function CLArray<T>.ReadArray(a: CommandQueue<array of &T>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a));
-
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a, ind, len, a_ind));
+
+function CLArray<T>.ReadArray(a: CommandQueue<array of &T>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a));
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, ind, len, a_ind));
@@ -28,11 +28,11 @@ Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, ind, len, a_ind));
 function CLArray<T>.Fill(val: &T): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddFill(val));
 
-function CLArray<T>.Fill(val: &T; ind, len: CommandQueue<integer>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
-
 function CLArray<T>.Fill(val: CommandQueue<&T>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddFill(val));
+
+function CLArray<T>.Fill(val: &T; ind, len: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
 
 function CLArray<T>.Fill(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));

@@ -61,9 +61,9 @@
     
     public function FillValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
     
-    public function FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
-    
     public function FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
+    
+    public function FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
     
     public function FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
     

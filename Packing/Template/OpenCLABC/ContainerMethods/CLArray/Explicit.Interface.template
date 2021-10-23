@@ -9,9 +9,9 @@
     
     public function AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
-    public function AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
-    
     public function AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
     public function AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
@@ -21,9 +21,9 @@
     
     public function AddFill(val: &T): CLArrayCCQ<T>;
     
-    public function AddFill(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
-    
     public function AddFill(val: CommandQueue<&T>): CLArrayCCQ<T>;
+    
+    public function AddFill(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     public function AddFill(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     

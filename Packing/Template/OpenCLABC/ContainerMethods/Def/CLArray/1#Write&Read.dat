@@ -1,18 +1,8 @@
 
 
 
-# WriteItem
-val: &T; ind: CommandQueue<integer>
-!Enqueue
-cl.EnqueueWriteBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
-  new IntPtr(!val:ptr!),
-  !evs!
-).RaiseIfError;
-
-# WriteItem!Q
-val: CommandQueue<&T>; ind: CommandQueue<integer>
+# WriteItem![%Q:,Q%]
+val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
@@ -23,23 +13,13 @@ cl.EnqueueWriteBuffer(
 
 
 
-# [%mode:Write,Read%]Array!AutoSize
-a: CommandQueue<array of &T>
+# [%mode:Write,Read%]Array![%AutoSize:AutoSize,%]
+a: CommandQueue<array of &T>{%AutoSize?:; ind, len, a_ind\: CommandQueue<integer>%}
 !Enqueue
 cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length*Marshal.SizeOf&<T>),
-  !a:pinn![0],
-  !evs!
-).RaiseIfError;
-
-# [%mode:Write,Read%]Array
-a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>
-!Enqueue
-cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!len!*Marshal.SizeOf&<T>),
-  !a:pinn![!a_ind!],
+  {%AutoSize?UIntPtr.Zero:new UIntPtr(!ind!*Marshal.SizeOf&<T>)%}, new UIntPtr({%AutoSize? !a\:pinn!.Length*Marshal.SizeOf&<T> : !len!*Marshal.SizeOf&<T> %}),
+  !a:pinn![{%AutoSize?0:!a_ind!%}],
   !evs!
 ).RaiseIfError;
 
