@@ -33,9 +33,9 @@
     
     public function AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
     
-    public function AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
-    
     public function AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
     
     public function AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     

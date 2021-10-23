@@ -44,11 +44,11 @@ Context.Default.SyncInvoke(self.NewQueue.AddFill(val, ind, len));
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<T>>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a));
 
-function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a));
-
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a, from_ind, to_ind, len));
+
+function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a));
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a, from_ind, to_ind, len));

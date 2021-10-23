@@ -33,9 +33,9 @@
     
     public function CopyTo(a: CommandQueue<CLArray<T>>): CLArray<T>;
     
-    public function CopyFrom(a: CommandQueue<CLArray<T>>): CLArray<T>;
-    
     public function CopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
+    
+    public function CopyFrom(a: CommandQueue<CLArray<T>>): CLArray<T>;
     
     public function CopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
     
