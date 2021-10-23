@@ -514,7 +514,7 @@ type
     begin
       var res := new StringBuilder;
       
-      var anon_names := |'<>local_variables_class_', '<>lambda', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[', 'строка '|;
+      var anon_names := |'<>local_variables_class_', '<>lambda', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[', ':строка ', ':line '|;
       var inds := new integer[anon_names.Length];
       var in_anon_name := false;
       foreach var ch in text do
