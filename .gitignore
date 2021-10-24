@@ -2,5 +2,6 @@
 *.pdb
 *.exe
 *.backup
+*.compile_lock
 /Release
 /LastPack (Timed).log

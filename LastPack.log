@@ -58,7 +58,6 @@ Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMl
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
 Tester: Compiling: OK
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.td"
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
@@ -67,7 +66,6 @@ Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
 Tester: Compiling: OK
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.td"
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
@@ -307,8 +305,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

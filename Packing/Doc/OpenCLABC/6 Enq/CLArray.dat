@@ -7,9 +7,9 @@
 # CLArrayCCQ<T>.AddWriteData(pointer)
 Заполняет весь данный объект CLArray<T> данными, находящимися по указанному адресу в RAM
 # CLArray<T>.ReadData(CommandQueue<IntPtr>)
-# CLArray<T>.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
 # CLArray<T>.ReadData(pointer)
-# CLArray<T>.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddReadData(CommandQueue<IntPtr>)
+# CLArrayCCQ<T>.AddReadData(pointer)
 Читает всё содержимое данного объекта CLArray<T> в RAM, по указанному адресу
 
 # CLArray<T>.WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
@@ -17,9 +17,9 @@
 # CLArrayCCQ<T>.AddWriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
 # CLArrayCCQ<T>.AddWriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 Заполняет len элементов начиная с индекса ind данного объекта CLArray<T> данными, находящимися по указанному адресу в RAM
-# CLArrayCCQ<T>.AddReadData(CommandQueue<IntPtr>)
+# CLArray<T>.ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLArray<T>.ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 # CLArrayCCQ<T>.AddReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
-# CLArrayCCQ<T>.AddReadData(pointer)
 # CLArrayCCQ<T>.AddReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 Читает len элементов начиная с индекса ind данного объекта CLArray<T> в RAM, по указанному адресу
 
