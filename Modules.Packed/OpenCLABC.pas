@@ -29,16 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Подумать как об этом можно написать в справке (или не в справке):
-// - ReadValue отсутствует
-// - (но есть GetValue)
-// --- В объяснении KernelArg из указателя всё уже сказано
-// --- Надо только как то объединить, чтоб текст был не только про KernelArg...
-// --- На самом деле в объяснении KernelArg не запрет, а объяснение
-//     что нельзя чтоб переменная выходила с области видимости
-// --- Но у ReadValue если алтернатива - ReadData(@val, 0, sizeof(val))
-// --- Написать в справке
-
 //===================================
 // Запланированное:
 
@@ -1676,10 +1666,10 @@ type
     public function ReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function WriteItem(val: &T; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteValue(val: &T; ind: CommandQueue<integer>): CLArray<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function WriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
     
     ///Записывает весь указанный массив в начало данного объекта CLArray<T>
     public function WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
@@ -1757,7 +1747,7 @@ type
     {$region Get}
     
     ///Читает элемент по указанному индексу
-    public function GetItem(ind: CommandQueue<integer>): &T;
+    public function GetValue(ind: CommandQueue<integer>): &T;
     
     ///Читает весь CLArray<T> как обычный массив array of T
     public function GetArray: array of &T;
@@ -3162,10 +3152,10 @@ type
     public function AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function AddWriteItem(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function AddWriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает весь указанный массив в начало данного объекта CLArray<T>
     public function AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
@@ -3243,7 +3233,7 @@ type
     {$region Get}
     
     ///Читает элемент по указанному индексу
-    public function AddGetItem(ind: CommandQueue<integer>): CommandQueue<&T>;
+    public function AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T>;
     
     ///Читает весь CLArray<T> как обычный массив array of T
     public function AddGetArray: CommandQueue<array of &T>;
@@ -3945,9 +3935,9 @@ function CLArrayProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_S
 {$region CLArray}
 
 function CLArray<T>.GetItemProp(ind: integer): T :=
-GetItem(ind);
+GetValue(ind);
 procedure CLArray<T>.SetItemProp(ind: integer; value: T) :=
-WriteItem(value, ind);
+WriteValue(value, ind);
 
 function CLArray<T>.GetSectionProp(range: IntRange): array of T :=
 GetArray(range.Low, range.High-range.Low+1);
@@ -11109,11 +11099,11 @@ ReadData(IntPtr(ptr));
 function CLArray<T>.ReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T> :=
 ReadData(IntPtr(ptr), ind, len);
 
-function CLArray<T>.WriteItem(val: &T; ind: CommandQueue<integer>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind));
+function CLArray<T>.WriteValue(val: &T; ind: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, ind));
 
-function CLArray<T>.WriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T> :=
-Context.Default.SyncInvoke(self.NewQueue.AddWriteItem(val, ind));
+function CLArray<T>.WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T> :=
+Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, ind));
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>): CLArray<T> :=
 Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a));
@@ -11181,8 +11171,8 @@ Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a, from_ind, to_ind, len));
 
 {$region Get}
 
-function CLArray<T>.GetItem(ind: CommandQueue<integer>): &T :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetItem(ind));
+function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetValue(ind));
 
 function CLArray<T>.GetArray: array of &T :=
 Context.Default.SyncInvoke(self.NewQueue.AddGetArray);
@@ -11498,10 +11488,10 @@ AddReadData(IntPtr(ptr), ind, len);
 
 {$endregion ReadData}
 
-{$region WriteItem}
+{$region WriteValue}
 
 type
-  CLArrayCommandWriteItem<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
     private val: ^&T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<&T>));
     private ind: CommandQueue<integer>;
@@ -11563,15 +11553,15 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteItem(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteItem<T>(val, ind));
+function CLArrayCCQ<T>.AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
+AddCommand(self, new CLArrayCommandWriteValue<T>(val, ind));
 
-{$endregion WriteItem}
+{$endregion WriteValue}
 
-{$region WriteItemQ}
+{$region WriteValueQ}
 
 type
-  CLArrayCommandWriteItemQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteValueQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
     private val: CommandQueue<&T>;
     private ind: CommandQueue<integer>;
@@ -11638,10 +11628,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteItemQ<T>(val, ind));
+function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
+AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
 
-{$endregion WriteItemQ}
+{$endregion WriteValueQ}
 
 {$region WriteArrayAutoSize}
 
@@ -12889,10 +12879,10 @@ AddCommand(self, new CLArrayCommandCopyFrom<T>(a, from_ind, to_ind, len));
 
 {$region Get}
 
-{$region GetItem}
+{$region GetValue}
 
 type
-  CLArrayCommandGetItem<T> = sealed class(EnqueueableGetCommand<CLArray<T>, &T>)
+  CLArrayCommandGetValue<T> = sealed class(EnqueueableGetCommand<CLArray<T>, &T>)
   where T: record;
     private ind: CommandQueue<integer>;
     
@@ -12953,10 +12943,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetItem(ind: CommandQueue<integer>): CommandQueue<&T> :=
-new CLArrayCommandGetItem<T>(self, ind) as CommandQueue<&T>;
+function CLArrayCCQ<T>.AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T> :=
+new CLArrayCommandGetValue<T>(self, ind) as CommandQueue<&T>;
 
-{$endregion GetItem}
+{$endregion GetValue}
 
 {$region GetArrayAutoSize}
 

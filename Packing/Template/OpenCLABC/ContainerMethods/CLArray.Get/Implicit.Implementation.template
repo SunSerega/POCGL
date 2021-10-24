@@ -3,8 +3,8 @@
 
 {$region Get}
 
-function CLArray<T>.GetItem(ind: CommandQueue<integer>): &T :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetItem(ind));
+function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T :=
+Context.Default.SyncInvoke(self.NewQueue.AddGetValue(ind));
 
 function CLArray<T>.GetArray: array of &T :=
 Context.Default.SyncInvoke(self.NewQueue.AddGetArray);

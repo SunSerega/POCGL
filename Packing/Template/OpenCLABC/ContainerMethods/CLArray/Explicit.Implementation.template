@@ -303,10 +303,10 @@ AddReadData(IntPtr(ptr), ind, len);
 
 {$endregion ReadData}
 
-{$region WriteItem}
+{$region WriteValue}
 
 type
-  CLArrayCommandWriteItem<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
     private val: ^&T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<&T>));
     private ind: CommandQueue<integer>;
@@ -368,15 +368,15 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteItem(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteItem<T>(val, ind));
+function CLArrayCCQ<T>.AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
+AddCommand(self, new CLArrayCommandWriteValue<T>(val, ind));
 
-{$endregion WriteItem}
+{$endregion WriteValue}
 
-{$region WriteItemQ}
+{$region WriteValueQ}
 
 type
-  CLArrayCommandWriteItemQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteValueQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
     private val: CommandQueue<&T>;
     private ind: CommandQueue<integer>;
@@ -443,10 +443,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteItemQ<T>(val, ind));
+function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
+AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
 
-{$endregion WriteItemQ}
+{$endregion WriteValueQ}
 
 {$region WriteArrayAutoSize}
 

@@ -4,7 +4,7 @@ T: record
 
 
 
-# GetItem
+# GetValue
 ind: CommandQueue<integer>
 !ResultType
 &T

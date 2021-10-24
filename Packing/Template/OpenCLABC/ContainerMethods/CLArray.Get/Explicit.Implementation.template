@@ -3,10 +3,10 @@
 
 {$region Get}
 
-{$region GetItem}
+{$region GetValue}
 
 type
-  CLArrayCommandGetItem<T> = sealed class(EnqueueableGetCommand<CLArray<T>, &T>)
+  CLArrayCommandGetValue<T> = sealed class(EnqueueableGetCommand<CLArray<T>, &T>)
   where T: record;
     private ind: CommandQueue<integer>;
     
@@ -67,10 +67,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetItem(ind: CommandQueue<integer>): CommandQueue<&T> :=
-new CLArrayCommandGetItem<T>(self, ind) as CommandQueue<&T>;
+function CLArrayCCQ<T>.AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T> :=
+new CLArrayCommandGetValue<T>(self, ind) as CommandQueue<&T>;
 
-{$endregion GetItem}
+{$endregion GetValue}
 
 {$region GetArrayAutoSize}
 

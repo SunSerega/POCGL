@@ -26,10 +26,10 @@
 
 
 
-# CLArray<T>.WriteItem(&T, CommandQueue<integer>)
-# CLArray<T>.WriteItem(CommandQueue<&T>, CommandQueue<integer>)
-# CLArrayCCQ<T>.AddWriteItem(&T, CommandQueue<integer>)
-# CLArrayCCQ<T>.AddWriteItem(CommandQueue<&T>, CommandQueue<integer>)
+# CLArray<T>.WriteValue(&T, CommandQueue<integer>)
+# CLArray<T>.WriteValue(CommandQueue<&T>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteValue(&T, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteValue(CommandQueue<&T>, CommandQueue<integer>)
 Записывает указанное значение по индексу ind
 
 
@@ -114,8 +114,8 @@ len указывает кол-во копируемых элементов
 
 
 
-# CLArray<T>.GetItem(CommandQueue<integer>)
-# CLArrayCCQ<T>.AddGetItem(CommandQueue<integer>)
+# CLArray<T>.GetValue(CommandQueue<integer>)
+# CLArrayCCQ<T>.AddGetValue(CommandQueue<integer>)
 Читает элемент по указанному индексу
 
 

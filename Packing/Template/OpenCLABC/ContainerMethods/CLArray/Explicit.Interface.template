@@ -19,9 +19,9 @@
     
     public function AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteItem(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     public function AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     

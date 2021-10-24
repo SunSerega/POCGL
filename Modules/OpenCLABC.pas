@@ -19,16 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Подумать как об этом можно написать в справке (или не в справке):
-// - ReadValue отсутствует
-// - (но есть GetValue)
-// --- В объяснении KernelArg из указателя всё уже сказано
-// --- Надо только как то объединить, чтоб текст был не только про KernelArg...
-// --- На самом деле в объяснении KernelArg не запрет, а объяснение
-//     что нельзя чтоб переменная выходила с области видимости
-// --- Но у ReadValue если алтернатива - ReadData(@val, 0, sizeof(val))
-// --- Написать в справке
-
 //===================================
 // Запланированное:
 
@@ -113,6 +103,8 @@ unit OpenCLABC;
 
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
+
+//TODO Посмотреть как можно использовать cl_khr_semaphore, когда добавят в мой драйвер
 
 //===================================
 
@@ -1733,9 +1725,9 @@ type
 {$region CLArray}
 
 function CLArray<T>.GetItemProp(ind: integer): T :=
-{%>GetItem(ind)!!} default(T) {%};
+{%>GetValue(ind)!!} default(T) {%};
 procedure CLArray<T>.SetItemProp(ind: integer; value: T) :=
-{%>WriteItem(value, ind)!!} exit() {%};
+{%>WriteValue(value, ind)!!} exit() {%};
 
 function CLArray<T>.GetSectionProp(range: IntRange): array of T :=
 {%>GetArray(range.Low, range.High-range.Low+1)!!} nil {%};

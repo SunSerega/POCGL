@@ -3,7 +3,7 @@
     
     {$region Get}
     
-    public function GetItem(ind: CommandQueue<integer>): &T;
+    public function GetValue(ind: CommandQueue<integer>): &T;
     
     public function GetArray: array of &T;
     

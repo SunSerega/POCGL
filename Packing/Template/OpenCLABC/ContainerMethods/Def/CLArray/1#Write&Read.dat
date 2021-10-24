@@ -18,7 +18,7 @@ ptr: pointer{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 
 
 
-# WriteItem![%Q:,Q%]
+# WriteValue![%Q:,Q%]
 val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
 !Enqueue
 cl.EnqueueWriteBuffer(

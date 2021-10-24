@@ -19,9 +19,9 @@
     
     public function ReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T>;
     
-    public function WriteItem(val: &T; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteValue(val: &T; ind: CommandQueue<integer>): CLArray<T>;
     
-    public function WriteItem(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
     
     public function WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
     
