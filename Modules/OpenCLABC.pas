@@ -19,26 +19,39 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Преобразование array of TRecord => KernelArg
+// - #2552
+// - Раскомментировать в тестах и справке
+
+//TODO Пройтись по интерфейсу, порасставлять кидание исключений
+//TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
+// - В том числе проверки с помощью BlittableHelper
+
 //===================================
 // Запланированное:
+
+//TODO HFQ(()->S) не работает как ссылка на S?
+
+//TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
+
+//TODO В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
+
+//TODO Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
+// - И в справке тогда убрать параграф...
+
+//TODO Использовать cl.EnqueueMapBuffer
+// - В виде .AddMap((MappedArray,Context)->())
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
 
 //TODO Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
+//TODO Создание SubDevice из cl_device_id
 
-//TODO Преобразование array of TRecord => KernelArg, используя CL_MEM_USE_HOST_PTR
-// - #2478
-// - При чём тут CL_MEM_USE_HOST_PTR???
-
-//TODO HFQ(()->S) не работает как ссылка на S:MemorySegment?
-
-//TODO Использовать cl.EnqueueMapBuffer
-// - В виде .AddMap((MappedArray,Context)->())
-
-//TODO Пройтись по интерфейсу, порасставлять кидание исключений
-//TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
-// - В том числе проверки с помощью BlittableHelper
+//TODO А что если вещи, которые могут привести к утечкам памяти при ThreadAbortException (как конструктор контекста) сувать в finally пустого try?
+// - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
+// - Обязательно сравнить скорость, перед тем как применять...
+// - Вообще нет, лучше избавится от ThreadAbortException, и передавать токены отмены в HPQ и т.п.
 
 //TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
 //
@@ -48,15 +61,6 @@ unit OpenCLABC;
 // - А что если все параметры кроме последнего - константы?
 // - Надо как то умнее это обрабатывать
 //TODO И сделать наконец нормальный класс-контейнер состояния очереди, параметрами всё не передашь
-
-//TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
-
-//TODO В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
-
-//TODO А что если вещи, которые могут привести к утечкам памяти при ThreadAbortException (как конструктор контекста) сувать в finally пустого try?
-// - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
-// - Обязательно сравнить скорость, перед тем как применять...
-// - Вообще нет, лучше избавится от ThreadAbortException, и передавать токены отмены в HPQ и т.п.
 
 //TODO IWaitQueue.CancelWait
 //TODO WaitAny(aborter, WaitAll(...));
@@ -69,8 +73,6 @@ unit OpenCLABC;
 // - Надо специально разрешить передавать какой то маркер аборта
 // - И только в WaitAll, другим Wait-ам это не нужно
 // - Или можно забыть про всё это и сделать+использовать AbortQueue чтоб убивать и Wait-ы, и всё остальное
-
-//TODO Создание SubDevice из cl_device_id
 
 //TODO Очередь-обработчик ошибок
 // - .HandleExceptions
@@ -95,9 +97,6 @@ unit OpenCLABC;
 
 //TODO Интегрировать профайлинг очередей
 
-//TODO Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
-// - И в справке тогда убрать параграф...
-
 //===================================
 // Сделать когда-нибуть:
 
@@ -116,7 +115,6 @@ unit OpenCLABC;
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
 // - #2431
-// - #2545
 
 //TODO Баги NVidia
 //TODO https://developer.nvidia.com/nvidia_bug/{id}
@@ -823,8 +821,6 @@ type
     
     {$region constructor's}
     
-    static constructor;
-    
     private procedure InitByLen(c: Context);
     begin
       
@@ -1474,26 +1470,36 @@ type
     
     {$endregion CLArray}
     
-    {$region Record}
+    {$region Data}
     
-    public static function FromRecord<TRecord>(val: TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromRecord(val); end;
+    public static function FromData(ptr: IntPtr; sz: UIntPtr): KernelArg;
     
-    public static function FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromRecordCQ(valq); end;
+    public static function FromDataCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): KernelArg;
     
-    {$endregion Record}
+    public static function FromValueData<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record;
+    public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromValueData(ptr); end;
     
-    {$region Ptr}
+    {$endregion Data}
     
-    public static function FromPtr(ptr: IntPtr; sz: UIntPtr): KernelArg;
+    {$region Value}
     
-    public static function FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): KernelArg;
+    public static function FromValue<TRecord>(val: TRecord): KernelArg; where TRecord: record;
+    public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromValue(val); end;
     
-    public static function FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromRecordPtr(ptr); end;
+    public static function FromValueCQ<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record;
+    public static function operator implicit<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(valq); end;
     
-    {$endregion Ptr}
+    {$endregion Value}
+    
+    {$region Array}
+    
+    public static function FromArray<TRecord>(a: array of TRecord; ind: integer := 0): KernelArg; where TRecord: record;
+    public static function operator implicit<TRecord>(a: array of TRecord): KernelArg; where TRecord: record; begin Result := FromArray(a); end;
+    
+    public static function FromArrayCQ<TRecord>(a: CommandQueue<array of TRecord>; ind: CommandQueue<integer> := 0): KernelArg; where TRecord: record;
+    public static function operator implicit<TRecord>(a: CommandQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a); end;
+    
+    {$endregion Array}
     
     {$region ToString}
     
@@ -1888,15 +1894,11 @@ type
     
   end;
   
-  //TODO #2545
-//  CLArray<T> = partial class
-//    static constructor :=
-//    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLArray%');
-//  end;
+  CLArray<T> = partial class
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLArray%');
+  end;
   
-static constructor CLArray<T>.Create :=
-BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLArray%');
-
 {$endregion Blittable}
 
 {$region NativeUtils}
@@ -2220,8 +2222,12 @@ type
         work_thr.Abort;
       end);
       
-      work_thr := NativeUtils.StartNewBgThread(()->
+      NativeUtils.StartNewBgThread(()->
       try
+        // Нельзя work_thr := NativeUtils.StartNewBgThread
+        // Потому что тогда abort_thr_ev.Set имеет шанс выполнится до присвоения
+        work_thr := Thread.CurrentThread;
+        
         var err := false;
         try
           if (after<>nil) and (after.count<>0) then
@@ -3628,31 +3634,6 @@ type
   
 {$endregion Base}
 
-{$region MemorySegment}
-
-type
-  KernelArgMemorySegment = sealed class(ConstKernelArg)
-    private mem: MemorySegment;
-    
-    public constructor(mem: MemorySegment) := self.mem := mem;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
-    cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), mem.ntv).RaiseIfError;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ' => ';
-      sb.Append(mem);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromMemorySegment(mem: MemorySegment) := new KernelArgMemorySegment(mem);
-
-{$endregion MemorySegment}
-
 {$region CLArray}
 
 type
@@ -3680,42 +3661,35 @@ begin Result := new KernelArgCLArray<T>(a); end;
 
 {$endregion CLArray}
 
-{$region Record}
+{$region MemorySegment}
 
 type
-  KernelArgRecord<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
+  KernelArgMemorySegment = sealed class(ConstKernelArg)
+    private mem: MemorySegment;
     
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(val: TRecord) := self.val^ := val;
+    public constructor(mem: MemorySegment) := self.mem := mem;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(new IntPtr(val));
-    
     public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
-    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
+    cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), mem.ntv).RaiseIfError;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += ' => ';
-      sb.Append(val^);
+      sb.Append(mem);
       sb += #10;
     end;
     
   end;
   
-static function KernelArg.FromRecord<TRecord>(val: TRecord) := new KernelArgRecord<TRecord>(val);
+static function KernelArg.FromMemorySegment(mem: MemorySegment) := new KernelArgMemorySegment(mem);
 
-{$endregion Record}
+{$endregion MemorySegment}
 
 {$region Ptr}
 
 type
-  KernelArgPtr = sealed class(ConstKernelArg)
+  KernelArgData = sealed class(ConstKernelArg)
     private ptr: IntPtr;
     private sz: UIntPtr;
     
@@ -3740,15 +3714,90 @@ type
     
   end;
   
-static function KernelArg.FromPtr(ptr: IntPtr; sz: UIntPtr) := new KernelArgPtr(ptr, sz);
+static function KernelArg.FromData(ptr: IntPtr; sz: UIntPtr) := new KernelArgData(ptr, sz);
 
-static function KernelArg.FromRecordPtr<TRecord>(ptr: ^TRecord): KernelArg;
+static function KernelArg.FromValueData<TRecord>(ptr: ^TRecord): KernelArg;
 begin
   BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-  Result := KernelArg.FromPtr(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>));
+  Result := KernelArg.FromData(new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>));
 end;
 
 {$endregion Ptr}
+
+{$region Record}
+
+type
+  KernelArgValue<TRecord> = sealed class(ConstKernelArg)
+  where TRecord: record;
+    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
+    
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
+    
+    public constructor(val: TRecord) := self.val^ := val;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected procedure Finalize; override :=
+    Marshal.FreeHGlobal(new IntPtr(val));
+    
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
+    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)).RaiseIfError; 
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(val^);
+      sb += #10;
+    end;
+    
+  end;
+  
+static function KernelArg.FromValue<TRecord>(val: TRecord) := new KernelArgValue<TRecord>(val);
+
+{$endregion Record}
+
+{$region Array}
+
+type
+  KernelArgArray<TRecord> = sealed class(ConstKernelArg)
+  where TRecord: record;
+    private hnd: GCHandle;
+    private offset: integer;
+    
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
+    
+    public constructor(a: array of TRecord; ind: integer);
+    begin
+      self.hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+      self.offset := Marshal.SizeOf&<TRecord> * ind;
+    end;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected procedure Finalize; override :=
+    if hnd.IsAllocated then hnd.Free;
+    
+    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context); override :=
+    cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), (hnd.AddrOfPinnedObject+offset).ToPointer).RaiseIfError; 
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ' => ';
+      sb.Append(_ObjectToString(hnd.Target));
+      if offset<>0 then
+      begin
+        sb += '+';
+        sb.Append(offset);
+        sb += 'b';
+      end;
+      sb += #10;
+    end;
+    
+  end;
+  
+static function KernelArg.FromArray<TRecord>(a: array of TRecord; ind: integer) := new KernelArgArray<TRecord>(a, ind);
+
+{$endregion Array}
 
 {$endregion Const}
 
@@ -3760,33 +3809,6 @@ type
   InvokeableKernelArg = abstract class(KernelArg) end;
   
 {$endregion Base}
-
-{$region MemorySegment}
-
-type
-  KernelArgMemorySegmentCQ = sealed class(InvokeableKernelArg)
-    public q: CommandQueue<MemorySegment>;
-    public constructor(q: CommandQueue<MemorySegment>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override :=
-    q.InvokeNewQ(tsk, c, main_dvc, false, nil).LazyQuickTransform(mem->new KernelArgMemorySegment(mem) as ISetableKernelArg);
-    
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
-    q.RegisterWaitables(tsk, prev_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromMemorySegmentCQ(mem_q: CommandQueue<MemorySegment>) :=
-new KernelArgMemorySegmentCQ(mem_q);
-
-{$endregion MemorySegment}
 
 {$region CLArray}
 
@@ -3816,43 +3838,16 @@ begin Result := new KernelArgCLArrayCQ<T>(a_q); end;
 
 {$endregion CLArray}
 
-{$region Record}
+{$region MemorySegment}
 
 type
-  KernelArgRecordQR<TRecord> = sealed class(ISetableKernelArg)
-  where TRecord: record;
-    public qr: QueueRes<TRecord>;
-    
-    public constructor(qr: QueueRes<TRecord>) := self.qr := qr;
+  KernelArgMemorySegmentCQ = sealed class(InvokeableKernelArg)
+    public q: CommandQueue<MemorySegment>;
+    public constructor(q: CommandQueue<MemorySegment>) := self.q := q;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    public procedure SetArg(k: cl_kernel; ind: UInt32; c: Context);
-    begin
-      var sz := new UIntPtr(Marshal.SizeOf&<TRecord>);
-      if qr is QueueResDelayedPtr<TRecord>(var pqr) then
-        cl.SetKernelArg(k, ind, sz, pointer(pqr.ptr)).RaiseIfError else
-      begin
-        var val := qr.GetRes;
-        cl.SetKernelArg(k, ind, sz, val).RaiseIfError;
-      end;
-    end;
-    
-  end;
-  KernelArgRecordCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public q: CommandQueue<TRecord>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(q: CommandQueue<TRecord>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
-    
-    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override;
-    begin
-      var prev_qr := q.InvokeNewQ(tsk, c, main_dvc, true, nil);
-      Result := new QueueResConst<ISetableKernelArg>(new KernelArgRecordQR<TRecord>(prev_qr), prev_qr.ev);
-    end;
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override :=
+    q.InvokeNewQ(tsk, c, main_dvc, false, nil).LazyQuickTransform(mem->new KernelArgMemorySegment(mem) as ISetableKernelArg);
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(tsk, prev_hubs);
@@ -3865,15 +3860,15 @@ type
     
   end;
   
-static function KernelArg.FromRecordCQ<TRecord>(valq: CommandQueue<TRecord>) :=
-new KernelArgRecordCQ<TRecord>(valq);
+static function KernelArg.FromMemorySegmentCQ(mem_q: CommandQueue<MemorySegment>) :=
+new KernelArgMemorySegmentCQ(mem_q);
 
-{$endregion Record}
+{$endregion MemorySegment}
 
 {$region Ptr}
 
 type
-  KernelArgPtrCQ = sealed class(InvokeableKernelArg)
+  KernelArgDataCQ = sealed class(InvokeableKernelArg)
     public ptr_q: CommandQueue<IntPtr>;
     public sz_q: CommandQueue<UIntPtr>;
     public constructor(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>);
@@ -3887,7 +3882,7 @@ type
     begin
       var ptr_qr  := ptr_q.InvokeNewQ(tsk, c, main_dvc, false, nil);
       var sz_qr   :=  sz_q.InvokeNewQ(tsk, c, main_dvc, false, nil);
-      Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgPtr(ptr_qr.GetRes, sz_qr.GetRes), ptr_qr.ev+sz_qr.ev);
+      Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgData(ptr_qr.GetRes, sz_qr.GetRes), ptr_qr.ev+sz_qr.ev);
     end;
     
     protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
@@ -3905,10 +3900,90 @@ type
     
   end;
   
-static function KernelArg.FromPtrCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>) :=
-new KernelArgPtrCQ(ptr_q, sz_q);
+static function KernelArg.FromDataCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>) :=
+new KernelArgDataCQ(ptr_q, sz_q);
 
 {$endregion Ptr}
+
+{$region Record}
+
+type
+  KernelArgValueCQ<TRecord> = sealed class(InvokeableKernelArg)
+  where TRecord: record;
+    public q: CommandQueue<TRecord>;
+    
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
+    
+    public constructor(q: CommandQueue<TRecord>) := self.q := q;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override;
+    begin
+      var prev_qr := q.InvokeNewQ(tsk, c, main_dvc, true, nil);
+      Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgValue<TRecord>(prev_qr.GetRes), prev_qr.ev);
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    q.RegisterWaitables(tsk, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+static function KernelArg.FromValueCQ<TRecord>(valq: CommandQueue<TRecord>) :=
+new KernelArgValueCQ<TRecord>(valq);
+
+{$endregion Record}
+
+{$region Array}
+
+type
+  KernelArgArrayCQ<TRecord> = sealed class(InvokeableKernelArg)
+  where TRecord: record;
+    public a: CommandQueue<array of TRecord>;
+    public ind: CommandQueue<integer>;
+    
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
+    
+    public constructor(a: CommandQueue<array of TRecord>; ind: CommandQueue<integer>);
+    begin
+      self.a := a;
+      self.ind := ind;
+    end;
+    private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
+    
+    protected function Invoke(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id): QueueRes<ISetableKernelArg>; override;
+    begin
+      var   a_qr := a.InvokeNewQ(tsk, c, main_dvc, false, nil);
+      var ind_qr := ind.InvokeNewQ(tsk, c, main_dvc, false, nil);
+      Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgArray<TRecord>(a_qr.GetRes, ind_qr.GetRes), a_qr.ev+ind_qr.ev);
+    end;
+    
+    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    begin
+        a.RegisterWaitables(tsk, prev_hubs);
+      ind.RegisterWaitables(tsk, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+        a.ToString(sb, tabs, index, delayed);
+      ind.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+static function KernelArg.FromArrayCQ<TRecord>(a: CommandQueue<array of TRecord>; ind: CommandQueue<integer>) :=
+new KernelArgArrayCQ<TRecord>(a, ind);
+
+{$endregion Array}
 
 {$endregion Invokeable}
 

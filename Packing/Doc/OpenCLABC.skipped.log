@@ -6,4 +6,3 @@ KernelProperties
 MemorySegmentProperties
 MemorySubSegmentProperties
 CLArrayProperties
-CLArray<T>.

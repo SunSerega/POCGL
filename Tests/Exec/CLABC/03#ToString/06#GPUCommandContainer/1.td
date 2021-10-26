@@ -17,6 +17,6 @@ KernelCCQ#0
 				QueueCommand
 					CommandQueueHostFunc<System.Int32>#5 => System.Func`2[OpenCLABC.Context,System.Int32]
 				ProcCommand => System.Action`2[OpenCLABC.MemorySegment,OpenCLABC.Context]
-		args[1]: KernelArgRecord<System.Int32> => 5
+		args[1]: KernelArgValue<System.Int32> => 5
 
 

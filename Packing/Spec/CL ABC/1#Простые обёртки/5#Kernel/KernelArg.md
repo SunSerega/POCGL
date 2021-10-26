@@ -9,6 +9,7 @@
 var k: Kernel;
 var val1 := 3;
 var val2 := 5;
+var a: array of byte;
 
 k.Exec1(1,
   // Передавать можно:
@@ -21,17 +22,25 @@ k.Exec1(1,
   // В том числе CLArrayCCQ и т.п.
   CLArray&<byte>.Create(1).NewQueue,
   
-  // Размерное значение
-  val1,
-  HFQ(()->val1),
-  
   // И указатель на размерное значение
   // (в kernel попадёт само значение, не указатель)
   @val2,
   // Так нельзя, потому что val1 была захвачена лямбдой из HFQ
 //  @val1,
   // Расширенный набор параметров для передачи адреса
-  KernelArg.FromPtr(new System.IntPtr(@val2), new System.UIntPtr(sizeof(integer)))
+  KernelArg.FromData(new System.IntPtr(@val2), new System.UIntPtr(sizeof(integer))),
+  
+  // Размерное значение
+  val1,
+  HFQ(()->val1),
+  
+  // Массив размерных значений
+  //TODO Пока не работает из за #2552
+//  a,
+//  HFQ(()->a)
+  //TODO Можно пока явно использовать KernelArg.FromArray
+  KernelArg.FromArray(a),
+  KernelArg.FromArrayCQ(HFQ(()->a))
   
 );
 ```

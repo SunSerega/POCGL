@@ -10,22 +10,30 @@
 # KernelArg.FromCLArrayCQ<T>(CommandQueue<CLArray<T>>)
 Создаёт агрумент kernel-а, представляющий массив данных, хранимых на GPU
 
+
+
 # KernelArg.FromMemorySegment(MemorySegment)
 # KernelArg.FromMemorySegmentCQ(CommandQueue<MemorySegment>)
 Создаёт аргумент kernel-а, представляющий область памяти GPU
 
-# KernelArg.FromRecord<TRecord>(TRecord)
-# KernelArg.FromRecordCQ<TRecord>(CommandQueue<TRecord>)
+
+
+# KernelArg.FromData(IntPtr, UIntPtr)
+# KernelArg.FromDataCQ(CommandQueue<IntPtr>, CommandQueue<UIntPtr>)
+# KernelArg.FromValueData<TRecord>(^TRecord)
+Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти или на стэке
+
+
+
+# KernelArg.FromValue<TRecord>(TRecord)
+# KernelArg.FromValueCQ<TRecord>(CommandQueue<TRecord>)
 Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
 
-# KernelArg.FromRecordPtr<TRecord>(^TRecord)
-Создаёт аргумент kernel-а, представляющий адрес размерного значения со стека
-Внимание! Адрес должен ссылаться именно на стек, иначе программа может время от времени падать с ошибками доступа к памяти
-Это значит, что передавать можно только адрес локальной переменной, не захваченной ни одной лямбдой
 
-# KernelArg.FromPtr(IntPtr, UIntPtr)
-# KernelArg.FromPtrCQ(CommandQueue<IntPtr>, CommandQueue<UIntPtr>)
-Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти
+
+# KernelArg.FromArray<TRecord>(array of TRecord, integer)
+# KernelArg.FromArrayCQ<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
+Создаёт аргумент kernel-а, ссылающийся на указанный массив, на элемент с индексом ind
 
 
 
@@ -33,7 +41,7 @@
 Возвращает строковое представление данного объекта KernelArg
 Используйте это значение только для отладки, потому что данный метод довольно медленный
 
-# KernelArg.Print[%,ln%]
-Вызывает Write{%0%}(ToString) для данного объекта KernelArg и возвращает его же
+# KernelArg.Print[%ln:,ln%]
+Вызывает Write{%ln%}(ToString) для данного объекта KernelArg и возвращает его же
 
 
