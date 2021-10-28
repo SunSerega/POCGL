@@ -1515,6 +1515,13 @@
     public static property FRAGMENT_LIGHT5_SGIX:                    EnableCap read new EnableCap($8411);
     public static property FRAGMENT_LIGHT6_SGIX:                    EnableCap read new EnableCap($8412);
     public static property FRAGMENT_LIGHT7_SGIX:                    EnableCap read new EnableCap($8413);
+    public static property TEXTURE_RECTANGLE:                       EnableCap read new EnableCap($84F5);
+    public static property TEXTURE_RECTANGLE_ARB:                   EnableCap read new EnableCap($84F5);
+    public static property TEXTURE_RECTANGLE_NV:                    EnableCap read new EnableCap($84F5);
+    public static property TEXTURE_CUBE_MAP:                        EnableCap read new EnableCap($8513);
+    public static property TEXTURE_CUBE_MAP_ARB:                    EnableCap read new EnableCap($8513);
+    public static property TEXTURE_CUBE_MAP_EXT:                    EnableCap read new EnableCap($8513);
+    public static property TEXTURE_CUBE_MAP_OES:                    EnableCap read new EnableCap($8513);
     public static property PROGRAM_POINT_SIZE:                      EnableCap read new EnableCap($8642);
     public static property DEPTH_CLAMP:                             EnableCap read new EnableCap($864F);
     public static property TEXTURE_CUBE_MAP_SEAMLESS:               EnableCap read new EnableCap($884F);
@@ -1653,6 +1660,13 @@
       if self.val = UInt32($8411) then Result := 'FRAGMENT_LIGHT5_SGIX' else
       if self.val = UInt32($8412) then Result := 'FRAGMENT_LIGHT6_SGIX' else
       if self.val = UInt32($8413) then Result := 'FRAGMENT_LIGHT7_SGIX' else
+      if self.val = UInt32($84F5) then Result := 'TEXTURE_RECTANGLE' else
+      if self.val = UInt32($84F5) then Result := 'TEXTURE_RECTANGLE_ARB' else
+      if self.val = UInt32($84F5) then Result := 'TEXTURE_RECTANGLE_NV' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP_ARB' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP_EXT' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP_OES' else
       if self.val = UInt32($8642) then Result := 'PROGRAM_POINT_SIZE' else
       if self.val = UInt32($864F) then Result := 'DEPTH_CLAMP' else
       if self.val = UInt32($884F) then Result := 'TEXTURE_CUBE_MAP_SEAMLESS' else
@@ -1829,43 +1843,45 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property COLOR_ATTACHMENT0:  FramebufferAttachment read new FramebufferAttachment($8CE0);
-    public static property COLOR_ATTACHMENT1:  FramebufferAttachment read new FramebufferAttachment($8CE1);
-    public static property COLOR_ATTACHMENT2:  FramebufferAttachment read new FramebufferAttachment($8CE2);
-    public static property COLOR_ATTACHMENT3:  FramebufferAttachment read new FramebufferAttachment($8CE3);
-    public static property COLOR_ATTACHMENT4:  FramebufferAttachment read new FramebufferAttachment($8CE4);
-    public static property COLOR_ATTACHMENT5:  FramebufferAttachment read new FramebufferAttachment($8CE5);
-    public static property COLOR_ATTACHMENT6:  FramebufferAttachment read new FramebufferAttachment($8CE6);
-    public static property COLOR_ATTACHMENT7:  FramebufferAttachment read new FramebufferAttachment($8CE7);
-    public static property COLOR_ATTACHMENT8:  FramebufferAttachment read new FramebufferAttachment($8CE8);
-    public static property COLOR_ATTACHMENT9:  FramebufferAttachment read new FramebufferAttachment($8CE9);
-    public static property COLOR_ATTACHMENT10: FramebufferAttachment read new FramebufferAttachment($8CEA);
-    public static property COLOR_ATTACHMENT11: FramebufferAttachment read new FramebufferAttachment($8CEB);
-    public static property COLOR_ATTACHMENT12: FramebufferAttachment read new FramebufferAttachment($8CEC);
-    public static property COLOR_ATTACHMENT13: FramebufferAttachment read new FramebufferAttachment($8CED);
-    public static property COLOR_ATTACHMENT14: FramebufferAttachment read new FramebufferAttachment($8CEE);
-    public static property COLOR_ATTACHMENT15: FramebufferAttachment read new FramebufferAttachment($8CEF);
-    public static property COLOR_ATTACHMENT16: FramebufferAttachment read new FramebufferAttachment($8CF0);
-    public static property COLOR_ATTACHMENT17: FramebufferAttachment read new FramebufferAttachment($8CF1);
-    public static property COLOR_ATTACHMENT18: FramebufferAttachment read new FramebufferAttachment($8CF2);
-    public static property COLOR_ATTACHMENT19: FramebufferAttachment read new FramebufferAttachment($8CF3);
-    public static property COLOR_ATTACHMENT20: FramebufferAttachment read new FramebufferAttachment($8CF4);
-    public static property COLOR_ATTACHMENT21: FramebufferAttachment read new FramebufferAttachment($8CF5);
-    public static property COLOR_ATTACHMENT22: FramebufferAttachment read new FramebufferAttachment($8CF6);
-    public static property COLOR_ATTACHMENT23: FramebufferAttachment read new FramebufferAttachment($8CF7);
-    public static property COLOR_ATTACHMENT24: FramebufferAttachment read new FramebufferAttachment($8CF8);
-    public static property COLOR_ATTACHMENT25: FramebufferAttachment read new FramebufferAttachment($8CF9);
-    public static property COLOR_ATTACHMENT26: FramebufferAttachment read new FramebufferAttachment($8CFA);
-    public static property COLOR_ATTACHMENT27: FramebufferAttachment read new FramebufferAttachment($8CFB);
-    public static property COLOR_ATTACHMENT28: FramebufferAttachment read new FramebufferAttachment($8CFC);
-    public static property COLOR_ATTACHMENT29: FramebufferAttachment read new FramebufferAttachment($8CFD);
-    public static property COLOR_ATTACHMENT30: FramebufferAttachment read new FramebufferAttachment($8CFE);
-    public static property COLOR_ATTACHMENT31: FramebufferAttachment read new FramebufferAttachment($8CFF);
-    public static property DEPTH_ATTACHMENT:   FramebufferAttachment read new FramebufferAttachment($8D00);
-    public static property STENCIL_ATTACHMENT: FramebufferAttachment read new FramebufferAttachment($8D20);
+    public static property DEPTH_STENCIL_ATTACHMENT: FramebufferAttachment read new FramebufferAttachment($821A);
+    public static property COLOR_ATTACHMENT0:        FramebufferAttachment read new FramebufferAttachment($8CE0);
+    public static property COLOR_ATTACHMENT1:        FramebufferAttachment read new FramebufferAttachment($8CE1);
+    public static property COLOR_ATTACHMENT2:        FramebufferAttachment read new FramebufferAttachment($8CE2);
+    public static property COLOR_ATTACHMENT3:        FramebufferAttachment read new FramebufferAttachment($8CE3);
+    public static property COLOR_ATTACHMENT4:        FramebufferAttachment read new FramebufferAttachment($8CE4);
+    public static property COLOR_ATTACHMENT5:        FramebufferAttachment read new FramebufferAttachment($8CE5);
+    public static property COLOR_ATTACHMENT6:        FramebufferAttachment read new FramebufferAttachment($8CE6);
+    public static property COLOR_ATTACHMENT7:        FramebufferAttachment read new FramebufferAttachment($8CE7);
+    public static property COLOR_ATTACHMENT8:        FramebufferAttachment read new FramebufferAttachment($8CE8);
+    public static property COLOR_ATTACHMENT9:        FramebufferAttachment read new FramebufferAttachment($8CE9);
+    public static property COLOR_ATTACHMENT10:       FramebufferAttachment read new FramebufferAttachment($8CEA);
+    public static property COLOR_ATTACHMENT11:       FramebufferAttachment read new FramebufferAttachment($8CEB);
+    public static property COLOR_ATTACHMENT12:       FramebufferAttachment read new FramebufferAttachment($8CEC);
+    public static property COLOR_ATTACHMENT13:       FramebufferAttachment read new FramebufferAttachment($8CED);
+    public static property COLOR_ATTACHMENT14:       FramebufferAttachment read new FramebufferAttachment($8CEE);
+    public static property COLOR_ATTACHMENT15:       FramebufferAttachment read new FramebufferAttachment($8CEF);
+    public static property COLOR_ATTACHMENT16:       FramebufferAttachment read new FramebufferAttachment($8CF0);
+    public static property COLOR_ATTACHMENT17:       FramebufferAttachment read new FramebufferAttachment($8CF1);
+    public static property COLOR_ATTACHMENT18:       FramebufferAttachment read new FramebufferAttachment($8CF2);
+    public static property COLOR_ATTACHMENT19:       FramebufferAttachment read new FramebufferAttachment($8CF3);
+    public static property COLOR_ATTACHMENT20:       FramebufferAttachment read new FramebufferAttachment($8CF4);
+    public static property COLOR_ATTACHMENT21:       FramebufferAttachment read new FramebufferAttachment($8CF5);
+    public static property COLOR_ATTACHMENT22:       FramebufferAttachment read new FramebufferAttachment($8CF6);
+    public static property COLOR_ATTACHMENT23:       FramebufferAttachment read new FramebufferAttachment($8CF7);
+    public static property COLOR_ATTACHMENT24:       FramebufferAttachment read new FramebufferAttachment($8CF8);
+    public static property COLOR_ATTACHMENT25:       FramebufferAttachment read new FramebufferAttachment($8CF9);
+    public static property COLOR_ATTACHMENT26:       FramebufferAttachment read new FramebufferAttachment($8CFA);
+    public static property COLOR_ATTACHMENT27:       FramebufferAttachment read new FramebufferAttachment($8CFB);
+    public static property COLOR_ATTACHMENT28:       FramebufferAttachment read new FramebufferAttachment($8CFC);
+    public static property COLOR_ATTACHMENT29:       FramebufferAttachment read new FramebufferAttachment($8CFD);
+    public static property COLOR_ATTACHMENT30:       FramebufferAttachment read new FramebufferAttachment($8CFE);
+    public static property COLOR_ATTACHMENT31:       FramebufferAttachment read new FramebufferAttachment($8CFF);
+    public static property DEPTH_ATTACHMENT:         FramebufferAttachment read new FramebufferAttachment($8D00);
+    public static property STENCIL_ATTACHMENT:       FramebufferAttachment read new FramebufferAttachment($8D20);
     
     public function ToString: string; override;
     begin
+      if self.val = UInt32($821A) then Result := 'DEPTH_STENCIL_ATTACHMENT' else
       if self.val = UInt32($8CE0) then Result := 'COLOR_ATTACHMENT0' else
       if self.val = UInt32($8CE1) then Result := 'COLOR_ATTACHMENT1' else
       if self.val = UInt32($8CE2) then Result := 'COLOR_ATTACHMENT2' else
@@ -2700,9 +2716,14 @@
     public static property MAX_RENDERBUFFER_SIZE:                          GetPName read new GetPName($84E8);
     public static property TEXTURE_COMPRESSION_HINT:                       GetPName read new GetPName($84EF);
     public static property TEXTURE_BINDING_RECTANGLE:                      GetPName read new GetPName($84F6);
+    public static property TEXTURE_BINDING_RECTANGLE_ARB:                  GetPName read new GetPName($84F6);
+    public static property TEXTURE_BINDING_RECTANGLE_NV:                   GetPName read new GetPName($84F6);
     public static property MAX_RECTANGLE_TEXTURE_SIZE:                     GetPName read new GetPName($84F8);
     public static property MAX_TEXTURE_LOD_BIAS:                           GetPName read new GetPName($84FD);
     public static property TEXTURE_BINDING_CUBE_MAP:                       GetPName read new GetPName($8514);
+    public static property TEXTURE_BINDING_CUBE_MAP_ARB:                   GetPName read new GetPName($8514);
+    public static property TEXTURE_BINDING_CUBE_MAP_EXT:                   GetPName read new GetPName($8514);
+    public static property TEXTURE_BINDING_CUBE_MAP_OES:                   GetPName read new GetPName($8514);
     public static property MAX_CUBE_MAP_TEXTURE_SIZE:                      GetPName read new GetPName($851C);
     public static property PACK_SUBSAMPLE_RATE_SGIX:                       GetPName read new GetPName($85A0);
     public static property UNPACK_SUBSAMPLE_RATE_SGIX:                     GetPName read new GetPName($85A1);
@@ -2768,6 +2789,9 @@
     public static property DRAW_FRAMEBUFFER_BINDING:                       GetPName read new GetPName($8CA6);
     public static property RENDERBUFFER_BINDING:                           GetPName read new GetPName($8CA7);
     public static property READ_FRAMEBUFFER_BINDING:                       GetPName read new GetPName($8CAA);
+    public static property MAX_COLOR_ATTACHMENTS:                          GetPName read new GetPName($8CDF);
+    public static property MAX_COLOR_ATTACHMENTS_EXT:                      GetPName read new GetPName($8CDF);
+    public static property MAX_COLOR_ATTACHMENTS_NV:                       GetPName read new GetPName($8CDF);
     public static property MAX_ELEMENT_INDEX:                              GetPName read new GetPName($8D6B);
     public static property MAX_GEOMETRY_UNIFORM_COMPONENTS:                GetPName read new GetPName($8DDF);
     public static property SHADER_BINARY_FORMATS:                          GetPName read new GetPName($8DF8);
@@ -3267,9 +3291,14 @@
       if self.val = UInt32($84E8) then Result := 'MAX_RENDERBUFFER_SIZE' else
       if self.val = UInt32($84EF) then Result := 'TEXTURE_COMPRESSION_HINT' else
       if self.val = UInt32($84F6) then Result := 'TEXTURE_BINDING_RECTANGLE' else
+      if self.val = UInt32($84F6) then Result := 'TEXTURE_BINDING_RECTANGLE_ARB' else
+      if self.val = UInt32($84F6) then Result := 'TEXTURE_BINDING_RECTANGLE_NV' else
       if self.val = UInt32($84F8) then Result := 'MAX_RECTANGLE_TEXTURE_SIZE' else
       if self.val = UInt32($84FD) then Result := 'MAX_TEXTURE_LOD_BIAS' else
       if self.val = UInt32($8514) then Result := 'TEXTURE_BINDING_CUBE_MAP' else
+      if self.val = UInt32($8514) then Result := 'TEXTURE_BINDING_CUBE_MAP_ARB' else
+      if self.val = UInt32($8514) then Result := 'TEXTURE_BINDING_CUBE_MAP_EXT' else
+      if self.val = UInt32($8514) then Result := 'TEXTURE_BINDING_CUBE_MAP_OES' else
       if self.val = UInt32($851C) then Result := 'MAX_CUBE_MAP_TEXTURE_SIZE' else
       if self.val = UInt32($85A0) then Result := 'PACK_SUBSAMPLE_RATE_SGIX' else
       if self.val = UInt32($85A1) then Result := 'UNPACK_SUBSAMPLE_RATE_SGIX' else
@@ -3335,6 +3364,9 @@
       if self.val = UInt32($8CA6) then Result := 'DRAW_FRAMEBUFFER_BINDING' else
       if self.val = UInt32($8CA7) then Result := 'RENDERBUFFER_BINDING' else
       if self.val = UInt32($8CAA) then Result := 'READ_FRAMEBUFFER_BINDING' else
+      if self.val = UInt32($8CDF) then Result := 'MAX_COLOR_ATTACHMENTS' else
+      if self.val = UInt32($8CDF) then Result := 'MAX_COLOR_ATTACHMENTS_EXT' else
+      if self.val = UInt32($8CDF) then Result := 'MAX_COLOR_ATTACHMENTS_NV' else
       if self.val = UInt32($8D6B) then Result := 'MAX_ELEMENT_INDEX' else
       if self.val = UInt32($8DDF) then Result := 'MAX_GEOMETRY_UNIFORM_COMPONENTS' else
       if self.val = UInt32($8DF8) then Result := 'SHADER_BINARY_FORMATS' else
@@ -8403,6 +8435,7 @@
     public static property TEXTURE_MAX_CLAMP_S_SGIX:             TextureParameterName read new TextureParameterName($8369);
     public static property TEXTURE_MAX_CLAMP_T_SGIX:             TextureParameterName read new TextureParameterName($836A);
     public static property TEXTURE_MAX_CLAMP_R_SGIX:             TextureParameterName read new TextureParameterName($836B);
+    public static property TEXTURE_MAX_ANISOTROPY:               TextureParameterName read new TextureParameterName($84FE);
     public static property TEXTURE_LOD_BIAS:                     TextureParameterName read new TextureParameterName($8501);
     public static property TEXTURE_COMPARE_MODE:                 TextureParameterName read new TextureParameterName($884C);
     public static property TEXTURE_COMPARE_FUNC:                 TextureParameterName read new TextureParameterName($884D);
@@ -8480,6 +8513,7 @@
       if self.val = UInt32($8369) then Result := 'TEXTURE_MAX_CLAMP_S_SGIX' else
       if self.val = UInt32($836A) then Result := 'TEXTURE_MAX_CLAMP_T_SGIX' else
       if self.val = UInt32($836B) then Result := 'TEXTURE_MAX_CLAMP_R_SGIX' else
+      if self.val = UInt32($84FE) then Result := 'TEXTURE_MAX_ANISOTROPY' else
       if self.val = UInt32($8501) then Result := 'TEXTURE_LOD_BIAS' else
       if self.val = UInt32($884C) then Result := 'TEXTURE_COMPARE_MODE' else
       if self.val = UInt32($884D) then Result := 'TEXTURE_COMPARE_FUNC' else
@@ -8516,10 +8550,15 @@
     public static property TEXTURE_4D_SGIS:                    TextureTarget read new TextureTarget($8134);
     public static property PROXY_TEXTURE_4D_SGIS:              TextureTarget read new TextureTarget($8135);
     public static property TEXTURE_RECTANGLE:                  TextureTarget read new TextureTarget($84F5);
+    public static property TEXTURE_RECTANGLE_ARB:              TextureTarget read new TextureTarget($84F5);
+    public static property TEXTURE_RECTANGLE_NV:               TextureTarget read new TextureTarget($84F5);
     public static property PROXY_TEXTURE_RECTANGLE:            TextureTarget read new TextureTarget($84F7);
     public static property PROXY_TEXTURE_RECTANGLE_ARB:        TextureTarget read new TextureTarget($84F7);
     public static property PROXY_TEXTURE_RECTANGLE_NV:         TextureTarget read new TextureTarget($84F7);
     public static property TEXTURE_CUBE_MAP:                   TextureTarget read new TextureTarget($8513);
+    public static property TEXTURE_CUBE_MAP_ARB:               TextureTarget read new TextureTarget($8513);
+    public static property TEXTURE_CUBE_MAP_EXT:               TextureTarget read new TextureTarget($8513);
+    public static property TEXTURE_CUBE_MAP_OES:               TextureTarget read new TextureTarget($8513);
     public static property TEXTURE_CUBE_MAP_POSITIVE_X:        TextureTarget read new TextureTarget($8515);
     public static property TEXTURE_CUBE_MAP_NEGATIVE_X:        TextureTarget read new TextureTarget($8516);
     public static property TEXTURE_CUBE_MAP_POSITIVE_Y:        TextureTarget read new TextureTarget($8517);
@@ -8565,10 +8604,15 @@
       if self.val = UInt32($8134) then Result := 'TEXTURE_4D_SGIS' else
       if self.val = UInt32($8135) then Result := 'PROXY_TEXTURE_4D_SGIS' else
       if self.val = UInt32($84F5) then Result := 'TEXTURE_RECTANGLE' else
+      if self.val = UInt32($84F5) then Result := 'TEXTURE_RECTANGLE_ARB' else
+      if self.val = UInt32($84F5) then Result := 'TEXTURE_RECTANGLE_NV' else
       if self.val = UInt32($84F7) then Result := 'PROXY_TEXTURE_RECTANGLE' else
       if self.val = UInt32($84F7) then Result := 'PROXY_TEXTURE_RECTANGLE_ARB' else
       if self.val = UInt32($84F7) then Result := 'PROXY_TEXTURE_RECTANGLE_NV' else
       if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP_ARB' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP_EXT' else
+      if self.val = UInt32($8513) then Result := 'TEXTURE_CUBE_MAP_OES' else
       if self.val = UInt32($8515) then Result := 'TEXTURE_CUBE_MAP_POSITIVE_X' else
       if self.val = UInt32($8516) then Result := 'TEXTURE_CUBE_MAP_NEGATIVE_X' else
       if self.val = UInt32($8517) then Result := 'TEXTURE_CUBE_MAP_POSITIVE_Y' else

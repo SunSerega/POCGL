@@ -8552,6 +8552,15 @@
 # glTextureNormalEXT
  TextureNormalModeEXT	|
 
+# glTexStorage1DEXT
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	|
+
+# glTexStorage2DEXT
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	|
+
+# glTexStorage3DEXT
+ TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	|
+
 # glCreateSemaphoresNV
  Int32	| array of UInt32	|
  Int32	| var UInt32	|

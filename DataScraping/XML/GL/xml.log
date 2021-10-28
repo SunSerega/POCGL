@@ -69,6 +69,7 @@ Group [FeedBackToken] wasn't used in any function
 Group [FogMode] wasn't used in any function
 Group [GetPixelMap] wasn't used in any function
 Group [GlslTypeToken] wasn't used in any function
+Group [DepthStencilTextureMode] wasn't used in any function
 Group [TextureGenMode] wasn't used in any function
 Group [TextureMagFilter] wasn't used in any function
 Group [TextureMinFilter] wasn't used in any function

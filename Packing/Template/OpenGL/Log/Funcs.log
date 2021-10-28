@@ -53,6 +53,7 @@ Group [FeedBackToken] was skipped
 Group [FogMode] was skipped
 Group [GetPixelMap] was skipped
 Group [GlslTypeToken] was skipped
+Group [DepthStencilTextureMode] was skipped
 Group [TextureGenMode] was skipped
 Group [TextureMagFilter] was skipped
 Group [TextureMinFilter] was skipped
