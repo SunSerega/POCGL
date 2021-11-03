@@ -42,28 +42,27 @@ unit OpenCLABC;
 // - Если ошибка возникла, к примеру, в колбеке - следующую очередь отменить
 // - Кроме того, ошибка могла возникнуть в Q1 или Q2, ожидаемые очередью Q3 - протестировать
 
-//TODO Преобразование array of TRecord => KernelArg
-// - #2552
-// - Теперь #2553
-// - Раскомментировать в тестах и справке
+//TODO Использовать EventDebug.CheckExists
+
+//TODO IWaitQueue.CancelWait
+//TODO WaitAny(aborter, WaitAll(...));
+// - Что случится с WaitAll если aborter будет первым?
+// - Очереди переданные в Wait - вообще не запускаются так
+// - Поэтому я и думал про что то типа CancelWait
+// - А вообще лучше разрешить выполнять Wait внутри другого Wait
+// - И заодно проверить чтобы Abort работало на Wait-ы
+// - А вообще всё не то - это костыли
+// - Надо специально разрешить передавать какой то маркер аборта
+// - И только в WaitAll, другим Wait-ам это не нужно
+// - Или можно забыть про всё это и сделать+использовать AbortQueue чтоб убивать и Wait-ы, и всё остальное
+//TODO Лучше сделать M1/M2 - M3, то есть аналог умножения и сложения очередей, но для маркеров
+
+//===================================
+// Запланированное:
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 // - В том числе проверки с помощью BlittableHelper
-
-//TODO Посмотреть на все partial - бывает sealed partial vs partial sealed
-
-//TODO CLTaskLocalData.Next - лучше по отдельным полям
-
-//TODO g.ParallelInvoke вызывается в кодо-сгенерированном коде, когда ветка всегда 1 (потому что 1 параметр)
-
-//TODO prev_ev=nil - поидее теперь не должно случаться
-//TODO origin_ev надо собственно освобождать
-
-//TODO Использовать EventDebug.CheckExists
-
-//===================================
-// Запланированное:
 
 //TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
 
@@ -85,18 +84,6 @@ unit OpenCLABC;
 // - Вообще, поидее, должен быть более красивый способ добиться того же... Что то с контрактами?
 // - Обязательно сравнить скорость, перед тем как применять...
 // - Вообще нет, лучше избавится от ThreadAbortException, и передавать токены отмены в HPQ и т.п.
-
-//TODO IWaitQueue.CancelWait
-//TODO WaitAny(aborter, WaitAll(...));
-// - Что случится с WaitAll если aborter будет первым?
-// - Очереди переданные в Wait - вообще не запускаются так
-// - Поэтому я и думал про что то типа CancelWait
-// - А вообще лучше разрешить выполнять Wait внутри другого Wait
-// - И заодно проверить чтобы Abort работало на Wait-ы
-// - А вообще всё не то - это костыли
-// - Надо специально разрешить передавать какой то маркер аборта
-// - И только в WaitAll, другим Wait-ам это не нужно
-// - Или можно забыть про всё это и сделать+использовать AbortQueue чтоб убивать и Wait-ы, и всё остальное
 
 //TODO Очередь-обработчик ошибок
 // - .HandleExceptions
@@ -2254,7 +2241,7 @@ type
   {$region ThenConvert}
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
-  CommandQueueBase = partial abstract class
+  CommandQueueBase = abstract partial class
     
     private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; virtual;
     
@@ -2275,7 +2262,7 @@ type
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
-  CommandQueue<T> = partial abstract class(CommandQueueBase)
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
     ThenConvert(f as object as Func2<T, Context, TOtp>); //TODO #2221
@@ -2301,7 +2288,7 @@ type
   {$region +/*}
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
-  CommandQueueBase = partial abstract class
+  CommandQueueBase = abstract partial class
     
     private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; virtual;
     private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; virtual;
@@ -2315,7 +2302,7 @@ type
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
-  CommandQueue<T> = partial abstract class(CommandQueueBase)
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     private function AfterQueueSyncBase (q: CommandQueueBase): CommandQueueBase; override := q+self;
     private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
@@ -2333,7 +2320,7 @@ type
   {$region Multiusable}
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
-  CommandQueueBase = partial abstract class
+  CommandQueueBase = abstract partial class
     
     private function MultiusableBase: ()->CommandQueueBase; virtual;
     
@@ -2344,7 +2331,7 @@ type
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
-  CommandQueue<T> = partial abstract class(CommandQueueBase)
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //TODO #2221
     
@@ -4449,7 +4436,6 @@ type
     
     public curr_inv_cq: cl_command_queue;
     private free_cqs := new System.Collections.Concurrent.ConcurrentBag<cl_command_queue>;
-    private curr_cq_used := false;
     
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
@@ -4465,7 +4451,6 @@ type
       end;
       
       curr_inv_cq := if async_enqueue then cl_command_queue.Zero else Result;
-      curr_cq_used := not async_enqueue;
     end;
     
   end;
@@ -4816,7 +4801,6 @@ type
   CLTaskBranchInvoker = sealed class
     private g: CLTaskGlobalData;
     private err_handler: CLTaskErrHandlerNode;
-    private first_branch_cq := cl_command_queue.Zero;
     
     public constructor(g: CLTaskGlobalData; err_handler: CLTaskErrHandlerNode);
     begin
@@ -4827,17 +4811,12 @@ type
     
     public procedure FinishInvokeBranch(last_ev: EventList);
     begin
-      if not g.curr_cq_used then exit;
+      if g.curr_inv_cq=cl_command_queue.Zero then exit;
       
-      if first_branch_cq<>cl_command_queue.Zero then
-      begin
-        var cq := g.curr_inv_cq;
-        last_ev.AttachFinallyCallback(()->g.free_cqs.Add(cq), ()->g.GetCQ, err_handler{$ifdef EventDebug}, $'return cq to bag'{$endif});
-      end else
-        first_branch_cq := g.curr_inv_cq;
-      
-      g.curr_cq_used := false;
+      var cq := g.curr_inv_cq;
       g.curr_inv_cq := cl_command_queue.Zero;
+      
+      last_ev.AttachFinallyCallback(()->g.free_cqs.Add(cq), ()->cq, err_handler{$ifdef EventDebug}, $'return cq to bag'{$endif});
     end;
     
   end;
@@ -4856,19 +4835,13 @@ type
     
     public procedure ParallelInvoke(err_handler: CLTaskErrHandlerNode; use: CLTaskBranchInvoker->());
     begin
-      var temp_used := self.curr_cq_used;
-      self.curr_cq_used := false;
+      // Нельзя использовать уже существующую очередь для веток, они должны начинать выполняться сразу
+      var cq := self.curr_inv_cq;
+      curr_inv_cq := cl_command_queue.Zero;
       
-      var invoker := new CLTaskBranchInvoker(self, err_handler);
-      use(invoker);
+      use(new CLTaskBranchInvoker(self, err_handler));
       
-      if invoker.first_branch_cq <> cl_command_queue.Zero then
-      begin
-        self.curr_inv_cq := invoker.first_branch_cq;
-        temp_used := true;
-      end;
-      
-      self.curr_cq_used := temp_used;
+      self.curr_inv_cq := cq;
     end;
     
     public procedure FinishInvoke;
@@ -9762,9 +9735,6 @@ type
     
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;
     begin
-      g.ParallelInvoke(l.err_handler, invoker->
-      begin
-      end);
       
       Result := (o, cq, err_handler, evs)->
       begin
@@ -12647,9 +12617,6 @@ type
     
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;
     begin
-      g.ParallelInvoke(l.err_handler, invoker->
-      begin
-      end);
       
       Result := (o, cq, err_handler, evs)->
       begin

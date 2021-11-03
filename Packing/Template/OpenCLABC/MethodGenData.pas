@@ -421,6 +421,110 @@ type
     protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
     protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
     
+    private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
+    begin
+      if settings.args=nil then exit;
+      var useful_args := settings.args.Where(arg->settings.arg_usage.ContainsKey(arg.name) and (arg.t.IsCQ or arg.t.IsKA)).ToArray;
+      if useful_args.Length=0 then exit;
+      
+      foreach var arg in useful_args do
+      begin
+        res_EIm += '      var ';
+        res_EIm += arg.name.PadLeft(max_arg_w);
+        res_EIm += '_qr: ';
+        
+        var t := arg.t;
+        while true do
+          if t is MethodArgTypeArray(var ta) then
+          begin
+            res_EIm += 'array';
+            if ta.rank<>1 then
+            begin
+              res_EIm += '[';
+              loop ta.rank-1 do
+                res_EIm += ',';
+              res_EIm += ']';
+            end;
+            res_EIm += ' of ';
+            t := ta.next;
+          end else
+            break;
+        
+        res_EIm += 'QueueRes<';
+        if arg.t.IsKA then
+          res_EIm += 'ISetableKernelArg' else
+          res_EIm += MethodArgTypeCQ(t).next.org_text;
+        res_EIm += '>;'#10;
+        
+      end;
+      
+      res_EIm += '      g.ParallelInvoke(l.err_handler, invoker->'#10;
+      res_EIm += '      begin'#10;
+      
+      foreach var arg in useful_args do
+      begin
+        res_EIm += '        ';
+        res_EIm += arg.name.PadLeft(max_arg_w);
+        res_EIm += '_qr := ';
+        
+        var arg_name := arg.name.PadLeft(max_arg_w);
+        for var i := 1 to arg.t.ArrLvl do
+        begin
+          var n_arg_name := $'temp{i}';
+          
+          res_EIm += arg_name;
+          res_EIm += '.ConvertAll(';
+          res_EIm += n_arg_name;
+          res_EIm += '->';
+          
+          arg_name := n_arg_name;
+        end;
+        
+        if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
+        
+        var WriteQRName := procedure->
+        if arg.t is MethodArgTypeArray then
+          res_EIm += 'Result' else
+        begin
+          res_EIm += arg.name;
+          res_EIm += '_qr';
+        end;
+        
+        res_EIm += arg_name;
+        res_EIm += '.Invoke';
+        res_EIm += '(g, l';
+        if arg.t.IsCQ then
+        begin
+          res_EIm += '.WithPtrNeed(';
+          res_EIm += (settings.arg_usage[arg.name]='ptr').ToString.PadLeft(5);
+          res_EIm += ')';
+        end;
+        res_EIm += '); ';
+        res_EIm += 'invoker.FinishInvokeBranch(';
+        WriteQRName;
+        res_EIm += '.ev); ';
+        
+        if settings.arg_usage[arg.name]='ptr' then
+        begin
+          res_EIm += '(if ';
+          WriteQRName;
+          res_EIm += ' is IQueueResDelayedPtr then evs_l2 else evs_l1)';
+        end else
+          res_EIm += 'evs_l1';
+        
+        res_EIm += '.Add(';
+        WriteQRName;
+        res_EIm += '.ev)';
+        
+        if arg.t is MethodArgTypeArray then res_EIm += '; end';
+        loop arg.t.ArrLvl do res_EIm += ')';
+        res_EIm += ';'#10;
+        
+      end;
+      
+      res_EIm += '      end);'#10;
+    end;
+    
     private procedure WriteCommandTypeInvoke(fn: string; max_arg_w: integer; settings: TSettings);
     begin
       WriteInvokeHeader(settings);
@@ -431,117 +535,7 @@ type
           if not settings.arg_usage.ContainsKey(arg.name) then
             Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used');
       
-      {$region param .Invoke's}
-      
-      if settings.args <> nil then
-      begin
-        foreach var arg in settings.args do
-          if settings.arg_usage.ContainsKey(arg.name) then
-          begin
-            var IsCQ := arg.t.IsCQ;
-            var IsKA := arg.t.IsKA;
-            if IsCQ or IsKA then
-            begin
-              res_EIm += '      var ';
-              res_EIm += arg.name.PadLeft(max_arg_w);
-              res_EIm += '_qr: ';
-              
-              var t := arg.t;
-              while true do
-                if t is MethodArgTypeArray(var ta) then
-                begin
-                  res_EIm += 'array';
-                  if ta.rank<>1 then
-                  begin
-                    res_EIm += '[';
-                    loop ta.rank-1 do
-                      res_EIm += ',';
-                    res_EIm += ']';
-                  end;
-                  res_EIm += ' of ';
-                  t := ta.next;
-                end else
-                  break;
-              
-              res_EIm += 'QueueRes<';
-              if IsKA then
-                res_EIm += 'ISetableKernelArg' else
-                res_EIm += MethodArgTypeCQ(t).next.org_text;
-              res_EIm += '>;'#10;
-              
-            end;
-          end;
-        res_EIm += '      g.ParallelInvoke(l.err_handler, invoker->'#10;
-        res_EIm += '      begin'#10;
-        foreach var arg in settings.args do
-          if settings.arg_usage.ContainsKey(arg.name) then
-          begin
-            var IsCQ := arg.t.IsCQ;
-            var IsKA := arg.t.IsKA;
-            if IsCQ or IsKA then
-            begin
-              res_EIm += '        ';
-              res_EIm += arg.name.PadLeft(max_arg_w);
-              res_EIm += '_qr := ';
-              
-              var arg_name := arg.name.PadLeft(max_arg_w);
-              for var i := 1 to arg.t.ArrLvl do
-              begin
-                var n_arg_name := $'temp{i}';
-                
-                res_EIm += arg_name;
-                res_EIm += '.ConvertAll(';
-                res_EIm += n_arg_name;
-                res_EIm += '->';
-                
-                arg_name := n_arg_name;
-              end;
-              
-              if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
-              
-              var WriteQRName := procedure->
-              if arg.t is MethodArgTypeArray then
-                res_EIm += 'Result' else
-              begin
-                res_EIm += arg.name;
-                res_EIm += '_qr';
-              end;
-              
-              res_EIm += arg_name;
-              res_EIm += '.Invoke';
-              res_EIm += '(g, l';
-              if IsCQ then
-              begin
-                res_EIm += '.WithPtrNeed(';
-                res_EIm += (settings.arg_usage[arg.name]='ptr').ToString.PadLeft(5);
-                res_EIm += ')';
-              end;
-              res_EIm += '); invoker.FinishInvokeBranch(';
-              WriteQRName;
-              res_EIm += '.ev); ';
-              
-              if settings.arg_usage[arg.name]='ptr' then
-              begin
-                res_EIm += '(if ';
-                WriteQRName;
-                res_EIm += ' is IQueueResDelayedPtr then evs_l2 else evs_l1)';
-              end else
-                res_EIm += 'evs_l1';
-              
-              res_EIm += '.Add(';
-              WriteQRName;
-              res_EIm += '.ev)';
-              
-              if arg.t is MethodArgTypeArray then res_EIm += '; end';
-              loop arg.t.ArrLvl do res_EIm += ')';
-              res_EIm += ';'#10;
-              
-            end;
-          end;
-        res_EIm += '      end);'#10;
-      end;
-      
-      {$endregion param .Invoke's}
+      WriteParamInvokes(max_arg_w, settings);
       
       res_EIm += '      '#10;
       
@@ -557,9 +551,7 @@ type
         foreach var arg in settings.args do
           if settings.arg_usage.ContainsKey(arg.name) then
           begin
-            var IsCQ := arg.t.IsCQ;
-            var IsKA := arg.t.IsKA;
-            if not IsCQ and not IsKA then continue;
+            if not arg.t.IsCQ and not arg.t.IsKA then continue;
             
             res_EIm += '        var ';
             res_EIm += arg.name.PadLeft(max_arg_w);

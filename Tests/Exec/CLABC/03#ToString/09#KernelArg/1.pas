@@ -34,8 +34,7 @@ Writeln;
 
 Writeln('Array:');
 TestArg(KernelArg.FromArray(a, 1));
-//TestArg(a); //TODO #2552
-Writeln('TODO: implicit array');
+TestArg(a);
 Writeln;
 
 
@@ -65,8 +64,7 @@ Writeln;
 
 Writeln('Array:');
 TestArg(KernelArg.FromArrayCQ(HFQ(()->a), 1));
-//TestArg(HFQ(()->a)); //TODO #2552
-Writeln('TODO: implicit array');
+TestArg(HFQ(()->a));
 Writeln;
 
 

@@ -25,7 +25,7 @@ KernelArgValue<System.Int32> => 1
 
 Array:
 KernelArgArray<System.Double> => [0]+8b
-TODO: implicit array
+KernelArgArray<System.Double> => [0]
 
 
 
@@ -60,6 +60,8 @@ Array:
 KernelArgArrayCQ<System.Double>
 	CommandQueueHostFunc<System.Double[]>#0 => System.Func`2[OpenCLABC.Context,System.Double[]]
 	ConstQueue<System.Int32>#1 { 1 }
-TODO: implicit array
+KernelArgArrayCQ<System.Double>
+	CommandQueueHostFunc<System.Double[]>#0 => System.Func`2[OpenCLABC.Context,System.Double[]]
+	ConstQueue<System.Int32>#1 { 0 }
 
 
