@@ -103,7 +103,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: GetMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParamsImpl(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; evs_l1, evs_l2: List<EventList>): (';
+      res_EIm += '    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (';
       res_EIm += t;
       if generics.Count <> 0 then
       begin
@@ -111,13 +111,13 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskBase, EventList, QueueResDelayedBase<';
+      res_EIm += ', cl_command_queue, CLTaskErrHandlerNode, EventList, QueueResDelayedBase<';
       res_EIm += settings.result_type.org_text;
       res_EIm += '>)->cl_event; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
     begin
-      res_EIm += '(o, cq, tsk, evs, own_qr)->'#10;
+      res_EIm += '(o, cq, err_handler, evs, own_qr)->'#10;
     end;
     protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: GetMethodSettings); override :=
     if settings.force_ptr_qr then

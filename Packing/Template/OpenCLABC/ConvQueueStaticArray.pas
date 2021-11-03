@@ -66,10 +66,10 @@ begin
         
         res.WriteLine('    ');
         
-        res.WriteLine('    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;');
+        res.WriteLine('    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;');
         res.WriteLine('    begin');
         for var i := 1 to c do
-          res.WriteLine($'      self.q{i}.RegisterWaitables(tsk, prev_hubs);');
+          res.WriteLine($'      self.q{i}.RegisterWaitables(g, prev_hubs);');
         res.WriteLine('    end;');
         
         res.WriteLine('    ');
@@ -110,25 +110,26 @@ begin
         res.WriteLine;
         res.WriteLine('    ');
         
-        res.Write('    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<');
+        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<');
         WriteVTDef;
         res.WriteLine('>; override;');
-        res.WriteLine('    begin');
+        res.WriteLine($'    begin');
+        res.WriteLine($'      l := l.WithPtrNeed(false);');
         
         for var i := 1 to c do
-          res.WriteLine($'      var qr{i} := q{i}.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr{i}.ev;');
+          res.WriteLine($'      var qr{i} := q{i}.Invoke(g, l); l.prev_ev := qr{i}.ev;');
         
-        res.Write('      Result := new QueueResFunc<');
+        res.Write($'      Result := new QueueResFunc<');
         WriteVTDef;
         res.Write('>(()->ValueTuple.Create(qr1.GetRes()');
         for var i := 2 to c do
           res.Write($', qr{i}.GetRes()');
-        res.WriteLine('), prev_ev);');
+        res.WriteLine('), l.prev_ev);');
         
-        res.WriteLine('    end;');
+        res.WriteLine($'    end;');
         
-        res.WriteLine('    ');
-        res.WriteLine('  end;');
+        res.WriteLine($'    ');
+        res.WriteLine($'  end;');
         
         {$endregion ConvSyncQueueArray}
         
@@ -144,32 +145,38 @@ begin
         res.WriteLine;
         res.WriteLine('    ');
         
-        res.Write('    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<');
+        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<');
         WriteVTDef;
         res.WriteLine('>; override;');
-        res.WriteLine('    begin');
-        res.WriteLine($'      if (prev_ev<>nil) and (prev_ev.count<>0) then loop {c-1} do prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
+        res.WriteLine($'    begin');
+        res.WriteLine($'      l := l.WithPtrNeed(false);');
+        res.WriteLine($'      if (l.prev_ev<>nil) and (l.prev_ev.count<>0) then loop {c-1} do l.prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
         
-        res.WriteLine(  $'      var qr{1} := q{1}.Invoke(tsk, c, main_dvc, false, cq, prev_ev);');
-        for var i := 2 to c do
-          res.WriteLine($'      var qr{i} := q{i}.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);');
+        for var i := 1 to c do
+          res.WriteLine($'      var qr{i}: QueueRes<TInp{i}>;');
         
-        res.Write('      Result := new QueueResFunc<');
+        res.WriteLine($'      g.ParallelInvoke(l.err_handler, invoker->');
+        res.WriteLine($'      begin');
+        for var i := 1 to c do
+          res.WriteLine($'        qr{i} := q{i}.Invoke(g, l); invoker.FinishInvokeBranch(qr{i}.ev);');
+        res.WriteLine($'      end);');
+        
+        res.Write($'      Result := new QueueResFunc<');
         WriteVTDef;
         res.Write('>(()->ValueTuple.Create(qr1.GetRes()');
         for var i := 2 to c do
           res.Write($', qr{i}.GetRes()');
         res.Write('), ');
         
-        res.Write('EventList.Combine(new EventList[](qr1.ev');
+        res.Write('EventList.Combine(|qr1.ev');
         for var i := 2 to c do
           res.Write($', qr{i}.ev');
-        res.WriteLine('), tsk, c.Native, main_dvc, cq));');
+        res.WriteLine('|));');
         
-        res.WriteLine('    end;');
+        res.WriteLine($'    end;');
         
-        res.WriteLine('    ');
-        res.WriteLine('  end;');
+        res.WriteLine($'    ');
+        res.WriteLine($'  end;');
         
         {$endregion ConvAsyncQueueArray}
         

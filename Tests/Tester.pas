@@ -2,6 +2,7 @@
 
 uses AOtp         in '..\Utils\AOtp';
 uses ATask        in '..\Utils\ATask';
+uses CLArgs       in '..\Utils\CLArgs';
 uses SubExecuters in '..\Utils\SubExecuters';
 
 {$string_nullbased+}
@@ -96,6 +97,8 @@ type
     static valid_modules := HSet('OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
     static allowed_modules := new HashSet<string>(valid_modules.Count);
     
+    static auto_update := false;
+    
     static all_loaded := new List<TestInfo>;
     static unused_test_files := new HashSet<string>;
     static domain_unload_otps := new List<AsyncProcOtp>;
@@ -131,14 +134,14 @@ type
     {$region Load}
     
     static procedure LoadCLA;
-    const modules_def = 'Modules=';
+    const modules_def = 'Modules';
+    const auto_update_def = 'AutoUpdate';
     begin
-      var arg := CommandLineArgs.FirstOrDefault(arg->arg.StartsWith(modules_def));
-      if arg<>nil then
-        foreach var w in arg.Remove(0,modules_def.Length).ToWords('+').Select(w->w.Trim) do
-          if w in valid_modules then
-            allowed_modules += w else
-            Otp($'WARNING: Invalid module [{w}]');
+      
+      foreach var w in CLArgs.GetArgs(modules_def).SelectMany(val->val.ToWords('+').Select(w->w.Trim)) do
+        if w in valid_modules then
+          allowed_modules += w else
+          Otp($'WARNING: Invalid module [{w}]');
       if allowed_modules.Count=0 then
       begin
         allowed_modules := valid_modules;
@@ -146,6 +149,10 @@ type
       end else
         Otp($'Testing selected modules:');
       Otp(allowed_modules.JoinToString(' + '));
+      
+      foreach var val in CLArgs.GetArgs(auto_update_def) do
+        auto_update := boolean.Parse(val);
+      
     end;
     static procedure MakeDebugPCU;
     begin
@@ -249,7 +256,7 @@ type
           if ReadAllText(t.pas_fname, enc).Contains('unit') then
             mark_skip();
           
-          case MessageBox.Show($'File {GetRelativePath(t.td_fname)} not found'+#10'Mark .pas file as test-ignored?', 'New .pas file', MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) of
+          case auto_update ? DialogResult.No : MessageBox.Show($'File {GetRelativePath(t.td_fname)} not found'+#10'Mark .pas file as test-ignored?', 'New .pas file', MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) of
             
             DialogResult.Yes: mark_skip();
             
@@ -321,7 +328,7 @@ type
         begin
           
           if t.expected_comp_err.parts=nil then
-            case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -337,7 +344,7 @@ type
             end else
             
           if not t.expected_comp_err.Matches(comp_err) then
-            case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -357,7 +364,7 @@ type
         begin
           
           if t.expected_comp_err.parts<>nil then
-            case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -591,7 +598,7 @@ type
       begin
         
         if expected_exec_err.parts=nil then
-          case MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
+          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
@@ -607,7 +614,7 @@ type
           end else
           
         if not expected_exec_err.Matches(err) then
-          case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
+          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
@@ -632,7 +639,7 @@ type
       begin
         
         if expected_exec_err.parts<>nil then
-          case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
+          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin
@@ -656,7 +663,7 @@ type
         if not expected_otp.Matches(res) then
         begin
           
-          case MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
+          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
             
             DialogResult.Yes:
             begin

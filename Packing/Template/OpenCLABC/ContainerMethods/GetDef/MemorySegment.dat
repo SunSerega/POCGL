@@ -10,7 +10,7 @@ Marshal.AllocHGlobal(IntPtr(pointer(o.Size)));
 //TODO А что если результат уже получен и освобождёт сдедующей .ThenConvert
 // - Вообще .WhenError тут (и в +1 месте) - говнокод
 // - Лучше стоит сделать обёртку вроде SafeIntPtr (или использовать готовую)
-tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
+//tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   UIntPtr.Zero, o.Size,
@@ -25,7 +25,7 @@ IntPtr
 !SetRes
 Marshal.AllocHGlobal(!len!)
 !Enqueue
-tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
+//tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
 cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), new UIntPtr(!len!),

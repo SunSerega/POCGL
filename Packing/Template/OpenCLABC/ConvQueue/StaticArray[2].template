@@ -15,10 +15,10 @@ type
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure RegisterWaitables(tsk: CLTaskBase; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
-      self.q1.RegisterWaitables(tsk, prev_hubs);
-      self.q2.RegisterWaitables(tsk, prev_hubs);
+      self.q1.RegisterWaitables(g, prev_hubs);
+      self.q2.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -34,22 +34,29 @@ type
   
   ConvSyncQueueArray2<TInp1, TInp2, TRes> = sealed class(ConvQueueArrayBase2<TInp1, TInp2, TRes>)
     
-    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<ValueTuple<TInp1, TInp2>>; override;
+    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ValueTuple<TInp1, TInp2>>; override;
     begin
-      var qr1 := q1.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr1.ev;
-      var qr2 := q2.Invoke(tsk, c, main_dvc, false, cq, prev_ev); prev_ev := qr2.ev;
-      Result := new QueueResFunc<ValueTuple<TInp1, TInp2>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes()), prev_ev);
+      l := l.WithPtrNeed(false);
+      var qr1 := q1.Invoke(g, l); l.prev_ev := qr1.ev;
+      var qr2 := q2.Invoke(g, l); l.prev_ev := qr2.ev;
+      Result := new QueueResFunc<ValueTuple<TInp1, TInp2>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes()), l.prev_ev);
     end;
     
   end;
   ConvAsyncQueueArray2<TInp1, TInp2, TRes> = sealed class(ConvQueueArrayBase2<TInp1, TInp2, TRes>)
     
-    protected function InvokeSubQs(tsk: CLTaskBase; c: Context; main_dvc: cl_device_id; var cq: cl_command_queue; prev_ev: EventList): QueueRes<ValueTuple<TInp1, TInp2>>; override;
+    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ValueTuple<TInp1, TInp2>>; override;
     begin
-      if (prev_ev<>nil) and (prev_ev.count<>0) then loop 1 do prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
-      var qr1 := q1.Invoke(tsk, c, main_dvc, false, cq, prev_ev);
-      var qr2 := q2.InvokeNewQ(tsk, c, main_dvc, false, prev_ev);
-      Result := new QueueResFunc<ValueTuple<TInp1, TInp2>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes()), EventList.Combine(new EventList[](qr1.ev, qr2.ev), tsk, c.Native, main_dvc, cq));
+      l := l.WithPtrNeed(false);
+      if (l.prev_ev<>nil) and (l.prev_ev.count<>0) then loop 1 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
+      var qr1: QueueRes<TInp1>;
+      var qr2: QueueRes<TInp2>;
+      g.ParallelInvoke(l.err_handler, invoker->
+      begin
+        qr1 := q1.Invoke(g, l); invoker.FinishInvokeBranch(qr1.ev);
+        qr2 := q2.Invoke(g, l); invoker.FinishInvokeBranch(qr2.ev);
+      end);
+      Result := new QueueResFunc<ValueTuple<TInp1, TInp2>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes()), EventList.Combine(|qr1.ev, qr2.ev|));
     end;
     
   end;

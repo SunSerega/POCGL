@@ -273,7 +273,7 @@ var AllStages := HSet(
     end;
     
     function MakeCoreTask: AsyncTask; override :=
-    ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"');
+    ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"', 'AutoUpdate=true');
     
   end;
   

@@ -10,17 +10,23 @@ begin
     WaitFor(M1) +
     (
       WaitFor(M1) +
-      HPQ(()->raise new Exception('TestERROR'))
+      HPQ(()->raise new Exception('Error2'))
     ) *
     (
       WaitFor(M2) +
-      HPQ(()->raise new Exception('TestOK'))
+      HPQ(()->
+      begin
+        Sleep(10);
+        raise new Exception('Error1');
+      end)
     )
   );
   
   Context.Default.SyncInvoke( M1s()*M1s() );
   Sleep(10);
-  Context.Default.SyncInvoke(M2);
+  M2.SendSignal;
+  Sleep(50);
+  M1.SendSignal;
   
   t.Wait;
 end.
