@@ -12,13 +12,7 @@
     public function AddProc(p: CLArray<T>->()): CLArrayCCQ<T>;
     public function AddProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     
-    public function AddWaitAll(params markers: array of WaitMarkerBase): CLArrayCCQ<T>;
-    public function AddWaitAll(markers: sequence of WaitMarkerBase): CLArrayCCQ<T>;
-    
-    public function AddWaitAny(params markers: array of WaitMarkerBase): CLArrayCCQ<T>;
-    public function AddWaitAny(markers: sequence of WaitMarkerBase): CLArrayCCQ<T>;
-    
-    public function AddWait(marker: WaitMarkerBase): CLArrayCCQ<T>;
+    public function AddWait(marker: WaitMarker): CLArrayCCQ<T>;
     
     {$endregion Special .Add's}
     

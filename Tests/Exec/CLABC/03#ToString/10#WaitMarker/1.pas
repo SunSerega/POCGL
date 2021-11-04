@@ -1,19 +1,16 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
+procedure Test<T>(o: T);
 begin
-  
-  Writeln(new WaitMarker);
+  Writeln(o);
   Writeln('-'*30,#10);
-  
-  var Q := HFQ(()->5).ThenWaitMarker;
-  
-  Writeln(Q);
-  Writeln('-'*30,#10);
-  
-  Writeln(WaitMarkerBase(Q));
-  Writeln('-'*30,#10);
-  
-  Writeln(WaitFor(Q) * Q);
-  Writeln('-'*30,#10);
-  
-end.
+end;
+
+Test(WaitMarker.Create);
+
+var Q := HFQ(()->5).ThenWaitMarker;
+Test(Q);
+Test(WaitMarker(Q));
+Test(WaitFor(Q) * Q);
+Test(Q/Q);
+Test(Q-Q);

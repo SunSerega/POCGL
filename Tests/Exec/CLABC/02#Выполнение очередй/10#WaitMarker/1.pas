@@ -1,12 +1,11 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  
-  var M1 := new WaitMarker;
-  Context.Default.SyncInvoke( WaitFor(M1) * M1 );
-  
-  var M2 := HFQ(()->5).ThenWaitMarker;
-  Context.Default.SyncInvoke( WaitFor(M2) * M2 ).Println;
-  Context.Default.SyncInvoke( WaitFor(M2) * WaitMarkerBase(M2) );
-  
-end.
+procedure Invoke(q: CommandQueueBase) :=
+Println( Context.Default.SyncInvoke(q) );
+
+var M1 := WaitMarker.Create;
+Invoke( WaitFor(M1) * M1 );
+
+var M2 := HFQ(()->5).ThenWaitMarker;
+Invoke( WaitFor(M2) * M2 );
+Invoke( WaitFor(M2) * WaitMarker(M2) );

@@ -1,39 +1,36 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
+procedure Test<T>(o: T);
 begin
-  var M1 := new WaitMarker;
-  var M2 := new WaitMarker;
-  
-  WaitFor(M1).Println;
-  (M1+WaitFor(M1)).Println;
-  (WaitFor(M1)+M1).Println;
-  WaitForAll(M1).Println;
-  WaitForAny(M1).Println;
-  WaitForAll(M1,M2).Println;
-  WaitForAny(M1,M2).Println;
-  
-  Writeln('='*30);
-  Writeln;
-  
-  var Q0: CommandQueueBase := nil as object;
-  Q0.ThenWaitFor(M1).Println;
-  (M1+Q0.ThenWaitFor(M1)).Println;
-  (Q0.ThenWaitFor(M1)+M1).Println;
-  Q0.ThenWaitForAll(M1).Println;
-  Q0.ThenWaitForAny(M1).Println;
-  Q0.ThenWaitForAll(M1,M2).Println;
-  Q0.ThenWaitForAny(M1,M2).Println;
-  
-  Writeln('='*30);
-  Writeln;
-  
-  var mem := new MemorySegment(1);
-  mem.NewQueue.AddWait(M1).Println;
-  (M1+mem.NewQueue.AddWait(M1)).Println;
-  (mem.NewQueue.AddWait(M1)+M1).Println;
-  mem.NewQueue.AddWaitAll(M1).Println;
-  mem.NewQueue.AddWaitAny(M1).Println;
-  mem.NewQueue.AddWaitAll(M1,M2).Println;
-  mem.NewQueue.AddWaitAny(M1,M2).Println;
-  
-end.
+  Writeln(o);
+  Writeln('-'*30,#10);
+end;
+
+var M1 := WaitMarker.Create;
+var M2 := WaitMarker.Create;
+
+Test( WaitFor(M1) );
+Test( (M1+WaitFor(M1)) );
+Test( WaitFor(M1)+M1 );
+Test( WaitFor(M1/M2) );
+Test( WaitFor(M1-M2) );
+
+Writeln('='*50);
+Writeln;
+
+var Q0: CommandQueueBase := nil as object;
+Test( Q0.ThenWaitFor(M1) );
+Test( M1+Q0.ThenWaitFor(M1) );
+Test( Q0.ThenWaitFor(M1)+M1 );
+Test( Q0.ThenWaitFor(M1/M2) );
+Test( Q0.ThenWaitFor(M1-M2) );
+
+Writeln('='*50);
+Writeln;
+
+var mem := new MemorySegment(1);
+Test( mem.NewQueue.AddWait(M1) );
+Test( M1+mem.NewQueue.AddWait(M1) );
+Test( mem.NewQueue.AddWait(M1)+M1 );
+Test( mem.NewQueue.AddWait(M1/M2) );
+Test( mem.NewQueue.AddWait(M1-M2) );

@@ -45,7 +45,3 @@
 Затем ожидает окончания выполнения и возвращает полученный результат
 
 
-
-# Context.MakeNewDefaultContext
-# Context.CheckMainDevice(Device, IList<Device>)
-# Context.GetContextDevices(cl_context)

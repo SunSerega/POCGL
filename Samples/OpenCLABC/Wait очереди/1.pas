@@ -29,7 +29,7 @@ begin
     A +
     (B+D) *
     (C+F) *
-    (WaitForAll(B,C) + E)
+    (WaitFor(B/C) + E)
   );
   
 end.

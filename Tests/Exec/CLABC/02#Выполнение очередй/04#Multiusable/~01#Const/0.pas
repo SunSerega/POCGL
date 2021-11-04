@@ -1,10 +1,10 @@
 ﻿uses OpenCLABC;
 
 begin
-  var M1 := new WaitMarker;
+  var M1 := WaitMarker.Create;
   var M1s := M1.Multiusable;
   
-  var M2 := new WaitMarker;
+  var M2 := WaitMarker.Create;
   
   var t := Context.Default.BeginInvoke(
     WaitFor(M1) +

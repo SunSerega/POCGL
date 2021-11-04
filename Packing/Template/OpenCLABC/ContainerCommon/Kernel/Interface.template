@@ -12,13 +12,7 @@
     public function AddProc(p: Kernel->()): KernelCCQ;
     public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
     
-    public function AddWaitAll(params markers: array of WaitMarkerBase): KernelCCQ;
-    public function AddWaitAll(markers: sequence of WaitMarkerBase): KernelCCQ;
-    
-    public function AddWaitAny(params markers: array of WaitMarkerBase): KernelCCQ;
-    public function AddWaitAny(markers: sequence of WaitMarkerBase): KernelCCQ;
-    
-    public function AddWait(marker: WaitMarkerBase): KernelCCQ;
+    public function AddWait(marker: WaitMarker): KernelCCQ;
     
     {$endregion Special .Add's}
     

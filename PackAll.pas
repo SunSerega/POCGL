@@ -504,10 +504,9 @@ begin
       
       T_Spec *
       T_OpenCL * T_OpenCLABC *
-      T_OpenGL * T_OpenGLABC *
-      T_Compile
+      T_OpenGL * T_OpenGLABC
       
-      + T_Test
+      + T_Compile * T_Test
       + T_Release
     ).SyncExec;
     

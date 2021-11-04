@@ -42,9 +42,45 @@ Finished runing Template[OpenCLABC]
 Compiling "Packing\Doc\PackComments.pas"
 Compiling: OK
 Runing Comments[OpenCLABC]
+Comments[OpenCLABC]: WARNING: key %Err:0Waitables% wasn't used!
+Comments[OpenCLABC]: WARNING: key %Err:Wait(nil)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %:WaitForDef% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitFor(WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitForAll(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitForAll(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitForAny(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitForAny(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitMarkerBase% wasn't used!
+Comments[OpenCLABC]: WARNING: key %WaitMarker.% wasn't used!
 Comments[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(Exception)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(ErrorCode)% wasn't used!
 Comments[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(CommandExecutionStatus)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitFor(WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitFor(WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWait(WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWait(WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWait(WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(array of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
+Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
 Finished runing Comments[OpenCLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
@@ -120,8 +156,6 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Compiling: OK
@@ -243,8 +277,6 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\0
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\~00#Err\1]
-Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue]
@@ -287,7 +319,6 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\09#KernelArg\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\01#Platform\1]
@@ -309,7 +340,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\09#KernelArg\1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

@@ -162,39 +162,14 @@ begin
       
       {$region AddWait}
       
-      foreach var order in |'All', 'Any'| do
-      begin
-        
-        foreach var arg_t in |'array of WaitMarkerBase', 'sequence of WaitMarkerBase'| do
-        begin
-          WriteHeader('function', 'public');
-          res += 'AddWait';
-          res += order;
-          res += '(';
-          if arg_t.StartsWith('array') then res += 'params ';
-          res += 'markers: ';
-          res += arg_t;
-          res += ')';
-          res_In += ': ';
-          WriteCCQ(res_In);
-          res_Im += ' := AddCommand(self, new WaitCommand<';
-          res_Im += t;
-          WriteGenerics(res_Im);
-          res_Im += '>(new WCQWaiter';
-          res_Im += order;
-          res_Im += '(markers.ToArray)))';
-          res += ';'#10;
-        end;
-        
-        res_In += '    ';
-        res += #10;
-      end;
-      
       WriteHeader('function', 'public');
-      res += 'AddWait(marker: WaitMarkerBase)';
+      res += 'AddWait(marker: WaitMarker)';
       res_In += ': ';
       WriteCCQ(res_In);
-      res_Im += ' := AddWaitAll(marker)';
+      res_Im += ' := AddCommand(self, new WaitCommand<';
+      res_Im += t;
+      WriteGenerics(res_Im);
+      res_Im += '>(marker))';
       res += ';'#10;
       
       res_In += '    ';

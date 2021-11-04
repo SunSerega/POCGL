@@ -2,12 +2,12 @@
 
 begin
   var Q := HFQ(()->5);
-  var M := new WaitMarker;
+  var M := WaitMarker.Create;
   
   var t := Context.Default.BeginInvoke(
     Q.ThenWaitFor(M)
   );
-  Context.Default.SyncInvoke(M);
+  M.SendSignal;
   
   t.WaitRes.Println;
 end.

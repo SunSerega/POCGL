@@ -1179,12 +1179,8 @@ k.Exec1(1,
   HFQ(()-&gt;val1),
   
   // Массив размерных значений
-  //TODO Пока не работает из за #2552
-//  a,
-//  HFQ(()-&gt;a)
-  //TODO Можно пока явно использовать KernelArg.FromArray
-  KernelArg.FromArray(a),
-  KernelArg.FromArrayCQ(HFQ(()-&gt;a))
+  a,
+  HFQ(()-&gt;a)
   
 );
 </code></pre>

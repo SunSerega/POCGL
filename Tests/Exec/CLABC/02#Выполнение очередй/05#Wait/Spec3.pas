@@ -2,7 +2,7 @@
 
 procedure Test(Q1_exec_count: integer; err_text1, err_text2: string) :=
 try
-  var M := new WaitMarker;
+  var M := WaitMarker.Create;
   
   var t1 := Context.Default.BeginInvoke(
     WaitFor(M) +

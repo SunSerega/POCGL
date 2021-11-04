@@ -18,13 +18,13 @@ begin
     ( WaitFor(Q1)+Q3 )
   );
   var t2 := Context.Default.BeginInvoke(
-    ( WaitFor(Q1)+WaitFor(Q2)+Q4 ) *
-    ( WaitFor(Q1)+WaitFor(Q3)+Q5 )
+    ( WaitFor(Q1 / Q2) + Q4 ) *
+    ( WaitFor(Q1 / Q3) + Q5 )
   );
   // Каждый вызов Q1 тут - активирует по 1 WaitFor(Q1) в каждом CLTask
   Context.Default.SyncInvoke(
-    ( Q1 + WaitForAll(Q2, Q4) ) +
-    ( Q1 + WaitForAll(Q3, Q5) )
+    Q1 + WaitFor(Q2 / Q4) +
+    Q1 + WaitFor(Q3 / Q5)
   );
   
   t1.Wait;
