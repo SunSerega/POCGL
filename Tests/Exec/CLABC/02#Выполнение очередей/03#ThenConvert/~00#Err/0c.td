@@ -6,8 +6,7 @@ OpenCLABC
 
 #ExpExecErr
 System.AggregateException: При выполнении очереди было вызвано 1 исключений. Используйте try чтоб получить больше информации ---> System.Exception: TestOK
-   в 0.Program.<>lambda*(Int32 <>i) в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas:строка *
-   в OpenCLABC.<>local_variables_class_*`2.<>lambda*(T <>o, Context <>c) в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
+   в 0c.Program.<>lambda*(Int32 <>i, Context <>c) в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas:строка *
    в OpenCLABC_implementation______.CommandQueueThenConvert`2.ExecFunc(TInp o, Context c) в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
@@ -15,11 +14,10 @@ System.AggregateException: При выполнении очереди было �
    в OpenCLABC.CLTaskBase.Wait() в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC.CLTask`1.WaitRes() в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC.Context.SyncInvoke[T](CommandQueue`1 q) в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
-   в 0.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas:строка *
-   в 0.Program.Main()
+   в 0c.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas:строка *
+   в 0c.Program.Main()
 ---> (Внутреннее исключение #0) System.Exception: TestOK
-   в 0.Program.<>lambda*(Int32 <>i) в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas:строка *
-   в OpenCLABC.<>local_variables_class_*`2.<>lambda*(T <>o, Context <>c) в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
+   в 0c.Program.<>lambda*(Int32 <>i, Context <>c) в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas:строка *
    в OpenCLABC_implementation______.CommandQueueThenConvert`2.ExecFunc(TInp o, Context c) в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() в *\pocgl\tests\LibSource\OpenCLABC.pas:строка *<---
