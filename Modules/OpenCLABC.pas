@@ -35,6 +35,10 @@ unit OpenCLABC;
 //TODO Кидание InvalidOperationException может ловить err_handler - тогда очередь зависает без диагностики
 // - Лучше сделать кастомное исключение, которое обработчик будет использовать чтоб моментально убить очередь
 
+//TODO На самом деле, тут надо давать отдельные колбеки каждому под-ивенту
+// - Ибо в случае Q1*Err+Q2, пока Q1 не завершится - выходить из очереди неправильно
+// - То есть всё должно работать как AttachFinallyCallback
+
 //===================================
 // Запланированное:
 
@@ -1998,8 +2002,6 @@ type
 {$region QueueRes}
 
 type
-  EventList = sealed partial class end;
-  
   {$region Misc}
   
   IPtrQueueRes<T> = interface
@@ -2227,6 +2229,7 @@ type
   CLTaskErrHandlerNode = sealed class
     public prev: CLTaskErrHandlerNode := nil;
     private node_handler: Exception->boolean;
+    public had_error := false;
     
     {$region constructor's}
     
@@ -2250,8 +2253,12 @@ type
     protected procedure AddErr(e: Exception);
     begin
       var handle := self;
-      while not handle.node_handler(e) do
+      while true do
+      begin
+        handle.had_error := true;
+        if (handle.node_handler<>nil) and handle.node_handler(e) then break;
         handle := handle.prev;
+      end;
     end;
     
     {%!!} /// True если ошибка есть {%}
@@ -2307,121 +2314,54 @@ type
     public static procedure AttachNativeCallback(ev: cl_event; cb: EventCallback) :=
     cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, NativeUtils.GCHndAlloc(cb)).RaiseIfError;
     
-    private static function DefaultStatusErr(err_handler: CLTaskErrHandlerNode; st: CommandExecutionStatus; save_err: boolean): boolean :=
-    if save_err then err_handler.AddErr(st) else st.IS_ERROR;
-    
-    public static procedure AttachCallback(ev: cl_event; work: Action; err_handler: CLTaskErrHandlerNode; need_ev_release: boolean{$ifdef EventDebug}; reason: string{$endif}; st_err_handler: (CLTaskErrHandlerNode, CommandExecutionStatus, boolean)->boolean := DefaultStatusErr; save_err: boolean := true) :=
-    AttachNativeCallback(ev, (ev,st,data)->
+    private static procedure CheckEvErr(ev: cl_event; err_handler: CLTaskErrHandlerNode);
     begin
-      if need_ev_release then
+      var st: CommandExecutionStatus;
+      var ec := cl.GetEventInfo(ev, EventInfo.EVENT_COMMAND_EXECUTION_STATUS, new UIntPtr(sizeof(CommandExecutionStatus)), st, IntPtr.Zero);
+      if err_handler.AddErr(ec) then exit;
+      if err_handler.AddErr(st) then exit;
+    end;
+    
+    public static procedure AttachCallback(midway: boolean; ev: cl_event; work: Action; err_handler: CLTaskErrHandlerNode{$ifdef EventDebug}; reason: string{$endif});
+    begin
+      if midway then
       begin
         {$ifdef EventDebug}
-        EventDebug.RegisterEventRelease(ev, $'discarding after use in AttachCallback, working on {reason}');
+        EventDebug.RegisterEventRetain(ev, $'retained before midway callback, working on {reason}');
         {$endif EventDebug}
-        err_handler.AddErr(cl.ReleaseEvent(ev));
+        err_handler.AddErr(cl.RetainEvent(ev));
       end;
-      
-      if not st_err_handler(err_handler, st, save_err) then
-      try
-        work;
-      except
-        on e: Exception do err_handler.AddErr(e);
-      end;
-      
-      NativeUtils.GCHndFree(data);
-    end);
-    
-    public static procedure AttachFinallyCallback(ev: cl_event; work: Action; err_handler: CLTaskErrHandlerNode; need_ev_release: boolean{$ifdef EventDebug}; reason: string{$endif}) :=
-    AttachNativeCallback(ev, (ev,st,data)->
-    begin
-      if need_ev_release then
+      AttachNativeCallback(ev, (ev,st,data)->
       begin
         {$ifdef EventDebug}
-        if reason=nil then raise new InvalidOperationException;
-        EventDebug.RegisterEventRelease(ev, $'discarding after use in AttachFinallyCallback, working on {reason}');
+        EventDebug.RegisterEventRelease(ev, $'released in callback, working on {reason}');
         {$endif EventDebug}
         err_handler.AddErr(cl.ReleaseEvent(ev));
-      end;
-      
-      try
+        // st копирует значение переданное в cl.SetEventCallback, поэтому он не подходит
+        CheckEvErr(ev, err_handler);
         work;
-      except
-        on e: Exception do err_handler.AddErr(e);
-      end;
-      
-      NativeUtils.GCHndFree(data);
-    end);
+        NativeUtils.GCHndFree(data);
+      end);
+    end;
     
     {$endregion cl_event.AttachCallback}
     
     {$region EventList.AttachCallback}
     
-    private function ToMarker(cq: cl_command_queue; expect_smart_status_err: boolean): cl_event;
-    begin
-      {$ifdef DEBUG}
-      if count <= 1 then raise new System.NotSupportedException;
-      {$endif DEBUG}
-      
-      cl.EnqueueMarkerWithWaitList(cq, self.count, self.evs, Result).RaiseIfError;
-      {$ifdef EventDebug}
-      EventDebug.RegisterEventRetain(Result, $'enq''ed marker for evs: {evs.JoinToString}');
-      {$endif EventDebug}
-      if expect_smart_status_err then self.Retain(
-        {$ifdef EventDebug}$'making sure ev isn''t deleted until SmartStatusErr'{$endif}
-      );
-      
-    end;
-    
-    private function SmartStatusErr(err_handler: CLTaskErrHandlerNode; org_st: CommandExecutionStatus; save_err: boolean; need_release: boolean): boolean;
-    begin
-      //TODO NV#3035203
-      //TODO И добавить использование save_err, когда раскомметирую
-//      if not org_st.IS_ERROR then exit;
-//      if org_st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
-//        Result := tsk.AddErr(org_st) else
-      
-      {$ifdef DEBUG}
-      if count <= 1 then raise new System.NotSupportedException;
-      {$endif DEBUG}
-      
-      for var i := 0 to count-1 do
+    public procedure AttachCallback(midway: boolean; work: Action; err_handler: CLTaskErrHandlerNode{$ifdef EventDebug}; reason: string{$endif}) :=
+    case self.count of
+      0: work;
+      1: AttachCallback(midway, self.evs[0], work, err_handler{$ifdef EventDebug}, nil{$endif});
+      else
       begin
-        var st: CommandExecutionStatus;
-        {$ifdef EventDebug}
-        EventDebug.CheckExists(evs[i]);
-        {$endif EventDebug}
-        var ec := cl.GetEventInfo(
-          evs[i], EventInfo.EVENT_COMMAND_EXECUTION_STATUS,
-          new UIntPtr(sizeof(CommandExecutionStatus)), st, IntPtr.Zero
-        );
-        
-        if err_handler.AddErr(ec) then continue;
-        if DefaultStatusErr(err_handler, st, save_err) then
-          Result := true;
-        
+        var done_c := count;
+        for var i := 0 to count-1 do
+          AttachCallback(midway, evs[i], ()->
+          begin
+            if System.Threading.Interlocked.Decrement(done_c) <> 0 then exit;
+            work;
+          end, err_handler{$ifdef EventDebug}, reason{$endif});
       end;
-      
-      if need_release then self.Release(
-        {$ifdef EventDebug}$'after use in SmartStatusErr'{$endif}
-      );
-      
-      //TODO NV#3035203 - без бага эта часть не нужна
-      if org_st.val <> ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST.val then
-        if DefaultStatusErr(err_handler, org_st, save_err) then Result := true;
-    end;
-    
-    public procedure AttachCallback(work: Action; cq: ()->cl_command_queue; err_handler: CLTaskErrHandlerNode{$ifdef EventDebug}; reason: string{$endif}; save_err: boolean := true) :=
-    case self.count of
-      0: work;
-      1: AttachCallback(self.evs[0], work, err_handler, false{$ifdef EventDebug}, nil{$endif}, DefaultStatusErr, save_err);
-      else AttachCallback(self.ToMarker(cq, true), work, err_handler, true{$ifdef EventDebug}, reason{$endif}, (tsk,st,save_err)->SmartStatusErr(tsk,st,save_err,true), save_err);
-    end;
-    
-    public procedure AttachFinallyCallback(work: Action; cq: ()->cl_command_queue; err_handler: CLTaskErrHandlerNode{$ifdef EventDebug}; reason: string{$endif}) :=
-    case self.count of
-      0: work;
-      1: AttachFinallyCallback(self.evs[0], work, err_handler, false{$ifdef EventDebug}, nil{$endif});
-      else AttachFinallyCallback(self.ToMarker(cq, false), work, err_handler, true{$ifdef EventDebug}, reason{$endif});
     end;
     
     {$endregion EventList.AttachCallback}
@@ -2446,17 +2386,16 @@ type
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     end;
     
-    /// True если возникла ошибка
-    public function WaitAndRelease(err_handler: CLTaskErrHandlerNode): boolean;
+    public procedure WaitAndRelease(err_handler: CLTaskErrHandlerNode);
     begin
       {$ifdef DEBUG}
-      if count=0 then raise new NotSupportedException;
+      if count=0 then raise new InvalidOperationException;
       {$endif DEBUG}
       
       var ec := cl.WaitForEvents(self.count, self.evs);
-      if count=1 then
-        Result := err_handler.AddErr(ec) else
-        Result := SmartStatusErr(err_handler, CommandExecutionStatus(ec), true, false);
+      if (ec=ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST) or not err_handler.AddErr(ec) then
+        for var i := 0 to count-1 do
+          CheckEvErr(evs[i], err_handler);
       
       self.Release({$ifdef EventDebug}$'discarding after being waited upon'{$endif EventDebug});
     end;
@@ -2493,24 +2432,28 @@ type
       );
       
       NativeUtils.StartNewBgThread(()->
-      try
-        
+      begin
         if (after<>nil) and (after.count<>0) then
-          if after.WaitAndRelease(err_handler) then
+          after.WaitAndRelease(err_handler);
+        
+        if err_handler.had_error then
+        begin
+          res.Abort;
+          exit;
+        end;
+        
+        try
+          work;
+        except
+          on e: Exception do
           begin
+            err_handler.AddErr(e);
             res.Abort;
             exit;
           end;
-        
-        work;
-        res.SetStatus(CommandExecutionStatus.COMPLETE);
-        
-      except
-        on e: Exception do
-        begin
-          err_handler.AddErr(e);
-          res.Abort;
         end;
+        
+        res.SetStatus(CommandExecutionStatus.COMPLETE);
       end);
       
       Result := res;
@@ -2583,12 +2526,10 @@ type
     
     public procedure FinishInvokeBranch(last_ev: EventList);
     begin
-      if g.curr_inv_cq=cl_command_queue.Zero then exit;
-      
       var cq := g.curr_inv_cq;
+      if cq=cl_command_queue.Zero then exit;
       g.curr_inv_cq := cl_command_queue.Zero;
-      
-      last_ev.AttachFinallyCallback(()->g.free_cqs.Add(cq), ()->cq, err_handler{$ifdef EventDebug}, $'return cq to bag'{$endif});
+      last_ev.AttachCallback(true, ()->g.free_cqs.Add(cq), err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
     end;
     
   end;
@@ -2747,12 +2688,11 @@ type
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
-      qr.ev.AttachFinallyCallback(()->System.Threading.Tasks.Task.Run(()->
+      qr.ev.AttachCallback(false, ()->System.Threading.Tasks.Task.Run(()->
       begin
-        qr.ev.Release({$ifdef EventDebug}$'last ev of CLTask'{$endif});
         g_data.FinishExecution(l_data.err_handler);
         OnQDone(qr);
-      end), ()->g_data.GetCQ, l_data.err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+      end), l_data.err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
       
     end;
     
@@ -2831,12 +2771,11 @@ type
       var qr := q.InvokeBase(g_data, l_data);
       g_data.FinishInvoke;
       
-      qr.ev.AttachFinallyCallback(()->System.Threading.Tasks.Task.Run(()->
+      qr.ev.AttachCallback(false, ()->System.Threading.Tasks.Task.Run(()->
       begin
-        qr.ev.Release({$ifdef EventDebug}$'last ev of CLTask'{$endif});
         g_data.FinishExecution(l_data.err_handler);
         OnQDone(qr);
-      end), ()->g_data.GetCQ, l_data.err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+      end), l_data.err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
       
     end;
     
@@ -3076,11 +3015,11 @@ type
       begin
         for var i := 0 to qs.Length-1 do
         begin
-          var ev := qs[i].InvokeBase(g, l.WithPtrNeed(false)).ev;
+          var ev := qs[i].InvokeBase(g, l.WithPtrNeed(false).WithErrHandler(nil)).ev;
           invoker.FinishInvokeBranch(ev);
           evs[i] := ev;
         end;
-        res := last.Invoke(g, l);
+        res := last.Invoke(g, l.WithErrHandler(nil));
         invoker.FinishInvokeBranch(res.ev);
         evs[qs.Length] := res.ev;
       end);
@@ -3162,7 +3101,7 @@ type
       begin
         // HostQueue уже передало l без need_ptr_qr
         // И Result тут промежуточный
-        var qr := qs[i].Invoke(g, l);
+        var qr := qs[i].Invoke(g, l.WithErrHandler(nil));
         qrs[i] := qr;
         evs[i] := qr.ev;
         invoker.FinishInvokeBranch(qr.ev);
@@ -3301,6 +3240,13 @@ type
   WaitHandler = abstract class
     private subs := new Dictionary<WaitHandler, integer>;
     
+    protected procedure AddSub(sub: WaitHandler; data: integer) :=
+    lock self do
+    begin
+      subs.Add(sub, data);
+      if activated then sub.Handle(data, true);
+    end;
+    
     protected function Handle(data: integer; activated: boolean): boolean; abstract;
     
     private activated := false;
@@ -3365,7 +3311,7 @@ type
     begin
       self.prev := prev;
       for var i := 0 to prev.Length-1 do
-        prev[i].subs.Add(self, i);
+        prev[i].AddSub(self, i);
       self.done := new boolean[prev.Length];
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
@@ -3397,19 +3343,22 @@ type
     public constructor(marker: WaitMarker; g: CLTaskGlobalData);
     begin
       self.prev := marker.GetWaitHandler(g);
-      prev.subs.Add(self, 0);
+      prev.AddSub(self, 0);
       self.uev := new UserEvent(g.cl_c);
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
     protected function Handle(data: integer; activated: boolean): boolean; override;
     begin
-      {$ifdef DEBUG}
-      if not activated then raise new System.InvalidOperationException;
-      {$endif DEBUG}
-      prev.Destroy(self, true);
-      uev.SetStatus(CommandExecutionStatus.Complete);
-      Result := true;
+      lock self do
+      begin
+        {$ifdef DEBUG}
+        if not activated then raise new System.InvalidOperationException;
+        {$endif DEBUG}
+        prev.Destroy(self, true);
+        uev.SetStatus(CommandExecutionStatus.Complete);
+        Result := true;
+      end;
     end;
     
     protected procedure Destroy(sub: WaitHandler; consume: boolean); override :=
@@ -3468,7 +3417,7 @@ type
       if l.need_ptr_qr then raise new System.InvalidOperationException;
       {$endif DEBUG}
       Result := new QueueResConst<object>(nil, l.prev_ev ?? EventList.Empty);
-      Result.ev.AttachCallback(self.SendSignal, ()->g.GetCQ, l.err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
+      Result.ev.AttachCallback(true, ()->if not l.err_handler.had_error then self.SendSignal, l.err_handler{$ifdef EventDebug}, $'SendSignal'{$endif});
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
@@ -3631,7 +3580,7 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
       Result := self.q.Invoke(g, l);
-      Result.ev.AttachCallback(PseudoWaitMarkerWrapper(wrap).SendSignal, ()->g.GetCQ, l.err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif}, false);
+      Result.ev.AttachCallback(true, ()->if not l.err_handler.had_error then PseudoWaitMarkerWrapper(wrap).SendSignal, l.err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
@@ -3661,8 +3610,16 @@ type
       {$ifdef DEBUG}
       if l.need_ptr_qr then raise new System.InvalidOperationException;
       {$endif DEBUG}
-      var res := new WaitHandlerOuter(marker, g);
-      Result := new QueueResConst<object>(nil, if l.prev_ev=nil then res.uev else l.prev_ev+res.uev.uev);
+      var res := WaitHandlerOuter.Create(marker, g).uev;
+      if l.prev_ev<>nil then
+      begin
+        l.prev_ev.AttachCallback(true, ()->
+        begin
+          if l.err_handler.had_error then
+            res.Abort;
+        end, l.err_handler{$ifdef EventDebug}, $'WaitFor.Abort if err_handler.had_error'{$endif});
+      end;
+      Result := new QueueResConst<object>(nil, if l.prev_ev=nil then res else l.prev_ev+res.uev);
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
@@ -4010,8 +3967,9 @@ type
       var  sz_qr: QueueRes<UIntPtr>;
       g.ParallelInvoke(l.err_handler, invoker->
       begin
-        ptr_qr := ptr_q.Invoke(g, l.WithPtrNeed(false)); invoker.FinishInvokeBranch(ptr_qr.ev);
-         sz_qr :=  sz_q.Invoke(g, l.WithPtrNeed(false)); invoker.FinishInvokeBranch( sz_qr.ev);
+        var next_l := l.WithPtrNeed(false);
+        ptr_qr := ptr_q.Invoke(g, next_l.WithErrHandler(nil)); invoker.FinishInvokeBranch(ptr_qr.ev);
+         sz_qr :=  sz_q.Invoke(g, next_l.WithErrHandler(nil)); invoker.FinishInvokeBranch( sz_qr.ev);
       end);
       Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgData(ptr_qr.GetRes, sz_qr.GetRes), ptr_qr.ev+sz_qr.ev);
     end;
@@ -4100,8 +4058,9 @@ type
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(l.err_handler, invoker->
       begin
-          a_qr :=   a_q.Invoke(g, l.WithPtrNeed(false)); invoker.FinishInvokeBranch(  a_qr.ev);
-        ind_qr := ind_q.Invoke(g, l.WithPtrNeed(false)); invoker.FinishInvokeBranch(ind_qr.ev);
+        var next_l := l.WithPtrNeed(false);
+          a_qr :=   a_q.Invoke(g, next_l.WithErrHandler(nil)); invoker.FinishInvokeBranch(  a_qr.ev);
+        ind_qr := ind_q.Invoke(g, next_l.WithErrHandler(nil)); invoker.FinishInvokeBranch(ind_qr.ev);
       end);
       Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgArray<TRecord>(a_qr.GetRes, ind_qr.GetRes), a_qr.ev+ind_qr.ev);
     end;
@@ -4490,6 +4449,12 @@ type
       var ev_l1 := EventList.Combine(evs_l1);
       var ev_l2 := EventList.Combine(evs_l2) ?? EventList.Empty;
       
+      if l.err_handler.had_error then
+      begin
+        Result := ev_l2;
+        exit;
+      end;
+      
       if ev_l1=nil then
       begin
         var enq_ev := enq_f(g.GetCQ, l.err_handler, ev_l2, inv_data);
@@ -4503,26 +4468,29 @@ type
       begin
         // Асинхронное Enqueue, чтоб следующая команда не записалась до enq_f - надо полностью забрать очередь
         var cq := g.GetCQ(true);
-        
         var res_ev := new UserEvent(g.cl_c
           {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
         );
         
-        ev_l1.AttachCallback(()->
+        ev_l1.AttachCallback(false, ()->
         begin
-          ev_l1.Release({$ifdef EventDebug}$'after waiting before Enq of {q.GetType}'{$endif});
+          if l.err_handler.had_error then
+          begin
+            res_ev.Abort;
+            g.free_cqs.Add(cq);
+            exit;
+          end;
           var enq_ev := enq_f(cq, l.err_handler, ev_l2, inv_data);
           {$ifdef EventDebug}
           EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
           {$endif EventDebug}
           var final_ev := ev_l2+enq_ev;
-          final_ev.AttachCallback(()->
+          final_ev.AttachCallback(false, ()->
           begin
-            final_ev.Release({$ifdef EventDebug}$'after waiting to set {res_ev.uev} of nested AttachCallback in Enq of {q.GetType}'{$endif});
             res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
             g.free_cqs.Add(cq);
-          end, ()->cq, l.err_handler{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
-        end, ()->g.GetCQ, l.err_handler{$ifdef EventDebug}, $'calling Enq of {q.GetType}'{$endif});
+          end, l.err_handler{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
+        end, l.err_handler{$ifdef EventDebug}, $'calling async Enq of {q.GetType}'{$endif});
         
         Result := res_ev;
       end;

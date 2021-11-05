@@ -655,7 +655,7 @@ type
       args_with_GCHandle.AddRange(args_with_pinn);
       if args_with_GCHandle.Count<>0 then
       begin
-        res_EIm += '        EventList.AttachFinallyCallback(res_ev, ()->'#10;
+        res_EIm += '        EventList.AttachCallback(true, res_ev, ()->'#10;
         res_EIm += '        begin'#10;
         
         foreach var arg in args_with_GCHandle do
@@ -665,7 +665,9 @@ type
           res_EIm += '_hnd.Free;'#10;
         end;
         
-        res_EIm += '        end, err_handler, false{$ifdef EventDebug}, nil{$endif});'#10;
+        res_EIm += '        end, err_handler{$ifdef EventDebug}, ''GCHandle.Free for [';
+        res_EIm += args_with_GCHandle.JoinToString(', ');
+        res_EIm += ']''{$endif});'#10;
         res_EIm += '        '#10;
         
       end;

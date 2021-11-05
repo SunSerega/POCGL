@@ -458,10 +458,10 @@ type
         
         var val_hnd := GCHandle.Alloc(val);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           val_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
         
         Result := res_ev;
       end;
@@ -538,10 +538,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -613,10 +613,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -688,10 +688,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -763,10 +763,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -838,10 +838,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -913,10 +913,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1002,10 +1002,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1111,10 +1111,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1230,10 +1230,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1344,10 +1344,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1453,10 +1453,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1572,10 +1572,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1904,10 +1904,10 @@ type
         
         var val_hnd := GCHandle.Alloc(val);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           val_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
         
         Result := res_ev;
       end;
@@ -2076,10 +2076,10 @@ type
         
         var val_hnd := GCHandle.Alloc(val);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           val_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
         
         Result := res_ev;
       end;
@@ -2161,10 +2161,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2236,10 +2236,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2311,10 +2311,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2405,10 +2405,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2524,10 +2524,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2653,10 +2653,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;

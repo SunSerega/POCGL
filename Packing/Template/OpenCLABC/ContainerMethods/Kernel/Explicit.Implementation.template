@@ -53,11 +53,11 @@ type
           cl.RetainKernel(ntv).RaiseIfError;
           var args_hnd := GCHandle.Alloc(args);
           
-          EventList.AttachFinallyCallback(res_ev, ()->
+          EventList.AttachCallback(true, res_ev, ()->
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+          end, err_handler{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
         end);
         
         Result := res_ev;
@@ -152,11 +152,11 @@ type
           cl.RetainKernel(ntv).RaiseIfError;
           var args_hnd := GCHandle.Alloc(args);
           
-          EventList.AttachFinallyCallback(res_ev, ()->
+          EventList.AttachCallback(true, res_ev, ()->
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+          end, err_handler{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
         end);
         
         Result := res_ev;
@@ -261,11 +261,11 @@ type
           cl.RetainKernel(ntv).RaiseIfError;
           var args_hnd := GCHandle.Alloc(args);
           
-          EventList.AttachFinallyCallback(res_ev, ()->
+          EventList.AttachCallback(true, res_ev, ()->
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+          end, err_handler{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
         end);
         
         Result := res_ev;
@@ -375,11 +375,11 @@ type
           cl.RetainKernel(ntv).RaiseIfError;
           var args_hnd := GCHandle.Alloc(args);
           
-          EventList.AttachFinallyCallback(res_ev, ()->
+          EventList.AttachCallback(true, res_ev, ()->
           begin
             cl.ReleaseKernel(ntv).RaiseIfError();
             args_hnd.Free;
-          end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+          end, err_handler{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
         end);
         
         Result := res_ev;

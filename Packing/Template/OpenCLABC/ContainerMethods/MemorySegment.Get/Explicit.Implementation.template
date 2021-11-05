@@ -181,10 +181,10 @@ type
         
         var own_qr_hnd := GCHandle.Alloc(own_qr);
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           own_qr_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [own_qr]'{$endif});
         
         Result := res_ev;
       end;
@@ -250,10 +250,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           res_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [res]'{$endif});
         
         Result := res_ev;
       end;
@@ -316,10 +316,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           res_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [res]'{$endif});
         
         Result := res_ev;
       end;
@@ -398,10 +398,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           res_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [res]'{$endif});
         
         Result := res_ev;
       end;
@@ -490,10 +490,10 @@ type
           evs.count, evs.evs, res_ev
         ).RaiseIfError;
         
-        EventList.AttachFinallyCallback(res_ev, ()->
+        EventList.AttachCallback(true, res_ev, ()->
         begin
           res_hnd.Free;
-        end, err_handler, false{$ifdef EventDebug}, nil{$endif});
+        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [res]'{$endif});
         
         Result := res_ev;
       end;

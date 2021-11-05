@@ -213,7 +213,7 @@ type
     procedure FindReqModules;
     begin
       req_modules := new List<string>;
-      foreach var l in ReadLines(pas_fname) do
+      foreach var l in ReadLines(pas_fname).Select(l->l.TrimStart('#').TrimStart) do
         if l.StartsWith('uses') then
           foreach var m in l.Substring('uses'.Length).ToWords(',',' ',';') do
             if m in valid_modules then
@@ -521,7 +521,7 @@ type
     begin
       var res := new StringBuilder;
       
-      var anon_names := |'<>local_variables_class_', '<>lambda', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[', ':строка ', ':line '|;
+      var anon_names := |'<>local_variables_class_', '<>lambda', 'Platform[', 'Device[', 'Context[', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[', ':строка ', ':line '|;
       var inds := new integer[anon_names.Length];
       var in_anon_name := false;
       foreach var ch in text do
