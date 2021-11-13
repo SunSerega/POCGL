@@ -91,10 +91,6 @@ type
       sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.css')).Trim);
       sw.WriteLine('</style>');
       
-      sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.js')).Trim);
-      sw.WriteLine('</script>');
-      
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
@@ -102,6 +98,10 @@ type
         ReadAllText(GetFullPathRTA('0SpecContainer\.md')),
         md_pipeline
       ).Trim);
+      
+      sw.WriteLine('<script>');
+      sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.js')).Trim);
+      sw.WriteLine('</script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);
       
