@@ -6,14 +6,3 @@ KernelProperties
 MemorySegmentProperties
 MemorySubSegmentProperties
 CLArrayProperties
-Context.MakeNewDefaultContext
-Context.CheckMainDevice(Device, IList<Device>)
-Context.GetContextDevices(cl_context)
-WaitMarker.Create
-WaitMarker.SendSignal
-CommandQueueBase.ThenWaitFor(WaitMarker)
-CommandQueue<T>.ThenWaitFor(WaitMarker)
-KernelCCQ.AddWait(WaitMarker)
-MemorySegmentCCQ.AddWait(WaitMarker)
-CLArrayCCQ<T>.AddWait(WaitMarker)
-WaitFor(WaitMarker)
