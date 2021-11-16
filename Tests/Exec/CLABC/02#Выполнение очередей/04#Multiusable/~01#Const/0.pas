@@ -10,14 +10,14 @@ begin
     WaitFor(M1) +
     (
       WaitFor(M1) +
-      HPQ(()->raise new Exception('Error2'))
+      HPQ(()->Writeln(2))
     ) *
     (
       WaitFor(M2) +
       HPQ(()->
       begin
         Sleep(10);
-        raise new Exception('Error1');
+        Writeln(1);
       end)
     )
   );
