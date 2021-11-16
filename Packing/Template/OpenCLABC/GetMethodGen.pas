@@ -111,7 +111,7 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskErrHandlerNode, EventList, QueueResDelayedBase<';
+      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<';
       res_EIm += settings.result_type.org_text;
       res_EIm += '>)->cl_event; override;'#10;
     end;
@@ -131,6 +131,19 @@ type
       wr += settings.result_init;
       wr += ';'#10;
       wr += '        own_qr.SetRes(res);'#10;
+    end;
+    protected function WriteLocalDataForParam(wr: Writer; settings: GetMethodSettings): boolean?; override;
+    begin
+      Result :=
+        if not settings.arg_usage.Values.Any(use->use='ptr') then false else
+        if settings.arg_usage.Values.All(use->use='ptr') then true else
+          nil;
+      if Result<>nil then
+      begin
+        wr += '.WithPtrNeed(';
+        wr += Result.Value.ToString;
+        wr += ')';
+      end;
     end;
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: GetMethodSettings); override;

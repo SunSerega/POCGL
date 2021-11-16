@@ -20,14 +20,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l.err_handler, invoker->
+      g.ParallelInvoke(l, 1 + args.Length, invoker->
       begin
-         sz1_qr :=  sz1.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(sz1_qr.ev); evs_l1.Add(sz1_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(g, l); invoker.FinishInvokeBranch(Result.ev); evs_l1.Add(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -116,16 +116,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l.err_handler, invoker->
+      g.ParallelInvoke(l, 2 + args.Length, invoker->
       begin
-         sz1_qr :=  sz1.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(sz1_qr.ev); evs_l1.Add(sz1_qr.ev);
-         sz2_qr :=  sz2.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(sz2_qr.ev); evs_l1.Add(sz2_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(g, l); invoker.FinishInvokeBranch(Result.ev); evs_l1.Add(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); evs_l1.Add(sz2_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -222,18 +222,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l.err_handler, invoker->
+      g.ParallelInvoke(l, 3 + args.Length, invoker->
       begin
-         sz1_qr :=  sz1.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(sz1_qr.ev); evs_l1.Add(sz1_qr.ev);
-         sz2_qr :=  sz2.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(sz2_qr.ev); evs_l1.Add(sz2_qr.ev);
-         sz3_qr :=  sz3.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(sz3_qr.ev); evs_l1.Add(sz3_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := temp1.Invoke(g, l); invoker.FinishInvokeBranch(Result.ev); evs_l1.Add(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); evs_l1.Add(sz2_qr.ev);
+         sz3_qr := invoker.InvokeBranch&<integer>( sz3.Invoke); evs_l1.Add(sz3_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -336,18 +336,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var global_work_offset_qr: QueueRes<array of UIntPtr>;
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
       var               args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l.err_handler, invoker->
+      g.ParallelInvoke(l, 3 + args.Length, invoker->
       begin
-        global_work_offset_qr := global_work_offset.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(global_work_offset_qr.ev); evs_l1.Add(global_work_offset_qr.ev);
-          global_work_size_qr :=   global_work_size.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(global_work_size_qr.ev); evs_l1.Add(global_work_size_qr.ev);
-           local_work_size_qr :=    local_work_size.Invoke(g, l.WithPtrNeed(False)); invoker.FinishInvokeBranch(local_work_size_qr.ev); evs_l1.Add(local_work_size_qr.ev);
-                      args_qr :=               args.ConvertAll(temp1->begin Result := temp1.Invoke(g, l); invoker.FinishInvokeBranch(Result.ev); evs_l1.Add(Result.ev); end);
+        global_work_offset_qr := invoker.InvokeBranch&<array of UIntPtr>(global_work_offset.Invoke); evs_l1.Add(global_work_offset_qr.ev);
+          global_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(  global_work_size.Invoke); evs_l1.Add(global_work_size_qr.ev);
+           local_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(   local_work_size.Invoke); evs_l1.Add(local_work_size_qr.ev);
+                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->

@@ -21,7 +21,7 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskErrHandlerNode, EventList)->cl_event; override;'#10;
+      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
     begin

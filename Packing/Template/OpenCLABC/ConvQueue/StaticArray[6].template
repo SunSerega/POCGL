@@ -75,14 +75,14 @@ type
       var qr4: QueueRes<TInp4>;
       var qr5: QueueRes<TInp5>;
       var qr6: QueueRes<TInp6>;
-      g.ParallelInvoke(l.err_handler, invoker->
+      g.ParallelInvoke(l, 6, invoker->
       begin
-        qr1 := q1.Invoke(g, l); invoker.FinishInvokeBranch(qr1.ev);
-        qr2 := q2.Invoke(g, l); invoker.FinishInvokeBranch(qr2.ev);
-        qr3 := q3.Invoke(g, l); invoker.FinishInvokeBranch(qr3.ev);
-        qr4 := q4.Invoke(g, l); invoker.FinishInvokeBranch(qr4.ev);
-        qr5 := q5.Invoke(g, l); invoker.FinishInvokeBranch(qr5.ev);
-        qr6 := q6.Invoke(g, l); invoker.FinishInvokeBranch(qr6.ev);
+        qr1 := invoker.InvokeBranch(q1.Invoke);
+        qr2 := invoker.InvokeBranch(q2.Invoke);
+        qr3 := invoker.InvokeBranch(q3.Invoke);
+        qr4 := invoker.InvokeBranch(q4.Invoke);
+        qr5 := invoker.InvokeBranch(q5.Invoke);
+        qr6 := invoker.InvokeBranch(q6.Invoke);
       end);
       Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), qr6.GetRes()), EventList.Combine(|qr1.ev, qr2.ev, qr3.ev, qr4.ev, qr5.ev, qr6.ev|));
     end;

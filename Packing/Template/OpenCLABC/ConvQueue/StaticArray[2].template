@@ -51,10 +51,10 @@ type
       if (l.prev_ev<>nil) and (l.prev_ev.count<>0) then loop 1 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
-      g.ParallelInvoke(l.err_handler, invoker->
+      g.ParallelInvoke(l, 2, invoker->
       begin
-        qr1 := q1.Invoke(g, l); invoker.FinishInvokeBranch(qr1.ev);
-        qr2 := q2.Invoke(g, l); invoker.FinishInvokeBranch(qr2.ev);
+        qr1 := invoker.InvokeBranch(q1.Invoke);
+        qr2 := invoker.InvokeBranch(q2.Invoke);
       end);
       Result := new QueueResFunc<ValueTuple<TInp1, TInp2>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes()), EventList.Combine(|qr1.ev, qr2.ev|));
     end;

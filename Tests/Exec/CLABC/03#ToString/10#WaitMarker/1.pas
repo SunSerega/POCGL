@@ -12,5 +12,5 @@ var Q := HFQ(()->5).ThenWaitMarker;
 Test(Q);
 Test(WaitMarker(Q));
 Test(WaitFor(Q) * Q);
-Test(Q/Q);
-Test(Q-Q);
+Test(Q and Q);
+Test(Q or Q);

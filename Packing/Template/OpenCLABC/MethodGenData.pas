@@ -420,6 +420,12 @@ type
     protected procedure WriteInvokeFHeader; abstract;
     protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
     protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
+    protected function WriteLocalDataForParam(wr: Writer; settings: TSettings): boolean?; virtual;
+    begin
+      var res := settings.arg_usage.Values.All(use->use='ptr');
+      if res then wr += '.WithPtrNeed(true)';
+      Result := res;
+    end;
     
     private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
     begin
@@ -458,7 +464,22 @@ type
         
       end;
       
-      res_EIm += '      g.ParallelInvoke(l.err_handler, invoker->'#10;
+      // Надо всегда, потому что даже если параметр 1 - его надо начинать выполнять асинхронно от всего остального
+      res_EIm += '      g.ParallelInvoke(l';
+      var default_need_ptr := WriteLocalDataForParam(res_EIm, settings);
+      res_EIm += ', ';
+      begin
+        var param_count_l := new List<MethodArgEvCount>;
+        if settings.args<>nil then
+          foreach var arg in settings.args do
+            if settings.arg_usage.ContainsKey(arg.name) then
+            begin
+              if not arg.t.IsCQ and not arg.t.IsKA then continue;
+              param_count_l += new MethodArgEvCount(arg);
+            end;
+        MethodArgEvCount.WriteAll(res_EIm, param_count_l);
+      end;
+      res_EIm += ', invoker->'#10;
       res_EIm += '      begin'#10;
       
       foreach var arg in useful_args do
@@ -467,7 +488,7 @@ type
         res_EIm += arg.name.PadLeft(max_arg_w);
         res_EIm += '_qr := ';
         
-        var arg_name := arg.name.PadLeft(max_arg_w);
+        var arg_name := arg.name;
         for var i := 1 to arg.t.ArrLvl do
         begin
           var n_arg_name := $'temp{i}';
@@ -482,6 +503,19 @@ type
         
         if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
         
+        res_EIm += 'invoker.InvokeBranch&<';
+        //TODO #2564
+        begin
+          if arg.t.IsKA then
+            res_EIm += 'ISetableKernelArg' else
+            res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
+        end;
+        res_EIm += '>(';
+        
+        var need_with_ptr_need := (settings.arg_usage[arg.name]='ptr') <> default_need_ptr;
+        if need_with_ptr_need then
+          res_EIm += '(g,l)->';
+        
         var WriteQRName := procedure->
         if arg.t is MethodArgTypeArray then
           res_EIm += 'Result' else
@@ -490,19 +524,17 @@ type
           res_EIm += '_qr';
         end;
         
-        res_EIm += arg_name;
+        //TODO вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
+        res_EIm += if need_with_ptr_need or (arg.t.ArrLvl<>0) then arg_name else arg_name.PadLeft(max_arg_w);
+        
         res_EIm += '.Invoke';
-        res_EIm += '(g, l';
-        if arg.t.IsCQ then
+        if need_with_ptr_need then
         begin
-          res_EIm += '.WithPtrNeed(';
+          res_EIm += '(g, l.WithPtrNeed(';
           res_EIm += (settings.arg_usage[arg.name]='ptr').ToString.PadLeft(5);
-          res_EIm += ')';
+          res_EIm += '))';
         end;
         res_EIm += '); ';
-        res_EIm += 'invoker.FinishInvokeBranch(';
-        WriteQRName;
-        res_EIm += '.ev); ';
         
         if settings.arg_usage[arg.name]='ptr' then
         begin

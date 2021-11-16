@@ -155,10 +155,10 @@ begin
         for var i := 1 to c do
           res.WriteLine($'      var qr{i}: QueueRes<TInp{i}>;');
         
-        res.WriteLine($'      g.ParallelInvoke(l.err_handler, invoker->');
+        res.WriteLine($'      g.ParallelInvoke(l, {c}, invoker->');
         res.WriteLine($'      begin');
         for var i := 1 to c do
-          res.WriteLine($'        qr{i} := q{i}.Invoke(g, l); invoker.FinishInvokeBranch(qr{i}.ev);');
+          res.WriteLine($'        qr{i} := invoker.InvokeBranch(q{i}.Invoke);');
         res.WriteLine($'      end);');
         
         res.Write($'      Result := new QueueResFunc<');
