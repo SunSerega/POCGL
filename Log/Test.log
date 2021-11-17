@@ -43,59 +43,61 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\00#Err\ExecutionCancel.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec2.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec2.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec3.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec4.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec4.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec5.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\10#WaitMarker\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#CLTask\WhenDone.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
 Tester: Compiling: OK
@@ -181,59 +183,61 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\00#Err\ExecutionCancel]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\02#Cast\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~00#Err\0c]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\03#ThenConvert\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\04#Multiusable\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec2]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec2]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec3]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec3]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec4]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec4]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\Spec5]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\Spec5]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\05#Wait\ThenWait]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddProc]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~00#Err\AddQueue]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\06#GPUCommandContainer\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\07#HostExec\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\08#CombineQueues\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\10#WaitMarker\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередй\11#CLTask\WhenDone]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#CLTask\WhenDone]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
 Tester: Done executing

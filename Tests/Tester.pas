@@ -164,7 +164,7 @@ type
         System.IO.File.Copy($'Modules.Packed\{mn}.pas', $'Tests\DebugPCU\{mn}.pas', true);
       used_units
         .Where(mn->not used_units.Contains(mn+'ABC'))
-        .Select(mn->CompTask($'Tests\DebugPCU\{mn}.pas', false, '/Debug:1'))
+        .Select(mn->CompTask($'Tests\DebugPCU\{mn}.pas', false, '/Debug:1 /Define:ForceMaxDebug'))
         .CombineAsyncTask
       .SyncExec;
       foreach var mn in used_units do
@@ -507,7 +507,12 @@ type
     begin
       var res := new StringBuilder;
       
-      var anon_names := |'<>local_variables_class_', '<>lambda', 'Platform[', 'Device[', 'Context[', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[', ':строка ', ':line '|;
+      var anon_names := |
+        '<>local_variables_class_', '<>lambda',
+        'cl_command_queue[',
+        'Platform[', 'Device[', 'Context[', 'MemorySegment[', 'MemorySubSegment[', 'ProgramCode[',
+        ':строка ', ':line '
+      |;
       var inds := new integer[anon_names.Length];
       var in_anon_name := false;
       foreach var ch in text do

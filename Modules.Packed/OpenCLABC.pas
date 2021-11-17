@@ -140,7 +140,16 @@ unit OpenCLABC;
 
 {$region Debug}{$ifdef DEBUG}
 
-{ $define EventDebug} // Регистрация всех cl.RetainEvent и cl.ReleaseEvent
+// Регистрация всех cl.RetainEvent и cl.ReleaseEvent
+{ $define EventDebug}
+
+// Регистрация использований cl_command_queue
+{ $define QueueDebug}
+
+{$ifdef ForceMaxDebug}
+  {$define EventDebug}
+  {$define QueueDebug}
+{$endif ForceMaxDebug}
 
 {$endif DEBUG}{$endregion Debug}
 
@@ -166,6 +175,135 @@ type
   DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
   
   {$endregion Re-definition's}
+  
+  {$region DEBUG}
+  
+  {$region EventDebug}{$ifdef EventDebug}
+  
+  EventRetainReleaseData = record
+    private is_release: boolean;
+    private reason: string;
+    
+    private static debug_time_counter := Stopwatch.StartNew;
+    private time: TimeSpan;
+    
+    public constructor(is_release: boolean; reason: string);
+    begin
+      self.is_release := is_release;
+      self.reason := reason;
+      self.time := debug_time_counter.Elapsed;
+    end;
+    
+    private function GetActStr := is_release ? 'Released' : 'Retained';
+    public function ToString: string; override :=
+    $'{time} | {GetActStr} when: {reason}';
+    
+  end;
+  EventDebug = static class
+    
+    {$region Retain/Release}
+    
+    private static RefCounter := new Dictionary<cl_event, List<EventRetainReleaseData>>;
+    private static function RefCounterFor(ev: cl_event): List<EventRetainReleaseData>;
+    begin
+      lock RefCounter do
+        if not RefCounter.TryGetValue(ev, Result) then
+        begin
+          Result := new List<EventRetainReleaseData>;
+          RefCounter[ev] := Result;
+        end;
+    end;
+    
+    public static procedure RegisterEventRetain(ev: cl_event; reason: string);
+    begin
+      var lst := RefCounterFor(ev);
+      lock lst do lst += new EventRetainReleaseData(false, reason);
+    end;
+    public static procedure RegisterEventRelease(ev: cl_event; reason: string);
+    begin
+      EventDebug.CheckExists(ev);
+      var lst := RefCounterFor(ev);
+      lock lst do lst += new EventRetainReleaseData(true, reason);
+    end;
+    
+    public static procedure ReportRefCounterInfo :=
+    lock output do lock RefCounter do
+    begin
+      
+      foreach var ev in RefCounter.Keys do
+      begin
+        $'Logging state change of {ev}'.Println;
+        var lst := RefCounter[ev];
+        var c := 0;
+        lock lst do
+          foreach var act in lst do
+          begin
+            if act.is_release then
+              c -= 1 else
+              c += 1;
+            $'{c,3} | {act}'.Println;
+          end;
+        Writeln('-'*30);
+      end;
+      
+      Writeln('='*40);
+      output.Flush;
+    end;
+    public static procedure CheckExists(ev: cl_event);
+    begin
+      var lst := RefCounterFor(ev);
+      lock lst do
+      begin
+        var c := 0;
+        foreach var act in lst do
+          if act.is_release then
+            c -= 1 else
+            c += 1;
+        if c<=0 then lock output do
+        begin
+          $'Event {ev} was released before last use at'.Println;
+          System.Environment.StackTrace.Println;
+          ReportRefCounterInfo;
+          Halt;
+        end;
+      end;
+    end;
+    
+    {$endregion Retain/Release}
+    
+  end;
+  
+  {$endif EventDebug}{$endregion EventDebug}
+  
+  {$region QueueDebug}{$ifdef QueueDebug}
+  
+  QueueDebug = static class
+    
+    private static QueueUses := new Dictionary<cl_command_queue, List<string>>;
+    private static function QueueUsesFor(cq: cl_command_queue): List<string>;
+    begin
+      lock QueueUses do
+        if not QueueUses.TryGetValue(cq, Result) then
+        begin
+          Result := new List<string>;
+          QueueUses[cq] := Result;
+        end;
+    end;
+    
+    public static procedure ReportQueueUses :=
+    lock QueueUses do
+      foreach var cq in QueueUses.Keys do
+      begin
+        $'Logging uses of {cq}'.Println;
+        QueueUses[cq].PrintLines;
+        Println('='*30);
+      end;
+    
+  end;
+  
+  {$endif QueueDebug}{$endregion QueueDebug}
+  
+  {$endregion DEBUG}
   
   {$region Properties}
   
@@ -3906,104 +4044,6 @@ WriteArray(value, range.Low, range.High-range.Low+1, 0);
 
 {$region Util type's}
 
-{$region EventDebug}{$ifdef EventDebug}
-
-type
-  EventRetainReleaseData = record
-    private is_release: boolean;
-    private reason: string;
-    
-    private static debug_time_counter := Stopwatch.StartNew;
-    private time: TimeSpan;
-    
-    public constructor(is_release: boolean; reason: string);
-    begin
-      self.is_release := is_release;
-      self.reason := reason;
-      self.time := debug_time_counter.Elapsed;
-    end;
-    
-    private function GetActStr := is_release ? 'Released' : 'Retained';
-    public function ToString: string; override :=
-    $'{time} | {GetActStr} when: {reason}';
-    
-  end;
-  EventDebug = static class
-    
-    {$region Retain/Release}
-    
-    private static RefCounter := new Dictionary<cl_event, List<EventRetainReleaseData>>;
-    private static function RefCounterFor(ev: cl_event): List<EventRetainReleaseData>;
-    begin
-      lock RefCounter do
-        if not RefCounter.TryGetValue(ev, Result) then
-        begin
-          Result := new List<EventRetainReleaseData>;
-          RefCounter[ev] := Result;
-        end;
-    end;
-    
-    public static procedure RegisterEventRetain(ev: cl_event; reason: string);
-    begin
-      var lst := RefCounterFor(ev);
-      lock lst do lst += new EventRetainReleaseData(false, reason);
-    end;
-    public static procedure RegisterEventRelease(ev: cl_event; reason: string);
-    begin
-      EventDebug.CheckExists(ev);
-      var lst := RefCounterFor(ev);
-      lock lst do lst += new EventRetainReleaseData(true, reason);
-    end;
-    
-    public static procedure ReportRefCounterInfo :=
-    lock output do lock RefCounter do
-    begin
-      
-      foreach var ev in RefCounter.Keys do
-      begin
-        $'Logging state change of {ev}'.Println;
-        var lst := RefCounter[ev];
-        var c := 0;
-        lock lst do
-          foreach var act in lst do
-          begin
-            if act.is_release then
-              c -= 1 else
-              c += 1;
-            $'{c,3} | {act}'.Println;
-          end;
-        Writeln('-'*30);
-      end;
-      
-      Writeln('='*40);
-      output.Flush;
-    end;
-    public static procedure CheckExists(ev: cl_event);
-    begin
-      var lst := RefCounterFor(ev);
-      lock lst do
-      begin
-        var c := 0;
-        foreach var act in lst do
-          if act.is_release then
-            c -= 1 else
-            c += 1;
-        if c<=0 then lock output do
-        begin
-          $'Event {ev} was released before last use at'.Println;
-          System.Environment.StackTrace.Println;
-          ReportRefCounterInfo;
-          Halt;
-        end;
-      end;
-    end;
-    
-    {$endregion Retain/Release}
-    
-  end;
-  
-{$endif EventDebug}{$endregion EventDebug}
-
 {$region Blittable}
 
 type
@@ -4726,6 +4766,7 @@ type
     
     public constructor(prev_cq: cl_command_queue; g: CLTaskGlobalData; l: CLTaskLocalData; capacity: integer);
     begin
+      self.prev_cq := prev_cq;
       self.g := g;
       self.l := l;
       self.branch_handlers.Capacity := capacity+1;
@@ -4748,7 +4789,13 @@ type
         g.curr_inv_cq := cl_command_queue.Zero;
         if prev_cq=cl_command_queue.Zero then
           prev_cq := cq else
-          Result.AttachCallback(true, ()->g.free_cqs.Add(cq), g.curr_err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
+          Result.AttachCallback(true, ()->
+          begin
+            {$ifdef QueueDebug}
+            QueueDebug.QueueUsesFor(cq).Add('----- return -----');
+            {$endif QueueDebug}
+            g.free_cqs.Add(cq);
+          end, g.curr_err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
       end;
     end;
     
@@ -4816,7 +4863,12 @@ type
       end;
       
       if curr_inv_cq<>cl_command_queue.Zero then
+      begin
+        {$ifdef QueueDebug}
+        QueueDebug.QueueUsesFor(curr_inv_cq).Add('----- last q -----');
+        {$endif QueueDebug}
         free_cqs.Add(curr_inv_cq);
+      end;
       
       foreach var cq in free_cqs do
         curr_err_handler.AddErr( cl.ReleaseCommandQueue(cq) );
@@ -6066,7 +6118,7 @@ type
     begin
       self.prev := marker.GetWaitHandler(g);
       prev.AddSub(self, 0);
-      self.uev := new UserEvent(g.cl_c);
+      self.uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'WaitHandlerOuter result'{$endif});
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
@@ -7311,9 +7363,15 @@ type
         exit;
       end;
       
+      // если enq_f асинхронное, чтоб следующая команда не записалась до его вызова - надо полностью забрать очередь
+      var cq := g.GetCQ(ev_l1<>nil);
+      {$ifdef QueueDebug}
+      QueueDebug.QueueUsesFor(cq).Add(q.GetType.ToString);
+      {$endif QueueDebug}
+      
       if ev_l1=nil then
       begin
-        var enq_ev := enq_f(g.GetCQ, err_handler, ev_l2, inv_data);
+        var enq_ev := enq_f(cq, err_handler, ev_l2, inv_data);
         {$ifdef EventDebug}
         EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
         {$endif EventDebug}
@@ -7322,8 +7380,6 @@ type
         Result := ev_l2 + enq_ev;
       end else
       begin
-        // Асинхронное Enqueue, чтоб следующая команда не записалась до enq_f - надо полностью забрать очередь
-        var cq := g.GetCQ(true);
         var res_ev := new UserEvent(g.cl_c
           {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1?.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
         );
