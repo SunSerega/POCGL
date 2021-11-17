@@ -1,0 +1,63 @@
+
+
+
+# clCommandCopyBufferRectKHR
+!limit_ovrs
+ *	| *	| *	| *	| *	| var UIntPtr	| var UIntPtr	| var UIntPtr	| *	| *	| *	| *	| *	| *	| *				| *								|
+ *	| *	| *	| *	| *	| IntPtr		| IntPtr		| IntPtr		| *	| *	| *	| *	| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *				| *				| *				| *	| *	| *	| *	| *	| *	| var UInt32	| *								|
+!possible_par_types
+ *	| *	| *	| *	| *	| *				| *				| *				| *	| *	| *	| *	| *	| *	| *				| -array of cl_mutable_command	|
+
+# clCommandCopyImageKHR
+!limit_ovrs
+ *	| *	| *	| *	| *	| var UIntPtr	| var UIntPtr	| var UIntPtr	| *	| *	| *				| *								|
+ *	| *	| *	| *	| *	| IntPtr		| IntPtr		| IntPtr		| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *				| *				| *				| *	| *	| var UInt32	| *								|
+!possible_par_types
+ *	| *	| *	| *	| *	| *				| *				| *				| *	| *	| *				| -array of cl_mutable_command	|
+
+# clCommandCopyBufferToImageKHR
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| var UIntPtr	| var UIntPtr	| *	| *	| *				| *								|
+ *	| *	| *	| *	| *	| *	| IntPtr		| IntPtr		| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| *				| *				| *	| *	| var UInt32	| *								|
+!possible_par_types
+ *	| *	| *	| *	| *	| *	| *				| *				| *	| *	| *				| -array of cl_mutable_command	|
+
+# clCommandCopyImageToBufferKHR
+!limit_ovrs
+ *	| *	| *	| *	| *	| var UIntPtr	| var UIntPtr	| *	| *	| *	| *				| *								|
+ *	| *	| *	| *	| *	| IntPtr		| IntPtr		| *	| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *				| *				| *	| *	| *	| var UInt32	| *								|
+!possible_par_types
+ *	| *	| *	| *	| *	| *				| *				| *	| *	| *	| *				| -array of cl_mutable_command	|
+
+
+
+# clCommandFillImageKHR
+!possible_par_types
+ *	| *	| *	| *	| -IntPtr +var T +IntPtr	| *				| *				| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *	| var T						| var UIntPtr	| var UIntPtr	| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *	| *							| *				| *				| *	| *	| var UInt32	| *								|
+!possible_par_types
+ *	| *	| *	| *	| *							| *				| *				| *	| *	| *				| -array of cl_mutable_command	|
+
+
+
+# clCommandNDRangeKernelKHR
+!limit_ovrs
+ *	| *	| *	| var UInt64	| *	| *	| var UIntPtr	| var UIntPtr	| var UIntPtr	| *	| *	| *				| *								|
+ *	| *	| *	| IntPtr		| *	| *	| IntPtr		| IntPtr		| IntPtr		| *	| *	| *				| *								|
+!limit_ovrs
+ *	| *	| *	| *				| *	| *	| *				| *				| *				| *	| *	| var UInt32	| *								|
+!possible_par_types
+ *	| *	| *	| *				| *	| *	| *				| *				| *				| *	| *	| *				| -array of cl_mutable_command	|
+
+
