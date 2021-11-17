@@ -19,7 +19,8 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) 
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetKernelSuggestedLocalWorkSizeKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueWaitSemaphoresKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueSignalSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: TypeTable key [cl_command_buffer_khr] wasn't used
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: TypeTable key [cl_mutable_command_khr] wasn't used
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandBarrierWithWaitListKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandCopyBufferKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandFillBufferKHR]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]

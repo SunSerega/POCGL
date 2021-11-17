@@ -359,6 +359,42 @@ type
     
   end;
   
+  CommandBufferInfoKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property COMMAND_BUFFER_QUEUES_KHR:           CommandBufferInfoKhr read new CommandBufferInfoKhr($1294);
+    public static property COMMAND_BUFFER_NUM_QUEUES_KHR:       CommandBufferInfoKhr read new CommandBufferInfoKhr($1295);
+    public static property COMMAND_BUFFER_REFERENCE_COUNT_KHR:  CommandBufferInfoKhr read new CommandBufferInfoKhr($1296);
+    public static property COMMAND_BUFFER_STATE_KHR:            CommandBufferInfoKhr read new CommandBufferInfoKhr($1297);
+    public static property COMMAND_BUFFER_PROPERTIES_ARRAY_KHR: CommandBufferInfoKhr read new CommandBufferInfoKhr($1298);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($1294) then Result := 'COMMAND_BUFFER_QUEUES_KHR' else
+      if self.val = UInt32($1295) then Result := 'COMMAND_BUFFER_NUM_QUEUES_KHR' else
+      if self.val = UInt32($1296) then Result := 'COMMAND_BUFFER_REFERENCE_COUNT_KHR' else
+      if self.val = UInt32($1297) then Result := 'COMMAND_BUFFER_STATE_KHR' else
+      if self.val = UInt32($1298) then Result := 'COMMAND_BUFFER_PROPERTIES_ARRAY_KHR' else
+        Result := $'CommandBufferInfoKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  CommandBufferPropertiesKhr = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property COMMAND_BUFFER_FLAGS_KHR: CommandBufferPropertiesKhr read new CommandBufferPropertiesKhr($1293);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($1293) then Result := 'COMMAND_BUFFER_FLAGS_KHR' else
+        Result := $'CommandBufferPropertiesKhr[{self.val}]';
+    end;
+    
+  end;
+  
   CommandExecutionStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -485,6 +521,7 @@ type
     public static property COMMAND_SVM_MAP:                             CommandType read new CommandType($120C);
     public static property COMMAND_SVM_UNMAP:                           CommandType read new CommandType($120D);
     public static property COMMAND_SVM_MIGRATE_MEM:                     CommandType read new CommandType($120E);
+    public static property COMMAND_COMMAND_BUFFER_KHR:                  CommandType read new CommandType($12A8);
     public static property COMMAND_GL_FENCE_SYNC_OBJECT_KHR:            CommandType read new CommandType($200D);
     public static property COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR:      CommandType read new CommandType($202B);
     public static property COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR:      CommandType read new CommandType($202C);
@@ -547,6 +584,7 @@ type
       if self.val = UInt32($120C) then Result := 'COMMAND_SVM_MAP' else
       if self.val = UInt32($120D) then Result := 'COMMAND_SVM_UNMAP' else
       if self.val = UInt32($120E) then Result := 'COMMAND_SVM_MIGRATE_MEM' else
+      if self.val = UInt32($12A8) then Result := 'COMMAND_COMMAND_BUFFER_KHR' else
       if self.val = UInt32($200D) then Result := 'COMMAND_GL_FENCE_SYNC_OBJECT_KHR' else
       if self.val = UInt32($202B) then Result := 'COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR' else
       if self.val = UInt32($202C) then Result := 'COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR' else
@@ -973,6 +1011,8 @@ type
     public static property DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES_KHR:                          DeviceInfo read new DeviceInfo($1073);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT_KHR:          DeviceInfo read new DeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED_KHR: DeviceInfo read new DeviceInfo($1075);
+    public static property DEVICE_COMMAND_BUFFER_CAPABILITIES_KHR:                               DeviceInfo read new DeviceInfo($12A9);
+    public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES_KHR:                  DeviceInfo read new DeviceInfo($12AA);
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                                      DeviceInfo read new DeviceInfo($2031);
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                                   DeviceInfo read new DeviceInfo($2035);
     public static property DEVICE_SEMAPHORE_TYPES_KHR:                                           DeviceInfo read new DeviceInfo($204C);
@@ -1173,6 +1213,8 @@ type
       if self.val = UInt32($1073) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES_KHR' else
       if self.val = UInt32($1074) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT_KHR' else
       if self.val = UInt32($1075) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED_KHR' else
+      if self.val = UInt32($12A9) then Result := 'DEVICE_COMMAND_BUFFER_CAPABILITIES_KHR' else
+      if self.val = UInt32($12AA) then Result := 'DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES_KHR' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY_KHR' else
       if self.val = UInt32($2035) then Result := 'DEVICE_MAX_NAMED_BARRIER_COUNT_KHR' else
       if self.val = UInt32($204C) then Result := 'DEVICE_SEMAPHORE_TYPES_KHR' else
@@ -1571,6 +1613,9 @@ type
     public static property ERROR_RESERVED1_IMG:                         ErrorCode read new ErrorCode(-1123);
     public static property ERROR_RESERVED2_IMG:                         ErrorCode read new ErrorCode(-1124);
     public static property ERROR_RESERVED3_IMG:                         ErrorCode read new ErrorCode(-1125);
+    public static property INVALID_COMMAND_BUFFER_KHR:                  ErrorCode read new ErrorCode(-1138);
+    public static property INVALID_SYNC_POINT_WAIT_LIST_KHR:            ErrorCode read new ErrorCode(-1139);
+    public static property INCOMPATIBLE_COMMAND_QUEUE_KHR:              ErrorCode read new ErrorCode(-1140);
     public static property INVALID_SEMAPHORE_KHR:                       ErrorCode read new ErrorCode(-1142);
     public static property NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE:         ErrorCode read new ErrorCode(-9999);
     
@@ -1678,6 +1723,9 @@ type
       if self.val = Int32(-1123) then Result := 'ERROR_RESERVED1_IMG' else
       if self.val = Int32(-1124) then Result := 'ERROR_RESERVED2_IMG' else
       if self.val = Int32(-1125) then Result := 'ERROR_RESERVED3_IMG' else
+      if self.val = Int32(-1138) then Result := 'INVALID_COMMAND_BUFFER_KHR' else
+      if self.val = Int32(-1139) then Result := 'INVALID_SYNC_POINT_WAIT_LIST_KHR' else
+      if self.val = Int32(-1140) then Result := 'INCOMPATIBLE_COMMAND_QUEUE_KHR' else
       if self.val = Int32(-1142) then Result := 'INVALID_SEMAPHORE_KHR' else
       if self.val = Int32(-9999) then Result := 'NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
         Result := $'ErrorCode[{self.val}]';
@@ -11386,35 +11434,6 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelArgMemPointerINTEL(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): ErrorCode :=
     z_SetKernelArgMemPointerINTEL_ovr_0(kernel, arg_index, arg_value);
     
-    private static function z_EnqueueMemsetINTEL_ovr_0(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
-    private static function z_EnqueueMemsetINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event) else
-      z_EnqueueMemsetINTEL_ovr_0_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event);
-    private static function z_EnqueueMemsetINTEL_ovr_1(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
-    private static function z_EnqueueMemsetINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
-    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
-      z_EnqueueMemsetINTEL_ovr_1(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event) else
-      z_EnqueueMemsetINTEL_ovr_1_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    z_EnqueueMemsetINTEL_ovr_1(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMemsetINTEL_ovr_4(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    z_EnqueueMemsetINTEL_ovr_4(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
-    private static function z_EnqueueMemsetINTEL_ovr_5(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    z_EnqueueMemsetINTEL_ovr_5(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
-    
     private static function z_EnqueueMemFillINTEL_ovr_0(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl.dll' name 'clEnqueueMemFillINTEL';
     private static function z_EnqueueMemFillINTEL_ovr_0_anh000000010(command_queue: cl_command_queue; dst_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
@@ -11530,6 +11549,35 @@ type
     external 'opencl.dll' name 'clEnqueueMigrateMemINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemINTEL(command_queue: cl_command_queue; ptr: IntPtr; size: UIntPtr; flags: MemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueMigrateMemINTEL_ovr_5(command_queue, ptr, size, flags, num_events_in_wait_list, event_wait_list, &event);
+    
+    private static function z_EnqueueMemsetINTEL_ovr_0(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
+    private static function z_EnqueueMemsetINTEL_ovr_0_anh00000010(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueMemsetINTEL_ovr_0_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueMemsetINTEL_ovr_1(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
+    private static function z_EnqueueMemsetINTEL_ovr_1_anh00000010(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueMemsetINTEL_ovr_1(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueMemsetINTEL_ovr_1_anh00000010(command_queue, dst_ptr, value, size, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueMemsetINTEL_ovr_0(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueMemsetINTEL_ovr_1(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueMemsetINTEL_ovr_4(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueMemsetINTEL_ovr_4(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueMemsetINTEL_ovr_5(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueMemsetINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMemsetINTEL(command_queue: cl_command_queue; dst_ptr: IntPtr; value: Int32; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueMemsetINTEL_ovr_5(command_queue, dst_ptr, value, size, num_events_in_wait_list, event_wait_list, &event);
     
   end;
   
@@ -13409,13 +13457,1137 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
-  clPoclContentSize = static class
+  clContentSizePOCL = static class
     public const _ExtStr = 'pocl_content_size';
     
     private static function z_SetContentSizeBufferPoCL_ovr_0(buffer: cl_mem; content_size_buffer: cl_mem): ErrorCode;
     external 'opencl.dll' name 'clSetContentSizeBufferPoCL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetContentSizeBufferPoCL(buffer: cl_mem; content_size_buffer: cl_mem): ErrorCode :=
     z_SetContentSizeBufferPoCL_ovr_0(buffer, content_size_buffer);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  clCommandBufferKHR = static class
+    public const _ExtStr = 'khr_command_buffer';
+    
+    private static function z_CreateCommandBufferKHR_ovr_0(num_queues: UInt32; var queues: cl_command_queue; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    private static function z_CreateCommandBufferKHR_ovr_0_anh00100(num_queues: UInt32; queues: IntPtr; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    private static function z_CreateCommandBufferKHR_ovr_0_anh00010(num_queues: UInt32; var queues: cl_command_queue; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    private static function z_CreateCommandBufferKHR_ovr_0_anh00110(num_queues: UInt32; queues: IntPtr; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; properties: array of CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    if (queues<>nil) and (queues.Length<>0) then
+      if (properties<>nil) and (properties.Length<>0) then
+        z_CreateCommandBufferKHR_ovr_0(num_queues, queues[0], properties[0], errcode_ret) else
+        z_CreateCommandBufferKHR_ovr_0_anh00010(num_queues, queues[0], IntPtr.Zero, errcode_ret) else
+      if (properties<>nil) and (properties.Length<>0) then
+        z_CreateCommandBufferKHR_ovr_0_anh00100(num_queues, IntPtr.Zero, properties[0], errcode_ret) else
+        z_CreateCommandBufferKHR_ovr_0_anh00110(num_queues, IntPtr.Zero, IntPtr.Zero, errcode_ret);
+    private static function z_CreateCommandBufferKHR_ovr_1_anh00100(num_queues: UInt32; queues: IntPtr; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    if (queues<>nil) and (queues.Length<>0) then
+      z_CreateCommandBufferKHR_ovr_0(num_queues, queues[0], properties, errcode_ret) else
+      z_CreateCommandBufferKHR_ovr_0_anh00100(num_queues, IntPtr.Zero, properties, errcode_ret);
+    private static function z_CreateCommandBufferKHR_ovr_2(num_queues: UInt32; var queues: cl_command_queue; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    private static function z_CreateCommandBufferKHR_ovr_2_anh00100(num_queues: UInt32; queues: IntPtr; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    if (queues<>nil) and (queues.Length<>0) then
+      z_CreateCommandBufferKHR_ovr_2(num_queues, queues[0], properties, errcode_ret) else
+      z_CreateCommandBufferKHR_ovr_2_anh00100(num_queues, IntPtr.Zero, properties, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; properties: array of CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    if (properties<>nil) and (properties.Length<>0) then
+      z_CreateCommandBufferKHR_ovr_0(num_queues, queues, properties[0], errcode_ret) else
+      z_CreateCommandBufferKHR_ovr_0_anh00010(num_queues, queues, IntPtr.Zero, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    z_CreateCommandBufferKHR_ovr_0(num_queues, queues, properties, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    z_CreateCommandBufferKHR_ovr_2(num_queues, queues, properties, errcode_ret);
+    private static function z_CreateCommandBufferKHR_ovr_6(num_queues: UInt32; queues: IntPtr; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    private static function z_CreateCommandBufferKHR_ovr_6_anh00010(num_queues: UInt32; queues: IntPtr; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; queues: IntPtr; properties: array of CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    if (properties<>nil) and (properties.Length<>0) then
+      z_CreateCommandBufferKHR_ovr_6(num_queues, queues, properties[0], errcode_ret) else
+      z_CreateCommandBufferKHR_ovr_6_anh00010(num_queues, queues, IntPtr.Zero, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; queues: IntPtr; var properties: CommandBufferPropertiesKhr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    z_CreateCommandBufferKHR_ovr_6(num_queues, queues, properties, errcode_ret);
+    private static function z_CreateCommandBufferKHR_ovr_8(num_queues: UInt32; queues: IntPtr; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
+    external 'opencl.dll' name 'clCreateCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateCommandBufferKHR(num_queues: UInt32; queues: IntPtr; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer :=
+    z_CreateCommandBufferKHR_ovr_8(num_queues, queues, properties, errcode_ret);
+    
+    private static function z_FinalizeCommandBufferKHR_ovr_0(command_buffer: cl_command_buffer): ErrorCode;
+    external 'opencl.dll' name 'clFinalizeCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function FinalizeCommandBufferKHR(command_buffer: cl_command_buffer): ErrorCode :=
+    z_FinalizeCommandBufferKHR_ovr_0(command_buffer);
+    
+    private static function z_RetainCommandBufferKHR_ovr_0(command_buffer: cl_command_buffer): ErrorCode;
+    external 'opencl.dll' name 'clRetainCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function RetainCommandBufferKHR(command_buffer: cl_command_buffer): ErrorCode :=
+    z_RetainCommandBufferKHR_ovr_0(command_buffer);
+    
+    private static function z_ReleaseCommandBufferKHR_ovr_0(command_buffer: cl_command_buffer): ErrorCode;
+    external 'opencl.dll' name 'clReleaseCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function ReleaseCommandBufferKHR(command_buffer: cl_command_buffer): ErrorCode :=
+    z_ReleaseCommandBufferKHR_ovr_0(command_buffer);
+    
+    private static function z_EnqueueCommandBufferKHR_ovr_0(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_0_anh0010000(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_0_anh0000010(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_0_anh0010010(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (queues<>nil) and (queues.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueCommandBufferKHR_ovr_0(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueCommandBufferKHR_ovr_0_anh0000010(num_queues, queues[0], command_buffer, num_events_in_wait_list, IntPtr.Zero, &event) else
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueCommandBufferKHR_ovr_0_anh0010000(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueCommandBufferKHR_ovr_0_anh0010010(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_1(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_1_anh0010000(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_1_anh0000010(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_1_anh0010010(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (queues<>nil) and (queues.Length<>0) then
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueCommandBufferKHR_ovr_1(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueCommandBufferKHR_ovr_1_anh0000010(num_queues, queues[0], command_buffer, num_events_in_wait_list, IntPtr.Zero, &event) else
+      if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueCommandBufferKHR_ovr_1_anh0010000(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueCommandBufferKHR_ovr_1_anh0010010(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_2_anh0010000(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    if (queues<>nil) and (queues.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_0(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueCommandBufferKHR_ovr_0_anh0010000(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_3_anh0010000(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    if (queues<>nil) and (queues.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_1(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueCommandBufferKHR_ovr_1_anh0010000(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_4(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_4_anh0010000(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    if (queues<>nil) and (queues.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_4(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueCommandBufferKHR_ovr_4_anh0010000(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_5(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_5_anh0010000(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    if (queues<>nil) and (queues.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_5(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list, &event) else
+      z_EnqueueCommandBufferKHR_ovr_5_anh0010000(num_queues, IntPtr.Zero, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_0(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueCommandBufferKHR_ovr_0_anh0000010(num_queues, queues, command_buffer, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_1(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueCommandBufferKHR_ovr_1_anh0000010(num_queues, queues, command_buffer, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_0(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_1(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_4(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; var queues: cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_5(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_12(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_12_anh0000010(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_12(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueCommandBufferKHR_ovr_12_anh0000010(num_queues, queues, command_buffer, num_events_in_wait_list, IntPtr.Zero, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_13(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    private static function z_EnqueueCommandBufferKHR_ovr_13_anh0000010(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueCommandBufferKHR_ovr_13(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueCommandBufferKHR_ovr_13_anh0000010(num_queues, queues, command_buffer, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_12(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_13(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_16(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_16(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    private static function z_EnqueueCommandBufferKHR_ovr_17(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clEnqueueCommandBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueCommandBufferKHR_ovr_17(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list, &event);
+    
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000011(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_0_anh0000111(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle[0]) else
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], IntPtr.Zero) else
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle[0]) else
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000011(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, IntPtr.Zero) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle[0]) else
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000101(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], IntPtr.Zero) else
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000110(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle[0]) else
+          z_CommandBarrierWithWaitListKHR_ovr_0_anh0000111(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_1_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_1_anh0000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_1_anh0000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle) else
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle) else
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000110(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_2_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_2_anh0000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_2_anh0000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_2(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle) else
+        z_CommandBarrierWithWaitListKHR_ovr_2_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_2_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle) else
+        z_CommandBarrierWithWaitListKHR_ovr_2_anh0000110(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_3_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_3_anh0000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000101(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, IntPtr.Zero);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_4_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_0_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_5_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_2(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_2_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_6_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_6_anh0000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_6_anh0000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_6(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_6_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_6_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_6_anh0000101(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, IntPtr.Zero);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_7_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_6(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_6_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_8_anh0000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_8(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_8_anh0000100(command_buffer, command_queue, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_0_anh0000011(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_0_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_2(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_2_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandBarrierWithWaitListKHR_ovr_0_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_0(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_2(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_6(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandBarrierWithWaitListKHR_ovr_6_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_6(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_8(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_18(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_18_anh0000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_18_anh0000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_18_anh0000011(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_18(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_18_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandBarrierWithWaitListKHR_ovr_18_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle[0]) else
+        z_CommandBarrierWithWaitListKHR_ovr_18_anh0000011(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_19_anh0000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_18(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_18_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_20(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_20_anh0000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_20(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandBarrierWithWaitListKHR_ovr_20_anh0000010(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_18(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandBarrierWithWaitListKHR_ovr_18_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_18(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_20(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_24(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    private static function z_CommandBarrierWithWaitListKHR_ovr_24_anh0000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandBarrierWithWaitListKHR_ovr_24(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandBarrierWithWaitListKHR_ovr_24_anh0000001(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_24(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandBarrierWithWaitListKHR_ovr_26(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandBarrierWithWaitListKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandBarrierWithWaitListKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandBarrierWithWaitListKHR_ovr_26(command_buffer, command_queue, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandCopyBufferKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000011(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_0_anh000000000111(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle[0]) else
+          z_CommandCopyBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], IntPtr.Zero) else
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandCopyBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle[0]) else
+          z_CommandCopyBufferKHR_ovr_0_anh000000000011(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, IntPtr.Zero) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandCopyBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle[0]) else
+          z_CommandCopyBufferKHR_ovr_0_anh000000000101(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], IntPtr.Zero) else
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandCopyBufferKHR_ovr_0_anh000000000110(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle[0]) else
+          z_CommandCopyBufferKHR_ovr_0_anh000000000111(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+    private static function z_CommandCopyBufferKHR_ovr_1_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_1_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_1_anh000000000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle) else
+        z_CommandCopyBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle) else
+        z_CommandCopyBufferKHR_ovr_0_anh000000000110(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_2_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_2_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_2_anh000000000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_2(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle) else
+        z_CommandCopyBufferKHR_ovr_2_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_2_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle) else
+        z_CommandCopyBufferKHR_ovr_2_anh000000000110(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_3_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_3_anh000000000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_0_anh000000000101(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, IntPtr.Zero);
+    private static function z_CommandCopyBufferKHR_ovr_4_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_5_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_2(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_2_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_6_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_6_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_6_anh000000000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_6_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_6_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_6_anh000000000101(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, IntPtr.Zero);
+    private static function z_CommandCopyBufferKHR_ovr_7_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_6_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_8_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_8(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_8_anh000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_0_anh000000000011(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_2(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_2_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandCopyBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_2(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandCopyBufferKHR_ovr_6_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_8(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_18(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_18_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_18_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_18_anh000000000011(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_18(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_18_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandCopyBufferKHR_ovr_18_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle[0]) else
+        z_CommandCopyBufferKHR_ovr_18_anh000000000011(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_CommandCopyBufferKHR_ovr_19_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_18(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_18_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_20(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_20_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_20(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandCopyBufferKHR_ovr_20_anh000000000010(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_18(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandCopyBufferKHR_ovr_18_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_18(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_20(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_24(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    private static function z_CommandCopyBufferKHR_ovr_24_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandCopyBufferKHR_ovr_24(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandCopyBufferKHR_ovr_24_anh000000000001(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_24(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferKHR_ovr_26(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_offset: UIntPtr; dst_offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferKHR_ovr_26(command_buffer, command_queue, src_buffer, dst_buffer, src_offset, dst_offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandCopyBufferRectKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    private static function z_CommandCopyBufferRectKHR_ovr_0_anh0000000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferRectKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferRectKHR_ovr_0_anh0000000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    private static function z_CommandCopyBufferRectKHR_ovr_1_anh0000000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferRectKHR_ovr_1(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferRectKHR_ovr_1_anh0000000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_1(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_4(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_5(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    private static function z_CommandCopyBufferRectKHR_ovr_6_anh0000000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferRectKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferRectKHR_ovr_6_anh0000000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    private static function z_CommandCopyBufferRectKHR_ovr_7_anh0000000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferRectKHR_ovr_7(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferRectKHR_ovr_7_anh0000000000000100(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_7(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_10(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_10(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferRectKHR_ovr_11(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferRectKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferRectKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; src_row_pitch: UIntPtr; src_slice_pitch: UIntPtr; dst_row_pitch: UIntPtr; dst_slice_pitch: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferRectKHR_ovr_11(command_buffer, command_queue, src_buffer, dst_buffer, src_origin, dst_origin, region, src_row_pitch, src_slice_pitch, dst_row_pitch, dst_slice_pitch, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandCopyBufferToImageKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    private static function z_CommandCopyBufferToImageKHR_ovr_0_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferToImageKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferToImageKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    private static function z_CommandCopyBufferToImageKHR_ovr_1_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferToImageKHR_ovr_1(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferToImageKHR_ovr_1_anh000000000100(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_0(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_1(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_4(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_5(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    private static function z_CommandCopyBufferToImageKHR_ovr_6_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferToImageKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferToImageKHR_ovr_6_anh000000000100(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    private static function z_CommandCopyBufferToImageKHR_ovr_7_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyBufferToImageKHR_ovr_7(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyBufferToImageKHR_ovr_7_anh000000000100(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_6(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_7(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_10(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_10(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyBufferToImageKHR_ovr_11(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyBufferToImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyBufferToImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_buffer: cl_mem; dst_image: cl_mem; src_offset: UIntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyBufferToImageKHR_ovr_11(command_buffer, command_queue, src_buffer, dst_image, src_offset, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandCopyImageKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    private static function z_CommandCopyImageKHR_ovr_0_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageKHR_ovr_0(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    private static function z_CommandCopyImageKHR_ovr_1_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageKHR_ovr_1(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageKHR_ovr_1_anh000000000100(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_0(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_1(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_4(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; var src_origin: UIntPtr; var dst_origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_5(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    private static function z_CommandCopyImageKHR_ovr_6_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageKHR_ovr_6(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageKHR_ovr_6_anh000000000100(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    private static function z_CommandCopyImageKHR_ovr_7_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageKHR_ovr_7(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageKHR_ovr_7_anh000000000100(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_6(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_7(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_10(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_10(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageKHR_ovr_11(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; src_origin: IntPtr; dst_origin: IntPtr; region: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageKHR_ovr_11(command_buffer, command_queue, src_image, dst_image, src_origin, dst_origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandCopyImageToBufferKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    private static function z_CommandCopyImageToBufferKHR_ovr_0_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageToBufferKHR_ovr_0(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageToBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    private static function z_CommandCopyImageToBufferKHR_ovr_1_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageToBufferKHR_ovr_1(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageToBufferKHR_ovr_1_anh000000000100(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_0(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_1(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_4(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; var src_origin: UIntPtr; var region: UIntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_5(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    private static function z_CommandCopyImageToBufferKHR_ovr_6_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageToBufferKHR_ovr_6(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageToBufferKHR_ovr_6_anh000000000100(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    private static function z_CommandCopyImageToBufferKHR_ovr_7_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandCopyImageToBufferKHR_ovr_7(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandCopyImageToBufferKHR_ovr_7_anh000000000100(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_6(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_7(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_10(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_10(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandCopyImageToBufferKHR_ovr_11(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandCopyImageToBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandCopyImageToBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; src_image: cl_mem; dst_buffer: cl_mem; src_origin: IntPtr; region: IntPtr; dst_offset: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandCopyImageToBufferKHR_ovr_11(command_buffer, command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandFillBufferKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000011(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_0_anh000000000111(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle[0]) else
+          z_CommandFillBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], IntPtr.Zero) else
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandFillBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle[0]) else
+          z_CommandFillBufferKHR_ovr_0_anh000000000011(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, IntPtr.Zero) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandFillBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle[0]) else
+          z_CommandFillBufferKHR_ovr_0_anh000000000101(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], IntPtr.Zero) else
+        if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+          z_CommandFillBufferKHR_ovr_0_anh000000000110(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle[0]) else
+          z_CommandFillBufferKHR_ovr_0_anh000000000111(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+    private static function z_CommandFillBufferKHR_ovr_1_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_1_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_1_anh000000000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle) else
+        z_CommandFillBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandFillBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle) else
+        z_CommandFillBufferKHR_ovr_0_anh000000000110(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_2_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_2_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_2_anh000000000110(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandFillBufferKHR_ovr_2(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle) else
+        z_CommandFillBufferKHR_ovr_2_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], IntPtr.Zero, mutable_handle) else
+      if (sync_point<>nil) and (sync_point.Length<>0) then
+        z_CommandFillBufferKHR_ovr_2_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point[0], mutable_handle) else
+        z_CommandFillBufferKHR_ovr_2_anh000000000110(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, IntPtr.Zero, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_3_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_3_anh000000000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_0_anh000000000101(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, IntPtr.Zero);
+    private static function z_CommandFillBufferKHR_ovr_4_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandFillBufferKHR_ovr_0_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_5_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandFillBufferKHR_ovr_2(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandFillBufferKHR_ovr_2_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_6_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_6_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_6_anh000000000101(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_6(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_6_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_6_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_6_anh000000000101(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, IntPtr.Zero);
+    private static function z_CommandFillBufferKHR_ovr_7_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandFillBufferKHR_ovr_6(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandFillBufferKHR_ovr_6_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_8_anh000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandFillBufferKHR_ovr_8(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandFillBufferKHR_ovr_8_anh000000000100(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_0_anh000000000011(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandFillBufferKHR_ovr_0_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandFillBufferKHR_ovr_2(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandFillBufferKHR_ovr_2_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandFillBufferKHR_ovr_0_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_0(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_2(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandFillBufferKHR_ovr_6(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandFillBufferKHR_ovr_6_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_6(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_8(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_18(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_18_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_18_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_18_anh000000000011(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_18(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_18_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], IntPtr.Zero) else
+      if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        z_CommandFillBufferKHR_ovr_18_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle[0]) else
+        z_CommandFillBufferKHR_ovr_18_anh000000000011(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, IntPtr.Zero);
+    private static function z_CommandFillBufferKHR_ovr_19_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandFillBufferKHR_ovr_18(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandFillBufferKHR_ovr_18_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_20(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_20_anh000000000010(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: array of UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point<>nil) and (sync_point.Length<>0) then
+      z_CommandFillBufferKHR_ovr_20(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point[0], mutable_handle) else
+      z_CommandFillBufferKHR_ovr_20_anh000000000010(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, IntPtr.Zero, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandFillBufferKHR_ovr_18(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandFillBufferKHR_ovr_18_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_18(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_20(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_24(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    private static function z_CommandFillBufferKHR_ovr_24_anh000000000001(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: array of cl_mutable_command): ErrorCode :=
+    if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+      z_CommandFillBufferKHR_ovr_24(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle[0]) else
+      z_CommandFillBufferKHR_ovr_24_anh000000000001(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_24(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandFillBufferKHR_ovr_26(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillBufferKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandFillBufferKHR_ovr_26(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_CommandFillImageKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillImageKHR';
+    private static function z_CommandFillImageKHR_ovr_0_anh00000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode; where T: record;
+    begin
+      if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+        Result := z_CommandFillImageKHR_ovr_0(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+        Result := z_CommandFillImageKHR_ovr_0_anh00000000100(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    end;
+    private static function z_CommandFillImageKHR_ovr_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillImageKHR';
+    private static function z_CommandFillImageKHR_ovr_1_anh00000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode; where T: record;
+    begin
+      if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+        Result := z_CommandFillImageKHR_ovr_1(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+        Result := z_CommandFillImageKHR_ovr_1_anh00000000100(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode; where T: record;
+    begin
+      Result := z_CommandFillImageKHR_ovr_0(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode; where T: record;
+    begin
+      Result := z_CommandFillImageKHR_ovr_1(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    end;
+    private static function z_CommandFillImageKHR_ovr_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode; where T: record;
+    begin
+      Result := z_CommandFillImageKHR_ovr_4(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    end;
+    private static function z_CommandFillImageKHR_ovr_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandFillImageKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode; where T: record;
+    begin
+      Result := z_CommandFillImageKHR_ovr_5(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    end;
+    
+    private static function z_CommandNDRangeKernelKHR_ovr_0(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    private static function z_CommandNDRangeKernelKHR_ovr_0_anh0000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandNDRangeKernelKHR_ovr_0(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandNDRangeKernelKHR_ovr_0_anh0000000000100(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    private static function z_CommandNDRangeKernelKHR_ovr_1_anh0000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandNDRangeKernelKHR_ovr_1(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandNDRangeKernelKHR_ovr_1_anh0000000000100(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_0(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_1(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_4(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_5(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    private static function z_CommandNDRangeKernelKHR_ovr_6_anh0000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandNDRangeKernelKHR_ovr_6(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandNDRangeKernelKHR_ovr_6_anh0000000000100(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    private static function z_CommandNDRangeKernelKHR_ovr_7_anh0000000000100(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+      z_CommandNDRangeKernelKHR_ovr_7(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point, mutable_handle) else
+      z_CommandNDRangeKernelKHR_ovr_7_anh0000000000100(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, IntPtr.Zero, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_6(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_7(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_10(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_10(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    private static function z_CommandNDRangeKernelKHR_ovr_11(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clCommandNDRangeKernelKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandNDRangeKernelKHR_ovr_11(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function z_GetCommandBufferInfoKHR_ovr_0(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetCommandBufferInfoKHR';
+    private static function z_GetCommandBufferInfoKHR_ovr_0_anh000001(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetCommandBufferInfoKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: array of UIntPtr): ErrorCode :=
+    if (param_value_size_ret<>nil) and (param_value_size_ret.Length<>0) then
+      z_GetCommandBufferInfoKHR_ovr_0(command_buffer, param_name, param_value_size, param_value, param_value_size_ret[0]) else
+      z_GetCommandBufferInfoKHR_ovr_0_anh000001(command_buffer, param_name, param_value_size, param_value, IntPtr.Zero);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetCommandBufferInfoKHR_ovr_0(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
+    private static function z_GetCommandBufferInfoKHR_ovr_2(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetCommandBufferInfoKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetCommandBufferInfoKHR_ovr_2(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   

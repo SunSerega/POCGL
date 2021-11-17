@@ -230,6 +230,42 @@
     
   end;
   
+  CommandBufferInfoKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property COMMAND_BUFFER_QUEUES_KHR:           CommandBufferInfoKhr read new CommandBufferInfoKhr($1294);
+    public static property COMMAND_BUFFER_NUM_QUEUES_KHR:       CommandBufferInfoKhr read new CommandBufferInfoKhr($1295);
+    public static property COMMAND_BUFFER_REFERENCE_COUNT_KHR:  CommandBufferInfoKhr read new CommandBufferInfoKhr($1296);
+    public static property COMMAND_BUFFER_STATE_KHR:            CommandBufferInfoKhr read new CommandBufferInfoKhr($1297);
+    public static property COMMAND_BUFFER_PROPERTIES_ARRAY_KHR: CommandBufferInfoKhr read new CommandBufferInfoKhr($1298);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($1294) then Result := 'COMMAND_BUFFER_QUEUES_KHR' else
+      if self.val = UInt32($1295) then Result := 'COMMAND_BUFFER_NUM_QUEUES_KHR' else
+      if self.val = UInt32($1296) then Result := 'COMMAND_BUFFER_REFERENCE_COUNT_KHR' else
+      if self.val = UInt32($1297) then Result := 'COMMAND_BUFFER_STATE_KHR' else
+      if self.val = UInt32($1298) then Result := 'COMMAND_BUFFER_PROPERTIES_ARRAY_KHR' else
+        Result := $'CommandBufferInfoKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  CommandBufferPropertiesKhr = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property COMMAND_BUFFER_FLAGS_KHR: CommandBufferPropertiesKhr read new CommandBufferPropertiesKhr($1293);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($1293) then Result := 'COMMAND_BUFFER_FLAGS_KHR' else
+        Result := $'CommandBufferPropertiesKhr[{self.val}]';
+    end;
+    
+  end;
+  
   CommandExecutionStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -356,6 +392,7 @@
     public static property COMMAND_SVM_MAP:                             CommandType read new CommandType($120C);
     public static property COMMAND_SVM_UNMAP:                           CommandType read new CommandType($120D);
     public static property COMMAND_SVM_MIGRATE_MEM:                     CommandType read new CommandType($120E);
+    public static property COMMAND_COMMAND_BUFFER_KHR:                  CommandType read new CommandType($12A8);
     public static property COMMAND_GL_FENCE_SYNC_OBJECT_KHR:            CommandType read new CommandType($200D);
     public static property COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR:      CommandType read new CommandType($202B);
     public static property COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR:      CommandType read new CommandType($202C);
@@ -418,6 +455,7 @@
       if self.val = UInt32($120C) then Result := 'COMMAND_SVM_MAP' else
       if self.val = UInt32($120D) then Result := 'COMMAND_SVM_UNMAP' else
       if self.val = UInt32($120E) then Result := 'COMMAND_SVM_MIGRATE_MEM' else
+      if self.val = UInt32($12A8) then Result := 'COMMAND_COMMAND_BUFFER_KHR' else
       if self.val = UInt32($200D) then Result := 'COMMAND_GL_FENCE_SYNC_OBJECT_KHR' else
       if self.val = UInt32($202B) then Result := 'COMMAND_ACQUIRE_DX9_MEDIA_SURFACES_KHR' else
       if self.val = UInt32($202C) then Result := 'COMMAND_RELEASE_DX9_MEDIA_SURFACES_KHR' else
@@ -844,6 +882,8 @@
     public static property DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES_KHR:                          DeviceInfo read new DeviceInfo($1073);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT_KHR:          DeviceInfo read new DeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED_KHR: DeviceInfo read new DeviceInfo($1075);
+    public static property DEVICE_COMMAND_BUFFER_CAPABILITIES_KHR:                               DeviceInfo read new DeviceInfo($12A9);
+    public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES_KHR:                  DeviceInfo read new DeviceInfo($12AA);
     public static property DEVICE_TERMINATE_CAPABILITY_KHR:                                      DeviceInfo read new DeviceInfo($2031);
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT_KHR:                                   DeviceInfo read new DeviceInfo($2035);
     public static property DEVICE_SEMAPHORE_TYPES_KHR:                                           DeviceInfo read new DeviceInfo($204C);
@@ -1044,6 +1084,8 @@
       if self.val = UInt32($1073) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES_KHR' else
       if self.val = UInt32($1074) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT_KHR' else
       if self.val = UInt32($1075) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED_KHR' else
+      if self.val = UInt32($12A9) then Result := 'DEVICE_COMMAND_BUFFER_CAPABILITIES_KHR' else
+      if self.val = UInt32($12AA) then Result := 'DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES_KHR' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY_KHR' else
       if self.val = UInt32($2035) then Result := 'DEVICE_MAX_NAMED_BARRIER_COUNT_KHR' else
       if self.val = UInt32($204C) then Result := 'DEVICE_SEMAPHORE_TYPES_KHR' else
@@ -1442,6 +1484,9 @@
     public static property ERROR_RESERVED1_IMG:                         ErrorCode read new ErrorCode(-1123);
     public static property ERROR_RESERVED2_IMG:                         ErrorCode read new ErrorCode(-1124);
     public static property ERROR_RESERVED3_IMG:                         ErrorCode read new ErrorCode(-1125);
+    public static property INVALID_COMMAND_BUFFER_KHR:                  ErrorCode read new ErrorCode(-1138);
+    public static property INVALID_SYNC_POINT_WAIT_LIST_KHR:            ErrorCode read new ErrorCode(-1139);
+    public static property INCOMPATIBLE_COMMAND_QUEUE_KHR:              ErrorCode read new ErrorCode(-1140);
     public static property INVALID_SEMAPHORE_KHR:                       ErrorCode read new ErrorCode(-1142);
     public static property NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE:         ErrorCode read new ErrorCode(-9999);
     
@@ -1549,6 +1594,9 @@
       if self.val = Int32(-1123) then Result := 'ERROR_RESERVED1_IMG' else
       if self.val = Int32(-1124) then Result := 'ERROR_RESERVED2_IMG' else
       if self.val = Int32(-1125) then Result := 'ERROR_RESERVED3_IMG' else
+      if self.val = Int32(-1138) then Result := 'INVALID_COMMAND_BUFFER_KHR' else
+      if self.val = Int32(-1139) then Result := 'INVALID_SYNC_POINT_WAIT_LIST_KHR' else
+      if self.val = Int32(-1140) then Result := 'INCOMPATIBLE_COMMAND_QUEUE_KHR' else
       if self.val = Int32(-1142) then Result := 'INVALID_SEMAPHORE_KHR' else
       if self.val = Int32(-9999) then Result := 'NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
         Result := $'ErrorCode[{self.val}]';

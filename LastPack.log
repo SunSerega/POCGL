@@ -36,8 +36,9 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) 
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetKernelSuggestedLocalWorkSizeKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueWaitSemaphoresKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueSignalSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: TypeTable key [cl_command_buffer_khr] wasn't used
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: TypeTable key [cl_mutable_command_khr] wasn't used
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandBarrierWithWaitListKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandCopyBufferKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandFillBufferKHR]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]
 ===================================== OpenGL =====================================
@@ -125,8 +126,17 @@ Tester: Compiling: OK
 Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
-Tester: Compiling: OK
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.td"
+Tester: Compiling: Compile errоrs:
+Tester: Compiling: System.IndexOutOfRangeException: Index was outside the bounds of the array.
+Tester: Compiling:    at PascalABCCompiler.TreeConverter.syntax_tree_visitor.visit(statement_list _statement_list)
+Tester: Compiling:    at PascalABCCompiler.TreeConverter.syntax_tree_visitor.convert_strong(statement st)
+Tester: Compiling:    at PascalABCCompiler.TreeConverter.syntax_tree_visitor.visit_program_code(statement_list program_code)
+Tester: Compiling:    at PascalABCCompiler.TreeConverter.syntax_tree_visitor.visit(block _block)
+Tester: Compiling:    at PascalABCCompiler.TreeConverter.syntax_tree_visitor.visit(program_module _program_module)
+Tester: Compiling:    at PascalABCCompiler.TreeConverter.SyntaxTreeToSemanticTreeConverter.CompileInterface(compilation_unit SyntaxUnit, unit_node_list UsedUnits, List`1 ErrorsList, List`1 WarningsList, SyntaxError parser_errоr, Hashtable bad_nodes, using_namespace_list namespaces, Dictionary`2 docs, Boolean debug, Boolean debugging, Boolean for_intellisense, List`1 CompiledVariables)
+Tester: Compiling:    at PascalABCCompiler.Compiler.CompileUnit(unit_node_list Units, Dictionary`2 DirectCompilationUnits, unit_or_namespace SyntaxUsesUnit, String prev_path)
+Tester: Compiling:    at PascalABCCompiler.Compiler.Compile()
+Tester: Compiling: 
 Tester: Compiling "Tests\Exec\GL\Det.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
@@ -141,8 +151,7 @@ Tester: Executing Test[Samples\OpenCL\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCL\SimpleAddition]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
-Tester: Done executing
+Tester: WARNING: Test[C:\0Prog\POCGL\Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь] wasn't executed because of prior errоrs
 Tester: Executing Test[Tests\Exec\GL\Det]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
@@ -154,7 +163,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

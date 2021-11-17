@@ -26,8 +26,9 @@ Type conversion for [cl_mem_info_intel] not found, so base type [uint32_t] conve
 Type conversion for [cl_mem_advice_intel] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_semaphore_payload_khr] not found, so base type [uint64_t] converted to [UInt64]
 Invalid ext name [CL], replaced with []
+Type conversion for [cl_sync_point_khr] not found, so base type [uint32_t] converted to [UInt32]
+Type conversion for [cl_ndrange_kernel_command_properties_khr] not found, so base type [uint64_t] converted to [UInt64]
 Ext group [LOADER] of ext [loader_layers] is not supported
-Ext group [POCL] of ext [pocl_content_size] is not supported
 Struct [cl_dx9_surface_info_khr] was skipped
 Struct [cl_motion_estimation_desc_intel] was skipped
 Struct [cl_mem_ext_host_ptr] was skipped
@@ -51,8 +52,11 @@ Group [CommandQueueCapabilitiesIntel] was skipped
 Group [DeviceFeatureCapabilitiesIntel] was skipped
 Group [DeviceIntegerDotProductCapabilitiesKhr] was skipped
 Group [SemaphoreTypeKhr] was skipped
+Group [CommandBufferFlagsKhr] was skipped
+Group [CommandBufferStateKhr] was skipped
 Group [KhronosVendorId] was skipped
 Group [DeviceSvmCapabilitiesArm] was skipped
 Group [UnifiedSharedMemoryTypeIntel] was skipped
 Group [ExternalMemoryHandleTypeKhr] was skipped
+Group [DeviceCommandBufferCapabilitiesKhr] was skipped
 done

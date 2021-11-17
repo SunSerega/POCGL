@@ -227,8 +227,8 @@ var Int32 = var ErrorCode
 
 # clEnqueueNDRangeKernel
 !limit_ovrs
- *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *						|
- *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *						|
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *	|
 
 # clEnqueueNativeKernel
 !possible_par_types
