@@ -60,11 +60,6 @@ unit OpenCLABC;
 //TODO Q1*Q2 + Q3
 // - cl_command_queue из Q1 можно использовать в Q3
 
-//TODO Выкинуть:
-// - https://github.com/SunSerega/POCGL/blob/433c3238a79f41db42b1489f8ba21d0da9e9487b/Tests/Tester.pas#L465
-
-//TODO В кодогенерированной части вызывать invoker.InvokeBranch(prev_q.Invoke), то есть без лямбды
-
 //===================================
 // Запланированное:
 
@@ -102,13 +97,19 @@ unit OpenCLABC;
 
 //TODO Исправить перегрузки Kernel.Exec
 
+//TODO Тестировщик должен запускать отдельные .exe для тестирования, а не вот это вот всё
+
 //===================================
 // Сделать когда-нибуть:
 
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
 
-//TODO Посмотреть как можно использовать cl_khr_semaphore, когда добавят в мой драйвер
+//TODO Слишком новые фичи, которые могут много чего изменить:
+// - cl_khr_command_buffer
+// --- Буферы, хранящие список комманд
+// - cl_khr_semaphore
+// --- Как cl_event, но многоразовые
 
 //===================================
 
@@ -2565,18 +2566,19 @@ type
   {$endregion UserEvent}
   
   CLTaskBranchInvoker = sealed class
+    private prev_cq: cl_command_queue;
     private g: CLTaskGlobalData;
     private l: CLTaskLocalData;
     private branch_handlers := new List<CLTaskErrHandler>;
     
-    public constructor(g: CLTaskGlobalData; l: CLTaskLocalData; capacity: integer);
+    public constructor(prev_cq: cl_command_queue; g: CLTaskGlobalData; l: CLTaskLocalData; capacity: integer);
     begin
       self.g := g;
       self.l := l;
       self.branch_handlers.Capacity := capacity+1;
       branch_handlers += g.curr_err_handler;
     end;
-    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
+    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     function InvokeBranch(branch: (CLTaskGlobalData, CLTaskLocalData)->EventList): EventList;
@@ -2588,10 +2590,13 @@ type
       g.curr_err_handler := prev_err_handler;
       
       var cq := g.curr_inv_cq;
-      if cq=cl_command_queue.Zero then exit;
-      g.curr_inv_cq := cl_command_queue.Zero;
-      
-      Result.AttachCallback(true, ()->g.free_cqs.Add(cq), g.curr_err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
+      if cq<>cl_command_queue.Zero then
+      begin
+        g.curr_inv_cq := cl_command_queue.Zero;
+        if prev_cq=cl_command_queue.Zero then
+          prev_cq := cq else
+          Result.AttachCallback(true, ()->g.free_cqs.Add(cq), g.curr_err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
+      end;
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -2623,19 +2628,19 @@ type
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     procedure ParallelInvoke(l: CLTaskLocalData; capacity: integer; use: CLTaskBranchInvoker->());
     begin
+      
+      var invoker := new CLTaskBranchInvoker(self.curr_inv_cq, self, l, capacity);
       // Нельзя использовать уже существующую очередь для веток, они должны начинать выполняться сразу
-      var cq := self.curr_inv_cq;
       curr_inv_cq := cl_command_queue.Zero;
       
-      var invoker := new CLTaskBranchInvoker(self, l, capacity);
       use(invoker);
+      
       {$ifdef DEBUG}
       if invoker.branch_handlers.Count<>capacity+1 then raise new System.InvalidOperationException;
       {$endif DEBUG}
       self.curr_err_handler := new CLTaskErrHandler(invoker.branch_handlers.ToArray, true);
       
-      if cq<>cl_command_queue.Zero then
-        self.curr_inv_cq := cq;
+      self.curr_inv_cq := invoker.prev_cq;
     end;
     
     public procedure FinishInvoke;

@@ -37,11 +37,14 @@ cl_device_id				= cl_device_id
 cl_context					= cl_context
 cl_command_queue			= cl_command_queue
 cl_sampler					= cl_sampler
-cl_semaphore_khr			= cl_semaphore
 cl_program					= cl_program
 cl_kernel					= cl_kernel
 cl_event					= cl_event
 cl_accelerator_intel		= cl_accelerator_intel
+
+cl_semaphore_khr			= cl_semaphore
+cl_command_buffer_khr		= cl_command_buffer
+cl_mutable_command_khr		= cl_mutable_command
 
 //--------------------------------------------------
 //                     Untested

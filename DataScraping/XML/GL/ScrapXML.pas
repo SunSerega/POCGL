@@ -7,6 +7,8 @@ var allowed_api := HSet(
   'glx'
 );
 
+var enum_without_group := new List<string>;
+
 type
   LogCache = static class
     
@@ -184,14 +186,15 @@ type
             log.WriteLine($'Group [{gname}] isn''t defined');
         end;
         
-      end;// else
-//      if is_enum then
-//        on_used += ()->
-//          if LogCache.func_with_enum_without_group.Add(func_name) then
+      end else
+      if is_enum then
+        on_used += ()->
+          if LogCache.func_with_enum_without_group.Add(func_name) then
+            //TODO func_name, похоже, используется только для этого
+            enum_without_group += func_name;
 //            Otp(func_name);
 //            log.WriteLine($'Command [{func_name}] has enum parameter without group');
-      
-      var TODO := 0; //TODO расскоментировать когда группы приведут в кое-какой порядк
+      var TODO := 0;
       
     end;
     
@@ -464,6 +467,8 @@ begin
     ScrapFile('gl');
     ScrapFile('wgl');
     ScrapFile('glx');
+    //TODO Убрать
+    enum_without_group.WriteLines(GetFullPathRTA('enum_without_group.txt'));
     
     foreach var fname in xmls do
       log.WriteLine($'File [{fname}] wasn''t used');

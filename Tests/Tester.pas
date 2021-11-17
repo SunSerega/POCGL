@@ -101,7 +101,6 @@ type
     
     static all_loaded := new List<TestInfo>;
     static unused_test_files := new HashSet<string>;
-    static domain_unload_otps := new List<AsyncProcOtp>;
     
     {$endregion global testing info}
     
@@ -458,29 +457,16 @@ type
         dom.GetData('Result') as string,
         dom.GetData('Err') as string
       );
-      var du_otp := new AsyncProcOtp(nil);
-      domain_unload_otps += du_otp;
-      StartBgThread(()->
       try
-        // Иначе сыпятся AppDomainUnloadedException
-        // Как минимум потому, что код HPQ может продолжать выполнятся (к примеру finally блок),
-        // после того как параллельная ветка умноженных очередей кинула исключение и таким образом завершила всю очередь
-        //TODO ... может считать кол-во потоков процесса до и после выполнения? Хотя хак не сильно лучше чем просто Sleep...
-        // - Вообще лучше добавить в OpenCLABC функционал для ожидания оставшихся потоков
-        Sleep(100);
-        try
-          System.AppDomain.Unload(dom);
-        except
-          on e: System.CannotUnloadAppDomainException do
-          begin
-            du_otp.Enq($'Error unloading domain of {nick}: {e}');
-            Readln;
-          end;
-        end;
-        du_otp.Finish;
+        Sleep(50); //TODO Конечно костыль - но надо запускать отдельный .exe, а не домен, иначе не исправить
+        System.AppDomain.Unload(dom);
       except
-        on e: Exception do ErrOtp(e);
-      end);
+        on e: System.CannotUnloadAppDomainException do
+        begin
+          Otp($'Error unloading domain of {nick}: {e}');
+          Readln;
+        end;
+      end;
     end;
     
     static function TryExecWaitTest(td_fname: string; all_executed: HashSet<TestInfo>): boolean;
@@ -739,10 +725,6 @@ type
           
         end;
       
-      foreach var du_otp in domain_unload_otps do
-        foreach var l in du_otp do
-          Otp(l);
-      
     end;
     
     {$endregion Cleanup}
@@ -759,10 +741,10 @@ begin
     TestInfo.LoadAll('Samples',     HSet('Comp'));
     TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
     (*)
-    TestInfo.allowed_modules += 'OpenCL';
+    TestInfo.auto_update := true;
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('Samples\OpenCLABC\Прекомпиляция ProgramCode',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\',  HSet('Comp','Exec'));
     (**)
     
     try

@@ -11,8 +11,8 @@ begin
     
     Otp($'Fixing all');
     Group.FixCL_Names;
-    Feature.FixCL_ErrCodeRet;
-    Extension.FixCL_ErrCodeRet;
+    Feature.FixCL;
+    Extension.FixCL;
     ApplyFixers;
     MarkUsed;
     

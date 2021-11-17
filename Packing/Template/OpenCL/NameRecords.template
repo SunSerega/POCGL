@@ -43,13 +43,6 @@
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
     public function ToString: string; override := $'cl_sampler[{val}]';
   end;
-  cl_semaphore = record
-    public val: IntPtr;
-    public constructor(val: IntPtr) := self.val := val;
-    public static property Zero: cl_semaphore read default(cl_semaphore);
-    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
-    public function ToString: string; override := $'cl_semaphore[{val}]';
-  end;
   cl_program = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -77,6 +70,28 @@
     public static property Zero: cl_accelerator_intel read default(cl_accelerator_intel);
     public static property Size: integer read Marshal.SizeOf&<IntPtr>;
     public function ToString: string; override := $'cl_accelerator_intel[{val}]';
+  end;
+  
+  cl_semaphore = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: cl_semaphore read default(cl_semaphore);
+    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_semaphore[{val}]';
+  end;
+  cl_command_buffer = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: cl_command_buffer read default(cl_command_buffer);
+    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_command_buffer[{val}]';
+  end;
+  cl_mutable_command = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public static property Zero: cl_mutable_command read default(cl_mutable_command);
+    public static property Size: integer read Marshal.SizeOf&<IntPtr>;
+    public function ToString: string; override := $'cl_mutable_command[{val}]';
   end;
   
   

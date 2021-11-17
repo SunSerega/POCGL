@@ -800,13 +800,23 @@ type
       end);
     end;
     
-    private procedure FixCL_ErrCodeRet;
+    private procedure FixCL;
     begin
-      if org_par.Length=1 then exit;
-      if org_par[org_par.Length-1].GetTName <> 'ErrorCode' then exit;
-      InitPossibleParTypes;
-      possible_par_types[org_par.Length-1].RemoveAt(2);
-      possible_par_types[org_par.Length-1].RemoveAt(0);
+      var last_pars := org_par?[^1:0:-1];
+      
+      if (last_pars.Length>=1) and (last_pars[0].GetTName = 'ErrorCode') then
+      begin
+        InitPossibleParTypes;
+        possible_par_types[^1].RemoveAt(2);
+        possible_par_types[^1].RemoveAt(0);
+      end else
+      if (last_pars.Length>=2) and last_pars.Take(2).All(par->(par.GetTName='cl_event') and (par.ptr=1)) then
+      begin
+        InitPossibleParTypes;
+        possible_par_types[^1].RemoveAt(0);
+//        possible_par_types[^2].RemoveAt(0);
+      end;
+      
     end;
     
     {$endregion PPT}
@@ -1550,12 +1560,12 @@ type
       
     end;
     
-    public static procedure FixCL_ErrCodeRet :=
+    public static procedure FixCL :=
     foreach var lst in Feature.ByApi.Values do
       foreach var f in lst do
       begin
-        foreach var fnc in f.add do fnc.FixCL_ErrCodeRet;
-        foreach var fnc in f.rem do fnc.FixCL_ErrCodeRet;
+        foreach var fnc in f.add do fnc.FixCL;
+        foreach var fnc in f.rem do fnc.FixCL;
       end;
     
     private procedure MarkUsed;
@@ -1761,10 +1771,10 @@ type
       
     end;
     
-    public static procedure FixCL_ErrCodeRet :=
+    public static procedure FixCL :=
     foreach var ext in All do
       foreach var f in ext.add do
-        f.FixCL_ErrCodeRet;
+        f.FixCL;
     
     private procedure MarkUsed;
     begin
@@ -2475,23 +2485,37 @@ type
       f.InitOverloads;
       
       var expected_ovr_l := f.org_par.Length - integer(f.is_proc);
-      foreach var ovr in ovrs do
+      foreach var ovr in self.ovrs do
         if ovr.pars.Length<>expected_ovr_l then
           raise new MessageException($'ERROR: [FuncLimitOvrsFixer] of func [{f.name}] had wrong param count: {f.org_par.Length} org vs {ovr.pars.Length+integer(f.is_proc)} custom');
       
-      var unused_t_ovrs := self.ovrs.ToList;
+      var unused_t_ovrs := self.ovrs.ToHashSet;
+      var limited_pars := new boolean[expected_ovr_l];
+      
       f.all_overloads.RemoveAll(fovr->
         not self.ovrs.Any(tovr->
         begin
-          Result := tovr.pars.Zip(fovr.pars,
-            (tp,fp)-> (tp.tname='*') or (tp=fp)
-          ).All(b->b);
+          Result := true;
+          for var i := 0 to tovr.pars.Length-1 do
+            //TODO #???? - operator<> не работает, потому что обе стороны зачем то преобразовывает к object
+            if not(tovr.pars[i]=fovr.pars[i]) then
+            begin
+              limited_pars[i] := true;
+              if tovr.pars[i].tname<>'*' then
+              begin
+                Result := false;
+                break;
+              end;
+            end;
           if Result then unused_t_ovrs.Remove(tovr);
         end)
       );
       
       foreach var ovr in unused_t_ovrs do
-        Otp($'WARNING: [FuncLimitOvrsFixer] of func [{f.name}] hasn''t used mask {_ObjectToString(ovr)}');
+        Otp($'WARNING: [FuncLimitOvrsFixer] of func [{f.name}] has not used mask {_ObjectToString(ovr)}');
+      
+      if limited_pars.Any(b->not b) then
+        Otp($'WARNING: [FuncLimitOvrsFixer] of func [{f.name}] has not limited par: {Range(0,expected_ovr_l-1).Where(i->not limited_pars[i]).JoinToString}');
       
       self.used := true;
       Result := false;
