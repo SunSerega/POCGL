@@ -52,26 +52,15 @@ unit OpenCLABC;
 //TODO Q1 + (Q2+Q3*Q4)*(Q5+Q6*Q7) + Q8
 // - Отмена выполнения при ошибке?
 
-//TODO QErr+M
-// - Сохранение ошибок из QErr и M.SendSignal оба находятся в AttachCallback
-// - Но ведь у него не определён порядок выполнения колбеков... Не годится
-// - То есть придётся заменять err_handler после каждой из синхронно-вызванных очередей
-// - Нет, лучше создавать новые ErrHandler-ы прямо перед .ParallelInvoke
-// - Правда случай (Q1*Q2) * Q3 без инлайна будет создавать лишний хэндлер
-// - И что насчёт Q1 * A.AddWriteValue(HFQ, HFQ)
-// - Можно хранить, был ли использован хэндлер, и если нет - брать его refs, вместо его самого
-// - Добавить в тесты
-
 //TODO Справка:
 // - M1/M2 - M3
 // - HandleExceptions/ThenFinally
-// - .ThenUse(o->(a := o)) как альтернатива .ReadData(@a, sizeof(a))
-
-//TODO Q1*Q2 + Q3
-// - cl_command_queue из Q1 можно использовать в Q3
 
 //===================================
 // Запланированное:
+
+//TODO CLValue<T> = class, содержащий указатель на значение
+// - Чтоб и .ReadValue работало, и меньше действий проводить на стороне CPU
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
@@ -4437,12 +4426,12 @@ type
   CLTaskErrHandler = class
     public local_err_lst := new List<Exception>;
     public prev: array of CLTaskErrHandler;
-    public fill_prev_errors: boolean;
+    public fill_prev: boolean;
     
-    public constructor(prev: array of CLTaskErrHandler; fill_prev_errors: boolean);
+    public constructor(prev: array of CLTaskErrHandler; fill_prev: boolean);
     begin
       self.prev := prev;
-      self.fill_prev_errors := fill_prev_errors;
+      self.fill_prev := fill_prev;
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
@@ -4490,7 +4479,7 @@ type
     public procedure FillErrLst(lst: List<Exception>);
     begin
       lst.AddRange(local_err_lst);
-      if not fill_prev_errors then exit;
+      if not fill_prev then exit;
       foreach var h in prev do
         h.FillErrLst(lst);
     end;
@@ -4509,7 +4498,7 @@ type
     public curr_inv_cq: cl_command_queue;
     private free_cqs := new System.Collections.Concurrent.ConcurrentBag<cl_command_queue>;
     
-    public curr_err_handler := new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, true);
+    public curr_err_handler := new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, false);
     
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
@@ -4778,9 +4767,11 @@ type
     function InvokeBranch(branch: (CLTaskGlobalData, CLTaskLocalData)->EventList): EventList;
     begin
       var prev_err_handler := g.curr_err_handler;
-      g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler|, false);
-      branch_handlers += g.curr_err_handler;
+      g.curr_err_handler := new CLTaskErrHandler(|prev_err_handler|, false);
+      
       Result := branch(g, l);
+      
+      branch_handlers += g.curr_err_handler; // Нельзя до вызова branch - его там могут подменить
       g.curr_err_handler := prev_err_handler;
       
       var cq := g.curr_inv_cq;
@@ -4877,7 +4868,7 @@ type
       if curr_err_handler.HadError{$ifdef DEBUG} or true{$endif DEBUG} then
         curr_err_handler.FillErrLst(err_lst);
       {$ifdef DEBUG}
-      if not curr_err_handler.HadError and (err_lst.Count<>0) then
+      if curr_err_handler.HadError <> (err_lst.Count<>0) then
         raise new System.InvalidOperationException;
       {$endif DEBUG}
     end;
