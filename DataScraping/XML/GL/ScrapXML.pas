@@ -211,6 +211,8 @@ type
       if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');
       bw.Write(ind);
       
+      bw.Write(false); // base_t - onlt relevant for OpenCL, because there is no class's
+      
     end;
     
   end;

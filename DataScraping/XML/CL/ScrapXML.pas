@@ -91,9 +91,9 @@ type
         if All.TryGetValue(def, prev) then
         begin
           prev.UnRollDef;
-          self.ptr          += prev.ptr;
-          self.name         := prev.name;
-          self.def          := nil;
+          self.ptr  += prev.ptr;
+          self.name := prev.name;
+          self.def  := nil;
         end else
         if LogCache.missing_type_def.Add(def) then
           log.WriteLine($'Type [{def}] is referenced but not defined');
@@ -273,6 +273,7 @@ type
     private readonly: boolean;
     private ptr: integer;
     private gr: Group := nil;
+    private base_t: (string, integer);
     
     public constructor(n: XmlNode);
     begin
@@ -313,12 +314,11 @@ type
       begin
         var td: TypeDef;
         if not TypeDef.All.TryGetValue(self.t, td) then
-        begin
-          Otp($'WARNING: Type [{self.t}] is not manually defined');
-          td := new TypeDef(self.t);
-        end;
-        self.ptr += td.ptr;
-        self.t := td.name;
+          Otp($'WARNING: Type [{self.t}] is not manually defined') else
+        if td.name<>self.t then
+          self.base_t := (td.name, td.ptr) else
+        if td.ptr<>0 then
+          self.ptr += td.ptr;
       end;
       
     end;
@@ -335,6 +335,13 @@ type
       var ind := gr=nil ? -1 : grs.IndexOf(gr);
       if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');
       bw.Write(ind);
+      
+      bw.Write(base_t<>nil);
+      if base_t<>nil then
+      begin
+        bw.Write(base_t[0]);
+        bw.Write(base_t[1]);
+      end;
       
     end;
     
@@ -386,7 +393,7 @@ type
     
   end;
   FuncData = sealed class
-    // первая пара - имя функции и возвращаемое значение
+    // У первого ParData - название это имя функции, а тип - возвращаемое значение
     private pars := new List<ParData>;
     
     public static All := new Dictionary<string, FuncData>;
@@ -403,7 +410,7 @@ type
       var last_par := pars[pars.Count-1];
       if last_par.name = 'errcode_ret' then
         last_par.gr := Group.All['ErrorCode'] else
-      if (pars[0].t='int32_t') and (pars[0].ptr=0) then
+      if (pars[0].t='cl_int') and (pars[0].ptr=0) then
         pars[0].gr := Group.All['ErrorCode'] else
         log.WriteLine($'Func [{pars[0].name}] had no err code return');
       

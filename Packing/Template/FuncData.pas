@@ -22,6 +22,7 @@ type
   LogCache = static class
     static invalid_ext_names  := new HashSet<string>;
     static invalid_ntv_types  := new HashSet<string>;
+    static base_t_used        := new HashSet<string>;
     static loged_ffo          := new HashSet<string>; // final func ovrs
   end;
   
@@ -51,10 +52,20 @@ type
       end;
     end;
     
-    public static function Convert(ntv_t: string): string;
+    public static function Convert(ntv_t: string; base_t: (string, integer)): string;
     begin
       if All.TryGetValue(ntv_t, Result) then
         Used += ntv_t else
+      if (base_t<>nil) and All.TryGetValue(base_t[0], Result) then
+      begin
+        if LogCache.base_t_used.Add(ntv_t) then
+          log.Otp($'Type conversion for [{ntv_t}] not found, so base type [{base_t[0]}] converted to [{Result}]');
+        if base_t[1]>0 then
+          Result += new string('*', base_t[1]) else
+        if base_t[1]<0 then
+          Result += new string('-', -base_t[1]);
+        Used += base_t[0];
+      end else
       begin
         Result := ntv_t;
         if LogCache.invalid_ntv_types.Add(ntv_t) then
@@ -102,7 +113,7 @@ type
     begin
       
       name := br.ReadString;
-      t := TypeTable.Convert(br.ReadString);
+      t := TypeTable.Convert(br.ReadString, nil);
       if TypeTable.All.ContainsKey(name) then
         Otp($'ERROR: Record name [{name}] in TypeTable') else
         TypeTable.All.Add(name, name);
@@ -293,21 +304,29 @@ type
     public constructor(br: System.IO.BinaryReader);
     begin
       self.name := br.ReadString;
-      self.t := TypeTable.Convert(br.ReadString);
+      self.t := br.ReadString;
       self.rep_c := br.ReadInt64;
       
       if br.ReadBoolean then raise new System.NotSupportedException; // readonly
       
-      self.ptr := br.ReadInt32 - self.t.Count(ch->ch='-');
-      if self.ptr<0 then raise new System.InvalidOperationException;
-//      if self.ptr>0 then raise new System.NotSupportedException(name); // cl_dx9_surface_info_khr содержит поле-указатель
-      self.t := self.t.Remove('-').Trim;
+      self.ptr := br.ReadInt32;
       
       // static_arr_len
       if br.ReadInt32 <> -1 then raise new System.NotSupportedException;
       
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
+      
+      var base_t: (string, integer) := nil;
+      if br.ReadBoolean then
+        base_t := (br.ReadString, br.ReadInt32);
+      
+      self.t := TypeTable.Convert(self.t, base_t);
+      self.ptr -= self.t.Count(ch->ch='-');
+      if self.ptr<0 then raise new System.InvalidOperationException;
+//      if self.ptr>0 then raise new System.NotSupportedException(name); // cl_dx9_surface_info_khr содержит поле-указатель
+      self.t := self.t.Remove('-').Trim;
+      
     end;
     
     public procedure FixT :=
@@ -524,7 +543,7 @@ type
   FuncOrgParam = sealed class
     public name, t: string;
     public readonly: boolean;
-    public ptr: integer := 0;
+    public ptr: integer;
     public static_arr_len: integer;
     public gr: Group;
     
@@ -544,12 +563,7 @@ type
       self.name := br.ReadString;
       if not proto and (self.name.ToLower in pas_keywords) then self.name := '&'+self.name;
       
-      var ntv_t := br.ReadString;
-      self.t := ntv_t in KnownClasses ?
-        ConvertClassName(ntv_t) :
-        TypeTable.Convert(ntv_t);
-      self.ptr += self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
-      self.t := self.t.Remove('*','-').Trim;
+      self.t := br.ReadString;
       
       var rep_c := br.ReadInt64;
       if rep_c<>1 then
@@ -560,24 +574,43 @@ type
       end;
       
       self.readonly := br.ReadBoolean;
-      if self.t.StartsWith('const ') then
-      begin
-        self.readonly := true;
-        self.t := self.t.Remove(0, 'const '.Length);
-      end;
       
-      self.ptr += br.ReadInt32;
-      if self.ptr<0 then
-      begin
-        if proto and (ntv_t.ToLower='void') and (ptr=-1) then // void конвертирует в IntPtr-
-          self.t := nil else
-          raise new MessageException($'ERROR: par [{name}] with type [{ntv_t}] got negative ref count: [{self.ptr}]');
-      end;
+      self.ptr := br.ReadInt32;
       
       self.static_arr_len := br.ReadInt32;
       
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
+      
+      var base_t: (string, integer) := nil;
+      if br.ReadBoolean then
+        base_t := (br.ReadString, br.ReadInt32);
+      
+      if self.t in KnownClasses then
+      begin
+        if base_t<>nil then raise new System.InvalidOperationException;
+        self.t := ConvertClassName(self.t);
+      end else
+      if proto and (self.t.ToLower='void') and (ptr=0) then
+      begin
+        if base_t<>nil then raise new System.InvalidOperationException;
+        self.t := nil;
+      end else
+      begin
+        self.t := TypeTable.Convert(self.t, base_t);
+        
+        self.ptr += self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
+        self.t := self.t.Remove('*','-').Trim;
+        if self.ptr<0 then
+          raise new MessageException($'ERROR: par [{name}] with type [{self.t}] got negative ref count: [{self.ptr}]');
+        
+        if self.t.StartsWith('const ') then
+        begin
+          self.readonly := true;
+          self.t := self.t.Remove(0, 'const '.Length);
+        end;
+        
+      end;
       
     end;
     
@@ -641,12 +674,15 @@ type
     public pars: array of FuncParamT;
     public constructor(pars: array of FuncParamT) := self.pars := pars;
     
-    public static function operator=(ovr1, ovr2: FuncOverload): boolean :=
-    ovr1.pars.Zip(ovr2.pars, (par1,par2)->par1=par2).All(b->b);
+    public static function operator=(ovr1, ovr2: FuncOverload): boolean;
+    begin
+      if ovr1.pars.Length<>ovr2.pars.Length then raise new System.InvalidOperationException;
+      Result := ovr1.pars.Zip(ovr2.pars, (par1,par2)->par1=par2).All(b->b);
+    end;
     
     public function Equals(other: FuncOverload) := self=other;
-    
-    public function GetHashCode: integer; override := pars.Last.tname.GetHashCode;
+    public function GetHashCode: integer; override :=
+    pars.Where(par->par.tname<>nil).Aggregate(0, (res,par)->res xor par.tname.GetHashCode);
     
   end;
   
@@ -829,14 +865,13 @@ type
       if all_overloads<>nil then exit;
       InitPossibleParTypes;
       
-      all_overloads := new List<FuncOverload>(
-        possible_par_types.Select(types->types.Count).Product
-      );
-      var overloads := Seq&<sequence of FuncParamT>(Seq&<FuncParamT>());
-      
+      var overloads := |System.Linq.Enumerable.Empty&<FuncParamT>|.AsEnumerable;
       foreach var types in possible_par_types do
         overloads := overloads.SelectMany(ovr->types.Select(t->ovr.Append(t)));
       
+      all_overloads := new List<FuncOverload>(
+        possible_par_types.Select(types->types.Count).Product
+      );
       foreach var ovr in overloads do
       begin
         var enmr := ovr.GetEnumerator();
@@ -1214,7 +1249,7 @@ type
           .Foreach((nil_arr_par_flags, nil_arr_hlp_ovr_i)->
           begin
             var curr_ovr_holey := new FuncOverload( ms.ConvertAll((m,par_i)->nil_arr_par_flags[par_i] ? arr_hlp_ovr_par : m?.par) );
-            var curr_ovr := new FuncOverload( curr_ovr_holey.pars.ConvertAll((par,par_i)->par as object=nil ? ovr.pars[par_i] : par) );
+            var curr_ovr := new FuncOverload( curr_ovr_holey.pars.ConvertAll((par,par_i)->par ?? ovr.pars[par_i]) );
             
             {$region Name construction}
             

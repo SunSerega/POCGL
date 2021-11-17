@@ -55,7 +55,6 @@ GLhalfNV				=Half
 GLfixed					=Fixed
 
 void 					=IntPtr -
-VOID					=IntPtr -
 LPVOID					=IntPtr
 HANDLE					=IntPtr
 
