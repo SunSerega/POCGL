@@ -45,9 +45,12 @@ Descriptions[OpenCLABC]: WARNING: key %WaitForAll(sequence of WaitMarkerBase)% w
 Descriptions[OpenCLABC]: WARNING: key %WaitForAny(array of WaitMarkerBase)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %WaitForAny(sequence of WaitMarkerBase)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %WaitMarkerBase% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitMarkerBase.SendSignal% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %WaitMarker% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %WaitMarker.% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.(CommandQueue<T>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.SendSignal% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(Exception)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(ErrorCode)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(CommandExecutionStatus)% wasn't used!
@@ -61,6 +64,8 @@ Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenError(Action<CLTask<T>, arr
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitMarker% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitMarker% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitFor(WaitMarkerBase)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitFor(WaitMarkerBase)% wasn't used!

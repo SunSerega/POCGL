@@ -8,7 +8,7 @@ end;
 
 Test(WaitMarker.Create);
 
-var Q := HFQ(()->5).ThenWaitMarker;
+var Q := HFQ(()->5).ThenMarkerSignal;
 Test(Q);
 Test(WaitMarker(Q));
 Test(WaitFor(Q) * Q);

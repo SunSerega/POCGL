@@ -16,7 +16,7 @@ begin
 end;
 Writeln('-'*10);
 begin
-  var QErr := HPQ(()->raise new Exception('ErrorOK')).ThenFinallyWaitMarker;
+  var QErr := HPQ(()->raise new Exception('ErrorOK')).ThenFinallyMarkerSignal;
   var t := Context.Default.BeginInvoke(WaitFor(QErr)+HPQ(()->Writeln(2)));
   Context.Default.SyncInvoke(QErr.HandleWithoutRes(e->
   begin

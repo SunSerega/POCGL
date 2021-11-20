@@ -39,20 +39,12 @@ unit OpenCLABC;
 // - И то же самое для cl.ReleaseEvent и т.п. - они возвращают диагностику внутренней проблемы
 // --- OpenCLABCInnerException.RaiseIfError(cl.ReleaseEvent(ev));
 
-//TODO .ThenWaitMarker vs .ThenFinallyWaitMarker
-//TODO .ThenWaitFor vs .ThenFinallyWaitFor
-// - Нужны обе версии, потому что бывают разные ситуации
-// - Нет, Q.ThenFinallyWaitFor это (WaitFor*Q)
-// --- Если конечно не говорить, что .ThenFinallyWaitFor пожирает ожидание только когда выполнилось всё что можно было до него
-// --- Вопрос - надо ли это?
-// - Всё всё всё в тесты
-//TODO И лучше переименовать .ThenWaitMarker в .ThenMarkerSignal, логичней будет звучать
-// - А PseudoWaitMarker в DetachedMarkerSignal
-
 //TODO WaitFor( WaitAll(seq1) or WaitAll(seq2) )
 // - И так же WaitAny
 
 //TODO Тесты:
+// - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
+// - .ThenWaitFor vs .ThenFinallyWaitFor vs (WaitFor*QErr)
 
 //TODO Справка:
 // - M1 and M2 or M3
@@ -73,9 +65,17 @@ unit OpenCLABC;
 // --- (QErr.ThenFinallyWaitMarker) работает как (QErr >= M), но возвращает результат
 // ----- В тесты
 // - WaitFor теперь тратит выполненность только если небыло предыдущих ошибок
+// - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
+// - .ThenWaitFor vs .ThenFinallyWaitFor
+// - .ThenFinallyWaitFor пожирает ожидание только когда выполнилось всё что можно было до него, иначе можно (WaitFor*QErr)
 
 //===================================
 // Запланированное:
+
+//TODO Избавится от lock
+
+//TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
+// - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
 
 //TODO .AddProc(()->p()) сейчас вызывает .AddProc(c->p()), но делает это лямбдой
 // - При выводе .ToString выглядит криво - стоит сделать пользовательский класс для этого
@@ -2555,22 +2555,21 @@ type
     
   end;
   
-  ///Представляет псевдо-маркер для Wait очередей, являющийся обёрткой очереди с возвращаемым значением
-  ///Этот тип является наследником CommandQueue<T>, а значит он не может наследовать сразу и от WaitMarkerBase
-  ///Но при присвоении или передаче параметром он разлагается в обычный маркер, поэтому его можно передавать в любые Wait очереди
-  PseudoWaitMarker<T> = sealed partial class(CommandQueue<T>)
+  DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
     private q: CommandQueue<T>;
     private wrap: WaitMarker;
+    private signal_in_finally: boolean;
     
-    public constructor(q: CommandQueue<T>; marker_in_finally: boolean);
+    public property SignalInFinally: boolean read signal_in_finally;
+    
+    public constructor(q: CommandQueue<T>; signal_in_finally: boolean);
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    public static function operator implicit(pmarker: PseudoWaitMarker<T>): WaitMarker := pmarker.wrap;
+    public static function operator implicit(dms: DetachedMarkerSignal<T>): WaitMarker := dms.wrap;
     
-    public static function operator and(m1, m2: PseudoWaitMarker<T>) := WaitMarker(m1) and WaitMarker(m2);
-    public static function operator or(m1, m2: PseudoWaitMarker<T>) := WaitMarker(m1) or WaitMarker(m2);
+    public static function operator and(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) and WaitMarker(m2);
+    public static function operator or(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) or WaitMarker(m2);
     
-    ///Посылает сигнал выполненности всем ожидающим Wait очередям
     public procedure SendSignal := wrap.SendSignal;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -2589,13 +2588,11 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function ThenWaitMarkerBase: WaitMarker; abstract;
-    ///Создаёт новую обёртку-псевдо-маркер (PseudoWaitMarker<T>), которая работает как очередь,
-    ///но разлогается в обычный маркер для Wait очередей при присвоении или передаче параметром
-    public function ThenWaitMarker := ThenWaitMarkerBase;
+    private function ThenMarkerSignalBase: WaitMarker; abstract;
+    public function ThenMarkerSignal := ThenMarkerSignalBase;
     
-    private function ThenFinallyWaitMarkerBase: WaitMarker; abstract;
-    public function ThenFinallyWaitMarker := ThenFinallyWaitMarkerBase;
+    private function ThenFinallyMarkerSignalBase: WaitMarker; abstract;
+    public function ThenFinallyMarkerSignal := ThenFinallyMarkerSignalBase;
     
     
     
@@ -2610,13 +2607,11 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    private function ThenWaitMarkerBase: WaitMarker; override := ThenWaitMarker;
-    ///Создаёт новую обёртку-псевдо-маркер (PseudoWaitMarker<T>), которая работает как очередь,
-    ///но разлогается в обычный маркер для Wait очередей при присвоении или передаче параметром
-    public function ThenWaitMarker := new PseudoWaitMarker<T>(self, false);
+    private function ThenMarkerSignalBase: WaitMarker; override := ThenMarkerSignal;
+    public function ThenMarkerSignal := new DetachedMarkerSignal<T>(self, false);
     
-    private function ThenFinallyWaitMarkerBase: WaitMarker; override := ThenFinallyWaitMarker;
-    public function ThenFinallyWaitMarker := new PseudoWaitMarker<T>(self, true);
+    private function ThenFinallyMarkerSignalBase: WaitMarker; override := ThenFinallyMarkerSignal;
+    public function ThenFinallyMarkerSignal := new DetachedMarkerSignal<T>(self, true);
     
     
     
@@ -5935,8 +5930,8 @@ function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQ
 type
   WaitMarker = abstract partial class
     
-    private function ThenWaitMarkerBase: WaitMarker; override := self.Cast&<object>.ThenWaitMarker;
-    private function ThenFinallyWaitMarkerBase: WaitMarker; override := self.Cast&<object>.ThenFinallyWaitMarker;
+    private function ThenMarkerSignalBase: WaitMarker; override := self.Cast&<object>.ThenMarkerSignal;
+    private function ThenFinallyMarkerSignalBase: WaitMarker; override := self.Cast&<object>.ThenFinallyMarkerSignal;
     
     private function ThenWaitForBase(marker: WaitMarker): CommandQueueBase; override := self+WaitFor(marker);
     private function ThenFinallyWaitForBase(marker: WaitMarker): CommandQueueBase; override := self>=WaitFor(marker);
@@ -6239,12 +6234,6 @@ type
 {$region All}
 
 type
-  WaitHandlerAllInnerSubInfo = class
-    public data: integer;
-    public state := new InterlockedBoolean;
-    public constructor(data: integer) := self.data := data;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
-  end;
   WaitHandlerAllInner = sealed class(IWaitHandlerSub)
     private sources: array of WaitHandlerDirect;
     private ref_counts: array of integer;
@@ -6259,6 +6248,8 @@ type
       WaitDebug.RegisterAction(self, $'Created AllInner for: {sources.Select(s->s.GetHashCode).JoinToString}');
       {$endif WaitDebug}
       self.sources := sources;
+      for var i := 0 to sources.Length-1 do
+        sources[i].Subscribe(self, new WaitHandlerDirectSubInfo(ref_counts[i], i));
       self.ref_counts := ref_counts;
       self.sub := sub;
       self.sub_data := sub_data;
@@ -6286,7 +6277,7 @@ type
       if prev_done_c=sources.Length then sub.HandleChildDec(sub_data);
     end;
     
-    public function TryConsume(try_set_res: ()->boolean): boolean;
+    public function TryConsume(uev: UserEvent): boolean;
     begin
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Trying to reserve');
@@ -6299,7 +6290,7 @@ type
           sources[i].ReleaseReserve(ref_counts[i]);
         exit;
       end;
-      Result := try_set_res();
+      Result := uev.SetStatus(CommandExecutionStatus.COMPLETE);
       if Result then
       begin
         {$ifdef WaitDebug}
@@ -6330,6 +6321,8 @@ type
       WaitDebug.RegisterAction(self, $'This is AllOuter for: {sources.Select(s->s.GetHashCode).JoinToString}');
       {$endif WaitDebug}
       self.sources := sources;
+      for var i := 0 to sources.Length-1 do
+        sources[i].Subscribe(self, new WaitHandlerDirectSubInfo(ref_counts[i], i));
       self.ref_counts := ref_counts;
     end;
     public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -6368,12 +6361,22 @@ type
           sources[i].ReleaseReserve(ref_counts[i]);
         exit;
       end;
-      Result := true;
-      {$ifdef WaitDebug}
-      WaitDebug.RegisterAction(self, $'Consuming');
-      {$endif WaitDebug}
-      for var i := 0 to sources.Length-1 do
-        sources[i].Comsume(ref_counts[i]);
+      Result := uev.SetStatus(CommandExecutionStatus.COMPLETE);
+      if Result then
+      begin
+        {$ifdef WaitDebug}
+        WaitDebug.RegisterAction(self, $'Consuming');
+        {$endif WaitDebug}
+        for var i := 0 to sources.Length-1 do
+          sources[i].Comsume(ref_counts[i]);
+      end else
+      begin
+        {$ifdef WaitDebug}
+        WaitDebug.RegisterAction(self, $'Abort consume');
+        {$endif WaitDebug}
+        for var i := 0 to sources.Length-1 do
+          sources[i].ReleaseReserve(ref_counts[i]);
+      end;
     end;
     
   end;
@@ -6517,7 +6520,7 @@ type
       {$endif WaitDebug}
       Result := false;
       for var i := 0 to sources.Length-1 do
-        if sources[i].TryConsume(()->uev.SetStatus(CommandExecutionStatus.COMPLETE)) then
+        if sources[i].TryConsume(uev) then
         begin
           Result := true;
           break;
@@ -6632,7 +6635,7 @@ static function WaitMarker.Create := new WaitMarkerDummy;
 {$region ThenWaitMarker}
 
 type
-  PseudoWaitMarkerWrapper = sealed class(WaitMarkerDirect)
+  DetachedMarkerSignalWrapper = sealed class(WaitMarkerDirect)
     private org: CommandQueueBase;
     public constructor(org: CommandQueueBase) := self.org := org;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -6654,17 +6657,16 @@ type
     end;
     
   end;
-  PseudoWaitMarker<T> = sealed partial class(CommandQueue<T>)
-    private marker_in_finally: boolean;
+  DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
       Result := self.q.Invoke(g, l);
       var err_handler := g.curr_err_handler;
-      var callback: Action0;
-      if marker_in_finally then
-        callback := PseudoWaitMarkerWrapper(wrap).SendSignal else
-        callback := ()->if not err_handler.HadError then PseudoWaitMarkerWrapper(wrap).SendSignal;
+      var callback: ()->();
+      if signal_in_finally then
+        callback := DetachedMarkerSignalWrapper(wrap).SendSignal else
+        callback := ()->if not err_handler.HadError then DetachedMarkerSignalWrapper(wrap).SendSignal;
       Result.ev.AttachCallback(true, callback, err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
     end;
     
@@ -6673,11 +6675,11 @@ type
     
   end;
   
-constructor PseudoWaitMarker<T>.Create(q: CommandQueue<T>; marker_in_finally: boolean);
+constructor DetachedMarkerSignal<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
 begin
   self.q := q;
-  self.marker_in_finally := marker_in_finally;
-  self.wrap := new PseudoWaitMarkerWrapper(self);
+  self.wrap := new DetachedMarkerSignalWrapper(self);
+  self.signal_in_finally := signal_in_finally;
 end;
 
 {$endregion ThenWaitMarker}
