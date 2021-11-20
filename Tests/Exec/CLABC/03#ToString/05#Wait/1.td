@@ -5,6 +5,44 @@
 OpenCLABC
 
 #ExpOtp
+WaitMarkerAll#0
+	WaitMarkerDummy#1
+	WaitMarkerDummy#2
+
+------------------------------
+
+WaitMarkerAny#0
+	WaitMarkerAll#1
+		WaitMarkerDummy#2
+	WaitMarkerAll#3
+		WaitMarkerDummy#4
+
+------------------------------
+
+WaitMarkerAll#0
+	WaitMarkerDummy#1 * 2
+
+------------------------------
+
+WaitMarkerAny#0
+	WaitMarkerAll#1
+		WaitMarkerDummy#2
+
+------------------------------
+
+WaitMarkerAny#0
+	WaitMarkerAll#1
+		WaitMarkerDummy#2 * 2
+	WaitMarkerAll#3
+		WaitMarkerDummy#4
+		WaitMarkerDummy#2
+	WaitMarkerAll#5
+		WaitMarkerDummy#4 * 2
+
+------------------------------
+
+==================================================
+
 CommandQueueWaitFor#0
 	WaitMarkerDummy#1
 
@@ -22,35 +60,6 @@ SimpleSyncQueueArray<System.Object>#0
 		WaitMarkerDummy#2
 	CastQueue<System.Object>#3
 		WaitMarkerDummy#2
-
-------------------------------
-
-CommandQueueWaitFor#0
-	WaitMarkerAll#1
-		WaitMarkerDummy#2
-		WaitMarkerDummy#3
-
-------------------------------
-
-CommandQueueWaitFor#0
-	WaitMarkerAny#1
-		WaitMarkerAll#2
-			WaitMarkerDummy#3
-		WaitMarkerAll#4
-			WaitMarkerDummy#5
-
-------------------------------
-
-CommandQueueWaitFor#0
-	WaitMarkerAll#1
-		WaitMarkerDummy#2 * 2
-
-------------------------------
-
-CommandQueueWaitFor#0
-	WaitMarkerAny#1
-		WaitMarkerAll#2
-			WaitMarkerDummy#3
 
 ------------------------------
 
@@ -79,39 +88,6 @@ SimpleSyncQueueArray<System.Object>#0
 
 ------------------------------
 
-CommandQueueThenWaitFor<System.Object>#0
-	ConstQueue<System.Object>#1 { nil }
-	WaitMarkerAll#2
-		WaitMarkerDummy#3
-		WaitMarkerDummy#4
-
-------------------------------
-
-CommandQueueThenWaitFor<System.Object>#0
-	ConstQueue<System.Object>#1 { nil }
-	WaitMarkerAny#2
-		WaitMarkerAll#3
-			WaitMarkerDummy#4
-		WaitMarkerAll#5
-			WaitMarkerDummy#6
-
-------------------------------
-
-CommandQueueThenWaitFor<System.Object>#0
-	ConstQueue<System.Object>#1 { nil }
-	WaitMarkerAll#2
-		WaitMarkerDummy#3 * 2
-
-------------------------------
-
-CommandQueueThenWaitFor<System.Object>#0
-	ConstQueue<System.Object>#1 { nil }
-	WaitMarkerAny#2
-		WaitMarkerAll#3
-			WaitMarkerDummy#4
-
-------------------------------
-
 ==================================================
 
 MemorySegmentCCQ#0
@@ -137,43 +113,6 @@ SimpleSyncQueueArray<System.Object>#0
 			WaitMarkerDummy#2
 	CastQueue<System.Object>#3
 		WaitMarkerDummy#2
-
-------------------------------
-
-MemorySegmentCCQ#0
-	CCCObj => MemorySegment[*] of size 1
-	WaitCommand
-		WaitMarkerAll#1
-			WaitMarkerDummy#2
-			WaitMarkerDummy#3
-
-------------------------------
-
-MemorySegmentCCQ#0
-	CCCObj => MemorySegment[*] of size 1
-	WaitCommand
-		WaitMarkerAny#1
-			WaitMarkerAll#2
-				WaitMarkerDummy#3
-			WaitMarkerAll#4
-				WaitMarkerDummy#5
-
-------------------------------
-
-MemorySegmentCCQ#0
-	CCCObj => MemorySegment[*] of size 1
-	WaitCommand
-		WaitMarkerAll#1
-			WaitMarkerDummy#2 * 2
-
-------------------------------
-
-MemorySegmentCCQ#0
-	CCCObj => MemorySegment[*] of size 1
-	WaitCommand
-		WaitMarkerAny#1
-			WaitMarkerAll#2
-				WaitMarkerDummy#3
 
 ------------------------------
 

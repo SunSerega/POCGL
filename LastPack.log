@@ -323,6 +323,7 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#Multiusable\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
 Tester: Done executing
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\05#Wait\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
@@ -331,7 +332,6 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
@@ -359,7 +359,7 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1.td" updated
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\05#Wait\1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
