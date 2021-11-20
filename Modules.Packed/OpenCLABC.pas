@@ -33,14 +33,10 @@ unit OpenCLABC;
 //TODO И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
 // - Может даже можно синхронно выполнить "HPQ(...)+HPQ(...)", в некоторых случаях?
 
-//TODO Кидание InvalidOperationException может ловить err_handler - тогда очередь зависает без диагностики
-// - Лучше сделать кастомное исключение, которое обработчик будет использовать чтоб моментально убить очередь
-// --- Ну или просто перебросит ещё раз, внутренние ошибки OpenCLABC не обязательно уметь ловить
-// - И то же самое для cl.ReleaseEvent и т.п. - они возвращают диагностику внутренней проблемы
-// --- OpenCLABCInnerException.RaiseIfError(cl.ReleaseEvent(ev));
-
 //TODO WaitFor( WaitAll(seq1) or WaitAll(seq2) )
 // - И так же WaitAny
+
+//TODO Избавится от lock
 
 //TODO Тесты:
 // - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
@@ -72,8 +68,6 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
-//TODO Избавится от lock
-
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
 
@@ -89,6 +83,7 @@ unit OpenCLABC;
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 // - В том числе проверки с помощью BlittableHelper
 // - BlittableHelper вроде уже всё проверяет, но проверок надо тучу
+//TODO А в самих cl.* вызовах - использовать OpenCLABCInnerException.RaiseIfError, ибо это внутренние проблемы
 
 //TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
 
@@ -192,6 +187,27 @@ type
   
   {$endregion Re-definition's}
   
+  {$region OpenCLABCInternalException}
+  
+  OpenCLABCInternalException = sealed class(Exception)
+    
+    private constructor(message: string) :=
+    inherited Create(message);
+    private constructor(message: string; ec: ErrorCode) :=
+    inherited Create($'{message} with {ec}');
+    private constructor;
+    begin
+      inherited Create($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+      raise self;
+    end;
+    
+    private procedure RaiseIfError(message: string; ec: ErrorCode) :=
+    if ec.IS_ERROR then raise new OpenCLABCInternalException(message, ec);
+    
+  end;
+  
+  {$endregion OpenCLABCInternalException}
+  
   {$region DEBUG}
   
   {$region EventDebug}{$ifdef EventDebug}
@@ -273,10 +289,8 @@ type
     public static procedure CheckExists(ev: cl_event) :=
     if CountRetains(ev)<=0 then lock output do
     begin
-      $'Event {ev} was released before last use at'.Println;
-      System.Environment.StackTrace.Println;
       ReportRefCounterInfo;
-      raise new System.InvalidOperationException;
+      raise new OpenCLABCInternalException($'Event {ev} was released before last use at');
     end;
     
     public static procedure AssertDone :=
@@ -285,7 +299,7 @@ type
       begin
         Console.SetOut(Console.Error);
         ReportRefCounterInfo;
-        raise new System.InvalidOperationException(ev.ToString);
+        raise new OpenCLABCInternalException(ev.ToString);
       end;
     
     {$endregion Retain/Release}
@@ -705,7 +719,7 @@ type
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     public constructor(ntv: cl_platform_id) := self.ntv := ntv;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     private static all_need_init := true;
     private static _all: IList<Platform>;
@@ -749,7 +763,7 @@ type
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     public constructor(ntv: cl_device_id) := self.ntv := ntv;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     private function GetBasePlatform: Platform;
     begin
@@ -967,7 +981,7 @@ type
     ///Создаёт совместимый контекст, равный данному с одним отличием - MainDevice заменён на dvc
     public function MakeSibling(new_main_dvc: Device) := new Context(self, new_main_dvc);
     
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     ///Позволяет OpenCL удалить неуправляемый объект
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
@@ -1073,7 +1087,7 @@ type
     public constructor(ntv: cl_program) :=
     Create(ntv, GetProgContext(ntv));
     
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     ///Позволяет OpenCL удалить неуправляемый объект
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
@@ -1243,7 +1257,7 @@ type
       if retain then cl.RetainKernel(ntv).RaiseIfError;
       self.ntv := ntv;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     ///Позволяет OpenCL удалить неуправляемый объект
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
@@ -1420,7 +1434,7 @@ type
       cl.RetainMemObject(ntv).RaiseIfError;
       GC.AddMemoryPressure(Size64);
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
     
@@ -1801,7 +1815,7 @@ type
       cl.RetainMemObject(ntv).RaiseIfError;
       GC.AddMemoryPressure(ByteSize);
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
     
@@ -2357,7 +2371,7 @@ type
     
     ///Создаёт новую константную очередь из заданного значения
     public constructor(o: T) := self.res := o;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public function IConstQueue.GetConstVal: object := self.res;
     ///Возвращает значение из которого была создана данная константная очередь
@@ -2563,7 +2577,7 @@ type
     public property SignalInFinally: boolean read signal_in_finally;
     
     public constructor(q: CommandQueue<T>; signal_in_finally: boolean);
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public static function operator implicit(dms: DetachedMarkerSignal<T>): WaitMarker := dms.wrap;
     
@@ -2688,7 +2702,7 @@ type
     private q: CommandQueue<T>;
     private q_res: T; //TODO Лучше хранить QueueRes, чтоб не выполнять лишнее копирование записи
     
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     {$region Property's}
     
@@ -3640,7 +3654,7 @@ type
   NtvPropertiesBase<TNtv, TInfo> = abstract class
     protected ntv: TNtv;
     public constructor(ntv: TNtv) := self.ntv := ntv;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
     protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
@@ -4162,13 +4176,16 @@ type
       self.prev := prev;
       self.fill_prev := fill_prev;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     {$region AddErr}
     protected static AbortStatus := new CommandExecutionStatus(integer.MinValue);
     
     protected procedure AddErr(e: Exception);
     begin
+      if e is OpenCLABCInternalException then
+        // Внутренние ошибки не регестрируем
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e).Throw;
       // HPQ(()->exit()) + HPQ(()->raise)
       // Тут сначала вычисляет HadError как false, а затем переключает на true
       prev_had_error := true;
@@ -4240,7 +4257,7 @@ type
     
     public curr_err_handler := new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, false);
     
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public function GetCQ(async_enqueue: boolean := false): cl_command_queue;
     begin
@@ -4294,7 +4311,7 @@ type
     
     public constructor(count: integer) :=
     if count<>0 then self.evs := new cl_event[count];
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     public static Empty := new EventList(0);
     
     public static function operator implicit(ev: cl_event): EventList;
@@ -4470,7 +4487,7 @@ type
     private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
     public constructor(val: T) := self.ptr^ := val;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(new IntPtr(ptr));
@@ -4490,7 +4507,7 @@ type
     
     public constructor(ev: EventList) :=
     self.ev := ev;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public function GetResBase: object; abstract;
     public function TrySetEvBase(new_ev: EventList): QueueResBase; abstract;
@@ -4660,7 +4677,7 @@ type
       EventDebug.RegisterEventRetain(self.uev, $'Created for {reason}');
       {$endif EventDebug}
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public static function StartBackgroundWork(after: EventList; work: Action; g: CLTaskGlobalData{$ifdef EventDebug}; reason: string{$endif}): UserEvent;
     begin
@@ -4786,7 +4803,7 @@ type
       self.branch_handlers.Capacity := capacity+1;
       branch_handlers += g.curr_err_handler;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     function InvokeBranch(branch: (CLTaskGlobalData, CLTaskLocalData)->EventList): EventList;
@@ -4854,7 +4871,8 @@ type
       use(invoker);
       
       {$ifdef DEBUG}
-      if invoker.branch_handlers.Count<>capacity+1 then raise new System.InvalidOperationException;
+      if invoker.branch_handlers.Count-1<>capacity then
+        raise new OpenCLABCInternalException($'{invoker.branch_handlers.Count-1} <> {capacity}');
       {$endif DEBUG}
       self.curr_err_handler := new CLTaskErrHandler(invoker.branch_handlers.ToArray, true);
       
@@ -4896,7 +4914,7 @@ type
         curr_err_handler.FillErrLst(err_lst);
       {$ifdef DEBUG}
       if curr_err_handler.HadError <> (err_lst.Count<>0) then
-        raise new System.InvalidOperationException;
+        raise new OpenCLABCInternalException($'{curr_err_handler.HadError} <> {err_lst.Count<>0}');
       {$endif DEBUG}
     end;
     
@@ -5117,7 +5135,7 @@ type
       self.q := q;
       self.f := f;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(g, prev_hubs);
@@ -5166,7 +5184,7 @@ type
       System.Array.Copy(qs, self.qs, qs.Length-1);
       self.last := qs[qs.Length-1].Cast&<T>;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public function GetQS: sequence of CommandQueueBase := qs.Append(last as CommandQueueBase);
     
@@ -5240,7 +5258,7 @@ type
       self.qs := qs;
       self.f := f;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     foreach var q in qs do q.RegisterWaitables(g, prev_hubs);
@@ -5813,7 +5831,7 @@ type
     public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: ISimpleQueueArray;
     begin
       var enmr := inp.GetEnumerator;
-      if not enmr.MoveNext then raise new InvalidOperationException('Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей');
+      if not enmr.MoveNext then raise new OpenCLABCInternalException('Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей');
       
       var res := new List<CommandQueueBase>;
       while true do
@@ -5858,7 +5876,7 @@ type
   MultiusableCommandQueueHub<T> = sealed partial class(MultiusableCommandQueueHubBase)
     public q: CommandQueue<T>;
     public constructor(q: CommandQueue<T>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public function OnNodeInvoked(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>;
     begin
@@ -5959,7 +5977,7 @@ type
     public constructor(g: CLTaskGlobalData; l: CLTaskLocalData);
     begin
       {$ifdef DEBUG}
-      if l.need_ptr_qr then raise new System.InvalidOperationException;
+      if l.need_ptr_qr then raise new OpenCLABCInternalException($'wait with need_ptr_qr');
       {$endif DEBUG}
       
       uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'Wait result'{$endif});
@@ -5986,7 +6004,7 @@ type
         end;
       end, err_handler{$ifdef EventDebug}, $'KeepAlive(handler[{self.GetHashCode}])'{$endif});
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function TryConsume: boolean; abstract;
     
@@ -5995,7 +6013,7 @@ type
       var new_state := System.Threading.Interlocked.Increment(self.state);
       
       {$ifdef DEBUG}
-      if not new_state.InRange(0,2) then raise new System.InvalidOperationException;
+      if not new_state.InRange(1,2) then raise new OpenCLABCInternalException($'WaitHandlerOuter.state={new_state}');
       {$endif DEBUG}
       
       {$ifdef WaitDebug}
@@ -6004,17 +6022,23 @@ type
       
       Result := (new_state=2) and TryConsume;
     end;
-    protected procedure DecState :=
-    if not System.Threading.Interlocked.Decrement(self.state).InRange(0,2) then
+    protected procedure DecState;
     begin
       {$ifdef DEBUG}
-      raise new System.InvalidOperationException;
+      var new_state :=
       {$endif DEBUG}
-    end else
-    begin
+      System.Threading.Interlocked.Decrement(self.state);
+      
+      {$ifdef DEBUG}
+      if not new_state.InRange(0,1) then
+        raise new OpenCLABCInternalException($'WaitHandlerOuter.state={new_state}');
+      
       {$ifdef WaitDebug}
-      WaitDebug.RegisterAction(self, $'Gone back to state {self.state}');
+      WaitDebug.RegisterAction(self, $'Gone back to state {new_state}');
       {$endif WaitDebug}
+      
+      {$endif DEBUG}
+      
     end;
     
   end;
@@ -6040,7 +6064,7 @@ type
       self.threshold := threshold;
       self.data := data;
     end;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
   end;
   /// Напрямую хранит активации конкретного CLTaskGlobalData
   WaitHandlerDirect = sealed class
@@ -6056,7 +6080,11 @@ type
       {$endif WaitDebug}
       
       if not subs.TryAdd(sub, info) then
-        raise new System.InvalidOperationException else
+      begin
+        {$ifdef DEBUG}
+        raise new OpenCLABCInternalException($'Sub added twice');
+        {$endif DEBUG}
+      end else
       if activations>=info.threshold then
         if info.state.TrySet(true) then
         begin
@@ -6110,7 +6138,7 @@ type
     if System.Threading.Interlocked.Add(reserved, -c)<0 then
     begin
       {$ifdef DEBUG}
-      raise new System.InvalidOperationException;
+      raise new OpenCLABCInternalException($'reserved={reserved}');
       {$endif DEBUG}
     end else
     begin
@@ -6125,7 +6153,7 @@ type
       var new_res := System.Threading.Interlocked.Add(reserved, -c);
       {$ifdef DEBUG}
       if (new_act<0) or (new_res<0) then
-        raise new System.InvalidOperationException;
+        raise new OpenCLABCInternalException($'new_act={new_act}, new_res={new_res}');
       {$endif DEBUG}
       
       {$ifdef WaitDebug}
@@ -6152,7 +6180,7 @@ type
       self.source := source;
       source.Subscribe(self, new WaitHandlerDirectSubInfo(1,0));
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public function IWaitHandlerSub.HandleChildInc(data: integer) := self.IncState;
     public procedure IWaitHandlerSub.HandleChildDec(data: integer) := self.DecState;
@@ -6205,7 +6233,7 @@ type
     private children: array of TChild;
     
     public constructor(children: array of TChild) := self.children := children;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     
     public procedure InitInnerHandles(g: CLTaskGlobalData); override :=
     foreach var child in children do child.InitInnerHandles(g);
@@ -6219,7 +6247,7 @@ type
     begin
       Result := nil;
       // Не должно произойти, потому что RegisterWaitables вылетит первым
-      raise new System.InvalidOperationException;
+      raise new OpenCLABCInternalException;
     end;
     
     public procedure SendSignal; override :=
@@ -6254,7 +6282,7 @@ type
       self.sub := sub;
       self.sub_data := sub_data;
     end;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
@@ -6325,7 +6353,7 @@ type
         sources[i].Subscribe(self, new WaitHandlerDirectSubInfo(ref_counts[i], i));
       self.ref_counts := ref_counts;
     end;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
@@ -6391,7 +6419,7 @@ type
       foreach var child in children do
         self.ref_counts[self.children.IndexOf(child)] += 1;
     end;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -6490,7 +6518,7 @@ type
       WaitDebug.RegisterAction(self, $'This is AnyOuter for: {sources.Select(s->s.GetHashCode).JoinToString}');
       {$endif WaitDebug}
     end;
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
@@ -6533,7 +6561,7 @@ type
     
     public constructor(sources: sequence of WaitMarkerAll) :=
     inherited Create(WaitMarkerAll.Distinct(sources).ToArray);
-    public constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor := raise new OpenCLABCInternalException;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -6615,7 +6643,7 @@ type
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override;
     begin
       {$ifdef DEBUG}
-      if l.need_ptr_qr then raise new System.InvalidOperationException;
+      if l.need_ptr_qr then raise new OpenCLABCInternalException($'marker with need_ptr_qr');
       {$endif DEBUG}
       Result := new QueueResConst<object>(nil, l.prev_ev);
       var err_handler := g.curr_err_handler;
@@ -6638,7 +6666,7 @@ type
   DetachedMarkerSignalWrapper = sealed class(WaitMarkerDirect)
     private org: CommandQueueBase;
     public constructor(org: CommandQueueBase) := self.org := org;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override :=
     org.InvokeBase(g, l);
@@ -6721,7 +6749,7 @@ type
       self.q := q;
       self.marker := marker;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -6791,7 +6819,7 @@ type
       self.try_do := try_do;
       self.do_finally := do_finally;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
     begin
@@ -6859,7 +6887,7 @@ type
       self.q := q;
       self.handler := handler;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(g, prev_hubs);
@@ -6902,7 +6930,7 @@ type
       self.q := q;
       self.handler := handler;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(g, prev_hubs);
@@ -6962,7 +6990,7 @@ type
       self.handler := handler;
       self.def := def;
     end;
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
     q.RegisterWaitables(g, prev_hubs);
@@ -7072,7 +7100,7 @@ type
     private a: CLArray<T>;
     
     public constructor(a: CLArray<T>) := self.a := a;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
     cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), a.ntv).RaiseIfError;
@@ -7098,7 +7126,7 @@ type
     private mem: MemorySegment;
     
     public constructor(mem: MemorySegment) := self.mem := mem;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
     cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), mem.ntv).RaiseIfError;
@@ -7128,7 +7156,7 @@ type
       self.ptr := ptr;
       self.sz := sz;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
     cl.SetKernelArg(k, ind, sz, pointer(ptr)).RaiseIfError;
@@ -7166,7 +7194,7 @@ type
     
     public constructor(val: TRecord) := self.val^ := val;
     public constructor(val: ^TRecord) := self.val := val;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure Finalize; override :=
     Marshal.FreeHGlobal(new IntPtr(val));
@@ -7203,7 +7231,7 @@ type
       self.hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
       self.offset := Marshal.SizeOf&<TRecord> * ind;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure Finalize; override :=
     if hnd.IsAllocated then hnd.Free;
@@ -7248,7 +7276,7 @@ type
   where T: record;
     public q: CommandQueue<CLArray<T>>;
     public constructor(q: CommandQueue<CLArray<T>>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override :=
     q.Invoke(g, l.WithPtrNeed(false)).LazyQuickTransform(a->new KernelArgCLArray<T>(a) as ISetableKernelArg);
@@ -7275,7 +7303,7 @@ type
   KernelArgMemorySegmentCQ = sealed class(InvokeableKernelArg)
     public q: CommandQueue<MemorySegment>;
     public constructor(q: CommandQueue<MemorySegment>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override :=
     q.Invoke(g, l.WithPtrNeed(false)).LazyQuickTransform(mem->new KernelArgMemorySegment(mem) as ISetableKernelArg);
@@ -7307,7 +7335,7 @@ type
       self.ptr_q := ptr_q;
       self.sz_q := sz_q;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override;
     begin
@@ -7352,7 +7380,7 @@ type
     BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
     
     public constructor(q: CommandQueue<TRecord>) := self.q := q;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override;
     begin
@@ -7397,7 +7425,7 @@ type
       self.  a_q :=   a_q;
       self.ind_q := ind_q;
     end;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override;
     begin
@@ -7480,7 +7508,7 @@ type
     public q: CommandQueueBase;
     
     public constructor(q: CommandQueueBase) := self.q := q;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     private function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) := q.InvokeBase(g, l).ev;
     
@@ -7507,7 +7535,7 @@ type
     public p: (T,Context)->();
     
     public constructor(p: (T,Context)->()) := self.p := p;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
     UserEvent.StartBackgroundWork(l.prev_ev, ()->p(o, g.c), g
@@ -7542,7 +7570,7 @@ type
     public marker: WaitMarker;
     
     public constructor(marker: WaitMarker) := self.marker := marker;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     private function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) := marker.MakeWaitEv(g, l);
     
@@ -7570,12 +7598,12 @@ type
 
 type
   GPUCommandContainer<T> = abstract partial class
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
   end;
   GPUCommandContainerCore<T> = abstract class
     private cc: GPUCommandContainer<T>;
     protected constructor(cc: GPUCommandContainer<T>) := self.cc := cc;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; abstract;
     
@@ -7601,7 +7629,7 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
       {$ifdef DEBUG}
-      if l.need_ptr_qr then raise new System.InvalidOperationException;
+      if l.need_ptr_qr then raise new OpenCLABCInternalException($'GPUCommandContainer with need_ptr_qr');
       {$endif DEBUG}
       Result := core.Invoke(g, l);
     end;
@@ -7840,10 +7868,10 @@ type
         var ev_exists := function(ev: EventList): integer -> integer(ev.count<>0);
         r1 := param_count_l1 +                + ev_exists(l1_start_ev);
         r2 := param_count_l1 + param_count_l2 + ev_exists(l1_start_ev);
-        if not evs_l1.Count.InRange(r1, r2) then raise new System.InvalidOperationException($'{q.GetType.Name}[L1]: {evs_l1.Count}.InRange({r1}, {r2})');
+        if not evs_l1.Count.InRange(r1, r2) then raise new OpenCLABCInternalException($'{q.GetType.Name}[L1]: {evs_l1.Count}.InRange({r1}, {r2})');
         r1 :=                + ev_exists(l2_start_ev);
         r2 := param_count_l2 + ev_exists(l2_start_ev);
-        if not evs_l2.Count.InRange(r1, r2) then raise new System.InvalidOperationException($'{q.GetType.Name}[L2]: {evs_l2.Count}.InRange({r1}, {r2})');
+        if not evs_l2.Count.InRange(r1, r2) then raise new OpenCLABCInternalException($'{q.GetType.Name}[L2]: {evs_l2.Count}.InRange({r1}, {r2})');
       end;
       {$endif DEBUG}
       var ev_l1 := EventList.Combine(evs_l1);
@@ -14326,7 +14354,7 @@ type
     
     private f: TFunc;
     public constructor(f: TFunc) := self.f := f;
-    private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    private constructor := raise new OpenCLABCInternalException;
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<object>; override :=
     new QueueResConst<Object>(nil, l.prev_ev);
@@ -14490,6 +14518,7 @@ finalization
   {$endif EventDebug}
   {$ifdef WaitDebug}
   foreach var whd: WaitHandlerDirect in WaitDebug.WaitActions.Keys.OfType&<WaitHandlerDirect> do
-    if whd.reserved<>0 then raise new System.InvalidOperationException;
+    if whd.reserved<>0 then
+      raise new OpenCLABCInternalException($'WaitHandler.reserved in finalization was <>0');
   {$endif WaitDebug}
 end.
