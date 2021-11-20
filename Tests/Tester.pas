@@ -694,7 +694,8 @@ type
     static procedure Cleanup;
     begin
       Otp('Cleanup');
-      System.IO.Directory.Delete('Tests\DebugPCU', true);
+      if System.IO.Directory.Exists('Tests\DebugPCU') then
+        System.IO.Directory.Delete('Tests\DebugPCU', true);
       
       foreach var t in all_loaded do
         if t.resave_settings then
@@ -749,7 +750,7 @@ begin
     TestInfo.auto_update := true;
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const',  HSet('Comp','Exec'));
     (**)
     
     try

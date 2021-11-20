@@ -150,7 +150,7 @@ begin
         res.WriteLine('>; override;');
         res.WriteLine($'    begin');
         res.WriteLine($'      l := l.WithPtrNeed(false);');
-        res.WriteLine($'      if (l.prev_ev<>nil) and (l.prev_ev.count<>0) then loop {c-1} do l.prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
+        res.WriteLine($'      if l.prev_ev.count<>0 then loop {c-1} do l.prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
         
         for var i := 1 to c do
           res.WriteLine($'      var qr{i}: QueueRes<TInp{i}>;');

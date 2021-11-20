@@ -58,7 +58,7 @@ type
     protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
     begin
       l := l.WithPtrNeed(false);
-      if (l.prev_ev<>nil) and (l.prev_ev.count<>0) then loop 3 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
+      if l.prev_ev.count<>0 then loop 3 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
       var qr3: QueueRes<TInp3>;

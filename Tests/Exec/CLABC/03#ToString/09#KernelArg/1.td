@@ -47,21 +47,21 @@ KernelArgMemorySegmentCQ
 
 Data:
 KernelArgDataCQ
-	CommandQueueHostFunc<System.IntPtr>#0 => System.Func`2[OpenCLABC.Context,System.IntPtr]
+	CommandQueueHostFunc<System.IntPtr>#0: OpenCLABC_implementation______.<>local_variables_class_*`1[System.IntPtr] => IntPtr <>lambda*(OpenCLABC.Context)
 	ConstQueue<System.UIntPtr>#1 { 0 }
 
 Value:
 KernelArgValueCQ<System.Int32>
-	CommandQueueHostFunc<System.Int32>#0 => System.Func`2[OpenCLABC.Context,System.Int32]
+	CommandQueueHostFunc<System.Int32>#0: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Int32] => Int32 <>lambda*(OpenCLABC.Context)
 KernelArgValueCQ<System.Int32>
-	CommandQueueHostFunc<System.Int32>#0 => System.Func`2[OpenCLABC.Context,System.Int32]
+	CommandQueueHostFunc<System.Int32>#0: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Int32] => Int32 <>lambda*(OpenCLABC.Context)
 
 Array:
 KernelArgArrayCQ<System.Double>
-	CommandQueueHostFunc<System.Double[]>#0 => System.Func`2[OpenCLABC.Context,System.Double[]]
+	CommandQueueHostFunc<System.Double[]>#0: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Double[]] => Double[] <>lambda*(OpenCLABC.Context)
 	ConstQueue<System.Int32>#1 { 1 }
 KernelArgArrayCQ<System.Double>
-	CommandQueueHostFunc<System.Double[]>#0 => System.Func`2[OpenCLABC.Context,System.Double[]]
+	CommandQueueHostFunc<System.Double[]>#0: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Double[]] => Double[] <>lambda*(OpenCLABC.Context)
 	ConstQueue<System.Int32>#1 { 0 }
 
 
