@@ -1,4 +1,4 @@
-﻿unit CommentableData;
+﻿unit DescriptionsData;
 {$string_nullbased+}
 
 interface

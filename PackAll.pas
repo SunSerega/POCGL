@@ -11,7 +11,7 @@ uses PathUtils  in 'Utils\PathUtils';
 // 
 // - "Stages=...+...+..." | запускает только указанные стадии упаковки
 //   - "FirstPack"  - Датаскрапинг спецификаций и исходников. Следует проводить только 1 раз, единственная по-умолчанию выключенная стадия
-//   - "Spec"       - Упаковка справок
+//   - "Reference"  - Упаковка справок
 //   - "OpenCL"     - Упаковка модуля OpenCL.pas
 //   - "OpenCLABC"  - Упаковка модуля OpenCLABC.pas
 //   - "OpenGL"     - Упаковка модуля OpenGL.pas
@@ -26,7 +26,7 @@ uses PathUtils  in 'Utils\PathUtils';
 {$region SpecialNames}
 
 const FirstPackStr  = 'FirstPack';
-const SpecStr       = 'Spec';
+const ReferenceStr  = 'Reference';
 const OpenCLStr     = 'OpenCL';
 const OpenCLABCStr  = 'OpenCLABC';
 const OpenGLStr     = 'OpenGL';
@@ -44,7 +44,7 @@ var AllModules := HSet(
 );
 var AllStages := HSet(
   FirstPackStr,
-  SpecStr,
+  ReferenceStr,
   OpenCLStr,OpenCLABCStr,
   OpenGLStr,OpenGLABCStr,
   CompileStr,
@@ -138,7 +138,7 @@ var AllStages := HSet(
       
       {$endregion UpdateReps}
       
-      {$region ParseSpec}
+      {$region Scrap XML}
       
       var T_ScrapXML :=
         TitleTask('Scrap XML', '~') +
@@ -148,7 +148,7 @@ var AllStages := HSet(
         
       ;
       
-      {$endregion ParseSpec}
+      {$endregion Scrap XML}
       
       Result :=
         T_UpdateReps +
@@ -160,22 +160,22 @@ var AllStages := HSet(
   
   {$endregion FirstPack}
   
-  {$region Spec}
+  {$region Reference}
   
-  SpecStage = sealed class(PackingStage)
+  ReferenceStage = sealed class(PackingStage)
     
     constructor;
     begin
-      inherited Create(SpecStr);
-      self.description := 'Specs';
+      inherited Create(ReferenceStr);
+      self.description := 'References';
     end;
     
     function MakeCoreTask: AsyncTask; override :=
-    ExecTask('Packing\Spec\SpecPacker.pas', 'SpecPacker');
+    ExecTask('Packing\Reference\ReferencePacker.pas', 'ReferencePacker');
     
   end;
   
-  {$endregion Spec}
+  {$endregion Reference}
   
   {$region Modules}
   
@@ -220,7 +220,7 @@ var AllStages := HSet(
       +
       ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]',     $'nick={id}', $'"inp_fname=Modules\{id}.pas"',              $'"otp_fname=Modules.Packed\{id}.pas"')
       +
-      ExecTask('Packing\Doc\PackComments.pas', $'Comments[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
     ;
     
   end;
@@ -391,28 +391,28 @@ var AllStages := HSet(
       
       {$endregion CopySamples}
       
-      {$region CopySpec}
+      {$region CopyReference}
       
-      var T_CopySpec :=
-        TitleTask('Copying spec', '~') +
+      var T_CopyReferences :=
+        TitleTask('Copying references', '~') +
         ProcTask(()->
         begin
           var c := 0;
           
-          foreach var fname in System.IO.Directory.EnumerateFiles('Packing\Spec', '*.html') do
+          foreach var fname in System.IO.Directory.EnumerateFiles('Packing\Reference', '*.html') do
           begin
-            var spec := System.IO.Path.GetFileName(fname);
-            Otp($'Packing spec [{spec}]');
+            var reference_name := System.IO.Path.GetFileName(fname);
+            Otp($'Packing reference [{reference_name}]');
             System.IO.Directory.CreateDirectory('Release\InstallerSamples\OpenGL и OpenCL');
-            System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenGL и OpenCL\{spec}' );
+            System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenGL и OpenCL\{reference_name}' );
             c += 1;
           end;
           
-          Otp($'Packed {c} spec files');
+          Otp($'Packed {c} reference files');
         end)
       ;
       
-      {$endregion CopySpec}
+      {$endregion CopyReference}
       
       Result :=
         T_Clear
@@ -420,7 +420,7 @@ var AllStages := HSet(
         
         T_CopyModules *
         T_CopySamples *
-        T_CopySpec
+        T_CopyReferences
         
         +
         EmptyTask
@@ -488,7 +488,7 @@ begin
     {$endregion MiscClear}
     
     var T_FirstPack := FirstPackStage .Create               .MakeTask;
-    var T_Spec      := SpecStage      .Create               .MakeTask;
+    var T_Reference := ReferenceStage .Create               .MakeTask;
     var T_OpenCL    := LLModuleStage  .Create(OpenCLStr)    .MakeTask;
     var T_OpenCLABC := HLModuleStage  .Create(OpenCLABCStr) .MakeTask;
     var T_OpenGL    := LLModuleStage  .Create(OpenGLStr)    .MakeTask;
@@ -502,7 +502,7 @@ begin
     (
       T_FirstPack +
       
-      T_Spec *
+      T_Reference *
       T_OpenCL * T_OpenCLABC *
       T_OpenGL * T_OpenGLABC
       

@@ -24,8 +24,8 @@ Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Пре�
 Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Packed 18 sample files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying spec ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing spec [Гайд по использованию OpenGL и OpenCL.html]
-Packing spec [Справка OpenCLABC.html]
-Packing spec [Справка OpenGLABC.html]
-Packed 3 spec files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packing reference [Гайд по использованию OpenGL и OpenCL.html]
+Packing reference [Справка OpenCLABC.html]
+Packing reference [Справка OpenGLABC.html]
+Packed 3 reference files

@@ -75,7 +75,7 @@ type
     public static procedure Pack(path, otp: string);
     begin
       var nick := otp.Remove(otp.LastIndexOf('.'));
-      POCGL_Utils.Otp($'Packing spec "{nick}"');
+      POCGL_Utils.Otp($'Packing reference "{nick}"');
       last_page_id := 0;
       
       path := GetFullPathRTA(path);
@@ -88,19 +88,19 @@ type
       sw.WriteLine('<meta charset="utf-8">');
       
       sw.WriteLine('<style>');
-      sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.css')).Trim);
+      sw.WriteLine(ReadAllText(GetFullPathRTA('0ReferenceContainer\.css')).Trim);
       sw.WriteLine('</style>');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText(GetFullPathRTA('0SpecContainer\.md')),
+        ReadAllText(GetFullPathRTA('0ReferenceContainer\.md')),
         md_pipeline
       ).Trim);
       
       sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText(GetFullPathRTA('0SpecContainer\.js')).Trim);
+      sw.WriteLine(ReadAllText(GetFullPathRTA('0ReferenceContainer\.js')).Trim);
       sw.WriteLine('</script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);
@@ -109,7 +109,7 @@ type
       sw.WriteLine('</html>');
       sw.Close;
       
-      POCGL_Utils.Otp($'Done packing spec "{nick}"');
+      POCGL_Utils.Otp($'Done packing feference "{nick}"');
     end;
     
   end;

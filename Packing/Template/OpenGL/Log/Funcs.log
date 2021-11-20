@@ -74,4 +74,6 @@ Group [CheckFramebufferStatusTarget] was skipped
 Group [DrawBufferModeATI] was skipped
 Group [FramebufferFetchNoncoherent] was skipped
 Group [ShadingRateQCOM] was skipped
+Group [TexStorageAttribs] was skipped
+Group [TexStorageAttribss] was skipped
 done

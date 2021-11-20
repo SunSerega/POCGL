@@ -6,7 +6,7 @@ uses AQueue       in '..\..\Utils\AQueue';
 uses CLArgs       in '..\..\Utils\CLArgs';
 uses Fixers       in '..\..\Utils\Fixers';
 
-uses CommentableData;
+uses DescriptionsData;
 
 type
   CommentData = sealed class

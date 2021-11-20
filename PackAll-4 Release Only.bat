@@ -1,6 +1,6 @@
 
 
 
-start PackAll.exe "Stages=Spec+Release"
+start PackAll.exe "Stages=Reference+Release"
 
 

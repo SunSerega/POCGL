@@ -1,6 +1,6 @@
 
 
 
-start PackAll.exe "Stages= Spec + OpenCL+OpenGL + Compile + Test + Release"
+start PackAll.exe "Stages= Reference + OpenCL+OpenGL + Compile + Test + Release"
 
 

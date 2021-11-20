@@ -53,8 +53,6 @@ unit OpenCLABC;
 // - И так же WaitAny
 
 //TODO Тесты:
-// - (M1 and M1 and M2)
-// - ((M1 or M2) and (M1 or M2)).ToString
 
 //TODO Справка:
 // - M1 and M2 or M3
@@ -75,10 +73,6 @@ unit OpenCLABC;
 // --- (QErr.ThenFinallyWaitMarker) работает как (QErr >= M), но возвращает результат
 // ----- В тесты
 // - WaitFor теперь тратит выполненность только если небыло предыдущих ошибок
-
-//TODO Переименовать
-// - Spec в Reference
-// - Doc в Descriptions
 
 //===================================
 // Запланированное:

@@ -1,9 +1,84 @@
 ﻿Executing selected stages:
-OpenCLABC + Compile + Test + Release
+FirstPack + Reference + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
-==================================== OpenCLABC ===================================
+=================================== First Pack ===================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\Reps\PullReps.pas"
+Compiling: OK
+Runing SubReps Update
+SubReps Update: Pulling OpenCL Docs
+SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
+SubReps Update: OpenCL Docs : [Info] * [new tag]         v3.0.10    -> v3.0.10
+SubReps Update: Done pulling OpenCL Docs
+SubReps Update: Pulling OpenGL Registry
+SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
+SubReps Update: OpenGL Registry : [Info] 97eaaab..a48c224  main       -> origin/main
+SubReps Update: OpenGL Registry : Submodule path 'DataScraping/Reps/OpenGL-Registry': checked out 'a48c224a2db6edc4f4c610025b529d1c31ee9445'
+SubReps Update: Done pulling OpenGL Registry
+Finished runing SubReps Update
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\XML\CL\ScrapXML.pas"
+Compiling: OK
+Runing ScrapXML[CL]
+ScrapXML[CL]: Parsing "cl"
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_MAKE_VERSION_KHR]
+ScrapXML[CL]: Saving as binary
+Finished runing ScrapXML[CL]
+Compiling "DataScraping\XML\GL\ScrapXML.pas"
+Compiling: OK
+Runing ScrapXML[GL]
+ScrapXML[GL]: Parsing "gl"
+ScrapXML[GL]: Parsing "wgl"
+ScrapXML[GL]: Parsing "glx"
+ScrapXML[GL]: Saving as binary
+Finished runing ScrapXML[GL]
+=================================== References ===================================
+Compiling "Packing\Reference\ReferencePacker.pas"
+Compiling: OK
+Runing ReferencePacker
+ReferencePacker: Packing reference "Гайд по использованию OpenGL и OpenCL"
+ReferencePacker: Done packing feference "Гайд по использованию OpenGL и OpenCL"
+ReferencePacker: Packing reference "Справка OpenGLABC"
+ReferencePacker: Done packing feference "Справка OpenGLABC"
+ReferencePacker: Packing reference "Справка OpenCLABC"
+ReferencePacker: Done packing feference "Справка OpenCLABC"
+Finished runing ReferencePacker
+===================================== OpenCL =====================================
 Compiling "Packing\Template\Pack Template.pas"
 Compiling: OK
+Runing Template[OpenCL]
+Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
+Template[OpenCL]: Compiling: OK
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
+Template[OpenCL]: Compiling: OK
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueGenerateMipmapIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetKernelSuggestedLocalWorkSizeKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueWaitSemaphoresKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueSignalSemaphoresKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandBarrierWithWaitListKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandCopyBufferKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandFillBufferKHR]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
+Finished runing Template[OpenCL]
+==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapPropGen.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -39,73 +114,149 @@ Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
 Finished runing Template[OpenCLABC]
-Compiling "Packing\Doc\PackComments.pas"
+Compiling "Packing\Descriptions\PackDescriptions.pas"
 Compiling: OK
-Runing Comments[OpenCLABC]
-Comments[OpenCLABC]: WARNING: key %IConstQueue% wasn't used!
-Comments[OpenCLABC]: WARNING: key %IConstQueue.GetConstVal% wasn't used!
-Comments[OpenCLABC]: WARNING: key %Err:0Waitables% wasn't used!
-Comments[OpenCLABC]: WARNING: key %Err:Wait(nil)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %:WaitForDef% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitFor(WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitForAll(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitForAll(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitForAny(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitForAny(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitMarkerBase% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitMarker% wasn't used!
-Comments[OpenCLABC]: WARNING: key %WaitMarker.% wasn't used!
-Comments[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.(CommandQueue<T>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(Exception)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(ErrorCode)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(CommandExecutionStatus)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask:AddEvent% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTaskBase.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask<T>.WhenDone(Action<CLTask<T>>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTaskBase.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask<T>.WhenComplete(Action<CLTask<T>, T>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTaskBase.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask<T>.WhenError(Action<CLTask<T>, array of Exception>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask<T>.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitFor(WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitFor(WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWait(WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWait(WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWait(WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(array of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
-Comments[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
-Finished runing Comments[OpenCLABC]
+Runing Descriptions[OpenCLABC]
+Descriptions[OpenCLABC]: WARNING: key %IConstQueue% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %IConstQueue.GetConstVal% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %Err:0Waitables% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %Err:Wait(nil)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %:WaitForDef% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitFor(WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitForAll(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitForAll(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitForAny(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitForAny(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitMarkerBase% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitMarker% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %WaitMarker.% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.(CommandQueue<T>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(Exception)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(ErrorCode)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(CommandExecutionStatus)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask:AddEvent% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDone(Action<CLTask<T>>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenComplete(Action<CLTask<T>, T>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenError(Action<CLTask<T>, array of Exception>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitFor(WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitFor(WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWait(WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWait(WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWait(WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(array of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
+Finished runing Descriptions[OpenCLABC]
+===================================== OpenGL =====================================
+Runing Template[OpenGL]
+Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
+Template[OpenGL]: Compiling: OK
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
+Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
+Template[OpenGL]: Compiling: OK
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferBase] was added in versions [3.0] and [3.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesAddressNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glListDrawCommandsStatesClientNV]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyBufferSubDataNVX]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglSetGammaTableI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglAssociateImageBufferEventsI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglQueryFrameTrackingI3D]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glXGetSyncValuesOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glXWaitForMscOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glXWaitForSbcOML]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glXQueryChannelRectSGIX]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glXQueryChannelDeltasSGIX]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
+Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
+Template[OpenGL]: Compiling: OK
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
+Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
+Template[OpenGL]: Compiling: OK
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
+Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
+Template[OpenGL]: Compiling: OK
+Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
+Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
+Finished runing Template[OpenGL]
+==================================== OpenGLABC ===================================
+Runing Template[OpenGLABC]
+Finished runing Template[OpenGLABC]
+Runing Descriptions[OpenGLABC]
+Finished runing Descriptions[OpenGLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
+Compiling: OK
+Compiling "Modules.Packed\OpenGLABC.pas"
 Compiling: OK
 ===================================== Testing ====================================
 Compiling "Tests\Tester.pas"
 Compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCLABC
+Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\DebugPCU\OpenGLABC.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Compiling: OK
@@ -120,6 +271,8 @@ Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
@@ -235,6 +388,20 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Det.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Random.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\GL\Vec.Cross.pas"
+Tester: Compiling: OK
+Tester: Executing Test[Samples\OpenCL\MatrMlt]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -323,7 +490,6 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#Multiusable\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\05#Wait\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
@@ -358,13 +524,25 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Det]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Random]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
+Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\05#Wait\1.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packing Modules.Packed\OpenCL.pas
 Packing Modules.Packed\OpenCLABC.pas
+Packing Modules.Packed\OpenGL.pas
+Packing Modules.Packed\OpenGLABC.pas
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample "Samples\OpenCL\MatrMlt.cl"
@@ -386,9 +564,9 @@ Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Пре�
 Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
 Packed 18 sample files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying spec ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing spec [Гайд по использованию OpenGL и OpenCL.html]
-Packing spec [Справка OpenCLABC.html]
-Packing spec [Справка OpenGLABC.html]
-Packed 3 spec files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packing reference [Гайд по использованию OpenGL и OpenCL.html]
+Packing reference [Справка OpenCLABC.html]
+Packing reference [Справка OpenGLABC.html]
+Packed 3 reference files
 Done packing

@@ -3543,6 +3543,7 @@
     public static property TEXTURE_MAX_CLAMP_T_SGIX:             GetTextureParameter read new GetTextureParameter($836A);
     public static property TEXTURE_MAX_CLAMP_R_SGIX:             GetTextureParameter read new GetTextureParameter($836B);
     public static property TEXTURE_UNNORMALIZED_COORDINATES_ARM: GetTextureParameter read new GetTextureParameter($8F6A);
+    public static property SURFACE_COMPRESSION_EXT:              GetTextureParameter read new GetTextureParameter($96C0);
     
     public function ToString: string; override;
     begin
@@ -3601,6 +3602,7 @@
       if self.val = UInt32($836A) then Result := 'TEXTURE_MAX_CLAMP_T_SGIX' else
       if self.val = UInt32($836B) then Result := 'TEXTURE_MAX_CLAMP_R_SGIX' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
+      if self.val = UInt32($96C0) then Result := 'SURFACE_COMPRESSION_EXT' else
         Result := $'GetTextureParameter[{self.val}]';
     end;
     
@@ -4636,77 +4638,78 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property SAMPLES:                                InternalFormatPName read new InternalFormatPName($80A9);
-    public static property GENERATE_MIPMAP:                        InternalFormatPName read new InternalFormatPName($8191);
-    public static property INTERNALFORMAT_SUPPORTED:               InternalFormatPName read new InternalFormatPName($826F);
-    public static property INTERNALFORMAT_PREFERRED:               InternalFormatPName read new InternalFormatPName($8270);
-    public static property INTERNALFORMAT_RED_SIZE:                InternalFormatPName read new InternalFormatPName($8271);
-    public static property INTERNALFORMAT_GREEN_SIZE:              InternalFormatPName read new InternalFormatPName($8272);
-    public static property INTERNALFORMAT_BLUE_SIZE:               InternalFormatPName read new InternalFormatPName($8273);
-    public static property INTERNALFORMAT_ALPHA_SIZE:              InternalFormatPName read new InternalFormatPName($8274);
-    public static property INTERNALFORMAT_DEPTH_SIZE:              InternalFormatPName read new InternalFormatPName($8275);
-    public static property INTERNALFORMAT_STENCIL_SIZE:            InternalFormatPName read new InternalFormatPName($8276);
-    public static property INTERNALFORMAT_SHARED_SIZE:             InternalFormatPName read new InternalFormatPName($8277);
-    public static property INTERNALFORMAT_RED_TYPE:                InternalFormatPName read new InternalFormatPName($8278);
-    public static property INTERNALFORMAT_GREEN_TYPE:              InternalFormatPName read new InternalFormatPName($8279);
-    public static property INTERNALFORMAT_BLUE_TYPE:               InternalFormatPName read new InternalFormatPName($827A);
-    public static property INTERNALFORMAT_ALPHA_TYPE:              InternalFormatPName read new InternalFormatPName($827B);
-    public static property INTERNALFORMAT_DEPTH_TYPE:              InternalFormatPName read new InternalFormatPName($827C);
-    public static property INTERNALFORMAT_STENCIL_TYPE:            InternalFormatPName read new InternalFormatPName($827D);
-    public static property MAX_WIDTH:                              InternalFormatPName read new InternalFormatPName($827E);
-    public static property MAX_HEIGHT:                             InternalFormatPName read new InternalFormatPName($827F);
-    public static property MAX_DEPTH:                              InternalFormatPName read new InternalFormatPName($8280);
-    public static property MAX_LAYERS:                             InternalFormatPName read new InternalFormatPName($8281);
-    public static property COLOR_COMPONENTS:                       InternalFormatPName read new InternalFormatPName($8283);
-    public static property COLOR_RENDERABLE:                       InternalFormatPName read new InternalFormatPName($8286);
-    public static property DEPTH_RENDERABLE:                       InternalFormatPName read new InternalFormatPName($8287);
-    public static property STENCIL_RENDERABLE:                     InternalFormatPName read new InternalFormatPName($8288);
-    public static property FRAMEBUFFER_RENDERABLE:                 InternalFormatPName read new InternalFormatPName($8289);
-    public static property FRAMEBUFFER_RENDERABLE_LAYERED:         InternalFormatPName read new InternalFormatPName($828A);
-    public static property FRAMEBUFFER_BLEND:                      InternalFormatPName read new InternalFormatPName($828B);
-    public static property READ_PIXELS:                            InternalFormatPName read new InternalFormatPName($828C);
-    public static property READ_PIXELS_FORMAT:                     InternalFormatPName read new InternalFormatPName($828D);
-    public static property READ_PIXELS_TYPE:                       InternalFormatPName read new InternalFormatPName($828E);
-    public static property TEXTURE_IMAGE_FORMAT:                   InternalFormatPName read new InternalFormatPName($828F);
-    public static property TEXTURE_IMAGE_TYPE:                     InternalFormatPName read new InternalFormatPName($8290);
-    public static property GET__TEXTURE_IMAGE_FORMAT:              InternalFormatPName read new InternalFormatPName($8291);
-    public static property GET__TEXTURE_IMAGE_TYPE:                InternalFormatPName read new InternalFormatPName($8292);
-    public static property MIPMAP:                                 InternalFormatPName read new InternalFormatPName($8293);
-    public static property AUTO_GENERATE_MIPMAP:                   InternalFormatPName read new InternalFormatPName($8295);
-    public static property COLOR_ENCODING:                         InternalFormatPName read new InternalFormatPName($8296);
-    public static property SRGB_READ:                              InternalFormatPName read new InternalFormatPName($8297);
-    public static property SRGB_WRITE:                             InternalFormatPName read new InternalFormatPName($8298);
-    public static property FILTER:                                 InternalFormatPName read new InternalFormatPName($829A);
-    public static property VERTEX_TEXTURE:                         InternalFormatPName read new InternalFormatPName($829B);
-    public static property TESS_CONTROL_TEXTURE:                   InternalFormatPName read new InternalFormatPName($829C);
-    public static property TESS_EVALUATION_TEXTURE:                InternalFormatPName read new InternalFormatPName($829D);
-    public static property GEOMETRY_TEXTURE:                       InternalFormatPName read new InternalFormatPName($829E);
-    public static property FRAGMENT_TEXTURE:                       InternalFormatPName read new InternalFormatPName($829F);
-    public static property COMPUTE_TEXTURE:                        InternalFormatPName read new InternalFormatPName($82A0);
-    public static property TEXTURE_SHADOW:                         InternalFormatPName read new InternalFormatPName($82A1);
-    public static property TEXTURE_GATHER:                         InternalFormatPName read new InternalFormatPName($82A2);
-    public static property TEXTURE_GATHER_SHADOW:                  InternalFormatPName read new InternalFormatPName($82A3);
-    public static property SHADER_IMAGE_LOAD:                      InternalFormatPName read new InternalFormatPName($82A4);
-    public static property SHADER_IMAGE_STORE:                     InternalFormatPName read new InternalFormatPName($82A5);
-    public static property SHADER_IMAGE_ATOMIC:                    InternalFormatPName read new InternalFormatPName($82A6);
-    public static property IMAGE_TEXEL_SIZE:                       InternalFormatPName read new InternalFormatPName($82A7);
-    public static property IMAGE_COMPATIBILITY_CLASS:              InternalFormatPName read new InternalFormatPName($82A8);
-    public static property IMAGE_PIXEL_FORMAT:                     InternalFormatPName read new InternalFormatPName($82A9);
-    public static property IMAGE_PIXEL_TYPE:                       InternalFormatPName read new InternalFormatPName($82AA);
-    public static property SIMULTANEOUS_TEXTURE_AND_DEPTH_TEST:    InternalFormatPName read new InternalFormatPName($82AC);
-    public static property SIMULTANEOUS_TEXTURE_AND_STENCIL_TEST:  InternalFormatPName read new InternalFormatPName($82AD);
-    public static property SIMULTANEOUS_TEXTURE_AND_DEPTH_WRITE:   InternalFormatPName read new InternalFormatPName($82AE);
-    public static property SIMULTANEOUS_TEXTURE_AND_STENCIL_WRITE: InternalFormatPName read new InternalFormatPName($82AF);
-    public static property TEXTURE_COMPRESSED_BLOCK_WIDTH:         InternalFormatPName read new InternalFormatPName($82B1);
-    public static property TEXTURE_COMPRESSED_BLOCK_HEIGHT:        InternalFormatPName read new InternalFormatPName($82B2);
-    public static property TEXTURE_COMPRESSED_BLOCK_SIZE:          InternalFormatPName read new InternalFormatPName($82B3);
-    public static property CLEAR_BUFFER:                           InternalFormatPName read new InternalFormatPName($82B4);
-    public static property TEXTURE_VIEW:                           InternalFormatPName read new InternalFormatPName($82B5);
-    public static property VIEW_COMPATIBILITY_CLASS:               InternalFormatPName read new InternalFormatPName($82B6);
-    public static property TEXTURE_COMPRESSED:                     InternalFormatPName read new InternalFormatPName($86A1);
-    public static property IMAGE_FORMAT_COMPATIBILITY_TYPE:        InternalFormatPName read new InternalFormatPName($90C7);
-    public static property CLEAR_TEXTURE:                          InternalFormatPName read new InternalFormatPName($9365);
-    public static property NUM_SAMPLE_COUNTS:                      InternalFormatPName read new InternalFormatPName($9380);
+    public static property SAMPLES:                                 InternalFormatPName read new InternalFormatPName($80A9);
+    public static property GENERATE_MIPMAP:                         InternalFormatPName read new InternalFormatPName($8191);
+    public static property INTERNALFORMAT_SUPPORTED:                InternalFormatPName read new InternalFormatPName($826F);
+    public static property INTERNALFORMAT_PREFERRED:                InternalFormatPName read new InternalFormatPName($8270);
+    public static property INTERNALFORMAT_RED_SIZE:                 InternalFormatPName read new InternalFormatPName($8271);
+    public static property INTERNALFORMAT_GREEN_SIZE:               InternalFormatPName read new InternalFormatPName($8272);
+    public static property INTERNALFORMAT_BLUE_SIZE:                InternalFormatPName read new InternalFormatPName($8273);
+    public static property INTERNALFORMAT_ALPHA_SIZE:               InternalFormatPName read new InternalFormatPName($8274);
+    public static property INTERNALFORMAT_DEPTH_SIZE:               InternalFormatPName read new InternalFormatPName($8275);
+    public static property INTERNALFORMAT_STENCIL_SIZE:             InternalFormatPName read new InternalFormatPName($8276);
+    public static property INTERNALFORMAT_SHARED_SIZE:              InternalFormatPName read new InternalFormatPName($8277);
+    public static property INTERNALFORMAT_RED_TYPE:                 InternalFormatPName read new InternalFormatPName($8278);
+    public static property INTERNALFORMAT_GREEN_TYPE:               InternalFormatPName read new InternalFormatPName($8279);
+    public static property INTERNALFORMAT_BLUE_TYPE:                InternalFormatPName read new InternalFormatPName($827A);
+    public static property INTERNALFORMAT_ALPHA_TYPE:               InternalFormatPName read new InternalFormatPName($827B);
+    public static property INTERNALFORMAT_DEPTH_TYPE:               InternalFormatPName read new InternalFormatPName($827C);
+    public static property INTERNALFORMAT_STENCIL_TYPE:             InternalFormatPName read new InternalFormatPName($827D);
+    public static property MAX_WIDTH:                               InternalFormatPName read new InternalFormatPName($827E);
+    public static property MAX_HEIGHT:                              InternalFormatPName read new InternalFormatPName($827F);
+    public static property MAX_DEPTH:                               InternalFormatPName read new InternalFormatPName($8280);
+    public static property MAX_LAYERS:                              InternalFormatPName read new InternalFormatPName($8281);
+    public static property COLOR_COMPONENTS:                        InternalFormatPName read new InternalFormatPName($8283);
+    public static property COLOR_RENDERABLE:                        InternalFormatPName read new InternalFormatPName($8286);
+    public static property DEPTH_RENDERABLE:                        InternalFormatPName read new InternalFormatPName($8287);
+    public static property STENCIL_RENDERABLE:                      InternalFormatPName read new InternalFormatPName($8288);
+    public static property FRAMEBUFFER_RENDERABLE:                  InternalFormatPName read new InternalFormatPName($8289);
+    public static property FRAMEBUFFER_RENDERABLE_LAYERED:          InternalFormatPName read new InternalFormatPName($828A);
+    public static property FRAMEBUFFER_BLEND:                       InternalFormatPName read new InternalFormatPName($828B);
+    public static property READ_PIXELS:                             InternalFormatPName read new InternalFormatPName($828C);
+    public static property READ_PIXELS_FORMAT:                      InternalFormatPName read new InternalFormatPName($828D);
+    public static property READ_PIXELS_TYPE:                        InternalFormatPName read new InternalFormatPName($828E);
+    public static property TEXTURE_IMAGE_FORMAT:                    InternalFormatPName read new InternalFormatPName($828F);
+    public static property TEXTURE_IMAGE_TYPE:                      InternalFormatPName read new InternalFormatPName($8290);
+    public static property GET__TEXTURE_IMAGE_FORMAT:               InternalFormatPName read new InternalFormatPName($8291);
+    public static property GET__TEXTURE_IMAGE_TYPE:                 InternalFormatPName read new InternalFormatPName($8292);
+    public static property MIPMAP:                                  InternalFormatPName read new InternalFormatPName($8293);
+    public static property AUTO_GENERATE_MIPMAP:                    InternalFormatPName read new InternalFormatPName($8295);
+    public static property COLOR_ENCODING:                          InternalFormatPName read new InternalFormatPName($8296);
+    public static property SRGB_READ:                               InternalFormatPName read new InternalFormatPName($8297);
+    public static property SRGB_WRITE:                              InternalFormatPName read new InternalFormatPName($8298);
+    public static property FILTER:                                  InternalFormatPName read new InternalFormatPName($829A);
+    public static property VERTEX_TEXTURE:                          InternalFormatPName read new InternalFormatPName($829B);
+    public static property TESS_CONTROL_TEXTURE:                    InternalFormatPName read new InternalFormatPName($829C);
+    public static property TESS_EVALUATION_TEXTURE:                 InternalFormatPName read new InternalFormatPName($829D);
+    public static property GEOMETRY_TEXTURE:                        InternalFormatPName read new InternalFormatPName($829E);
+    public static property FRAGMENT_TEXTURE:                        InternalFormatPName read new InternalFormatPName($829F);
+    public static property COMPUTE_TEXTURE:                         InternalFormatPName read new InternalFormatPName($82A0);
+    public static property TEXTURE_SHADOW:                          InternalFormatPName read new InternalFormatPName($82A1);
+    public static property TEXTURE_GATHER:                          InternalFormatPName read new InternalFormatPName($82A2);
+    public static property TEXTURE_GATHER_SHADOW:                   InternalFormatPName read new InternalFormatPName($82A3);
+    public static property SHADER_IMAGE_LOAD:                       InternalFormatPName read new InternalFormatPName($82A4);
+    public static property SHADER_IMAGE_STORE:                      InternalFormatPName read new InternalFormatPName($82A5);
+    public static property SHADER_IMAGE_ATOMIC:                     InternalFormatPName read new InternalFormatPName($82A6);
+    public static property IMAGE_TEXEL_SIZE:                        InternalFormatPName read new InternalFormatPName($82A7);
+    public static property IMAGE_COMPATIBILITY_CLASS:               InternalFormatPName read new InternalFormatPName($82A8);
+    public static property IMAGE_PIXEL_FORMAT:                      InternalFormatPName read new InternalFormatPName($82A9);
+    public static property IMAGE_PIXEL_TYPE:                        InternalFormatPName read new InternalFormatPName($82AA);
+    public static property SIMULTANEOUS_TEXTURE_AND_DEPTH_TEST:     InternalFormatPName read new InternalFormatPName($82AC);
+    public static property SIMULTANEOUS_TEXTURE_AND_STENCIL_TEST:   InternalFormatPName read new InternalFormatPName($82AD);
+    public static property SIMULTANEOUS_TEXTURE_AND_DEPTH_WRITE:    InternalFormatPName read new InternalFormatPName($82AE);
+    public static property SIMULTANEOUS_TEXTURE_AND_STENCIL_WRITE:  InternalFormatPName read new InternalFormatPName($82AF);
+    public static property TEXTURE_COMPRESSED_BLOCK_WIDTH:          InternalFormatPName read new InternalFormatPName($82B1);
+    public static property TEXTURE_COMPRESSED_BLOCK_HEIGHT:         InternalFormatPName read new InternalFormatPName($82B2);
+    public static property TEXTURE_COMPRESSED_BLOCK_SIZE:           InternalFormatPName read new InternalFormatPName($82B3);
+    public static property CLEAR_BUFFER:                            InternalFormatPName read new InternalFormatPName($82B4);
+    public static property TEXTURE_VIEW:                            InternalFormatPName read new InternalFormatPName($82B5);
+    public static property VIEW_COMPATIBILITY_CLASS:                InternalFormatPName read new InternalFormatPName($82B6);
+    public static property TEXTURE_COMPRESSED:                      InternalFormatPName read new InternalFormatPName($86A1);
+    public static property NUM_SURFACE_COMPRESSION_FIXED_RATES_EXT: InternalFormatPName read new InternalFormatPName($8F6E);
+    public static property IMAGE_FORMAT_COMPATIBILITY_TYPE:         InternalFormatPName read new InternalFormatPName($90C7);
+    public static property CLEAR_TEXTURE:                           InternalFormatPName read new InternalFormatPName($9365);
+    public static property NUM_SAMPLE_COUNTS:                       InternalFormatPName read new InternalFormatPName($9380);
     
     public function ToString: string; override;
     begin
@@ -4778,6 +4781,7 @@
       if self.val = UInt32($82B5) then Result := 'TEXTURE_VIEW' else
       if self.val = UInt32($82B6) then Result := 'VIEW_COMPATIBILITY_CLASS' else
       if self.val = UInt32($86A1) then Result := 'TEXTURE_COMPRESSED' else
+      if self.val = UInt32($8F6E) then Result := 'NUM_SURFACE_COMPRESSION_FIXED_RATES_EXT' else
       if self.val = UInt32($90C7) then Result := 'IMAGE_FORMAT_COMPATIBILITY_TYPE' else
       if self.val = UInt32($9365) then Result := 'CLEAR_TEXTURE' else
       if self.val = UInt32($9380) then Result := 'NUM_SAMPLE_COUNTS' else
