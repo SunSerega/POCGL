@@ -14,6 +14,8 @@ Test( (M1+WaitFor(M1)) );
 Test( WaitFor(M1)+M1 );
 Test( WaitFor(M1 and M2) );
 Test( WaitFor(M1 or M2) );
+Test( WaitFor(M1 and M1) );
+Test( WaitFor(M1 or M1) );
 
 Writeln('='*50);
 Writeln;
@@ -24,6 +26,8 @@ Test( M1+Q0.ThenWaitFor(M1) );
 Test( Q0.ThenWaitFor(M1)+M1 );
 Test( Q0.ThenWaitFor(M1 and M2) );
 Test( Q0.ThenWaitFor(M1 or M2) );
+Test( Q0.ThenWaitFor(M1 and M1) );
+Test( Q0.ThenWaitFor(M1 or M1) );
 
 Writeln('='*50);
 Writeln;
@@ -34,3 +38,5 @@ Test( M1+mem.NewQueue.AddWait(M1) );
 Test( mem.NewQueue.AddWait(M1)+M1 );
 Test( mem.NewQueue.AddWait(M1 and M2) );
 Test( mem.NewQueue.AddWait(M1 or M2) );
+Test( mem.NewQueue.AddWait(M1 and M1) );
+Test( mem.NewQueue.AddWait(M1 or M1) );

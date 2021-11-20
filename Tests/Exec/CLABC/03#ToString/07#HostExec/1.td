@@ -5,8 +5,8 @@
 OpenCLABC
 
 #ExpOtp
-CommandQueueHostFunc<System.Int32>#0 => System.Func`2[OpenCLABC.Context,System.Int32]
+CommandQueueHostFunc<System.Int32>#0: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Int32] => Int32 <>lambda*(OpenCLABC.Context)
 
-CommandQueueHostProc#0 => System.Action`1[OpenCLABC.Context]
+CommandQueueHostProc#0: OpenCLABC_implementation______.<>local_variables_class_* => Void <>lambda*(OpenCLABC.Context)
 
 

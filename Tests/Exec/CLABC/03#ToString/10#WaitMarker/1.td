@@ -11,7 +11,7 @@ WaitMarkerDummy#0
 
 PseudoWaitMarker<System.Int32>#0
 	PseudoWaitMarkerWrapper#1
-	CommandQueueHostFunc<System.Int32>#2 => System.Func`2[OpenCLABC.Context,System.Int32]
+	CommandQueueHostFunc<System.Int32>#2: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Int32] => Int32 <>lambda*(OpenCLABC.Context)
 
 ------------------------------
 
@@ -26,23 +26,20 @@ SimpleAsyncQueueArray<System.Int32>#0
 			PseudoWaitMarker<System.Int32>#3
 	PseudoWaitMarker<System.Int32>#3
 		PseudoWaitMarkerWrapper#2
-		CommandQueueHostFunc<System.Int32>#4 => System.Func`2[OpenCLABC.Context,System.Int32]
+		CommandQueueHostFunc<System.Int32>#4: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Int32] => Int32 <>lambda*(OpenCLABC.Context)
 
 ------------------------------
 
-WaitAllMarker#0
+WaitMarkerAll#0
 	PseudoWaitMarkerWrapper#1
-		PseudoWaitMarker<System.Int32>#2
-	PseudoWaitMarkerWrapper#1
-		PseudoWaitMarker<System.Int32>#2
+		PseudoWaitMarker<System.Int32>#2 * 2
 
 ------------------------------
 
-WaitAnyMarker#0
-	PseudoWaitMarkerWrapper#1
-		PseudoWaitMarker<System.Int32>#2
-	PseudoWaitMarkerWrapper#1
-		PseudoWaitMarker<System.Int32>#2
+WaitMarkerAny#0
+	WaitMarkerAll#1
+		PseudoWaitMarkerWrapper#2
+			PseudoWaitMarker<System.Int32>#3
 
 ------------------------------
 

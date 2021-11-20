@@ -26,16 +26,31 @@ SimpleSyncQueueArray<System.Object>#0
 ------------------------------
 
 CommandQueueWaitFor#0
-	WaitAllMarker#1
+	WaitMarkerAll#1
 		WaitMarkerDummy#2
 		WaitMarkerDummy#3
 
 ------------------------------
 
 CommandQueueWaitFor#0
-	WaitAnyMarker#1
-		WaitMarkerDummy#2
-		WaitMarkerDummy#3
+	WaitMarkerAny#1
+		WaitMarkerAll#2
+			WaitMarkerDummy#3
+		WaitMarkerAll#4
+			WaitMarkerDummy#5
+
+------------------------------
+
+CommandQueueWaitFor#0
+	WaitMarkerAll#1
+		WaitMarkerDummy#2 * 2
+
+------------------------------
+
+CommandQueueWaitFor#0
+	WaitMarkerAny#1
+		WaitMarkerAll#2
+			WaitMarkerDummy#3
 
 ------------------------------
 
@@ -66,7 +81,7 @@ SimpleSyncQueueArray<System.Object>#0
 
 CommandQueueThenWaitFor<System.Object>#0
 	ConstQueue<System.Object>#1 { nil }
-	WaitAllMarker#2
+	WaitMarkerAll#2
 		WaitMarkerDummy#3
 		WaitMarkerDummy#4
 
@@ -74,9 +89,26 @@ CommandQueueThenWaitFor<System.Object>#0
 
 CommandQueueThenWaitFor<System.Object>#0
 	ConstQueue<System.Object>#1 { nil }
-	WaitAnyMarker#2
-		WaitMarkerDummy#3
-		WaitMarkerDummy#4
+	WaitMarkerAny#2
+		WaitMarkerAll#3
+			WaitMarkerDummy#4
+		WaitMarkerAll#5
+			WaitMarkerDummy#6
+
+------------------------------
+
+CommandQueueThenWaitFor<System.Object>#0
+	ConstQueue<System.Object>#1 { nil }
+	WaitMarkerAll#2
+		WaitMarkerDummy#3 * 2
+
+------------------------------
+
+CommandQueueThenWaitFor<System.Object>#0
+	ConstQueue<System.Object>#1 { nil }
+	WaitMarkerAny#2
+		WaitMarkerAll#3
+			WaitMarkerDummy#4
 
 ------------------------------
 
@@ -111,7 +143,7 @@ SimpleSyncQueueArray<System.Object>#0
 MemorySegmentCCQ#0
 	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
-		WaitAllMarker#1
+		WaitMarkerAll#1
 			WaitMarkerDummy#2
 			WaitMarkerDummy#3
 
@@ -120,9 +152,28 @@ MemorySegmentCCQ#0
 MemorySegmentCCQ#0
 	CCCObj => MemorySegment[*] of size 1
 	WaitCommand
-		WaitAnyMarker#1
-			WaitMarkerDummy#2
-			WaitMarkerDummy#3
+		WaitMarkerAny#1
+			WaitMarkerAll#2
+				WaitMarkerDummy#3
+			WaitMarkerAll#4
+				WaitMarkerDummy#5
+
+------------------------------
+
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
+	WaitCommand
+		WaitMarkerAll#1
+			WaitMarkerDummy#2 * 2
+
+------------------------------
+
+MemorySegmentCCQ#0
+	CCCObj => MemorySegment[*] of size 1
+	WaitCommand
+		WaitMarkerAny#1
+			WaitMarkerAll#2
+				WaitMarkerDummy#3
 
 ------------------------------
 

@@ -73,6 +73,10 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
+//TODO .AddProc(()->p()) сейчас вызывает .AddProc(c->p()), но делает это лямбдой
+// - При выводе .ToString выглядит криво - стоит сделать пользовательский класс для этого
+// - И наверное интерфейс IDelegatePropagator, чтоб в .ToString выводить только изначальный делегат
+
 //TODO CLValue<T> = class, содержащий указатель на значение
 // - Чтоб и .ReadValue работало, и меньше действий проводить на стороне CPU
 //TODO В HandleDefaultRes принимать CLValue<T> вместо T
@@ -142,7 +146,7 @@ unit OpenCLABC;
 
 {$endregion}
 
-{$region Debug}{$ifdef DEBUG}
+{$region DEBUG}{$ifdef DEBUG}
 
 // Регистрация всех cl.RetainEvent и cl.ReleaseEvent
 { $define EventDebug}
@@ -150,12 +154,16 @@ unit OpenCLABC;
 // Регистрация использований cl_command_queue
 { $define QueueDebug}
 
+// Регистрация активаций/деактиваций всех WaitHandler-ов
+{ $define WaitDebug}
+
 {$ifdef ForceMaxDebug}
   {$define EventDebug}
   {$define QueueDebug}
+  {$define WaitDebug}
 {$endif ForceMaxDebug}
 
-{$endif DEBUG}{$endregion Debug}
+{$endif DEBUG}{$endregion DEBUG}
 
 interface
 
@@ -277,7 +285,7 @@ type
     
   end;
   
-  {$endif EventDebug}{$endregion EventDebug}
+  {$endif}{$endregion EventDebug}
   
   {$region QueueDebug}{$ifdef QueueDebug}
   
@@ -304,7 +312,28 @@ type
     
   end;
   
-  {$endif QueueDebug}{$endregion QueueDebug}
+  {$endif}{$endregion QueueDebug}
+  
+  {$region WaitDebug}{$ifdef WaitDebug}
+  
+  WaitDebug = static class
+    
+    private static WaitActions := new System.Collections.Concurrent.ConcurrentDictionary<object, System.Collections.Concurrent.ConcurrentQueue<string>>;
+    
+    private static procedure RegisterAction(handler: object; act: string) :=
+    WaitActions.GetOrAdd(handler, hc->new System.Collections.Concurrent.ConcurrentQueue<string>).Enqueue(act);
+    
+    public static procedure ReportWaitActions :=
+    foreach var kvp in WaitActions do
+    begin
+      $'Logging actions of handler[{kvp.Key.GetHashCode}]'.Println;
+      kvp.Value.PrintLines;
+      Println('='*30);
+    end;
+    
+  end;
+  
+  {$endif}{$endregion WaitDebug}
   
   {$endregion DEBUG}
   
@@ -2248,7 +2277,7 @@ type
     public procedure AttachCallback(midway: boolean; work: Action; err_handler: CLTaskErrHandler{$ifdef EventDebug}; reason: string{$endif}) :=
     case self.count of
       0: work;
-      1: AttachCallback(midway, self.evs[0], work, err_handler{$ifdef EventDebug}, nil{$endif});
+      1: AttachCallback(midway, self.evs[0], work, err_handler{$ifdef EventDebug}, reason{$endif});
       else
       begin
         var done_c := count;
@@ -2490,7 +2519,7 @@ type
 type
   UserEvent = sealed class
     private uev: cl_event;
-    private done := false;
+    private done := false; //TODO InterlockedBoolean
     
     {$region constructor's}
     
@@ -2587,6 +2616,8 @@ type
 //      ev1 += ev2.uev;
 //      ev1.abortable := true;
 //    end;
+    
+    public function ToString: string; override := $'UserEvent[{uev.val}]';
     
     {$endregion operator's}
     
@@ -2973,6 +3004,7 @@ type
       
       q.ToString(sb, tabs, index, delayed);
       
+      sb.Append(#9, tabs);
       ToStringWriteDelegate(sb, f);
       sb += #10;
       
@@ -3094,6 +3126,7 @@ type
       foreach var q in qs do
         q.ToString(sb, tabs, index, delayed);
       
+      sb.Append(#9, tabs);
       ToStringWriteDelegate(sb, f);
       sb += #10;
     end;
@@ -3273,6 +3306,9 @@ function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQ
 
 {$region Def}
 //TODO Куча дублей кода, особенно в Combination
+//TODO data ничего не делает, кроме как для WaitDebug, потому что state хранится в sub_info
+// - Лучше передавать self.GetHashCode
+//TODO Отписка никогда не происходит - пока не сделал, чтоб перепродумывать как обрабатывать всё при циклах
 
 {$region Base}
 
@@ -3312,15 +3348,28 @@ type
       {$endif DEBUG}
       
       uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'Wait result'{$endif});
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Created outer with prev_ev=[ {l.prev_ev.evs?.JoinToString} ], res_ev={uev}');
+      {$endif WaitDebug}
       EventList.AttachCallback(true, self.uev, ()->System.GC.KeepAlive(self), g.curr_err_handler{$ifdef EventDebug}, $'KeepAlive(WaitHandlerOuter)'{$endif});
       
       var err_handler := g.curr_err_handler;
       l.prev_ev.AttachCallback(false, ()->
       begin
         if err_handler.HadError then
-          uev.Abort else
+        begin
+          {$ifdef WaitDebug}
+          WaitDebug.RegisterAction(self, $'Aborted');
+          {$endif WaitDebug}
+          uev.Abort;
+        end else
+        begin
+          {$ifdef WaitDebug}
+          WaitDebug.RegisterAction(self, $'Got prev_ev boost');
+          {$endif WaitDebug}
           self.IncState;
-      end, err_handler{$ifdef EventDebug}, $'KeepAlive(WaitHandlerOuter)'{$endif});
+        end;
+      end, err_handler{$ifdef EventDebug}, $'KeepAlive(handler[{self.GetHashCode}])'{$endif});
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
@@ -3329,9 +3378,15 @@ type
     protected function IncState: boolean;
     begin
       var new_state := System.Threading.Interlocked.Increment(self.state);
+      
       {$ifdef DEBUG}
       if not new_state.InRange(0,2) then raise new System.InvalidOperationException;
       {$endif DEBUG}
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Advanced to state {new_state}');
+      {$endif WaitDebug}
+      
       Result := (new_state=2) and TryConsume;
     end;
     protected procedure DecState :=
@@ -3340,6 +3395,11 @@ type
       {$ifdef DEBUG}
       raise new System.InvalidOperationException;
       {$endif DEBUG}
+    end else
+    begin
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Gone back to state {self.state}');
+      {$endif WaitDebug}
     end;
     
   end;
@@ -3373,32 +3433,63 @@ type
     private activations := 0;
     private reserved := 0;
     
-    public procedure Subscribe(sub: IWaitHandlerSub; info: WaitHandlerDirectSubInfo) :=
-    if not subs.TryAdd(sub, info) then
-      raise new System.InvalidOperationException else
-    if activations>=info.threshold then
-      if info.state.TrySet(true) then
-        // Может выполняться одновременно с AddActivation, в таком случае 
-        sub.HandleChildInc(info.data);
+    public procedure Subscribe(sub: IWaitHandlerSub; info: WaitHandlerDirectSubInfo);
+    begin
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got new sub {sub.GetHashCode}');
+      {$endif WaitDebug}
+      
+      if not subs.TryAdd(sub, info) then
+        raise new System.InvalidOperationException else
+      if activations>=info.threshold then
+        if info.state.TrySet(true) then
+        begin
+          {$ifdef WaitDebug}
+          WaitDebug.RegisterAction(self, $'Add immidiatly inced sub {sub.GetHashCode}');
+          {$endif WaitDebug}
+          // Может выполняться одновременно с AddActivation, в таком случае 
+          sub.HandleChildInc(info.data);
+        end;
+    end;
     
     public procedure AddActivation;
     begin
+      {$ifdef WaitDebug}
+      var new_act :=
+      {$endif WaitDebug}
       System.Threading.Interlocked.Increment(activations);
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got activation =>{new_act}');
+      {$endif WaitDebug}
+      
       foreach var kvp in subs do
         // activations может изменится, если .HandleChildInc из
         // .AddActivation другого хэндлера или .Subscribe затронет self.activations
         // Поэтому результат Interlocked.Increment использовать нельзя
         if activations>=kvp.Value.threshold then
           if kvp.Value.state.TrySet(true) and kvp.Key.HandleChildInc(kvp.Value.data) then
+          begin
+            {$ifdef WaitDebug}
+            WaitDebug.RegisterAction(self, $'Sub {kvp.Key.GetHashCode} consumed activation =>{activations}');
+            {$endif WaitDebug}
             // Если активацию съели - нет смысла продолжать
             break;
+          end;
     end;
     
     public function TryReserve(c: integer): boolean;
     begin
       var n_reserved := System.Threading.Interlocked.Add(reserved, c);
       Result := n_reserved<=activations;
-      if not Result then ReleaseReserve(c);
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Tried to reserve {c}=>{n_reserved}: {Result}');
+      {$endif WaitDebug}
+      
+      // Надо делать там, где было вызвано TryReserve
+      // Потому что TryReserve не последняя проверка, есть ещё uev.SetStatus
+//      if not Result then ReleaseReserve(c);
     end;
     public procedure ReleaseReserve(c: integer) :=
     if System.Threading.Interlocked.Add(reserved, -c)<0 then
@@ -3406,6 +3497,11 @@ type
       {$ifdef DEBUG}
       raise new System.InvalidOperationException;
       {$endif DEBUG}
+    end else
+    begin
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Released reserve {c}=>{reserved}');
+      {$endif WaitDebug}
     end;
     
     public procedure Comsume(c: integer);
@@ -3416,6 +3512,11 @@ type
       if (new_act<0) or (new_res<0) then
         raise new System.InvalidOperationException;
       {$endif DEBUG}
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Sub consumed {c}, new_act={new_act}, new_res={new_res}');
+      {$endif WaitDebug}
+      
       foreach var kvp in subs do
         if activations<kvp.Value.threshold then
           if kvp.Value.state.TrySet(false) then
@@ -3430,6 +3531,9 @@ type
     public constructor(g: CLTaskGlobalData; l: CLTaskLocalData; source: WaitHandlerDirect);
     begin
       inherited Create(g, l);
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'This is DirectWrap for {source.GetHashCode}');
+      {$endif WaitDebug}
       self.source := source;
       source.Subscribe(self, new WaitHandlerDirectSubInfo(1,0));
     end;
@@ -3441,6 +3545,12 @@ type
     protected function TryConsume: boolean; override;
     begin
       Result := source.TryReserve(1) and self.uev.SetStatus(CommandExecutionStatus.COMPLETE);
+      if not Result then source.ReleaseReserve(1);
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Tryed reserving {1} in source[{source.GetHashCode}]: {Result}');
+      {$endif WaitDebug}
+      
       if Result then source.Comsume(1);
     end;
     
@@ -3451,7 +3561,13 @@ type
     private handlers := new ConcurrentDictionary<CLTaskGlobalData, WaitHandlerDirect>;
     
     public procedure InitInnerHandles(g: CLTaskGlobalData); override :=
-    handlers.GetOrAdd(g, g->new WaitHandlerDirect);
+    handlers.GetOrAdd(g, g->
+    begin
+      Result := new WaitHandlerDirect;
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(Result, $'Created for {self.GetType.Name}[{self.GetHashCode}]');
+      {$endif WaitDebug}
+    end);
     
     public function MakeWaitEv(g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
     WaitHandlerDirectWrap.Create(g, l, handlers[g]).uev;
@@ -3519,6 +3635,9 @@ type
     
     public constructor(sources: array of WaitHandlerDirect; ref_counts: array of integer; sub: IWaitHandlerSub; sub_data: integer);
     begin
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Created AllInner for: {sources.Select(s->s.GetHashCode).JoinToString}');
+      {$endif WaitDebug}
       self.sources := sources;
       self.ref_counts := ref_counts;
       self.sub := sub;
@@ -3526,24 +3645,56 @@ type
     end;
     public constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer) :=
-    (System.Threading.Interlocked.Increment(done_c)=sources.Length) and sub.HandleChildInc(sub_data);
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer) :=
-    if System.Threading.Interlocked.Decrement(done_c)=sources.Length-1 then sub.HandleChildDec(sub_data);
-    
-    protected function TryConsume: boolean;
+    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
+      var new_done_c := System.Threading.Interlocked.Increment(done_c);
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got activation from {sources[data].GetHashCode}, new_done_c={new_done_c}/{sources.Length}');
+      {$endif WaitDebug}
+      
+      Result := (new_done_c=sources.Length) and sub.HandleChildInc(sub_data);
+    end;
+    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    begin
+      var prev_done_c := System.Threading.Interlocked.Decrement(done_c)+1;
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got deactivation from {sources[data].GetHashCode}, new_done_c={prev_done_c-1}/{sources.Length}');
+      {$endif WaitDebug}
+      
+      if prev_done_c=sources.Length then sub.HandleChildDec(sub_data);
+    end;
+    
+    public function TryConsume(try_set_res: ()->boolean): boolean;
+    begin
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Trying to reserve');
+      {$endif WaitDebug}
       Result := false;
       for var i := 0 to sources.Length-1 do
       begin
         if sources[i].TryReserve(ref_counts[i]) then continue;
-        for var prev_i := 0 to i-1 do
+        for var prev_i := 0 to i do
           sources[i].ReleaseReserve(ref_counts[i]);
         exit;
       end;
-      Result := true;
-      for var i := 0 to sources.Length-1 do
-        sources[i].Comsume(ref_counts[i]);
+      Result := try_set_res();
+      if Result then
+      begin
+        {$ifdef WaitDebug}
+        WaitDebug.RegisterAction(self, $'Consuming');
+        {$endif WaitDebug}
+        for var i := 0 to sources.Length-1 do
+          sources[i].Comsume(ref_counts[i]);
+      end else
+      begin
+        {$ifdef WaitDebug}
+        WaitDebug.RegisterAction(self, $'Abort consume');
+        {$endif WaitDebug}
+        for var i := 0 to sources.Length-1 do
+          sources[i].ReleaseReserve(ref_counts[i]);
+      end;
     end;
     
   end;
@@ -3555,27 +3706,52 @@ type
     public constructor(g: CLTaskGlobalData; l: CLTaskLocalData; sources: array of WaitHandlerDirect; ref_counts: array of integer);
     begin
       inherited Create(g, l);
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'This is AllOuter for: {sources.Select(s->s.GetHashCode).JoinToString}');
+      {$endif WaitDebug}
       self.sources := sources;
       self.ref_counts := ref_counts;
     end;
     public constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer) :=
-    (System.Threading.Interlocked.Increment(done_c)=sources.Length) and self.IncState;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer) :=
-    if System.Threading.Interlocked.Decrement(done_c)=sources.Length-1 then self.DecState;
+    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    begin
+      var new_done_c := System.Threading.Interlocked.Increment(done_c);
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got activation from {sources[data].GetHashCode}, new_done_c={new_done_c}/{sources.Length}');
+      {$endif WaitDebug}
+      
+      Result := (new_done_c=sources.Length) and self.IncState;
+    end;
+    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    begin
+      var prev_done_c := System.Threading.Interlocked.Decrement(done_c)+1;
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got deactivation from {sources[data].GetHashCode}, new_done_c={prev_done_c-1}/{sources.Length}');
+      {$endif WaitDebug}
+      
+      if prev_done_c=sources.Length then self.DecState;
+    end;
     
     protected function TryConsume: boolean; override;
     begin
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Trying to reserve');
+      {$endif WaitDebug}
       Result := false;
       for var i := 0 to sources.Length-1 do
       begin
         if sources[i].TryReserve(ref_counts[i]) then continue;
-        for var prev_i := 0 to i-1 do
+        for var prev_i := 0 to i do
           sources[i].ReleaseReserve(ref_counts[i]);
         exit;
       end;
       Result := true;
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Consuming');
+      {$endif WaitDebug}
       for var i := 0 to sources.Length-1 do
         sources[i].Comsume(ref_counts[i]);
     end;
@@ -3599,13 +3775,14 @@ type
       sb += #10;
       foreach var i in Range(0,children.Length-1).OrderByDescending(i->ref_counts[i]) do
       begin
-        sb.Append(#9, tabs);
+        children[i].ToString(sb, tabs, index, delayed);
         if ref_counts[i]<>1 then
         begin
-          sb.Append(ref_counts[i]);
+          sb.Length -= 1;
           sb += ' * ';
+          sb.Append(ref_counts[i]);
+          sb += #10;
         end;
-        children[i].ToStringHeader(sb, index);
       end;
     end;
     
@@ -3686,19 +3863,41 @@ type
       self.sources := new WaitHandlerAllInner[markers.Length];
       for var i := 0 to markers.Length-1 do
         self.sources[i] := new WaitHandlerAllInner(markers[i].children.ConvertAll(m->m.handlers[g]), markers[i].ref_counts, self, i);
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'This is AnyOuter for: {sources.Select(s->s.GetHashCode).JoinToString}');
+      {$endif WaitDebug}
     end;
     public constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer) :=
-    (System.Threading.Interlocked.Increment(done_c)=1) and self.IncState;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer) :=
-    if System.Threading.Interlocked.Decrement(done_c)=0 then self.DecState;
+    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    begin
+      var new_done_c := System.Threading.Interlocked.Increment(done_c);
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got activation from {sources[data].GetHashCode}, new_done_c={new_done_c}/{sources.Length}');
+      {$endif WaitDebug}
+      
+      Result := (new_done_c=1) and self.IncState;
+    end;
+    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    begin
+      var prev_done_c := System.Threading.Interlocked.Decrement(done_c)+1;
+      
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Got deactivation from {sources[data].GetHashCode}, new_done_c={prev_done_c-1}/{sources.Length}');
+      {$endif WaitDebug}
+      
+      if prev_done_c=1 then self.DecState;
+    end;
     
     protected function TryConsume: boolean; override;
     begin
+      {$ifdef WaitDebug}
+      WaitDebug.RegisterAction(self, $'Trying to consume');
+      {$endif WaitDebug}
       Result := false;
       for var i := 0 to sources.Length-1 do
-        if sources[i].TryConsume then
+        if sources[i].TryConsume(()->uev.SetStatus(CommandExecutionStatus.COMPLETE)) then
         begin
           Result := true;
           break;
@@ -5231,4 +5430,8 @@ finalization
   {$ifdef EventDebug}
   EventDebug.AssertDone;
   {$endif EventDebug}
+  {$ifdef WaitDebug}
+  foreach var whd: WaitHandlerDirect in WaitDebug.WaitActions.Keys.OfType&<WaitHandlerDirect> do
+    if whd.reserved<>0 then raise new System.InvalidOperationException;
+  {$endif WaitDebug}
 end.
