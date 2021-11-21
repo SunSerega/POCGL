@@ -118,8 +118,9 @@ begin
       res += ';'#10;
       res_Im += 'begin'#10;
       res_Im += '  Result := self;'#10;
-      res_Im += '  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;
-      res_Im += '  if q is ICastQueue(var cq) then q := cq.GetQ;'#10;
+      res_Im += '  //TODO UseTyped'#10;
+      res_Im += '//  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;
+      res_Im += '//  if q is ICastQueue(var cq) then q := cq.GetQ;'#10;
       
       res_Im += '  commands.Add( new QueueCommand<';
       res_Im += t;

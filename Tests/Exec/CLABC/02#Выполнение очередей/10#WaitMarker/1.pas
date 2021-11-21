@@ -1,7 +1,7 @@
 ﻿## uses OpenCLABC;
 
 procedure Invoke(q: CommandQueueBase) :=
-Println( Context.Default.SyncInvoke(q) );
+Println( Context.Default.SyncInvoke(q.Cast&<object>) );
 
 var M1 := WaitMarker.Create;
 Invoke( WaitFor(M1) * M1 );

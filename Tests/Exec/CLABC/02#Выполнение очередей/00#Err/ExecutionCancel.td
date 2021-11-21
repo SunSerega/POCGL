@@ -13,8 +13,6 @@ System.AggregateException: При выполнении очереди было �
    в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    --- Конец трассировки внутреннего стека исключений ---
    в OpenCLABC.CLTaskBase.Wait() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.CLTaskResLess.WaitResBase() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC.CLTaskBase.WaitRes() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC.Context.SyncInvoke(CommandQueueBase q) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в ExecutionCancel.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas:строка *
    в ExecutionCancel.Program.Main()

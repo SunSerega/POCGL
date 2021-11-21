@@ -34,9 +34,14 @@ Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
 Finished runing Template[OpenCLABC]
 Runing Descriptions[OpenCLABC]
+Descriptions[OpenCLABC]: ERROR: key %Err:WaitCombine:InpEmpty% wasn't found!
 Descriptions[OpenCLABC]: WARNING: key %IConstQueue% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %ConstQueue<T>% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %ConstQueue<T>.(T)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %IConstQueue.GetConstVal% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %ConstQueue<T>.Val% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %Err:0Waitables% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %Err:AddQueue(Const)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %Err:Wait(nil)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %:WaitForDef% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %WaitFor(WaitMarkerBase)% wasn't used!
@@ -65,6 +70,7 @@ Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenError(Action<CLTask<T>, arr
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WaitRes% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitMarker% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitMarker% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!

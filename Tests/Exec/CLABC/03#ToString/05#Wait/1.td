@@ -24,9 +24,7 @@ WaitMarkerAll#0
 
 ------------------------------
 
-WaitMarkerAny#0
-	WaitMarkerAll#1
-		WaitMarkerDummy#2
+WaitMarkerDummy#0
 
 ------------------------------
 
@@ -34,8 +32,8 @@ WaitMarkerAny#0
 	WaitMarkerAll#1
 		WaitMarkerDummy#2 * 2
 	WaitMarkerAll#3
-		WaitMarkerDummy#4
 		WaitMarkerDummy#2
+		WaitMarkerDummy#4
 	WaitMarkerAll#5
 		WaitMarkerDummy#4 * 2
 

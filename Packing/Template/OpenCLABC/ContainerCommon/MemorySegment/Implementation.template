@@ -10,8 +10,9 @@ constructor MemorySegmentCCQ.Create := inherited;
 function MemorySegmentCCQ.AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
 begin
   Result := self;
-  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
-  if q is ICastQueue(var cq) then q := cq.GetQ;
+  //TODO UseTyped
+//  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
+//  if q is ICastQueue(var cq) then q := cq.GetQ;
   commands.Add( new QueueCommand<MemorySegment>(q) );
 end;
 

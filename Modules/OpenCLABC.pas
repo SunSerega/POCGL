@@ -20,11 +20,6 @@ unit OpenCLABC;
 // Обязательно сделать до следующей стабильной версии:
 
 //TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
-//TODO И асинхронные умнее запускать - помнить значение, указывающее можно ли выполнить их синхронно
-// - Может даже можно синхронно выполнить "HPQ(...)+HPQ(...)", в некоторых случаях?
-
-//TODO WaitFor( WaitAll(seq1) or WaitAll(seq2) )
-// - И так же WaitAny
 
 //TODO Тесты:
 // - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
@@ -60,6 +55,8 @@ unit OpenCLABC;
 
 //TODO CommandQueueBase.UseTyped(typed_q_user: interface procedure use<T>(cq: CommandQueue<T>); procedure use_base(cq: CommandQueueBase); end)
 // - Использовать это внутри, чтоб наконец избавится от всех этих .Cast&<object>
+// - Пройтись по всеми TODO UseTyped
+// - И проверять возможность приведения при создании CastQueue
 
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
@@ -106,6 +103,8 @@ unit OpenCLABC;
 //TODO Интегрировать профайлинг очередей
 
 //TODO Исправить перегрузки Kernel.Exec
+
+//TODO Проверить, будет ли оптимизацией, создавать свой ThreadPool для каждого CLTaskBase
 
 //TODO Тестировщик должен запускать отдельные .exe для тестирования, а не вот это вот всё
 
@@ -287,7 +286,7 @@ type
     private static procedure Add(cq: cl_command_queue; use: string) := QueueUsesFor(cq).Enqueue(use);
     
     public static procedure ReportQueueUses :=
-    foreach var kvp in QueueUses do
+    foreach var kvp in QueueUses.OrderBy(kvp->kvp.Key.val.ToInt64) do
     begin
       $'Logging uses of {kvp.Key}'.Println;
       kvp.Value.PrintLines;
@@ -1252,16 +1251,12 @@ type
   
   {$region Const}
   
-  IConstQueue = interface
-    function GetConstVal: Object;
-  end;
-  ConstQueue<T> = sealed partial class(CommandQueue<T>, IConstQueue)
+  ConstQueue<T> = sealed partial class(CommandQueue<T>)
     private res: T;
     
     public constructor(o: T) := self.res := o;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IConstQueue.GetConstVal: object := self.res;
     public property Val: T read self.res;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1276,13 +1271,6 @@ type
         sb += 'nil';
       sb += ' }'#10;
     end;
-    
-  end;
-  
-  CommandQueueBase = abstract partial class
-    
-    public static function operator implicit(o: object): CommandQueueBase :=
-    new ConstQueue<object>(o);
     
   end;
   
@@ -1519,9 +1507,6 @@ type
       raise new AggregateException($'%Err:CLTask:%', err_lst.ToArray);
     end;
     
-    private function WaitResBase: object; abstract;
-    public function WaitRes := WaitResBase;
-    
     {$endregion Wait}
     
   end;
@@ -1546,7 +1531,6 @@ type
       Wait;
       Result := self.q_res;
     end;
-    private function WaitResBase: object; override := WaitRes;
     
     {$endregion Wait}
     
@@ -1558,7 +1542,7 @@ type
     public function BeginInvoke(q: CommandQueueBase): CLTaskBase;
     
     public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).WaitRes;
-    public function SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).WaitRes;
+    public procedure SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).Wait;
     
   end;
   
@@ -1738,11 +1722,14 @@ function HPQ(p: Context->()): CommandQueueBase;
 
 {$endregion HFQ/HPQ}
 
-{$region WaitFor}
+{$region Wait}
+
+function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
+function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 
 function WaitFor(marker: WaitMarker): CommandQueueBase;
 
-{$endregion WaitFor}
+{$endregion Wait}
 
 {$region CombineQueue's}
 
@@ -2748,7 +2735,7 @@ type
 {$region Const}
 
 type
-  ConstQueue<T> = sealed partial class(CommandQueue<T>, IConstQueue)
+  ConstQueue<T> = sealed partial class(CommandQueue<T>)
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
@@ -2827,7 +2814,6 @@ type
   
   CLTaskResLess = sealed class(CLTaskBase)
     protected q: CommandQueueBase;
-    protected q_res: object;
     
     protected function OrgQueueBase: CommandQueueBase; override := q;
     
@@ -2845,22 +2831,11 @@ type
       
       qr.ev.AttachCallback(false, ()->System.Threading.Tasks.Task.Run(()->
       begin
-        if not g_data.curr_err_handler.HadError then self.q_res := qr.GetResBase;
         g_data.FinishExecution(self.err_lst);
         wh.Set;
       end), g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
       
     end;
-    
-    {$region Execution}
-    
-    protected function WaitResBase: object; override;
-    begin
-      Wait;
-      Result := q_res;
-    end;
-    
-    {$endregion Execution}
     
   end;
   
@@ -2874,12 +2849,8 @@ function Context.BeginInvoke(q: CommandQueueBase) := new CLTaskResLess(q, self);
 {$region Cast}
 
 type
-  ICastQueue = interface
-    function GetQ: CommandQueueBase;
-  end;
-  CastQueue<T> = sealed class(CommandQueue<T>, ICastQueue)
+  CastQueue<T> = sealed class(CommandQueue<T>)
     private q: CommandQueueBase;
-    public function ICastQueue.GetQ := q;
     
     public constructor(q: CommandQueueBase) := self.q := q;
     
@@ -2906,17 +2877,10 @@ type
     
   end;
   
-function CommandQueueBase.Cast<T>: CommandQueue<T>;
-begin
-  var q := self;
-  if q is ICastQueue(var cq) then q := cq.GetQ;
-  Result :=
-    if q is IConstQueue(var cq) then
-      new ConstQueue<T>(T(cq.GetConstVal)) else
-    if q is CommandQueue<T>(var tcq) then
-      tcq else
-      new CastQueue<T>(q);
-end;
+function CommandQueueBase.Cast<T>: CommandQueue<T> :=
+//TODO UseTyped
+if self is CommandQueue<T>(var tcq) then
+  tcq else new CastQueue<T>(self);
 
 {$endregion Cast}
 
@@ -3149,11 +3113,12 @@ type
         var curr := enmr.Current;
         var next := enmr.MoveNext;
         
-        if next then
-        begin
-          if curr is IConstQueue then continue;
-          if curr is ICastQueue(var cq) then curr := cq.GetQ;
-        end;
+        //TODO UseTyped
+//        if next then
+//        begin
+//          if curr is IConstQueue then continue;
+//          if curr is ICastQueue(var cq) then curr := cq.GetQ;
+//        end;
         
         if curr is T(var sqa) then
           res.AddRange(sqa.GetQS) else
@@ -3592,7 +3557,7 @@ type
       self.sub := sub;
       self.sub_data := sub_data;
     end;
-    public constructor := raise new OpenCLABCInternalException;
+    private constructor := raise new OpenCLABCInternalException;
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
@@ -3663,7 +3628,7 @@ type
         sources[i].Subscribe(self, new WaitHandlerDirectSubInfo(ref_counts[i], i));
       self.ref_counts := ref_counts;
     end;
-    public constructor := raise new OpenCLABCInternalException;
+    private constructor := raise new OpenCLABCInternalException;
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
@@ -3722,14 +3687,12 @@ type
   WaitMarkerAll = sealed partial class(WaitMarkerCombination<WaitMarkerDirect>)
     private ref_counts: array of integer;
     
-    public constructor(children: sequence of WaitMarkerDirect);
+    public constructor(children: Dictionary<WaitMarkerDirect, integer>);
     begin
-      inherited Create(children.Distinct.ToArray);
-      self.ref_counts := new integer[self.children.Length];
-      foreach var child in children do
-        self.ref_counts[self.children.IndexOf(child)] += 1;
+      inherited Create(children.Keys.ToArray);
+      self.ref_counts := self.children.ConvertAll(key->children[key]);
     end;
-    public constructor := raise new OpenCLABCInternalException;
+    private constructor := raise new OpenCLABCInternalException;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -3750,60 +3713,16 @@ type
     public function MakeWaitEv(g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
     WaitHandlerAllOuter.Create(g, l, children.ConvertAll(m->m.handlers[g]), ref_counts).uev;
     
-    private function EnmrChildren: sequence of WaitMarkerDirect;
+    private function GetChildrenArr: array of WaitMarkerDirect;
     begin
+      Result := new WaitMarkerDirect[ref_counts.Sum];
+      var res_ind := 0;
       for var i := 0 to children.Length-1 do
         loop ref_counts[i] do
-          yield children[i];
-    end;
-    
-    public static function Distinct(markers: sequence of WaitMarkerAll): List<WaitMarkerAll>;
-    type MCDict = Dictionary<WaitMarkerDirect, integer>;
-    begin
-      Result := new List<WaitMarkerAll>;
-      var dcts := new List<MCDict>;
-      
-      var dict_contains := function(what, in_what: MCDict): boolean->
-      begin
-        foreach var kvp in what do
         begin
-          var target_c: integer;
-          if not in_what.TryGetValue(kvp.Key, target_c) or (target_c<kvp.Value) then
-          begin
-            Result := false;
-            exit;
-          end;
+          Result[res_ind] := children[i];
+          res_ind += 1;
         end;
-        Result := true;
-      end;
-      
-      foreach var m in markers do
-      begin
-        var d := new MCDict(m.children.Length);
-        for var i := 0 to m.children.Length-1 do
-          d.Add(m.children[i], m.ref_counts[i]);
-        
-        var found := false;
-        for var i := 0 to Result.Count-1 do
-        begin
-          
-          if dict_contains(dcts[i], d) then
-          begin
-            Result[i] := m;
-            dcts[i] := d;
-          end else
-          if not dict_contains(d, dcts[i]) then
-            continue;
-          
-          found := true;
-          break;
-        end;
-        
-        if found then continue;
-        Result += m;
-        dcts += d;
-      end;
-      
     end;
     
   end;
@@ -3869,9 +3788,8 @@ type
   
   WaitMarkerAny = sealed partial class(WaitMarkerCombination<WaitMarkerAll>)
     
-    public constructor(sources: sequence of WaitMarkerAll) :=
-    inherited Create(WaitMarkerAll.Distinct(sources).ToArray);
-    public constructor := raise new OpenCLABCInternalException;
+    public constructor(sources: array of WaitMarkerAll) := inherited Create(sources);
+    private constructor := raise new OpenCLABCInternalException;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -3887,59 +3805,140 @@ type
   
 {$endregion Any}
 
-{$region WaitMarker.operator}
+{$region public}
 
 type
-  WaitMarkerAll = sealed partial class(WaitMarkerCombination<WaitMarkerDirect>)
+  WaitMarkerAllFast = sealed class
+    private children: Dictionary<WaitMarkerDirect, integer>;
     
-    static function GetChildren(m: WaitMarker): sequence of WaitMarkerDirect;
+    public constructor(c: integer) :=
+    children := new Dictionary<WaitMarkerDirect, integer>(c);
+    public constructor(m: WaitMarkerDirect);
     begin
-      if m is WaitMarkerDirect(var md) then
-        yield md else
-      if m is WaitMarkerAll(var ma) then
-        yield sequence ma.EnmrChildren else
-        raise new System.NotImplementedException(m.GetType.ToString);
+      Create(1);
+      self.children.Add(m, 1);
+    end;
+    public constructor(m: WaitMarkerAll);
+    begin
+      Create(m.children.Length);
+      for var i := 0 to m.children.Length-1 do
+        self.children.Add(m.children[i], m.ref_counts[i]);
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public static function operator in(what, in_what: WaitMarkerAllFast): boolean;
+    begin
+      Result := false;
+      
+      if what.children.Count>in_what.children.Count then
+        exit;
+      foreach var kvp in what.children do
+        if in_what.children.Get(kvp.Key) < kvp.Value then
+          exit;
+      
+      Result := true;
     end;
     
-  end;
-  WaitMarkerAny = sealed partial class(WaitMarkerCombination<WaitMarkerAll>)
-    
-    static function GetChildren(m: WaitMarker): sequence of WaitMarkerAll;
+    public static function operator+(c1, c2: WaitMarkerAllFast): WaitMarkerAllFast;
     begin
-      if m is WaitMarkerDirect(var md) then
-        yield new WaitMarkerAll(|md|) else
-      if m is WaitMarkerAll(var ma) then
-        yield ma else
-      if m is WaitMarkerAny(var ma) then
-        yield sequence ma.children else
-        raise new System.NotImplementedException(m.GetType.ToString);
+      Result := new WaitMarkerAllFast(c1.children.Count+c2.children.Count);
+      foreach var kvp in c1.children do
+        Result.children.Add(kvp.Key, kvp.Value);
+      foreach var kvp in c2.children do
+        Result.children[kvp.Key] := Result.children.Get(kvp.Key) + kvp.Value;
+    end;
+    
+    public static procedure TryAdd(lst: List<WaitMarkerAllFast>; c: WaitMarkerAllFast);
+    begin
+      
+      for var i := 0 to lst.Count-1 do
+      begin
+        var c0 := lst[i];
+        
+        if c0 in c then
+          lst[i] := c else
+        if c in c0 then
+          {nothing} else
+          continue;
+        
+        exit;
+      end;
+      
+      lst += c;
+    end;
+    
+    public static function MarkerFromLst(lst: IList<WaitMarkerAllFast>): WaitMarker;
+    begin
+      if lst.Count>1 then
+      begin
+        var res := new WaitMarkerAll[lst.Count];
+        for var i := 0 to res.Length-1 do
+          res[i] := new WaitMarkerAll(lst[i].children);
+        Result := new WaitMarkerAny(res);
+      end else
+      case lst[0].children.Values.Sum of
+        0: raise new System.ArgumentException($'%Err:WaitCombine:InpEmpty%');
+        1: Result := lst[0].children.Keys.Single;
+        else Result := new WaitMarkerAll(lst[0].children);
+      end;
     end;
     
   end;
   
-static function WaitMarker.operator and(m1, m2: WaitMarker): WaitMarker;
+function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
 begin
-  if (m1 is WaitMarkerAny) or (m2 is WaitMarkerAny) then
+  var prev := |new WaitMarkerAllFast(0)| as IList<WaitMarkerAllFast>;
+  var next := new List<WaitMarkerAllFast>;
+  
+  foreach var m in sub_markers do
   begin
-    var branches := new List<WaitMarkerAll>;
-    foreach var sm1 in WaitMarkerAny.GetChildren(m1) do
-      foreach var sm2 in WaitMarkerAny.GetChildren(m1) do
-        branches += new WaitMarkerAll(sm1.children.AsEnumerable + sm2.children);
-    Result := new WaitMarkerAny(branches);
-  end else
-    Result := new WaitMarkerAll(
-      WaitMarkerAll.GetChildren(m1)+
-      WaitMarkerAll.GetChildren(m2)
-    );
+    
+    if m is WaitMarkerAny(var ma) then
+    begin
+      foreach var child in ma.children do
+      begin
+        var c2 := new WaitMarkerAllFast(child);
+        foreach var c1 in prev do
+          WaitMarkerAllFast.TryAdd(next, c1+c2);
+      end;
+    end else
+    begin
+      var c2 := if m is WaitMarkerDirect(var md) then
+        new WaitMarkerAllFast(md) else
+        new WaitMarkerAllFast(WaitMarkerAll(m));
+      foreach var c1 in prev do
+        next += c1+c2;
+    end;
+    
+    prev := next.ToArray;
+    next.Clear;
+  end;
+  
+  Result := WaitMarkerAllFast.MarkerFromLst(prev);
 end;
 
-static function WaitMarker.operator or(m1, m2: WaitMarker) :=
-new WaitMarkerAny(
-  WaitMarkerAny.GetChildren(m1)+
-  WaitMarkerAny.GetChildren(m2)
-);
+function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
+begin
+  var res := new List<WaitMarkerAllFast>;
+  foreach var m in sub_markers do
+    if m is WaitMarkerAny(var ma) then
+    begin
+      foreach var child in ma.children do
+        WaitMarkerAllFast.TryAdd(res, new WaitMarkerAllFast(child));
+    end else
+    begin
+      var c := if m is WaitMarkerDirect(var md) then
+        new WaitMarkerAllFast(md) else
+        new WaitMarkerAllFast(WaitMarkerAll(m));
+      WaitMarkerAllFast.TryAdd(res, c);
+    end;
+  Result := WaitMarkerAllFast.MarkerFromLst(res);
+end;
 
-{$endregion WaitMarker.operator}
+static function WaitMarker.operator and(m1, m2: WaitMarker) := WaitAll(|m1, m2|);
+static function WaitMarker.operator or(m1, m2: WaitMarker) := WaitAny(|m1, m2|);
+
+{$endregion public}
 
 {$endregion Combination}
 

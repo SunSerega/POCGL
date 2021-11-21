@@ -36,10 +36,8 @@ WaitMarkerAll#0
 
 ------------------------------
 
-WaitMarkerAny#0
-	WaitMarkerAll#1
-		DetachedMarkerSignalWrapper#2
-			DetachedMarkerSignal<System.Int32>#3
+DetachedMarkerSignalWrapper#0
+	DetachedMarkerSignal<System.Int32>#1
 
 ------------------------------
 

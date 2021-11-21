@@ -1,6 +1,7 @@
 ﻿uses OpenCLABC;
 
 begin
-  Writeln(CombineSyncQueue(a->a.JoinToString, nil as object, nil as object));
-  Writeln(CombineAsyncQueue(a->a.JoinToString, nil as object, nil as object));
+  var empty_q := new ConstQueue<object>(nil);
+  Writeln(CombineSyncQueue&<object>(a->a.JoinToString, empty_q, empty_q));
+  Writeln(CombineAsyncQueue&<object>(a->a.JoinToString, empty_q, empty_q));
 end.
