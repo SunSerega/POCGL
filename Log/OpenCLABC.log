@@ -51,6 +51,7 @@ Descriptions[OpenCLABC]: WARNING: key %WaitMarker.% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.(CommandQueue<T>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.SendSignal% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.Error% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(Exception)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(ErrorCode)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(CommandExecutionStatus)% wasn't used!

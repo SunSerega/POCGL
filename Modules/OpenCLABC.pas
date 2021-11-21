@@ -26,8 +26,6 @@ unit OpenCLABC;
 //TODO WaitFor( WaitAll(seq1) or WaitAll(seq2) )
 // - И так же WaitAny
 
-//TODO Избавится от lock
-
 //TODO Тесты:
 // - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
 // - .ThenWaitFor vs .ThenFinallyWaitFor vs (WaitFor*QErr)
@@ -35,7 +33,6 @@ unit OpenCLABC;
 //TODO Справка:
 // - M1 and M2 or M3
 // - Finally+Handle
-// --- (CommandQueueBase >= CommandQueueBase) возвращает результат, но НЕ является CommandQueueFinally
 // --- HandleWithoutRes всегда возвращает object(nil), не зависимо от ошибок при выполнении
 // --- HandleDefaultRes ставит результат на дефолтный только если ошибка, иначе надо (QErr.HandleWithoutRes>=res)
 // ----- В тесты все 3 варианта
@@ -48,15 +45,21 @@ unit OpenCLABC;
 // --- Обработчик выполняется в .AttachCallback
 // - Написать что Wait-маркеры стоит ставить после >= для потоко-безопастности
 // --- (QErr.HandleWithoutRes >= M), если обработчик должен быть до M
-// --- (QErr.ThenFinallyWaitMarker) работает как (QErr >= M), но возвращает результат
+// --- (QErr.ThenFinallyMarkerSignal) работает как (QErr >= M), но возвращает результат
 // ----- В тесты
 // - WaitFor теперь тратит выполненность только если небыло предыдущих ошибок
 // - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
 // - .ThenWaitFor vs .ThenFinallyWaitFor
 // - .ThenFinallyWaitFor пожирает ожидание только когда выполнилось всё что можно было до него, иначе можно (WaitFor*QErr)
+// - OpenCLABC основано на асинхронности, поэтому посмотрите на System.Collections.Concurrent, и может lock
+
+//TODO Пройтись по TODO модуля, исправить список зависимых issue
 
 //===================================
 // Запланированное:
+
+//TODO CommandQueueBase.UseTyped(typed_q_user: interface procedure use<T>(cq: CommandQueue<T>); procedure use_base(cq: CommandQueueBase); end)
+// - Использовать это внутри, чтоб наконец избавится от всех этих .Cast&<object>
 
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
@@ -138,13 +141,13 @@ unit OpenCLABC;
 {$region DEBUG}{$ifdef DEBUG}
 
 // Регистрация всех cl.RetainEvent и cl.ReleaseEvent
-{ $define EventDebug}
+{$define EventDebug}
 
 // Регистрация использований cl_command_queue
-{ $define QueueDebug}
+{$define QueueDebug}
 
 // Регистрация активаций/деактиваций всех WaitHandler-ов
-{ $define WaitDebug}
+{$define WaitDebug}
 
 {$ifdef ForceMaxDebug}
   {$define EventDebug}
@@ -160,6 +163,7 @@ uses System;
 uses System.Threading;
 uses System.Runtime.InteropServices;
 uses System.Collections.ObjectModel;
+uses System.Collections.Concurrent;
 
 uses OpenCL;
 
@@ -222,72 +226,51 @@ type
     
     {$region Retain/Release}
     
-    private static RefCounter := new Dictionary<cl_event, List<EventRetainReleaseData>>;
-    private static function RefCounterFor(ev: cl_event): List<EventRetainReleaseData>;
-    begin
-      lock RefCounter do
-        if not RefCounter.TryGetValue(ev, Result) then
-        begin
-          Result := new List<EventRetainReleaseData>;
-          RefCounter[ev] := Result;
-        end;
-    end;
+    private static RefCounter := new ConcurrentDictionary<cl_event, ConcurrentQueue<EventRetainReleaseData>>;
+    private static function RefCounterFor(ev: cl_event) := RefCounter.GetOrAdd(ev, ev->new ConcurrentQueue<EventRetainReleaseData>);
     
-    public static procedure RegisterEventRetain(ev: cl_event; reason: string);
-    begin
-      var lst := RefCounterFor(ev);
-      lock lst do lst += new EventRetainReleaseData(false, reason);
-    end;
+    public static procedure RegisterEventRetain(ev: cl_event; reason: string) :=
+    RefCounterFor(ev).Enqueue(new EventRetainReleaseData(false, reason));
     public static procedure RegisterEventRelease(ev: cl_event; reason: string);
     begin
       EventDebug.CheckExists(ev);
-      var lst := RefCounterFor(ev);
-      lock lst do lst += new EventRetainReleaseData(true, reason);
+      RefCounterFor(ev).Enqueue(new EventRetainReleaseData(true, reason));
     end;
     
-    public static procedure ReportRefCounterInfo :=
-    lock output do lock RefCounter do
+    public static procedure ReportRefCounterInfo(otp: System.IO.TextWriter := Console.Out);
     begin
       
-      foreach var ev in RefCounter.Keys do
+      foreach var kvp in RefCounter do
       begin
-        $'Logging state change of {ev}'.Println;
-        var lst := RefCounter[ev];
+        $'Logging state change of {kvp.Key}'.Println;
         var c := 0;
-        lock lst do
-          foreach var act in lst do
-          begin
-            c += if act.is_release then -1 else +1;
-            $'{c,3} | {act}'.Println;
-          end;
+        foreach var act in kvp.Value do
+        begin
+          c += if act.is_release then -1 else +1;
+          $'{c,3} | {act}'.Println;
+        end;
         Writeln('-'*30);
       end;
       
       Writeln('='*40);
       output.Flush;
     end;
-    public static function CountRetains(ev: cl_event): integer;
-    begin
-      Result := 0;
-      var lst := RefCounterFor(ev);
-      lock lst do foreach var act in lst do
-        Result += if act.is_release then -1 else +1;
-    end;
+    
+    public static function CountRetains(ev: cl_event) :=
+    RefCounter[ev].Sum(act->act.is_release ? -1 : +1);
     public static procedure CheckExists(ev: cl_event) :=
-    if CountRetains(ev)<=0 then lock output do
+    if CountRetains(ev)<=0 then
     begin
-      ReportRefCounterInfo;
+      ReportRefCounterInfo(Console.Error);
       raise new OpenCLABCInternalException($'Event {ev} was released before last use at');
     end;
     
     public static procedure AssertDone :=
-    lock RefCounter do foreach var ev in RefCounter.Keys do
-      if CountRetains(ev)<>0 then
-      begin
-        Console.SetOut(Console.Error);
-        ReportRefCounterInfo;
-        raise new OpenCLABCInternalException(ev.ToString);
-      end;
+    foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
+    begin
+      ReportRefCounterInfo(Console.Error);
+      raise new OpenCLABCInternalException(ev.ToString);
+    end;
     
     {$endregion Retain/Release}
     
@@ -299,22 +282,15 @@ type
   
   QueueDebug = static class
     
-    private static QueueUses := new Dictionary<cl_command_queue, List<string>>;
-    private static function QueueUsesFor(cq: cl_command_queue): List<string>;
-    begin
-      lock QueueUses do
-        if not QueueUses.TryGetValue(cq, Result) then
-        begin
-          Result := new List<string>;
-          QueueUses[cq] := Result;
-        end;
-    end;
+    private static QueueUses := new ConcurrentDictionary<cl_command_queue, ConcurrentQueue<string>>;
+    private static function QueueUsesFor(cq: cl_command_queue) := QueueUses.GetOrAdd(cq, cq->new ConcurrentQueue<string>);
+    private static procedure Add(cq: cl_command_queue; use: string) := QueueUsesFor(cq).Enqueue(use);
     
     public static procedure ReportQueueUses :=
-    lock QueueUses do foreach var cq in QueueUses.Keys do
+    foreach var kvp in QueueUses do
     begin
-      $'Logging uses of {cq}'.Println;
-      QueueUses[cq].PrintLines;
+      $'Logging uses of {kvp.Key}'.Println;
+      kvp.Value.PrintLines;
       Println('='*30);
     end;
     
@@ -326,7 +302,7 @@ type
   
   WaitDebug = static class
     
-    private static WaitActions := new System.Collections.Concurrent.ConcurrentDictionary<object, System.Collections.Concurrent.ConcurrentQueue<string>>;
+    private static WaitActions := new ConcurrentDictionary<object, ConcurrentQueue<string>>;
     
     private static procedure RegisterAction(handler: object; act: string) :=
     WaitActions.GetOrAdd(handler, hc->new System.Collections.Concurrent.ConcurrentQueue<string>).Enqueue(act);
@@ -479,27 +455,18 @@ type
     
     {$region Default}
     
-    private static default_need_init := true;
-    private static default_init_lock := new object;
+    private static default_was_inited := 0;
     private static _default: Context;
     
     private static function GetDefault: Context;
     begin
-      
-      // Теоретически default_init_lock может оказаться nil уже после проверки default_need_init, поэтому "??"
-      if default_need_init then lock default_init_lock??new object do if default_need_init then
-      begin
-        default_need_init := false;
-        default_init_lock := nil;
-        _default := MakeNewDefaultContext;
-      end;
-      
+      if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
+        Interlocked.CompareExchange(_default, MakeNewDefaultContext, nil);
       Result := _default;
     end;
     private static procedure SetDefault(new_default: Context);
     begin
-      default_need_init := false;
-      default_init_lock := nil;
+      default_was_inited := 1;
       _default := new_default;
     end;
     public static property &Default: Context read GetDefault write SetDefault;
@@ -589,12 +556,11 @@ type
     
     private constructor := raise new OpenCLABCInternalException;
     
-    public procedure Dispose :=
-    if ntv<>cl_context.Zero then lock self do
+    public procedure Dispose;
     begin
-      if ntv=cl_context.Zero then exit;
-      cl.ReleaseContext(ntv).RaiseIfError;
-      ntv := cl_context.Zero;
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      cl.ReleaseContext(new cl_context(prev)).RaiseIfError;
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -681,12 +647,11 @@ type
     
     private constructor := raise new OpenCLABCInternalException;
     
-    public procedure Dispose :=
-    if ntv<>cl_program.Zero then lock self do
+    public procedure Dispose;
     begin
-      if ntv=cl_program.Zero then exit;
-      cl.ReleaseProgram(ntv).RaiseIfError;
-      ntv := cl_program.Zero;
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      cl.ReleaseProgram(new cl_program(prev)).RaiseIfError;
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -832,12 +797,11 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public procedure Dispose :=
-    if ntv<>cl_kernel.Zero then lock self do
+    public procedure Dispose;
     begin
-      if ntv=cl_kernel.Zero then exit;
-      cl.ReleaseKernel(ntv).RaiseIfError;
-      ntv := cl_kernel.Zero;
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      cl.ReleaseKernel(new cl_kernel(prev)).RaiseIfError;
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -845,42 +809,46 @@ type
     
     {$region UseExclusiveNative}
     
-    private exclusive_ntv_lock := new object;
+    private ntv_in_use := 0;
     protected procedure UseExclusiveNative(p: cl_kernel->());
     begin
-      var owned := Monitor.TryEnter(exclusive_ntv_lock);
+      
+      if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
       try
-        if owned then
-          p(self.ntv) else
-        begin
-          var k := MakeNewNtv;
-          try
-            p(k);
-          finally
-            cl.ReleaseKernel(k).RaiseIfError;
-          end;
-        end;
+        p(self.ntv);
       finally
-        if owned then Monitor.Exit(exclusive_ntv_lock);
+        ntv_in_use := 0;
+//        exit; //TODO #2568
+      end else
+      begin
+      var k := MakeNewNtv;
+      try
+        p(k);
+      finally
+        cl.ReleaseKernel(k).RaiseIfError;
       end;
+      end;
+      
     end;
     protected function UseExclusiveNative<T>(f: cl_kernel->T): T;
     begin
-      var owned := Monitor.TryEnter(exclusive_ntv_lock);
+      
+      if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
       try
-        if owned then
-          Result := f(self.ntv) else
-        begin
-          var k := MakeNewNtv;
-          try
-            Result := f(k);
-          finally
-            cl.ReleaseKernel(k).RaiseIfError;
-          end;
-        end;
+        Result := f(self.ntv);
       finally
-        if owned then Monitor.Exit(exclusive_ntv_lock);
+        ntv_in_use := 0;
+//        exit; //TODO #2568
+      end else
+      begin
+      var k := MakeNewNtv;
+      try
+        Result := f(k);
+      finally
+        cl.ReleaseKernel(k).RaiseIfError;
       end;
+      end;
+      
     end;
     
     {$endregion UseExclusiveNative}
@@ -1159,14 +1127,12 @@ type
   
   MemorySegment = partial class
     
-    public procedure Dispose; virtual :=
-    if ntv<>cl_mem.Zero then lock self do
+    public procedure Dispose; virtual;
     begin
-      if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
-      {%>self.prop := nil;%}
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
       GC.RemoveMemoryPressure(Size64);
-      cl.ReleaseMemObject(ntv).RaiseIfError;
-      ntv := cl_mem.Zero;
+      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -1174,27 +1140,23 @@ type
   
   MemorySubSegment = partial class
     
-    public procedure Dispose; override :=
-    if ntv<>cl_mem.Zero then lock self do
+    public procedure Dispose; override;
     begin
-      if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
-      {%>self.prop := nil;%}
-      cl.ReleaseMemObject(ntv).RaiseIfError;
-      ntv := cl_mem.Zero;
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
     end;
     
   end;
   
   CLArray<T> = partial class
     
-    public procedure Dispose; virtual :=
-    if ntv<>cl_mem.Zero then lock self do
+    public procedure Dispose;
     begin
-      if self.ntv=cl_mem.Zero then exit; // Во время ожидания lock могли удалить
-      {%>self.prop := nil;%}
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
       GC.RemoveMemoryPressure(ByteSize);
-      cl.ReleaseMemObject(ntv).RaiseIfError;
-      ntv := cl_mem.Zero;
+      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -1536,7 +1498,7 @@ type
   
   CLTaskBase = abstract partial class
     protected wh := new ManualResetEvent(false);
-    protected wh_lock := new object;
+    private err_lst: List<Exception>;
     
     {$region Property's}
     
@@ -1548,27 +1510,13 @@ type
     
     {$endregion Property's}
     
-    {$region Error's}
-    protected err_lst: List<Exception>;
-    
-    /// lock err_lst do err_lst.ToArray
-    protected function GetErrArr: array of Exception;
-    begin
-      lock err_lst do
-        Result := err_lst.ToArray;
-    end;
-    
-    public property Error: AggregateException read err_lst.Count=0 ? nil : new AggregateException($'%Err:CLTask:%', GetErrArr);
-    
-    {$endregion Error's}
-    
     {$region Wait}
     
     public procedure Wait;
     begin
       wh.WaitOne;
-      var err := self.Error;
-      if err<>nil then raise err;
+      if err_lst.Count=0 then exit;
+      raise new AggregateException($'%Err:CLTask:%', err_lst.ToArray);
     end;
     
     private function WaitResBase: object; abstract;
@@ -1806,8 +1754,6 @@ function WaitFor(marker: WaitMarker): CommandQueueBase;
 
 implementation
 
-uses System.Collections.Concurrent;
-
 {$region Properties}
 
 {$region Base}
@@ -1980,7 +1926,7 @@ type
     begin
       var prev := integer(not b);
       var curr := integer(b);
-      Result := System.Threading.Interlocked.CompareExchange(val, curr, prev)=prev;
+      Result := Interlocked.CompareExchange(val, curr, prev)=prev;
     end;
     
     public static function operator implicit(b: InterlockedBoolean): boolean := b.val<>0;
@@ -2298,7 +2244,7 @@ type
         for var i := 0 to count-1 do
           AttachCallback(midway, evs[i], ()->
           begin
-            if System.Threading.Interlocked.Decrement(done_c) <> 0 then exit;
+            if Interlocked.Decrement(done_c) <> 0 then exit;
             work;
           end, err_handler{$ifdef EventDebug}, reason{$endif});
       end;
@@ -2533,7 +2479,7 @@ type
 type
   UserEvent = sealed class
     private uev: cl_event;
-    private done := false; //TODO InterlockedBoolean
+    private done := new InterlockedBoolean;
     
     {$region constructor's}
     
@@ -2587,29 +2533,11 @@ type
     
     {$region Status}
     
-    public property CanRemove: boolean read done;
-    
     /// True если статус получилось изменить
     public function SetStatus(st: CommandExecutionStatus): boolean;
     begin
-      lock self do
-      begin
-        if done then exit;
-        cl.SetUserEventStatus(uev, st).RaiseIfError;
-        done := true;
-        Result := true;
-      end;
-    end;
-    /// True если статус получилось изменить
-    public function SetStatus(st: CommandExecutionStatus; err_handler: CLTaskErrHandler): boolean;
-    begin
-      lock self do
-      begin
-        if done then exit;
-        if err_handler.AddErr(cl.SetUserEventStatus(uev, st)) then exit;
-        done := true;
-        Result := true;
-      end;
+      Result := done.TrySet(true);
+      if Result then cl.SetUserEventStatus(uev, st).RaiseIfError;
     end;
     public function Abort := SetStatus(CLTaskErrHandler.AbortStatus);
     
@@ -2694,7 +2622,7 @@ type
           Result.AttachCallback(true, ()->
           begin
             {$ifdef QueueDebug}
-            QueueDebug.QueueUsesFor(cq).Add('----- return -----');
+            QueueDebug.Add(cq, '----- return -----');
             {$endif QueueDebug}
             g.free_cqs.Add(cq);
           end, g.curr_err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
@@ -2770,7 +2698,7 @@ type
       if curr_inv_cq<>cl_command_queue.Zero then
       begin
         {$ifdef QueueDebug}
-        QueueDebug.QueueUsesFor(curr_inv_cq).Add('----- last q -----');
+        QueueDebug.Add(curr_inv_cq, '----- last q -----');
         {$endif QueueDebug}
         free_cqs.Add(curr_inv_cq);
       end;
@@ -3392,7 +3320,7 @@ type
     
     protected function IncState: boolean;
     begin
-      var new_state := System.Threading.Interlocked.Increment(self.state);
+      var new_state := Interlocked.Increment(self.state);
       
       {$ifdef DEBUG}
       if not new_state.InRange(1,2) then raise new OpenCLABCInternalException($'WaitHandlerOuter.state={new_state}');
@@ -3409,7 +3337,7 @@ type
       {$ifdef DEBUG}
       var new_state :=
       {$endif DEBUG}
-      System.Threading.Interlocked.Decrement(self.state);
+      Interlocked.Decrement(self.state);
       
       {$ifdef DEBUG}
       if not new_state.InRange(0,1) then
@@ -3483,7 +3411,7 @@ type
       {$ifdef WaitDebug}
       var new_act :=
       {$endif WaitDebug}
-      System.Threading.Interlocked.Increment(activations);
+      Interlocked.Increment(activations);
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got activation =>{new_act}');
       {$endif WaitDebug}
@@ -3505,7 +3433,7 @@ type
     
     public function TryReserve(c: integer): boolean;
     begin
-      var n_reserved := System.Threading.Interlocked.Add(reserved, c);
+      var n_reserved := Interlocked.Add(reserved, c);
       Result := n_reserved<=activations;
       
       {$ifdef WaitDebug}
@@ -3517,7 +3445,7 @@ type
 //      if not Result then ReleaseReserve(c);
     end;
     public procedure ReleaseReserve(c: integer) :=
-    if System.Threading.Interlocked.Add(reserved, -c)<0 then
+    if Interlocked.Add(reserved, -c)<0 then
     begin
       {$ifdef DEBUG}
       raise new OpenCLABCInternalException($'reserved={reserved}');
@@ -3531,8 +3459,8 @@ type
     
     public procedure Comsume(c: integer);
     begin
-      var new_act := System.Threading.Interlocked.Add(activations, -c);
-      var new_res := System.Threading.Interlocked.Add(reserved, -c);
+      var new_act := Interlocked.Add(activations, -c);
+      var new_res := Interlocked.Add(reserved, -c);
       {$ifdef DEBUG}
       if (new_act<0) or (new_res<0) then
         raise new OpenCLABCInternalException($'new_act={new_act}, new_res={new_res}');
@@ -3668,7 +3596,7 @@ type
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
-      var new_done_c := System.Threading.Interlocked.Increment(done_c);
+      var new_done_c := Interlocked.Increment(done_c);
       
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got activation from {sources[data].GetHashCode}, new_done_c={new_done_c}/{sources.Length}');
@@ -3678,7 +3606,7 @@ type
     end;
     public procedure IWaitHandlerSub.HandleChildDec(data: integer);
     begin
-      var prev_done_c := System.Threading.Interlocked.Decrement(done_c)+1;
+      var prev_done_c := Interlocked.Decrement(done_c)+1;
       
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got deactivation from {sources[data].GetHashCode}, new_done_c={prev_done_c-1}/{sources.Length}');
@@ -3739,7 +3667,7 @@ type
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
-      var new_done_c := System.Threading.Interlocked.Increment(done_c);
+      var new_done_c := Interlocked.Increment(done_c);
       
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got activation from {sources[data].GetHashCode}, new_done_c={new_done_c}/{sources.Length}');
@@ -3749,7 +3677,7 @@ type
     end;
     public procedure IWaitHandlerSub.HandleChildDec(data: integer);
     begin
-      var prev_done_c := System.Threading.Interlocked.Decrement(done_c)+1;
+      var prev_done_c := Interlocked.Decrement(done_c)+1;
       
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got deactivation from {sources[data].GetHashCode}, new_done_c={prev_done_c-1}/{sources.Length}');
@@ -3904,7 +3832,7 @@ type
     
     public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
     begin
-      var new_done_c := System.Threading.Interlocked.Increment(done_c);
+      var new_done_c := Interlocked.Increment(done_c);
       
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got activation from {sources[data].GetHashCode}, new_done_c={new_done_c}/{sources.Length}');
@@ -3914,7 +3842,7 @@ type
     end;
     public procedure IWaitHandlerSub.HandleChildDec(data: integer);
     begin
-      var prev_done_c := System.Threading.Interlocked.Decrement(done_c)+1;
+      var prev_done_c := Interlocked.Decrement(done_c)+1;
       
       {$ifdef WaitDebug}
       WaitDebug.RegisterAction(self, $'Got deactivation from {sources[data].GetHashCode}, new_done_c={prev_done_c-1}/{sources.Length}');
@@ -5212,7 +5140,7 @@ type
       // если enq_f асинхронное, чтоб следующая команда не записалась до его вызова - надо полностью забрать очередь
       var cq := g.GetCQ(ev_l1.count<>0);
       {$ifdef QueueDebug}
-      QueueDebug.QueueUsesFor(cq).Add(q.GetType.ToString);
+      QueueDebug.Add(cq, q.GetType.ToString);
       {$endif QueueDebug}
       
       if ev_l1.count=0 then

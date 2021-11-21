@@ -1,13 +1,8 @@
 ﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runing SubReps Update
 SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] * [new tag]         v3.0.10    -> v3.0.10
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL Registry : [Info] 97eaaab..a48c224  main       -> origin/main
-SubReps Update: OpenGL Registry : Submodule path 'DataScraping/Reps/OpenGL-Registry': checked out 'a48c224a2db6edc4f4c610025b529d1c31ee9445'
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
