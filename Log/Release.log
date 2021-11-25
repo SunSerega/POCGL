@@ -18,12 +18,14 @@ Packing sample "Samples\OpenCLABC\Wait очереди\2.pas"
 Packing sample "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
 Packing sample "Samples\OpenCLABC\Игра жизнь\Игра жизнь.cl"
 Packing sample "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
+Packing sample "Samples\OpenCLABC\Поиск фигур на поле\Поиск.cl"
+Packing sample "Samples\OpenCLABC\Поиск фигур на поле\Поиск.pas"
 Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\0.cl"
 Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
 Packing sample "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Packing sample "Samples\OpenGL\Rot Triangle 1.vertex.glsl"
 Packing sample "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
-Packed 18 sample files
+Packed 20 sample files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing reference [Гайд по использованию OpenGL и OpenCL.html]
 Packing reference [Справка OpenCLABC.html]

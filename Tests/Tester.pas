@@ -393,7 +393,7 @@ type
     
     ///Result = (res, err)
     static function ExecuteTestExe(fname, nick: string): (string, string);
-    const MaxExecTime = 5000;
+    const MaxExecTime = 15000;
     begin
       var dom := System.AppDomain.CreateDomain('Domain of '+nick);
       dom.SetData('fname', fname);

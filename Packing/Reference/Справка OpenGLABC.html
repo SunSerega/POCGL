@@ -231,7 +231,7 @@ const on_start_folder = (folder_name, root_page)=>{
 		root_folder = res;
 		res.path = "";
 		
-		localStorageKey = `spec : ${folder_name} : `;
+		localStorageKey = `reference : ${folder_name} : `;
 		let prev_opened_folders_str = localStorage[localStorageKey+"opened_folders"];
 		prev_opened_folders = prev_opened_folders_str ? JSON.parse(prev_opened_folders_str) : [];
 		

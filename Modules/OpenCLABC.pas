@@ -19,14 +19,13 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
-
 //TODO Тесты:
 // - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
 // - .ThenWaitFor vs .ThenFinallyWaitFor vs (WaitFor*QErr)
 
 //TODO Справка:
 // - M1 and M2 or M3
+// --- WaitAll/WaitAny
 // - Finally+Handle
 // --- HandleWithoutRes всегда возвращает object(nil), не зависимо от ошибок при выполнении
 // --- HandleDefaultRes ставит результат на дефолтный только если ошибка, иначе надо (QErr.HandleWithoutRes>=res)
@@ -57,6 +56,8 @@ unit OpenCLABC;
 // - Использовать это внутри, чтоб наконец избавится от всех этих .Cast&<object>
 // - Пройтись по всеми TODO UseTyped
 // - И проверять возможность приведения при создании CastQueue
+
+//TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
 
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
@@ -809,25 +810,20 @@ type
     {$region UseExclusiveNative}
     
     private ntv_in_use := 0;
-    protected procedure UseExclusiveNative(p: cl_kernel->());
+    protected procedure UseExclusiveNative(p: cl_kernel->()) :=
+    if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
+    try
+      p(self.ntv);
+    finally
+      ntv_in_use := 0;
+    end else
     begin
-      
-      if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
-      try
-        p(self.ntv);
-      finally
-        ntv_in_use := 0;
-//        exit; //TODO #2568
-      end else
-      begin
       var k := MakeNewNtv;
       try
         p(k);
       finally
         cl.ReleaseKernel(k).RaiseIfError;
       end;
-      end;
-      
     end;
     protected function UseExclusiveNative<T>(f: cl_kernel->T): T;
     begin
@@ -837,15 +833,14 @@ type
         Result := f(self.ntv);
       finally
         ntv_in_use := 0;
-//        exit; //TODO #2568
       end else
       begin
-      var k := MakeNewNtv;
-      try
-        Result := f(k);
-      finally
-        cl.ReleaseKernel(k).RaiseIfError;
-      end;
+        var k := MakeNewNtv;
+        try
+          Result := f(k);
+        finally
+          cl.ReleaseKernel(k).RaiseIfError;
+        end;
       end;
       
     end;
