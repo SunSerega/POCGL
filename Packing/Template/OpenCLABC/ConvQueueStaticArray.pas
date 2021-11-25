@@ -66,7 +66,7 @@ begin
         
         res.WriteLine('    ');
         
-        res.WriteLine('    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;');
+        res.WriteLine('    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;');
         res.WriteLine('    begin');
         for var i := 1 to c do
           res.WriteLine($'      self.q{i}.RegisterWaitables(g, prev_hubs);');

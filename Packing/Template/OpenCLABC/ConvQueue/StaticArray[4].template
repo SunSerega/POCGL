@@ -19,7 +19,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'%Err:NoParamCtor%');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);

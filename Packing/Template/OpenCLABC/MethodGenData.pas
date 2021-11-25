@@ -894,7 +894,7 @@ type
       
       {$region RegisterWaitables}
       
-      res_EIm += '    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override';
+      res_EIm += '    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override';
       if settings.args = nil then
         res_EIm += ' := exit;'#10 else
       begin

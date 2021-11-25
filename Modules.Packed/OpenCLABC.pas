@@ -32,6 +32,9 @@ unit OpenCLABC;
 //TODO Тесты:
 // - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
 // - .ThenWaitFor vs .ThenFinallyWaitFor vs (WaitFor*QErr)
+// - MU и ошибки
+// --- Кидание ошибок во всех mu ветках
+// --- 2 выполнения, с 2 разными ошибками
 
 //TODO Справка:
 // - M1 and M2 or M3
@@ -56,6 +59,8 @@ unit OpenCLABC;
 // - .ThenWaitFor vs .ThenFinallyWaitFor
 // - .ThenFinallyWaitFor пожирает ожидание только когда выполнилось всё что можно было до него, иначе можно (WaitFor*QErr)
 // - OpenCLABC основано на асинхронности, поэтому посмотрите на System.Collections.Concurrent, и может lock
+// - MU и ошибки
+// --- Если ошибка в источнике MU - её должно кидать всюду, где используется этот источник
 
 //TODO Пройтись по TODO модуля, исправить список зависимых issue
 
@@ -4072,15 +4077,6 @@ type
   
 {$endregion NativeUtils}
 
-{$region MultiusableBase}
-
-type
-  MultiusableCommandQueueHubBase = abstract class
-    
-  end;
-  
-{$endregion MultiusableBase}
-
 {$region CLTaskData}
 
 type
@@ -4651,6 +4647,7 @@ type
     public static function operator implicit(ev: UserEvent): cl_event := ev.uev;
     public static function operator implicit(ev: UserEvent): EventList := ev.uev;
     
+    //TODO #????
 //    public static function operator+(ev1: EventList; ev2: UserEvent): EventList;
 //    begin
 //      Result := ev1 + ev2.uev;
@@ -4669,6 +4666,24 @@ type
   end;
   
 {$endregion UserEvent}
+
+{$region MultiusableBase}
+
+type
+  IMultiusableCommandQueueHub = interface end;
+  MultiuseableResultData = record
+    public qres: QueueResBase;
+    public err_handler: CLTaskErrHandler;
+    
+    public constructor(qres: QueueResBase; err_handler: CLTaskErrHandler);
+    begin
+      self.qres := qres;
+      self.err_handler := err_handler;
+    end;
+    
+  end;
+  
+{$endregion MultiusableBase}
 
 {$region CLTaskData}
 
@@ -4748,7 +4763,7 @@ type
   
   CLTaskGlobalData = sealed partial class
     
-    public mu_res := new Dictionary<MultiusableCommandQueueHubBase, QueueResBase>;
+    public mu_res := new Dictionary<IMultiusableCommandQueueHub, MultiuseableResultData>;
     
     public constructor(tsk: CLTaskBase);
     begin
@@ -4783,8 +4798,8 @@ type
     begin
       
       // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
-      foreach var mu_qr in mu_res.Values do
-        mu_qr.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
+      foreach var mrd in mu_res.Values do
+        mrd.qres.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
       mu_res := nil;
       
     end;
@@ -4834,7 +4849,7 @@ type
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; abstract;
     
     /// Добавление tsk в качестве ключа для всех ожидаемых очередей
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
   end;
   
@@ -4862,7 +4877,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
   end;
   
@@ -4913,7 +4928,7 @@ type
       var g_data := new CLTaskGlobalData(self);
       var l_data := new CLTaskLocalData;
       
-      q.RegisterWaitables(g_data, new HashSet<MultiusableCommandQueueHubBase>);
+      q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
@@ -4941,7 +4956,7 @@ type
       var g_data := new CLTaskGlobalData(self);
       var l_data := new CLTaskLocalData;
       
-      q.RegisterWaitables(g_data, new HashSet<MultiusableCommandQueueHubBase>);
+      q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
       var qr := q.InvokeBase(g_data, l_data);
       g_data.FinishInvoke;
       
@@ -4982,7 +4997,7 @@ type
       end);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -5014,7 +5029,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<TInp>; override := q.Invoke(g, l);
@@ -5065,7 +5080,7 @@ type
     
     public function GetQS: sequence of CommandQueueBase := qs.Append(last as CommandQueueBase);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       foreach var q in qs do q.RegisterWaitables(g, prev_hubs);
       last.RegisterWaitables(g, prev_hubs);
@@ -5137,7 +5152,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     foreach var q in qs do q.RegisterWaitables(g, prev_hubs);
     
     protected function ExecFunc(o: array of TInp; c: Context): TRes; override := f(o, c);
@@ -5225,7 +5240,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);
@@ -5291,7 +5306,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);
@@ -5364,7 +5379,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);
@@ -5444,7 +5459,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);
@@ -5531,7 +5546,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);
@@ -5625,7 +5640,7 @@ type
     end;
     private constructor := raise new InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       self.q1.RegisterWaitables(g, prev_hubs);
       self.q2.RegisterWaitables(g, prev_hubs);
@@ -5751,7 +5766,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 {$region Multiusable}
 
 type
-  MultiusableCommandQueueHub<T> = sealed partial class(MultiusableCommandQueueHubBase)
+  MultiusableCommandQueueHub<T> = sealed partial class(IMultiusableCommandQueueHub)
     public q: CommandQueue<T>;
     public constructor(q: CommandQueue<T>) := self.q := q;
     private constructor := raise new OpenCLABCInternalException;
@@ -5759,17 +5774,27 @@ type
     public function OnNodeInvoked(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>;
     begin
       
-      var res_o: QueueResBase;
+      var res_data: MultiuseableResultData;
       // Потоко-безопасно, потому что все .Invoke выполняются синхронно
       //TODO А что будет когда .ThenIf и т.п.
-      if g.mu_res.TryGetValue(self, res_o) then
-        Result := QueueRes&<T>( res_o ) else
+      if g.mu_res.TryGetValue(self, res_data) then
+      begin
+        g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler, res_data.err_handler|, false);
+        Result := QueueRes&<T>( res_data.qres );
+      end else
       begin
         var prev_ev := l.prev_ev;
         l.prev_ev := EventList.Empty;
+        
+        var err_handler := g.curr_err_handler;
+        g.curr_err_handler := new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, false);
         Result := self.q.Invoke(g, l);
         Result.can_set_ev := false;
-        g.mu_res[self] := Result;
+        Swap(err_handler, g.curr_err_handler);
+        g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler, err_handler|, true);
+        
+        g.mu_res[self] := new MultiuseableResultData(Result, err_handler);
+        
         if prev_ev.count<>0 then
         begin
           Result := Result.Clone;
@@ -5788,7 +5813,7 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := hub.OnNodeInvoked(g, l);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     if prev_hubs.Add(hub) then hub.q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -5801,7 +5826,7 @@ type
     
   end;
   
-  MultiusableCommandQueueHub<T> = sealed partial class(MultiusableCommandQueueHubBase)
+  MultiusableCommandQueueHub<T> = sealed partial class(IMultiusableCommandQueueHub)
     
     public function MakeNode: CommandQueue<T> :=
     new MultiusableCommandQueueNode<T>(self);
@@ -6118,7 +6143,7 @@ type
     
     {$region Disabled override's}
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     raise new System.NotSupportedException($'Err:WaitMarkerCombination.Invoke');
     
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override;
@@ -6562,7 +6587,7 @@ type
       Result.ev.AttachCallback(true, ()->if not err_handler.HadError then self.SendSignal, err_handler{$ifdef EventDebug}, $'SendSignal'{$endif});
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -6583,7 +6608,7 @@ type
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override :=
     org.InvokeBase(g, l);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     org.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -6610,7 +6635,7 @@ type
       Result.ev.AttachCallback(true, callback, err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
   end;
@@ -6634,7 +6659,7 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<object>; override :=
     new QueueResConst<object>(nil, marker.MakeWaitEv(g,l));
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     marker.InitInnerHandles(g);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -6663,7 +6688,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       q.RegisterWaitables(g, prev_hubs);
       marker.InitInnerHandles(g);
@@ -6733,7 +6758,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       try_do.RegisterWaitables(g, prev_hubs);
       do_finally.RegisterWaitables(g, prev_hubs);
@@ -6801,7 +6826,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<object>; override;
@@ -6844,7 +6869,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
@@ -6904,7 +6929,7 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
@@ -6980,7 +7005,7 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; abstract;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
   end;
   
@@ -6996,7 +7021,7 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override :=
     new QueueResConst<ISetableKernelArg>(self, EventList.Empty);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     public procedure SetArg(k: cl_kernel; ind: UInt32); abstract;
     
@@ -7193,7 +7218,7 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override :=
     q.Invoke(g, l.WithPtrNeed(false)).LazyQuickTransform(a->new KernelArgCLArray<T>(a) as ISetableKernelArg);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7220,7 +7245,7 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ISetableKernelArg>; override :=
     q.Invoke(g, l.WithPtrNeed(false)).LazyQuickTransform(mem->new KernelArgMemorySegment(mem) as ISetableKernelArg);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7261,7 +7286,7 @@ type
       Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgData(ptr_qr.GetRes, sz_qr.GetRes), ptr_qr.ev+sz_qr.ev);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr_q.RegisterWaitables(g, prev_hubs);
        sz_q.RegisterWaitables(g, prev_hubs);
@@ -7305,7 +7330,7 @@ type
         Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgValue<TRecord>(prev_qr.GetRes), prev_qr.ev);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7351,7 +7376,7 @@ type
       Result := new QueueResFunc<ISetableKernelArg>(()->new KernelArgArray<TRecord>(a_qr.GetRes, ind_qr.GetRes), a_qr.ev+ind_qr.ev);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
         a_q.RegisterWaitables(g, prev_hubs);
       ind_q.RegisterWaitables(g, prev_hubs);
@@ -7385,7 +7410,7 @@ type
     protected function InvokeObj  (o: T;                     g: CLTaskGlobalData; l: CLTaskLocalData): EventList; abstract;
     protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; abstract;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
     protected function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
@@ -7427,7 +7452,7 @@ type
     protected function InvokeObj  (o: T;                     g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override := Invoke(g, l);
     protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override := Invoke(g, l);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7462,7 +7487,7 @@ type
       );
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -7489,7 +7514,7 @@ type
     protected function InvokeObj  (o: T;                     g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override := Invoke(g, l);
     protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override := Invoke(g, l);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     marker.InitInnerHandles(g);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7519,7 +7544,7 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; abstract;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); abstract;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
@@ -7546,7 +7571,7 @@ type
       Result := core.Invoke(g, l);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       core.RegisterWaitables(g, prev_hubs);
       foreach var comm in commands do comm.RegisterWaitables(g, prev_hubs);
@@ -7592,7 +7617,7 @@ type
       Result := new QueueResConst<T>(o, l.prev_ev);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -7622,7 +7647,7 @@ type
       Result := new_plug().Invoke(g, l);
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override :=
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     hub.q.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -8016,7 +8041,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
        sz1.RegisterWaitables(g, prev_hubs);
       foreach var temp1 in args do temp1.RegisterWaitables(g, prev_hubs);
@@ -8115,7 +8140,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
        sz1.RegisterWaitables(g, prev_hubs);
        sz2.RegisterWaitables(g, prev_hubs);
@@ -8224,7 +8249,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
        sz1.RegisterWaitables(g, prev_hubs);
        sz2.RegisterWaitables(g, prev_hubs);
@@ -8338,7 +8363,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       global_work_offset.RegisterWaitables(g, prev_hubs);
         global_work_size.RegisterWaitables(g, prev_hubs);
@@ -8596,7 +8621,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr.RegisterWaitables(g, prev_hubs);
     end;
@@ -8668,7 +8693,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
              ptr.RegisterWaitables(g, prev_hubs);
       mem_offset.RegisterWaitables(g, prev_hubs);
@@ -8740,7 +8765,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr.RegisterWaitables(g, prev_hubs);
     end;
@@ -8812,7 +8837,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
              ptr.RegisterWaitables(g, prev_hubs);
       mem_offset.RegisterWaitables(g, prev_hubs);
@@ -8938,7 +8963,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       mem_offset.RegisterWaitables(g, prev_hubs);
     end;
@@ -9021,7 +9046,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
              val.RegisterWaitables(g, prev_hubs);
       mem_offset.RegisterWaitables(g, prev_hubs);
@@ -9101,7 +9126,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -9176,7 +9201,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -9251,7 +9276,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -9326,7 +9351,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -9401,7 +9426,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -9476,7 +9501,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -9565,7 +9590,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                a.RegisterWaitables(g, prev_hubs);
         a_offset.RegisterWaitables(g, prev_hubs);
@@ -9674,7 +9699,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                a.RegisterWaitables(g, prev_hubs);
        a_offset1.RegisterWaitables(g, prev_hubs);
@@ -9793,7 +9818,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                a.RegisterWaitables(g, prev_hubs);
        a_offset1.RegisterWaitables(g, prev_hubs);
@@ -9907,7 +9932,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                a.RegisterWaitables(g, prev_hubs);
         a_offset.RegisterWaitables(g, prev_hubs);
@@ -10016,7 +10041,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                a.RegisterWaitables(g, prev_hubs);
        a_offset1.RegisterWaitables(g, prev_hubs);
@@ -10135,7 +10160,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                a.RegisterWaitables(g, prev_hubs);
        a_offset1.RegisterWaitables(g, prev_hubs);
@@ -10231,7 +10256,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
               ptr.RegisterWaitables(g, prev_hubs);
       pattern_len.RegisterWaitables(g, prev_hubs);
@@ -10313,7 +10338,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
               ptr.RegisterWaitables(g, prev_hubs);
       pattern_len.RegisterWaitables(g, prev_hubs);
@@ -10394,7 +10419,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
     end;
     
@@ -10467,7 +10492,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       val.RegisterWaitables(g, prev_hubs);
     end;
@@ -10546,7 +10571,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       mem_offset.RegisterWaitables(g, prev_hubs);
              len.RegisterWaitables(g, prev_hubs);
@@ -10639,7 +10664,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
              val.RegisterWaitables(g, prev_hubs);
       mem_offset.RegisterWaitables(g, prev_hubs);
@@ -10724,7 +10749,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -10799,7 +10824,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -10874,7 +10899,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -10968,7 +10993,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                 a.RegisterWaitables(g, prev_hubs);
          a_offset.RegisterWaitables(g, prev_hubs);
@@ -11087,7 +11112,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                 a.RegisterWaitables(g, prev_hubs);
         a_offset1.RegisterWaitables(g, prev_hubs);
@@ -11216,7 +11241,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                 a.RegisterWaitables(g, prev_hubs);
         a_offset1.RegisterWaitables(g, prev_hubs);
@@ -11312,7 +11337,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       mem.RegisterWaitables(g, prev_hubs);
     end;
@@ -11389,7 +11414,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
            mem.RegisterWaitables(g, prev_hubs);
       from_pos.RegisterWaitables(g, prev_hubs);
@@ -11466,7 +11491,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       mem.RegisterWaitables(g, prev_hubs);
     end;
@@ -11543,7 +11568,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
            mem.RegisterWaitables(g, prev_hubs);
       from_pos.RegisterWaitables(g, prev_hubs);
@@ -11623,7 +11648,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -11683,7 +11708,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       mem_offset.RegisterWaitables(g, prev_hubs);
              len.RegisterWaitables(g, prev_hubs);
@@ -11772,7 +11797,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       mem_offset.RegisterWaitables(g, prev_hubs);
     end;
@@ -11841,7 +11866,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -11907,7 +11932,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       len.RegisterWaitables(g, prev_hubs);
     end;
@@ -11989,7 +12014,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       len1.RegisterWaitables(g, prev_hubs);
       len2.RegisterWaitables(g, prev_hubs);
@@ -12081,7 +12106,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       len1.RegisterWaitables(g, prev_hubs);
       len2.RegisterWaitables(g, prev_hubs);
@@ -12279,7 +12304,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr.RegisterWaitables(g, prev_hubs);
     end;
@@ -12352,7 +12377,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
@@ -12425,7 +12450,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr.RegisterWaitables(g, prev_hubs);
     end;
@@ -12498,7 +12523,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ptr.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
@@ -12606,7 +12631,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ind.RegisterWaitables(g, prev_hubs);
     end;
@@ -12685,7 +12710,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       val.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
@@ -12760,7 +12785,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -12845,7 +12870,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
           a.RegisterWaitables(g, prev_hubs);
         ind.RegisterWaitables(g, prev_hubs);
@@ -12930,7 +12955,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -13015,7 +13040,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
           a.RegisterWaitables(g, prev_hubs);
         ind.RegisterWaitables(g, prev_hubs);
@@ -13102,7 +13127,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
               ptr.RegisterWaitables(g, prev_hubs);
       pattern_len.RegisterWaitables(g, prev_hubs);
@@ -13185,7 +13210,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
               ptr.RegisterWaitables(g, prev_hubs);
       pattern_len.RegisterWaitables(g, prev_hubs);
@@ -13276,7 +13301,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
     end;
     
@@ -13345,7 +13370,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       val.RegisterWaitables(g, prev_hubs);
     end;
@@ -13420,7 +13445,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ind.RegisterWaitables(g, prev_hubs);
       len.RegisterWaitables(g, prev_hubs);
@@ -13509,7 +13534,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       val.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
@@ -13589,7 +13614,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -13679,7 +13704,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
                 a.RegisterWaitables(g, prev_hubs);
          a_offset.RegisterWaitables(g, prev_hubs);
@@ -13766,7 +13791,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -13844,7 +13869,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
              a.RegisterWaitables(g, prev_hubs);
       from_ind.RegisterWaitables(g, prev_hubs);
@@ -13922,7 +13947,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       a.RegisterWaitables(g, prev_hubs);
     end;
@@ -14000,7 +14025,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
              a.RegisterWaitables(g, prev_hubs);
       from_ind.RegisterWaitables(g, prev_hubs);
@@ -14092,7 +14117,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ind.RegisterWaitables(g, prev_hubs);
     end;
@@ -14157,7 +14182,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -14224,7 +14249,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       ind.RegisterWaitables(g, prev_hubs);
       len.RegisterWaitables(g, prev_hubs);
@@ -14274,7 +14299,7 @@ type
     protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<object>; override :=
     new QueueResConst<Object>(nil, l.prev_ev);
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<MultiusableCommandQueueHubBase>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
