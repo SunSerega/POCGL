@@ -305,7 +305,6 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder]
 Tester: Done executing
-Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue]
@@ -324,7 +323,6 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\~00#Err\err while async]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1]
@@ -382,8 +380,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

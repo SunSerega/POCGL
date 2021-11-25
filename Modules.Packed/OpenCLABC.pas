@@ -305,7 +305,7 @@ type
     private static procedure Add(cq: cl_command_queue; use: string) := QueueUsesFor(cq).Enqueue(use);
     
     public static procedure ReportQueueUses :=
-    foreach var kvp in QueueUses.OrderBy(kvp->kvp.Key.val.ToInt64) do
+    foreach var kvp in QueueUses.OrderBy(kvp->kvp.Value.Count) do
     begin
       $'Logging uses of {kvp.Key}'.Println;
       kvp.Value.PrintLines;
