@@ -1,16 +1,13 @@
 
 
 # POCGL
-Pascal Wrappers of OpenCL and OpenGL
+PascalABC.Net Wrappers of OpenCL and OpenGL
 
 ---
 
 # Packing (Building)
 
-When packing first time:
-1. Compile `PackAll.pas`;
-2. Execute `PackAll-0 FIRST PACK.bat`.
-
-For every next packing - just execute `PackAll.exe`.
+When packinglding first time: Execute `PackAll-0 FIRST PACK.bat`.
+For every next packing: Execute one of `PackAll-***.bat` files or `PackAll.exe`.
 
 

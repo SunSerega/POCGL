@@ -29,12 +29,17 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO
+// - "A + B*C" - тут B*C не должно выполняться, если в A ошибка
+// - "А + S.WriteValue(B, C)" - тут B и C должно выполнится, даже если в A ошибка
+//TODO То есть надо ввести различие в .InvokeBranch
+
 //TODO Тесты:
-// - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
-// - .ThenWaitFor vs .ThenFinallyWaitFor vs (WaitFor*QErr)
 // - MU и ошибки
 // --- Кидание ошибок во всех mu ветках
 // --- 2 выполнения, с 2 разными ошибками
+
+//TODO Описания
 
 //TODO Справка:
 // - M1 and M2 or M3
@@ -61,6 +66,7 @@ unit OpenCLABC;
 // - OpenCLABC основано на асинхронности, поэтому посмотрите на System.Collections.Concurrent, и может lock
 // - MU и ошибки
 // --- Если ошибка в источнике MU - её должно кидать всюду, где используется этот источник
+// --- Другими словами MU даёт множественное использование не только результата, но и ошибки
 
 //TODO Пройтись по TODO модуля, исправить список зависимых issue
 
@@ -4080,17 +4086,20 @@ type
 {$region CLTaskData}
 
 type
+  CLTaskErrHandlerPrevAction = (EPA_Ignore, EPA_Use, EPA_Copy);
   CLTaskErrHandler = class
-    public local_err_lst := new List<Exception>;
-    public prev: array of CLTaskErrHandler;
-    public fill_prev: boolean;
+    private local_err_lst := new List<Exception>;
+    private prev: array of CLTaskErrHandler;
+    private prev_action: CLTaskErrHandlerPrevAction;
     
-    public constructor(prev: array of CLTaskErrHandler; fill_prev: boolean);
+    public constructor(prev: array of CLTaskErrHandler; prev_action: CLTaskErrHandlerPrevAction);
     begin
       self.prev := prev;
-      self.fill_prev := fill_prev;
+      self.prev_action := prev_action;
     end;
     private constructor := raise new OpenCLABCInternalException;
+    
+    public static property Empty: CLTaskErrHandler read new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, EPA_Ignore);
     
     {$region AddErr}
     protected static AbortStatus := new CommandExecutionStatus(integer.MinValue);
@@ -4102,7 +4111,7 @@ type
         System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e).Throw;
       // HPQ(()->exit()) + HPQ(()->raise)
       // Тут сначала вычисляет HadError как false, а затем переключает на true
-      prev_had_error := true;
+      had_error_cache := true;
       local_err_lst += e;
     end;
     
@@ -4119,12 +4128,12 @@ type
     
     {$endregion AddErr}
     
-    private prev_had_error := default(boolean?);
+    private had_error_cache := default(boolean?);
     public function HadError: boolean;
     begin
-      if prev_had_error<>nil then
+      if had_error_cache<>nil then
       begin
-        Result := prev_had_error.Value;
+        Result := had_error_cache.Value;
         exit;
       end;
       Result := local_err_lst.Count<>0;
@@ -4133,28 +4142,61 @@ type
         Result := h.HadError;
         if Result then break;
       end;
-      prev_had_error := Result;
+      had_error_cache := Result;
     end;
     
-    public procedure TryRemoveErrors<TException>(handler: TException->boolean);
+    private procedure StealPrevErrors;
+    begin
+      foreach var h in prev do
+        h.FillErrLst(self.local_err_lst);
+      self.prev := Empty.prev;
+      self.prev_action := Empty.prev_action;
+    end;
+    
+    public function TryRemoveErrors<TException>(handler: TException->boolean): boolean;
     where TException: Exception;
     begin
       if not HadError then exit;
-      prev_had_error := nil;
+      Result := false;
+      case prev_action of
+        
+        EPA_Use: foreach var h in prev do
+          Result := h.TryRemoveErrors(handler) or Result;
+        
+        EPA_Copy: StealPrevErrors;
+        
+        {$ifdef DEBUG}
+        EPA_Ignore: ;
+        else raise new OpenCLABCInternalException('Invalid prev_action value');
+        {$endif DEBUG}
+      end;
+      var prev_c := local_err_lst.Count;
       local_err_lst.RemoveAll(e->
         (e is TException) and handler(TException(e))
       );
-      if not fill_prev then exit;
-      foreach var h in prev do
-        h.TryRemoveErrors(handler);
+      Result := Result or (prev_c<>local_err_lst.Count);
+      if Result then had_error_cache := nil;
     end;
     
     public procedure FillErrLst(lst: List<Exception>);
     begin
+      case prev_action of
+        
+        EPA_Use: foreach var h in prev do
+          h.FillErrLst(lst);
+        
+        // В случае CommandQueueHandleReplaceRes
+        // Если обработать удалось - будет вызвано TryRemoveErrors
+        // StealPrevErrors делает то же самое что EPA_Use тут,
+        // но оставляет более удобный формат данных, сплющенный в 1 список
+        EPA_Copy: StealPrevErrors;
+        
+        {$ifdef DEBUG}
+        EPA_Ignore: ;
+        else raise new OpenCLABCInternalException('Invalid prev_action value');
+        {$endif DEBUG}
+      end;
       lst.AddRange(local_err_lst);
-      if not fill_prev then exit;
-      foreach var h in prev do
-        h.FillErrLst(lst);
     end;
     
   end;
@@ -4169,7 +4211,7 @@ type
     public curr_inv_cq: cl_command_queue;
     private free_cqs := new System.Collections.Concurrent.ConcurrentBag<cl_command_queue>;
     
-    public curr_err_handler := new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, false);
+    public curr_err_handler := CLTaskErrHandler.Empty;
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -4710,9 +4752,9 @@ type
     private l: CLTaskLocalData;
     private branch_handlers := new List<CLTaskErrHandler>;
     
-    public constructor(prev_cq: cl_command_queue; g: CLTaskGlobalData; l: CLTaskLocalData; capacity: integer);
+    public constructor(g: CLTaskGlobalData; l: CLTaskLocalData; capacity: integer);
     begin
-      self.prev_cq := prev_cq;
+      self.prev_cq := g.curr_inv_cq;
       self.g := g;
       self.l := l;
       self.branch_handlers.Capacity := capacity+1;
@@ -4723,13 +4765,10 @@ type
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     function InvokeBranch(branch: (CLTaskGlobalData, CLTaskLocalData)->EventList): EventList;
     begin
-      var prev_err_handler := g.curr_err_handler;
-      g.curr_err_handler := new CLTaskErrHandler(|prev_err_handler|, false);
+      // Ошибка в предыдущем хэндлере не должна отменять выполнение ветки
+      g.curr_err_handler := CLTaskErrHandler.Empty;
       
       Result := branch(g, l);
-      
-      branch_handlers += g.curr_err_handler; // Нельзя до вызова branch - его там могут подменить
-      g.curr_err_handler := prev_err_handler;
       
       var cq := g.curr_inv_cq;
       if cq<>cl_command_queue.Zero then
@@ -4745,6 +4784,10 @@ type
             g.free_cqs.Add(cq);
           end, g.curr_err_handler{$ifdef EventDebug}, $'returning cq to bag'{$endif});
       end;
+      
+      // Как можно позже, потому что вызовы использующие
+      // err_handler могут заменять его на новый, свой собственный
+      branch_handlers += g.curr_err_handler;
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -4779,7 +4822,7 @@ type
     procedure ParallelInvoke(l: CLTaskLocalData; capacity: integer; use: CLTaskBranchInvoker->());
     begin
       
-      var invoker := new CLTaskBranchInvoker(self.curr_inv_cq, self, l, capacity);
+      var invoker := new CLTaskBranchInvoker(self, l, capacity);
       // Нельзя использовать уже существующую очередь для веток, они должны начинать выполняться сразу
       curr_inv_cq := cl_command_queue.Zero;
       
@@ -4789,7 +4832,7 @@ type
       if invoker.branch_handlers.Count-1<>capacity then
         raise new OpenCLABCInternalException($'{invoker.branch_handlers.Count-1} <> {capacity}');
       {$endif DEBUG}
-      self.curr_err_handler := new CLTaskErrHandler(invoker.branch_handlers.ToArray, true);
+      self.curr_err_handler := new CLTaskErrHandler(invoker.branch_handlers.ToArray, EPA_Use);
       
       self.curr_inv_cq := invoker.prev_cq;
     end;
@@ -4829,7 +4872,7 @@ type
         curr_err_handler.FillErrLst(err_lst);
       {$ifdef DEBUG}
       if curr_err_handler.HadError <> (err_lst.Count<>0) then
-        raise new OpenCLABCInternalException($'{curr_err_handler.HadError} <> {err_lst.Count<>0}');
+        raise new OpenCLABCInternalException($'{curr_err_handler.HadError} <> ({err_lst.Count}<>0)');
       {$endif DEBUG}
     end;
     
@@ -5773,36 +5816,42 @@ type
     
     public function OnNodeInvoked(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>;
     begin
+      var prev_ev := l.prev_ev;
       
       var res_data: MultiuseableResultData;
       // Потоко-безопасно, потому что все .Invoke выполняются синхронно
       //TODO А что будет когда .ThenIf и т.п.
       if g.mu_res.TryGetValue(self, res_data) then
       begin
-        g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler, res_data.err_handler|, false);
+        g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler,
+          new CLTaskErrHandler(|res_data.err_handler|, EPA_Copy)
+        |, EPA_Use);
         Result := QueueRes&<T>( res_data.qres );
       end else
       begin
-        var prev_ev := l.prev_ev;
-        l.prev_ev := EventList.Empty;
+        var prev_err_handler := g.curr_err_handler;
+        g.curr_err_handler := CLTaskErrHandler.Empty;
         
-        var err_handler := g.curr_err_handler;
-        g.curr_err_handler := new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, false);
+        l.prev_ev := EventList.Empty;
+        // Ради только 1 из веток делать доп. указатель - было бы странно
+        l.need_ptr_qr := false;
         Result := self.q.Invoke(g, l);
         Result.can_set_ev := false;
-        Swap(err_handler, g.curr_err_handler);
-        g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler, err_handler|, true);
+        var q_err_handler := g.curr_err_handler;
         
-        g.mu_res[self] := new MultiuseableResultData(Result, err_handler);
+        g.curr_err_handler := new CLTaskErrHandler(|prev_err_handler,
+          new CLTaskErrHandler(|q_err_handler|, EPA_Copy)
+        |, EPA_Use);
         
-        if prev_ev.count<>0 then
-        begin
-          Result := Result.Clone;
-          Result.ev := Result.ev+prev_ev;
-        end;
+        g.mu_res[self] := new MultiuseableResultData(Result, q_err_handler);
       end;
       
       Result.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
+      if prev_ev.count<>0 then
+      begin
+        Result := Result.Clone;
+        Result.ev := Result.ev+prev_ev;
+      end;
     end;
     
   end;
@@ -6721,16 +6770,16 @@ type
     begin
       var base_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandler(|base_err_handler|, true);
+      g.curr_err_handler := new CLTaskErrHandler(|base_err_handler|, EPA_Use);
       Result := q.Invoke(g, l);
       var q_err_handler := g.curr_err_handler;
       
       l.prev_ev := Result.ev;
-      g.curr_err_handler := new CLTaskErrHandler(|base_err_handler|, false);
+      g.curr_err_handler := new CLTaskErrHandler(|base_err_handler|, EPA_Ignore);
       Result := Result.TrySetEv( marker.MakeWaitEv(g, l.WithPtrNeed(false)) );
       var m_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandler(|q_err_handler, m_err_handler|, true);
+      g.curr_err_handler := new CLTaskErrHandler(|q_err_handler, m_err_handler|, EPA_Use);
     end;
     
   end;
@@ -6771,10 +6820,9 @@ type
       {$region try_do}
       var mid_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'mid_ev for {self.GetType}'{$endif});
       
-      var try_handler := new CLTaskErrHandler(|base_handler|, true);
-      g.curr_err_handler := try_handler;
+      g.curr_err_handler := new CLTaskErrHandler(|base_handler|, EPA_Use);
       var try_ev := try_do.InvokeBase(g, l.WithPtrNeed(false)).ev;
-      try_handler := g.curr_err_handler;
+      var try_handler := g.curr_err_handler;
       
       try_ev.AttachCallback(false, ()->
       begin
@@ -6786,14 +6834,13 @@ type
       {$region do_finally}
       l.prev_ev := mid_ev;
       
-      var fin_handler := new CLTaskErrHandler(|base_handler|, false);
-      g.curr_err_handler := fin_handler;
+      g.curr_err_handler := new CLTaskErrHandler(|base_handler|, EPA_Ignore);
       Result := do_finally.Invoke(g, l);
-      fin_handler := g.curr_err_handler;
+      var fin_handler := g.curr_err_handler;
       
       {$endregion do_finally}
       
-      g.curr_err_handler := new CLTaskErrHandler(|try_handler, fin_handler|, true);
+      g.curr_err_handler := new CLTaskErrHandler(|try_handler, fin_handler|, EPA_Use);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
