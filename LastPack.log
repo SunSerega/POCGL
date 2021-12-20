@@ -1,6 +1,47 @@
-﻿Executing default stages:
-Reference + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+﻿Executing selected stages:
+FirstPack + Reference + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
+=================================== First Pack ===================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\Reps\PullReps.pas"
+Compiling: OK
+Runing SubReps Update
+SubReps Update: Pulling OpenCL Docs
+SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
+SubReps Update: OpenCL Docs : [Info] + cc5e8ec...69ce1e4 cl-ext-image-tiling-control -> origin/cl-ext-image-tiling-control  (forced update)
+SubReps Update: OpenCL Docs : [Info] 554771d..d62c555  cl-ext-yuv-images          -> origin/cl-ext-yuv-images
+SubReps Update: OpenCL Docs : [Info] 62afd10..3d36d93  master                     -> origin/master
+SubReps Update: OpenCL Docs : [Info] * [new tag]         cxxforopencl-docrev2021.12 -> cxxforopencl-docrev2021.12
+SubReps Update: OpenCL Docs : Submodule path 'DataScraping/Reps/OpenCL-Docs': checked out '3d36d9309228ef507d87b850a81e02d801fa7b05'
+SubReps Update: Done pulling OpenCL Docs
+SubReps Update: Pulling OpenGL Registry
+SubReps Update: OpenGL Registry : [Info] From github.com:KhronosGroup/OpenGL-Registry
+SubReps Update: OpenGL Registry : [Info] a48c224..84e297a  main       -> origin/main
+SubReps Update: OpenGL Registry : Submodule path 'DataScraping/Reps/OpenGL-Registry': checked out '84e297a87b9c3a660d11667ed7cec557906c1933'
+SubReps Update: Done pulling OpenGL Registry
+Finished runing SubReps Update
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiling "DataScraping\XML\CL\ScrapXML.pas"
+Compiling: OK
+Runing ScrapXML[CL]
+ScrapXML[CL]: Parsing "cl"
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_MASK_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_KHR]
+ScrapXML[CL]: WARNING: Weird XML for [CL_MAKE_VERSION_KHR]
+ScrapXML[CL]: Saving as binary
+Finished runing ScrapXML[CL]
+Compiling "DataScraping\XML\GL\ScrapXML.pas"
+Compiling: OK
+Runing ScrapXML[GL]
+ScrapXML[GL]: Parsing "gl"
+ScrapXML[GL]: Parsing "wgl"
+ScrapXML[GL]: Parsing "glx"
+ScrapXML[GL]: Saving as binary
+Finished runing ScrapXML[GL]
 =================================== References ===================================
 Compiling "Packing\Reference\ReferencePacker.pas"
 Compiling: OK

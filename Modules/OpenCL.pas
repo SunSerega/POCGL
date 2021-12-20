@@ -2233,7 +2233,7 @@ type
     public static property MEM_RESERVED1_ARM:                   MemFlags read new MemFlags($200000000);
     public static property MEM_RESERVED2_ARM:                   MemFlags read new MemFlags($400000000);
     public static property MEM_RESERVED3_ARM:                   MemFlags read new MemFlags($800000000);
-    public static property MEM_RESERVED4_ARM:                   MemFlags read new MemFlags($1000000000);
+    public static property MEM_PROTECTED_ALLOC_ARM:             MemFlags read new MemFlags($1000000000);
     public static property MEM_RESERVED0_QCOM:                  MemFlags read new MemFlags($2000000000);
     public static property MEM_RESERVED1_QCOM:                  MemFlags read new MemFlags($4000000000);
     public static property MEM_RESERVED2_QCOM:                  MemFlags read new MemFlags($8000000000);
@@ -2265,7 +2265,7 @@ type
     public property HAS_FLAG_MEM_RESERVED1_ARM:                   boolean read self.val and $200000000 <> 0;
     public property HAS_FLAG_MEM_RESERVED2_ARM:                   boolean read self.val and $400000000 <> 0;
     public property HAS_FLAG_MEM_RESERVED3_ARM:                   boolean read self.val and $800000000 <> 0;
-    public property HAS_FLAG_MEM_RESERVED4_ARM:                   boolean read self.val and $1000000000 <> 0;
+    public property HAS_FLAG_MEM_PROTECTED_ALLOC_ARM:             boolean read self.val and $1000000000 <> 0;
     public property HAS_FLAG_MEM_RESERVED0_QCOM:                  boolean read self.val and $2000000000 <> 0;
     public property HAS_FLAG_MEM_RESERVED1_QCOM:                  boolean read self.val and $4000000000 <> 0;
     public property HAS_FLAG_MEM_RESERVED2_QCOM:                  boolean read self.val and $8000000000 <> 0;
@@ -2297,7 +2297,7 @@ type
       if self.val and UInt64($200000000) = UInt64($200000000) then res += 'MEM_RESERVED1_ARM+';
       if self.val and UInt64($400000000) = UInt64($400000000) then res += 'MEM_RESERVED2_ARM+';
       if self.val and UInt64($800000000) = UInt64($800000000) then res += 'MEM_RESERVED3_ARM+';
-      if self.val and UInt64($1000000000) = UInt64($1000000000) then res += 'MEM_RESERVED4_ARM+';
+      if self.val and UInt64($1000000000) = UInt64($1000000000) then res += 'MEM_PROTECTED_ALLOC_ARM+';
       if self.val and UInt64($2000000000) = UInt64($2000000000) then res += 'MEM_RESERVED0_QCOM+';
       if self.val and UInt64($4000000000) = UInt64($4000000000) then res += 'MEM_RESERVED1_QCOM+';
       if self.val and UInt64($8000000000) = UInt64($8000000000) then res += 'MEM_RESERVED2_QCOM+';
