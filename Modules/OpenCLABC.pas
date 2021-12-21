@@ -23,8 +23,6 @@ unit OpenCLABC;
 // - MU и ошибки
 // --- Кидание ошибок во всех mu ветках
 // --- 2 выполнения, с 2 разными ошибками
-// - A + B*C.Handle
-// --- Нельзя съедать ошибку из A
 
 //TODO Описания
 
@@ -55,8 +53,6 @@ unit OpenCLABC;
 // --- Если ошибка в источнике MU - её должно кидать всюду, где используется этот источник
 // --- Другими словами MU даёт множественное использование не только результата, но и ошибки
 //TODO По сути теперь надо отдельный раздел про ошибки в очередях
-
-//TODO Пройтись по TODO модуля, исправить список зависимых issue
 
 //===================================
 // Запланированное:
@@ -109,6 +105,9 @@ unit OpenCLABC;
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 //TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
 // - Или может метод MarkerQueue.Abort?
+//
+//TODO Несколько TODO в:
+// - Queue converter's >> Wait
 
 //TODO Интегрировать профайлинг очередей
 
@@ -123,6 +122,7 @@ unit OpenCLABC;
 
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
+// - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
 
 //TODO Слишком новые фичи, которые могут много чего изменить:
 // - cl_khr_command_buffer
@@ -522,7 +522,6 @@ type
         ntv_dvcs[i] := dvcs[i].ntv;
       
       var ec: ErrorCode;
-      //TODO позволить использовать CL_CONTEXT_INTEROP_USER_SYNC в свойствах
       self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
       ec.RaiseIfError;
       
@@ -1384,8 +1383,12 @@ type
     private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; abstract;
     public static function operator>=(try_do, do_finally: CommandQueueBase) := do_finally.AfterTry(try_do);
     
+    private function ConvertErrHandler<TException>(handler: TException->boolean): Exception->boolean; where TException: Exception;
+    begin Result := e->(e is TException) and handler(TException(e)) end;
+    
     public function HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueBase; where TException: Exception;
-    public function HandleWithoutRes(handler: Exception->boolean) := HandleWithoutRes&<Exception>(handler);
+    begin Result := HandleWithoutRes(ConvertErrHandler(handler)) end;
+    public function HandleWithoutRes(handler: Exception->boolean): CommandQueueBase;
     
   end;
   
@@ -1397,7 +1400,8 @@ type
     public function HandleReplaceRes(handler: Func<array of Exception, (boolean,T)>): CommandQueue<T>;
     
     public function HandleDefaultRes<TException>(handler: TException->boolean; def: T): CommandQueue<T>; where TException: Exception;
-    public function HandleDefaultRes(handler: Exception->boolean; def: T) := HandleDefaultRes&<Exception>(handler, def);
+    begin Result := HandleDefaultRes(ConvertErrHandler(handler), def) end;
+    public function HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T>;
     
   end;
   
@@ -1518,7 +1522,6 @@ type
   
   CLTask<T> = sealed partial class(CLTaskBase)
     private q: CommandQueue<T>;
-    private q_res: T; //TODO Лучше хранить QueueRes, чтоб не выполнять лишнее копирование записи
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -1532,10 +1535,6 @@ type
     {$region Wait}
     
     public function WaitRes: T; reintroduce;
-    begin
-      Wait;
-      Result := self.q_res;
-    end;
     
     {$endregion Wait}
     
@@ -2411,6 +2410,8 @@ type
     
     public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; abstract;
     
+    public function StabiliseBase(err_handler: CLTaskErrHandler): QueueResBase; abstract;
+    
   end;
   
   QueueRes<T> = abstract partial class(QueueResBase)
@@ -2438,6 +2439,9 @@ type
     /// Должно выполнятся только после ожидания ивентов
     public function ToPtr: IPtrQueueRes<T>; abstract;
     
+    public function StabiliseBase(err_handler: CLTaskErrHandler): QueueResBase; override := Stabilise(err_handler);
+    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; abstract;
+    
   end;
   
   {$endregion Base}
@@ -2463,6 +2467,8 @@ type
     new QueueResConst<T2>(f(self.res), self.ev);
     
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
+    
+    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; override := self;
     
   end;
   
@@ -2490,6 +2496,8 @@ type
     
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(self.f());
     
+    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; override := new QueueResConst<T>(self.GetRes, self.ev);
+    
   end;
   
   {$endregion Func}
@@ -2508,6 +2516,8 @@ type
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
     new QueueResFunc<T2>(()->f(self.GetRes()), self.ev);
+    
+    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; override := self;
     
   end;
   
@@ -2912,6 +2922,7 @@ type
   end;
   
   CLTask<T> = sealed partial class(CLTaskBase)
+    private q_res: QueueRes<T>;
     
     protected constructor(q: CommandQueue<T>; c: Context);
     begin
@@ -2922,13 +2933,14 @@ type
       var l_data := new CLTaskLocalData;
       
       q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
-      var qr := q.Invoke(g_data, l_data);
+      self.q_res := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
       NativeUtils.StartNewBgThread(()->
       begin
-        if qr.ev.count<>0 then qr.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
-        if not g_data.curr_err_handler.HadError(true) then self.q_res := qr.GetRes;
+        self.q_res.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+        if not g_data.curr_err_handler.HadError(true) then
+          self.q_res := q_res.Stabilise(g_data.curr_err_handler);
         g_data.FinishExecution(self.err_lst);
         wh.Set;
       end);
@@ -2956,7 +2968,9 @@ type
       
       NativeUtils.StartNewBgThread(()->
       begin
-        if qr.ev.count<>0 then qr.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+        qr.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+        if not g_data.curr_err_handler.HadError(true) then
+          qr.StabiliseBase(g_data.curr_err_handler);
         g_data.FinishExecution(self.err_lst);
         wh.Set;
       end);
@@ -2967,6 +2981,12 @@ type
   
 function Context.BeginInvoke<T>(q: CommandQueue<T>) := new CLTask<T>(q, self);
 function Context.BeginInvoke(q: CommandQueueBase) := new CLTaskResLess(q, self);
+
+function CLTask<T>.WaitRes: T;
+begin
+  Wait;
+  Result := q_res.GetRes;
+end;
 
 {$endregion CLTask}
 
@@ -4326,12 +4346,11 @@ new CommandQueueTryFinally<T>(try_do, do_finally);
 
 type
   
-  CommandQueueHandleWithoutRes<TException> = sealed class(CommandQueue<object>)
-  where TException: Exception;
+  CommandQueueHandleWithoutRes = sealed class(CommandQueue<object>)
     private q: CommandQueueBase;
-    private handler: TException->boolean;
+    private handler: Exception->boolean;
     
-    public constructor(q: CommandQueueBase; handler: TException->boolean);
+    public constructor(q: CommandQueueBase; handler: Exception->boolean);
     begin
       self.q := q;
       self.handler := handler;
@@ -4427,13 +4446,12 @@ type
     
   end;
   
-  CommandQueueHandleDefaultRes<T, TException> = sealed class(CommandQueue<T>)
-  where TException: Exception;
+  CommandQueueHandleDefaultRes<T> = sealed class(CommandQueue<T>)
     private q: CommandQueue<T>;
-    private handler: TException->boolean;
+    private handler: Exception->boolean;
     private def: T;
     
-    public constructor(q: CommandQueue<T>; handler: TException->boolean; def: T);
+    public constructor(q: CommandQueue<T>; handler: Exception->boolean; def: T);
     begin
       self.q := q;
       self.handler := handler;
@@ -4484,20 +4502,14 @@ type
     
   end;
   
-function CommandQueueBase.HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueBase;
-where TException: Exception;
-begin
-  Result := new CommandQueueHandleWithoutRes<TException>(self, handler);
-end;
+function CommandQueueBase.HandleWithoutRes(handler: Exception->boolean) :=
+new CommandQueueHandleWithoutRes(self, handler);
 
 function CommandQueue<T>.HandleReplaceRes(handler: Func<array of Exception, (boolean,T)>) :=
 new CommandQueueHandleReplaceRes<T>(self, handler);
 
-function CommandQueue<T>.HandleDefaultRes<TException>(handler: TException->boolean; def: T): CommandQueue<T>;
-where TException: Exception;
-begin
-  Result := new CommandQueueHandleDefaultRes<T, TException>(self, handler, def);
-end;
+function CommandQueue<T>.HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T> :=
+new CommandQueueHandleDefaultRes<T>(self, handler, def);
 
 {$endregion Non-Finally}
 
@@ -5227,14 +5239,16 @@ begin Result := FromCLArrayCQ(a_q); end;
 {$region Core}
 
 type
+  EnqueueableEnqFunc<TInvData> = function(cq: cl_command_queue; err_handler: CLTaskErrHandler; ev_l2: EventList; inv_data: TInvData): cl_event;
   IEnqueueable<TInvData> = interface
     
     function ParamCountL1: integer;
     function ParamCountL2: integer;
     
-    function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (cl_command_queue, CLTaskErrHandler, EventList, TInvData)->cl_event;
+    function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<TInvData>;
     
   end;
+  
   EnqueueableCore = static class
     
     private static function MakeEvList(exp_size: integer; start_ev: EventList): List<EventList>;
@@ -5242,6 +5256,22 @@ type
       var need_start_ev := start_ev.count<>0;
       Result := new List<EventList>(exp_size + integer(need_start_ev));
       if need_start_ev then Result += start_ev;
+    end;
+    
+    private static function ExecuteEnqFunc<TEnq, TInvData>(cq: cl_command_queue; q: TEnq; enq_f: EnqueueableEnqFunc<TInvData>; inv_data: TInvData; ev_l2: EventList; err_handler: CLTaskErrHandler): EventList; where TEnq: IEnqueueable<TInvData>;
+    begin
+      Result := ev_l2;
+      try
+        var enq_ev := enq_f(cq, err_handler, ev_l2, inv_data);
+        {$ifdef EventDebug}
+        EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
+        {$endif EventDebug}
+        // 1. ev_l2 can be released only after executing dependant command
+        // 2. If event in ev_l2 would receive error, enq_ev would not give descriptive error
+        Result := Result+enq_ev;
+      except
+        on e: Exception do err_handler.AddErr(e);
+      end;
     end;
     
     public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; l: CLTaskLocalData; l1_start_ev, l2_start_ev: EventList): EventList; where TEnq: IEnqueueable<TInvData>;
@@ -5283,15 +5313,7 @@ type
       {$endif QueueDebug}
       
       if ev_l1.count=0 then
-      begin
-        var enq_ev := enq_f(cq, g.curr_err_handler, ev_l2, inv_data);
-        {$ifdef EventDebug}
-        EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-        {$endif EventDebug}
-        // 1. ev_l2 можно освобождать только после выполнения команды, ожидающей его
-        // 2. Если ивент из ev_l2 завершится с ошибкой - enq_ev скажет только что была ошибка в ev_l2, но не скажет какая
-        Result := ev_l2 + enq_ev;
-      end else
+        Result := ExecuteEnqFunc(cq, q, enq_f, inv_data, ev_l2, g.curr_err_handler) else
       begin
         var res_ev := new UserEvent(g.cl_c
           {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
@@ -5300,19 +5322,14 @@ type
         var post_params_handler := g.curr_err_handler;
         ev_l1.AttachCallback(false, ()->
         begin
-          // Can't cache, ev_l2 hasn't executed yet
+          // Can't cache, ev_l2 wasn't completed yet
           if post_params_handler.HadError(false) then
           begin
             res_ev.Abort;
             g.free_cqs.Add(cq);
             exit;
           end;
-          var enq_ev := enq_f(cq, post_params_handler, ev_l2, inv_data);
-          {$ifdef EventDebug}
-          EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-          {$endif EventDebug}
-          var final_ev := ev_l2+enq_ev;
-          final_ev.AttachCallback(false, ()->
+          ExecuteEnqFunc(cq, q, enq_f, inv_data, ev_l2, post_params_handler).AttachCallback(false, ()->
           begin
             res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
             g.free_cqs.Add(cq);
@@ -5340,7 +5357,7 @@ type
     public function ParamCountL2: integer; abstract;
     
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (cl_command_queue, CLTaskErrHandler, EventList, EnqueueableGPUCommandInvData<T>)->cl_event;
+    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
     begin
       var enq_f := InvokeParamsImpl(g, l, evs_l1, evs_l2);
       Result := (lcq, err_handler, ev, data)->enq_f(data.qr.GetRes, lcq, err_handler, ev);
@@ -5384,7 +5401,7 @@ type
     public function ForcePtrQr: boolean; virtual := false;
     
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (TObj, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (cl_command_queue, CLTaskErrHandler, EventList, EnqueueableGetCommandInvData<TObj, TRes>)->cl_event;
+    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
     begin
       var enq_f := InvokeParamsImpl(g, l, evs_l1, evs_l2);
       Result := (lcq, err_handler, ev, data)->enq_f(data.prev_qr.GetRes, lcq, err_handler, ev, data.res_qr);
