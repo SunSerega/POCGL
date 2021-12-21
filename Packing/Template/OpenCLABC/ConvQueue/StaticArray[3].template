@@ -57,7 +57,7 @@ type
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
       var qr3: QueueRes<TInp3>;
-      g.ParallelInvoke(l, 3, invoker->
+      g.ParallelInvoke(l, false, 3, invoker->
       begin
         qr1 := invoker.InvokeBranch(q1.Invoke);
         qr2 := invoker.InvokeBranch(q2.Invoke);

@@ -467,7 +467,7 @@ type
       // Надо всегда, потому что даже если параметр 1 - его надо начинать выполнять асинхронно от всего остального
       res_EIm += '      g.ParallelInvoke(l';
       var default_need_ptr := WriteLocalDataForParam(res_EIm, settings);
-      res_EIm += ', ';
+      res_EIm += ', true, ';
       begin
         var param_count_l := new List<MethodArgEvCount>;
         if settings.args<>nil then

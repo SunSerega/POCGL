@@ -19,15 +19,12 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO
-// - "A + B*C" - тут B*C не должно выполняться, если в A ошибка
-// - "А + S.WriteValue(B, C)" - тут B и C должно выполнится, даже если в A ошибка
-//TODO То есть надо ввести различие в .InvokeBranch
-
 //TODO Тесты:
 // - MU и ошибки
 // --- Кидание ошибок во всех mu ветках
 // --- 2 выполнения, с 2 разными ошибками
+// - A + B*C.Handle
+// --- Нельзя съедать ошибку из A
 
 //TODO Описания
 
@@ -57,6 +54,7 @@ unit OpenCLABC;
 // - MU и ошибки
 // --- Если ошибка в источнике MU - её должно кидать всюду, где используется этот источник
 // --- Другими словами MU даёт множественное использование не только результата, но и ошибки
+//TODO По сути теперь надо отдельный раздел про ошибки в очередях
 
 //TODO Пройтись по TODO модуля, исправить список зависимых issue
 
@@ -152,14 +150,15 @@ unit OpenCLABC;
 {$region DEBUG}{$ifdef DEBUG}
 
 // Регистрация всех cl.RetainEvent и cl.ReleaseEvent
-{$define EventDebug}
+{ $define EventDebug}
 
 // Регистрация использований cl_command_queue
-{$define QueueDebug}
+{ $define QueueDebug}
 
 // Регистрация активаций/деактиваций всех WaitHandler-ов
-{$define WaitDebug}
+{ $define WaitDebug}
 
+{ $define ForceMaxDebug}
 {$ifdef ForceMaxDebug}
   {$define EventDebug}
   {$define QueueDebug}
@@ -1966,7 +1965,7 @@ type
 
 type
   CLTaskErrHandlerPrevAction = (EPA_Ignore, EPA_Use, EPA_Copy);
-  CLTaskErrHandler = class
+  CLTaskErrHandler = sealed class
     private local_err_lst := new List<Exception>;
     private prev: array of CLTaskErrHandler;
     private prev_action: CLTaskErrHandlerPrevAction;
@@ -2008,7 +2007,7 @@ type
     {$endregion AddErr}
     
     private had_error_cache := default(boolean?);
-    public function HadError: boolean;
+    public function HadError(can_cache: boolean): boolean;
     begin
       if had_error_cache<>nil then
       begin
@@ -2018,10 +2017,10 @@ type
       Result := local_err_lst.Count<>0;
       if not Result then foreach var h in prev do
       begin
-        Result := h.HadError;
+        Result := h.HadError(can_cache);
         if Result then break;
       end;
-      had_error_cache := Result;
+      if can_cache then had_error_cache := Result;
     end;
     
     private procedure StealPrevErrors;
@@ -2032,42 +2031,69 @@ type
       self.prev_action := Empty.prev_action;
     end;
     
-    public function TryRemoveErrors<TException>(handler: TException->boolean): boolean;
-    where TException: Exception;
+    private last_remove_obj: object;
+    private last_remove_res: boolean;
+    private function TryRemoveErrorsCore(remove_obj: object; handler: Exception->boolean): boolean;
     begin
-      if not HadError then exit;
+      if last_remove_obj=remove_obj then
+      begin
+        Result := last_remove_res;
+        exit;
+      end;
       Result := false;
+      if had_error_cache=false then exit;
+      
       case prev_action of
         
         EPA_Use: foreach var h in prev do
-          Result := h.TryRemoveErrors(handler) or Result;
+          Result := h.TryRemoveErrorsCore(remove_obj, handler) or Result;
         
         EPA_Copy: StealPrevErrors;
         
+        EPA_Ignore: foreach var h in prev do
+          // Can't remove from here, because "A + B*C.Handle" would otherwise consume error in A
+          if (h.last_remove_obj=remove_obj) and h.last_remove_res then
+          begin
+            Result := true;
+            break;
+          end;
+        
         {$ifdef DEBUG}
-        EPA_Ignore: ;
         else raise new OpenCLABCInternalException('Invalid prev_action value');
         {$endif DEBUG}
       end;
+      
       var prev_c := local_err_lst.Count;
-      local_err_lst.RemoveAll(e->
+      local_err_lst.RemoveAll(handler);
+      Result := Result or (prev_c<>local_err_lst.Count);
+      
+      last_remove_obj := remove_obj;
+      last_remove_res := Result;
+      
+      if Result then had_error_cache := nil;
+    end;
+    public procedure TryRemoveErrors<TException>(handler: TException->boolean);
+    where TException: Exception;
+    begin
+      TryRemoveErrorsCore(new object, e->
         (e is TException) and handler(TException(e))
       );
-      Result := Result or (prev_c<>local_err_lst.Count);
-      if Result then had_error_cache := nil;
     end;
     
     public procedure FillErrLst(lst: List<Exception>);
     begin
+      {$ifndef DEBUG}
+      if not HadError(true) then exit;
+      {$endif DEBUG}
       case prev_action of
         
         EPA_Use: foreach var h in prev do
           h.FillErrLst(lst);
         
-        // В случае CommandQueueHandleReplaceRes
-        // Если обработать удалось - будет вызвано TryRemoveErrors
-        // StealPrevErrors делает то же самое что EPA_Use тут,
-        // но оставляет более удобный формат данных, сплющенный в 1 список
+        // In case CommandQueueHandleReplaceRes
+        // If exception is handled - TryRemoveErrors would be called
+        // StealPrevErrors does the same as EPA_Use here,
+        // but set's up better data format, as a single list
         EPA_Copy: StealPrevErrors;
         
         {$ifdef DEBUG}
@@ -2078,6 +2104,32 @@ type
       lst.AddRange(local_err_lst);
     end;
     
+    public procedure SanityCheck(err_lst: List<Exception>);
+    begin
+      
+      // QErr*QErr - second cache wouldn't be calculated
+//      if had_error_cache=nil then
+//        raise new OpenCLABCInternalException($'SanityCheck expects all had_error_cache to exist');
+      
+      begin
+        var had_error := self.HadError(true);
+        if had_error <> (err_lst.Count<>0) then
+          raise new OpenCLABCInternalException($'{had_error} <> {err_lst.Count}');
+      end;
+      
+      // In case "A + B*C" handler of C would see error in A, but ignore it in FillErrLst
+//      if prev_action <> EPA_Ignore then
+//        foreach var h in prev do
+//          h.SanityCheck;
+      
+    end;
+//    public procedure SanityCheck;
+//    begin
+//      var err_lst := new List<Exception>;
+//      FillErrLst(err_lst);
+//      SanityCheck(err_lst);
+//    end;
+    
   end;
   
   CLTaskGlobalData = sealed partial class
@@ -2087,7 +2139,8 @@ type
     public cl_c: cl_context;
     public cl_dvc: cl_device_id;
     
-    public curr_inv_cq: cl_command_queue;
+    private curr_inv_cq := cl_command_queue.Zero;
+    private outer_cq := cl_command_queue.Zero;
     private free_cqs := new System.Collections.Concurrent.ConcurrentBag<cl_command_queue>;
     
     public curr_err_handler := CLTaskErrHandler.Empty;
@@ -2098,11 +2151,20 @@ type
     begin
       Result := curr_inv_cq;
       
-      if (Result=cl_command_queue.Zero) and not free_cqs.TryTake(Result) then
+      if Result=cl_command_queue.Zero then
       begin
-        var ec: ErrorCode;
-        Result := cl.CreateCommandQueue(cl_c, cl_dvc, CommandQueueProperties.NONE, ec);
-        ec.RaiseIfError;
+        if outer_cq<>cl_command_queue.Zero then
+        begin
+          Result := outer_cq;
+          outer_cq := cl_command_queue.Zero;
+        end else
+        if free_cqs.TryTake(Result) then
+          else
+        begin
+          var ec: ErrorCode;
+          Result := cl.CreateCommandQueue(cl_c, cl_dvc, CommandQueueProperties.NONE, ec);
+          ec.RaiseIfError;
+        end;
       end;
       
       curr_inv_cq := if async_enqueue then cl_command_queue.Zero else Result;
@@ -2292,7 +2354,7 @@ type
       cl.ReleaseEvent(evs[i]).RaiseIfError;
     end;
     
-    public procedure WaitAndRelease(err_handler: CLTaskErrHandler);
+    public procedure WaitAndRelease(err_handler: CLTaskErrHandler{$ifdef EventDebug}; reason: string{$endif});
     begin
       if count=0 then exit;
       
@@ -2301,7 +2363,7 @@ type
         for var i := 0 to count-1 do
           CheckEvErr(evs[i], err_handler);
       
-      self.Release({$ifdef EventDebug}$'discarding after being waited upon'{$endif EventDebug});
+      self.Release({$ifdef EventDebug}$'discarding after being waited upon for {reason}'{$endif EventDebug});
     end;
     
     {$endregion Retain/Release}
@@ -2524,9 +2586,9 @@ type
       
       NativeUtils.StartNewBgThread(()->
       begin
-        after.WaitAndRelease(err_handler);
+        after.WaitAndRelease(err_handler{$ifdef EventDebug}, $'Background work with res_ev={res}'{$endif});
         
-        if err_handler.HadError then
+        if err_handler.HadError(true) then
         begin
           res.Abort;
           exit;
@@ -2630,22 +2692,26 @@ type
     private g: CLTaskGlobalData;
     private l: CLTaskLocalData;
     private branch_handlers := new List<CLTaskErrHandler>;
+    private make_base_err_handler: ()->CLTaskErrHandler;
     
-    public constructor(g: CLTaskGlobalData; l: CLTaskLocalData; capacity: integer);
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    constructor(g: CLTaskGlobalData; l: CLTaskLocalData; as_new: boolean; capacity: integer);
     begin
-      self.prev_cq := g.curr_inv_cq;
+      self.prev_cq := if as_new then g.curr_inv_cq else cl_command_queue.Zero;
       self.g := g;
       self.l := l;
       self.branch_handlers.Capacity := capacity+1;
       branch_handlers += g.curr_err_handler;
+      if as_new then
+        make_base_err_handler := ()->CLTaskErrHandler.Empty else
+        make_base_err_handler := ()->new CLTaskErrHandler(|self.branch_handlers[0]|, EPA_Ignore);
     end;
     private constructor := raise new OpenCLABCInternalException;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     function InvokeBranch(branch: (CLTaskGlobalData, CLTaskLocalData)->EventList): EventList;
     begin
-      // Ошибка в предыдущем хэндлере не должна отменять выполнение ветки
-      g.curr_err_handler := CLTaskErrHandler.Empty;
+      g.curr_err_handler := make_base_err_handler();
       
       Result := branch(g, l);
       
@@ -2698,11 +2764,18 @@ type
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    procedure ParallelInvoke(l: CLTaskLocalData; capacity: integer; use: CLTaskBranchInvoker->());
+    procedure ParallelInvoke(l: CLTaskLocalData; as_new: boolean; capacity: integer; use: CLTaskBranchInvoker->());
     begin
+      var invoker := new CLTaskBranchInvoker(self, l, as_new, capacity);
       
-      var invoker := new CLTaskBranchInvoker(self, l, capacity);
-      // Нельзя использовать уже существующую очередь для веток, они должны начинать выполняться сразу
+      // Только в случае A + B*C, то есть "not as_new", можно использовать curr_inv_cq - и только как outer_cq
+      if not as_new and (curr_inv_cq<>cl_command_queue.Zero) then
+      begin
+        {$ifdef DEBUG}
+        if outer_cq<>cl_command_queue.Zero then raise new OpenCLABCInternalException($'OuterCQ confusion');
+        {$endif DEBUG}
+        outer_cq := curr_inv_cq;
+      end;
       curr_inv_cq := cl_command_queue.Zero;
       
       use(invoker);
@@ -2747,11 +2820,9 @@ type
         curr_err_handler.AddErr( cl.ReleaseCommandQueue(cq) );
       
       err_lst := new List<Exception>;
-      if curr_err_handler.HadError{$ifdef DEBUG} or true{$endif DEBUG} then
-        curr_err_handler.FillErrLst(err_lst);
+      curr_err_handler.FillErrLst(err_lst);
       {$ifdef DEBUG}
-      if curr_err_handler.HadError <> (err_lst.Count<>0) then
-        raise new OpenCLABCInternalException($'{curr_err_handler.HadError} <> ({err_lst.Count}<>0)');
+      curr_err_handler.SanityCheck(err_lst);
       {$endif DEBUG}
     end;
     
@@ -2854,12 +2925,13 @@ type
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
-      qr.ev.AttachCallback(false, ()->System.Threading.Tasks.Task.Run(()->
+      NativeUtils.StartNewBgThread(()->
       begin
-        if not g_data.curr_err_handler.HadError then self.q_res := qr.GetRes;
+        if qr.ev.count<>0 then qr.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+        if not g_data.curr_err_handler.HadError(true) then self.q_res := qr.GetRes;
         g_data.FinishExecution(self.err_lst);
         wh.Set;
-      end), g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+      end);
       
     end;
     
@@ -2882,11 +2954,12 @@ type
       var qr := q.InvokeBase(g_data, l_data);
       g_data.FinishInvoke;
       
-      qr.ev.AttachCallback(false, ()->System.Threading.Tasks.Task.Run(()->
+      NativeUtils.StartNewBgThread(()->
       begin
+        if qr.ev.count<>0 then qr.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
         g_data.FinishExecution(self.err_lst);
         wh.Set;
-      end), g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+      end);
       
     end;
     
@@ -3041,7 +3114,7 @@ type
       var evs := new EventList[qs.Length+1];
       
       var res: QueueRes<T>;
-      g.ParallelInvoke(l, qs.Length+1, invoker->
+      g.ParallelInvoke(l, false, qs.Length+1, invoker->
       begin
         for var i := 0 to qs.Length-1 do
           evs[i] := invoker.InvokeBranch((g,l)->
@@ -3126,7 +3199,7 @@ type
       var qrs := new QueueRes<TInp>[qs.Length];
       var evs := new EventList[qs.Length];
       
-      g.ParallelInvoke(l, qs.Length, invoker ->
+      g.ParallelInvoke(l, false, qs.Length, invoker ->
       for var i := 0 to qs.Length-1 do
       begin
         var qr := invoker.InvokeBranch&<TInp>(qs[i].Invoke);
@@ -3333,7 +3406,7 @@ type
       var err_handler := g.curr_err_handler;
       l.prev_ev.AttachCallback(false, ()->
       begin
-        if err_handler.HadError then
+        if err_handler.HadError(true) then
         begin
           {$ifdef WaitDebug}
           WaitDebug.RegisterAction(self, $'Aborted');
@@ -4025,7 +4098,7 @@ type
       {$endif DEBUG}
       Result := new QueueResConst<object>(nil, l.prev_ev);
       var err_handler := g.curr_err_handler;
-      Result.ev.AttachCallback(true, ()->if not err_handler.HadError then self.SendSignal, err_handler{$ifdef EventDebug}, $'SendSignal'{$endif});
+      Result.ev.AttachCallback(true, ()->if not err_handler.HadError(true) then self.SendSignal, err_handler{$ifdef EventDebug}, $'SendSignal'{$endif});
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
@@ -4072,7 +4145,7 @@ type
       var callback: ()->();
       if signal_in_finally then
         callback := DetachedMarkerSignalWrapper(wrap).SendSignal else
-        callback := ()->if not err_handler.HadError then DetachedMarkerSignalWrapper(wrap).SendSignal;
+        callback := ()->if not err_handler.HadError(true) then DetachedMarkerSignalWrapper(wrap).SendSignal;
       Result.ev.AttachCallback(true, callback, err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
     end;
     
@@ -4322,7 +4395,7 @@ type
       var err_handler := g.curr_err_handler;
       prev_qr.ev.AttachCallback(false, ()->
       begin
-        if not err_handler.HadError then
+        if not err_handler.HadError(true) then
           res.SetRes(prev_qr.GetRes) else
         begin
           var err_lst := new List<Exception>;
@@ -4382,11 +4455,11 @@ type
       var err_handler := g.curr_err_handler;
       prev_qr.ev.AttachCallback(false, ()->
       begin
-        if not err_handler.HadError then
+        if not err_handler.HadError(true) then
           res.SetRes(prev_qr.GetRes) else
         begin
           err_handler.TryRemoveErrors(handler);
-          if not err_handler.HadError then
+          if not err_handler.HadError(true) then
             res.SetRes(def);
         end;
         res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
@@ -4717,7 +4790,7 @@ type
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var  sz_qr: QueueRes<UIntPtr>;
-      g.ParallelInvoke(l.WithPtrNeed(false), 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(false), true, 2, invoker->
       begin
         ptr_qr := invoker.InvokeBranch(ptr_q.Invoke);
          sz_qr := invoker.InvokeBranch( sz_q.Invoke);
@@ -4807,7 +4880,7 @@ type
     begin
       var   a_qr: QueueRes<array of TRecord>;
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(false), 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(false), true, 2, invoker->
       begin
           a_qr := invoker.InvokeBranch(  a_q.Invoke);
         ind_qr := invoker.InvokeBranch(ind_q.Invoke);
@@ -5180,6 +5253,7 @@ type
       var evs_l1 := MakeEvList(param_count_l1+param_count_l2, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
       var evs_l2 := MakeEvList(               param_count_l2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
       
+      var pre_params_handler := g.curr_err_handler;
       var enq_f := q.InvokeParams(g, l, evs_l1, evs_l2);
       {$ifdef DEBUG}
       begin
@@ -5196,10 +5270,9 @@ type
       var ev_l1 := EventList.Combine(evs_l1);
       var ev_l2 := EventList.Combine(evs_l2);
       
-      var err_handler := g.curr_err_handler;
-      if err_handler.HadError then
+      if pre_params_handler.HadError(true) then
       begin
-        Result := ev_l2;
+        Result := ev_l1+ev_l2;
         exit;
       end;
       
@@ -5211,7 +5284,7 @@ type
       
       if ev_l1.count=0 then
       begin
-        var enq_ev := enq_f(cq, err_handler, ev_l2, inv_data);
+        var enq_ev := enq_f(cq, g.curr_err_handler, ev_l2, inv_data);
         {$ifdef EventDebug}
         EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
         {$endif EventDebug}
@@ -5224,15 +5297,17 @@ type
           {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
         );
         
+        var post_params_handler := g.curr_err_handler;
         ev_l1.AttachCallback(false, ()->
         begin
-          if err_handler.HadError then
+          // Can't cache, ev_l2 hasn't executed yet
+          if post_params_handler.HadError(false) then
           begin
             res_ev.Abort;
             g.free_cqs.Add(cq);
             exit;
           end;
-          var enq_ev := enq_f(cq, err_handler, ev_l2, inv_data);
+          var enq_ev := enq_f(cq, post_params_handler, ev_l2, inv_data);
           {$ifdef EventDebug}
           EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
           {$endif EventDebug}
@@ -5241,8 +5316,8 @@ type
           begin
             res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
             g.free_cqs.Add(cq);
-          end, err_handler{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
-        end, err_handler{$ifdef EventDebug}, $'calling async Enq of {q.GetType}'{$endif});
+          end, post_params_handler{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
+        end, post_params_handler{$ifdef EventDebug}, $'calling async Enq of {q.GetType}'{$endif});
         
         Result := res_ev;
       end;

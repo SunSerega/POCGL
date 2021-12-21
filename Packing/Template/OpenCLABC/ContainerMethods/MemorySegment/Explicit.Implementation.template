@@ -21,7 +21,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
       end);
@@ -89,7 +89,7 @@ type
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 3, invoker->
+      g.ParallelInvoke(l, true, 3, invoker->
       begin
                ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); evs_l1.Add(ptr_qr.ev);
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
@@ -165,7 +165,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
       end);
@@ -233,7 +233,7 @@ type
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 3, invoker->
+      g.ParallelInvoke(l, true, 3, invoker->
       begin
                ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); evs_l1.Add(ptr_qr.ev);
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
@@ -363,7 +363,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
       end);
@@ -437,7 +437,7 @@ type
     begin
       var        val_qr: QueueRes<TRecord>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 2, invoker->
+      g.ParallelInvoke(l, true, 2, invoker->
       begin
                val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
@@ -518,7 +518,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -593,7 +593,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -668,7 +668,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -743,7 +743,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -818,7 +818,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -893,7 +893,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -977,7 +977,7 @@ type
       var   a_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 4, invoker->
+      g.ParallelInvoke(l, true, 4, invoker->
       begin
                  a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
           a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
@@ -1084,7 +1084,7 @@ type
       var  a_offset2_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 5, invoker->
+      g.ParallelInvoke(l, true, 5, invoker->
       begin
                  a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
          a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
@@ -1201,7 +1201,7 @@ type
       var  a_offset3_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 6, invoker->
+      g.ParallelInvoke(l, true, 6, invoker->
       begin
                  a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
          a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
@@ -1319,7 +1319,7 @@ type
       var   a_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 4, invoker->
+      g.ParallelInvoke(l, true, 4, invoker->
       begin
                  a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
           a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
@@ -1426,7 +1426,7 @@ type
       var  a_offset2_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 5, invoker->
+      g.ParallelInvoke(l, true, 5, invoker->
       begin
                  a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
          a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
@@ -1543,7 +1543,7 @@ type
       var  a_offset3_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 6, invoker->
+      g.ParallelInvoke(l, true, 6, invoker->
       begin
                  a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
          a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
@@ -1654,7 +1654,7 @@ type
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 2, invoker->
+      g.ParallelInvoke(l, true, 2, invoker->
       begin
                 ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); evs_l1.Add(ptr_qr.ev);
         pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
@@ -1732,7 +1732,7 @@ type
       var pattern_len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 4, invoker->
+      g.ParallelInvoke(l, true, 4, invoker->
       begin
                 ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); evs_l1.Add(ptr_qr.ev);
         pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
@@ -1885,7 +1885,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var val_qr: QueueRes<TRecord>;
-      g.ParallelInvoke(l.WithPtrNeed(true), 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(true), true, 1, invoker->
       begin
         val_qr := invoker.InvokeBranch&<TRecord>(val.Invoke); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
       end);
@@ -1969,7 +1969,7 @@ type
     begin
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 2, invoker->
+      g.ParallelInvoke(l, true, 2, invoker->
       begin
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
                len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
@@ -2053,7 +2053,7 @@ type
       var        val_qr: QueueRes<TRecord>;
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 3, invoker->
+      g.ParallelInvoke(l, true, 3, invoker->
       begin
                val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
@@ -2141,7 +2141,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -2216,7 +2216,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -2291,7 +2291,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
       end);
@@ -2378,7 +2378,7 @@ type
       var pattern_len_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 5, invoker->
+      g.ParallelInvoke(l, true, 5, invoker->
       begin
                   a_qr := invoker.InvokeBranch&<array of TRecord>(          a.Invoke); evs_l1.Add(a_qr.ev);
            a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
@@ -2495,7 +2495,7 @@ type
       var pattern_len_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 6, invoker->
+      g.ParallelInvoke(l, true, 6, invoker->
       begin
                   a_qr := invoker.InvokeBranch&<array[,] of TRecord>(          a.Invoke); evs_l1.Add(a_qr.ev);
           a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
@@ -2622,7 +2622,7 @@ type
       var pattern_len_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 7, invoker->
+      g.ParallelInvoke(l, true, 7, invoker->
       begin
                   a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(          a.Invoke); evs_l1.Add(a_qr.ev);
           a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
@@ -2737,7 +2737,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_qr: QueueRes<MemorySegment>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); evs_l1.Add(mem_qr.ev);
       end);
@@ -2808,7 +2808,7 @@ type
       var from_pos_qr: QueueRes<integer>;
       var   to_pos_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 4, invoker->
+      g.ParallelInvoke(l, true, 4, invoker->
       begin
              mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); evs_l1.Add(mem_qr.ev);
         from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); evs_l1.Add(from_pos_qr.ev);
@@ -2891,7 +2891,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_qr: QueueRes<MemorySegment>;
-      g.ParallelInvoke(l, 1, invoker->
+      g.ParallelInvoke(l, true, 1, invoker->
       begin
         mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); evs_l1.Add(mem_qr.ev);
       end);
@@ -2962,7 +2962,7 @@ type
       var from_pos_qr: QueueRes<integer>;
       var   to_pos_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, 4, invoker->
+      g.ParallelInvoke(l, true, 4, invoker->
       begin
              mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); evs_l1.Add(mem_qr.ev);
         from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); evs_l1.Add(from_pos_qr.ev);

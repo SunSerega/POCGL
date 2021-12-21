@@ -24,7 +24,7 @@ type
     begin
       var  sz1_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, 1 + args.Length, invoker->
+      g.ParallelInvoke(l, true, 1 + args.Length, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
         args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
@@ -121,7 +121,7 @@ type
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, 2 + args.Length, invoker->
+      g.ParallelInvoke(l, true, 2 + args.Length, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
          sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); evs_l1.Add(sz2_qr.ev);
@@ -228,7 +228,7 @@ type
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, 3 + args.Length, invoker->
+      g.ParallelInvoke(l, true, 3 + args.Length, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
          sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); evs_l1.Add(sz2_qr.ev);
@@ -342,7 +342,7 @@ type
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
       var               args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, 3 + args.Length, invoker->
+      g.ParallelInvoke(l, true, 3 + args.Length, invoker->
       begin
         global_work_offset_qr := invoker.InvokeBranch&<array of UIntPtr>(global_work_offset.Invoke); evs_l1.Add(global_work_offset_qr.ev);
           global_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(  global_work_size.Invoke); evs_l1.Add(global_work_size_qr.ev);

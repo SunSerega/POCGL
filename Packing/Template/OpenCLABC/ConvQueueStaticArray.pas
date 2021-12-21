@@ -155,7 +155,7 @@ begin
         for var i := 1 to c do
           res.WriteLine($'      var qr{i}: QueueRes<TInp{i}>;');
         
-        res.WriteLine($'      g.ParallelInvoke(l, {c}, invoker->');
+        res.WriteLine($'      g.ParallelInvoke(l, false, {c}, invoker->');
         res.WriteLine($'      begin');
         for var i := 1 to c do
           res.WriteLine($'        qr{i} := invoker.InvokeBranch(q{i}.Invoke);');

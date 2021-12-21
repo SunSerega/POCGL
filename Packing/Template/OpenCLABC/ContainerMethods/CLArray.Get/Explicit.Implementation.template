@@ -25,7 +25,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<&T>)->cl_event; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 1, invoker->
       begin
         ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
       end);
@@ -153,7 +153,7 @@ type
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 2, invoker->
       begin
         ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
         len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);

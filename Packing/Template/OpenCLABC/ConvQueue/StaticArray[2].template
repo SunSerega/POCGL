@@ -51,7 +51,7 @@ type
       if l.prev_ev.count<>0 then loop 1 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
-      g.ParallelInvoke(l, 2, invoker->
+      g.ParallelInvoke(l, false, 2, invoker->
       begin
         qr1 := invoker.InvokeBranch(q1.Invoke);
         qr2 := invoker.InvokeBranch(q2.Invoke);

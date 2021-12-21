@@ -75,7 +75,7 @@ type
     begin
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 2, invoker->
       begin
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
                len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
@@ -162,7 +162,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 1, invoker->
       begin
         mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
       end);
@@ -295,7 +295,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 1, invoker->
       begin
         len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
       end);
@@ -375,7 +375,7 @@ type
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 2, invoker->
       begin
         len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); evs_l1.Add(len1_qr.ev);
         len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); evs_l1.Add(len2_qr.ev);
@@ -465,7 +465,7 @@ type
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
       var len3_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), 3, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, 3, invoker->
       begin
         len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); evs_l1.Add(len1_qr.ev);
         len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); evs_l1.Add(len2_qr.ev);
