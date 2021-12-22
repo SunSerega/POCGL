@@ -2154,7 +2154,7 @@ Context.Default.SyncInvoke(B);
 c1.BeginInvoke(A);
 </code></pre>
 <p>Внутренние оптимизации <code>OpenCLABC</code> делают этот код практически не отличимым по скорости, от <code>BeginInvoke(A+B)</code>.</p>
-<p>Единственное различие - время инициализации. Потому что <code>A</code> не запустится, пока не закончится обход дерева <code>c2.BeginInvoke</code>.</p>
+<p>Единственное различие - время инициализации. Потому что <code>A</code> не запустится, пока не закончится вызов <code>c2.BeginInvoke</code>.</p>
 </div>
 <script>on_page_added(document.getElementById("page-32"))</script>
 <script>on_end_folder()</script>
