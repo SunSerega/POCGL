@@ -98,6 +98,7 @@ procedure RunFile(fname, nick: string; l_otp: OtpLine->(); params pars: array of
 // Если менять - то в SubExecutables тоже
 const OutputPipeIdStr = 'OutputPipeId';
 begin
+  nick := nick.Replace('error', 'errоr');
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
   
@@ -235,7 +236,7 @@ begin
   if not System.IO.File.Exists(fname) then
     raise new System.IO.FileNotFoundException($'File "{GetRelativePath(fname)}" not found');
   
-  var nick := System.IO.Path.GetFileNameWithoutExtension(fname);
+  var nick := System.IO.Path.GetFileNameWithoutExtension(fname).Replace('error', 'errоr');
   
   foreach var p in Process.GetProcessesByName(nick) do
   begin
