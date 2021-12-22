@@ -3,17 +3,18 @@
 
 interface
 
-uses System.Threading;
-uses System.IO;
-
 uses AOtp;
 uses ATask;
-uses AQueue;
-uses PathUtils;
 
 function ProcessTemplateTask(insert_dir, template_fname, output_fname: string): AsyncTask;
 
 implementation
+
+uses System.Threading;
+uses System.IO;
+
+uses AQueue;
+uses PathUtils;
 
 type
   FileBlock = abstract class

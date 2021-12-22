@@ -63,28 +63,29 @@ begin
   prev := prev+|fname|;
   
   var text := ReadAllText(fname, enc);
-  if not text.Contains('{savepcu false}') then
+  if not text.Contains('{'+'$savepcu false}') then
     yield fname;
   
   var dir := System.IO.Path.GetDirectoryName(fname);
   var ind := 0;
   while true do
   begin
+    //ToDo Better parsing
     ind := text.IndexOf(uses_str, ind);
     if ind=-1 then break;
     ind += uses_str.Length;
     
     var ind2 := text.IndexOf(';', ind);
-    if ind2=-1 then raise new System.FormatException(fname);
+    if ind2=-1 then continue;
     
-    foreach var u_str in text.Substring(ind, ind2-ind).Split(',') do
+    var u_strs := text.Substring(ind, ind2-ind).Split(',').ConvertAll(u_str->u_str.Split(|in_str|, 2, System.StringSplitOptions.None));
+    if not u_strs.All(u_ss->u_ss.First.All(ch->ch.IsLetter or ch.IsDigit or (ch in '&_'))) then continue;
+    
+    foreach var u_ss in u_strs do
       yield sequence GetUsedModules(GetFullPath(
-        if u_str.Contains(in_str) then
-          u_str.Split(|in_str|, 2, System.StringSplitOptions.None)[1].Trim(''' '.ToCharArray) else
-          u_str.Trim
-      ,
-        dir
+        u_ss.Last.Trim(''' '.ToCharArray), dir
       ), prev);
+    
   end;
 end;
 function GetUsedModules(fname: string) := GetUsedModules(fname, new string[0]);
