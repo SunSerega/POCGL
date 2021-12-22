@@ -79,6 +79,10 @@ Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDoneBase(Action<CLTaskBase>
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WaitRes% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenConvert<TOtp>(object->TOtp)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenConvert<TOtp>((object, Context)->TOtp)% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenUse(object->())% wasn't used!
+Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenUse((object, Context)->())% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitMarker% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitMarker% wasn't used!
 Descriptions[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!

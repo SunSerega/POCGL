@@ -16,6 +16,8 @@ Context.CheckMainDevice(Device, IList<Device>)
 Context.GetContextDevices(cl_context)
 CommandQueue<T>.(T)
 CommandQueue<T>.Val
+CommandQueueBase.ThenConvert<TOtp>(()->TOtp)
+CommandQueueBase.ThenConvert<TOtp>(Context->TOtp)
 CommandQueueBase.Create
 CommandQueueBase.SendSignal
 DetachedMarkerSignal<T>

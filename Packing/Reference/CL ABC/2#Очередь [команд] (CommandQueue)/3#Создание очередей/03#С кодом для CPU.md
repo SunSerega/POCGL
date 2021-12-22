@@ -12,63 +12,20 @@ HPQ — Host Procedure Queue\
 (Хост в контексте OpenCL - это CPU, потому что с него посылаются команды для GPU)
 
 Они возвращают очередь, выполняющую код (функцию/процедуру соотвественно) на CPU.\
-Пример применения приведён
-<a path="../Возвращаемое значение очередей/">
-на странице выше
-</a>
-.
+Пример применения приведён <a path="../Возвращаемое значение очередей/"> на странице выше</a>.
 
 ---
 
-Если во время выполнения очереди возникает какая-либо ошибка - весь пользовательский код,
-выполняемый на CPU в этой очереди получает `ThreadAbortException`:
+Так же бывает нужно использовать результат предыдущей очереди в коде на CPU.
+Для этого используются методы `.ThenConvert` и `.ThenUse`, соответствующие `HFQ` и `HPQ`:
 ```
-uses OpenCLABC;
+## uses OpenCLABC;
+var Q := HFQ(()->5);
 
-begin
-  var t := Context.Default.BeginInvoke(
-    HPQ(()->
-    begin
-      try
-        Sleep(1000);
-      except
-        on e: Exception do lock output do
-        begin
-          Writeln('Ошибка во время выполнения первого HPQ:');
-          Writeln(e);
-          Writeln;
-        end;
-      end;
-      // Это никогда не выполнится, потому что
-      // ThreadAbortException кидает себя ещё раз в конце try
-      Writeln(1);
-    end)
-  *
-    HPQ(()->
-    begin
-      Sleep(500);
-      raise new Exception('abc');
-    end)
-  );
-  
-  try
-    t.Wait;
-  except
-    on e: Exception do lock output do
-    begin
-      Writeln('Ошибка во время выполнения очереди:');
-      Writeln(e);
-    end;
-  end;
-  
-end.
+Context.Default.SyncInvoke(Q
+  .ThenUse(x->Println($'x*2 = {x*2}'))
+  .ThenConvert(x->$'x^2 = {x**2}')
+).Println;
 ```
-Исключение `ThreadAbortException` во многом опасно.\
-Подробнее можно прочитать в [справке от microsoft](https://docs.microsoft.com/en-us/dotnet/api/system.threading.thread.abort?view=netframework-4.8).
-
-А в кратце, если в вашем коде была кинута `ThreadAbortException` - становится очень сложно сказать что-либо о его состоянии.\
-Даже потокобезопастный код, как вызов `Buffer.Dispose`, может привести к утечкам памяти, если посреди него кинут `ThreadAbortException`.
-
-Считайте получение `ThreadAbortException` критической ошибкой, после которой очень желателен перезапуск всего .exe файла.
 
 

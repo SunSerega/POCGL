@@ -29,11 +29,12 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Описания
+//TODO Тесты:
+// - Ошибка при BeginInvoke(WaitAll(M1,M2))
+
+//TODO Описания:
 
 //TODO Справка:
-// - M1 and M2 or M3
-// --- WaitAll/WaitAny
 // - Finally+Handle
 // --- HandleWithoutRes всегда возвращает object(nil), не зависимо от ошибок при выполнении
 // --- HandleDefaultRes ставит результат на дефолтный только если ошибка, иначе надо (QErr.HandleWithoutRes>=res)
@@ -61,6 +62,11 @@ unit OpenCLABC;
 
 //===================================
 // Запланированное:
+
+//TODO Параметры с константным результатом тоже надо сувать в ev_l2:
+// - k.Exec1(N, a.NewQueue.AddFillValue(1))
+// - a.NewQueue.AddFillValue(1) + k.Exec1(N, a)
+// --- Иначе сейчас cl.Enqueue не происходит до самого последнего момента, даже для такого простого случая
 
 //TODO MultiusableBase позволяет использовать вне модуля
 
@@ -102,6 +108,9 @@ unit OpenCLABC;
 // - Проверить сочетание с каждой другой фичей
 
 //TODO Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
+// - Уже не существует никакого перевыделения, память выделяется всего 1 раз, при создании
+// - Но стоит всё же кидать исключения, если родительский сегмент удалён
+
 //TODO Создание SubDevice из cl_device_id
 
 //TODO .Cycle(integer)
@@ -146,7 +155,6 @@ unit OpenCLABC;
 //TODO Issue компилятора:
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
-// - #2431
 
 //TODO Баги NVidia
 //TODO https://developer.nvidia.com/nvidia_bug/{id}
@@ -2374,29 +2382,17 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; virtual;
+    private function ThenConvertBase<TOtp>(f: Context->TOtp): CommandQueue<TOtp>; virtual;
     
-    ///Создаёт очередь, которая выполнит данную
-    ///А затем выполнит на CPU функцию f, используя результат данной очереди
-    public function ThenConvert<TOtp>(f: object->TOtp           ) := ThenConvertBase((o,c)->f(o));
-    ///Создаёт очередь, которая выполнит данную
-    ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
-    public function ThenConvert<TOtp>(f: (object, Context)->TOtp) := ThenConvertBase(f);
-    
-    ///Создаёт очередь, которая выполнит данную и вернёт её результат
-    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
-    public function ThenUse(p: object->()           ) := ThenConvert( o   ->begin p(o  ); Result := o; end);
-    ///Создаёт очередь, которая выполнит данную и вернёт её результат
-    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат и контекст выполнения
-    public function ThenUse(p: (object, Context)->()) := ThenConvert((o,c)->begin p(o,c); Result := o; end);
+    public function ThenConvert<TOtp>(f:      ()->TOtp) := ThenConvertBase(c->f());
+    public function ThenConvert<TOtp>(f: Context->TOtp) := ThenConvertBase(f);
     
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    private function ThenConvertBase<TOtp>(f: (object, Context)->TOtp): CommandQueue<TOtp>; override :=
-    ThenConvert(f as object as Func2<T, Context, TOtp>); //TODO #2221
+    private function ThenConvertBase<TOtp>(f: Context->TOtp): CommandQueue<TOtp>; override := ThenConvert((o,c)->f(c));
     
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
@@ -4983,14 +4979,8 @@ type
       
     end;
     
-    public event ExecutionFinished: CLTaskGlobalData->();
     public procedure FinishExecution(var err_lst: List<Exception>);
     begin
-      
-      begin
-        var ExecutionFinished := self.ExecutionFinished;
-        if ExecutionFinished<>nil then ExecutionFinished(self);
-      end;
       
       if curr_inv_cq<>cl_command_queue.Zero then
       begin
@@ -5239,8 +5229,8 @@ type
     
   end;
   
-function CommandQueueBase.ThenConvertBase<TOtp>(f: (object, Context)->TOtp) :=
-self.Cast&<object>.ThenConvert(f);
+function CommandQueueBase.ThenConvertBase<TOtp>(f: Context->TOtp) :=
+self.Cast&<object>.ThenConvert((o,c)->f(c));
 
 function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
 new CommandQueueThenConvert<T, TOtp>(self, f);
