@@ -61,7 +61,9 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0.pas"
 Tester: Compiling: OK
@@ -97,7 +99,13 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchUnCancel.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\finally order.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\handle only branch.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally.pas"
 Tester: Compiling: OK
@@ -201,7 +209,9 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0]
 Tester: Done executing
@@ -237,7 +247,13 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchUnCancel]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\finally order]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\handle only branch]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally]
 Tester: Done executing

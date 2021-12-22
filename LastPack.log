@@ -303,11 +303,10 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi error multiuse]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse]
 Tester: Done executing
-Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi error multiuse.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0]
@@ -344,10 +343,8 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchUnCancel]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchUnCancel.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\finally order]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\handle only branch]
@@ -399,9 +396,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi error multiuse.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchUnCancel.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

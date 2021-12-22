@@ -55,8 +55,7 @@ type
         while (ind1<text.Length) and (text[ind1] = '*') do
           ind1 += 1;
       end;
-      if ind1<>text.Length then
-        parts += new ExpectedTextPart(text.Remove(0, ind1));
+      parts += new ExpectedTextPart(text.Remove(0, ind1));
     end;
     
     function Matches(text: string): boolean;
@@ -68,20 +67,26 @@ type
       end;
       Result := false;
       if parts=nil then exit;
-      if parts.Count=0 then
-      begin
-        Result := text.Length=0;
-        exit;
+      
+      case parts.Count of
+        0: Result := text.Length=0;
+        1: Result := text=parts[0].s;
+        else
+        begin
+          if not text.StartsWith(parts[0].s) then exit;
+          var min_ind := parts[0].s.Length;
+          
+          for var i := 1 to parts.Count-2 do
+          begin
+            var next_min_ind := parts[i].NextInds(text, min_ind).FirstOrDefault;
+            if next_min_ind=nil then exit;
+            min_ind := next_min_ind.Value;
+          end;
+          
+          Result := text.Length = parts[parts.Count-1].NextInds(text, min_ind).LastOrDefault;
+        end;
       end;
-      if not text.StartsWith(parts[0].s) then exit;
-      var min_ind := parts[0].s.Length;
-      for var i := 1 to parts.Count-2 do
-      begin
-        var next_min_ind := parts[i].NextInds(text, min_ind).FirstOrDefault;
-        if next_min_ind=nil then exit;
-        min_ind := next_min_ind.Value;
-      end;
-      Result := text.Length = if parts.Count=1 then min_ind else parts[parts.Count-1].NextInds(text, min_ind).LastOrDefault;
+      
     end;
     
     public function ToString: string; override := parts?.Select(part->part.s).JoinToString('*');
@@ -395,6 +400,7 @@ type
     static function ExecuteTestExe(fname, nick: string): (string, string);
     const MaxExecTime = 15000;
     begin
+      nick := nick.Replace('error', 'errоr');
       var dom := System.AppDomain.CreateDomain('Domain of '+nick);
       dom.SetData('fname', fname);
       
@@ -747,10 +753,10 @@ begin
     TestInfo.LoadAll('Samples',     HSet('Comp'));
     TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
     (*)
-    TestInfo.auto_update := true;
+//    TestInfo.auto_update := true;
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle',  HSet('Comp','Exec'));
     (**)
     
     try
