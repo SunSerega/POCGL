@@ -169,7 +169,9 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0.pas"
 Tester: Compiling: OK
@@ -263,12 +265,10 @@ Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\Ma
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.td"
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.td"
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
@@ -291,60 +291,47 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.td"
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi error multiuse]
+Tester: Done executing
+Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi error multiuse.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0.td"
-Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0.td"
-Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.td"
-Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\~00#Err\err while async]
@@ -411,26 +398,10 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.td"
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1.td" updated
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi error multiuse.td" updated
 Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.td" updated
 Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchUnCancel.td" updated
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

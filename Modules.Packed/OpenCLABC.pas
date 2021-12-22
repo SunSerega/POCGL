@@ -29,11 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Тесты:
-// - MU и ошибки
-// --- Кидание ошибок во всех mu ветках
-// --- 2 выполнения, с 2 разными ошибками
-
 //TODO Описания
 
 //TODO Справка:
@@ -66,6 +61,8 @@ unit OpenCLABC;
 
 //===================================
 // Запланированное:
+
+//TODO MultiusableBase позволяет использовать вне модуля
 
 //TODO CommandQueueBase.UseTyped(typed_q_user: interface procedure use<T>(cq: CommandQueue<T>); procedure use_base(cq: CommandQueueBase); end)
 // - Использовать это внутри, чтоб наконец избавится от всех этих .Cast&<object>
@@ -4081,23 +4078,11 @@ type
   
 {$endregion NativeUtils}
 
-{$region CLTaskData}
+{$region CLTaskErrHandler}
 
 type
-  CLTaskErrHandlerPrevAction = (EPA_Ignore, EPA_Use, EPA_Copy);
-  CLTaskErrHandler = sealed class
+  CLTaskErrHandler = abstract class
     private local_err_lst := new List<Exception>;
-    private prev: array of CLTaskErrHandler;
-    private prev_action: CLTaskErrHandlerPrevAction;
-    
-    public constructor(prev: array of CLTaskErrHandler; prev_action: CLTaskErrHandlerPrevAction);
-    begin
-      self.prev := prev;
-      self.prev_action := prev_action;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public static property Empty: CLTaskErrHandler read new CLTaskErrHandler(System.Array.Empty&<CLTaskErrHandler>, EPA_Ignore);
     
     {$region AddErr}
     protected static AbortStatus := new CommandExecutionStatus(integer.MinValue);
@@ -4127,6 +4112,7 @@ type
     {$endregion AddErr}
     
     private had_error_cache := default(boolean?);
+    protected function HadErrorInPrev(can_cache: boolean): boolean; abstract;
     public function HadError(can_cache: boolean): boolean;
     begin
       if had_error_cache<>nil then
@@ -4134,95 +4120,37 @@ type
         Result := had_error_cache.Value;
         exit;
       end;
-      Result := local_err_lst.Count<>0;
-      if not Result then foreach var h in prev do
-      begin
-        Result := h.HadError(can_cache);
-        if Result then break;
-      end;
+      Result := (local_err_lst.Count<>0) or HadErrorInPrev(can_cache);
       if can_cache then had_error_cache := Result;
     end;
     
-    private procedure StealPrevErrors;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; abstract;
+    protected function TryRemoveErrors(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean;
     begin
-      foreach var h in prev do
-        h.FillErrLst(self.local_err_lst);
-      self.prev := Empty.prev;
-      self.prev_action := Empty.prev_action;
-    end;
-    
-    private last_remove_obj: object;
-    private last_remove_res: boolean;
-    private function TryRemoveErrorsCore(remove_obj: object; handler: Exception->boolean): boolean;
-    begin
-      if last_remove_obj=remove_obj then
-      begin
-        Result := last_remove_res;
-        exit;
-      end;
       Result := false;
       if had_error_cache=false then exit;
       
-      case prev_action of
-        
-        EPA_Use: foreach var h in prev do
-          Result := h.TryRemoveErrorsCore(remove_obj, handler) or Result;
-        
-        EPA_Copy: StealPrevErrors;
-        
-        EPA_Ignore: foreach var h in prev do
-          // Can't remove from here, because "A + B*C.Handle" would otherwise consume error in A
-          if (h.last_remove_obj=remove_obj) and h.last_remove_res then
-          begin
-            Result := true;
-            break;
-          end;
-        
-        {$ifdef DEBUG}
-        else raise new OpenCLABCInternalException('Invalid prev_action value');
-        {$endif DEBUG}
-      end;
+      Result := TryRemoveErrorsInPrev(origin_cache, handler);
       
-      var prev_c := local_err_lst.Count;
-      local_err_lst.RemoveAll(handler);
-      Result := Result or (prev_c<>local_err_lst.Count);
-      
-      last_remove_obj := remove_obj;
-      last_remove_res := Result;
-      
+      Result := (local_err_lst.RemoveAll(handler)<>0) or Result;
       if Result then had_error_cache := nil;
     end;
-    public procedure TryRemoveErrors<TException>(handler: TException->boolean);
-    where TException: Exception;
-    begin
-      TryRemoveErrorsCore(new object, e->
-        (e is TException) and handler(TException(e))
-      );
-    end;
+    public procedure TryRemoveErrors(handler: Exception->boolean) :=
+    TryRemoveErrors(new Dictionary<CLTaskErrHandler, boolean>, handler);
     
-    public procedure FillErrLst(lst: List<Exception>);
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); abstract;
+    protected procedure FillErrLst(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>);
     begin
       {$ifndef DEBUG}
       if not HadError(true) then exit;
       {$endif DEBUG}
-      case prev_action of
-        
-        EPA_Use: foreach var h in prev do
-          h.FillErrLst(lst);
-        
-        // In case CommandQueueHandleReplaceRes
-        // If exception is handled - TryRemoveErrors would be called
-        // StealPrevErrors does the same as EPA_Use here,
-        // but set's up better data format, as a single list
-        EPA_Copy: StealPrevErrors;
-        
-        {$ifdef DEBUG}
-        EPA_Ignore: ;
-        else raise new OpenCLABCInternalException('Invalid prev_action value');
-        {$endif DEBUG}
-      end;
+      
+      FillErrLstWithPrev(origin_cache, lst);
+      
       lst.AddRange(local_err_lst);
     end;
+    public procedure FillErrLst(lst: List<Exception>) :=
+    FillErrLst(new HashSet<CLTaskErrHandler>, lst);
     
     public procedure SanityCheck(err_lst: List<Exception>);
     begin
@@ -4252,6 +4180,128 @@ type
     
   end;
   
+  CLTaskErrHandlerEmpty = sealed class(CLTaskErrHandler)
+    
+    public constructor := exit;
+    
+    protected function HadErrorInPrev(can_cache: boolean): boolean; override := false;
+    
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override := false;
+    
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override := exit;
+    
+  end;
+  
+  CLTaskErrHandlerBranchBase = sealed class(CLTaskErrHandler)
+    private origin: CLTaskErrHandler;
+    
+    public constructor(origin: CLTaskErrHandler) := self.origin := origin;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function HadErrorInPrev(can_cache: boolean): boolean; override := origin.HadError(can_cache);
+    
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    begin
+      if origin_cache.TryGetValue(origin, Result) then exit;
+      // Can't remove from here, because "A + B*C.Handle" would otherwise consume error in A
+//      Result := origin.TryRemoveErrors(origin_cache, handler);
+    end;
+    
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    begin
+      if origin_cache.Contains(origin) then exit;
+      origin.FillErrLst(origin_cache, lst);
+    end;
+    
+  end;
+  CLTaskErrHandlerBranchCombinator = sealed class(CLTaskErrHandler)
+    private origin: CLTaskErrHandler;
+    private branches: array of CLTaskErrHandler;
+    
+    public constructor(origin: CLTaskErrHandler; branches: array of CLTaskErrHandler);
+    begin
+      self.origin := origin;
+      self.branches := branches;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function HadErrorInPrev(can_cache: boolean): boolean; override;
+    begin
+      Result := origin.HadError(can_cache);
+      if Result then exit;
+      foreach var h in branches do
+      begin
+        Result := h.HadError(can_cache);
+        if Result then exit;
+      end;
+    end;
+    
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    begin
+      Result := origin.TryRemoveErrors(origin_cache, handler);
+      origin_cache.Add(origin, Result);
+      foreach var h in branches do
+        Result := h.TryRemoveErrors(origin_cache, handler) or Result;
+      origin_cache.Remove(origin);
+    end;
+    
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    begin
+      origin.FillErrLst(origin_cache, lst);
+      {$ifdef DEBUG}if not{$endif}origin_cache.Add(origin)
+      {$ifdef DEBUG}then
+        raise new OpenCLABCInternalException($'Origin added multiple times');
+      {$endif DEBUG};
+      foreach var h in branches do
+        h.FillErrLst(origin_cache, lst);
+      origin_cache.Remove(origin);
+    end;
+    
+  end;
+  
+  CLTaskErrHandlerMultiusableRepeater = sealed class(CLTaskErrHandler)
+    private prev_handler, mu_handler: CLTaskErrHandler;
+    
+    public constructor(prev_handler, mu_handler: CLTaskErrHandler);
+    begin
+      self.prev_handler := prev_handler;
+      self.mu_handler := mu_handler;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function HadErrorInPrev(can_cache: boolean): boolean; override :=
+    // mu_handler.HadError would be called more often,
+    // so it's more likely to already have cache
+    ((mu_handler<>nil) and mu_handler.HadError(can_cache)) or prev_handler.HadError(can_cache);
+    
+    private procedure StealPrevErrors;
+    begin
+      if mu_handler=nil then exit;
+      if not prev_handler.HadError(true) then
+        mu_handler.FillErrLst(self.local_err_lst);
+      mu_handler := nil;
+    end;
+    
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    begin
+      Result := prev_handler.TryRemoveErrors(origin_cache, handler);
+      if not prev_handler.HadError(true) then StealPrevErrors;
+    end;
+    
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    begin
+      var prev_c := lst.Count;
+      prev_handler.FillErrLst(lst);
+      if prev_c=lst.Count then StealPrevErrors;
+    end;
+    
+  end;
+  
+{$endregion CLTaskErrHandler}
+
+{$region CLTaskData}
+
+type
   CLTaskGlobalData = sealed partial class
     public tsk: CLTaskBase;
     
@@ -4263,7 +4313,7 @@ type
     private outer_cq := cl_command_queue.Zero;
     private free_cqs := new System.Collections.Concurrent.ConcurrentBag<cl_command_queue>;
     
-    public curr_err_handler := CLTaskErrHandler.Empty;
+    public curr_err_handler: CLTaskErrHandler := new CLTaskErrHandlerEmpty;
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -4831,11 +4881,13 @@ type
       self.prev_cq := if as_new then g.curr_inv_cq else cl_command_queue.Zero;
       self.g := g;
       self.l := l;
-      self.branch_handlers.Capacity := capacity+1;
-      branch_handlers += g.curr_err_handler;
+      self.branch_handlers.Capacity := capacity;
       if as_new then
-        make_base_err_handler := ()->CLTaskErrHandler.Empty else
-        make_base_err_handler := ()->new CLTaskErrHandler(|self.branch_handlers[0]|, EPA_Ignore);
+        self.make_base_err_handler := ()->new CLTaskErrHandlerEmpty else
+      begin
+        var origin_handler := g.curr_err_handler;
+        self.make_base_err_handler := ()->new CLTaskErrHandlerBranchBase(origin_handler);
+      end;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -4898,6 +4950,7 @@ type
     procedure ParallelInvoke(l: CLTaskLocalData; as_new: boolean; capacity: integer; use: CLTaskBranchInvoker->());
     begin
       var invoker := new CLTaskBranchInvoker(self, l, as_new, capacity);
+      var origin_handler := self.curr_err_handler;
       
       // Только в случае A + B*C, то есть "not as_new", можно использовать curr_inv_cq - и только как outer_cq
       if not as_new and (curr_inv_cq<>cl_command_queue.Zero) then
@@ -4912,10 +4965,10 @@ type
       use(invoker);
       
       {$ifdef DEBUG}
-      if invoker.branch_handlers.Count-1<>capacity then
-        raise new OpenCLABCInternalException($'{invoker.branch_handlers.Count-1} <> {capacity}');
+      if invoker.branch_handlers.Count<>capacity then
+        raise new OpenCLABCInternalException($'{invoker.branch_handlers.Count} <> {capacity}');
       {$endif DEBUG}
-      self.curr_err_handler := new CLTaskErrHandler(invoker.branch_handlers.ToArray, EPA_Use);
+      self.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_handler, invoker.branch_handlers.ToArray);
       
       self.curr_inv_cq := invoker.prev_cq;
     end;
@@ -5916,14 +5969,12 @@ type
       //TODO А что будет когда .ThenIf и т.п.
       if g.mu_res.TryGetValue(self, res_data) then
       begin
-        g.curr_err_handler := new CLTaskErrHandler(|g.curr_err_handler,
-          new CLTaskErrHandler(|res_data.err_handler|, EPA_Copy)
-        |, EPA_Use);
+        g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(g.curr_err_handler, res_data.err_handler);
         Result := QueueRes&<T>( res_data.qres );
       end else
       begin
         var prev_err_handler := g.curr_err_handler;
-        g.curr_err_handler := CLTaskErrHandler.Empty;
+        g.curr_err_handler := new CLTaskErrHandlerEmpty;
         
         l.prev_ev := EventList.Empty;
         // Ради только 1 из веток делать доп. указатель - было бы странно
@@ -5932,10 +5983,7 @@ type
         Result.can_set_ev := false;
         var q_err_handler := g.curr_err_handler;
         
-        g.curr_err_handler := new CLTaskErrHandler(|prev_err_handler,
-          new CLTaskErrHandler(|q_err_handler|, EPA_Copy)
-        |, EPA_Use);
-        
+        g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(prev_err_handler, q_err_handler);
         g.mu_res[self] := new MultiuseableResultData(Result, q_err_handler);
       end;
       
@@ -6861,18 +6909,18 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
-      var base_err_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandler(|base_err_handler|, EPA_Use);
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
       Result := q.Invoke(g, l);
       var q_err_handler := g.curr_err_handler;
       
       l.prev_ev := Result.ev;
-      g.curr_err_handler := new CLTaskErrHandler(|base_err_handler|, EPA_Ignore);
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
       Result := Result.TrySetEv( marker.MakeWaitEv(g, l.WithPtrNeed(false)) );
       var m_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandler(|q_err_handler, m_err_handler|, EPA_Use);
+      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |q_err_handler, m_err_handler|);
     end;
     
   end;
@@ -6908,12 +6956,12 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
-      var base_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
       {$region try_do}
       var mid_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'mid_ev for {self.GetType}'{$endif});
       
-      g.curr_err_handler := new CLTaskErrHandler(|base_handler|, EPA_Use);
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
       var try_ev := try_do.InvokeBase(g, l.WithPtrNeed(false)).ev;
       var try_handler := g.curr_err_handler;
       
@@ -6927,13 +6975,13 @@ type
       {$region do_finally}
       l.prev_ev := mid_ev;
       
-      g.curr_err_handler := new CLTaskErrHandler(|base_handler|, EPA_Ignore);
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
       Result := do_finally.Invoke(g, l);
       var fin_handler := g.curr_err_handler;
       
       {$endregion do_finally}
       
-      g.curr_err_handler := new CLTaskErrHandler(|try_handler, fin_handler|, EPA_Use);
+      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |try_handler, fin_handler|);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7030,7 +7078,7 @@ type
           var (ok, handler_res) := handler(err_lst.ToArray);
           if ok then
           begin
-            err_handler.TryRemoveErrors&<Exception>(e->true);
+            err_handler.TryRemoveErrors(e->true);
             res.SetRes(handler_res);
           end;
         end;
