@@ -122,14 +122,15 @@ begin
   
   {$region otp capture}
   var start_time_mark: int64;
-  var pipe_connection_established := false;
+  var pipe_connection_established := default(boolean?);
   
   var thr_otp := new AsyncProcOtp(AsyncProcOtp.curr);
   p.OutputDataReceived += (o,e)->
   try
     if e.Data=nil then
     begin
-      if not pipe_connection_established then
+      while pipe_connection_established=nil do Sleep(10);
+      if pipe_connection_established=false then
         thr_otp.Finish;
     end else
       thr_otp.Enq(e.Data);
@@ -181,14 +182,19 @@ begin
     except
       on e: System.IO.EndOfStreamException do
       begin
-        if pipe_connection_established then
+        if pipe_connection_established=true then
           thr_otp.Finish else
           Otp($'WARNING: Pipe connection with "{nick}" wasn''t established');
         exit;
       end;
     end;
   except
-    on e: Exception do ErrOtp(e);
+    on e: Exception do
+    begin
+      if pipe_connection_established=nil then
+        pipe_connection_established := false;
+      ErrOtp(e);
+    end;
   end);
   
   {$endregion otp capture}
@@ -228,7 +234,7 @@ begin
     
   end);
   
-  if not pipe_connection_established then pipe.Close;
+  if pipe_connection_established<>true then pipe.Close;
 end;
 
 procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); general_task: boolean; args: string; params search_paths: array of string);

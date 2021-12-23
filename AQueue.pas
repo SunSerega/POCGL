@@ -25,6 +25,10 @@ type
     protected done := false;
     private ev := new ManualResetEvent(false);
     
+    {$ifdef DEBUG}
+    private done_trace := default(string);
+    {$endif DEBUG}
+    
     public constructor :=
     q := new Queue<T>;
     public constructor(capacity: integer) :=
@@ -44,8 +48,17 @@ type
     begin
       lock q do
       begin
-        if done then raise new InvalidOperationException($'ERROR: Двойная попытка завершить {self.GetType}');
+        if done then raise new InvalidOperationException($'ERROR: Двойная попытка завершить {self.GetType}'
+          {$ifdef DEBUG}
+            +':'#10#10+
+            done_trace + #10#10 +
+            System.Environment.StackTrace
+          {$endif DEBUG}
+        );
         done := true;
+        {$ifdef DEBUG}
+        done_trace := System.Environment.StackTrace;
+        {$endif DEBUG}
         ev.Set;
       end;
     end;
