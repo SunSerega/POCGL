@@ -29,36 +29,7 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Тесты:
-// - Ошибка при BeginInvoke(WaitAll(M1,M2))
-
 //TODO Описания:
-
-//TODO Справка:
-// - Finally+Handle
-// --- HandleWithoutRes всегда возвращает object(nil), не зависимо от ошибок при выполнении
-// --- HandleDefaultRes ставит результат на дефолтный только если ошибка, иначе надо (QErr.HandleWithoutRes>=res)
-// ----- В тесты все 3 варианта
-// --- HandleWithoutRes и HandleDefaultRes можно накладывать друг на друга
-// --- HandleReplaceRes обрабатывает все исключения одновременно
-// --- Обработчик срабатывает до finally части
-// ----- Но: (A>=B).HandleWithoutRes - обработчик выполнится после B
-// --- Есть Handle&<TException> и просто Handle варианты у каждого из Handle методов
-// ----- Кроме HandleReplaceRes - он принимает массив ошибок
-// --- Обработчик выполняется в .AttachCallback
-// - Написать что Wait-маркеры стоит ставить после >= для потоко-безопастности
-// --- (QErr.HandleWithoutRes >= M), если обработчик должен быть до M
-// --- (QErr.ThenFinallyMarkerSignal) работает как (QErr >= M), но возвращает результат
-// ----- В тесты
-// - WaitFor теперь тратит выполненность только если небыло предыдущих ошибок
-// - .ThenMarkerSignal vs .ThenFinallyMarkerSignal
-// - .ThenWaitFor vs .ThenFinallyWaitFor
-// - .ThenFinallyWaitFor пожирает ожидание только когда выполнилось всё что можно было до него, иначе можно (WaitFor*QErr)
-// - OpenCLABC основано на асинхронности, поэтому посмотрите на System.Collections.Concurrent, и может lock
-// - MU и ошибки
-// --- Если ошибка в источнике MU - её должно кидать всюду, где используется этот источник
-// --- Другими словами MU даёт множественное использование не только результата, но и ошибки
-//TODO По сути теперь надо отдельный раздел про ошибки в очередях
 
 //===================================
 // Запланированное:
@@ -76,6 +47,7 @@ unit OpenCLABC;
 // - И проверять возможность приведения при создании CastQueue
 
 //TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
+//TODO Справка: В обработке исключений написать, что обработчики всегда Quick
 
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
@@ -130,6 +102,7 @@ unit OpenCLABC;
 //TODO Исправить перегрузки Kernel.Exec
 
 //TODO Проверить, будет ли оптимизацией, создавать свой ThreadPool для каждого CLTaskBase
+// - (HPQ+HPQ).Handle.Handle, тут создаётся 4 UserEvent, хотя всё можно было бы выполнять синхронно
 
 //TODO Тестировщик должен запускать отдельные .exe для тестирования, а не вот это вот всё
 
@@ -2492,11 +2465,11 @@ type
     private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; override := try_do >= self;
     public static function operator>=(try_do: CommandQueueBase; do_finally: CommandQueue<T>): CommandQueue<T>;
     
-    public function HandleReplaceRes(handler: Func<array of Exception, (boolean,T)>): CommandQueue<T>;
-    
     public function HandleDefaultRes<TException>(handler: TException->boolean; def: T): CommandQueue<T>; where TException: Exception;
     begin Result := HandleDefaultRes(ConvertErrHandler(handler), def) end;
     public function HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T>;
+    
+    public function HandleReplaceRes(handler: List<Exception> -> T): CommandQueue<T>;
     
   end;
   
@@ -3303,7 +3276,10 @@ function HPQ(p: Context->()): CommandQueueBase;
 
 {$region Wait}
 
+function WaitAll(params sub_markers: array of WaitMarker): WaitMarker;
 function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
+
+function WaitAny(params sub_markers: array of WaitMarker): WaitMarker;
 function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 
 function WaitFor(marker: WaitMarker): CommandQueueBase;
@@ -4107,6 +4083,12 @@ type
     
     {$endregion AddErr}
     
+    function get_local_err_lst: List<Exception>;
+    begin
+      had_error_cache := nil;
+      Result := local_err_lst;
+    end;
+    
     private had_error_cache := default(boolean?);
     protected function HadErrorInPrev(can_cache: boolean): boolean; abstract;
     public function HadError(can_cache: boolean): boolean;
@@ -4255,28 +4237,60 @@ type
     
   end;
   
-  CLTaskErrHandlerMultiusableRepeater = sealed class(CLTaskErrHandler)
-    private prev_handler, mu_handler: CLTaskErrHandler;
+  CLTaskErrHandlerThiefBase = abstract class(CLTaskErrHandler)
+    protected victim: CLTaskErrHandler;
+    
+    public constructor(victim: CLTaskErrHandler) := self.victim := victim;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function CanSteal: boolean; abstract;
+    public procedure StealPrevErrors;
+    begin
+      if victim=nil then exit;
+      if CanSteal then
+        victim.FillErrLst(self.local_err_lst);
+      victim := nil;
+    end;
+    
+    protected function HadErrorInVictim(can_cache: boolean): boolean :=
+    (victim<>nil) and victim.HadError(can_cache);
+    
+  end;
+  CLTaskErrHandlerThief = sealed class(CLTaskErrHandlerThiefBase)
+    
+    protected function CanSteal: boolean; override := true;
+    
+    protected function HadErrorInPrev(can_cache: boolean): boolean; override := HadErrorInVictim(can_cache);
+    
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    begin
+      StealPrevErrors;
+      Result := false;
+    end;
+    
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    begin
+      StealPrevErrors;
+    end;
+    
+  end;
+  CLTaskErrHandlerMultiusableRepeater = sealed class(CLTaskErrHandlerThiefBase)
+    private prev_handler: CLTaskErrHandler;
     
     public constructor(prev_handler, mu_handler: CLTaskErrHandler);
     begin
+      inherited Create(mu_handler);
       self.prev_handler := prev_handler;
-      self.mu_handler := mu_handler;
     end;
     private constructor := raise new OpenCLABCInternalException;
+    
+    protected function CanSteal: boolean; override :=
+    not prev_handler.HadError(true);
     
     protected function HadErrorInPrev(can_cache: boolean): boolean; override :=
     // mu_handler.HadError would be called more often,
     // so it's more likely to already have cache
-    ((mu_handler<>nil) and mu_handler.HadError(can_cache)) or prev_handler.HadError(can_cache);
-    
-    private procedure StealPrevErrors;
-    begin
-      if mu_handler=nil then exit;
-      if not prev_handler.HadError(true) then
-        mu_handler.FillErrLst(self.local_err_lst);
-      mu_handler := nil;
-    end;
+    HadErrorInVictim(can_cache) or prev_handler.HadError(can_cache);
     
     protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
@@ -6724,6 +6738,7 @@ begin
   
   Result := WaitMarkerAllFast.MarkerFromLst(prev);
 end;
+function WaitAll(params sub_markers: array of WaitMarker) := WaitAll(sub_markers.AsEnumerable);
 
 function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 begin
@@ -6742,6 +6757,7 @@ begin
     end;
   Result := WaitMarkerAllFast.MarkerFromLst(res);
 end;
+function WaitAny(params sub_markers: array of WaitMarker) := WaitAny(sub_markers.AsEnumerable);
 
 static function WaitMarker.operator and(m1, m2: WaitMarker) := WaitAll(|m1, m2|);
 static function WaitMarker.operator or(m1, m2: WaitMarker) := WaitAny(|m1, m2|);
@@ -7008,74 +7024,21 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<object>; override;
     begin
+      var origin_err_handler := g.curr_err_handler;
+      
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
       var q_ev := q.InvokeBase(g, l.WithPtrNeed(false)).ev;
+      var q_err_handler := g.curr_err_handler;
+      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |q_err_handler|);
       
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
-      var err_handler := g.curr_err_handler;
       q_ev.AttachCallback(false, ()->
       begin
-        err_handler.TryRemoveErrors(handler);
+        q_err_handler.TryRemoveErrors(handler);
         res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
-      end, err_handler{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
+      end, g.curr_err_handler{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
       
       Result := new QueueResConst<object>(nil, res_ev);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      q.ToString(sb, tabs, index, delayed);
-      
-      sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
-      sb += #10;
-      
-    end;
-    
-  end;
-  
-  CommandQueueHandleReplaceRes<T> = sealed class(CommandQueue<T>)
-    private q: CommandQueue<T>;
-    private handler: Func<array of Exception, (boolean, T)>;
-    
-    public constructor(q: CommandQueue<T>; handler: Func<array of Exception, (boolean, T)>);
-    begin
-      self.q := q;
-      self.handler := handler;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    q.RegisterWaitables(g, prev_hubs);
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
-    begin
-      var prev_qr := q.Invoke(g, l.WithPtrNeed(false));
-      
-      var res := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
-      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
-      res.ev := res_ev;
-      
-      var err_handler := g.curr_err_handler;
-      prev_qr.ev.AttachCallback(false, ()->
-      begin
-        if not err_handler.HadError(true) then
-          res.SetRes(prev_qr.GetRes) else
-        begin
-          var err_lst := new List<Exception>;
-          err_handler.FillErrLst(err_lst);
-          var (ok, handler_res) := handler(err_lst.ToArray);
-          if ok then
-          begin
-            err_handler.TryRemoveErrors(e->true);
-            res.SetRes(handler_res);
-          end;
-        end;
-        res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
-      end, err_handler{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
-      
-      Result := res;
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -7110,24 +7073,28 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
+      var origin_err_handler := g.curr_err_handler;
+      
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
       var prev_qr := q.Invoke(g, l.WithPtrNeed(false));
+      var q_err_handler := g.curr_err_handler;
+      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |q_err_handler|);
       
       var res := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
       res.ev := res_ev;
       
-      var err_handler := g.curr_err_handler;
       prev_qr.ev.AttachCallback(false, ()->
       begin
-        if not err_handler.HadError(true) then
+        if not q_err_handler.HadError(true) then
           res.SetRes(prev_qr.GetRes) else
         begin
-          err_handler.TryRemoveErrors(handler);
-          if not err_handler.HadError(true) then
+          q_err_handler.TryRemoveErrors(handler);
+          if not q_err_handler.HadError(true) then
             res.SetRes(def);
         end;
         res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
-      end, err_handler{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
+      end, g.curr_err_handler{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
       
       Result := res;
     end;
@@ -7148,14 +7115,71 @@ type
     
   end;
   
+  CommandQueueHandleReplaceRes<T> = sealed class(CommandQueue<T>)
+    private q: CommandQueue<T>;
+    private handler: List<Exception> -> T;
+    
+    public constructor(q: CommandQueue<T>; handler: List<Exception> -> T);
+    begin
+      self.q := q;
+      self.handler := handler;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    q.RegisterWaitables(g, prev_hubs);
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    begin
+      var origin_err_handler := g.curr_err_handler;
+      
+      g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
+      var prev_qr := q.Invoke(g, l.WithPtrNeed(false));
+      var q_err_handler := new CLTaskErrHandlerThief(g.curr_err_handler);
+      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, new CLTaskErrHandler[](q_err_handler));
+      
+      var res := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
+      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
+      res.ev := res_ev;
+      
+      prev_qr.ev.AttachCallback(false, ()->
+      begin
+        if not q_err_handler.HadError(true) then
+          res.SetRes(prev_qr.GetRes) else
+        begin
+          q_err_handler.StealPrevErrors;
+          var err_lst := q_err_handler.get_local_err_lst;
+          var handler_res := handler(err_lst);
+          if err_lst.Count=0 then res.SetRes(handler_res);
+        end;
+        res_ev.SetStatus(CommandExecutionStatus.COMPLETE);
+      end, g.curr_err_handler{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
+      
+      Result := res;
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      q.ToString(sb, tabs, index, delayed);
+      
+      sb.Append(#9, tabs);
+      ToStringWriteDelegate(sb, handler);
+      sb += #10;
+      
+    end;
+    
+  end;
+  
 function CommandQueueBase.HandleWithoutRes(handler: Exception->boolean) :=
 new CommandQueueHandleWithoutRes(self, handler);
 
-function CommandQueue<T>.HandleReplaceRes(handler: Func<array of Exception, (boolean,T)>) :=
-new CommandQueueHandleReplaceRes<T>(self, handler);
-
 function CommandQueue<T>.HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T> :=
 new CommandQueueHandleDefaultRes<T>(self, handler, def);
+
+function CommandQueue<T>.HandleReplaceRes(handler: List<Exception> -> T) :=
+new CommandQueueHandleReplaceRes<T>(self, handler);
 
 {$endregion Non-Finally}
 
