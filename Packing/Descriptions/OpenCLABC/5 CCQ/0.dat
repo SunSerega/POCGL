@@ -33,15 +33,7 @@
 # CLArrayCCQ<T>.AddProc((CLArray<T>, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
 
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWait(WaitMarkerBase)
+# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWait(WaitMarker)
 Добавляет ожидание сигнала выполненности от заданного маркера
-
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWaitAll(array of WaitMarkerBase)
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWaitAll(sequence of WaitMarkerBase)
-Добавляет ожидание сигнала выполненности от всех заданных маркеров
-
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWaitAny(array of WaitMarkerBase)
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWaitAny(sequence of WaitMarkerBase)
-Добавляет ожидание первого сигнала выполненности от одного из заданных маркеров
 
 

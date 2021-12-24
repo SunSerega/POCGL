@@ -5,7 +5,7 @@
 OpenCLABC
 
 #ExpExecErr
-System.NotSupportedException: Err:WaitMarkerCombination.Invoke
+System.NotSupportedException: Выполнять маркер-комбинацию нельзя. Возможно вы забыли написать WaitFor?
    в OpenCLABC_implementation______.WaitMarkerCombination`1.RegisterWaitables(CLTaskGlobalData g, HashSet`1 prev_hubs) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.CLTaskResLess..ctor(CommandQueueBase q, Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC.Context.BeginInvoke(CommandQueueBase q) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *

@@ -1,5 +1,4 @@
-﻿OpenCLABCInternalException
-EventRetainReleaseData
+﻿EventRetainReleaseData
 EventDebug
 QueueDebug
 WaitDebug
@@ -11,29 +10,3 @@ KernelProperties
 MemorySegmentProperties
 MemorySubSegmentProperties
 CLArrayProperties
-Context.MakeNewDefaultContext
-Context.CheckMainDevice(Device, IList<Device>)
-Context.GetContextDevices(cl_context)
-CommandQueue<T>.(T)
-CommandQueue<T>.Val
-CommandQueueBase.ThenConvert<TOtp>(()->TOtp)
-CommandQueueBase.ThenConvert<TOtp>(Context->TOtp)
-CommandQueueBase.Create
-CommandQueueBase.SendSignal
-DetachedMarkerSignal<T>
-CommandQueueBase.ThenMarkerSignal
-CommandQueueBase.ThenFinallyMarkerSignal
-CommandQueueBase.ThenWaitFor(WaitMarker)
-CommandQueueBase.ThenFinallyWaitFor(WaitMarker)
-CommandQueue<T>.ThenMarkerSignal
-CommandQueue<T>.ThenFinallyMarkerSignal
-CommandQueue<T>.ThenWaitFor(WaitMarker)
-CommandQueue<T>.ThenFinallyWaitFor(WaitMarker)
-KernelCCQ.AddWait(WaitMarker)
-MemorySegmentCCQ.AddWait(WaitMarker)
-CLArrayCCQ<T>.AddWait(WaitMarker)
-WaitAll(array of WaitMarker)
-WaitAll(sequence of WaitMarker)
-WaitAny(array of WaitMarker)
-WaitAny(sequence of WaitMarker)
-WaitFor(WaitMarker)

@@ -162,7 +162,7 @@ begin
             begin
               res.Write(' ' * spaces);
               res.Write('///');
-              res.WriteLine(l);
+              res.WriteLine(l.TrimEnd);
             end;
           end;
           

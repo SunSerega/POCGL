@@ -42,75 +42,6 @@ Finished runing Template[OpenCLABC]
 Compiling "Packing\Descriptions\PackDescriptions.pas"
 Compiling: OK
 Runing Descriptions[OpenCLABC]
-Descriptions[OpenCLABC]: ERROR: key %Err:WaitCombine:InpEmpty% wasn't found!
-Descriptions[OpenCLABC]: WARNING: key %IConstQueue% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %ConstQueue<T>% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %ConstQueue<T>.(T)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %IConstQueue.GetConstVal% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %ConstQueue<T>.Val% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %Err:0Waitables% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %Err:AddQueue(Const)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %Err:Wait(nil)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %:WaitForDef% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitFor(WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitForAll(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitForAll(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitForAny(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitForAny(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitMarkerBase% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitMarkerBase.SendSignal% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitMarker% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %WaitMarker.% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.(CommandQueue<T>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %PseudoWaitMarker<T>.SendSignal% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.Error% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(Exception)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(ErrorCode)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.AddErr(CommandExecutionStatus)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask:AddEvent% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDone(Action<CLTask<T>>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenComplete(Action<CLTask<T>, T>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenError(Action<CLTask<T>, array of Exception>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenDoneBase(Action<CLTaskBase>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenCompleteBase(Action<CLTaskBase, object>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTask<T>.WhenErrorBase(Action<CLTaskBase, array of Exception>)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLTaskBase.WaitRes% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenConvert<TOtp>(object->TOtp)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenConvert<TOtp>((object, Context)->TOtp)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenUse(object->())% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenUse((object, Context)->())% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitMarker% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitMarker% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CQ:ThenWaitDef% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitFor(WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitFor(WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAll(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueueBase.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CommandQueue<T>.ThenWaitForAny(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWait(WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWait(WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWait(WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAll(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(array of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %MemorySegmentCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %KernelCCQ.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
-Descriptions[OpenCLABC]: WARNING: key %CLArrayCCQ<T>.AddWaitAny(sequence of WaitMarkerBase)% wasn't used!
 Finished runing Descriptions[OpenCLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
@@ -349,7 +280,6 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll]
 Tester: Done executing
-Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.td"
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel]
@@ -409,7 +339,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================

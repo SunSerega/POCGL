@@ -181,6 +181,8 @@ type
   
   {$region OpenCLABCInternalException}
   
+  ///Исключение, кидаемое при неожиданном поведении внутренностей OpenCLABC
+  ///Если это исключение было кинуто - пишите в issue
   OpenCLABCInternalException = sealed class(Exception)
     
     private constructor(message: string) :=
@@ -193,7 +195,7 @@ type
       raise self;
     end;
     
-    private procedure RaiseIfError(message: string; ec: ErrorCode) :=
+    private static procedure RaiseIfError(message: string; ec: ErrorCode) :=
     if ec.IS_ERROR then raise new OpenCLABCInternalException(message, ec);
     
   end;
@@ -843,6 +845,7 @@ type
     ///Но это свидетельствует скорее об отсутствии драйверов, чем отстутсвии устройств
     public static property &Default: Context read GetDefault write SetDefault;
     
+    ///Создаёт новый контекст, соответствующий изначальному значению Context.Default
     protected static function MakeNewDefaultContext: Context;
     begin
       Result := nil;
@@ -872,7 +875,7 @@ type
     
     {$region constructor's}
     
-    protected static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
+    private static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
     if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'main_dvc должен быть в списке устройств контекста');
     
     ///Создаёт контекст с указанными AllDevices и MainDevice
@@ -895,6 +898,7 @@ type
     ///В качестве MainDevice берётся первое устройство из массива
     public constructor(params dvcs: array of Device) := Create(dvcs, dvcs[0]);
     
+    ///Получает неуправляемые устройства указанного неуправляемого контекста
     protected static function GetContextDevices(ntv: cl_context): array of Device;
     begin
       
@@ -2304,12 +2308,16 @@ type
   
   {$region Const}
   
+  ///Представляет константную очередь
+  ///Константные очереди ничего не выполняют и возвращает заданное при создании значение
   ConstQueue<T> = sealed partial class(CommandQueue<T>)
     private res: T;
     
+    ///Создаёт новую константную очередь из заданного значения
     public constructor(o: T) := self.res := o;
     private constructor := raise new OpenCLABCInternalException;
     
+    ///Возвращает значение из которого была создана данная константная очередь
     public property Val: T read self.res;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -2355,17 +2363,10 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function ThenConvertBase<TOtp>(f: Context->TOtp): CommandQueue<TOtp>; virtual;
-    
-    public function ThenConvert<TOtp>(f:      ()->TOtp) := ThenConvertBase(c->f());
-    public function ThenConvert<TOtp>(f: Context->TOtp) := ThenConvertBase(f);
-    
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T> = abstract partial class(CommandQueueBase)
-    
-    private function ThenConvertBase<TOtp>(f: Context->TOtp): CommandQueue<TOtp>; override := ThenConvert((o,c)->f(c));
     
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
@@ -2454,21 +2455,33 @@ type
     private function ConvertErrHandler<TException>(handler: TException->boolean): Exception->boolean; where TException: Exception;
     begin Result := e->(e is TException) and handler(TException(e)) end;
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
+    ///Созданная очередь возвращает nil не зависимо от исключений при выполнении данной очереди
     public function HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueBase; where TException: Exception;
     begin Result := HandleWithoutRes(ConvertErrHandler(handler)) end;
+    ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
+    ///Созданная очередь возвращает nil не зависимо от исключений при выполнении данной очереди
     public function HandleWithoutRes(handler: Exception->boolean): CommandQueueBase;
     
   end;
   
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; override := try_do >= self;
     public static function operator>=(try_do: CommandQueueBase; do_finally: CommandQueue<T>): CommandQueue<T>;
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная, если исключений небыло и указанное значение если обработчик был успешно выполнен
     public function HandleDefaultRes<TException>(handler: TException->boolean; def: T): CommandQueue<T>; where TException: Exception;
     begin Result := HandleDefaultRes(ConvertErrHandler(handler), def) end;
+    ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная, если исключений небыло и указанное значение если обработчик был успешно выполнен
     public function HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T>;
     
+    ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
+    ///Для того чтоб пометить исключение обработанным - его надо удалить из полученного списка
+    ///Возвращаемое значение обработчика указывает на что надо заменить возвращаемое значение данной очереди, если обработчик был успешно выполнен
     public function HandleReplaceRes(handler: List<Exception> -> T): CommandQueue<T>;
     
   end;
@@ -2477,10 +2490,14 @@ type
   
   {$region Wait}
   
+  ///Представляет маркер для Wait очередей
+  ///При выполнении возвращает nil
   WaitMarker = abstract partial class(CommandQueueBase)
     
+    ///Создаёт новый простой маркер
     public static function Create: WaitMarker;
     
+    ///Посылает сигнал выполненности всем ожидающим Wait очередям
     public procedure SendSignal; abstract;
     
     public static function operator and(m1, m2: WaitMarker): WaitMarker;
@@ -2489,13 +2506,20 @@ type
     
   end;
   
+  ///Представляет оторванный сигнал маркера, являющийся обёрткой очереди с возвращаемым значением
+  ///Этот тип является наследником CommandQueue<T>, а значит он не может наследовать сразу и от WaitMarker
+  ///Но при присвоении или передаче параметром он разлагается в обычный маркер, поэтому его можно передавать в Wait очереди
   DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
     private q: CommandQueue<T>;
     private wrap: WaitMarker;
     private signal_in_finally: boolean;
     
+    ///Указывает, будут ли проигнорированы ошибки выполнения q при автоматическом вызове .SendSignal
     public property SignalInFinally: boolean read signal_in_finally;
     
+    ///Создаёт новый оторванный сигнал маркера
+    ///При выполнении сначала будет выполнена очередь q, а затем метод .SendSignal
+    ///signal_in_finally указывает, будут ли проигнорированы ошибки выполнения q при автоматическом вызове .SendSignal
     public constructor(q: CommandQueue<T>; signal_in_finally: boolean);
     private constructor := raise new OpenCLABCInternalException;
     
@@ -2504,6 +2528,7 @@ type
     public static function operator and(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) and WaitMarker(m2);
     public static function operator or(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) or WaitMarker(m2);
     
+    ///Посылает сигнал выполненности всем ожидающим Wait очередям
     public procedure SendSignal := wrap.SendSignal;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -2523,17 +2548,27 @@ type
   CommandQueueBase = abstract partial class
     
     private function ThenMarkerSignalBase: WaitMarker; abstract;
+    ///Создаёт особый маркер из данной очереди
+    ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenMarkerSignal := ThenMarkerSignalBase;
     
     private function ThenFinallyMarkerSignalBase: WaitMarker; abstract;
+    ///Создаёт особый маркер из данной очереди
+    ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal не зависимо от исключений при выполнении данной очереди
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyMarkerSignal := ThenFinallyMarkerSignalBase;
     
     
     
     private function ThenWaitForBase(marker: WaitMarker): CommandQueueBase; abstract;
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenWaitFor(marker: WaitMarker) := ThenWaitForBase(marker);
     
     private function ThenFinallyWaitForBase(marker: WaitMarker): CommandQueueBase; abstract;
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера не зависимо от исключений при выполнении данной очереди
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyWaitFor(marker: WaitMarker) := ThenFinallyWaitForBase(marker);
     
   end;
@@ -2542,17 +2577,27 @@ type
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     private function ThenMarkerSignalBase: WaitMarker; override := ThenMarkerSignal;
+    ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal
+    ///При передаче в Wait-очереди, DetachedMarkerSignal превращается в маркер
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenMarkerSignal := new DetachedMarkerSignal<T>(self, false);
     
     private function ThenFinallyMarkerSignalBase: WaitMarker; override := ThenFinallyMarkerSignal;
+    ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal не зависимо от исключений при выполнении данной очереди
+    ///При передаче в Wait-очереди, DetachedMarkerSignal превращается в маркер
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyMarkerSignal := new DetachedMarkerSignal<T>(self, true);
     
     
     
     private function ThenWaitForBase(marker: WaitMarker): CommandQueueBase; override := ThenWaitFor(marker);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenWaitFor(marker: WaitMarker): CommandQueue<T>;
     
     private function ThenFinallyWaitForBase(marker: WaitMarker): CommandQueueBase; override := ThenFinallyWaitFor(marker);
+    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера не зависимо от исключений при выполнении данной очереди
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyWaitFor(marker: WaitMarker): CommandQueue<T>;
     
   end;
@@ -2780,6 +2825,7 @@ type
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
     
+    ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function AddWait(marker: WaitMarker): KernelCCQ;
     
     {$endregion Special .Add's}
@@ -2834,6 +2880,7 @@ type
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
     
+    ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function AddWait(marker: WaitMarker): MemorySegmentCCQ;
     
     {$endregion Special .Add's}
@@ -3117,6 +3164,7 @@ type
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     public function AddProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     
+    ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function AddWait(marker: WaitMarker): CLArrayCCQ<T>;
     
     {$endregion Special .Add's}
@@ -3266,22 +3314,27 @@ function HFQ<T>(f: ()->T): CommandQueue<T>;
 function HFQ<T>(f: Context->T): CommandQueue<T>;
 
 ///Создаёт очередь, выполняющую указанную процедуру на CPU
-///И возвращающую object(nil)
+///И возвращающую nil
 function HPQ(p: ()->()): CommandQueueBase;
 ///Создаёт очередь, выполняющую указанную процедуру на CPU
-///И возвращающую object(nil)
+///И возвращающую nil
 function HPQ(p: Context->()): CommandQueueBase;
 
 {$endregion HFQ/HPQ}
 
 {$region Wait}
 
+///Создаёт маркер-комбинацию, который активируется когда активированы каждых из указанных маркеров
 function WaitAll(params sub_markers: array of WaitMarker): WaitMarker;
+///Создаёт маркер-комбинацию, который активируется когда активированы каждых из указанных маркеров
 function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
 
+///Создаёт маркер-комбинацию, который активируется когда активированы любого из указанных маркеров
 function WaitAny(params sub_markers: array of WaitMarker): WaitMarker;
+///Создаёт маркер-комбинацию, который активируется когда активированы любого из указанных маркеров
 function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 
+///Создаёт очередь, ожидающую сигнала выполненности от заданного маркера
 function WaitFor(marker: WaitMarker): CommandQueueBase;
 
 {$endregion Wait}
@@ -4070,7 +4123,7 @@ type
       local_err_lst += e;
     end;
     
-    
+    //TODO Заменить на OpenCLABCInternalException.RaiseIfError
     protected function AddErr(ec: ErrorCode): boolean;
     begin
       if not ec.IS_ERROR then exit;
@@ -5243,9 +5296,6 @@ type
     
   end;
   
-function CommandQueueBase.ThenConvertBase<TOtp>(f: Context->TOtp) :=
-self.Cast&<object>.ThenConvert((o,c)->f(c));
-
 function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
 new CommandQueueThenConvert<T, TOtp>(self, f);
 
@@ -6338,7 +6388,7 @@ type
     {$region Disabled override's}
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    raise new System.NotSupportedException($'Err:WaitMarkerCombination.Invoke');
+    raise new System.NotSupportedException($'Выполнять маркер-комбинацию нельзя. Возможно вы забыли написать WaitFor?');
     
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override;
     begin
@@ -6699,7 +6749,7 @@ type
         Result := new WaitMarkerAny(res);
       end else
       case lst[0].children.Values.Sum of
-        0: raise new System.ArgumentException($'');
+        0: raise new System.ArgumentException($'Количество комбинируемых маркеров должно быть положительным');
         1: Result := lst[0].children.Keys.Single;
         else Result := new WaitMarkerAll(lst[0].children);
       end;

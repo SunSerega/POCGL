@@ -1,6 +1,8 @@
 ﻿unit DescriptionsData;
 {$string_nullbased+}
 
+{ $define ParseLevelDebug}
+
 interface
 
 type
@@ -138,21 +140,54 @@ implementation
 
 {$region Utils}
 
-function IndexOfAny(self: string; start_ind: integer; params strs: array of string): integer; extensionmethod;
+function IsNamePart(self: char): boolean; extensionmethod :=
+self.IsLetter or self.IsDigit or (self = '_');
+
+function IndexOfSpaced(self: string; start_ind: integer; kw: string): integer?; extensionmethod;
 begin
-  Result := -1;
+  Result := nil;
+  var res := self.IndexOf(kw, start_ind);
+  if res=-1 then exit;
+  if (res<>0) and self[res-1].IsNamePart then exit;
+  if (res+kw.Length<>self.Length) and self[res+kw.Length].IsNamePart then exit;
+  Result := res;
+end;
+function IndexOfSpaced(self: string; kw: string): integer?; extensionmethod :=
+self.IndexOfSpaced(0, kw);
+
+function ContainsSpaced(self: string; kw: string): boolean; extensionmethod :=
+self.IndexOfSpaced(kw) <> nil;
+
+function IndexOfAnyG(self: string; start_ind: integer; finder: (string,integer,string)->integer?; params strs: array of string): integer?; extensionmethod;
+begin
+  Result := nil;
   
   foreach var s in strs do
   begin
-    var ind := self.IndexOf(s, start_ind);
-    if ind=-1 then continue;
-    if (Result=-1) or (ind < Result) then
-      Result := ind;
+    var res := finder(self, start_ind, s);
+    if res=nil then continue;
+    if (Result=nil) or (res.Value < Result.Value) then
+      Result := res;
   end;
   
 end;
-function IndexOfAny(self: string; params strs: array of string): integer; extensionmethod :=
+
+function IndexOfAny(self: string; start_ind: integer; params strs: array of string): integer?; extensionmethod :=
+self.IndexOfAnyG(start_ind, (self,start_ind,s)->
+begin
+  Result := self.IndexOf(s, start_ind);
+  if Result=-1 then Result := nil;
+end, strs);
+function IndexOfAny(self: string; params strs: array of string): integer?; extensionmethod :=
 self.IndexOfAny(0, strs);
+
+function IndexOfAnySpaced(self: string; start_ind: integer; params strs: array of string): integer?; extensionmethod :=
+self.IndexOfAnyG(start_ind, (self,start_ind,s)->self.IndexOfSpaced(start_ind, s), strs);
+function IndexOfAnySpaced(self: string; params strs: array of string): integer?; extensionmethod :=
+self.IndexOfAnySpaced(0, strs);
+
+//function IndexOfAny(self: string; params strs: array of string): integer; extensionmethod :=
+//self.IndexOfAny(0, strs);
 
 function SmartIndexOf(self: string; ch: char; ind: integer): integer; extensionmethod;
 begin
@@ -221,13 +256,14 @@ end;
 {$region Member parser's}
 
 static function CommentableType.Parse(l: string): CommentableType;
+const separator = ' = ';
 const type_keywords: array of string = ('record', 'class', 'interface');
 begin
-  var ind := l.IndexOf(' = ');
+  var ind := l.IndexOf(separator);
   if ind=-1 then exit;
-  if type_keywords.Any(kw->l.Contains(kw+';')) then exit;
+  if l.Contains('class;') then exit;
   
-  var def := l.Substring(ind+' = '.Length);
+  var def := l.Substring(ind+separator.Length);
   var ind2 := def.IndexOf('(');
   if ind2<>-1 then def := def.Remove(ind2);
   var def_wds := def.ToWords;
@@ -241,71 +277,71 @@ begin
 end;
 
 static function CommentableMethod.Parse(l: string; t: CommentableType): CommentableMethod;
-const method_keywords: array of string = ('function ', 'procedure ');
+const method_keywords: array of string = ('function', 'procedure');
 begin
-  var ind := l.IndexOfAny(method_keywords);
-  if ind=-1 then exit;
+  var ind := l.IndexOfAnySpaced(method_keywords);
+  if ind=nil then exit;
   
-  ind := l.IndexOf(' ', ind+1) + 1;
-  var ind2 := l.IndexOfAny(ind, '(', ':', ':=', ';');
-  if ind2=-1 then raise new System.InvalidOperationException(l);
+  ind := l.IndexOf(' ', ind.Value+1) + 1;
+  var ind2 := l.IndexOfAny(ind.Value, '(', ':', ':=', ';');
+  if ind2=nil then raise new System.InvalidOperationException(l);
   
-  var name := l.Substring(ind, ind2-ind).Trim;
-  if name.Contains('operator') then exit;
+  var name := l.Substring(ind.Value, ind2.Value-ind.Value).Trim;
+  if name.ContainsSpaced('operator') then exit;
   if name.Contains('.') then exit; // Явные реализации интерфейсов
   
   Result := new CommentableMethod(t, name,
-    GetArgs(l, ind2, '(', ')')
+    GetArgs(l, ind2.Value, '(', ')')
   );
   
 end;
 
 static function CommentableConstructor.Parse(l: string; t: CommentableType): CommentableConstructor;
-const constructor_keywords: array of string = (' constructor');
+const constructor_keywords: array of string = ('constructor');
 begin
-  var ind := l.IndexOfAny(constructor_keywords);
-  if ind=-1 then exit;
+  var ind := l.IndexOfAnySpaced(constructor_keywords);
+  if ind=nil then exit;
   
-  ind := l.IndexOfAny(ind, '(', ':=', ';');
-  if ind=-1 then raise new System.InvalidOperationException(l);
+  ind := l.IndexOfAny(ind.Value, '(', ':=', ';');
+  if ind=nil then raise new System.InvalidOperationException(l);
   
   Result := new CommentableConstructor(t,
-    GetArgs(l, ind, '(', ')')
+    GetArgs(l, ind.Value, '(', ')')
   );
   
 end;
 
 static function CommentableProp.Parse(l: string; t: CommentableType): CommentableProp;
-const prop_keywords: array of string = (' property ');
+const prop_keywords: array of string = ('property');
 begin
-  var ind := l.IndexOfAny(prop_keywords);
-  if ind=-1 then exit;
+  var ind := l.IndexOfAnySpaced(prop_keywords);
+  if ind=nil then exit;
   
-  ind := l.IndexOf(' ', ind+1) + 1;
-  var ind2 := l.IndexOfAny(ind, '[', ':');
-  if ind2=-1 then raise new System.InvalidOperationException(l);
+  ind := l.IndexOf(' ', ind.Value+1) + 1;
+  var ind2 := l.IndexOfAny(ind.Value, '[', ':');
+  if ind2=nil then raise new System.InvalidOperationException(l);
   
-  var name := l.Substring(ind, ind2-ind).Trim;
+  var name := l.Substring(ind.Value, ind2.Value-ind.Value).Trim;
   if name.Contains('.') then exit; // явные реализации интерфейсов
   
   Result := new CommentableProp(t, name,
-    GetArgs(l, ind2, '[', ']')
+    GetArgs(l, ind2.Value, '[', ']')
   );
   
 end;
 
 static function CommentableEvent.Parse(l: string; t: CommentableType): CommentableEvent;
-const event_keywords: array of string = (' event ');
+const event_keywords: array of string = ('event');
 begin
-  var ind := l.IndexOfAny(event_keywords);
-  if ind=-1 then exit;
+  var ind := l.IndexOfAnySpaced(event_keywords);
+  if ind=nil then exit;
   
-  ind := l.IndexOf(' ', ind+1) + 1;
-  var ind2 := l.IndexOf(':', ind);
+  ind := l.IndexOf(' ', ind.Value+1) + 1;
+  var ind2 := l.IndexOf(':', ind.Value);
   if ind2=-1 then raise new System.InvalidOperationException(l);
   
   Result := new CommentableEvent(t,
-    l.Substring(ind, ind2-ind).Trim
+    l.Substring(ind.Value, ind2-ind.Value).Trim
   );
   
 end;
@@ -314,26 +350,42 @@ end;
 
 {$region File parser's}
 
+{$ifdef ParseLevelDebug}
+var parse_level := 0;
+{$endif ParseLevelDebug}
+
 function SkipCodeBlock(l: string; enmr: IEnumerator<string>): boolean;
 const block_open_kvds: array of string = ('begin', 'case', 'match', 'try');
 begin
-  if not block_open_kvds.Any(kw->l.Contains(kw)) then exit;
+  Result := false;
+  if l.IndexOfAnySpaced(block_open_kvds)=nil then exit;
   var bl_lvl := 1;
+  {$ifdef ParseLevelDebug}
+  parse_level += 1;
+  {$endif ParseLevelDebug}
   
   while true do
   begin
     
-    if l.StartsWith('end') or l.Contains(' end') then
+    if l.ContainsSpaced('end') then
     begin
       bl_lvl -= 1;
+      {$ifdef ParseLevelDebug}
+      parse_level -= 1;
+      {$endif ParseLevelDebug}
       if bl_lvl=0 then break;
     end;
     
     if not enmr.MoveNext then raise new System.InvalidOperationException;
     l := enmr.Current;
     
-    if block_open_kvds.Any(kw->l.Contains(kw)) then
+    if l.IndexOfAnySpaced(block_open_kvds)<>nil then
+    begin
       bl_lvl += 1;
+      {$ifdef ParseLevelDebug}
+      parse_level += 1;
+      {$endif ParseLevelDebug}
+    end;
     
   end;
   
@@ -346,6 +398,9 @@ begin
   .Where(on_line)
   .Select(l->
   begin
+    {$ifdef ParseLevelDebug}
+    Writeln($'{parse_level}: {l}');
+    {$endif ParseLevelDebug}
     
     var ind := l.IndexOf('//');
     if ind<>-1 then l := l.Remove(ind);
@@ -356,25 +411,36 @@ begin
       .Trim(' ')
     ;
   end)
+  .Where(l->not string.IsNullOrWhiteSpace(l))
   .GetEnumerator;
   
   var start_checking := false;
   var end_checking := false;
   
-  while enmr.MoveNext do
+  while true do
   begin
+    {$ifdef ParseLevelDebug}
+    parse_level := 0;
+    {$endif ParseLevelDebug}
+    if not enmr.MoveNext then break;
     var l := enmr.Current;
     
-    if not start_checking and l.Contains('interface') then start_checking := true;
-    if not start_checking then continue;
+    if not start_checking then
+      if l.Contains('interface') then
+        start_checking := true else
+        continue;
     
     if not end_checking and l.Contains('implementation') then end_checking := true;
     if end_checking then continue;
     
     if CommentableType.Parse(l) is CommentableType(var t) then
     begin
+      {$ifdef ParseLevelDebug}
+      parse_level := 1;
+      {$endif ParseLevelDebug}
       yield t;
       if t.ReDef<>nil then continue;
+      if l.Contains('end') then continue;
       
       while true do
       begin

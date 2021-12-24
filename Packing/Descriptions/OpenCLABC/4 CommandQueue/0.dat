@@ -12,25 +12,21 @@
 
 
 
-# CommandQueueBase.ThenConvert<TOtp>(object->TOtp)
 # CommandQueue<T>.ThenConvert<TOtp>(T->TOtp)
 # CQ:ThenConvertDef
 Создаёт очередь, которая выполнит данную
 А затем выполнит на CPU функцию f, используя результат данной очереди
 
-# CommandQueueBase.ThenConvert<TOtp>((object, Context)->TOtp)
 # CommandQueue<T>.ThenConvert<TOtp>((T, Context)->TOtp)
 %CQ:ThenConvertDef% и контекст выполнения
 
 
 
-# CommandQueueBase.ThenUse(object->())
 # CommandQueue<T>.ThenUse(T->())
 # CQ:ThenUseDef
 Создаёт очередь, которая выполнит данную и вернёт её результат
 Но перед этим выполнит на CPU процедуру p, используя полученный результат
 
-# CommandQueueBase.ThenUse((object, Context)->())
 # CommandQueue<T>.ThenUse((T, Context)->())
 %CQ:ThenUseDef% и контекст выполнения
 
@@ -42,21 +38,49 @@
 
 
 
-# CommandQueue[%Base,<T>%].ThenWaitMarker
-Создаёт новую обёртку-псевдо-маркер (PseudoWaitMarker<T>), которая работает как очередь,
-но разлогается в обычный маркер для Wait очередей при присвоении или передаче параметром
+# CQ:ThenSaveRes
+В конце выполнения созданная очередь возвращает то, что вернула данная
 
-# CQ:ThenWaitDef
-Создаёт очередь, сначала выполняющую данную, а затем ожидающую
+# CQ:FinallyMode:
 
-# CommandQueue[%Base,<T>%].ThenWaitFor(WaitMarkerBase)
-%CQ:ThenWaitDef% сигнала выполненности от заданого маркера
+# CQ:FinallyMode:Finally
+не зависимо от исключений при выполнении данной очереди
 
-# CommandQueue[%Base,<T>%].ThenWaitForAll([%sequence,array%] of WaitMarkerBase)
-%CQ:ThenWaitDef% сигнала выполненности от каждого из заданых маркеров
 
-# CommandQueue[%Base,<T>%].ThenWaitForAny([%sequence,array%] of WaitMarkerBase)
-%CQ:ThenWaitDef% первого сигнала выполненности от любого из заданных маркеров
+
+# CommandQueue<T>.Then[%finally:,Finally%]MarkerSignal
+Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal %CQ:FinallyMode:{%finally%}%
+При передаче в Wait-очереди, DetachedMarkerSignal превращается в маркер
+%CQ:ThenSaveRes%
+
+# CommandQueueBase.Then[%finally:,Finally%]MarkerSignal
+Создаёт особый маркер из данной очереди
+При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal %CQ:FinallyMode:{%finally%}%
+%CQ:ThenSaveRes%
+
+# CommandQueue[%Base,<T>%].Then[%finally:,Finally%]WaitFor(WaitMarker)
+Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера %CQ:FinallyMode:{%finally%}%
+%CQ:ThenSaveRes%
+
+
+
+# CQ:Handle
+Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
+
+# CommandQueueBase.HandleWithoutRes<TException>(TException->boolean)
+# CommandQueueBase.HandleWithoutRes(Exception->boolean)
+%CQ:Handle%
+Созданная очередь возвращает nil %CQ:FinallyMode:Finally%
+
+# CommandQueue<T>.HandleDefaultRes<TException>(TException->boolean, T)
+# CommandQueue<T>.HandleDefaultRes(Exception->boolean, T)
+%CQ:Handle%
+%CQ:ThenSaveRes%, если исключений небыло и указанное значение если обработчик был успешно выполнен
+
+# CommandQueue<T>.HandleReplaceRes(List<Exception> -> T)
+%CQ:Handle%
+Для того чтоб пометить исключение обработанным - его надо удалить из полученного списка
+Возвращаемое значение обработчика указывает на что надо заменить возвращаемое значение данной очереди, если обработчик был успешно выполнен
 
 
 

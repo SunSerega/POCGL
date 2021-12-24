@@ -180,7 +180,7 @@ type
       raise self;
     end;
     
-    private procedure RaiseIfError(message: string; ec: ErrorCode) :=
+    private static procedure RaiseIfError(message: string; ec: ErrorCode) :=
     if ec.IS_ERROR then raise new OpenCLABCInternalException(message, ec);
     
   end;
@@ -488,7 +488,7 @@ type
     
     {$region constructor's}
     
-    protected static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
+    private static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
     if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:Context:WrongMainDvc%');
     
     public constructor(dvcs: IList<Device>; main_dvc: Device);
@@ -1279,16 +1279,9 @@ type
   
   CommandQueueBase = abstract partial class
     
-    private function ThenConvertBase<TOtp>(f: Context->TOtp): CommandQueue<TOtp>; virtual;
-    
-    public function ThenConvert<TOtp>(f:      ()->TOtp) := ThenConvertBase(c->f());
-    public function ThenConvert<TOtp>(f: Context->TOtp) := ThenConvertBase(f);
-    
   end;
   
   CommandQueue<T> = abstract partial class(CommandQueueBase)
-    
-    private function ThenConvertBase<TOtp>(f: Context->TOtp): CommandQueue<TOtp>; override := ThenConvert((o,c)->f(c));
     
     public function ThenConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> := ThenConvert((o,c)->f(o));
     public function ThenConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
@@ -1957,7 +1950,7 @@ type
       local_err_lst += e;
     end;
     
-    
+    //TODO Заменить на OpenCLABCInternalException.RaiseIfError
     protected function AddErr(ec: ErrorCode): boolean;
     begin
       if not ec.IS_ERROR then exit;
@@ -3130,9 +3123,6 @@ type
     
   end;
   
-function CommandQueueBase.ThenConvertBase<TOtp>(f: Context->TOtp) :=
-self.Cast&<object>.ThenConvert((o,c)->f(c));
-
 function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
 new CommandQueueThenConvert<T, TOtp>(self, f);
 
@@ -3738,7 +3728,7 @@ type
     {$region Disabled override's}
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    raise new System.NotSupportedException($'Err:WaitMarkerCombination.Invoke');
+    raise new System.NotSupportedException($'%Err:WaitMarkerCombination.Invoke%');
     
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override;
     begin

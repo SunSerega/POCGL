@@ -84,15 +84,10 @@ main_dvc должен быть в списке устройств контекс
 # Err:FlattenQueueArray:InpEmpty
 Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей
 
-# Err:0Waitables
-Wait очереди должны ожидать хотя бы одну очередь
+# Err:WaitCombine:InpEmpty
+Количество комбинируемых маркеров должно быть положительным
 
-
-
-# Err:AddQueue(Const)
-В .AddQueue нельзя передавать константные очереди
-
-# Err:Wait(nil)
-Очередь [{i}] очереди из списка маркеров была nil
+# Err:WaitMarkerCombination.Invoke
+Выполнять маркер-комбинацию нельзя. Возможно вы забыли написать WaitFor?
 
 

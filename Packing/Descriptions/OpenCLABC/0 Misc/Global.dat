@@ -9,23 +9,23 @@
 # HPQ(()->())
 # HPQ(Context->())
 Создаёт очередь, выполняющую указанную процедуру на CPU
-И возвращающую object(nil)
+И возвращающую nil
 
 
 
-# :WaitForDef
-Создаёт очередь, ожидающую
+# WaitFor(WaitMarker)
+Создаёт очередь, ожидающую сигнала выполненности от заданного маркера
 
-# WaitFor(WaitMarkerBase)
-%:WaitForDef% сигнала выполненности от заданного маркера
+# :WaitCombinationDef
+Создаёт маркер-комбинацию, который активируется когда активированы
 
-# WaitForAll(array of WaitMarkerBase)
-# WaitForAll(sequence of WaitMarkerBase)
-%:WaitForDef% сигнала выполненности от каждого из указанных маркеров
+# WaitAll(array of WaitMarker)
+# WaitAll(sequence of WaitMarker)
+%:WaitCombinationDef% каждых из указанных маркеров
 
-# WaitForAny(array of WaitMarkerBase)
-# WaitForAny(sequence of WaitMarkerBase)
-%:WaitForDef% первого сигнала выполненности от любого из указанных маркеров
+# WaitAny(array of WaitMarker)
+# WaitAny(sequence of WaitMarker)
+%:WaitCombinationDef% любого из указанных маркеров
 
 
 
