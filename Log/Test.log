@@ -97,6 +97,8 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.pas"
@@ -106,6 +108,8 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\finally order.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\handle only branch.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\Handle only local.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally.pas"
 Tester: Compiling: OK
@@ -245,6 +249,8 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel]
@@ -254,6 +260,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\finally order]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\handle only branch]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\Handle only local]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally]
 Tester: Done executing
