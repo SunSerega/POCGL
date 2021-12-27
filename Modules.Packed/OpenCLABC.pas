@@ -32,11 +32,6 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
-//TODO Параметры с константным результатом тоже надо сувать в ev_l2:
-// - k.Exec1(N, a.NewQueue.AddFillValue(1))
-// - a.NewQueue.AddFillValue(1) + k.Exec1(N, a)
-// --- Иначе сейчас cl.Enqueue не происходит до самого последнего момента, даже для такого простого случая
-
 //TODO MultiusableBase позволяет использовать вне модуля
 
 //TODO CommandQueueBase.UseTyped(typed_q_user: interface procedure use<T>(cq: CommandQueue<T>); procedure use_base(cq: CommandQueueBase); end)
@@ -4409,7 +4404,7 @@ type
 
 type
   EventList = record
-    public evs: array of cl_event := nil;
+    public evs: array of cl_event;
     public count := 0;
     
     {$region Misc}
@@ -4438,9 +4433,9 @@ type
     {$region constructor's}
     
     public constructor(count: integer) :=
-    if count<>0 then self.evs := new cl_event[count];
+    self.evs := new cl_event[count];
     public constructor := raise new OpenCLABCInternalException;
-    public static Empty := new EventList(0);
+    public static Empty := default(EventList);
     
     public static function operator implicit(ev: cl_event): EventList;
     begin
@@ -4488,18 +4483,20 @@ type
       Result += ev;
     end;
     
-    private static function Combine(evs: IList<EventList>): EventList;
+    private static function Combine<TList>(evs: TList): EventList; where TList: IList<EventList>;
     begin
       Result := EventList.Empty;
       var count := 0;
       
-      for var i := 0 to evs.Count-1 do
-        count += evs[i].count;
+      //TODO #2589
+      for var i := 0 to (evs as IList<EventList>).Count-1 do
+        count += evs.Item[i].count;
       if count=0 then exit;
       
       Result := new EventList(count);
-      for var i := 0 to evs.Count-1 do
-        Result += evs[i];
+      //TODO #2589
+      for var i := 0 to (evs as IList<EventList>).Count-1 do
+        Result += evs.Item[i];
       
     end;
     
@@ -4680,8 +4677,9 @@ type
   
   {$region Const}
   
+  IQueueResConst = interface end;
   // Результат который просто есть
-  QueueResConst<T> = sealed partial class(QueueRes<T>)
+  QueueResConst<T> = sealed partial class(QueueRes<T>, IQueueResConst)
     private res: T;
     
     public constructor(res: T; ev: EventList);
@@ -4695,8 +4693,7 @@ type
     
     public function GetRes: T; override := res;
     
-    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
-    new QueueResConst<T2>(f(self.res), self.ev);
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override;
     
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
     
@@ -4763,7 +4760,7 @@ type
     
   end;
   
-  IQueueResDelayedPtr = interface end; // Если параметры команды реализует - можно не ждать его ивент, а cl.enqueue сразу
+  IQueueResDelayedPtr = interface end;
   QueueResDelayedPtr<T> = sealed partial class(QueueResDelayedBase<T>, IPtrQueueRes<T>, IQueueResDelayedPtr)
     private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
@@ -4796,6 +4793,26 @@ type
   
   {$endregion Delayed}
   
+function QueueResConst<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
+begin
+  var n_res: T2;
+  try
+    n_res := f(self.res);
+  except
+    on e: Exception do
+    begin
+      var edi := System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e);
+      Result := new QueueResFunc<T2>(()->
+      begin
+        Result := default(T2);
+        edi.Throw;
+      end, self.ev);
+      exit;
+    end;
+  end;
+  Result := new QueueResConst<T2>(n_res, self.ev);
+end;
+
 {$endregion QueueRes}
 
 {$region UserEvent}
@@ -8017,13 +8034,64 @@ function CLArrayCCQ<T>.AddWait(marker: WaitMarker) := AddCommand(self, new WaitC
 {$region Core}
 
 type
+  EnqEvLst = sealed class
+    private evs: array of EventList;
+    private c1 := 0;
+    private c2 := 0;
+    {$ifdef DEBUG}
+    private skipped := 0;
+    {$endif DEBUG}
+    
+    public constructor(cap: integer) :=
+    evs := new EventList[cap];
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property Capacity: integer read evs.Length;
+    
+    public procedure AddL1(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        evs[c1] := ev;
+        c1 += 1;
+      end;
+    end;
+    public procedure AddL2(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        c2 += 1;
+        evs[evs.Length-c2] := ev;
+      end;
+    end;
+    
+    public function MakeLists: ValueTuple<EventList, EventList>;
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2}/{evs.Length} used');
+      {$endif DEBUG}
+      Result := ValueTuple.Create(
+        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
+        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
+      );
+    end;
+    
+  end;
+  
   EnqueueableEnqFunc<TInvData> = function(cq: cl_command_queue; err_handler: CLTaskErrHandler; ev_l2: EventList; inv_data: TInvData): cl_event;
   IEnqueueable<TInvData> = interface
     
-    function ParamCountL1: integer;
-    function ParamCountL2: integer;
+    function EnqEvCapacity: integer;
     
-    function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<TInvData>;
+    function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<TInvData>;
     
   end;
   
@@ -8052,31 +8120,16 @@ type
       end;
     end;
     
-    public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; l: CLTaskLocalData; l1_start_ev, l2_start_ev: EventList): EventList; where TEnq: IEnqueueable<TInvData>;
+    public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; l: CLTaskLocalData; start_ev: EventList; start_ev_in_l1: boolean): EventList; where TEnq: IEnqueueable<TInvData>;
     begin
-      var param_count_l1 := q.ParamCountL1;
-      var param_count_l2 := q.ParamCountL2;
-      
-      // +param_count_l2, потому что, к примеру, .Cast может вернуть не QueueResDelayedPtr, даже при need_ptr_qr
-      var evs_l1 := MakeEvList(param_count_l1+param_count_l2, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
-      var evs_l2 := MakeEvList(               param_count_l2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
+      var enq_evs := new EnqEvLst(q.EnqEvCapacity+1);
+      if start_ev_in_l1 then
+        enq_evs.AddL1(start_ev) else
+        enq_evs.AddL2(start_ev);
       
       var pre_params_handler := g.curr_err_handler;
-      var enq_f := q.InvokeParams(g, l, evs_l1, evs_l2);
-      {$ifdef DEBUG}
-      begin
-        var r1,r2: integer;
-        var ev_exists := function(ev: EventList): integer -> integer(ev.count<>0);
-        r1 := param_count_l1 +                + ev_exists(l1_start_ev);
-        r2 := param_count_l1 + param_count_l2 + ev_exists(l1_start_ev);
-        if not evs_l1.Count.InRange(r1, r2) then raise new OpenCLABCInternalException($'{q.GetType.Name}[L1]: {evs_l1.Count}.InRange({r1}, {r2})');
-        r1 :=                + ev_exists(l2_start_ev);
-        r2 := param_count_l2 + ev_exists(l2_start_ev);
-        if not evs_l2.Count.InRange(r1, r2) then raise new OpenCLABCInternalException($'{q.GetType.Name}[L2]: {evs_l2.Count}.InRange({r1}, {r2})');
-      end;
-      {$endif DEBUG}
-      var ev_l1 := EventList.Combine(evs_l1);
-      var ev_l2 := EventList.Combine(evs_l2);
+      var enq_f := q.InvokeParams(g, l, enq_evs);
+      var (ev_l1, ev_l2) := enq_evs.MakeLists;
       
       if pre_params_handler.HadError(true) then
       begin
@@ -8131,30 +8184,32 @@ type
   end;
   EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>, IEnqueueable<EnqueueableGPUCommandInvData<T>>)
     
-    public function ParamCountL1: integer; abstract;
-    public function ParamCountL2: integer; abstract;
+    public function EnqEvCapacity: integer; abstract;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (T, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; abstract;
+    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
     begin
-      var enq_f := InvokeParamsImpl(g, l, evs_l1, evs_l2);
+      var enq_f := InvokeParamsImpl(g, l, enq_evs);
       Result := (lcq, err_handler, ev, data)->enq_f(data.qr.GetRes, lcq, err_handler, ev);
     end;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData; prev_qr: QueueRes<T>; l2_start_ev: EventList): EventList;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData; prev_qr: QueueRes<T>; start_ev: EventList; start_ev_in_l1: boolean): EventList;
     begin
       var inv_data: EnqueueableGPUCommandInvData<T>;
       inv_data.qr  := prev_qr;
       
       l.prev_ev := EventList.Empty; // InfokeObj/InvokeQueue уже используего его
-      Result := EnqueueableCore.Invoke(self, inv_data, g, l, prev_qr.ev, l2_start_ev);
+      Result := EnqueueableCore.Invoke(self, inv_data, g, l, start_ev, start_ev_in_l1);
     end;
     
     protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
-    Invoke(g, l, new QueueResConst<T>(o, EventList.Empty), l.prev_ev);
+    Invoke(g, l, new QueueResConst<T>(o, EventList.Empty), l.prev_ev, false);
     
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
-    Invoke(g, l, o_q().Invoke(g, l), EventList.Empty);
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override;
+    begin
+      var prev_qr := o_q().Invoke(g, l);
+      Result := Invoke(g, l, prev_qr, prev_qr.ev, not (prev_qr is IQueueResConst));
+    end;
     
   end;
   
@@ -8173,15 +8228,14 @@ type
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
     
-    public function ParamCountL1: integer; abstract;
-    public function ParamCountL2: integer; abstract;
+    public function EnqEvCapacity: integer; abstract;
     
     public function ForcePtrQr: boolean; virtual := false;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (TObj, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (TObj, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
+    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
     begin
-      var enq_f := InvokeParamsImpl(g, l, evs_l1, evs_l2);
+      var enq_f := InvokeParamsImpl(g, l, enq_evs);
       Result := (lcq, err_handler, ev, data)->enq_f(data.prev_qr.GetRes, lcq, err_handler, ev, data.res_qr);
     end;
     
@@ -8195,7 +8249,7 @@ type
       inv_data.res_qr   := QueueResDelayedBase&<TRes>.MakeNew(l.need_ptr_qr or ForcePtrQr);
       
       Result := inv_data.res_qr;
-      Result.ev := EnqueueableCore.Invoke(self, inv_data, g, l, prev_qr.ev, EventList.Empty);
+      Result.ev := EnqueueableCore.Invoke(self, inv_data, g, l, prev_qr.ev, not (prev_qr is IQueueResConst));
     end;
     
   end;
@@ -8235,8 +8289,7 @@ type
     private  sz1: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 1 + args.Length;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1 + args.Length;
     
     public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
     begin
@@ -8245,14 +8298,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, 1 + args.Length, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8330,8 +8383,7 @@ type
     private  sz2: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 2 + args.Length;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2 + args.Length;
     
     public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
     begin
@@ -8341,16 +8393,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, 2 + args.Length, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); evs_l1.Add(sz2_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8435,8 +8487,7 @@ type
     private  sz3: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 3 + args.Length;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3 + args.Length;
     
     public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
     begin
@@ -8447,18 +8498,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, 3 + args.Length, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); evs_l1.Add(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); evs_l1.Add(sz2_qr.ev);
-         sz3_qr := invoker.InvokeBranch&<integer>( sz3.Invoke); evs_l1.Add(sz3_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+         sz3_qr := invoker.InvokeBranch&<integer>( sz3.Invoke); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8549,8 +8600,7 @@ type
     private    local_work_size: CommandQueue<array of UIntPtr>;
     private               args: array of KernelArg;
     
-    public function ParamCountL1: integer; override := 3 + args.Length;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3 + args.Length;
     
     public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
     begin
@@ -8561,18 +8611,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var global_work_offset_qr: QueueRes<array of UIntPtr>;
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
       var               args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, 3 + args.Length, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        global_work_offset_qr := invoker.InvokeBranch&<array of UIntPtr>(global_work_offset.Invoke); evs_l1.Add(global_work_offset_qr.ev);
-          global_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(  global_work_size.Invoke); evs_l1.Add(global_work_size_qr.ev);
-           local_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(   local_work_size.Invoke); evs_l1.Add(local_work_size_qr.ev);
-                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); evs_l1.Add(Result.ev); end);
+        global_work_offset_qr := invoker.InvokeBranch&<array of UIntPtr>(global_work_offset.Invoke); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
+          global_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(  global_work_size.Invoke); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
+           local_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(   local_work_size.Invoke); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
+                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8836,8 +8886,7 @@ type
   MemorySegmentCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
     private ptr: CommandQueue<IntPtr>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -8845,12 +8894,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8900,8 +8949,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>);
     begin
@@ -8911,16 +8959,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 3, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
+               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8980,8 +9028,7 @@ type
   MemorySegmentCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
     private ptr: CommandQueue<IntPtr>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -8989,12 +9036,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9044,8 +9091,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>);
     begin
@@ -9055,16 +9101,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 3, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
+               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9173,8 +9219,7 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9187,12 +9232,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9246,8 +9291,7 @@ type
     private        val: CommandQueue<TRecord>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -9260,14 +9304,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var        val_qr: QueueRes<TRecord>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 2, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9329,8 +9373,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9342,12 +9385,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9404,8 +9447,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9417,12 +9459,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9479,8 +9521,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9492,12 +9533,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9554,8 +9595,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9567,12 +9607,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9629,8 +9669,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9642,12 +9681,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9704,8 +9743,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -9717,12 +9755,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9782,8 +9820,7 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     static constructor;
     begin
@@ -9798,18 +9835,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var          a_qr: QueueRes<array of TRecord>;
       var   a_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
-          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9887,8 +9924,7 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 5;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 5;
     
     static constructor;
     begin
@@ -9904,20 +9940,20 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var          a_qr: QueueRes<array[,] of TRecord>;
       var  a_offset1_qr: QueueRes<integer>;
       var  a_offset2_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 5, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); evs_l1.Add(a_offset2_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10002,8 +10038,7 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 6;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 6;
     
     static constructor;
     begin
@@ -10020,7 +10055,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var          a_qr: QueueRes<array[,,] of TRecord>;
       var  a_offset1_qr: QueueRes<integer>;
@@ -10028,14 +10063,14 @@ type
       var  a_offset3_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 6, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); evs_l1.Add(a_offset2_qr.ev);
-         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); evs_l1.Add(a_offset3_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10124,8 +10159,7 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     static constructor;
     begin
@@ -10140,18 +10174,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var          a_qr: QueueRes<array of TRecord>;
       var   a_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
-          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10229,8 +10263,7 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 5;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 5;
     
     static constructor;
     begin
@@ -10246,20 +10279,20 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var          a_qr: QueueRes<array[,] of TRecord>;
       var  a_offset1_qr: QueueRes<integer>;
       var  a_offset2_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 5, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); evs_l1.Add(a_offset2_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10344,8 +10377,7 @@ type
     private        len: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 6;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 6;
     
     static constructor;
     begin
@@ -10362,7 +10394,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var          a_qr: QueueRes<array[,,] of TRecord>;
       var  a_offset1_qr: QueueRes<integer>;
@@ -10370,14 +10402,14 @@ type
       var  a_offset3_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 6, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); evs_l1.Add(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); evs_l1.Add(a_offset2_qr.ev);
-         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); evs_l1.Add(a_offset3_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10467,8 +10499,7 @@ type
     private         ptr: CommandQueue<IntPtr>;
     private pattern_len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>);
     begin
@@ -10477,14 +10508,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 2, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10541,8 +10572,7 @@ type
     private  mem_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>);
     begin
@@ -10553,18 +10583,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); evs_l1.Add(len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10636,8 +10666,7 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 0;
     
     static constructor;
     begin
@@ -10649,7 +10678,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       
       Result := (o, cq, err_handler, evs)->
@@ -10696,8 +10725,7 @@ type
   where TRecord: record;
     private val: CommandQueue<TRecord>;
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -10709,12 +10737,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var val_qr: QueueRes<TRecord>;
-      g.ParallelInvoke(l.WithPtrNeed(true), true, 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(true), true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<TRecord>(val.Invoke); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
+        val_qr := invoker.InvokeBranch&<TRecord>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10777,8 +10805,7 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -10792,14 +10819,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 2, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10860,8 +10887,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -10875,16 +10901,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var        val_qr: QueueRes<TRecord>;
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 3, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
+               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10952,8 +10978,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -10965,12 +10990,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11027,8 +11052,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -11040,12 +11064,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11102,8 +11126,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -11115,12 +11138,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11181,8 +11204,7 @@ type
     private         len: CommandQueue<integer>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 5;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 5;
     
     static constructor;
     begin
@@ -11198,20 +11220,20 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var           a_qr: QueueRes<array of TRecord>;
       var    a_offset_qr: QueueRes<integer>;
       var pattern_len_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 5, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array of TRecord>(          a.Invoke); evs_l1.Add(a_qr.ev);
-           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); evs_l1.Add(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<array of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11296,8 +11318,7 @@ type
     private         len: CommandQueue<integer>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 6;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 6;
     
     static constructor;
     begin
@@ -11314,7 +11335,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var           a_qr: QueueRes<array[,] of TRecord>;
       var   a_offset1_qr: QueueRes<integer>;
@@ -11322,14 +11343,14 @@ type
       var pattern_len_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 6, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array[,] of TRecord>(          a.Invoke); evs_l1.Add(a_qr.ev);
-          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
-          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); evs_l1.Add(a_offset2_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); evs_l1.Add(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<array[,] of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11421,8 +11442,7 @@ type
     private         len: CommandQueue<integer>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 7;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 7;
     
     static constructor;
     begin
@@ -11440,7 +11460,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var           a_qr: QueueRes<array[,,] of TRecord>;
       var   a_offset1_qr: QueueRes<integer>;
@@ -11449,15 +11469,15 @@ type
       var pattern_len_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       var  mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 7, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(          a.Invoke); evs_l1.Add(a_qr.ev);
-          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); evs_l1.Add(a_offset1_qr.ev);
-          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); evs_l1.Add(a_offset2_qr.ev);
-          a_offset3_qr := invoker.InvokeBranch&<integer>(  a_offset3.Invoke); evs_l1.Add(a_offset3_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); evs_l1.Add(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+          a_offset3_qr := invoker.InvokeBranch&<integer>(  a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11552,8 +11572,7 @@ type
   MemorySegmentCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
     private mem: CommandQueue<MemorySegment>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(mem: CommandQueue<MemorySegment>);
     begin
@@ -11561,12 +11580,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_qr: QueueRes<MemorySegment>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); evs_l1.Add(mem_qr.ev);
+        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11617,8 +11636,7 @@ type
     private   to_pos: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>);
     begin
@@ -11629,18 +11647,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var      mem_qr: QueueRes<MemorySegment>;
       var from_pos_qr: QueueRes<integer>;
       var   to_pos_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); evs_l1.Add(mem_qr.ev);
-        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); evs_l1.Add(from_pos_qr.ev);
-          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); evs_l1.Add(to_pos_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); evs_l1.Add(len_qr.ev);
+             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
+          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
+             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11706,8 +11724,7 @@ type
   MemorySegmentCommandCopyFromAutoSize = sealed class(EnqueueableGPUCommand<MemorySegment>)
     private mem: CommandQueue<MemorySegment>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(mem: CommandQueue<MemorySegment>);
     begin
@@ -11715,12 +11732,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var mem_qr: QueueRes<MemorySegment>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); evs_l1.Add(mem_qr.ev);
+        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11771,8 +11788,7 @@ type
     private   to_pos: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>);
     begin
@@ -11783,18 +11799,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var      mem_qr: QueueRes<MemorySegment>;
       var from_pos_qr: QueueRes<integer>;
       var   to_pos_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); evs_l1.Add(mem_qr.ev);
-        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); evs_l1.Add(from_pos_qr.ev);
-          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); evs_l1.Add(to_pos_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); evs_l1.Add(len_qr.ev);
+             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
+          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
+             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11863,8 +11879,7 @@ AddCommand(self, new MemorySegmentCommandCopyFrom(mem, from_pos, to_pos, len));
 type
   MemorySegmentCommandGetDataAutoSize = sealed class(EnqueueableGetCommand<MemorySegment, IntPtr>)
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 0;
     
     public constructor(ccq: MemorySegmentCCQ);
     begin
@@ -11872,7 +11887,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -11915,8 +11930,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(ccq: MemorySegmentCCQ; mem_offset, len: CommandQueue<integer>);
     begin
@@ -11926,14 +11940,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<IntPtr>)->cl_event; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); evs_l1.Add(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12000,8 +12014,7 @@ type
     
     public function ForcePtrQr: boolean; override := true;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -12014,12 +12027,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRecord>)->cl_event; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); evs_l1.Add(mem_offset_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12074,8 +12087,7 @@ type
   MemorySegmentCommandGetArray1AutoSize<TRecord> = sealed class(EnqueueableGetCommand<MemorySegment, array of TRecord>)
   where TRecord: record;
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 0;
     
     static constructor;
     begin
@@ -12087,7 +12099,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12133,8 +12145,7 @@ type
   where TRecord: record;
     private len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -12147,12 +12158,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of TRecord>)->cl_event; override;
     begin
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
+        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12211,8 +12222,7 @@ type
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -12226,14 +12236,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array[,] of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array[,] of TRecord>)->cl_event; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); evs_l1.Add(len1_qr.ev);
-        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); evs_l1.Add(len2_qr.ev);
+        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
+        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12299,8 +12309,7 @@ type
     private len2: CommandQueue<integer>;
     private len3: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -12315,16 +12324,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array[,,] of TRecord>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (MemorySegment, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array[,,] of TRecord>)->cl_event; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
       var len3_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 3, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); evs_l1.Add(len1_qr.ev);
-        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); evs_l1.Add(len2_qr.ev);
-        len3_qr := invoker.InvokeBranch&<integer>(len3.Invoke); evs_l1.Add(len3_qr.ev);
+        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
+        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
+        len3_qr := invoker.InvokeBranch&<integer>(len3.Invoke); if (len3_qr is IQueueResConst) then enq_evs.AddL2(len3_qr.ev) else enq_evs.AddL1(len3_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12519,8 +12528,7 @@ type
   where T: record;
     private ptr: CommandQueue<IntPtr>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -12528,12 +12536,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12584,8 +12592,7 @@ type
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>);
     begin
@@ -12595,16 +12602,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 3, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12665,8 +12672,7 @@ type
   where T: record;
     private ptr: CommandQueue<IntPtr>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -12674,12 +12680,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12730,8 +12736,7 @@ type
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 3;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>);
     begin
@@ -12741,16 +12746,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 3, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12845,8 +12850,7 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(val: &T; ind: CommandQueue<integer>);
     begin
@@ -12855,12 +12859,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12914,8 +12918,7 @@ type
     private val: CommandQueue<&T>;
     private ind: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(val: CommandQueue<&T>; ind: CommandQueue<integer>);
     begin
@@ -12924,14 +12927,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var val_qr: QueueRes<&T>;
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 2, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<&T>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
+        val_qr := invoker.InvokeBranch&<&T>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12993,8 +12996,7 @@ type
   where T: record;
     private a: CommandQueue<array of &T>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(a: CommandQueue<array of &T>);
     begin
@@ -13002,12 +13004,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of &T>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13066,8 +13068,7 @@ type
     private   len: CommandQueue<integer>;
     private a_ind: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>);
     begin
@@ -13078,18 +13079,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var   ind_qr: QueueRes<integer>;
       var   len_qr: QueueRes<integer>;
       var a_ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<array of &T>(    a.Invoke); evs_l1.Add(a_qr.ev);
-          ind_qr := invoker.InvokeBranch&<integer>(  ind.Invoke); evs_l1.Add(ind_qr.ev);
-          len_qr := invoker.InvokeBranch&<integer>(  len.Invoke); evs_l1.Add(len_qr.ev);
-        a_ind_qr := invoker.InvokeBranch&<integer>(a_ind.Invoke); evs_l1.Add(a_ind_qr.ev);
+            a_qr := invoker.InvokeBranch&<array of &T>(    a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          ind_qr := invoker.InvokeBranch&<integer>(  ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+          len_qr := invoker.InvokeBranch&<integer>(  len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        a_ind_qr := invoker.InvokeBranch&<integer>(a_ind.Invoke); if (a_ind_qr is IQueueResConst) then enq_evs.AddL2(a_ind_qr.ev) else enq_evs.AddL1(a_ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13163,8 +13164,7 @@ type
   where T: record;
     private a: CommandQueue<array of &T>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(a: CommandQueue<array of &T>);
     begin
@@ -13172,12 +13172,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of &T>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13236,8 +13236,7 @@ type
     private   len: CommandQueue<integer>;
     private a_ind: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>);
     begin
@@ -13248,18 +13247,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var   ind_qr: QueueRes<integer>;
       var   len_qr: QueueRes<integer>;
       var a_ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<array of &T>(    a.Invoke); evs_l1.Add(a_qr.ev);
-          ind_qr := invoker.InvokeBranch&<integer>(  ind.Invoke); evs_l1.Add(ind_qr.ev);
-          len_qr := invoker.InvokeBranch&<integer>(  len.Invoke); evs_l1.Add(len_qr.ev);
-        a_ind_qr := invoker.InvokeBranch&<integer>(a_ind.Invoke); evs_l1.Add(a_ind_qr.ev);
+            a_qr := invoker.InvokeBranch&<array of &T>(    a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          ind_qr := invoker.InvokeBranch&<integer>(  ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+          len_qr := invoker.InvokeBranch&<integer>(  len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        a_ind_qr := invoker.InvokeBranch&<integer>(a_ind.Invoke); if (a_ind_qr is IQueueResConst) then enq_evs.AddL2(a_ind_qr.ev) else enq_evs.AddL1(a_ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13338,8 +13337,7 @@ type
     private         ptr: CommandQueue<IntPtr>;
     private pattern_len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>);
     begin
@@ -13348,14 +13346,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 2, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13413,8 +13411,7 @@ type
     private         ind: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>);
     begin
@@ -13425,18 +13422,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
       var         ind_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); evs_l1.Add(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
-                ind_qr := invoker.InvokeBranch&<integer>(        ind.Invoke); evs_l1.Add(ind_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); evs_l1.Add(len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ind_qr := invoker.InvokeBranch&<integer>(        ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13522,8 +13519,7 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 0;
     
     public constructor(val: &T);
     begin
@@ -13531,7 +13527,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       
       Result := (o, cq, err_handler, evs)->
@@ -13578,8 +13574,7 @@ type
   where T: record;
     private val: CommandQueue<&T>;
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(val: CommandQueue<&T>);
     begin
@@ -13587,12 +13582,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var val_qr: QueueRes<&T>;
-      g.ParallelInvoke(l.WithPtrNeed(true), true, 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(true), true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<&T>(val.Invoke); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
+        val_qr := invoker.InvokeBranch&<&T>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13655,8 +13650,7 @@ type
       Marshal.FreeHGlobal(new IntPtr(val));
     end;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(val: &T; ind, len: CommandQueue<integer>);
     begin
@@ -13666,14 +13660,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 2, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13734,8 +13728,7 @@ type
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(val: CommandQueue<&T>; ind, len: CommandQueue<integer>);
     begin
@@ -13745,16 +13738,16 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var val_qr: QueueRes<&T>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 3, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<&T>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); (if val_qr is IQueueResDelayedPtr then evs_l2 else evs_l1).Add(val_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
+        val_qr := invoker.InvokeBranch&<&T>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13822,8 +13815,7 @@ type
   where T: record;
     private a: CommandQueue<array of &T>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(a: CommandQueue<array of &T>);
     begin
@@ -13831,12 +13823,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<array of &T>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13896,8 +13888,7 @@ type
     private         ind: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 5;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 5;
     
     public constructor(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>);
     begin
@@ -13909,20 +13900,20 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var           a_qr: QueueRes<array of &T>;
       var    a_offset_qr: QueueRes<integer>;
       var pattern_len_qr: QueueRes<integer>;
       var         ind_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 5, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array of &T>(          a.Invoke); evs_l1.Add(a_qr.ev);
-           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); evs_l1.Add(a_offset_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); evs_l1.Add(pattern_len_qr.ev);
-                ind_qr := invoker.InvokeBranch&<integer>(        ind.Invoke); evs_l1.Add(ind_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); evs_l1.Add(len_qr.ev);
+                  a_qr := invoker.InvokeBranch&<array of &T>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ind_qr := invoker.InvokeBranch&<integer>(        ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14006,8 +13997,7 @@ type
   where T: record;
     private a: CommandQueue<CLArray<T>>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(a: CommandQueue<CLArray<T>>);
     begin
@@ -14015,12 +14005,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<CLArray<T>>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<CLArray<T>>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<CLArray<T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14072,8 +14062,7 @@ type
     private   to_ind: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>);
     begin
@@ -14084,18 +14073,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var        a_qr: QueueRes<CLArray<T>>;
       var from_ind_qr: QueueRes<integer>;
       var   to_ind_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               a_qr := invoker.InvokeBranch&<CLArray<T>>(       a.Invoke); evs_l1.Add(a_qr.ev);
-        from_ind_qr := invoker.InvokeBranch&<integer>(from_ind.Invoke); evs_l1.Add(from_ind_qr.ev);
-          to_ind_qr := invoker.InvokeBranch&<integer>(  to_ind.Invoke); evs_l1.Add(to_ind_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); evs_l1.Add(len_qr.ev);
+               a_qr := invoker.InvokeBranch&<CLArray<T>>(       a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        from_ind_qr := invoker.InvokeBranch&<integer>(from_ind.Invoke); if (from_ind_qr is IQueueResConst) then enq_evs.AddL2(from_ind_qr.ev) else enq_evs.AddL1(from_ind_qr.ev);
+          to_ind_qr := invoker.InvokeBranch&<integer>(  to_ind.Invoke); if (to_ind_qr is IQueueResConst) then enq_evs.AddL2(to_ind_qr.ev) else enq_evs.AddL1(to_ind_qr.ev);
+             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14162,8 +14151,7 @@ type
   where T: record;
     private a: CommandQueue<CLArray<T>>;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(a: CommandQueue<CLArray<T>>);
     begin
@@ -14171,12 +14159,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var a_qr: QueueRes<CLArray<T>>;
-      g.ParallelInvoke(l, true, 1, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<CLArray<T>>(a.Invoke); evs_l1.Add(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<CLArray<T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14228,8 +14216,7 @@ type
     private   to_ind: CommandQueue<integer>;
     private      len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 4;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 4;
     
     public constructor(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>);
     begin
@@ -14240,18 +14227,18 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var        a_qr: QueueRes<CLArray<T>>;
       var from_ind_qr: QueueRes<integer>;
       var   to_ind_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, true, 4, invoker->
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               a_qr := invoker.InvokeBranch&<CLArray<T>>(       a.Invoke); evs_l1.Add(a_qr.ev);
-        from_ind_qr := invoker.InvokeBranch&<integer>(from_ind.Invoke); evs_l1.Add(from_ind_qr.ev);
-          to_ind_qr := invoker.InvokeBranch&<integer>(  to_ind.Invoke); evs_l1.Add(to_ind_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); evs_l1.Add(len_qr.ev);
+               a_qr := invoker.InvokeBranch&<CLArray<T>>(       a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        from_ind_qr := invoker.InvokeBranch&<integer>(from_ind.Invoke); if (from_ind_qr is IQueueResConst) then enq_evs.AddL2(from_ind_qr.ev) else enq_evs.AddL1(from_ind_qr.ev);
+          to_ind_qr := invoker.InvokeBranch&<integer>(  to_ind.Invoke); if (to_ind_qr is IQueueResConst) then enq_evs.AddL2(to_ind_qr.ev) else enq_evs.AddL1(to_ind_qr.ev);
+             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14324,8 +14311,7 @@ type
     
     public function ForcePtrQr: boolean; override := true;
     
-    public function ParamCountL1: integer; override := 1;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(ccq: CLArrayCCQ<T>; ind: CommandQueue<integer>);
     begin
@@ -14334,12 +14320,12 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<&T>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<&T>)->cl_event; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 1, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -14394,8 +14380,7 @@ type
   CLArrayCommandGetArrayAutoSize<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
   where T: record;
     
-    public function ParamCountL1: integer; override := 0;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 0;
     
     public constructor(ccq: CLArrayCCQ<T>);
     begin
@@ -14403,7 +14388,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
     begin
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -14450,8 +14435,7 @@ type
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function ParamCountL1: integer; override := 2;
-    public function ParamCountL2: integer; override := 0;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(ccq: CLArrayCCQ<T>; ind, len: CommandQueue<integer>);
     begin
@@ -14461,14 +14445,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<array of &T>)->cl_event; override;
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(l.WithPtrNeed(False), true, 2, invoker->
+      g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); evs_l1.Add(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); evs_l1.Add(len_qr.ev);
+        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->

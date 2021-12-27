@@ -319,7 +319,7 @@ type
       all_loaded.Where(t->(t.req_modules<>nil) and t.test_mode.Contains('Comp'))
       .Select(t->ProcTask(()->
       try
-        var fwoe := t.pas_fname.Remove(t.pas_fname.LastIndexOf('.'));
+        var fwoe := System.IO.Path.ChangeExtension(t.pas_fname, nil).Replace('error','errоr');
         
         var comp_err: string := nil;
         CompilePasFile(t.pas_fname,
@@ -573,7 +573,7 @@ type
             else raise new MessageException($'ERROR: Invalid wait test extension [{System.IO.Path.GetExtension(wait_test)}]');
           end;
       
-      var fwoe := pas_fname.Remove(pas_fname.LastIndexOf('.'));
+      var fwoe := System.IO.Path.ChangeExtension(pas_fname, nil);
       
       if stop_test then
       begin
@@ -591,6 +591,7 @@ type
       res := res?.Remove(#13).Trim(#10);
       err := err?.Remove(#13).Trim(#10);
       
+      fwoe := fwoe.Replace('error','errоr');
       if err<>nil then
       begin
         

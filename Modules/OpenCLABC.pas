@@ -22,11 +22,6 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
-//TODO Параметры с константным результатом тоже надо сувать в ev_l2:
-// - k.Exec1(N, a.NewQueue.AddFillValue(1))
-// - a.NewQueue.AddFillValue(1) + k.Exec1(N, a)
-// --- Иначе сейчас cl.Enqueue не происходит до самого последнего момента, даже для такого простого случая
-
 //TODO MultiusableBase позволяет использовать вне модуля
 
 //TODO CommandQueueBase.UseTyped(typed_q_user: interface procedure use<T>(cq: CommandQueue<T>); procedure use_base(cq: CommandQueueBase); end)
@@ -2236,7 +2231,7 @@ type
 
 type
   EventList = record
-    public evs: array of cl_event := nil;
+    public evs: array of cl_event;
     public count := 0;
     
     {$region Misc}
@@ -2265,9 +2260,9 @@ type
     {$region constructor's}
     
     public constructor(count: integer) :=
-    if count<>0 then self.evs := new cl_event[count];
+    self.evs := new cl_event[count];
     public constructor := raise new OpenCLABCInternalException;
-    public static Empty := new EventList(0);
+    public static Empty := default(EventList);
     
     public static function operator implicit(ev: cl_event): EventList;
     begin
@@ -2315,18 +2310,20 @@ type
       Result += ev;
     end;
     
-    private static function Combine(evs: IList<EventList>): EventList;
+    private static function Combine<TList>(evs: TList): EventList; where TList: IList<EventList>;
     begin
       Result := EventList.Empty;
       var count := 0;
       
-      for var i := 0 to evs.Count-1 do
-        count += evs[i].count;
+      //TODO #2589
+      for var i := 0 to (evs as IList<EventList>).Count-1 do
+        count += evs.Item[i].count;
       if count=0 then exit;
       
       Result := new EventList(count);
-      for var i := 0 to evs.Count-1 do
-        Result += evs[i];
+      //TODO #2589
+      for var i := 0 to (evs as IList<EventList>).Count-1 do
+        Result += evs.Item[i];
       
     end;
     
@@ -2507,8 +2504,9 @@ type
   
   {$region Const}
   
+  IQueueResConst = interface end;
   // Результат который просто есть
-  QueueResConst<T> = sealed partial class(QueueRes<T>)
+  QueueResConst<T> = sealed partial class(QueueRes<T>, IQueueResConst)
     private res: T;
     
     public constructor(res: T; ev: EventList);
@@ -2522,8 +2520,7 @@ type
     
     public function GetRes: T; override := res;
     
-    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
-    new QueueResConst<T2>(f(self.res), self.ev);
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override;
     
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
     
@@ -2590,7 +2587,7 @@ type
     
   end;
   
-  IQueueResDelayedPtr = interface end; // Если параметры команды реализует - можно не ждать его ивент, а cl.enqueue сразу
+  IQueueResDelayedPtr = interface end;
   QueueResDelayedPtr<T> = sealed partial class(QueueResDelayedBase<T>, IPtrQueueRes<T>, IQueueResDelayedPtr)
     private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
@@ -2623,6 +2620,26 @@ type
   
   {$endregion Delayed}
   
+function QueueResConst<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
+begin
+  var n_res: T2;
+  try
+    n_res := f(self.res);
+  except
+    on e: Exception do
+    begin
+      var edi := System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e);
+      Result := new QueueResFunc<T2>(()->
+      begin
+        Result := default(T2);
+        edi.Throw;
+      end, self.ev);
+      exit;
+    end;
+  end;
+  Result := new QueueResConst<T2>(n_res, self.ev);
+end;
+
 {$endregion QueueRes}
 
 {$region UserEvent}
@@ -5297,13 +5314,64 @@ begin Result := FromCLArrayCQ(a_q); end;
 {$region Core}
 
 type
+  EnqEvLst = sealed class
+    private evs: array of EventList;
+    private c1 := 0;
+    private c2 := 0;
+    {$ifdef DEBUG}
+    private skipped := 0;
+    {$endif DEBUG}
+    
+    public constructor(cap: integer) :=
+    evs := new EventList[cap];
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property Capacity: integer read evs.Length;
+    
+    public procedure AddL1(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        evs[c1] := ev;
+        c1 += 1;
+      end;
+    end;
+    public procedure AddL2(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        c2 += 1;
+        evs[evs.Length-c2] := ev;
+      end;
+    end;
+    
+    public function MakeLists: ValueTuple<EventList, EventList>;
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2}/{evs.Length} used');
+      {$endif DEBUG}
+      Result := ValueTuple.Create(
+        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
+        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
+      );
+    end;
+    
+  end;
+  
   EnqueueableEnqFunc<TInvData> = function(cq: cl_command_queue; err_handler: CLTaskErrHandler; ev_l2: EventList; inv_data: TInvData): cl_event;
   IEnqueueable<TInvData> = interface
     
-    function ParamCountL1: integer;
-    function ParamCountL2: integer;
+    function EnqEvCapacity: integer;
     
-    function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<TInvData>;
+    function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<TInvData>;
     
   end;
   
@@ -5332,31 +5400,16 @@ type
       end;
     end;
     
-    public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; l: CLTaskLocalData; l1_start_ev, l2_start_ev: EventList): EventList; where TEnq: IEnqueueable<TInvData>;
+    public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; l: CLTaskLocalData; start_ev: EventList; start_ev_in_l1: boolean): EventList; where TEnq: IEnqueueable<TInvData>;
     begin
-      var param_count_l1 := q.ParamCountL1;
-      var param_count_l2 := q.ParamCountL2;
-      
-      // +param_count_l2, потому что, к примеру, .Cast может вернуть не QueueResDelayedPtr, даже при need_ptr_qr
-      var evs_l1 := MakeEvList(param_count_l1+param_count_l2, l1_start_ev); // Ожидание, перед вызовом  cl.Enqueue*
-      var evs_l2 := MakeEvList(               param_count_l2, l2_start_ev); // Ожидание, передаваемое в cl.Enqueue*
+      var enq_evs := new EnqEvLst(q.EnqEvCapacity+1);
+      if start_ev_in_l1 then
+        enq_evs.AddL1(start_ev) else
+        enq_evs.AddL2(start_ev);
       
       var pre_params_handler := g.curr_err_handler;
-      var enq_f := q.InvokeParams(g, l, evs_l1, evs_l2);
-      {$ifdef DEBUG}
-      begin
-        var r1,r2: integer;
-        var ev_exists := function(ev: EventList): integer -> integer(ev.count<>0);
-        r1 := param_count_l1 +                + ev_exists(l1_start_ev);
-        r2 := param_count_l1 + param_count_l2 + ev_exists(l1_start_ev);
-        if not evs_l1.Count.InRange(r1, r2) then raise new OpenCLABCInternalException($'{q.GetType.Name}[L1]: {evs_l1.Count}.InRange({r1}, {r2})');
-        r1 :=                + ev_exists(l2_start_ev);
-        r2 := param_count_l2 + ev_exists(l2_start_ev);
-        if not evs_l2.Count.InRange(r1, r2) then raise new OpenCLABCInternalException($'{q.GetType.Name}[L2]: {evs_l2.Count}.InRange({r1}, {r2})');
-      end;
-      {$endif DEBUG}
-      var ev_l1 := EventList.Combine(evs_l1);
-      var ev_l2 := EventList.Combine(evs_l2);
+      var enq_f := q.InvokeParams(g, l, enq_evs);
+      var (ev_l1, ev_l2) := enq_evs.MakeLists;
       
       if pre_params_handler.HadError(true) then
       begin
@@ -5411,30 +5464,32 @@ type
   end;
   EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>, IEnqueueable<EnqueueableGPUCommandInvData<T>>)
     
-    public function ParamCountL1: integer; abstract;
-    public function ParamCountL2: integer; abstract;
+    public function EnqEvCapacity: integer; abstract;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (T, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (T, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; abstract;
+    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
     begin
-      var enq_f := InvokeParamsImpl(g, l, evs_l1, evs_l2);
+      var enq_f := InvokeParamsImpl(g, l, enq_evs);
       Result := (lcq, err_handler, ev, data)->enq_f(data.qr.GetRes, lcq, err_handler, ev);
     end;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData; prev_qr: QueueRes<T>; l2_start_ev: EventList): EventList;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData; prev_qr: QueueRes<T>; start_ev: EventList; start_ev_in_l1: boolean): EventList;
     begin
       var inv_data: EnqueueableGPUCommandInvData<T>;
       inv_data.qr  := prev_qr;
       
       l.prev_ev := EventList.Empty; // InfokeObj/InvokeQueue уже используего его
-      Result := EnqueueableCore.Invoke(self, inv_data, g, l, prev_qr.ev, l2_start_ev);
+      Result := EnqueueableCore.Invoke(self, inv_data, g, l, start_ev, start_ev_in_l1);
     end;
     
     protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
-    Invoke(g, l, new QueueResConst<T>(o, EventList.Empty), l.prev_ev);
+    Invoke(g, l, new QueueResConst<T>(o, EventList.Empty), l.prev_ev, false);
     
-    protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override :=
-    Invoke(g, l, o_q().Invoke(g, l), EventList.Empty);
+    protected function InvokeQueue(o_q: ()->CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): EventList; override;
+    begin
+      var prev_qr := o_q().Invoke(g, l);
+      Result := Invoke(g, l, prev_qr, prev_qr.ev, not (prev_qr is IQueueResConst));
+    end;
     
   end;
   
@@ -5453,15 +5508,14 @@ type
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
     
-    public function ParamCountL1: integer; abstract;
-    public function ParamCountL2: integer; abstract;
+    public function EnqEvCapacity: integer; abstract;
     
     public function ForcePtrQr: boolean; virtual := false;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): (TObj, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; evs_l1, evs_l2: List<EventList>): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (TObj, cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<TRes>)->cl_event; abstract;
+    public function InvokeParams(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
     begin
-      var enq_f := InvokeParamsImpl(g, l, evs_l1, evs_l2);
+      var enq_f := InvokeParamsImpl(g, l, enq_evs);
       Result := (lcq, err_handler, ev, data)->enq_f(data.prev_qr.GetRes, lcq, err_handler, ev, data.res_qr);
     end;
     
@@ -5475,7 +5529,7 @@ type
       inv_data.res_qr   := QueueResDelayedBase&<TRes>.MakeNew(l.need_ptr_qr or ForcePtrQr);
       
       Result := inv_data.res_qr;
-      Result.ev := EnqueueableCore.Invoke(self, inv_data, g, l, prev_qr.ev, EventList.Empty);
+      Result.ev := EnqueueableCore.Invoke(self, inv_data, g, l, prev_qr.ev, not (prev_qr is IQueueResConst));
     end;
     
   end;

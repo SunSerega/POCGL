@@ -467,19 +467,7 @@ type
       // Надо всегда, потому что даже если параметр 1 - его надо начинать выполнять асинхронно от всего остального
       res_EIm += '      g.ParallelInvoke(l';
       var default_need_ptr := WriteLocalDataForParam(res_EIm, settings);
-      res_EIm += ', true, ';
-      begin
-        var param_count_l := new List<MethodArgEvCount>;
-        if settings.args<>nil then
-          foreach var arg in settings.args do
-            if settings.arg_usage.ContainsKey(arg.name) then
-            begin
-              if not arg.t.IsCQ and not arg.t.IsKA then continue;
-              param_count_l += new MethodArgEvCount(arg);
-            end;
-        MethodArgEvCount.WriteAll(res_EIm, param_count_l);
-      end;
-      res_EIm += ', invoker->'#10;
+      res_EIm += ', true, enq_evs.Capacity-1, invoker->'#10;
       res_EIm += '      begin'#10;
       
       foreach var arg in useful_args do
@@ -536,15 +524,18 @@ type
         end;
         res_EIm += '); ';
         
+        res_EIm += 'if ';
         if settings.arg_usage[arg.name]='ptr' then
         begin
-          res_EIm += '(if ';
+          res_EIm += '(';
           WriteQRName;
-          res_EIm += ' is IQueueResDelayedPtr then evs_l2 else evs_l1)';
-        end else
-          res_EIm += 'evs_l1';
-        
-        res_EIm += '.Add(';
+          res_EIm += ' is IQueueResDelayedPtr) or ';
+        end;
+        res_EIm += '(';
+        WriteQRName;
+        res_EIm += ' is IQueueResConst) then enq_evs.AddL2(';
+        WriteQRName;
+        res_EIm += '.ev) else enq_evs.AddL1(';
         WriteQRName;
         res_EIm += '.ev)';
         
@@ -806,26 +797,18 @@ type
       
       WriteMiscMethods(settings);
       
-      var param_count_l1 := new List<MethodArgEvCount>;
-      var param_count_l2 := new List<MethodArgEvCount>;
-      if settings.args<>nil then
-        foreach var arg in settings.args do
-          if settings.arg_usage.ContainsKey(arg.name) then
-          begin
-            if not arg.t.IsCQ and not arg.t.IsKA then continue;
-            
-            var c := new MethodArgEvCount(arg);
-            
-            if settings.arg_usage[arg.name] = 'ptr' then
-              param_count_l2 += c else
-              param_count_l1 += c;
-            
-          end;
-      res_EIm += '    public function ParamCountL1: integer; override := ';
-      MethodArgEvCount.WriteAll(res_EIm, param_count_l1);
-      res_EIm += ';'+#10;
-      res_EIm += '    public function ParamCountL2: integer; override := ';
-      MethodArgEvCount.WriteAll(res_EIm, param_count_l2);
+      res_EIm += '    public function EnqEvCapacity: integer; override := ';
+      begin
+        var param_count := new List<MethodArgEvCount>;
+        if settings.args<>nil then
+          foreach var arg in settings.args do
+            if settings.arg_usage.ContainsKey(arg.name) then
+            begin
+              if not arg.t.IsCQ and not arg.t.IsKA then continue;
+              param_count += new MethodArgEvCount(arg);
+            end;
+        MethodArgEvCount.WriteAll(res_EIm, param_count);
+      end;
       res_EIm += ';'+#10;
       
       res_EIm += '    '#10;
