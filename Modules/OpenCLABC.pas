@@ -19,6 +19,8 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Тестировщик должен запускать отдельные .exe для тестирования, а не вот это вот всё
+
 //TODO HPQ должно возвращать nil как константу
 
 //TODO Тестировать ((Q+Const)+Q).ToString, константу должно выкинуть
@@ -93,8 +95,6 @@ unit OpenCLABC;
 //TODO Проверить, будет ли оптимизацией, создавать свой ThreadPool для каждого CLTaskBase
 // - (HPQ+HPQ).Handle.Handle, тут создаётся 4 UserEvent, хотя всё можно было бы выполнять синхронно
 
-//TODO Тестировщик должен запускать отдельные .exe для тестирования, а не вот это вот всё
-
 //===================================
 // Сделать когда-нибуть:
 
@@ -117,6 +117,7 @@ unit OpenCLABC;
 //TODO Issue компилятора:
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
+// - #2599
 
 //TODO Баги NVidia
 //TODO https://developer.nvidia.com/nvidia_bug/{id}
@@ -1258,11 +1259,7 @@ type
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     public procedure UseTyped(user: ITypedCQUser); override := user.Use(self);
-    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; override;
-    begin//TODO #2595
-      var f := Func&<CommandQueue<T>,TRes>(object(Func&<CommandQueue<T>,T>(converter.Convert&<T>)));
-      Result := f(self);
-    end;
+    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; override := converter.Convert(self);
     
   end;
   
@@ -3108,7 +3105,7 @@ type
     
   end;
   
-{$endregion}
+{$endregion Nil}
 
 {$region Cast}
 
@@ -3182,8 +3179,8 @@ type
     
   end;
   
-  //TODO #2594
-  CastQueueFactory<TRes> = class(ITypedCQConverter<CommandQueue<TRes>>)
+  //TODO #2599
+  CastQueueFactory<TRes> = sealed class(ITypedCQConverter<CommandQueue<TRes>>)
     
     public function Convert<TInp>(cq: CommandQueue<TInp>): CommandQueue<TRes>;
     begin
@@ -3263,8 +3260,7 @@ new CommandQueueThenConvert<T, TOtp>(self, f);
 {$region Simple}
 
 type
-  //TODO #2594
-  SimpleQueueArrayCommon<TQ> = class
+  SimpleQueueArrayCommon<TQ> = record
   where TQ: CommandQueueBase;
     public qs: array of CommandQueueBase;
     public last: TQ;
@@ -3614,7 +3610,7 @@ type
         // Ради только 1 из веток делать доп. указатель - было бы странно
         l.need_ptr_qr := false;
         Result := invoke_q(g, l);
-        (Result as QueueResBase).can_set_ev := false; //TODO #2596
+        Result.can_set_ev := false;
         var q_err_handler := g.curr_err_handler;
         
         g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(prev_err_handler, q_err_handler);
@@ -3625,7 +3621,7 @@ type
       if prev_ev.count<>0 then
       begin
         Result := TR(Result.CloneBase);
-        (Result as QueueResBase).ev := Result.ev+prev_ev; //TODO #2596
+        Result.ev := Result.ev+prev_ev;
       end;
     end;
     
@@ -4638,8 +4634,7 @@ function CommandQueue<T>.ThenFinallyWaitFor(marker: WaitMarker) := new CommandQu
 {$region Finally}
 
 type
-  //TODO #2594
-  CommandQueueTryFinallyCommon<TQ> = class
+  CommandQueueTryFinallyCommon<TQ> = record
   where TQ: CommandQueueBase;
     public try_do: CommandQueueBase;
     public do_finally: TQ;
