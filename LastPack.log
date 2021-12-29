@@ -176,6 +176,9 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.pas"
+Tester: Compiling: OK
+Tester: %WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.td"
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
@@ -312,6 +315,9 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const]
+Tester: Done executing
+Tester: WARNING: Settings updated for "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.td"
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
@@ -335,6 +341,7 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
 Tester: Cleanup
+Tester: WARNING: File "C:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
