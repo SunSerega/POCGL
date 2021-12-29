@@ -29,8 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Сделать класс для наследования между CommandQueueBase и очередями, возвращающими nil
-
 //TODO HPQ должно возвращать nil как константу
 
 //TODO Тестировать ((Q+Const)+Q).ToString, константу должно выкинуть
@@ -2337,10 +2335,10 @@ type
     
     ///Проверяет, какой тип результата у данной очереди
     ///Передаёт результат указанному объекту
-    public procedure UseTyped(user: ITypedCQUser); virtual := user.UseBase(self);
+    public procedure UseTyped(user: ITypedCQUser); abstract;
     ///Проверяет, какой тип результата у данной очереди
     ///Передаёт результат указанному объекту
-    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; virtual := converter.ConvertBase(self);
+    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; abstract;
     
   end;
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
@@ -2444,8 +2442,8 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; virtual;
-    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; virtual;
+    private function  AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
     
     public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
     public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
@@ -2545,7 +2543,7 @@ type
   
   ///Представляет маркер для Wait очередей
   ///При выполнении возвращает nil
-  WaitMarker = abstract partial class(CommandQueueBase)
+  WaitMarker = abstract partial class
     
     ///Создаёт новый простой маркер
     public static function Create: WaitMarker;
@@ -2589,13 +2587,13 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function ThenMarkerSignalBase: WaitMarker; virtual;
+    private function ThenMarkerSignalBase: WaitMarker; abstract;
     ///Создаёт особый маркер из данной очереди
     ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenMarkerSignal := ThenMarkerSignalBase;
     
-    private function ThenFinallyMarkerSignalBase: WaitMarker; virtual;
+    private function ThenFinallyMarkerSignalBase: WaitMarker; abstract;
     ///Создаёт особый маркер из данной очереди
     ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal не зависимо от исключений при выполнении данной очереди
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
@@ -5241,6 +5239,24 @@ end;
 
 {$region Queue converter's}
 
+{$region Nil}
+
+type
+  CommandQueueNil = abstract class(CommandQueueBase)
+    
+    public procedure UseTyped(user: ITypedCQUser); override := user.UseBase(self);
+    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; override := converter.ConvertBase(self);
+    
+    private function  AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; override;
+    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override;
+    
+    private function ThenMarkerSignalBase: WaitMarker; override;
+    private function ThenFinallyMarkerSignalBase: WaitMarker; override;
+    
+  end;
+  
+{$endregion Nil}
+
 {$region Cast}
 
 type
@@ -5458,7 +5474,7 @@ type
   ISimpleSyncQueueArray = interface(ISimpleQueueArray) end;
   ISimpleAsyncQueueArray = interface(ISimpleQueueArray) end;
   
-  SimpleQueueArrayBase = abstract class(CommandQueueBase, ISimpleQueueArray)
+  SimpleQueueArrayBase = abstract class(CommandQueueNil, ISimpleQueueArray)
     protected data := new SimpleQueueArrayCommon< CommandQueueBase >;
     
     public constructor(qs: array of CommandQueueBase; last: CommandQueueBase);
@@ -6190,8 +6206,8 @@ type
   
 {$endregion Utils}
 
-function CommandQueueBase. AfterQueueSyncBase(q: CommandQueueBase) := QueueArrayUtils. ConstructSync(|q, self|);
-function CommandQueueBase.AfterQueueAsyncBase(q: CommandQueueBase) := QueueArrayUtils.ConstructAsync(|q, self|);
+function CommandQueueNil. AfterQueueSyncBase(q: CommandQueueBase) := QueueArrayUtils. ConstructSync(|q, self|);
+function CommandQueueNil.AfterQueueAsyncBase(q: CommandQueueBase) := QueueArrayUtils.ConstructAsync(|q, self|);
 
 static function CommandQueue<T>.operator+(q1: CommandQueueBase; q2: CommandQueue<T>) := QueueArrayUtils. ConstructSync&<T>(|q1, q2|);
 static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(|q1, q2|);
@@ -6266,7 +6282,7 @@ type
     public function MakeNode: CommandQueueBase;
     
   end;
-  MultiusableCommandQueueNodeBase = sealed class(CommandQueueBase)
+  MultiusableCommandQueueNodeBase = sealed class(CommandQueueNil)
     public hub: MultiusableCommandQueueHubBase;
     public constructor(hub: MultiusableCommandQueueHubBase) := self.hub := hub;
     
@@ -6319,7 +6335,7 @@ function CommandQueue<T>.Multiusable := MultiusableCommandQueueHub&<T>.Create(se
 {$region Base}
 
 type
-  WaitMarker = abstract partial class(CommandQueueBase)
+  WaitMarker = abstract partial class(CommandQueueNil)
     
     public procedure InitInnerHandles(g: CLTaskGlobalData); abstract;
     
@@ -7155,8 +7171,8 @@ begin
   self.signal_in_finally := signal_in_finally;
 end;
 
-function CommandQueueBase.ThenMarkerSignalBase := new DetachedMarkerSignalResLess(self, false);
-function CommandQueueBase.ThenFinallyMarkerSignalBase := new DetachedMarkerSignalResLess(self, true);
+function CommandQueueNil.ThenMarkerSignalBase := new DetachedMarkerSignalResLess(self, false);
+function CommandQueueNil.ThenFinallyMarkerSignalBase := new DetachedMarkerSignalResLess(self, true);
 
 {$endregion ThenMarkerSignal}
 
@@ -7310,7 +7326,7 @@ type
     
   end;
   
-  CommandQueueTryFinallyBase = sealed class(CommandQueueBase)
+  CommandQueueTryFinallyBase = sealed class(CommandQueueNil)
     private data := new CommandQueueTryFinallyCommon< CommandQueueBase >;
     
     private constructor(try_do: CommandQueueBase; do_finally: CommandQueueBase);
