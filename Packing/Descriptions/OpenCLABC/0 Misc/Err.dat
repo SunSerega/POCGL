@@ -81,6 +81,14 @@ main_dvc должен быть в списке устройств контекс
 
 
 
+# Err:Cast:nil->T
+.Cast не может преобразовывать nil в {typeof(T)}
+
+# Err:Cast:TInp->TRes
+.Cast не может преобразовывать {typeof(TInp)} в {typeof(TRes)}
+
+
+
 # Err:FlattenQueueArray:InpEmpty
 Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей
 

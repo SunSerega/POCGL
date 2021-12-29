@@ -10,7 +10,7 @@ begin
   ).Println;
   
   Context.Default.SyncInvoke(
-    CombineSyncQueue2((i,s)->(i,s),
+    CombineSyncQueueN2((i,s)->(i,s),
       HFQ(()->5),
       HFQ(()->'abc')
     )
@@ -24,7 +24,7 @@ begin
   ).Println;
   
   Context.Default.SyncInvoke(
-    CombineAsyncQueue2((i,s)->(i,s),
+    CombineAsyncQueueN2((i,s)->(i,s),
       HFQ(()->5),
       HFQ(()->'abc')
     )

@@ -25,14 +25,6 @@ Test( WaitFor(M1)+M1 );
 Writeln('='*50);
 Writeln;
 
-var Q0: CommandQueueBase := new ConstQueue<object>(nil);
-Test( Q0.ThenWaitFor(M1) );
-Test( M1+Q0.ThenWaitFor(M1) );
-Test( Q0.ThenWaitFor(M1)+M1 );
-
-Writeln('='*50);
-Writeln;
-
 var mem := new MemorySegment(1);
 Test( mem.NewQueue.AddWait(M1) );
 Test( M1+mem.NewQueue.AddWait(M1) );

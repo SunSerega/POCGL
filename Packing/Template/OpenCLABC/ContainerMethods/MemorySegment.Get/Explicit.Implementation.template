@@ -75,8 +75,8 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -161,7 +161,7 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -292,7 +292,7 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -371,8 +371,8 @@ type
       var len2_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
-        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
+        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
+        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -460,9 +460,9 @@ type
       var len3_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
-        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
-        len3_qr := invoker.InvokeBranch&<integer>(len3.Invoke); if (len3_qr is IQueueResConst) then enq_evs.AddL2(len3_qr.ev) else enq_evs.AddL1(len3_qr.ev);
+        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
+        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
+        len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.Invoke); if (len3_qr is IQueueResConst) then enq_evs.AddL2(len3_qr.ev) else enq_evs.AddL1(len3_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->

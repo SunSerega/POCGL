@@ -6,6 +6,28 @@
 
 
 
+# ITypedCQUser
+# ITypedCQConverter<TRes>
+Представляет интерфейс типа, содержащего отдельные алгоритмы обработки, очереди без- и с возвращаемым значением
+
+# ITypedCQUser.Use<T>(CommandQueue<T>)
+# ITypedCQConverter<TRes>.Convert<T>(CommandQueue<T>)
+Вызывается если у очереди есть возвращаемое значение
+# ITypedCQUser.UseBase(CommandQueueBase)
+# ITypedCQConverter<TRes>.ConvertBase(CommandQueueBase)
+Вызывается если у очереди нет возвращаемого значения
+
+# CommandQueueBase.UseTyped(ITypedCQUser)
+# CommandQueueBase.ConvertTyped<TRes>(ITypedCQConverter<TRes>)
+Проверяет, какой тип результата у данной очереди
+Передаёт результат указанному объекту
+
+# CommandQueue<T>.UseTyped(ITypedCQUser)
+# CommandQueue<T>.ConvertTyped<TRes>(ITypedCQConverter<TRes>)
+--
+
+
+
 # CommandQueueBase.Cast<T>
 Если данная очередь проходит по условию "... is CommandQueue<T>" - возвращает себя же
 Иначе возвращает очередь-обёртку, выполняющую "res := T(res)", где res - результат данной очереди
@@ -58,7 +80,7 @@
 При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal %CQ:FinallyMode:{%finally%}%
 %CQ:ThenSaveRes%
 
-# CommandQueue[%Base,<T>%].Then[%finally:,Finally%]WaitFor(WaitMarker)
+# CommandQueue<T>.Then[%finally:,Finally%]WaitFor(WaitMarker)
 Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера %CQ:FinallyMode:{%finally%}%
 %CQ:ThenSaveRes%
 

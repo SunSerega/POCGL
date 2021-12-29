@@ -25,8 +25,8 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -121,9 +121,9 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -227,10 +227,10 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
-         sz3_qr := invoker.InvokeBranch&<integer>( sz3.Invoke); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz3.Invoke); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -340,10 +340,10 @@ type
       var               args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        global_work_offset_qr := invoker.InvokeBranch&<array of UIntPtr>(global_work_offset.Invoke); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
-          global_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(  global_work_size.Invoke); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
-           local_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(   local_work_size.Invoke); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
-                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.Invoke); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
+          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(  global_work_size.Invoke); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
+           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(   local_work_size.Invoke); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
+                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->

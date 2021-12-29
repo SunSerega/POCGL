@@ -491,14 +491,14 @@ type
         
         if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
         
-        res_EIm += 'invoker.InvokeBranch&<';
+        res_EIm += 'invoker.InvokeBranch&<QueueRes<';
         //TODO #2564
         begin
           if arg.t.IsKA then
             res_EIm += 'ISetableKernelArg' else
             res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
         end;
-        res_EIm += '>(';
+        res_EIm += '>>(';
         
         var need_with_ptr_need := (settings.arg_usage[arg.name]='ptr') <> default_need_ptr;
         if need_with_ptr_need then

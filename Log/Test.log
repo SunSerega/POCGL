@@ -47,8 +47,6 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0.pas"
-Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0.pas"
@@ -198,8 +196,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1]
 Tester: Done executing

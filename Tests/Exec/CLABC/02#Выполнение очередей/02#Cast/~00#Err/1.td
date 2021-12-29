@@ -5,15 +5,9 @@
 OpenCLABC
 
 #ExpExecErr
-System.AggregateException: При выполнении очереди было вызвано 1 исключений. Используйте try чтоб получить больше информации ---> System.InvalidCastException: Specified cast is not valid.
-   в OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*(Object <>o) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   --- Конец трассировки внутреннего стека исключений ---
-   в OpenCLABC.CLTaskBase.Wait() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC.CLTask`1.WaitRes() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC.Context.SyncInvoke[T](CommandQueue`1 q) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
+System.InvalidCastException: .Cast не может преобразовывать System.Int32 в System.UInt16
+   в OpenCLABC.CommandQueueBase.Cast[T]() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в 1.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.pas:строка *
    в 1.Program.Main()
----> (Внутреннее исключение #0) System.InvalidCastException: Specified cast is not valid.
-   в OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*(Object <>o) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
 
 

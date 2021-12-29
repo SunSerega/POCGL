@@ -21,14 +21,15 @@ type
   
   CommentableType = sealed class(CommentableBase)
     private re_def: string;
-    private is_sealed: boolean;
+    private is_sealed, is_interface: boolean;
     public property ReDef: string read re_def;
     
-    public constructor(name: string; re_def: string; is_sealed: boolean);
+    public constructor(name: string; re_def: string; is_sealed, is_interface: boolean);
     begin
       inherited Create(name);
       self.re_def := re_def;
       self.is_sealed := is_sealed;
+      self.is_interface := is_interface;
     end;
     
     public property FullName: string read self.Name; override;
@@ -271,7 +272,8 @@ begin
   Result := new CommentableType(
     l.Remove(ind).Trim,
     def_wds.Last in type_keywords ? nil : def,
-    'sealed' in def_wds
+    'sealed' in def_wds,
+    def.StartsWith('interface')
   );
   
 end;
@@ -447,8 +449,11 @@ begin
         if not enmr.MoveNext then raise new System.InvalidOperationException;
         l := enmr.Current;
         
-        if l.StartsWith('private ') then continue;
-        if t.is_sealed and l.StartsWith('protected ') then continue;
+        if not t.is_interface then
+        begin
+          if l.StartsWith('private ') then continue;
+          if t.is_sealed and l.StartsWith('protected ') then continue;
+        end;
         
         if CommentableProp.Parse(l, t) is CommentableProp(var p) then
           yield p else

@@ -29,15 +29,29 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Сделать класс для наследования между CommandQueueBase и очередями, возвращающими nil
+
+//TODO HPQ должно возвращать nil как константу
+
+//TODO Тестировать ((Q+Const)+Q).ToString, константу должно выкинуть
+
+//TODO CLValue<T> = class, содержащий указатель на значение
+// - Чтоб и .ReadValue работало, и меньше действий проводить на стороне CPU
+//TODO В HandleDefaultRes принимать CLValue<T> вместо T
+
+//TODO Справка:
+// - [Use/Convert]Typed
+
 //===================================
 // Запланированное:
 
-//TODO MultiusableBase позволяет использовать вне модуля
+//TODO Дублирование ивентов в EventList
+// - Код с этим справляется, но наверное можно эффективнее?
 
-//TODO CommandQueueBase.UseTyped(typed_q_user: interface procedure use<T>(cq: CommandQueue<T>); procedure use_base(cq: CommandQueueBase); end)
-// - Использовать это внутри, чтоб наконец избавится от всех этих .Cast&<object>
-// - Пройтись по всеми TODO UseTyped
-// - И проверять возможность приведения при создании CastQueue
+//TODO Использовать cl.EnqueueMapBuffer
+// - В виде .AddMap((MappedArray,Context)->())
+
+//TODO MultiusableBase позволяет использовать вне модуля
 
 //TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
 //TODO Справка: В обработке исключений написать, что обработчики всегда Quick
@@ -48,10 +62,7 @@ unit OpenCLABC;
 //TODO .AddProc(()->p()) сейчас вызывает .AddProc(c->p()), но делает это лямбдой
 // - При выводе .ToString выглядит криво - стоит сделать пользовательский класс для этого
 // - И наверное интерфейс IDelegatePropagator, чтоб в .ToString выводить только изначальный делегат
-
-//TODO CLValue<T> = class, содержащий указатель на значение
-// - Чтоб и .ReadValue работало, и меньше действий проводить на стороне CPU
-//TODO В HandleDefaultRes принимать CLValue<T> вместо T
+// - Не забыть про кодогенератор CombineQueues
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
@@ -65,9 +76,6 @@ unit OpenCLABC;
 
 //TODO Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
 // - И в справке тогда убрать параграф...
-
-//TODO Использовать cl.EnqueueMapBuffer
-// - В виде .AddMap((MappedArray,Context)->())
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
@@ -229,12 +237,14 @@ type
     RefCounterFor(ev).Enqueue(new EventRetainReleaseData(false, reason));
     public static procedure RegisterEventRelease(ev: cl_event; reason: string);
     begin
-      EventDebug.CheckExists(ev);
+      EventDebug.CheckExists(ev, reason);
       RefCounterFor(ev).Enqueue(new EventRetainReleaseData(true, reason));
     end;
     
-    public static procedure ReportRefCounterInfo(otp: System.IO.TextWriter := Console.Out);
+    public static procedure ReportRefCounterInfo(otp: System.IO.TextWriter := Console.Out) :=
+    lock otp do
     begin
+      System.Environment.StackTrace.Println;
       
       foreach var kvp in RefCounter do
       begin
@@ -254,17 +264,19 @@ type
     
     public static function CountRetains(ev: cl_event) :=
     RefCounter[ev].Sum(act->act.is_release ? -1 : +1);
-    public static procedure CheckExists(ev: cl_event) :=
+    public static procedure CheckExists(ev: cl_event; reason: string) :=
     if CountRetains(ev)<=0 then
     begin
       ReportRefCounterInfo(Console.Error);
-      raise new OpenCLABCInternalException($'Event {ev} was released before last use at');
+      Sleep(100);
+      raise new OpenCLABCInternalException($'Event {ev} was released before last use ({reason}) at');
     end;
     
     public static procedure AssertDone :=
     foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
     begin
       ReportRefCounterInfo(Console.Error);
+      Sleep(100);
       raise new OpenCLABCInternalException(ev.ToString);
     end;
     
@@ -2299,6 +2311,54 @@ type
   
   {$endregion ToString}
   
+  {$region Use/Convert Typed}
+  
+  ///Представляет интерфейс типа, содержащего отдельные алгоритмы обработки, очереди без- и с возвращаемым значением
+  ITypedCQUser = interface
+    
+    ///Вызывается если у очереди есть возвращаемое значение
+    procedure Use<T>(cq: CommandQueue<T>);
+    ///Вызывается если у очереди нет возвращаемого значения
+    procedure UseBase(cq: CommandQueueBase);
+    
+  end;
+  ///Представляет интерфейс типа, содержащего отдельные алгоритмы обработки, очереди без- и с возвращаемым значением
+  ITypedCQConverter<TRes> = interface
+    
+    ///Вызывается если у очереди есть возвращаемое значение
+    function Convert<T>(cq: CommandQueue<T>): TRes;
+    ///Вызывается если у очереди нет возвращаемого значения
+    function ConvertBase(cq: CommandQueueBase): TRes;
+    
+  end;
+  
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
+  CommandQueueBase = abstract partial class
+    
+    ///Проверяет, какой тип результата у данной очереди
+    ///Передаёт результат указанному объекту
+    public procedure UseTyped(user: ITypedCQUser); virtual := user.UseBase(self);
+    ///Проверяет, какой тип результата у данной очереди
+    ///Передаёт результат указанному объекту
+    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; virtual := converter.ConvertBase(self);
+    
+  end;
+  ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
+    
+    ///--
+    public procedure UseTyped(user: ITypedCQUser); override := user.Use(self);
+    ///--
+    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; override;
+    begin//TODO #2595
+      var f := Func&<CommandQueue<T>,TRes>(object(Func&<CommandQueue<T>,T>(converter.Convert&<T>)));
+      Result := f(self);
+    end;
+    
+  end;
+  
+  {$endregion Use/Convert Typed}
+  
   {$region Const}
   
   ///Представляет константную очередь
@@ -2442,7 +2502,7 @@ type
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; abstract;
+    private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; virtual;
     public static function operator>=(try_do, do_finally: CommandQueueBase) := do_finally.AfterTry(try_do);
     
     private function ConvertErrHandler<TException>(handler: TException->boolean): Exception->boolean; where TException: Exception;
@@ -2502,7 +2562,7 @@ type
   ///Представляет оторванный сигнал маркера, являющийся обёрткой очереди с возвращаемым значением
   ///Этот тип является наследником CommandQueue<T>, а значит он не может наследовать сразу и от WaitMarker
   ///Но при присвоении или передаче параметром он разлагается в обычный маркер, поэтому его можно передавать в Wait очереди
-  DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
+  DetachedMarkerSignal<T> = sealed partial class
     private q: CommandQueue<T>;
     private wrap: WaitMarker;
     private signal_in_finally: boolean;
@@ -2524,45 +2584,22 @@ type
     ///Посылает сигнал выполненности всем ожидающим Wait очередям
     public procedure SendSignal := wrap.SendSignal;
     
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      wrap.ToStringHeader(sb, index);
-      sb += #10;
-      
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
   end;
   
   ///Представляет очередь, состоящую в основном из команд, выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function ThenMarkerSignalBase: WaitMarker; abstract;
+    private function ThenMarkerSignalBase: WaitMarker; virtual;
     ///Создаёт особый маркер из данной очереди
     ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenMarkerSignal := ThenMarkerSignalBase;
     
-    private function ThenFinallyMarkerSignalBase: WaitMarker; abstract;
+    private function ThenFinallyMarkerSignalBase: WaitMarker; virtual;
     ///Создаёт особый маркер из данной очереди
     ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal не зависимо от исключений при выполнении данной очереди
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyMarkerSignal := ThenFinallyMarkerSignalBase;
-    
-    
-    
-    private function ThenWaitForBase(marker: WaitMarker): CommandQueueBase; abstract;
-    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера
-    ///В конце выполнения созданная очередь возвращает то, что вернула данная
-    public function ThenWaitFor(marker: WaitMarker) := ThenWaitForBase(marker);
-    
-    private function ThenFinallyWaitForBase(marker: WaitMarker): CommandQueueBase; abstract;
-    ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера не зависимо от исключений при выполнении данной очереди
-    ///В конце выполнения созданная очередь возвращает то, что вернула данная
-    public function ThenFinallyWaitFor(marker: WaitMarker) := ThenFinallyWaitForBase(marker);
     
   end;
   
@@ -2583,12 +2620,10 @@ type
     
     
     
-    private function ThenWaitForBase(marker: WaitMarker): CommandQueueBase; override := ThenWaitFor(marker);
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenWaitFor(marker: WaitMarker): CommandQueue<T>;
     
-    private function ThenFinallyWaitForBase(marker: WaitMarker): CommandQueueBase; override := ThenFinallyWaitFor(marker);
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера не зависимо от исключений при выполнении данной очереди
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyWaitFor(marker: WaitMarker): CommandQueue<T>;
@@ -3347,29 +3382,20 @@ function CombineSyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBas
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///И возвращающую результат последней очереди
-function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
-
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
+function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
 {$endregion NonConv}
 
 {$region Conv}
 
 {$region NonContext}
-
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineSyncQueue<TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineSyncQueue<TRes>(conv: Func<array of object, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
@@ -3383,40 +3409,31 @@ function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: seque
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
 {$region Context}
-
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineSyncQueue<TRes>(conv: Func<array of object, Context, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineSyncQueue<TRes>(conv: Func<array of object, Context, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
@@ -3430,27 +3447,27 @@ function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion Context}
 
@@ -3471,29 +3488,20 @@ function CombineAsyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBa
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///И возвращающую результат последней очереди
-function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
-
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
+function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
 {$endregion NonConv}
 
 {$region Conv}
 
 {$region NonContext}
-
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineAsyncQueue<TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineAsyncQueue<TRes>(conv: Func<array of object, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
@@ -3507,40 +3515,31 @@ function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequ
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
 {$region Context}
-
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineAsyncQueue<TRes>(conv: Func<array of object, Context, TRes>; params qs: array of CommandQueueBase): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-function CombineAsyncQueue<TRes>(conv: Func<array of object, Context, TRes>; qs: sequence of CommandQueueBase): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
@@ -3554,27 +3553,27 @@ function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion Context}
 
@@ -4507,10 +4506,10 @@ type
     public static procedure AttachNativeCallback(ev: cl_event; cb: EventCallback) :=
     cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, cb, NativeUtils.GCHndAlloc(cb)).RaiseIfError;
     
-    private static procedure CheckEvErr(ev: cl_event; err_handler: CLTaskErrHandler);
+    private static procedure CheckEvErr(ev: cl_event; err_handler: CLTaskErrHandler{$ifdef EventDebug}; reason: string{$endif});
     begin
       {$ifdef EventDebug}
-      EventDebug.CheckExists(ev);
+      EventDebug.CheckExists(ev, reason);
       {$endif EventDebug}
       var st: CommandExecutionStatus;
       var ec := cl.GetEventInfo(ev, EventInfo.EVENT_COMMAND_EXECUTION_STATUS, new UIntPtr(sizeof(CommandExecutionStatus)), st, IntPtr.Zero);
@@ -4530,7 +4529,7 @@ type
       AttachNativeCallback(ev, (ev,st,data)->
       begin
         // st копирует значение переданное в cl.SetEventCallback, поэтому он не подходит
-        CheckEvErr(ev, err_handler);
+        CheckEvErr(ev, err_handler{$ifdef EventDebug}, reason{$endif});
         {$ifdef EventDebug}
         EventDebug.RegisterEventRelease(ev, $'released in callback, working on {reason}');
         {$endif EventDebug}
@@ -4589,7 +4588,7 @@ type
       var ec := cl.WaitForEvents(self.count, self.evs);
       if (ec=ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST) or not err_handler.AddErr(ec) then
         for var i := 0 to count-1 do
-          CheckEvErr(evs[i], err_handler);
+          CheckEvErr(evs[i], err_handler{$ifdef EventDebug}, reason{$endif});
       
       self.Release({$ifdef EventDebug}$'discarding after being waited upon for {reason}'{$endif EventDebug});
     end;
@@ -4635,7 +4634,10 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     public function GetResBase: object; abstract;
+    
     public function TrySetEvBase(new_ev: EventList): QueueResBase; abstract;
+    
+    public function CloneBase: QueueResBase; abstract;
     
     public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; abstract;
     
@@ -4659,11 +4661,12 @@ type
     end;
     public function TrySetEvBase(new_ev: EventList): QueueResBase; override := TrySetEv(new_ev);
     
+    public function CloneBase: QueueResBase; override := Clone;
     public function Clone: QueueRes<T>; abstract;
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
     public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; override :=
-    LazyQuickTransform(o->f(o)); //TODO #2221
+    LazyQuickTransform(o->f(o));
     
     /// Должно выполнятся только после ожидания ивентов
     public function ToPtr: IPtrQueueRes<T>; abstract;
@@ -4997,9 +5000,9 @@ type
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function InvokeBranch<T>(branch: (CLTaskGlobalData, CLTaskLocalData)->QueueRes<T>): QueueRes<T>;
+    function InvokeBranch<TR>(branch: (CLTaskGlobalData, CLTaskLocalData)->TR): TR; where TR: QueueResBase;
     begin
-      var res: QueueRes<T>;
+      var res: TR;
       InvokeBranch((g,l)->
       begin
         res := branch(g,l);
@@ -5241,17 +5244,58 @@ end;
 {$region Cast}
 
 type
-  CastQueue<T> = sealed class(CommandQueue<T>)
-    private q: CommandQueueBase;
+  NilQueue<T> = sealed class(CommandQueue<T>)
+    private static nil_val := default(T);
     
-    public constructor(q: CommandQueueBase) := self.q := q;
+    static constructor;
+    begin
+      if object(nil_val)<>nil then
+        raise new System.InvalidCastException($'.Cast не может преобразовывать nil в {typeof(T)}');
+    end;
+    public constructor := exit;
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
-      var err_handler := g.curr_err_handler;
-      Result := q.InvokeBase(g, l.WithPtrNeed(false)).LazyQuickTransformBase(o->
+      {$ifdef DEBUG}
+      if l.need_ptr_qr then raise new OpenCLABCInternalException($'nil with need_ptr_qr');
+      {$endif DEBUG}
+      Result := new QueueResConst<T>(nil_val, l.prev_ev);
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
+    
+  end;
+  
+  CastQueueBase<TRes> = abstract class(CommandQueue<TRes>)
+    
+    public property SourceBase: CommandQueueBase read; abstract;
+    
+  end;
+  
+  CastQueue<TInp, TRes> = sealed class(CastQueueBase<TRes>)
+    private q: CommandQueue<TInp>;
+    
+    static constructor;
+    begin
+      if typeof(TInp)=typeof(object) then exit;
       try
-        Result := T(o);
+        var res := TRes(object(default(TInp)));
+        res := res;
+      except
+        raise new System.InvalidCastException($'.Cast не может преобразовывать {typeof(TInp)} в {typeof(TRes)}');
+      end;
+    end;
+    public constructor(q: CommandQueue<TInp>) := self.q := q;
+    
+    public property SourceBase: CommandQueueBase read q as CommandQueueBase; override;
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<TRes>; override;
+    begin
+      var err_handler := g.curr_err_handler;
+      Result := q.Invoke(g, l.WithPtrNeed(false)).LazyQuickTransform(o->
+      try
+        Result := TRes(object(o));
       except
         on e: Exception do
           err_handler.AddErr(e);
@@ -5269,10 +5313,39 @@ type
     
   end;
   
-function CommandQueueBase.Cast<T>: CommandQueue<T> :=
-//TODO UseTyped
-if self is CommandQueue<T>(var tcq) then
-  tcq else new CastQueue<T>(self);
+  //TODO #2594
+  CastQueueFactory<TRes> = class(ITypedCQConverter<CommandQueue<TRes>>)
+    
+    public function Convert<TInp>(cq: CommandQueue<TInp>): CommandQueue<TRes>;
+    begin
+      if cq is CastQueueBase<TInp>(var cqb) then
+        Result := cqb.SourceBase.Cast&<TRes> else
+      if cq is ConstQueue<TInp>(var ccq) then
+      try
+        Result := new ConstQueue<TRes>(TRes(object(ccq.Val)))
+      except
+        on e: InvalidCastException do
+          raise new System.InvalidCastException($'.Cast не может преобразовывать {typeof(TInp)} в {typeof(TRes)}');
+      end else
+        Result := new CastQueue<TInp, TRes>(cq);
+    end;
+    public function ConvertBase(cq: CommandQueueBase): CommandQueue<TRes> := cq + new NilQueue<TRes>;
+    
+  end;
+  
+function CommandQueueBase.Cast<T>: CommandQueue<T>;
+begin
+  if self is CommandQueue<T>(var tcq) then
+    Result := tcq else
+  try
+    Result := self.ConvertTyped(new CastQueueFactory<T>);
+  except
+    on e: TypeInitializationException do
+      raise e.InnerException;
+    on e: InvalidCastException do
+      raise e;
+  end;
+end;
 
 {$endregion Cast}
 
@@ -5321,75 +5394,122 @@ new CommandQueueThenConvert<T, TOtp>(self, f);
 {$region Simple}
 
 type
-  ISimpleQueueArray = interface
-    function GetQS: sequence of CommandQueueBase;
-  end;
-  SimpleQueueArray<T> = abstract class(CommandQueue<T>, ISimpleQueueArray)
-    protected qs: array of CommandQueueBase;
-    protected last: CommandQueue<T>;
+  //TODO #2594
+  SimpleQueueArrayCommon<TQ> = class
+  where TQ: CommandQueueBase;
+    public qs: array of CommandQueueBase;
+    public last: TQ;
     
-    public constructor(params qs: array of CommandQueueBase);
-    begin
-      self.qs := new CommandQueueBase[qs.Length-1];
-      System.Array.Copy(qs, self.qs, qs.Length-1);
-      self.last := qs[qs.Length-1].Cast&<T>;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function GetQS: sequence of CommandQueueBase := qs.Append&<CommandQueueBase>(last);
     
-    public function GetQS: sequence of CommandQueueBase := qs.Append(last as CommandQueueBase);
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>);
     begin
       foreach var q in qs do q.RegisterWaitables(g, prev_hubs);
       last.RegisterWaitables(g, prev_hubs);
     end;
     
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb += #10;
-      foreach var q in GetQS do
+      foreach var q in qs do
         q.ToString(sb, tabs, index, delayed);
+      last.ToString(sb, tabs, index, delayed);
     end;
     
-  end;
-  
-  ISimpleSyncQueueArray = interface(ISimpleQueueArray) end;
-  SimpleSyncQueueArray<T> = sealed class(SimpleQueueArray<T>, ISimpleSyncQueueArray)
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function InvokeSync<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_last: (CLTaskGlobalData,CLTaskLocalData)->TR): TR; where TR: QueueResBase;
     begin
       
       for var i := 0 to qs.Length-1 do
         l.prev_ev := qs[i].InvokeBase(g, l.WithPtrNeed(false)).ev;
       
-      Result := last.Invoke(g, l);
+      Result := invoke_last(g, l);
     end;
     
-  end;
-  
-  ISimpleAsyncQueueArray = interface(ISimpleQueueArray) end;
-  SimpleAsyncQueueArray<T> = sealed class(SimpleQueueArray<T>, ISimpleAsyncQueueArray)
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function InvokeAsync<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_last: (CLTaskGlobalData,CLTaskLocalData)->TR): TR; where TR: QueueResBase;
     begin
       if l.prev_ev.count<>0 then loop qs.Length do
         l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var evs := new EventList[qs.Length+1];
       
-      var res: QueueRes<T>;
+      var res: TR;
       g.ParallelInvoke(l, false, qs.Length+1, invoker->
       begin
         for var i := 0 to qs.Length-1 do
           evs[i] := invoker.InvokeBranch((g,l)->
             qs[i].InvokeBase(g, l.WithPtrNeed(false)).ev
           );
-        res := invoker.InvokeBranch(last.Invoke);
+        res := invoker.InvokeBranch(invoke_last);
         evs[qs.Length] := res.ev;
       end);
       
-      Result := res.TrySetEv( EventList.Combine(evs) );
+      Result := TR(res.TrySetEvBase( EventList.Combine(evs) ));
     end;
     
+  end;
+  
+  ISimpleQueueArray = interface
+    function GetQS: sequence of CommandQueueBase;
+  end;
+  ISimpleSyncQueueArray = interface(ISimpleQueueArray) end;
+  ISimpleAsyncQueueArray = interface(ISimpleQueueArray) end;
+  
+  SimpleQueueArrayBase = abstract class(CommandQueueBase, ISimpleQueueArray)
+    protected data := new SimpleQueueArrayCommon< CommandQueueBase >;
+    
+    public constructor(qs: array of CommandQueueBase; last: CommandQueueBase);
+    begin
+      data.qs := qs;
+      data.last := last;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public function GetQS: sequence of CommandQueueBase := data.GetQS;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.RegisterWaitables(g, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+  SimpleSyncQueueArrayBase = sealed class(SimpleQueueArrayBase, ISimpleSyncQueueArray)
+    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override := data.InvokeSync(g, l, data.last.InvokeBase);
+  end;
+  SimpleAsyncQueueArrayBase = sealed class(SimpleQueueArrayBase, ISimpleAsyncQueueArray)
+    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override := data.InvokeAsync(g, l, data.last.InvokeBase);
+  end;
+  
+  SimpleQueueArray<T> = abstract class(CommandQueue<T>, ISimpleQueueArray)
+    protected data := new SimpleQueueArrayCommon< CommandQueue<T> >;
+    
+    public constructor(qs: array of CommandQueueBase; last: CommandQueue<T>);
+    begin
+      data.qs := qs;
+      data.last := last;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public function GetQS: sequence of CommandQueueBase := data.GetQS;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.RegisterWaitables(g, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+  SimpleSyncQueueArray<T> = sealed class(SimpleQueueArray<T>, ISimpleSyncQueueArray)
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := data.InvokeSync(g, l, data.last.Invoke);
+  end;
+  SimpleAsyncQueueArray<T> = sealed class(SimpleQueueArray<T>, ISimpleAsyncQueueArray)
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := data.InvokeAsync(g, l, data.last.Invoke);
   end;
   
 {$endregion Simple}
@@ -5465,7 +5585,7 @@ type
       g.ParallelInvoke(l, false, qs.Length, invoker ->
       for var i := 0 to qs.Length-1 do
       begin
-        var qr := invoker.InvokeBranch&<TInp>(qs[i].Invoke);
+        var qr := invoker.InvokeBranch(qs[i].Invoke);
         qrs[i] := qr;
         evs[i] := qr.ev;
       end);
@@ -5976,60 +6096,123 @@ type
 {$region Utils}
 
 type
-  QueueArrayUtils = static class
+  QueueArrayFlattener<TArray> = sealed class(ITypedCQUser)
+  where TArray: ISimpleQueueArray;
+    public qs := new List<CommandQueueBase>;
+    private has_next := false;
     
-    public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): array of CommandQueueBase; where T: ISimpleQueueArray;
+    public procedure ProcessSeq(s: sequence of CommandQueueBase);
     begin
-      var enmr := inp.GetEnumerator;
-      if not enmr.MoveNext then raise new OpenCLABCInternalException('Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей');
+      var enmr := s.GetEnumerator;
+      if not enmr.MoveNext then raise new System.ArgumentException('Функции CombineSyncQueue/CombineAsyncQueue не могут принимать 0 очередей');
       
-      var res := new List<CommandQueueBase>;
+      var upper_had_next := self.has_next;
       while true do
       begin
         var curr := enmr.Current;
-        var next := enmr.MoveNext;
-        
-        //TODO UseTyped
-//        if next then
-//        begin
-//          if curr is IConstQueue then continue;
-//          if curr is ICastQueue(var cq) then curr := cq.GetQ;
-//        end;
-        
-        if curr is T(var sqa) then
-          res.AddRange(sqa.GetQS) else
-          res += curr;
-        
-        if not next then break;
+        var l_has_next := enmr.MoveNext;
+        self.has_next := upper_had_next or l_has_next;
+        curr.UseTyped(self);
+        if not l_has_next then break;
       end;
+      self.has_next := upper_had_next;
       
-      Result := res.ToArray;
     end;
     
-    public static function  FlattenSyncQueueArray(inp: sequence of CommandQueueBase) := FlattenQueueArray&< ISimpleSyncQueueArray>(inp);
-    public static function FlattenAsyncQueueArray(inp: sequence of CommandQueueBase) := FlattenQueueArray&<ISimpleAsyncQueueArray>(inp);
+    public procedure ITypedCQUser.Use<T>(cq: CommandQueue<T>);
+    begin
+      if has_next then
+      begin
+        if cq is ConstQueue<T> then exit;
+        if cq is CastQueueBase<T>(var cqb) then
+        begin
+          cqb.SourceBase.UseTyped(self);
+          exit;
+        end;
+      end;
+      if cq is TArray(var sqa) then
+        ProcessSeq(sqa.GetQs) else
+        qs.Add(cq);
+    end;
+    public procedure ITypedCQUser.UseBase(cq: CommandQueueBase);
+    begin
+      // Нельзя пропускать - тут можно быть HPQ, WaitFor и т.п. работа без результата
+//      if has_next then exit;
+      qs += cq;
+    end;
+    
+  end;
+  
+  QueueArrayConstructorBase = abstract class
+    private body: array of CommandQueueBase;
+    
+    public constructor(body: array of CommandQueueBase) := self.body := body;
+    private constructor := raise new OpenCLABCInternalException;
+    
+  end;
+  
+  QueueArraySyncConstructor = sealed class(QueueArrayConstructorBase, ITypedCQConverter<CommandQueueBase>)
+    public function Convert<T>(last: CommandQueue<T>): CommandQueueBase := new SimpleSyncQueueArray<T>(body, last);
+    public function ConvertBase(last: CommandQueueBase): CommandQueueBase := new SimpleSyncQueueArrayBase(body, last);
+  end;
+  QueueArrayAsyncConstructor = sealed class(QueueArrayConstructorBase, ITypedCQConverter<CommandQueueBase>)
+    public function Convert<T>(last: CommandQueue<T>): CommandQueueBase := new SimpleAsyncQueueArray<T>(body, last);
+    public function ConvertBase(last: CommandQueueBase): CommandQueueBase := new SimpleAsyncQueueArrayBase(body, last);
+  end;
+  
+  QueueArrayUtils = static class
+    
+    public static function FlattenQueueArray<T>(inp: sequence of CommandQueueBase): (array of CommandQueueBase, CommandQueueBase); where T: ISimpleQueueArray;
+    begin
+      var res := new QueueArrayFlattener<T>;
+      res.ProcessSeq(inp);
+      var ind_last := res.qs.Count-1;
+      var last := res.qs[ind_last];
+      res.qs.RemoveAt(ind_last);
+      Result := (res.qs.ToArray, last);
+    end;
+    
+    public static function ConstructSync(inp: sequence of CommandQueueBase): CommandQueueBase;
+    begin
+      var (body, last) := FlattenQueueArray&<ISimpleSyncQueueArray>(inp);
+      Result := if body.Length=0 then last else last.ConvertTyped(new QueueArraySyncConstructor(body));
+    end;
+    public static function ConstructSync<T>(inp: sequence of CommandQueueBase) := CommandQueue&<T>( ConstructSync(inp) );
+    
+    public static function ConstructAsync(inp: sequence of CommandQueueBase): CommandQueueBase;
+    begin
+      var (body, last) := FlattenQueueArray&<ISimpleAsyncQueueArray>(inp);
+      Result := if body.Length=0 then last else last.ConvertTyped(new QueueArrayAsyncConstructor(body));
+    end;
+    public static function ConstructAsync<T>(inp: sequence of CommandQueueBase) := CommandQueue&<T>( ConstructAsync(inp) );
     
   end;
   
 {$endregion Utils}
 
-function CommandQueueBase. AfterQueueSyncBase(q: CommandQueueBase) := q + self.Cast&<object>;
-function CommandQueueBase.AfterQueueAsyncBase(q: CommandQueueBase) := q * self.Cast&<object>;
+function CommandQueueBase. AfterQueueSyncBase(q: CommandQueueBase) := QueueArrayUtils. ConstructSync(|q, self|);
+function CommandQueueBase.AfterQueueAsyncBase(q: CommandQueueBase) := QueueArrayUtils.ConstructAsync(|q, self|);
 
-static function CommandQueue<T>.operator+(q1: CommandQueueBase; q2: CommandQueue<T>) := new  SimpleSyncQueueArray<T>(QueueArrayUtils. FlattenSyncQueueArray(|q1, q2|));
-static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(|q1, q2|));
+static function CommandQueue<T>.operator+(q1: CommandQueueBase; q2: CommandQueue<T>) := QueueArrayUtils. ConstructSync&<T>(|q1, q2|);
+static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(|q1, q2|);
 
 {$endregion +/*}
 
 {$region Multiusable}
 
 type
-  MultiusableCommandQueueHub<T> = sealed partial class(IMultiusableCommandQueueHub)
-    public q: CommandQueue<T>;
-    public constructor(q: CommandQueue<T>) := self.q := q;
+  MultiusableCommandQueueHubCommon<TQ> = abstract class(IMultiusableCommandQueueHub)
+  where TQ: CommandQueueBase;
+    public q: TQ;
+    public constructor(q: TQ) := self.q := q;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function OnNodeInvoked(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>) :=
+    if prev_hubs.Add(self) then q.RegisterWaitables(g, prev_hubs);
+    
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_q: (CLTaskGlobalData,CLTaskLocalData)->TR): TR; where TR: QueueResBase;
     begin
       var prev_ev := l.prev_ev;
       
@@ -6039,7 +6222,7 @@ type
       if g.mu_res.TryGetValue(self, res_data) then
       begin
         g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(g.curr_err_handler, res_data.err_handler);
-        Result := QueueRes&<T>( res_data.qres );
+        Result := TR( res_data.qres );
       end else
       begin
         var prev_err_handler := g.curr_err_handler;
@@ -6048,8 +6231,8 @@ type
         l.prev_ev := EventList.Empty;
         // Ради только 1 из веток делать доп. указатель - было бы странно
         l.need_ptr_qr := false;
-        Result := self.q.Invoke(g, l);
-        Result.can_set_ev := false;
+        Result := invoke_q(g, l);
+        (Result as QueueResBase).can_set_ev := false; //TODO #2596
         var q_err_handler := g.curr_err_handler;
         
         g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(prev_err_handler, q_err_handler);
@@ -6059,41 +6242,69 @@ type
       Result.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
       if prev_ev.count<>0 then
       begin
-        Result := Result.Clone;
-        Result.ev := Result.ev+prev_ev;
+        Result := TR(Result.CloneBase);
+        (Result as QueueResBase).ev := Result.ev+prev_ev; //TODO #2596
       end;
     end;
     
-  end;
-  
-  MultiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
-    public hub: MultiusableCommandQueueHub<T>;
-    public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := hub.OnNodeInvoked(g, l);
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    if prev_hubs.Add(hub) then hub.q.RegisterWaitables(g, prev_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb += ' => ';
-      if hub.q.ToStringHeader(sb, index) then
-        delayed.Add(hub.q);
+      if q.ToStringHeader(sb, index) then
+        delayed.Add(q);
       sb += #10;
     end;
     
   end;
   
-  MultiusableCommandQueueHub<T> = sealed partial class(IMultiusableCommandQueueHub)
+  MultiusableCommandQueueHubBase = sealed class(MultiusableCommandQueueHubCommon< CommandQueueBase >)
     
-    public function MakeNode: CommandQueue<T> :=
-    new MultiusableCommandQueueNode<T>(self);
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) := Invoke(g, l, q.InvokeBase);
+    
+    public function MakeNode: CommandQueueBase;
+    
+  end;
+  MultiusableCommandQueueNodeBase = sealed class(CommandQueueBase)
+    public hub: MultiusableCommandQueueHubBase;
+    public constructor(hub: MultiusableCommandQueueHubBase) := self.hub := hub;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := hub.RegisterWaitables(g, prev_hubs);
+    
+    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override := hub.Invoke(g, l);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    hub.ToString(sb, tabs, index, delayed);
     
   end;
   
-function CommandQueueBase.MultiusableBase := self.Cast&<object>.Multiusable() as object as Func<CommandQueueBase>; //TODO #2221
-function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQueueHub&<T>.Create(self).MakeNode;
+  MultiusableCommandQueueHub<T> = sealed class(MultiusableCommandQueueHubCommon< CommandQueue<T> >)
+    
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) := Invoke(g, l, q.Invoke);
+    
+    public function MakeNode: CommandQueue<T>;
+    
+  end;
+  MultiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
+    public hub: MultiusableCommandQueueHub<T>;
+    public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := hub.RegisterWaitables(g, prev_hubs);
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := hub.Invoke(g, l);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    hub.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+function MultiusableCommandQueueHubBase.MakeNode := new MultiusableCommandQueueNodeBase(self);
+function MultiusableCommandQueueHub<T>.MakeNode := new MultiusableCommandQueueNode<T>(self);
+
+function CommandQueueBase.MultiusableBase := MultiusableCommandQueueHubBase.Create(self).MakeNode;
+function CommandQueue<T>.Multiusable := MultiusableCommandQueueHub&<T>.Create(self).MakeNode;
 
 {$endregion Multiusable}
 
@@ -6108,17 +6319,7 @@ function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := MultiusableCommandQ
 {$region Base}
 
 type
-  WaitMarker = abstract partial class
-    
-    private function ThenMarkerSignalBase: WaitMarker; override := self.Cast&<object>.ThenMarkerSignal;
-    private function ThenFinallyMarkerSignalBase: WaitMarker; override := self.Cast&<object>.ThenFinallyMarkerSignal;
-    
-    private function ThenWaitForBase(marker: WaitMarker): CommandQueueBase; override := self+WaitFor(marker);
-    private function ThenFinallyWaitForBase(marker: WaitMarker): CommandQueueBase; override := self>=WaitFor(marker);
-    
-    private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; override := try_do >= self.Cast&<object>;
-    
-    
+  WaitMarker = abstract partial class(CommandQueueBase)
     
     public procedure InitInnerHandles(g: CLTaskGlobalData); abstract;
     
@@ -6858,13 +7059,16 @@ static function WaitMarker.Create := new WaitMarkerDummy;
 
 {$endregion WaitMarkerDummy}
 
-{$region ThenWaitMarker}
+{$region ThenMarkerSignal}
 
 type
   DetachedMarkerSignalWrapper = sealed class(WaitMarkerDirect)
     private org: CommandQueueBase;
     public constructor(org: CommandQueueBase) := self.org := org;
     private constructor := raise new OpenCLABCInternalException;
+    
+    public procedure UseTyped(user: ITypedCQUser); override := org.UseTyped(user);
+    public function ConvertTyped<TRes>(converter: ITypedCQConverter<TRes>): TRes; override := org.ConvertTyped(converter);
     
     protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override :=
     org.InvokeBase(g, l);
@@ -6899,6 +7103,49 @@ type
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      wrap.ToStringHeader(sb, index);
+      sb += #10;
+      
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+  DetachedMarkerSignalResLess = sealed class(WaitMarkerDirect)
+    private q: CommandQueueBase;
+    private signal_in_finally: boolean;
+    
+    public constructor(q: CommandQueueBase; signal_in_finally: boolean);
+    begin
+      self.q := q;
+      self.signal_in_finally := signal_in_finally;
+    end;
+    
+    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override;
+    begin
+      Result := self.q.InvokeBase(g, l);
+      var err_handler := g.curr_err_handler;
+      var callback: ()->();
+      if signal_in_finally then
+        callback := self.SendSignal else
+        callback := ()->if not err_handler.HadError(true) then self.SendSignal;
+      Result.ev.AttachCallback(true, callback, err_handler{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    q.RegisterWaitables(g, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
   end;
   
 constructor DetachedMarkerSignal<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
@@ -6908,7 +7155,10 @@ begin
   self.signal_in_finally := signal_in_finally;
 end;
 
-{$endregion ThenWaitMarker}
+function CommandQueueBase.ThenMarkerSignalBase := new DetachedMarkerSignalResLess(self, false);
+function CommandQueueBase.ThenFinallyMarkerSignalBase := new DetachedMarkerSignalResLess(self, true);
+
+{$endregion ThenMarkerSignal}
 
 {$region WaitFor}
 
@@ -6935,7 +7185,7 @@ function WaitFor(marker: WaitMarker) := new CommandQueueWaitFor(marker);
 
 {$endregion WaitFor}
 
-{$region ThenWait}
+{$region ThenWaitFor}
 
 type
   CommandQueueThenBaseWaitFor<T> = abstract class(CommandQueue<T>)
@@ -6969,13 +7219,11 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
       Result := q.Invoke(g, l);
-      
       l.prev_ev := Result.ev;
       Result := Result.TrySetEv( marker.MakeWaitEv(g, l.WithPtrNeed(false)) );
     end;
     
   end;
-  
   CommandQueueThenFinallyWaitFor<T> = sealed class(CommandQueueThenBaseWaitFor<T>)
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
@@ -6999,7 +7247,7 @@ type
 function CommandQueue<T>.ThenWaitFor(marker: WaitMarker) := new CommandQueueThenWaitFor<T>(self, marker);
 function CommandQueue<T>.ThenFinallyWaitFor(marker: WaitMarker) := new CommandQueueThenFinallyWaitFor<T>(self, marker);
 
-{$endregion ThenWait}
+{$endregion ThenWaitFor}
 
 {$endregion Wait}
 
@@ -7008,24 +7256,21 @@ function CommandQueue<T>.ThenFinallyWaitFor(marker: WaitMarker) := new CommandQu
 {$region Finally}
 
 type
-  CommandQueueTryFinally<T> = sealed class(CommandQueue<T>)
-    private try_do: CommandQueueBase;
-    private do_finally: CommandQueue<T>;
+  //TODO #2594
+  CommandQueueTryFinallyCommon<TQ> = class
+  where TQ: CommandQueueBase;
+    public try_do: CommandQueueBase;
+    public do_finally: TQ;
     
-    private constructor(try_do: CommandQueueBase; do_finally: CommandQueue<T>);
-    begin
-      self.try_do := try_do;
-      self.do_finally := do_finally;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>);
     begin
       try_do.RegisterWaitables(g, prev_hubs);
       do_finally.RegisterWaitables(g, prev_hubs);
     end;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_finally: (CLTaskGlobalData,CLTaskLocalData)->TR): TR; where TR: QueueResBase;
     begin
       var origin_err_handler := g.curr_err_handler;
       
@@ -7047,7 +7292,7 @@ type
       l.prev_ev := mid_ev;
       
       g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
-      Result := do_finally.Invoke(g, l);
+      Result := invoke_finally(g, l);
       var fin_handler := g.curr_err_handler;
       
       {$endregion do_finally}
@@ -7055,7 +7300,8 @@ type
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |try_handler, fin_handler|);
     end;
     
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb += #10;
       try_do.ToString(sb, tabs, index, delayed);
@@ -7064,6 +7310,50 @@ type
     
   end;
   
+  CommandQueueTryFinallyBase = sealed class(CommandQueueBase)
+    private data := new CommandQueueTryFinallyCommon< CommandQueueBase >;
+    
+    private constructor(try_do: CommandQueueBase; do_finally: CommandQueueBase);
+    begin
+      data.try_do := try_do;
+      data.do_finally := do_finally;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.RegisterWaitables(g, prev_hubs);
+    
+    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override :=
+    data.Invoke(g, l, data.do_finally.InvokeBase);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  CommandQueueTryFinally<T> = sealed class(CommandQueue<T>)
+    private data := new CommandQueueTryFinallyCommon< CommandQueue<T> >;
+    
+    private constructor(try_do: CommandQueueBase; do_finally: CommandQueue<T>);
+    begin
+      data.try_do := try_do;
+      data.do_finally := do_finally;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.RegisterWaitables(g, prev_hubs);
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override :=
+    data.Invoke(g, l, data.do_finally.Invoke);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+function CommandQueueBase.AfterTry(try_do: CommandQueueBase) :=
+new CommandQueueTryFinallyBase(try_do, self);
+
 static function CommandQueue<T>.operator>=(try_do: CommandQueueBase; do_finally: CommandQueue<T>) :=
 new CommandQueueTryFinally<T>(try_do, do_finally);
 
@@ -8304,8 +8594,8 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8400,9 +8690,9 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8506,10 +8796,10 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<integer>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<integer>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
-         sz3_qr := invoker.InvokeBranch&<integer>( sz3.Invoke); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz3.Invoke); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8619,10 +8909,10 @@ type
       var               args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        global_work_offset_qr := invoker.InvokeBranch&<array of UIntPtr>(global_work_offset.Invoke); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
-          global_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(  global_work_size.Invoke); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
-           local_work_size_qr := invoker.InvokeBranch&<array of UIntPtr>(   local_work_size.Invoke); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
-                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<ISetableKernelArg>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
+        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.Invoke); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
+          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(  global_work_size.Invoke); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
+           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(   local_work_size.Invoke); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
+                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8899,7 +9189,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -8966,9 +9256,9 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9041,7 +9331,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9108,9 +9398,9 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9237,7 +9527,7 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9310,8 +9600,8 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               val_qr := invoker.InvokeBranch&<QueueRes<TRecord>>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9390,7 +9680,7 @@ type
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9464,7 +9754,7 @@ type
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9538,7 +9828,7 @@ type
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9612,7 +9902,7 @@ type
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9686,7 +9976,7 @@ type
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9760,7 +10050,7 @@ type
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9843,10 +10133,10 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -9949,11 +10239,11 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10065,12 +10355,12 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+         a_offset3_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10182,10 +10472,10 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10288,11 +10578,11 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10404,12 +10694,12 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+         a_offset3_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10514,8 +10804,8 @@ type
       var pattern_len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10591,10 +10881,10 @@ type
       var         len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10742,7 +11032,7 @@ type
       var val_qr: QueueRes<TRecord>;
       g.ParallelInvoke(l.WithPtrNeed(true), true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<TRecord>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        val_qr := invoker.InvokeBranch&<QueueRes<TRecord>>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10825,8 +11115,8 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10908,9 +11198,9 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               val_qr := invoker.InvokeBranch&<QueueRes<TRecord>>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -10995,7 +11285,7 @@ type
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11069,7 +11359,7 @@ type
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11143,7 +11433,7 @@ type
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11229,11 +11519,11 @@ type
       var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+           a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11345,12 +11635,12 @@ type
       var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array[,] of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+          a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11471,13 +11761,13 @@ type
       var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-          a_offset3_qr := invoker.InvokeBranch&<integer>(  a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+          a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+          a_offset3_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11585,7 +11875,7 @@ type
       var mem_qr: QueueRes<MemorySegment>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11655,10 +11945,10 @@ type
       var      len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
-        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
-          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+             mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        from_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
+          to_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11737,7 +12027,7 @@ type
       var mem_qr: QueueRes<MemorySegment>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11807,10 +12097,10 @@ type
       var      len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
-        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
-          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+             mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        from_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
+          to_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -11946,8 +12236,8 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12032,7 +12322,7 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12163,7 +12453,7 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12242,8 +12532,8 @@ type
       var len2_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
-        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
+        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
+        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12331,9 +12621,9 @@ type
       var len3_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        len1_qr := invoker.InvokeBranch&<integer>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
-        len2_qr := invoker.InvokeBranch&<integer>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
-        len3_qr := invoker.InvokeBranch&<integer>(len3.Invoke); if (len3_qr is IQueueResConst) then enq_evs.AddL2(len3_qr.ev) else enq_evs.AddL1(len3_qr.ev);
+        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.Invoke); if (len1_qr is IQueueResConst) then enq_evs.AddL2(len1_qr.ev) else enq_evs.AddL1(len1_qr.ev);
+        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.Invoke); if (len2_qr is IQueueResConst) then enq_evs.AddL2(len2_qr.ev) else enq_evs.AddL1(len2_qr.ev);
+        len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.Invoke); if (len3_qr is IQueueResConst) then enq_evs.AddL2(len3_qr.ev) else enq_evs.AddL1(len3_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -12541,7 +12831,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12609,9 +12899,9 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12685,7 +12975,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12753,9 +13043,9 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12864,7 +13154,7 @@ type
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -12933,8 +13223,8 @@ type
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<&T>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        val_qr := invoker.InvokeBranch&<QueueRes<&T>>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13009,7 +13299,7 @@ type
       var a_qr: QueueRes<array of &T>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13087,10 +13377,10 @@ type
       var a_ind_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<array of &T>(    a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          ind_qr := invoker.InvokeBranch&<integer>(  ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-          len_qr := invoker.InvokeBranch&<integer>(  len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        a_ind_qr := invoker.InvokeBranch&<integer>(a_ind.Invoke); if (a_ind_qr is IQueueResConst) then enq_evs.AddL2(a_ind_qr.ev) else enq_evs.AddL1(a_ind_qr.ev);
+            a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(    a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.Invoke); if (a_ind_qr is IQueueResConst) then enq_evs.AddL2(a_ind_qr.ev) else enq_evs.AddL1(a_ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13177,7 +13467,7 @@ type
       var a_qr: QueueRes<array of &T>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13255,10 +13545,10 @@ type
       var a_ind_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<array of &T>(    a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          ind_qr := invoker.InvokeBranch&<integer>(  ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-          len_qr := invoker.InvokeBranch&<integer>(  len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        a_ind_qr := invoker.InvokeBranch&<integer>(a_ind.Invoke); if (a_ind_qr is IQueueResConst) then enq_evs.AddL2(a_ind_qr.ev) else enq_evs.AddL1(a_ind_qr.ev);
+            a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(    a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.Invoke); if (a_ind_qr is IQueueResConst) then enq_evs.AddL2(a_ind_qr.ev) else enq_evs.AddL1(a_ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13352,8 +13642,8 @@ type
       var pattern_len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13430,10 +13720,10 @@ type
       var         len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                ind_qr := invoker.InvokeBranch&<integer>(        ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13587,7 +13877,7 @@ type
       var val_qr: QueueRes<&T>;
       g.ParallelInvoke(l.WithPtrNeed(true), true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<&T>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        val_qr := invoker.InvokeBranch&<QueueRes<&T>>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13666,8 +13956,8 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13745,9 +14035,9 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<&T>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        val_qr := invoker.InvokeBranch&<QueueRes<&T>>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13828,7 +14118,7 @@ type
       var a_qr: QueueRes<array of &T>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of &T>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -13909,11 +14199,11 @@ type
       var         len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array of &T>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                ind_qr := invoker.InvokeBranch&<integer>(        ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+           a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14010,7 +14300,7 @@ type
       var a_qr: QueueRes<CLArray<T>>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<CLArray<T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14081,10 +14371,10 @@ type
       var      len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               a_qr := invoker.InvokeBranch&<CLArray<T>>(       a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-        from_ind_qr := invoker.InvokeBranch&<integer>(from_ind.Invoke); if (from_ind_qr is IQueueResConst) then enq_evs.AddL2(from_ind_qr.ev) else enq_evs.AddL1(from_ind_qr.ev);
-          to_ind_qr := invoker.InvokeBranch&<integer>(  to_ind.Invoke); if (to_ind_qr is IQueueResConst) then enq_evs.AddL2(to_ind_qr.ev) else enq_evs.AddL1(to_ind_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(       a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        from_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_ind.Invoke); if (from_ind_qr is IQueueResConst) then enq_evs.AddL2(from_ind_qr.ev) else enq_evs.AddL1(from_ind_qr.ev);
+          to_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_ind.Invoke); if (to_ind_qr is IQueueResConst) then enq_evs.AddL2(to_ind_qr.ev) else enq_evs.AddL1(to_ind_qr.ev);
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14164,7 +14454,7 @@ type
       var a_qr: QueueRes<CLArray<T>>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<CLArray<T>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14235,10 +14525,10 @@ type
       var      len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               a_qr := invoker.InvokeBranch&<CLArray<T>>(       a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-        from_ind_qr := invoker.InvokeBranch&<integer>(from_ind.Invoke); if (from_ind_qr is IQueueResConst) then enq_evs.AddL2(from_ind_qr.ev) else enq_evs.AddL1(from_ind_qr.ev);
-          to_ind_qr := invoker.InvokeBranch&<integer>(  to_ind.Invoke); if (to_ind_qr is IQueueResConst) then enq_evs.AddL2(to_ind_qr.ev) else enq_evs.AddL1(to_ind_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(       a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        from_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_ind.Invoke); if (from_ind_qr is IQueueResConst) then enq_evs.AddL2(from_ind_qr.ev) else enq_evs.AddL1(from_ind_qr.ev);
+          to_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_ind.Invoke); if (to_ind_qr is IQueueResConst) then enq_evs.AddL2(to_ind_qr.ev) else enq_evs.AddL1(to_ind_qr.ev);
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -14325,7 +14615,7 @@ type
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -14451,8 +14741,8 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(l.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<integer>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
-        len_qr := invoker.InvokeBranch&<integer>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
@@ -14576,13 +14866,13 @@ new CommandQueueHostProc(p);
 
 {$region NonConv}
 
-function CombineSyncQueueBase(params qs: array of CommandQueueBase) := new SimpleSyncQueueArray<object>(QueueArrayUtils.FlattenSyncQueueArray(qs));
-function CombineSyncQueueBase(qs: sequence of CommandQueueBase) := new SimpleSyncQueueArray<object>(QueueArrayUtils.FlattenSyncQueueArray(qs));
+function CombineSyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs);
+function CombineSyncQueueBase(qs: sequence of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs);
 
-function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := new SimpleSyncQueueArray<T>(QueueArrayUtils.FlattenSyncQueueArray(qs.Append(last as CommandQueueBase)));
+function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
+function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
 
-function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := new SimpleSyncQueueArray<T>(QueueArrayUtils.FlattenSyncQueueArray(qs.Cast&<CommandQueueBase>));
-function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>) := new SimpleSyncQueueArray<T>(QueueArrayUtils.FlattenSyncQueueArray(qs.Cast&<CommandQueueBase>));
+function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Append&<CommandQueueBase>(last));
 
 {$endregion NonConv}
 
@@ -14590,35 +14880,29 @@ function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>) := new SimpleSyncQ
 
 {$region NonContext}
 
-function CombineSyncQueue<TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase) := new ConvSyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, (a,c)->conv(a));
-function CombineSyncQueue<TRes>(conv: Func<array of object, TRes>; qs: sequence of CommandQueueBase) := new ConvSyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, (a,c)->conv(a));
-
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new ConvSyncQueueArray<TInp, TRes>(qs.ToArray, (a,c)->conv(a));
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new ConvSyncQueueArray<TInp, TRes>(qs.ToArray, (a,c)->conv(a));
 
-function CombineSyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, (o1, o2, c)->conv(o1, o2));
-function CombineSyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, (o1, o2, o3, c)->conv(o1, o2, o3));
-function CombineSyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, (o1, o2, o3, o4, c)->conv(o1, o2, o3, o4));
-function CombineSyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, (o1, o2, o3, o4, o5, c)->conv(o1, o2, o3, o4, o5));
-function CombineSyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, (o1, o2, o3, o4, o5, o6, c)->conv(o1, o2, o3, o4, o5, o6));
-function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, (o1, o2, o3, o4, o5, o6, o7, c)->conv(o1, o2, o3, o4, o5, o6, o7));
+function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, (o1,o2,c)->conv(o1,o2));
+function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, (o1,o2,o3,c)->conv(o1,o2,o3));
+function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, (o1,o2,o3,o4,c)->conv(o1,o2,o3,o4));
+function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, (o1,o2,o3,o4,o5,c)->conv(o1,o2,o3,o4,o5));
+function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, (o1,o2,o3,o4,o5,o6,c)->conv(o1,o2,o3,o4,o5,o6));
+function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, (o1,o2,o3,o4,o5,o6,o7,c)->conv(o1,o2,o3,o4,o5,o6,o7));
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineSyncQueue<TRes>(conv: Func<array of object, Context, TRes>; params qs: array of CommandQueueBase) := new ConvSyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, conv);
-function CombineSyncQueue<TRes>(conv: Func<array of object, Context, TRes>; qs: sequence of CommandQueueBase) := new ConvSyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, conv);
-
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new ConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new ConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 
-function CombineSyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineSyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineSyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineSyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineSyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
 {$endregion Context}
 
@@ -14630,13 +14914,13 @@ function CombineSyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes
 
 {$region NonConv}
 
-function CombineAsyncQueueBase(params qs: array of CommandQueueBase) := new SimpleAsyncQueueArray<object>(QueueArrayUtils.FlattenAsyncQueueArray(qs));
-function CombineAsyncQueueBase(qs: sequence of CommandQueueBase) := new SimpleAsyncQueueArray<object>(QueueArrayUtils.FlattenAsyncQueueArray(qs));
+function CombineAsyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs);
+function CombineAsyncQueueBase(qs: sequence of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs);
 
-function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(qs.Append(last as CommandQueueBase)));
+function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
+function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
 
-function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(qs.Cast&<CommandQueueBase>));
-function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>) := new SimpleAsyncQueueArray<T>(QueueArrayUtils.FlattenAsyncQueueArray(qs.Cast&<CommandQueueBase>));
+function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Append&<CommandQueueBase>(last));
 
 {$endregion NonConv}
 
@@ -14644,35 +14928,29 @@ function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>) := new SimpleAsyn
 
 {$region NonContext}
 
-function CombineAsyncQueue<TRes>(conv: Func<array of object, TRes>; params qs: array of CommandQueueBase) := new ConvAsyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, (a,c)->conv(a));
-function CombineAsyncQueue<TRes>(conv: Func<array of object, TRes>; qs: sequence of CommandQueueBase) := new ConvAsyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, (a,c)->conv(a));
-
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new ConvAsyncQueueArray<TInp, TRes>(qs.ToArray, (a,c)->conv(a));
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new ConvAsyncQueueArray<TInp, TRes>(qs.ToArray, (a,c)->conv(a));
 
-function CombineAsyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, (o1, o2, c)->conv(o1, o2));
-function CombineAsyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, (o1, o2, o3, c)->conv(o1, o2, o3));
-function CombineAsyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, (o1, o2, o3, o4, c)->conv(o1, o2, o3, o4));
-function CombineAsyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, (o1, o2, o3, o4, o5, c)->conv(o1, o2, o3, o4, o5));
-function CombineAsyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, (o1, o2, o3, o4, o5, o6, c)->conv(o1, o2, o3, o4, o5, o6));
-function CombineAsyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, (o1, o2, o3, o4, o5, o6, o7, c)->conv(o1, o2, o3, o4, o5, o6, o7));
+function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, (o1,o2,c)->conv(o1,o2));
+function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, (o1,o2,o3,c)->conv(o1,o2,o3));
+function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, (o1,o2,o3,o4,c)->conv(o1,o2,o3,o4));
+function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, (o1,o2,o3,o4,o5,c)->conv(o1,o2,o3,o4,o5));
+function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, (o1,o2,o3,o4,o5,o6,c)->conv(o1,o2,o3,o4,o5,o6));
+function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, (o1,o2,o3,o4,o5,o6,o7,c)->conv(o1,o2,o3,o4,o5,o6,o7));
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineAsyncQueue<TRes>(conv: Func<array of object, Context, TRes>; params qs: array of CommandQueueBase) := new ConvAsyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, conv);
-function CombineAsyncQueue<TRes>(conv: Func<array of object, Context, TRes>; qs: sequence of CommandQueueBase) := new ConvAsyncQueueArray<object, TRes>(qs.Select(q->q.Cast&<object>).ToArray, conv);
-
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new ConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new ConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 
-function CombineAsyncQueue2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineAsyncQueue3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineAsyncQueue4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineAsyncQueue5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineAsyncQueue6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineAsyncQueue7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new ConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new ConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new ConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new ConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new ConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
 {$endregion Context}
 

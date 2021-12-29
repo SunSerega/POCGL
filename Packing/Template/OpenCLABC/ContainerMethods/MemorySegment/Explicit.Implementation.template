@@ -22,7 +22,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -89,9 +89,9 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -164,7 +164,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<IntPtr>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -231,9 +231,9 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               ptr_qr := invoker.InvokeBranch&<IntPtr>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(       ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -360,7 +360,7 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -433,8 +433,8 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               val_qr := invoker.InvokeBranch&<QueueRes<TRecord>>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -513,7 +513,7 @@ type
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -587,7 +587,7 @@ type
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -661,7 +661,7 @@ type
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -735,7 +735,7 @@ type
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -809,7 +809,7 @@ type
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -883,7 +883,7 @@ type
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -966,10 +966,10 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1072,11 +1072,11 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1188,12 +1188,12 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+         a_offset3_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1305,10 +1305,10 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset_qr := invoker.InvokeBranch&<integer>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1411,11 +1411,11 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1527,12 +1527,12 @@ type
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-         a_offset1_qr := invoker.InvokeBranch&<integer>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-         a_offset2_qr := invoker.InvokeBranch&<integer>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-         a_offset3_qr := invoker.InvokeBranch&<integer>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                 a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(         a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+         a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+         a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+         a_offset3_qr := invoker.InvokeBranch&<QueueRes<integer>>( a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1637,8 +1637,8 @@ type
       var pattern_len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1714,10 +1714,10 @@ type
       var         len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<IntPtr>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if (ptr_qr is IQueueResConst) then enq_evs.AddL2(ptr_qr.ev) else enq_evs.AddL1(ptr_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1865,7 +1865,7 @@ type
       var val_qr: QueueRes<TRecord>;
       g.ParallelInvoke(l.WithPtrNeed(true), true, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<TRecord>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        val_qr := invoker.InvokeBranch&<QueueRes<TRecord>>(val.Invoke); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -1948,8 +1948,8 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2031,9 +2031,9 @@ type
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<TRecord>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
-        mem_offset_qr := invoker.InvokeBranch&<integer>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
-               len_qr := invoker.InvokeBranch&<integer>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+               val_qr := invoker.InvokeBranch&<QueueRes<TRecord>>((g,l)->val.Invoke(g, l.WithPtrNeed( True))); if (val_qr is IQueueResDelayedPtr) or (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+               len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2118,7 +2118,7 @@ type
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2192,7 +2192,7 @@ type
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2266,7 +2266,7 @@ type
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+        a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2352,11 +2352,11 @@ type
       var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-           a_offset_qr := invoker.InvokeBranch&<integer>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array of TRecord>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+           a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   a_offset.Invoke); if (a_offset_qr is IQueueResConst) then enq_evs.AddL2(a_offset_qr.ev) else enq_evs.AddL1(a_offset_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2468,12 +2468,12 @@ type
       var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array[,] of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array[,] of TRecord>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+          a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2594,13 +2594,13 @@ type
       var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<array[,,] of TRecord>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
-          a_offset1_qr := invoker.InvokeBranch&<integer>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
-          a_offset2_qr := invoker.InvokeBranch&<integer>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
-          a_offset3_qr := invoker.InvokeBranch&<integer>(  a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
-        pattern_len_qr := invoker.InvokeBranch&<integer>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
-                len_qr := invoker.InvokeBranch&<integer>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
-         mem_offset_qr := invoker.InvokeBranch&<integer>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
+                  a_qr := invoker.InvokeBranch&<QueueRes<array[,,] of TRecord>>(          a.Invoke); if (a_qr is IQueueResConst) then enq_evs.AddL2(a_qr.ev) else enq_evs.AddL1(a_qr.ev);
+          a_offset1_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset1.Invoke); if (a_offset1_qr is IQueueResConst) then enq_evs.AddL2(a_offset1_qr.ev) else enq_evs.AddL1(a_offset1_qr.ev);
+          a_offset2_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset2.Invoke); if (a_offset2_qr is IQueueResConst) then enq_evs.AddL2(a_offset2_qr.ev) else enq_evs.AddL1(a_offset2_qr.ev);
+          a_offset3_qr := invoker.InvokeBranch&<QueueRes<integer>>(  a_offset3.Invoke); if (a_offset3_qr is IQueueResConst) then enq_evs.AddL2(a_offset3_qr.ev) else enq_evs.AddL1(a_offset3_qr.ev);
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if (pattern_len_qr is IQueueResConst) then enq_evs.AddL2(pattern_len_qr.ev) else enq_evs.AddL1(pattern_len_qr.ev);
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.Invoke); if (mem_offset_qr is IQueueResConst) then enq_evs.AddL2(mem_offset_qr.ev) else enq_evs.AddL1(mem_offset_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2708,7 +2708,7 @@ type
       var mem_qr: QueueRes<MemorySegment>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2778,10 +2778,10 @@ type
       var      len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
-        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
-          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+             mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        from_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
+          to_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2860,7 +2860,7 @@ type
       var mem_qr: QueueRes<MemorySegment>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<MemorySegment>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
@@ -2930,10 +2930,10 @@ type
       var      len_qr: QueueRes<integer>;
       g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
       begin
-             mem_qr := invoker.InvokeBranch&<MemorySegment>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
-        from_pos_qr := invoker.InvokeBranch&<integer>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
-          to_pos_qr := invoker.InvokeBranch&<integer>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
-             len_qr := invoker.InvokeBranch&<integer>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
+             mem_qr := invoker.InvokeBranch&<QueueRes<MemorySegment>>(     mem.Invoke); if (mem_qr is IQueueResConst) then enq_evs.AddL2(mem_qr.ev) else enq_evs.AddL1(mem_qr.ev);
+        from_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_pos.Invoke); if (from_pos_qr is IQueueResConst) then enq_evs.AddL2(from_pos_qr.ev) else enq_evs.AddL1(from_pos_qr.ev);
+          to_pos_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_pos.Invoke); if (to_pos_qr is IQueueResConst) then enq_evs.AddL2(to_pos_qr.ev) else enq_evs.AddL1(to_pos_qr.ev);
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if (len_qr is IQueueResConst) then enq_evs.AddL2(len_qr.ev) else enq_evs.AddL1(len_qr.ev);
       end);
       
       Result := (o, cq, err_handler, evs)->
