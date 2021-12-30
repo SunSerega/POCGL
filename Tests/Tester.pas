@@ -3,6 +3,7 @@
 uses AOtp         in '..\Utils\AOtp';
 uses ATask        in '..\Utils\ATask';
 uses CLArgs       in '..\Utils\CLArgs';
+uses Testing      in '..\Utils\Testing';
 uses SubExecuters in '..\Utils\SubExecuters';
 
 {$string_nullbased+}
@@ -13,6 +14,8 @@ type MessageBoxButtons        = System.Windows.Forms.MessageBoxButtons;
 type MessageBoxIcon           = System.Windows.Forms.MessageBoxIcon;
 type MessageBoxDefaultButton  = System.Windows.Forms.MessageBoxDefaultButton;
 type DialogResult             = System.Windows.Forms.DialogResult;
+
+const MaxExecTime = 15000;
 
 type
   {$region Helper types}
@@ -113,6 +116,7 @@ type
     
     pas_fname, test_dir, td_fname: string;
     stop_test := false;
+    loaded_test: ExecutingTest;
     
     {$endregion core test info}
     
@@ -251,7 +255,7 @@ type
         if unused_test_files.Remove(t.td_fname) then
           t.LoadSettingsDict else
         begin
-          var mark_skip: Action0 := ()->
+          var mark_skip := procedure->
           begin
             WriteAllText(t.td_fname, #10#10#10'#SkipTest'#10#10#10, enc);
             raise new TestCanceledException;
@@ -382,6 +386,8 @@ type
               DialogResult.Cancel: Halt(-1);
             end;
           
+          if t.test_mode.Contains('Exec') then
+            t.loaded_test := new ExecutingTest(System.IO.Path.ChangeExtension(t.pas_fname, '.exe'), MaxExecTime, true);
         end;
         
       except
@@ -395,85 +401,6 @@ type
     {$endregion Comp}
     
     {$region Exec}
-    
-    ///Result = (res, err)
-    static function ExecuteTestExe(fname, nick: string): (string, string);
-    const MaxExecTime = 15000;
-    begin
-      nick := nick.Replace('error', 'errоr');
-      var dom := System.AppDomain.CreateDomain('Domain of '+nick);
-      dom.SetData('fname', fname);
-      
-      var otp_l: OtpLine := $'Executing {nick}';
-      Otp(otp_l);
-      
-      dom.DoCallBack(()->
-      try
-        var dom := System.AppDomain.CurrentDomain;
-        var fname := dom.GetData('fname') as string;
-        
-        var ep := System.Reflection.Assembly.LoadFile(fname).EntryPoint;
-        if ep=nil then raise new System.EntryPointNotFoundException;
-        
-        var res := new System.IO.StringWriter;
-        Console.SetOut(res);
-        
-        var prev_path := System.Environment.CurrentDirectory;
-        var thr := new System.Threading.Thread(()->
-        try
-          var sw := System.Diagnostics.Stopwatch.StartNew;
-          try
-            try
-              System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(fname);
-              ep.Invoke(nil, new object[0]);
-            finally
-              System.Environment.CurrentDirectory := prev_path;
-            end;
-          except
-            on e: Exception do dom.SetData('Err', e.InnerException.ToString);
-          end;
-          sw.Stop;
-          dom.SetData('exec_time', sw.ElapsedTicks);
-        except
-          on e: Exception do dom.SetData('fatal_err', e.ToString);
-        end);
-        thr.Start;
-        
-        if not thr.Join(MaxExecTime) then
-        begin
-          thr.Abort;
-          System.Environment.CurrentDirectory := prev_path;
-          dom.SetData('exec_time', MaxExecTime*System.TimeSpan.TicksPerMillisecond);
-          dom.SetData('fatal_err', $'ERROR: Execution took too long for "{GetFullPathRTA(fname)}"');
-        end else
-          dom.SetData('Result', res.ToString);
-        
-      except
-        on e: Exception do System.AppDomain.CurrentDomain.SetData('fatal_err', e.ToString);
-      end);
-      
-      if dom.GetData('fatal_err') is string(var fatal_err) then
-        raise new Exception(fatal_err);
-      
-      otp_l.s := $'Done executing';
-      otp_l.t += int64(dom.GetData('exec_time'));
-      Otp(otp_l);
-      
-      Result := (
-        dom.GetData('Result') as string,
-        dom.GetData('Err') as string
-      );
-      try
-        Sleep(50); //TODO Конечно костыль - но надо запускать отдельный .exe, а не домен, иначе не исправить
-        System.AppDomain.Unload(dom);
-      except
-        on e: System.CannotUnloadAppDomainException do
-        begin
-          Otp($'Error unloading domain of {nick}: {e}');
-          Readln;
-        end;
-      end;
-    end;
     
     static function TryExecWaitTest(td_fname: string; all_executed: HashSet<TestInfo>): boolean;
     begin
@@ -573,7 +500,7 @@ type
             else raise new MessageException($'ERROR: Invalid wait test extension [{System.IO.Path.GetExtension(wait_test)}]');
           end;
       
-      var fwoe := System.IO.Path.ChangeExtension(pas_fname, nil);
+      var fwoe := System.IO.Path.ChangeExtension(pas_fname, nil).Replace('error','errоr');
       
       if stop_test then
       begin
@@ -581,18 +508,12 @@ type
         exit;
       end;
       
-      if not FileExists(fwoe+'.exe') then
-      begin
-        Otp($'ERROR: File {fwoe}.exe not found');
-        exit;
-      end;
+      Otp($'Executing Test[{GetRelativePath(fwoe)}]');
+      var (res, err) := loaded_test.FinishExecution;
+      Otp($'Done executing');
       
-      var (res, err) := ExecuteTestExe(GetFullPath(fwoe+'.exe'), $'Test[{GetRelativePath(fwoe)}]');
-      res := res?.Remove(#13).Trim(#10);
-      err := err?.Remove(#13).Trim(#10);
-      
-      fwoe := fwoe.Replace('error','errоr');
-      if err<>nil then
+      fwoe := fwoe;
+      if not string.IsNullOrWhiteSpace(err) then
       begin
         
         if expected_exec_err.parts=nil then
@@ -681,7 +602,8 @@ type
       end;
       
     except
-      on TestCanceledException do exit;
+      on e: FatalTestingException do
+        Otp(e.ToString);
     end;
     
     static procedure ExecAll;

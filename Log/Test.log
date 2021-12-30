@@ -133,6 +133,8 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
@@ -282,6 +284,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
 Tester: Done executing
