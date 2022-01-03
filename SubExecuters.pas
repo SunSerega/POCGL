@@ -6,6 +6,8 @@ uses AOtp;
 uses PathUtils;
 uses Timers;
 
+uses AQueue; //TODO #2543
+
 {$region Helpers}
 
 type
@@ -70,7 +72,7 @@ begin
   var ind := 0;
   while true do
   begin
-    //ToDo Better parsing
+    //TODO Better parsing
     ind := text.IndexOf(uses_str, ind);
     if ind=-1 then break;
     ind += uses_str.Length;
@@ -143,7 +145,7 @@ begin
     try
       if br.ReadByte <> 0 then raise new System.InvalidOperationException($'Output of {nick} didn''t start from 0');
       
-      //ToDo разобраться на сколько это надо и куда сувать
+      //TODO разобраться на сколько это надо и куда сувать
       // - update: таки без него не видит завершение вывода при умирании процесса
       pipe.DisposeLocalCopyOfClientHandle;
       pek.halt_str.DisposeLocalCopyOfClientHandle;

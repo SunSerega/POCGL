@@ -26,6 +26,12 @@ type
     public static function operator=(ind1: integer; ind2: StringIndex) :=
     (ind1=ind2.val) and not ind2.IsInvalid;
     
+    public static function operator<(ind1: StringIndex; ind2: integer) := integer(ind1)<ind2;
+    public static function operator>(ind1: StringIndex; ind2: integer) := integer(ind1)>ind2;
+    
+    public static function operator<(ind1: integer; ind2: StringIndex) := ind1<integer(ind2);
+    public static function operator>(ind1: integer; ind2: StringIndex) := ind1>integer(ind2);
+    
     public static function operator<(ind1, ind2: StringIndex): boolean;
     begin
       if ind1.IsInvalid then raise new System.ArgumentOutOfRangeException('ind1');
@@ -68,7 +74,7 @@ type
     end;
     
     public function ToString: string; override :=
-    if self.IsInvalid then 'Invalid' else self.val.ToString;
+    if self.IsInvalid then 'StringIndex.Invalid' else self.val.ToString;
     public function Print: StringIndex;
     begin
       self.ToString.Print;
@@ -451,7 +457,7 @@ type
     end;
     
     public function ToString: string; override :=
-    if self.IsInvalid then 'Invalid' else range.ToString(text);
+    if self.IsInvalid then 'StringSection.Invalid' else range.ToString(text);
     public property AsString: string read ToString;
     
   end;

@@ -5,6 +5,8 @@ uses System.Threading;
 uses AOtp;
 uses SubExecuters;
 
+uses AQueue; //TODO #2543
+
 type
   AsyncTask = abstract class
     public own_otp: AsyncProcOtp;

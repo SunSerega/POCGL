@@ -5,22 +5,7 @@ uses System.Threading;
 
 type
   
-  //ToDo #2038
-  ///--
-  __AsyncQueueBase = abstract class(System.Collections.IEnumerable, System.Collections.IEnumerator)
-    
-    public function GetEnumerator: System.Collections.IEnumerator := self;
-    
-    protected function GetCurrentBase: object; abstract;
-    public property System.Collections.IEnumerator.Current: object read GetCurrentBase;
-    
-    public function MoveNext: boolean; abstract;
-    
-    public procedure Reset := raise new System.NotSupportedException;
-    
-  end;
-  
-  AsyncQueue<T> = class(__AsyncQueueBase, IEnumerable<T>, IEnumerator<T>)
+  AsyncQueue<T> = class(IEnumerable<T>, IEnumerator<T>)
     protected q: Queue<T>;
     protected done := false;
     private ev := new ManualResetEvent(false);
@@ -51,12 +36,13 @@ type
     end;
     
     public function GetEnumerator: IEnumerator<T> := self;
+    function System.Collections.IEnumerable.GetEnumerator: System.Collections.IEnumerator := self;
     
     private last_item: T;
     public property Current: T read last_item;
-    protected function GetCurrentBase: object; override := last_item;
+    property System.Collections.IEnumerator.Current: object read last_item as object;
     
-    public function MoveNext: boolean; override;
+    public function MoveNext: boolean;
     begin
       last_item := default(T);
       Result := false;
@@ -82,6 +68,7 @@ type
       Result := true;
     end;
     
+    public procedure Reset := raise new System.NotSupportedException;
     public procedure Dispose := exit;
     
   end;
