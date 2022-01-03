@@ -188,8 +188,8 @@ function operator*(p1,p2: AsyncTask): AsyncTask; extensionmethod :=
 new AsyncTaskMlt(p1??EmptyTask, p2??EmptyTask);
 procedure operator*=(var p1: AsyncTask; p2: AsyncTask); extensionmethod := p1 := p1*p2;
 
-function CompTask(fname: string; general_task: boolean := false) :=
-ProcTask(()->CompilePasFile(fname, general_task));
+function CompTask(fname: string; general_task: boolean := false; args: string := nil) :=
+ProcTask(()->CompilePasFile(fname, general_task, args));
 
 function ExecTask(fname, nick: string; params pars: array of string) :=
 new AsyncTaskProcessExec(fname, nick, pars);

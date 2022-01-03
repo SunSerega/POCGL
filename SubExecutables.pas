@@ -48,6 +48,7 @@ type
       bw.Write(1);
       bw.Write(l.s);
       bw.Write(l.t);
+      bw.Write(l.general);
       bw.Flush;
     end;
     
@@ -62,7 +63,7 @@ type
     
     public procedure GlobalLog; override;
     begin
-      var bw := (Logger.main as ParentStreamLogger).bw;
+      var bw := ParentStreamLogger(Logger.main).bw;
       bw.Write(2);
       self.Save( bw );
     end;

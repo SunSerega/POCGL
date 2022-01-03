@@ -9,6 +9,7 @@ type
     
     public procedure Write(l: string); abstract;
     public static procedure operator+=(wr: Writer; l: string) := wr.Write(l);
+    public static procedure operator+=(wr: Writer; c: integer) := wr += c.ToString;
     public static function operator*(wr1, wr2: Writer): Writer;
     
     public procedure Close; abstract;
