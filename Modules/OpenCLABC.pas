@@ -19,12 +19,9 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO CLValue<T> = class, содержащий указатель на значение
-// - Чтоб и .ReadValue работало, и меньше действий проводить на стороне CPU
-//TODO В HandleDefaultRes принимать CLValue<T> вместо T
-
 //TODO Справка:
 // - [Use/Convert]Typed
+// - NativeValue<T>
 
 //===================================
 // Запланированное:
@@ -853,6 +850,30 @@ type
   end;
   
   {$endregion Kernel}
+  
+  {$region CLValue}
+  
+  NativeValue<T> = partial class(System.IDisposable)
+  where T: record;
+    private ptr := Marshal.AllocHGlobal(Marshal.SizeOf&<T>);
+    
+    public constructor(o: T) := self.Value := o;
+    public static function operator implicit(o: T): NativeValue<T> := new NativeValue<T>(o);
+    
+    private function PtrUntyped := pointer(ptr);
+    public property Pointer: ^T read PtrUntyped();
+    public property Value: T read Pointer^ write Pointer^ := value;
+    
+    public procedure Dispose;
+    begin
+      var l_ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
+      Marshal.FreeHGlobal(l_ptr);
+    end;
+    protected procedure Finalize; override := Dispose;
+    
+  end;
+  
+  {$endregion CLValue}
   
   {$region MemorySegment}
   
@@ -1873,6 +1894,11 @@ type
       raise new BlittableException(t, blame, source_name);
     end;
     
+  end;
+  
+  NativeValue<T> = partial class
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLArray%');
   end;
   
   CLArray<T> = partial class

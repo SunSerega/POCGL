@@ -60,8 +60,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteDataAutoSize<T>(ptr));
+function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteDataAutoSize<T>(ptr));
+end;
 
 {$endregion WriteDataAutoSize}
 
@@ -142,8 +144,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteData<T>(ptr, ind, len));
+function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteData<T>(ptr, ind, len));
+end;
 
 {$endregion WriteData}
 
@@ -204,8 +208,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandReadDataAutoSize<T>(ptr));
+function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadDataAutoSize<T>(ptr));
+end;
 
 {$endregion ReadDataAutoSize}
 
@@ -286,36 +292,46 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandReadData<T>(ptr, ind, len));
+function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadData<T>(ptr, ind, len));
+end;
 
 {$endregion ReadData}
 
 {$region WriteDataAutoSize}
 
-function CLArrayCCQ<T>.AddWriteData(ptr: pointer): CLArrayCCQ<T> :=
-AddWriteData(IntPtr(ptr));
+function CLArrayCCQ<T>.AddWriteData(ptr: pointer): CLArrayCCQ<T>;
+begin
+  Result := AddWriteData(IntPtr(ptr));
+end;
 
 {$endregion WriteDataAutoSize}
 
 {$region WriteData}
 
-function CLArrayCCQ<T>.AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddWriteData(IntPtr(ptr), ind, len);
+function CLArrayCCQ<T>.AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddWriteData(IntPtr(ptr), ind, len);
+end;
 
 {$endregion WriteData}
 
 {$region ReadDataAutoSize}
 
-function CLArrayCCQ<T>.AddReadData(ptr: pointer): CLArrayCCQ<T> :=
-AddReadData(IntPtr(ptr));
+function CLArrayCCQ<T>.AddReadData(ptr: pointer): CLArrayCCQ<T>;
+begin
+  Result := AddReadData(IntPtr(ptr));
+end;
 
 {$endregion ReadDataAutoSize}
 
 {$region ReadData}
 
-function CLArrayCCQ<T>.AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddReadData(IntPtr(ptr), ind, len);
+function CLArrayCCQ<T>.AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddReadData(IntPtr(ptr), ind, len);
+end;
 
 {$endregion ReadData}
 
@@ -387,8 +403,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteValue<T>(val, ind));
+function CLArrayCCQ<T>.AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteValue<T>(val, ind));
+end;
 
 {$endregion WriteValue}
 
@@ -466,10 +484,300 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
+function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
+end;
 
 {$endregion WriteValueQ}
+
+{$region WriteValueN}
+
+type
+  CLArrayCommandWriteValueN<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private val: NativeValue<&T>;
+    private ind: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(val: NativeValue<&T>; ind: CommandQueue<integer>);
+    begin
+      self.val := val;
+      self.ind := ind;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    begin
+      var ind_qr: QueueRes<integer>;
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      begin
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+      end);
+      
+      Result := (o, cq, err_handler, evs)->
+      begin
+        var ind := ind_qr.GetRes;
+        var res_ev: cl_event;
+        
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+          val.ptr,
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ind.RegisterWaitables(g, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'val: ';
+      sb.Append(val);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind: ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.AddWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteValueN<T>(val, ind));
+end;
+
+{$endregion WriteValueN}
+
+{$region WriteValueNQ}
+
+type
+  CLArrayCommandWriteValueNQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private val: CommandQueue<NativeValue<&T>>;
+    private ind: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>);
+    begin
+      self.val := val;
+      self.ind := ind;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    begin
+      var val_qr: QueueRes<NativeValue<&T>>;
+      var ind_qr: QueueRes<integer>;
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      begin
+        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.Invoke); if (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+      end);
+      
+      Result := (o, cq, err_handler, evs)->
+      begin
+        var val := val_qr.GetRes;
+        var ind := ind_qr.GetRes;
+        var res_ev: cl_event;
+        
+        cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+          val.ptr,
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.RegisterWaitables(g, prev_hubs);
+      ind.RegisterWaitables(g, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'val: ';
+      val.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind: ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteValueNQ<T>(val, ind));
+end;
+
+{$endregion WriteValueNQ}
+
+{$region ReadValueN}
+
+type
+  CLArrayCommandReadValueN<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private val: NativeValue<&T>;
+    private ind: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(val: NativeValue<&T>; ind: CommandQueue<integer>);
+    begin
+      self.val := val;
+      self.ind := ind;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    begin
+      var ind_qr: QueueRes<integer>;
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      begin
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+      end);
+      
+      Result := (o, cq, err_handler, evs)->
+      begin
+        var ind := ind_qr.GetRes;
+        var res_ev: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+          val.ptr,
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ind.RegisterWaitables(g, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'val: ';
+      sb.Append(val);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind: ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.AddReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadValueN<T>(val, ind));
+end;
+
+{$endregion ReadValueN}
+
+{$region ReadValueNQ}
+
+type
+  CLArrayCommandReadValueNQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private val: CommandQueue<NativeValue<&T>>;
+    private ind: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>);
+    begin
+      self.val := val;
+      self.ind := ind;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    begin
+      var val_qr: QueueRes<NativeValue<&T>>;
+      var ind_qr: QueueRes<integer>;
+      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      begin
+        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.Invoke); if (val_qr is IQueueResConst) then enq_evs.AddL2(val_qr.ev) else enq_evs.AddL1(val_qr.ev);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if (ind_qr is IQueueResConst) then enq_evs.AddL2(ind_qr.ev) else enq_evs.AddL1(ind_qr.ev);
+      end);
+      
+      Result := (o, cq, err_handler, evs)->
+      begin
+        var val := val_qr.GetRes;
+        var ind := ind_qr.GetRes;
+        var res_ev: cl_event;
+        
+        cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+          val.ptr,
+          evs.count, evs.evs, res_ev
+        ).RaiseIfError;
+        
+        Result := res_ev;
+      end;
+      
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.RegisterWaitables(g, prev_hubs);
+      ind.RegisterWaitables(g, prev_hubs);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'val: ';
+      val.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind: ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.AddReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadValueNQ<T>(val, ind));
+end;
+
+{$endregion ReadValueNQ}
 
 {$region WriteArrayAutoSize}
 
@@ -535,8 +843,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteArrayAutoSize<T>(a));
+function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteArrayAutoSize<T>(a));
+end;
 
 {$endregion WriteArrayAutoSize}
 
@@ -634,8 +944,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandWriteArray<T>(a, ind, len, a_ind));
+function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteArray<T>(a, ind, len, a_ind));
+end;
 
 {$endregion WriteArray}
 
@@ -703,8 +1015,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandReadArrayAutoSize<T>(a));
+function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadArrayAutoSize<T>(a));
+end;
 
 {$endregion ReadArrayAutoSize}
 
@@ -802,8 +1116,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandReadArray<T>(a, ind, len, a_ind));
+function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadArray<T>(a, ind, len, a_ind));
+end;
 
 {$endregion ReadArray}
 
@@ -878,8 +1194,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillDataAutoSize<T>(ptr, pattern_len));
+function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillDataAutoSize<T>(ptr, pattern_len));
+end;
 
 {$endregion FillDataAutoSize}
 
@@ -970,22 +1288,28 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillData<T>(ptr, pattern_len, ind, len));
+function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillData<T>(ptr, pattern_len, ind, len));
+end;
 
 {$endregion FillData}
 
 {$region FillDataAutoSize}
 
-function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddFillData(IntPtr(ptr), pattern_len);
+function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddFillData(IntPtr(ptr), pattern_len);
+end;
 
 {$endregion FillDataAutoSize}
 
 {$region FillData}
 
-function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddFillData(IntPtr(ptr), pattern_len, ind, len);
+function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddFillData(IntPtr(ptr), pattern_len, ind, len);
+end;
 
 {$endregion FillData}
 
@@ -1044,8 +1368,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: &T): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillValueAutoSize<T>(val));
+function CLArrayCCQ<T>.AddFillValue(val: &T): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillValueAutoSize<T>(val));
+end;
 
 {$endregion FillValueAutoSize}
 
@@ -1113,8 +1439,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillValueAutoSizeQ<T>(val));
+function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillValueAutoSizeQ<T>(val));
+end;
 
 {$endregion FillValueAutoSizeQ}
 
@@ -1196,8 +1524,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillValue<T>(val, ind, len));
+function CLArrayCCQ<T>.AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillValue<T>(val, ind, len));
+end;
 
 {$endregion FillValue}
 
@@ -1285,8 +1615,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillValueQ<T>(val, ind, len));
+function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillValueQ<T>(val, ind, len));
+end;
 
 {$endregion FillValueQ}
 
@@ -1354,8 +1686,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillArrayAutoSize<T>(a));
+function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillArrayAutoSize<T>(a));
+end;
 
 {$endregion FillArrayAutoSize}
 
@@ -1463,8 +1797,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandFillArray<T>(a, a_offset, pattern_len, ind, len));
+function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillArray<T>(a, a_offset, pattern_len, ind, len));
+end;
 
 {$endregion FillArray}
 
@@ -1529,8 +1865,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandCopyToAutoSize<T>(a));
+function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandCopyToAutoSize<T>(a));
+end;
 
 {$endregion CopyToAutoSize}
 
@@ -1621,8 +1959,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandCopyTo<T>(a, from_ind, to_ind, len));
+function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandCopyTo<T>(a, from_ind, to_ind, len));
+end;
 
 {$endregion CopyTo}
 
@@ -1683,8 +2023,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandCopyFromAutoSize<T>(a));
+function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandCopyFromAutoSize<T>(a));
+end;
 
 {$endregion CopyFromAutoSize}
 
@@ -1775,8 +2117,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T> :=
-AddCommand(self, new CLArrayCommandCopyFrom<T>(a, from_ind, to_ind, len));
+function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandCopyFrom<T>(a, from_ind, to_ind, len));
+end;
 
 {$endregion CopyFrom}
 

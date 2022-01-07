@@ -948,6 +948,9 @@
     public static property DEVICE_SUPPORTED_REGISTER_ALLOCATIONS_ARM:                            DeviceInfo read new DeviceInfo($41EB);
     public static property DEVICE_CONTROLLED_TERMINATION_CAPABILITIES_ARM:                       DeviceInfo read new DeviceInfo($41EE);
     public static property DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION_EXT:                            DeviceInfo read new DeviceInfo($4230);
+    public static property DEVICE_SINGLE_FP_ATOMIC_CAPABILITIES_EXT:                             DeviceInfo read new DeviceInfo($4231);
+    public static property DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES_EXT:                             DeviceInfo read new DeviceInfo($4232);
+    public static property DEVICE_HALF_FP_ATOMIC_CAPABILITIES_EXT:                               DeviceInfo read new DeviceInfo($4233);
     public static property DEVICE_IP_VERSION_INTEL:                                              DeviceInfo read new DeviceInfo($4250);
     public static property DEVICE_ID_INTEL:                                                      DeviceInfo read new DeviceInfo($4251);
     public static property DEVICE_NUM_SLICES_INTEL:                                              DeviceInfo read new DeviceInfo($4252);
@@ -1150,6 +1153,9 @@
       if self.val = UInt32($41EB) then Result := 'DEVICE_SUPPORTED_REGISTER_ALLOCATIONS_ARM' else
       if self.val = UInt32($41EE) then Result := 'DEVICE_CONTROLLED_TERMINATION_CAPABILITIES_ARM' else
       if self.val = UInt32($4230) then Result := 'DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION_EXT' else
+      if self.val = UInt32($4231) then Result := 'DEVICE_SINGLE_FP_ATOMIC_CAPABILITIES_EXT' else
+      if self.val = UInt32($4232) then Result := 'DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES_EXT' else
+      if self.val = UInt32($4233) then Result := 'DEVICE_HALF_FP_ATOMIC_CAPABILITIES_EXT' else
       if self.val = UInt32($4250) then Result := 'DEVICE_IP_VERSION_INTEL' else
       if self.val = UInt32($4251) then Result := 'DEVICE_ID_INTEL' else
       if self.val = UInt32($4252) then Result := 'DEVICE_NUM_SLICES_INTEL' else

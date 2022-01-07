@@ -3,14 +3,20 @@
 
 {$region Get}
 
-function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetValue(ind));
+function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetValue(ind));
+end;
 
-function CLArray<T>.GetArray: array of &T :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetArray);
+function CLArray<T>.GetArray: array of &T;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray);
+end;
 
-function CLArray<T>.GetArray(ind, len: CommandQueue<integer>): array of &T :=
-Context.Default.SyncInvoke(self.NewQueue.AddGetArray(ind, len));
+function CLArray<T>.GetArray(ind, len: CommandQueue<integer>): array of &T;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray(ind, len));
+end;
 
 {$endregion Get}
 

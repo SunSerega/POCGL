@@ -28,6 +28,16 @@ cl.EnqueueWriteBuffer(
   !evs!
 ).RaiseIfError;
 
+# [%mode:Write,Read%]Value!N[%Q:,Q%]
+val: {%Q?NativeValue<&T>:CommandQueue<NativeValue<&T>>%}; ind: CommandQueue<integer>
+!Enqueue
+cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  !val!.ptr,
+  !evs!
+).RaiseIfError;
+
 
 
 # [%mode:Write,Read%]Array![%AutoSize:AutoSize,%]

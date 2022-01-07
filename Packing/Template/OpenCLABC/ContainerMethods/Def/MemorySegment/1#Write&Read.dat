@@ -23,6 +23,11 @@ val: {%Q?TRecord:CommandQueue<TRecord>%}
 !ShortDef
 WriteValue(val, 0);
 
+# [%mode:Write,Read%]Value!N[%Q:,Q%]
+val: {%Q?NativeValue<TRecord>:CommandQueue<NativeValue<TRecord>>%}
+!ShortDef
+WriteValue(val, 0);
+
 # WriteValue![%Q:,Q%]
 val: {%Q?TRecord:CommandQueue<TRecord>%}; mem_offset: CommandQueue<integer>
 !Enqueue
@@ -30,6 +35,16 @@ cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
   new IntPtr(!val:ptr!),
+  !evs!
+).RaiseIfError;
+
+# [%mode:Write,Read%]Value!N[%Q:,Q%]
+val: {%Q?NativeValue<TRecord>:CommandQueue<NativeValue<TRecord>>%}; mem_offset: CommandQueue<integer>
+!Enqueue
+cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
+  !val!.ptr,
   !evs!
 ).RaiseIfError;
 

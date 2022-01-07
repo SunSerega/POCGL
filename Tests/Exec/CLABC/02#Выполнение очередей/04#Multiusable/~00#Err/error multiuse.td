@@ -6,28 +6,28 @@ OpenCLABC
 
 #ExpExecErr
 System.AggregateException: При выполнении очереди было вызвано 2 исключений. Используйте try чтоб получить больше информации ---> System.Exception: TestOK
-   в error multiuse.Program.<>lambda*() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   --- Конец трассировки внутреннего стека исключений ---
-   в OpenCLABC.CLTaskBase.Wait() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC.Context.SyncInvoke(CommandQueueBase q) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в error multiuse.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:строка *
-   в error multiuse.Program.Main()
----> (Внутреннее исключение #0) System.Exception: TestOK
-   в error multiuse.Program.<>lambda*() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
+   at error multiuse.Program.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   --- End of inner exception stack trace ---
+   at OpenCLABC.CLTaskBase.Wait() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC.Context.SyncInvoke(CommandQueueBase q) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at error multiuse.Program.$Main() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:line *
+   at error multiuse.Program.Main()
+---> (Inner Exception #0) System.Exception: TestOK
+   at error multiuse.Program.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *<---
 
----> (Внутреннее исключение #1) System.Exception: TestOK
-   в error multiuse.Program.<>lambda*() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
+---> (Inner Exception #1) System.Exception: TestOK
+   at error multiuse.Program.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\error multiuse.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProc.ExecFunc(Object o, Context c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *<---
 
 

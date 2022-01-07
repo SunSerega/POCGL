@@ -70,8 +70,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T> :=
-new CLArrayCommandGetValue<T>(self, ind) as CommandQueue<&T>;
+function CLArrayCCQ<T>.AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T>;
+begin
+  Result := new CLArrayCommandGetValue<T>(self, ind) as CommandQueue<&T>;
+end;
 
 {$endregion GetValue}
 
@@ -123,8 +125,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetArray: CommandQueue<array of &T> :=
-new CLArrayCommandGetArrayAutoSize<T>(self) as CommandQueue<array of &T>;
+function CLArrayCCQ<T>.AddGetArray: CommandQueue<array of &T>;
+begin
+  Result := new CLArrayCommandGetArrayAutoSize<T>(self) as CommandQueue<array of &T>;
+end;
 
 {$endregion GetArrayAutoSize}
 
@@ -205,8 +209,10 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T> :=
-new CLArrayCommandGetArray<T>(self, ind, len) as CommandQueue<array of &T>;
+function CLArrayCCQ<T>.AddGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
+begin
+  Result := new CLArrayCommandGetArray<T>(self, ind, len) as CommandQueue<array of &T>;
+end;
 
 {$endregion GetArray}
 

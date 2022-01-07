@@ -47,8 +47,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetData: CommandQueue<IntPtr> :=
-new MemorySegmentCommandGetDataAutoSize(self) as CommandQueue<IntPtr>;
+function MemorySegmentCCQ.AddGetData: CommandQueue<IntPtr>;
+begin
+  Result := new MemorySegmentCommandGetDataAutoSize(self) as CommandQueue<IntPtr>;
+end;
 
 {$endregion GetDataAutoSize}
 
@@ -122,15 +124,19 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetData(mem_offset, len: CommandQueue<integer>): CommandQueue<IntPtr> :=
-new MemorySegmentCommandGetData(self, mem_offset, len) as CommandQueue<IntPtr>;
+function MemorySegmentCCQ.AddGetData(mem_offset, len: CommandQueue<integer>): CommandQueue<IntPtr>;
+begin
+  Result := new MemorySegmentCommandGetData(self, mem_offset, len) as CommandQueue<IntPtr>;
+end;
 
 {$endregion GetData}
 
 {$region GetValue}
 
-function MemorySegmentCCQ.AddGetValue<TRecord>: CommandQueue<TRecord> :=
-AddGetValue&<TRecord>(0);
+function MemorySegmentCCQ.AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+begin
+  Result := AddGetValue&<TRecord>(0);
+end;
 
 {$endregion GetValue}
 
@@ -205,8 +211,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord> :=
-new MemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
+function MemorySegmentCCQ.AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+begin
+  Result := new MemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
+end;
 
 {$endregion GetValue}
 
@@ -262,8 +270,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray1<TRecord>: CommandQueue<array of TRecord> :=
-new MemorySegmentCommandGetArray1AutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
+function MemorySegmentCCQ.AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+begin
+  Result := new MemorySegmentCommandGetArray1AutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
+end;
 
 {$endregion GetArray1AutoSize}
 
@@ -338,8 +348,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord> :=
-new MemorySegmentCommandGetArray1<TRecord>(self, len) as CommandQueue<array of TRecord>;
+function MemorySegmentCCQ.AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+begin
+  Result := new MemorySegmentCommandGetArray1<TRecord>(self, len) as CommandQueue<array of TRecord>;
+end;
 
 {$endregion GetArray1}
 
@@ -424,8 +436,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord> :=
-new MemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
+function MemorySegmentCCQ.AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+begin
+  Result := new MemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
+end;
 
 {$endregion GetArray2}
 
@@ -520,8 +534,10 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord> :=
-new MemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
+function MemorySegmentCCQ.AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+begin
+  Result := new MemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
+end;
 
 {$endregion GetArray3}
 

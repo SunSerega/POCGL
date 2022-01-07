@@ -43,6 +43,8 @@ main_dvc должен быть в списке устройств контекс
 
 # Err:Blittable:Source:MemorySegment:WriteValue
 # Err:Blittable:Source:MemorySegment:WriteValueQ
+# Err:Blittable:Source:MemorySegment:WriteValueN
+# Err:Blittable:Source:MemorySegment:WriteValueNQ
 # Err:Blittable:Source:MemorySegment:WriteArray1AutoSize
 # Err:Blittable:Source:MemorySegment:WriteArray2AutoSize
 # Err:Blittable:Source:MemorySegment:WriteArray3AutoSize
@@ -61,6 +63,8 @@ main_dvc должен быть в списке устройств контекс
 # Err:Blittable:Source:MemorySegment:FillArray3
 записывать в область памяти OpenCL
 
+# Err:Blittable:Source:MemorySegment:ReadValueN
+# Err:Blittable:Source:MemorySegment:ReadValueNQ
 # Err:Blittable:Source:MemorySegment:ReadArray1AutoSize
 # Err:Blittable:Source:MemorySegment:ReadArray2AutoSize
 # Err:Blittable:Source:MemorySegment:ReadArray3AutoSize

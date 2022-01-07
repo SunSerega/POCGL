@@ -54,6 +54,7 @@ Group [DeviceIntegerDotProductCapabilitiesKhr] was skipped
 Group [SemaphoreTypeKhr] was skipped
 Group [CommandBufferFlagsKhr] was skipped
 Group [CommandBufferStateKhr] was skipped
+Group [DeviceFpAtomicCapabilitiesExt] was skipped
 Group [KhronosVendorId] was skipped
 Group [DeviceSvmCapabilitiesArm] was skipped
 Group [UnifiedSharedMemoryTypeIntel] was skipped

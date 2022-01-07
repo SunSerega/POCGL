@@ -23,6 +23,14 @@
     
     public function WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
     
+    public function WriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+    
     public function WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
     
     public function WriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T>;

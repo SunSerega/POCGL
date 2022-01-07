@@ -25,12 +25,21 @@
 
 
 
-
 # CLArray<T>.WriteValue(&T, CommandQueue<integer>)
 # CLArray<T>.WriteValue(CommandQueue<&T>, CommandQueue<integer>)
 # CLArrayCCQ<T>.AddWriteValue(&T, CommandQueue<integer>)
 # CLArrayCCQ<T>.AddWriteValue(CommandQueue<&T>, CommandQueue<integer>)
+# CLArray<T>.WriteValue(NativeValue<&T>, CommandQueue<integer>)
+# CLArray<T>.WriteValue(CommandQueue<NativeValue<&T>>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteValue(NativeValue<&T>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddWriteValue(CommandQueue<NativeValue<&T>>, CommandQueue<integer>)
 Записывает указанное значение по индексу ind
+
+# CLArray<T>.ReadValue(NativeValue<&T>, CommandQueue<integer>)
+# CLArray<T>.ReadValue(CommandQueue<NativeValue<&T>>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddReadValue(NativeValue<&T>, CommandQueue<integer>)
+# CLArrayCCQ<T>.AddReadValue(CommandQueue<NativeValue<&T>>, CommandQueue<integer>)
+Читает значение по индексу ind в указанное значение
 
 
 

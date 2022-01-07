@@ -50,14 +50,36 @@ len указывает кол-во задействованных элемент
 # MemorySegment.WriteValue<TRecord>(CommandQueue<TRecord>)
 # MemorySegmentCCQ.AddWriteValue<TRecord>(TRecord)
 # MemorySegmentCCQ.AddWriteValue<TRecord>(CommandQueue<TRecord>)
+# MemorySegment.WriteValue<TRecord>(NativeValue<TRecord>)
+# MemorySegment.WriteValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
+# MemorySegmentCCQ.AddWriteValue<TRecord>(NativeValue<TRecord>)
+# MemorySegmentCCQ.AddWriteValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
 Записывает указанное значение размерного типа в начало области памяти
+
+# MemorySegment.ReadValue<TRecord>(NativeValue<TRecord>)
+# MemorySegment.ReadValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
+# MemorySegmentCCQ.AddReadValue<TRecord>(NativeValue<TRecord>)
+# MemorySegmentCCQ.AddReadValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
+Читает значение размерного типа из начала области памяти в указанное значение
 
 # MemorySegment.WriteValue<TRecord>(TRecord, CommandQueue<integer>)
 # MemorySegment.WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
 # MemorySegmentCCQ.AddWriteValue<TRecord>(TRecord, CommandQueue<integer>)
 # MemorySegmentCCQ.AddWriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
+# MemorySegment.WriteValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
+# MemorySegment.WriteValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddWriteValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddWriteValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
 Записывает указанное значение размерного типа в области памяти
 %MemorySegment:OffsetDef%
+
+# MemorySegment.ReadValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
+# MemorySegment.ReadValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddReadValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
+# MemorySegmentCCQ.AddReadValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
+Читает значение размерного типа из области памяти в указанное значение
+%MemorySegment:OffsetDef%
+
 
 
 

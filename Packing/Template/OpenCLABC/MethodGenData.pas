@@ -71,6 +71,24 @@ type
     end;
     
   end;
+  MethodArgTypeNV = sealed class(MethodArgType)
+    public next: MethodArgType;
+    
+    public function Enmr: sequence of MethodArgType; override;
+    begin
+      yield self;
+      yield sequence next.Enmr;
+    end;
+    
+    public constructor(s: string);
+    const nv_def = 'NativeValue<';
+    begin
+      org_text := s;
+      
+      next := MethodArgType.FromString(s.Substring(nv_def.Length, s.Length-nv_def.Length-1));
+    end;
+    
+  end;
   
   MethodArgTypeKernelArg = sealed class(MethodArgType)
     
@@ -96,6 +114,8 @@ begin
     Result := new MethodArgTypeArray(s) else
   if s.StartsWith('CommandQueue<') then
     Result := new MethodArgTypeCQ(s) else
+  if s.StartsWith('NativeValue<') then
+    Result := new MethodArgTypeNV(s) else
   if s = 'KernelArg' then
     Result := new MethodArgTypeKernelArg(s) else
     Result := new MethodArgTypeBasic(s);
@@ -1025,59 +1045,60 @@ type
       if not settings.is_short_def then
         WriteCommandType(fn, tn, settings);
       
+      {$region Setup}
+      
+      var l_res_EIm := settings.implicit_only ? new WriterEmpty  : res_EIm;
+      
+      var l_res_In  := settings.implicit_only ? res_IIn          : res_In;
+      var l_res_Im  := settings.implicit_only ? res_IIm          : res_Im;
+      
+      var l_res_E   := settings.implicit_only ? new WriterEmpty  : res_E;
+      
+      var l_res     := settings.implicit_only ? res_I            : res;
+      
+      {$endregion Setup}
+      
       {$region Header}
       
+      l_res_In += '    public ';
+      l_res += 'function ';
+      l_res_Im += t;
+      l_res_EIm += 'CCQ';
+      if generics.Count <> 0 then
       begin
-        var l_res_EIm := settings.implicit_only ? new WriterEmpty  : res_EIm;
-        
-        var l_res_In  := settings.implicit_only ? res_IIn          : res_In;
-        var l_res_Im  := settings.implicit_only ? res_IIm          : res_Im;
-        
-        var l_res_E   := settings.implicit_only ? new WriterEmpty  : res_E;
-        
-        var l_res     := settings.implicit_only ? res_I            : res;
-        
-        l_res_In += '    public ';
-        l_res += 'function ';
-        l_res_Im += t;
-        l_res_EIm += 'CCQ';
-        if generics.Count <> 0 then
-        begin
-          l_res_Im += '<';
-          l_res_Im += generics.Select(g->g[0]).JoinToString(', ');
-          l_res_Im += '>';
-        end;
-        l_res_Im += '.';
-        l_res_E += 'Add';
-        l_res += fn;
-        l_res += settings.generics_str;
-        if settings.args_str <> nil then
-        begin
-          l_res += '(';
-          l_res += settings.args_str;
-          l_res += ')';
-        end;
-        l_res += ': ';
-        WriteMethodResT(l_res, l_res_E, settings);
-        l_res_In += ';';
-        if settings.where_record_str<>nil then
-        begin
-          l_res_In += ' ';
-          l_res_In += settings.where_record_str;
-        end;
-        l_res_Im += ' :=';
-        l_res += #10;
-        
+        l_res_Im += '<';
+        l_res_Im += generics.Select(g->g[0]).JoinToString(', ');
+        l_res_Im += '>';
       end;
+      l_res_Im += '.';
+      l_res_E += 'Add';
+      l_res += fn;
+      l_res += settings.generics_str;
+      if settings.args_str <> nil then
+      begin
+        l_res += '(';
+        l_res += settings.args_str;
+        l_res += ')';
+      end;
+      l_res += ': ';
+      WriteMethodResT(l_res, l_res_E, settings);
+      l_res += ';';
+      if settings.where_record_str<>nil then
+      begin
+        l_res += ' ';
+        l_res += settings.where_record_str;
+      end;
+      l_res += #10;
       
       {$endregion Header}
       
       {$region Body}
       
+      l_res_Im += 'begin'#10;
+      l_res_Im += '  Result := ';
+      
       if settings.is_short_def then
       begin
-        var l_res_Im  := settings.implicit_only ? res_IIm          : res_Im;
-        var l_res_EIm := settings.implicit_only ? new WriterEmpty  : res_EIm;
         
         l_res_EIm += 'Add';
         l_res_Im += settings.def.Single;
@@ -1122,6 +1143,8 @@ type
         end, settings);
         
       end;
+      
+      l_res_Im += 'end;'#10;
       
       {$endregion Body}
       
