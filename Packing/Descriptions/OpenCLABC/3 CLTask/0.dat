@@ -2,6 +2,7 @@
 
 
 # CLTaskBase
+# CLTaskNil
 # CLTask<T>
 Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
 
@@ -11,6 +12,7 @@
 Возвращает контекст, в котором выполняется данный CLTask
 
 # CLTaskBase.OrgQueue
+# CLTaskNil.OrgQueue
 # CLTask<T>.OrgQueue
 Возвращает очередь, которую выполняет данный CLTask
 

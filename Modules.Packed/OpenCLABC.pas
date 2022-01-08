@@ -29,11 +29,10 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO CLTaskNil
-
 //TODO Справка:
 // - [Use/Convert]Typed
 // - CommandQueueNil
+// - CLTaskNil
 // - NativeValue<T>
 
 //===================================
@@ -2415,19 +2414,19 @@ type
   ///Представляет интерфейс типа, содержащего отдельные алгоритмы обработки, очереди без- и с возвращаемым значением
   ITypedCQUser = interface
     
-    ///Вызывается если у очереди есть возвращаемое значение
-    procedure Use<T>(cq: CommandQueue<T>);
     ///Вызывается если у очереди нет возвращаемого значения
     procedure UseNil(cq: CommandQueueNil);
+    ///Вызывается если у очереди есть возвращаемое значение
+    procedure Use<T>(cq: CommandQueue<T>);
     
   end;
   ///Представляет интерфейс типа, содержащего отдельные алгоритмы обработки, очереди без- и с возвращаемым значением
   ITypedCQConverter<TRes> = interface
     
-    ///Вызывается если у очереди есть возвращаемое значение
-    function Convert<T>(cq: CommandQueue<T>): TRes;
     ///Вызывается если у очереди нет возвращаемого значения
     function ConvertNil(cq: CommandQueueNil): TRes;
+    ///Вызывается если у очереди есть возвращаемое значение
+    function Convert<T>(cq: CommandQueue<T>): TRes;
     
   end;
   
@@ -2862,22 +2861,16 @@ type
   
   ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
   CLTaskBase = abstract partial class
-    protected wh := new ManualResetEvent(false);
+    private org_c: Context;
+    private wh := new ManualResetEvent(false);
     private err_lst: List<Exception>;
-    
-    {$region Property's}
     
     private function OrgQueueBase: CommandQueueBase; abstract;
     ///Возвращает очередь, которую выполняет данный CLTask
     public property OrgQueue: CommandQueueBase read OrgQueueBase;
     
-    private org_c: Context;
     ///Возвращает контекст, в котором выполняется данный CLTask
     public property OrgContext: Context read org_c;
-    
-    {$endregion Property's}
-    
-    {$region Wait}
     
     ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
     ///Вызывает исключение, если оно было вызвано при выполнении очереди
@@ -2888,7 +2881,17 @@ type
       raise new AggregateException($'При выполнении очереди было вызвано {err_lst.Count} исключений. Используйте try чтоб получить больше информации', err_lst.ToArray);
     end;
     
-    {$endregion Wait}
+  end;
+  
+  ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
+  CLTaskNil = sealed partial class(CLTaskBase)
+    private q: CommandQueueNil;
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    ///Возвращает очередь, которую выполняет данный CLTask
+    public property OrgQueue: CommandQueueNil read q; reintroduce;
+    private function OrgQueueBase: CommandQueueBase; override := self.OrgQueue;
     
   end;
   
@@ -2898,22 +2901,14 @@ type
     
     private constructor := raise new OpenCLABCInternalException;
     
-    {$region Property's}
-    
     ///Возвращает очередь, которую выполняет данный CLTask
     public property OrgQueue: CommandQueue<T> read q; reintroduce;
-    protected function OrgQueueBase: CommandQueueBase; override := self.OrgQueue;
-    
-    {$endregion Property's}
-    
-    {$region Wait}
+    private function OrgQueueBase: CommandQueueBase; override := self.OrgQueue;
     
     ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
     ///Вызывает исключение, если оно было вызвано при выполнении очереди
     ///А затем возвращает результат выполнения
-    public function WaitRes: T; reintroduce;
-    
-    {$endregion Wait}
+    public function WaitRes: T;
     
   end;
   
@@ -2921,18 +2916,24 @@ type
   Context = partial class
     
     ///Запускает данную очередь и все её подочереди
-    ///Как только всё запущено: возвращает объект типа CLTask<>, через который можно следить за процессом выполнения
-    public function BeginInvoke<T>(q: CommandQueue<T>): CLTask<T>;
-    ///Запускает данную очередь и все её подочереди
-    ///Как только всё запущено: возвращает объект типа CLTask<>, через который можно следить за процессом выполнения
+    ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
     public function BeginInvoke(q: CommandQueueBase): CLTaskBase;
+    ///Запускает данную очередь и все её подочереди
+    ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
+    public function BeginInvoke(q: CommandQueueNil): CLTaskNil;
+    ///Запускает данную очередь и все её подочереди
+    ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
+    public function BeginInvoke<T>(q: CommandQueue<T>): CLTask<T>;
     
+    ///Запускает данную очередь и все её подочереди
+    ///Затем ожидает окончания выполнения
+    public procedure SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).Wait;
+    ///Запускает данную очередь и все её подочереди
+    ///Затем ожидает окончания выполнения
+    public procedure SyncInvoke(q: CommandQueueNil) := BeginInvoke(q).Wait;
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения и возвращает полученный результат
     public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).WaitRes;
-    ///Запускает данную очередь и все её подочереди
-    ///Затем ожидает окончания выполнения и возвращает полученный результат
-    public procedure SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).Wait;
     
   end;
   
@@ -5481,10 +5482,34 @@ type
     
   end;
   
+  CLTaskNil = sealed partial class(CLTaskBase)
+    
+    private constructor(q: CommandQueueNil; c: Context);
+    begin
+      self.q := q;
+      self.org_c := c;
+      
+      var g_data := new CLTaskGlobalData(self);
+      var l_data := new CLTaskLocalData;
+      
+      q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
+      var res_ev := q.Invoke(g_data, l_data);
+      g_data.FinishInvoke;
+      
+      NativeUtils.StartNewBgThread(()->
+      begin
+        res_ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
+        g_data.FinishExecution(self.err_lst);
+        wh.Set;
+      end);
+      
+    end;
+    
+  end;
   CLTask<T> = sealed partial class(CLTaskBase)
     private q_res: QueueRes<T>;
     
-    protected constructor(q: CommandQueue<T>; c: Context);
+    private constructor(q: CommandQueue<T>; c: Context);
     begin
       self.q := q;
       self.org_c := c;
@@ -5509,38 +5534,19 @@ type
     
   end;
   
-  CLTaskResLess = sealed class(CLTaskBase)
-    protected q: CommandQueueBase;
+  CLTaskFactory = record(ITypedCQConverter<CLTaskBase>)
+    private c: Context;
+    public constructor(c: Context) := self.c := c;
+    public constructor := raise new OpenCLABCInternalException;
     
-    protected function OrgQueueBase: CommandQueueBase; override := q;
-    
-    protected constructor(q: CommandQueueBase; c: Context);
-    begin
-      self.q := q;
-      self.org_c := c;
-      
-      var g_data := new CLTaskGlobalData(self);
-      var l_data := new CLTaskLocalData;
-      
-      q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
-      var qr := q.InvokeBase(g_data, l_data);
-      g_data.FinishInvoke;
-      
-      NativeUtils.StartNewBgThread(()->
-      begin
-        qr.ev.WaitAndRelease(g_data.curr_err_handler{$ifdef EventDebug}, $'CLTask.OnQDone'{$endif});
-        if not g_data.curr_err_handler.HadError(true) then
-          qr.StabiliseBase(g_data.curr_err_handler);
-        g_data.FinishExecution(self.err_lst);
-        wh.Set;
-      end);
-      
-    end;
+    public function ConvertNil(cq: CommandQueueNil): CLTaskBase := new CLTaskNil(cq, c);
+    public function Convert<T>(cq: CommandQueue<T>): CLTaskBase := new CLTask<T>(cq, c);
     
   end;
   
+function Context.BeginInvoke(q: CommandQueueBase) := q.ConvertTyped(new CLTaskFactory(self));
+function Context.BeginInvoke(q: CommandQueueNil) := new CLTaskNil(q, self);
 function Context.BeginInvoke<T>(q: CommandQueue<T>) := new CLTask<T>(q, self);
-function Context.BeginInvoke(q: CommandQueueBase) := new CLTaskResLess(q, self);
 
 function CLTask<T>.WaitRes: T;
 begin
@@ -5555,26 +5561,26 @@ end;
 {$region Cast}
 
 type
-  NilQueue<T> = sealed class(CommandQueue<T>)
+  TypedNilQueue<T> = sealed class(CommandQueue<T>)
     private static nil_val := default(T);
+    private q: CommandQueueNil;
     
     static constructor;
     begin
       if object(nil_val)<>nil then
         raise new System.InvalidCastException($'.Cast не может преобразовывать nil в {typeof(T)}');
     end;
-    public constructor := exit;
+    public constructor(q: CommandQueueNil) := self.q := q;
+    private constructor := raise new OpenCLABCInternalException;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.RegisterWaitables(g, prev_hubs);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := new QueueResConst<T>(nil_val, q.Invoke(g, l));
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      {$ifdef DEBUG}
-      l.CheckInvalidNeedPtrQr(self);
-      {$endif DEBUG}
-      Result := new QueueResConst<T>(nil_val, l.prev_ev);
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
     end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
   end;
   
@@ -5598,6 +5604,7 @@ type
       end;
     end;
     public constructor(q: CommandQueue<TInp>) := self.q := q;
+    private constructor := raise new OpenCLABCInternalException;
     
     public property SourceBase: CommandQueueBase read q as CommandQueueBase; override;
     
@@ -5640,7 +5647,7 @@ type
       end else
         Result := new CastQueue<TInp, TRes>(cq);
     end;
-    public function ConvertNil(cq: CommandQueueNil): CommandQueue<TRes> := cq + new NilQueue<TRes>;
+    public function ConvertNil(cq: CommandQueueNil): CommandQueue<TRes> := new TypedNilQueue<TRes>(cq);
     
   end;
   
@@ -6448,6 +6455,12 @@ type
       
     end;
     
+    public procedure ITypedCQUser.UseNil(cq: CommandQueueNil);
+    begin
+      // Нельзя пропускать - тут можно быть HPQ, WaitFor и т.п. работа без результата
+//      if has_next then exit;
+      qs.Add(cq);
+    end;
     public procedure ITypedCQUser.Use<T>(cq: CommandQueue<T>);
     begin
       if has_next then
@@ -6462,12 +6475,6 @@ type
       if cq is TArray(var sqa) then
         ProcessSeq(sqa.GetQs) else
         qs.Add(cq);
-    end;
-    public procedure ITypedCQUser.UseNil(cq: CommandQueueNil);
-    begin
-      // Нельзя пропускать - тут можно быть HPQ, WaitFor и т.п. работа без результата
-//      if has_next then exit;
-      qs.Add(cq);
     end;
     
   end;

@@ -158,6 +158,8 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\typed nil.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#ThenConvert\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#Multiusable\1.pas"
@@ -295,6 +297,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\typed nil]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#ThenConvert\1]
 Tester: Done executing

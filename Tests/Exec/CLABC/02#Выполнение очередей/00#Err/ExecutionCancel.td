@@ -12,7 +12,7 @@ System.AggregateException: При выполнении очереди было �
    at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    --- End of inner exception stack trace ---
    at OpenCLABC.CLTaskBase.Wait() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
-   at OpenCLABC.Context.SyncInvoke(CommandQueueBase q) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC.Context.SyncInvoke(CommandQueueNil q) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    at ExecutionCancel.Program.$Main() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas:line *
    at ExecutionCancel.Program.Main()
 ---> (Inner Exception #0) System.Exception: TestOK:1

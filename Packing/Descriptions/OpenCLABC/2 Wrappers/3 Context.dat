@@ -34,15 +34,19 @@
 # Context.MakeSibling(Device)
 Создаёт совместимый контекст, равный данному с одним отличием - MainDevice заменён на dvc
 
-# Context.BeginInvoke<T>(CommandQueue<T>)
 # Context.BeginInvoke(CommandQueueBase)
+# Context.BeginInvoke(CommandQueueNil)
+# Context.BeginInvoke<T>(CommandQueue<T>)
 Запускает данную очередь и все её подочереди
-Как только всё запущено: возвращает объект типа CLTask<>, через который можно следить за процессом выполнения
+Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
 
-# Context.SyncInvoke<T>(CommandQueue<T>)
+# Context:SyncInvoke
 # Context.SyncInvoke(CommandQueueBase)
+# Context.SyncInvoke(CommandQueueNil)
 Запускает данную очередь и все её подочереди
-Затем ожидает окончания выполнения и возвращает полученный результат
+Затем ожидает окончания выполнения
+# Context.SyncInvoke<T>(CommandQueue<T>)
+%Context:SyncInvoke% и возвращает полученный результат
 
 # Context.MakeNewDefaultContext
 Создаёт новый контекст, соответствующий изначальному значению Context.Default
