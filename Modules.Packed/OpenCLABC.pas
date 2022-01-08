@@ -29,13 +29,7 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Заменить CommandQueueBase на CommandQueueNil в интерфейсе
-// - Включая кодогенерируемый интерфейс
-
 //TODO CLTaskNil
-
-//TODO Тесты:
-// - CommandQueueBase(WaitMarker(DetachedSignal)).ToString
 
 //TODO Справка:
 // - [Use/Convert]Typed
@@ -2828,13 +2822,13 @@ type
   ///Такая очередь всегда возвращает nil
   CommandQueueNil = abstract partial class(CommandQueueBase)
     
-    ///Создаёт особый маркер из данной очереди
-    ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal
-    ///В конце выполнения созданная очередь возвращает то, что вернула данная, то есть nil
+    ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal
+    ///При передаче в Wait-очереди, полученная очередь превращается в маркер
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenMarkerSignal := new DetachedMarkerSignalNil(self, false);
-    ///Создаёт особый маркер из данной очереди
-    ///При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal не зависимо от исключений при выполнении данной очереди
-    ///В конце выполнения созданная очередь возвращает то, что вернула данная, то есть nil
+    ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal не зависимо от исключений при выполнении данной очереди
+    ///При передаче в Wait-очереди, полученная очередь превращается в маркер
+    ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyMarkerSignal := new DetachedMarkerSignalNil(self, true);
     
   end;
@@ -2843,11 +2837,11 @@ type
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal
-    ///При передаче в Wait-очереди, DetachedMarkerSignal превращается в маркер
+    ///При передаче в Wait-очереди, полученная очередь превращается в маркер
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenMarkerSignal := new DetachedMarkerSignal<T>(self, false);
     ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal не зависимо от исключений при выполнении данной очереди
-    ///При передаче в Wait-очереди, DetachedMarkerSignal превращается в маркер
+    ///При передаче в Wait-очереди, полученная очередь превращается в маркер
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
     public function ThenFinallyMarkerSignal := new DetachedMarkerSignal<T>(self, true);
     
@@ -3652,10 +3646,21 @@ function CombineSyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBas
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///И возвращающую результат последней очереди
+function CombineSyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
+function CombineSyncQueueNil(qs: sequence of CommandQueueNil): CommandQueueNil;
+
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+
+///Создаёт очередь, выполняющую указанные очереди одну за другой
+///И возвращающую результат последней очереди
+function CombineSyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///И возвращающую результат последней очереди
@@ -3758,10 +3763,21 @@ function CombineAsyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBa
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///И возвращающую результат последней очереди
+function CombineAsyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
+function CombineAsyncQueueNil(qs: sequence of CommandQueueNil): CommandQueueNil;
+
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+
+///Создаёт очередь, выполняющую указанные очереди одновременно
+///И возвращающую результат последней очереди
+function CombineAsyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///И возвращающую результат последней очереди
@@ -16278,8 +16294,13 @@ new CommandQueueHostProc(p);
 function CombineSyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs);
 function CombineSyncQueueBase(qs: sequence of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs);
 
+function CombineSyncQueueNil(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Cast&<CommandQueueBase>);
+function CombineSyncQueueNil(qs: sequence of CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Cast&<CommandQueueBase>);
+
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
 function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
+
+function CombineSyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Append&<CommandQueueBase>(last));
 
 function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Append&<CommandQueueBase>(last));
 
@@ -16326,8 +16347,13 @@ function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRe
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs);
 function CombineAsyncQueueBase(qs: sequence of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs);
 
+function CombineAsyncQueueNil(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Cast&<CommandQueueBase>);
+function CombineAsyncQueueNil(qs: sequence of CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Cast&<CommandQueueBase>);
+
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
 function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
+
+function CombineAsyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Append&<CommandQueueBase>(last));
 
 function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Append&<CommandQueueBase>(last));
 

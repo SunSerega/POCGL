@@ -19,13 +19,7 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Заменить CommandQueueBase на CommandQueueNil в интерфейсе
-// - Включая кодогенерируемый интерфейс
-
 //TODO CLTaskNil
-
-//TODO Тесты:
-// - CommandQueueBase(WaitMarker(DetachedSignal)).ToString
 
 //TODO Справка:
 // - [Use/Convert]Typed

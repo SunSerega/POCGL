@@ -31,52 +31,60 @@ begin
       
       wr += '{$region NonConv}'#10#10;
       
-      foreach var qs_def in qs_defs do
+      foreach var q_t in |'Base','Nil','&<T>'| do
+      begin
+        
+        foreach var qs_def in qs_defs do
+        begin
+          
+          wr += 'function Combine';
+          wr += exec_order;
+          wr += 'Queue';
+          wr += q_t.TrimStart('&');
+          wr += '(';
+          wr += qs_def;
+          wr += 'CommandQueue';
+          wr += q_t.TrimStart('&');
+          wr += ')';
+          
+          intr += ': CommandQueue';
+          intr += q_t.TrimStart('&');
+          intr += ';'#10;
+          
+          impl += ' := QueueArrayUtils.Construct';
+          impl += exec_order;
+          if q_t<>'Base' then impl += q_t;
+          impl += '(qs';
+          if q_t<>'Base' then impl += '.Cast&<CommandQueueBase>';
+          impl += ');'#10;
+          
+        end;
+        wr += #10;
+        
+      end;
+      
+      foreach var q_t in |'Nil','&<T>'| do
       begin
         
         wr += 'function Combine';
         wr += exec_order;
-        wr += 'QueueBase(';
-        wr += qs_def;
-        wr += 'CommandQueueBase)';
+        wr += 'Queue';
+        wr += q_t.TrimStart('&');
+        wr += '(qs: sequence of CommandQueueBase; last: CommandQueue';
+        wr += q_t.TrimStart('&');
+        wr += ')';
         
-        intr += ': CommandQueueBase;'#10;
-        
-        impl += ' := QueueArrayUtils.Construct';
-        impl += exec_order;
-        impl += '(qs);'#10;
-        
-      end;
-      wr += #10;
-      
-      foreach var qs_def in qs_defs do
-      begin
-        
-        wr += 'function Combine';
-        wr += exec_order;
-        wr += 'Queue<T>(';
-        wr += qs_def;
-        wr += 'CommandQueue<T>)';
-        
-        intr += ': CommandQueue<T>;'#10;
+        intr += ': CommandQueue';
+        intr += q_t.TrimStart('&');
+        intr += ';'#10;
         
         impl += ' := QueueArrayUtils.Construct';
         impl += exec_order;
-        impl += '&<T>(qs.Cast&<CommandQueueBase>);'#10;
+        impl += q_t;
+        impl += '(qs.Append&<CommandQueueBase>(last));'#10;
+        wr += #10;
         
       end;
-      wr += #10;
-      
-      wr += 'function Combine';
-      wr += exec_order;
-      wr += 'Queue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>)';
-      
-      intr += ': CommandQueue<T>;'#10;
-      
-      impl += ' := QueueArrayUtils.Construct';
-      impl += exec_order;
-      impl += '&<T>(qs.Append&<CommandQueueBase>(last));'#10;
-      wr += #10;
       
       wr += '{$endregion NonConv}'#10#10;
       

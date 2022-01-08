@@ -8,8 +8,13 @@
 function CombineSyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
 function CombineSyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
+function CombineSyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
+function CombineSyncQueueNil(qs: sequence of CommandQueueNil): CommandQueueNil;
+
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+
+function CombineSyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
 
 function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
@@ -56,8 +61,13 @@ function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRe
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
 function CombineAsyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
+function CombineAsyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
+function CombineAsyncQueueNil(qs: sequence of CommandQueueNil): CommandQueueNil;
+
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
 function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+
+function CombineAsyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
 
 function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 

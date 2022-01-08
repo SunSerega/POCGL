@@ -8,8 +8,13 @@
 function CombineSyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs);
 function CombineSyncQueueBase(qs: sequence of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs);
 
+function CombineSyncQueueNil(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Cast&<CommandQueueBase>);
+function CombineSyncQueueNil(qs: sequence of CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Cast&<CommandQueueBase>);
+
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
 function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
+
+function CombineSyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Append&<CommandQueueBase>(last));
 
 function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Append&<CommandQueueBase>(last));
 
@@ -56,8 +61,13 @@ function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRe
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs);
 function CombineAsyncQueueBase(qs: sequence of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs);
 
+function CombineAsyncQueueNil(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Cast&<CommandQueueBase>);
+function CombineAsyncQueueNil(qs: sequence of CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Cast&<CommandQueueBase>);
+
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
 function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
+
+function CombineAsyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Append&<CommandQueueBase>(last));
 
 function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Append&<CommandQueueBase>(last));
 

@@ -29,10 +29,10 @@
 
 
 
-# Combine[%mode:Sync,Async%]QueueBase(array of CommandQueueBase)
-# Combine[%mode:Sync,Async%]QueueBase(sequence of CommandQueueBase)
-# Combine[%mode:Sync,Async%]Queue<T>(array of CommandQueue<T>)
-# Combine[%mode:Sync,Async%]Queue<T>(sequence of CommandQueue<T>)
+# Combine[%mode:Sync,Async%]QueueBase([%array,sequence%] of CommandQueueBase)
+# Combine[%mode:Sync,Async%]QueueNil([%array,sequence%] of CommandQueueNil)
+# Combine[%mode:Sync,Async%]Queue<T>([%array,sequence%] of CommandQueue<T>)
+# Combine[%mode:Sync,Async%]QueueNil(sequence of CommandQueueBase, CommandQueueNil)
 # Combine[%mode:Sync,Async%]Queue<T>(sequence of CommandQueueBase, CommandQueue<T>)
 Создаёт очередь, выполняющую указанные очереди {%mode? одну за другой : одновременно %}
 И возвращающую результат последней очереди
