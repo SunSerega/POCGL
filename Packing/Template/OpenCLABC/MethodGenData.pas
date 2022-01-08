@@ -934,7 +934,7 @@ type
       
       {$region ToStringImpl}
       
-      res_EIm += '    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override';
+      res_EIm += '    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override';
       if settings.args = nil then
         res_EIm += ' := sb += #10;'#10 else
       begin

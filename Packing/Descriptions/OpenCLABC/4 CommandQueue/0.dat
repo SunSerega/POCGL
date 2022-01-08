@@ -1,8 +1,17 @@
 
 
 
-# CommandQueue[%Base,<T>%]
-Представляет очередь, состоящую в основном из команд, выполняемых на GPU
+# CommandQueue:Common
+# CommandQueueBase
+Представляет очередь команд, в основном выполняемых на GPU
+
+# CommandQueueNil
+%CommandQueue:Common%
+Такая очередь всегда возвращает nil
+
+# CommandQueue<T>
+%CommandQueue:Common%
+Такая очередь всегда возвращает значение типа T
 
 
 
@@ -13,8 +22,8 @@
 # ITypedCQUser.Use<T>(CommandQueue<T>)
 # ITypedCQConverter<TRes>.Convert<T>(CommandQueue<T>)
 Вызывается если у очереди есть возвращаемое значение
-# ITypedCQUser.UseBase(CommandQueueBase)
-# ITypedCQConverter<TRes>.ConvertBase(CommandQueueBase)
+# ITypedCQUser.UseNil(CommandQueueNil)
+# ITypedCQConverter<TRes>.ConvertNil(CommandQueueNil)
 Вызывается если у очереди нет возвращаемого значения
 
 # CommandQueueBase.UseTyped(ITypedCQUser)
@@ -24,6 +33,8 @@
 
 # CommandQueue<T>.UseTyped(ITypedCQUser)
 # CommandQueue<T>.ConvertTyped<TRes>(ITypedCQConverter<TRes>)
+# CommandQueueNil.UseTyped(ITypedCQUser)
+# CommandQueueNil.ConvertTyped<TRes>(ITypedCQConverter<TRes>)
 --
 
 
@@ -54,7 +65,7 @@
 
 
 
-# CommandQueue[%Base,<T>%].Multiusable
+# CommandQueue[%Base,Nil,<T>%].Multiusable
 Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
 Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
 
@@ -70,14 +81,10 @@
 
 
 
+# CommandQueueNil.Then[%finally:,Finally%]MarkerSignal
 # CommandQueue<T>.Then[%finally:,Finally%]MarkerSignal
 Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal %CQ:FinallyMode:{%finally%}%
-При передаче в Wait-очереди, DetachedMarkerSignal превращается в маркер
-%CQ:ThenSaveRes%
-
-# CommandQueueBase.Then[%finally:,Finally%]MarkerSignal
-Создаёт особый маркер из данной очереди
-При выполнении он сначала выполняет данную очередь, а затем вызывает свой .SendSignal %CQ:FinallyMode:{%finally%}%
+При передаче в Wait-очереди, полученная очередь превращается в маркер
 %CQ:ThenSaveRes%
 
 # CommandQueue<T>.Then[%finally:,Finally%]WaitFor(WaitMarker)
@@ -107,10 +114,9 @@
 
 
 # CommandQueueBase.ToString
-Возвращает строковое представление данной очереди
-Используйте это значение только для отладки, потому что данный метод довольно медленный
+%ToString:ToString%
 
-# CommandQueueBase.Print[%,ln%]
-Вызывает Write{%0%}(ToString) для данной очереди и возвращает её же
+# CommandQueue[%Base,Nil,<T>%].Print[%ln:,ln%]
+%ToString:Print{%ln%}%
 
 

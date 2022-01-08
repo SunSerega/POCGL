@@ -99,7 +99,7 @@ main_dvc должен быть в списке устройств контекс
 # Err:WaitCombine:InpEmpty
 Количество комбинируемых маркеров должно быть положительным
 
-# Err:WaitMarkerCombination.Invoke
-Выполнять маркер-комбинацию нельзя. Возможно вы забыли написать WaitFor?
+# Err:WaitMarkerCombination.ConvertToQBase
+Преобразовывать комбинацию маркеров в очередь нельзя. Возможно вы забыли написать WaitFor?
 
 

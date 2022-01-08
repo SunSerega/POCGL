@@ -74,7 +74,7 @@ begin
         
         res.WriteLine('    ');
         
-        res.WriteLine('    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<CommandQueueBase,integer>; delayed: HashSet<CommandQueueBase>); override;');
+        res.WriteLine('    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;');
         res.WriteLine('    begin');
         res.WriteLine('      sb += #10;');
         for var i := 1 to c do

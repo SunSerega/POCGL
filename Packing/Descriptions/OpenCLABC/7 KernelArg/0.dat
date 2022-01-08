@@ -38,10 +38,9 @@
 
 
 # KernelArg.ToString
-Возвращает строковое представление данного объекта KernelArg
-Используйте это значение только для отладки, потому что данный метод довольно медленный
+%ToString:ToString%
 
 # KernelArg.Print[%ln:,ln%]
-Вызывает Write{%ln%}(ToString) для данного объекта KernelArg и возвращает его же
+%ToString:Print{%ln%}%
 
 
