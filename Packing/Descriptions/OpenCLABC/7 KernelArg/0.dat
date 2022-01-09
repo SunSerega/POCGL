@@ -6,34 +6,33 @@
 
 
 
+# KernelArg:From
+Создаёт аргумент kernel'а,
+
 # KernelArg.FromCLArray<T>(CLArray<T>)
 # KernelArg.FromCLArrayCQ<T>(CommandQueue<CLArray<T>>)
-Создаёт агрумент kernel-а, представляющий массив данных, хранимых на GPU
-
-
+%KernelArg:From% представляющий массив данных, хранимых на GPU
 
 # KernelArg.FromMemorySegment(MemorySegment)
 # KernelArg.FromMemorySegmentCQ(CommandQueue<MemorySegment>)
-Создаёт аргумент kernel-а, представляющий область памяти GPU
-
-
+%KernelArg:From% представляющий область памяти GPU
 
 # KernelArg.FromData(IntPtr, UIntPtr)
 # KernelArg.FromDataCQ(CommandQueue<IntPtr>, CommandQueue<UIntPtr>)
 # KernelArg.FromValueData<TRecord>(^TRecord)
-Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти или на стэке
-
-
+%KernelArg:From% представляющий адрес в неуправляемой памяти или на стэке
 
 # KernelArg.FromValue<TRecord>(TRecord)
 # KernelArg.FromValueCQ<TRecord>(CommandQueue<TRecord>)
-Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
+%KernelArg:From% представляющий небольшое значение размерного типа
 
-
+# KernelArg.FromNativeValue<TRecord>(NativeValue<TRecord>)
+# KernelArg.FromNativeValueCQ<TRecord>(CommandQueue<NativeValue<TRecord>>)
+%KernelArg:From% ссылающийся на неуправляемое значение
 
 # KernelArg.FromArray<TRecord>(array of TRecord, integer)
 # KernelArg.FromArrayCQ<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
-Создаёт аргумент kernel-а, ссылающийся на указанный массив, на элемент с индексом ind
+%KernelArg:From% ссылающийся на указанный массив, на элемент с индексом ind
 
 
 

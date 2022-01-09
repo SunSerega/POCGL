@@ -2946,11 +2946,11 @@ type
     
     {$region MemorySegment}
     
-    ///Создаёт аргумент kernel-а, представляющий область памяти GPU
+    ///Создаёт аргумент kernel'а, представляющий область памяти GPU
     public static function FromMemorySegment(mem: MemorySegment): KernelArg;
     public static function operator implicit(mem: MemorySegment): KernelArg := FromMemorySegment(mem);
     
-    ///Создаёт аргумент kernel-а, представляющий область памяти GPU
+    ///Создаёт аргумент kernel'а, представляющий область памяти GPU
     public static function FromMemorySegmentCQ(mem_q: CommandQueue<MemorySegment>): KernelArg;
     public static function operator implicit(mem_q: CommandQueue<MemorySegment>): KernelArg := FromMemorySegmentCQ(mem_q);
     
@@ -2958,12 +2958,12 @@ type
     
     {$region CLArray}
     
-    ///Создаёт агрумент kernel-а, представляющий массив данных, хранимых на GPU
+    ///Создаёт аргумент kernel'а, представляющий массив данных, хранимых на GPU
     public static function FromCLArray<T>(a: CLArray<T>): KernelArg; where T: record;
     public static function operator implicit<T>(a: CLArray<T>): KernelArg; where T: record;
     begin Result := FromCLArray(a); end;
     
-    ///Создаёт агрумент kernel-а, представляющий массив данных, хранимых на GPU
+    ///Создаёт аргумент kernel'а, представляющий массив данных, хранимых на GPU
     public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
     public static function operator implicit<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
     begin Result := FromCLArrayCQ(a_q); end;
@@ -2972,13 +2972,13 @@ type
     
     {$region Data}
     
-    ///Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти или на стэке
+    ///Создаёт аргумент kernel'а, представляющий адрес в неуправляемой памяти или на стэке
     public static function FromData(ptr: IntPtr; sz: UIntPtr): KernelArg;
     
-    ///Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти или на стэке
+    ///Создаёт аргумент kernel'а, представляющий адрес в неуправляемой памяти или на стэке
     public static function FromDataCQ(ptr_q: CommandQueue<IntPtr>; sz_q: CommandQueue<UIntPtr>): KernelArg;
     
-    ///Создаёт аргумент kernel-а, представляющий адрес в неуправляемой памяти или на стэке
+    ///Создаёт аргумент kernel'а, представляющий адрес в неуправляемой памяти или на стэке
     public static function FromValueData<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record; begin Result := FromValueData(ptr); end;
     
@@ -2986,11 +2986,11 @@ type
     
     {$region Value}
     
-    ///Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
+    ///Создаёт аргумент kernel'а, представляющий небольшое значение размерного типа
     public static function FromValue<TRecord>(val: TRecord): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromValue(val); end;
     
-    ///Создаёт аргумент kernel-а, представляющий небольшое значение размерного типа
+    ///Создаёт аргумент kernel'а, представляющий небольшое значение размерного типа
     public static function FromValueCQ<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(valq); end;
     
@@ -2998,9 +2998,11 @@ type
     
     {$region NativeValue}
     
+    ///Создаёт аргумент kernel'а, ссылающийся на неуправляемое значение
     public static function FromNativeValue<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record; begin Result := FromNativeValue(val); end;
     
+    ///Создаёт аргумент kernel'а, ссылающийся на неуправляемое значение
     public static function FromNativeValueCQ<TRecord>(valq: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(valq: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(valq); end;
     
@@ -3008,11 +3010,11 @@ type
     
     {$region Array}
     
-    ///Создаёт аргумент kernel-а, ссылающийся на указанный массив, на элемент с индексом ind
+    ///Создаёт аргумент kernel'а, ссылающийся на указанный массив, на элемент с индексом ind
     public static function FromArray<TRecord>(a: array of TRecord; ind: integer := 0): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(a: array of TRecord): KernelArg; where TRecord: record; begin Result := FromArray(a); end;
     
-    ///Создаёт аргумент kernel-а, ссылающийся на указанный массив, на элемент с индексом ind
+    ///Создаёт аргумент kernel'а, ссылающийся на указанный массив, на элемент с индексом ind
     public static function FromArrayCQ<TRecord>(a_q: CommandQueue<array of TRecord>; ind_q: CommandQueue<integer> := 0): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(a_q: CommandQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
     
