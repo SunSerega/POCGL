@@ -13,13 +13,13 @@ begin
   //TODO UseTyped
 //  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
 //  if q is ICastQueue(var cq) then q := cq.GetQ;
-  commands.Add( new QueueCommand<Kernel>(q) );
+  commands.Add( BasicGPUCommand&<Kernel>.MakeQueue(q) );
 end;
 
-function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, new ProcCommand<Kernel>((o,c)->p(o)));
-function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, new ProcCommand<Kernel>(p));
+function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc((o,c)->p(o)));
+function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc(p));
 
-function KernelCCQ.AddWait(marker: WaitMarker) := AddCommand(self, new WaitCommand<Kernel>(marker));
+function KernelCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeWait(marker));
 
 {$endregion Special .Add's}
 

@@ -122,10 +122,10 @@ begin
       res_Im += '//  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;
       res_Im += '//  if q is ICastQueue(var cq) then q := cq.GetQ;'#10;
       
-      res_Im += '  commands.Add( new QueueCommand<';
+      res_Im += '  commands.Add( BasicGPUCommand&<';
       res_Im += t;
       WriteGenerics(res_Im);
-      res_Im += '>(q) );'#10;
+      res_Im += '>.MakeQueue(q) );'#10;
       
       res_Im += 'end;'#10;
       
@@ -147,10 +147,10 @@ begin
         res += '->())';
         res_In += ': ';
         WriteCCQ(res_In);
-        res_Im += ' := AddCommand(self, new ProcCommand<';
+        res_Im += ' := AddCommand(self, BasicGPUCommand&<';
         res_Im += t;
         WriteGenerics(res_Im);
-        res_Im += '>(';
+        res_Im += '>.MakeProc(';
         res_Im += if need_c then 'p' else '(o,c)->p(o)';
         res_Im += '))';
         res += ';'#10;
@@ -167,10 +167,10 @@ begin
       res += 'AddWait(marker: WaitMarker)';
       res_In += ': ';
       WriteCCQ(res_In);
-      res_Im += ' := AddCommand(self, new WaitCommand<';
+      res_Im += ' := AddCommand(self, BasicGPUCommand&<';
       res_Im += t;
       WriteGenerics(res_Im);
-      res_Im += '>(marker))';
+      res_Im += '>.MakeWait(marker))';
       res += ';'#10;
       
       res_In += '    ';

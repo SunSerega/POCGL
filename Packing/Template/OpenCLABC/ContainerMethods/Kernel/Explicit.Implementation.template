@@ -19,13 +19,13 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
         args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
@@ -116,15 +116,15 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz2.Invoke(g, l.WithPtrNeed(False))); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
         args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
@@ -223,17 +223,17 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
       var args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.Invoke); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
-         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.Invoke); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
-         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz3.Invoke); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if (sz1_qr is IQueueResConst) then enq_evs.AddL2(sz1_qr.ev) else enq_evs.AddL1(sz1_qr.ev);
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz2.Invoke(g, l.WithPtrNeed(False))); if (sz2_qr is IQueueResConst) then enq_evs.AddL2(sz2_qr.ev) else enq_evs.AddL1(sz2_qr.ev);
+         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz3.Invoke(g, l.WithPtrNeed(False))); if (sz3_qr is IQueueResConst) then enq_evs.AddL2(sz3_qr.ev) else enq_evs.AddL1(sz3_qr.ev);
         args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       
@@ -338,17 +338,17 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, CLTaskErrHandler, EventList)->cl_event; override;
     begin
       var global_work_offset_qr: QueueRes<array of UIntPtr>;
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
       var               args_qr: array of QueueRes<ISetableKernelArg>;
-      g.ParallelInvoke(l, true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.Invoke); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
-          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(  global_work_size.Invoke); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
-           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(   local_work_size.Invoke); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
+        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->global_work_offset.Invoke(g, l.WithPtrNeed(False))); if (global_work_offset_qr is IQueueResConst) then enq_evs.AddL2(global_work_offset_qr.ev) else enq_evs.AddL1(global_work_offset_qr.ev);
+          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->global_work_size.Invoke(g, l.WithPtrNeed(False))); if (global_work_size_qr is IQueueResConst) then enq_evs.AddL2(global_work_size_qr.ev) else enq_evs.AddL1(global_work_size_qr.ev);
+           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->local_work_size.Invoke(g, l.WithPtrNeed(False))); if (local_work_size_qr is IQueueResConst) then enq_evs.AddL2(local_work_size_qr.ev) else enq_evs.AddL1(local_work_size_qr.ev);
                       args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if (Result is IQueueResConst) then enq_evs.AddL2(Result.ev) else enq_evs.AddL1(Result.ev); end);
       end);
       

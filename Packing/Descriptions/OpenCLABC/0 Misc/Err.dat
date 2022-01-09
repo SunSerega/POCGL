@@ -78,6 +78,9 @@ main_dvc должен быть в списке устройств контекс
 # Err:Blittable:Source:MemorySegment:GetArray3
 читать из области памяти OpenCL
 
+# Err:Blittable:Source:QueueResDelayedPtr
+использовать в некоторой внутренней ситуации (напишите об этом в issue)
+
 
 
 # Err:CLTask:

@@ -110,11 +110,11 @@ begin
         res.WriteLine;
         res.WriteLine('    ');
         
-        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<');
+        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<');
         WriteVTDef;
         res.WriteLine('>; override;');
         res.WriteLine($'    begin');
-        res.WriteLine($'      l := l.WithPtrNeed(false);');
+        res.WriteLine($'      var l := l_nil.WithPtrNeed(false);');
         
         for var i := 1 to c do
           res.WriteLine($'      var qr{i} := q{i}.Invoke(g, l); l.prev_ev := qr{i}.ev;');
@@ -145,11 +145,11 @@ begin
         res.WriteLine;
         res.WriteLine('    ');
         
-        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<');
+        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<');
         WriteVTDef;
         res.WriteLine('>; override;');
         res.WriteLine($'    begin');
-        res.WriteLine($'      l := l.WithPtrNeed(false);');
+        res.WriteLine($'      var l := l_nil.WithPtrNeed(false);');
         res.WriteLine($'      if l.prev_ev.count<>0 then loop {c-1} do l.prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
         
         for var i := 1 to c do

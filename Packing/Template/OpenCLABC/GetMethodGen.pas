@@ -103,7 +103,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: GetMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (';
+      res_EIm += '    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (';
       res_EIm += t;
       if generics.Count <> 0 then
       begin
@@ -131,19 +131,6 @@ type
       wr += settings.result_init;
       wr += ';'#10;
       wr += '        own_qr.SetRes(res);'#10;
-    end;
-    protected function WriteLocalDataForParam(wr: Writer; settings: GetMethodSettings): boolean?; override;
-    begin
-      Result :=
-        if not settings.arg_usage.Values.Any(use->use='ptr') then false else
-        if settings.arg_usage.Values.All(use->use='ptr') then true else
-          nil;
-      if Result<>nil then
-      begin
-        wr += '.WithPtrNeed(';
-        wr += Result.Value.ToString;
-        wr += ')';
-      end;
     end;
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: GetMethodSettings); override;
@@ -194,7 +181,7 @@ begin
   try
     
     EnumerateFiles(GetFullPathRTA('ContainerMethods\GetDef'), '*.dat')
-    .Select(fname->ProcTask(()->
+    .TaskForEach(fname->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
       var g := new GetMethodGenerator(t);
@@ -204,8 +191,7 @@ begin
       
       g.Close;
       Otp($'Packed .Get methods for [{t}]');
-    end))
-    .CombineAsyncTask
+    end)
     .SyncExec;
     
   except

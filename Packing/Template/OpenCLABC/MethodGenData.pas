@@ -440,12 +440,6 @@ type
     protected procedure WriteInvokeFHeader; abstract;
     protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
     protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
-    protected function WriteLocalDataForParam(wr: Writer; settings: TSettings): boolean?; virtual;
-    begin
-      var res := settings.arg_usage.Values.All(use->use='ptr');
-      if res then wr += '.WithPtrNeed(true)';
-      Result := res;
-    end;
     
     private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
     begin
@@ -484,9 +478,23 @@ type
         
       end;
       
+      var default_need_ptr: boolean?;
+      begin
+        var useful_usages := useful_args.Select(arg->settings.arg_usage[arg.name]);
+        default_need_ptr :=
+          if useful_args.Any(arg->arg.t.IsKA) then nil else
+          if not useful_usages.Any(use->use='ptr') then false else
+          if useful_usages.All(use->use='ptr') then true else
+            nil;
+      end;
       // Надо всегда, потому что даже если параметр 1 - его надо начинать выполнять асинхронно от всего остального
-      res_EIm += '      g.ParallelInvoke(l';
-      var default_need_ptr := WriteLocalDataForParam(res_EIm, settings);
+      res_EIm += '      g.ParallelInvoke(CLTaskLocalDataNil.Create';
+      if default_need_ptr<>nil then
+      begin
+        res_EIm += '.WithPtrNeed(';
+        res_EIm += default_need_ptr.Value.ToString;
+        res_EIm += ')';
+      end;
       res_EIm += ', true, enq_evs.Capacity-1, invoker->'#10;
       res_EIm += '      begin'#10;
       
@@ -520,8 +528,9 @@ type
         end;
         res_EIm += '>>(';
         
-        var need_with_ptr_need := (settings.arg_usage[arg.name]='ptr') <> default_need_ptr;
-        if need_with_ptr_need then
+        var local_ptr_need := if arg.t.IsKA then nil else settings.arg_usage[arg.name]='ptr';
+        var need_change_ptr_need := local_ptr_need <> default_need_ptr;
+        if need_change_ptr_need then
           res_EIm += '(g,l)->';
         
         var WriteQRName := procedure->
@@ -533,14 +542,22 @@ type
         end;
         
         //TODO вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
-        res_EIm += if need_with_ptr_need or (arg.t.ArrLvl<>0) then arg_name else arg_name.PadLeft(max_arg_w);
+        res_EIm += if need_change_ptr_need or (arg.t.ArrLvl<>0) then arg_name else arg_name.PadLeft(max_arg_w);
         
         res_EIm += '.Invoke';
-        if need_with_ptr_need then
+        if need_change_ptr_need then
         begin
-          res_EIm += '(g, l.WithPtrNeed(';
-          res_EIm += (settings.arg_usage[arg.name]='ptr').ToString.PadLeft(5);
-          res_EIm += '))';
+          res_EIm += '(g, ';
+          if local_ptr_need<>nil then
+          begin
+            res_EIm += 'l.WithPtrNeed(';
+            res_EIm += local_ptr_need.Value.ToString.PadLeft(5);
+            res_EIm += ')';
+          end else
+            // Если есть аргументы без PtrNeed - лучше передавать в ParallelInvoke CLTaskLocalDataNil, чтобы кидать меньше данных
+            raise new System.NotSupportedException;
+//            res_EIm += 'CLTaskLocalDataNil(l)';
+          res_EIm += ')';
         end;
         res_EIm += '); ';
         

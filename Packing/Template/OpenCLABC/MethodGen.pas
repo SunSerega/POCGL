@@ -13,7 +13,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: MethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParamsImpl(g: CLTaskGlobalData; l: CLTaskLocalData; enq_evs: EnqEvLst): (';
+      res_EIm += '    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (';
       res_EIm += t;
       if generics.Count <> 0 then
       begin
@@ -65,7 +65,7 @@ begin
   try
     
     EnumerateDirectories(GetFullPathRTA('ContainerMethods\Def'))
-    .Select(dir->ProcTask(()->
+    .TaskForEach(dir->
     begin
       var t := System.IO.Path.GetFileName(dir);
       var g := new MethodGenerator(t);
@@ -76,8 +76,7 @@ begin
       
       g.Close;
       Otp($'Packed methods for [{t}]');
-    end))
-    .CombineAsyncTask
+    end)
     .SyncExec;
     
   except

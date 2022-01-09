@@ -46,7 +46,7 @@ CommandQueueWaitFor#0
 
 ------------------------------
 
-SimpleSyncQueueArrayBase#0
+SimpleSyncQueueArrayNil#0
 	WaitMarkerDummyExecutor#1
 		WaitMarkerDummy#2
 	CommandQueueWaitFor#3
@@ -54,7 +54,7 @@ SimpleSyncQueueArrayBase#0
 
 ------------------------------
 
-SimpleSyncQueueArrayBase#0
+SimpleSyncQueueArrayNil#0
 	CommandQueueWaitFor#1
 		WaitMarkerDummy#2
 	WaitMarkerDummyExecutor#3
@@ -81,7 +81,7 @@ SimpleSyncQueueArray<OpenCLABC.MemorySegment>#0
 
 ------------------------------
 
-SimpleSyncQueueArrayBase#0
+SimpleSyncQueueArrayNil#0
 	MemorySegmentCCQ#1
 		CCCObj => MemorySegment[*] of size 1
 		WaitCommand

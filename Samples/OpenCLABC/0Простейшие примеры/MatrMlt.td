@@ -4,6 +4,9 @@
 #TestMode
 Comp+Exec
 
+#ReqModules
+OpenCLABC
+
 #ExpOtp
 Матрица A: 
    0.73   0.82   0.77   0.56
@@ -28,8 +31,5 @@ Comp+Exec
 
 Вектор V2 = C*V1: 
 43.549829529219 38.1055105291197 44.5335618220427 23.6192068006406
-
-#ReqModules
-OpenCLABC
 
 

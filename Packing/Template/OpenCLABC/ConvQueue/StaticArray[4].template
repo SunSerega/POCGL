@@ -42,9 +42,9 @@ type
   
   ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes>)
     
-    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
+    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
     begin
-      l := l.WithPtrNeed(false);
+      var l := l_nil.WithPtrNeed(false);
       var qr1 := q1.Invoke(g, l); l.prev_ev := qr1.ev;
       var qr2 := q2.Invoke(g, l); l.prev_ev := qr2.ev;
       var qr3 := q3.Invoke(g, l); l.prev_ev := qr3.ev;
@@ -55,9 +55,9 @@ type
   end;
   ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes>)
     
-    protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
+    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
     begin
-      l := l.WithPtrNeed(false);
+      var l := l_nil.WithPtrNeed(false);
       if l.prev_ev.count<>0 then loop 3 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;

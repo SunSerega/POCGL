@@ -13,13 +13,13 @@ begin
   //TODO UseTyped
 //  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
 //  if q is ICastQueue(var cq) then q := cq.GetQ;
-  commands.Add( new QueueCommand<MemorySegment>(q) );
+  commands.Add( BasicGPUCommand&<MemorySegment>.MakeQueue(q) );
 end;
 
-function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, new ProcCommand<MemorySegment>((o,c)->p(o)));
-function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, new ProcCommand<MemorySegment>(p));
+function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc((o,c)->p(o)));
+function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc(p));
 
-function MemorySegmentCCQ.AddWait(marker: WaitMarker) := AddCommand(self, new WaitCommand<MemorySegment>(marker));
+function MemorySegmentCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeWait(marker));
 
 {$endregion Special .Add's}
 
