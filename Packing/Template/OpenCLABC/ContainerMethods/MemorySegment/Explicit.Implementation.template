@@ -513,7 +513,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           val_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
         
         Result := res_ev;
       end;
@@ -898,7 +898,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -974,7 +974,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1050,7 +1050,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1126,7 +1126,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1202,7 +1202,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1278,7 +1278,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1368,7 +1368,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1478,7 +1478,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1598,7 +1598,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1713,7 +1713,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1823,7 +1823,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -1943,7 +1943,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2279,7 +2279,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           val_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
         
         Result := res_ev;
       end;
@@ -2453,7 +2453,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           val_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [val]'{$endif});
         
         Result := res_ev;
       end;
@@ -2539,7 +2539,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2615,7 +2615,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2691,7 +2691,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2786,7 +2786,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -2906,7 +2906,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;
@@ -3036,7 +3036,7 @@ type
         EventList.AttachCallback(true, res_ev, ()->
         begin
           a_hnd.Free;
-        end, err_handler{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
+        end{$ifdef EventDebug}, 'GCHandle.Free for [a]'{$endif});
         
         Result := res_ev;
       end;

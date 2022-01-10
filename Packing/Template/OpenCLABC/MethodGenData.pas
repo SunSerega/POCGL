@@ -725,7 +725,7 @@ type
           res_EIm += '_hnd.Free;'#10;
         end;
         
-        res_EIm += '        end, err_handler{$ifdef EventDebug}, ''GCHandle.Free for [';
+        res_EIm += '        end{$ifdef EventDebug}, ''GCHandle.Free for [';
         res_EIm += args_with_GCHandle.JoinToString(', ');
         res_EIm += ']''{$endif});'#10;
         res_EIm += '        '#10;

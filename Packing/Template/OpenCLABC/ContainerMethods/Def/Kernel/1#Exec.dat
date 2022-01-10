@@ -25,7 +25,7 @@ begin
   begin
     cl.ReleaseKernel(ntv).RaiseIfError();
     args_hnd.Free;
-  end, err_handler{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+  end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
 end);
 
 
@@ -54,7 +54,7 @@ begin
   begin
     cl.ReleaseKernel(ntv).RaiseIfError();
     args_hnd.Free;
-  end, err_handler{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+  end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
 end);
 
 
