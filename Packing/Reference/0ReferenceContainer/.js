@@ -325,16 +325,16 @@ const code_words_color = {
 	"pas": {
 		"keyword": [
 			"###", "##", "program", "unit", "library", "namespace",
-			"begin","end", "var", "uses", "as", "new", "try", "except", "on", "do", "const",
+			"begin","end", "var", "uses", "as", "new", "try", "except", "on", "do", "finally", "const",
 			"procedure", "function", "lock", "type", "class","record", "sizeof","typeof", "external",
 			"static", "array", "where", "or","and", "public","private", "property","constructor", "default",
 			"of", "if","then","else", "div","mod", "extensionmethod", "while",
 		],
 		"build-in": [
-			"nil", "self", "true", "false",
+			"nil", "self", "true", "false", "value",
 			"string","char", "object", "pointer", "single","real",
-			"shortint",	"smallint",	"integer", 				"int64",
-			"byte",		"word", 	"longword", "cardinal",	"uint64",
+			"shortint", "smallint", "integer", "int64",
+			"byte", "word", "longword", "cardinal", "uint64",
 		],
 		"red": ["ToDo"],
 	},

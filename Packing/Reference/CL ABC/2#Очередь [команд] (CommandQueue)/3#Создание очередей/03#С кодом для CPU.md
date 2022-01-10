@@ -17,7 +17,7 @@ HPQ — Host Procedure Queue\
 ---
 
 Так же бывает нужно использовать результат предыдущей очереди в коде на CPU.
-Для этого используются методы `.ThenConvert` и `.ThenUse`, соответствующие `HFQ` и `HPQ`:
+Для этого используются методы `.ThenUse` и `.ThenConvert`:
 ```
 ## uses OpenCLABC;
 var Q := HFQ(()->5);
@@ -27,5 +27,5 @@ Context.Default.SyncInvoke(Q
   .ThenConvert(x->$'x^2 = {x**2}')
 ).Println;
 ```
-
+Они схожи с `HPQ` и `HFQ` соответственно, за исключением того, что `.ThenUse` возвращает значение, которое в него передали, а не `nil`.
 

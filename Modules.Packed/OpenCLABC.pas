@@ -29,12 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Справка:
-// - [Use/Convert]Typed
-// - CommandQueueNil
-// - CLTaskNil
-// - NativeValue<T>
-
 //===================================
 // Запланированное:
 
@@ -254,10 +248,10 @@ type
     public static function CountRetains(ev: cl_event) :=
     RefCounter[ev].Sum(act->act.is_release ? -1 : +1);
     public static procedure CheckExists(ev: cl_event; reason: string) :=
-    if CountRetains(ev)<=0 then
+    if CountRetains(ev)<=0 then lock output do
     begin
       ReportRefCounterInfo(Console.Error);
-      Sleep(100);
+      Sleep(1000);
       raise new OpenCLABCInternalException($'Event {ev} was released before last use ({reason}) at');
     end;
     
@@ -265,7 +259,7 @@ type
     foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
     begin
       ReportRefCounterInfo(Console.Error);
-      Sleep(100);
+      Sleep(1000);
       raise new OpenCLABCInternalException(ev.ToString);
     end;
     
@@ -2648,11 +2642,11 @@ type
     
     ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
     ///Созданная очередь возвращает nil не зависимо от исключений при выполнении данной очереди
-    public function HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueBase; where TException: Exception;
+    public function HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueNil; where TException: Exception;
     begin Result := HandleWithoutRes(ConvertErrHandler(handler)) end;
     ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
     ///Созданная очередь возвращает nil не зависимо от исключений при выполнении данной очереди
-    public function HandleWithoutRes(handler: Exception->boolean): CommandQueueBase;
+    public function HandleWithoutRes(handler: Exception->boolean): CommandQueueNil;
     
   end;
   
@@ -2873,7 +2867,7 @@ type
     public property OrgContext: Context read org_c;
     
     ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
-    ///Вызывает исключение, если оно было вызвано при выполнении очереди
+    ///Кидает System.AggregateException, содержащие ошибки при выполнении очереди, если такие имеются
     public procedure Wait;
     begin
       wh.WaitOne;
@@ -2906,7 +2900,7 @@ type
     private function OrgQueueBase: CommandQueueBase; override := self.OrgQueue;
     
     ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
-    ///Вызывает исключение, если оно было вызвано при выполнении очереди
+    ///Кидает System.AggregateException, содержащие ошибки при выполнении очереди, если такие имеются
     ///А затем возвращает результат выполнения
     public function WaitRes: T;
     
@@ -4711,6 +4705,8 @@ type
     function get_ev: TEventList;
     function set_ev_base(val: TEventList): IEventListContainerT<TEventList>;
     
+    procedure forbid_ev_swap;
+    
   end;
   
 function set_ev<TC,TV>(self: TC; val: TV): TC; extensionmethod; where TC: IEventListContainerT<TV>;
@@ -4727,6 +4723,8 @@ type
     
     public function IEventListContainerT<TEventList>.get_ev: EventList := self;
     public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainerT<EventList> := val;
+    
+    public procedure IEventListContainerT<TEventList>.forbid_ev_swap := exit;
     
     {$endregion IValueContainer}
     
@@ -5003,6 +5001,8 @@ type
     
     public function IEventListContainerT<TEventList>.get_ev: EventList := ev;
     public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainer := self.TrySetEv(val);
+    
+    public procedure IEventListContainerT<TEventList>.forbid_ev_swap := self.can_set_ev := false;
     
     {$endregion IValueContainer}
     
@@ -6593,6 +6593,7 @@ type
         
         l.PrevEv := EventList.Empty;
         Result := invoke_q(g, l);
+        Result.forbid_ev_swap;
         var q_err_handler := g.curr_err_handler;
         
         g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(prev_err_handler, q_err_handler);

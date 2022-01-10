@@ -19,12 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Справка:
-// - [Use/Convert]Typed
-// - CommandQueueNil
-// - CLTaskNil
-// - NativeValue<T>
-
 //===================================
 // Запланированное:
 
@@ -239,10 +233,10 @@ type
     public static function CountRetains(ev: cl_event) :=
     RefCounter[ev].Sum(act->act.is_release ? -1 : +1);
     public static procedure CheckExists(ev: cl_event; reason: string) :=
-    if CountRetains(ev)<=0 then
+    if CountRetains(ev)<=0 then lock output do
     begin
       ReportRefCounterInfo(Console.Error);
-      Sleep(100);
+      Sleep(1000);
       raise new OpenCLABCInternalException($'Event {ev} was released before last use ({reason}) at');
     end;
     
@@ -250,7 +244,7 @@ type
     foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
     begin
       ReportRefCounterInfo(Console.Error);
-      Sleep(100);
+      Sleep(1000);
       raise new OpenCLABCInternalException(ev.ToString);
     end;
     
@@ -1454,9 +1448,9 @@ type
     private function ConvertErrHandler<TException>(handler: TException->boolean): Exception->boolean; where TException: Exception;
     begin Result := e->(e is TException) and handler(TException(e)) end;
     
-    public function HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueBase; where TException: Exception;
+    public function HandleWithoutRes<TException>(handler: TException->boolean): CommandQueueNil; where TException: Exception;
     begin Result := HandleWithoutRes(ConvertErrHandler(handler)) end;
-    public function HandleWithoutRes(handler: Exception->boolean): CommandQueueBase;
+    public function HandleWithoutRes(handler: Exception->boolean): CommandQueueNil;
     
   end;
   
@@ -2401,6 +2395,8 @@ type
     function get_ev: TEventList;
     function set_ev_base(val: TEventList): IEventListContainerT<TEventList>;
     
+    procedure forbid_ev_swap;
+    
   end;
   
 function set_ev<TC,TV>(self: TC; val: TV): TC; extensionmethod; where TC: IEventListContainerT<TV>;
@@ -2417,6 +2413,8 @@ type
     
     public function IEventListContainerT<TEventList>.get_ev: EventList := self;
     public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainerT<EventList> := val;
+    
+    public procedure IEventListContainerT<TEventList>.forbid_ev_swap := exit;
     
     {$endregion IValueContainer}
     
@@ -2693,6 +2691,8 @@ type
     
     public function IEventListContainerT<TEventList>.get_ev: EventList := ev;
     public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainer := self.TrySetEv(val);
+    
+    public procedure IEventListContainerT<TEventList>.forbid_ev_swap := self.can_set_ev := false;
     
     {$endregion IValueContainer}
     
@@ -3796,6 +3796,7 @@ type
         
         l.PrevEv := EventList.Empty;
         Result := invoke_q(g, l);
+        Result.forbid_ev_swap;
         var q_err_handler := g.curr_err_handler;
         
         g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(prev_err_handler, q_err_handler);
