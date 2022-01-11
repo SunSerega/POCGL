@@ -8,11 +8,11 @@ OpenCLABC
 ConvSyncQueueArray<System.Object, System.String>#0
 	ConstQueue<System.Object>#1 { nil }
 	ConstQueue<System.Object>#1 { nil }
-	OpenCLABC_implementation______.<>local_variables_class_*`2[System.Object,System.String] => System.String <>lambda*(System.Object[], OpenCLABC.Context)
+	System.String <>lambda*(System.Object[])
 
 ConvAsyncQueueArray<System.Object, System.String>#0
 	ConstQueue<System.Object>#1 { nil }
 	ConstQueue<System.Object>#1 { nil }
-	OpenCLABC_implementation______.<>local_variables_class_*`2[System.Object,System.String] => System.String <>lambda*(System.Object[], OpenCLABC.Context)
+	System.String <>lambda*(System.Object[])
 
 

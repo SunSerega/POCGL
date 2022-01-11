@@ -13,10 +13,10 @@ KernelCCQ#0
 		args[0]: KernelArgMemorySegmentCQ
 			MemorySegmentCCQ#3
 				CCCQueue
-					CommandQueueHostFunc<OpenCLABC.MemorySegment>#4: OpenCLABC_implementation______.<>local_variables_class_*`1[OpenCLABC.MemorySegment] => OpenCLABC.MemorySegment <>lambda*(OpenCLABC.Context)
+					CommandQueueHostFunc<OpenCLABC.MemorySegment>#4: OpenCLABC.MemorySegment <>lambda*()
 				QueueCommand
-					CommandQueueHostFunc<System.Int32>#5: OpenCLABC_implementation______.<>local_variables_class_*`1[System.Int32] => Int32 <>lambda*(OpenCLABC.Context)
-				ProcCommand: OpenCLABC_implementation______.<>local_variables_class_* => Void <>lambda*(OpenCLABC.MemorySegment, OpenCLABC.Context)
+					CommandQueueHostFunc<System.Int32>#5: Int32 <>lambda*()
+				ProcCommand: Void <>lambda*(OpenCLABC.MemorySegment)
 		args[1]: KernelArgValue<System.Int32> => 5
 
 

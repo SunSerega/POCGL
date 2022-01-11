@@ -16,7 +16,7 @@ begin
   commands.Add( BasicGPUCommand&<Kernel>.MakeQueue(q) );
 end;
 
-function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc((o,c)->p(o)));
+function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc(p));
 function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc(p));
 
 function KernelCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeWait(marker));

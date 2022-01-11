@@ -2,14 +2,15 @@
 
 
 type
-  ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4>, TRes>)
+  ConvQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, TFunc> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3, TInp4>, TRes>)
+  where TFunc: Delegate;
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
     protected q3: CommandQueue<TInp3>;
     protected q4: CommandQueue<TInp4>;
-    protected f: (TInp1, TInp2, TInp3, TInp4, Context)->TRes;
+    protected f: TFunc;
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; f: (TInp1, TInp2, TInp3, TInp4, Context)->TRes);
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; f: TFunc);
     begin
       self.q1 := q1;
       self.q2 := q2;
@@ -36,11 +37,10 @@ type
       self.q4.ToString(sb, tabs, index, delayed);
     end;
     
-    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, c);
-    
   end;
   
-  ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes>)
+  ConvSyncQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, TFunc> = abstract class(ConvQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, TFunc>)
+  where TFunc: Delegate;
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
     begin
@@ -53,12 +53,25 @@ type
     end;
     
   end;
-  ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvQueueArrayBase4<TInp1, TInp2, TInp3, TInp4, TRes>)
+  
+  ConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvSyncQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, (TInp1, TInp2, TInp3, TInp4)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4);
+    
+  end;
+  ConvSyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvSyncQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, (TInp1, TInp2, TInp3, TInp4, Context)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, c);
+    
+  end;
+  
+  ConvAsyncQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, TFunc> = abstract class(ConvQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, TFunc>)
+  where TFunc: Delegate;
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4>>; override;
     begin
       var l := l_nil.WithPtrNeed(false);
-      if l.prev_ev.count<>0 then loop 3 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
+      if l.prev_ev.count<>0 then loop 3 do l.prev_ev.Retain({$ifdef EventDebug}'for all async branches'{$endif});
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
       var qr3: QueueRes<TInp3>;
@@ -72,6 +85,17 @@ type
       end);
       Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes()), EventList.Combine(|qr1.ev, qr2.ev, qr3.ev, qr4.ev|));
     end;
+    
+  end;
+  
+  ConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvAsyncQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, (TInp1, TInp2, TInp3, TInp4)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4);
+    
+  end;
+  ConvAsyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes> = sealed class(ConvAsyncQueueArray4Base<TInp1, TInp2, TInp3, TInp4, TRes, (TInp1, TInp2, TInp3, TInp4, Context)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3, TInp4>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, t.Item4, c);
     
   end;
   

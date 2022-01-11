@@ -2,13 +2,14 @@
 
 
 type
-  ConvQueueArrayBase3<TInp1, TInp2, TInp3, TRes> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3>, TRes>)
+  ConvQueueArray3Base<TInp1, TInp2, TInp3, TRes, TFunc> = abstract class(HostQueue<ValueTuple<TInp1, TInp2, TInp3>, TRes>)
+  where TFunc: Delegate;
     protected q1: CommandQueue<TInp1>;
     protected q2: CommandQueue<TInp2>;
     protected q3: CommandQueue<TInp3>;
-    protected f: (TInp1, TInp2, TInp3, Context)->TRes;
+    protected f: TFunc;
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; f: (TInp1, TInp2, TInp3, Context)->TRes);
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; f: TFunc);
     begin
       self.q1 := q1;
       self.q2 := q2;
@@ -32,11 +33,10 @@ type
       self.q3.ToString(sb, tabs, index, delayed);
     end;
     
-    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, c);
-    
   end;
   
-  ConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes> = sealed class(ConvQueueArrayBase3<TInp1, TInp2, TInp3, TRes>)
+  ConvSyncQueueArray3Base<TInp1, TInp2, TInp3, TRes, TFunc> = abstract class(ConvQueueArray3Base<TInp1, TInp2, TInp3, TRes, TFunc>)
+  where TFunc: Delegate;
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3>>; override;
     begin
@@ -48,12 +48,25 @@ type
     end;
     
   end;
-  ConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes> = sealed class(ConvQueueArrayBase3<TInp1, TInp2, TInp3, TRes>)
+  
+  ConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes> = sealed class(ConvSyncQueueArray3Base<TInp1, TInp2, TInp3, TRes, (TInp1, TInp2, TInp3)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3);
+    
+  end;
+  ConvSyncQueueArray3C<TInp1, TInp2, TInp3, TRes> = sealed class(ConvSyncQueueArray3Base<TInp1, TInp2, TInp3, TRes, (TInp1, TInp2, TInp3, Context)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, c);
+    
+  end;
+  
+  ConvAsyncQueueArray3Base<TInp1, TInp2, TInp3, TRes, TFunc> = abstract class(ConvQueueArray3Base<TInp1, TInp2, TInp3, TRes, TFunc>)
+  where TFunc: Delegate;
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3>>; override;
     begin
       var l := l_nil.WithPtrNeed(false);
-      if l.prev_ev.count<>0 then loop 2 do l.prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
+      if l.prev_ev.count<>0 then loop 2 do l.prev_ev.Retain({$ifdef EventDebug}'for all async branches'{$endif});
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
       var qr3: QueueRes<TInp3>;
@@ -65,6 +78,17 @@ type
       end);
       Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes()), EventList.Combine(|qr1.ev, qr2.ev, qr3.ev|));
     end;
+    
+  end;
+  
+  ConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes> = sealed class(ConvAsyncQueueArray3Base<TInp1, TInp2, TInp3, TRes, (TInp1, TInp2, TInp3)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3);
+    
+  end;
+  ConvAsyncQueueArray3C<TInp1, TInp2, TInp3, TRes> = sealed class(ConvAsyncQueueArray3Base<TInp1, TInp2, TInp3, TRes, (TInp1, TInp2, TInp3, Context)->TRes>)
+    
+    protected function ExecFunc(t: ValueTuple<TInp1, TInp2, TInp3>; c: Context): TRes; override := f(t.Item1, t.Item2, t.Item3, c);
     
   end;
   

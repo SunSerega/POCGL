@@ -7,8 +7,8 @@ OpenCLABC
 #ExpExecErr
 System.AggregateException: При выполнении очереди было вызвано 1 исключений. Используйте try чтоб получить больше информации ---> System.Exception: MemorySegment[*] of size 1, TestOK
    at AddQueue.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.pas:line *
-   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
-   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProc.ExecProc(Context c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    --- End of inner exception stack trace ---
    at OpenCLABC.CLTaskBase.Wait() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
@@ -18,8 +18,8 @@ System.AggregateException: При выполнении очереди было �
    at AddQueue.Program.Main()
 ---> (Inner Exception #0) System.Exception: MemorySegment[*] of size 1, TestOK
    at AddQueue.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.pas:line *
-   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*(Context <>c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
-   at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProc.ExecProc(Context c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    at OpenCLABC_implementation______.<>local_variables_class_*.<>lambda*() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *<---
 
 

@@ -1,6 +1,7 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses Fixers       in '..\..\..\Utils\Fixers';
 
+uses CodeGen      in '..\..\..\Utils\CodeGen';
+uses Fixers       in '..\..\..\Utils\Fixers';
 uses ATask        in '..\..\..\Utils\ATask';
 
 const MaxQueueStaticArraySize = 7;
@@ -11,198 +12,210 @@ begin
     (
       Range(2, MaxQueueStaticArraySize).TaskForEach(c->
       begin
-        var res := new System.IO.StreamWriter(GetFullPathRTA($'ConvQueue\StaticArray[{c}].template'), false, enc);
-        loop 3 do res.WriteLine;
+        var wr := new FileWriter(GetFullPathRTA($'ConvQueue\StaticArray[{c}].template'));
+        loop 3 do wr += #10;
         
-        var WriteVTDef: Action0 := ()->
+        var WriteNumbered := procedure(a: string)->
         begin
-          res.Write('ValueTuple<TInp1');
-          for var i := 2 to c do
-            res.Write($', TInp{i}');
-          res.Write('>');
+          var ind := a.IndexOf('!');
+          var a_long := if ind=-1 then a else a.Remove(ind,1);
+          var a_short := if ind=-1 then a else a.Remove(ind);
+          for var i := 1 to c-1 do wr += a_long.Replace('%', i.ToString);
+          wr += a_short.Replace('%', c.ToString);
         end;
         
-        var WriteFuncDef: Action0 := ()->
+        var WriteVTDef := procedure->
         begin
-          res.Write('(');
-          for var i := 1 to c do
-            res.Write($'TInp{i}, ');
-          res.Write('Context)->TRes');
+          wr += 'ValueTuple<';
+          WriteNumbered('TInp%!, ');
+          wr += '>';
+        end;
+        
+        var WriteBaseDef := procedure(exec_order: string)->
+        begin
+          wr += '  Conv';
+          wr += exec_order;
+          wr += 'QueueArray';
+          wr += c;
+          wr += 'Base<';
+          WriteNumbered('TInp%, ');
+          wr += 'TRes, TFunc> = abstract class';
         end;
         
         {$region ConvQueueArrayBase}
         
-        res.WriteLine('type');
-        res.Write($'  ConvQueueArrayBase{c}<');
-        for var i := 1 to c do
-          res.Write($'TInp{i}, ');
-        res.Write('TRes> = abstract class(HostQueue<');
+        wr += 'type'#10;
+        WriteBaseDef(nil);
+        wr += '(HostQueue<';
         WriteVTDef;
-        res.Write(', TRes>)');
-        res.WriteLine;
+        wr += ', TRes>)'#10;
+        wr += '  where TFunc: Delegate;'#10;
         
-        for var i := 1 to c do
-          res.WriteLine($'    protected q{i}: CommandQueue<TInp{i}>;');
+        WriteNumbered('    protected q%: CommandQueue<TInp%>;'#10);
+        wr += '    protected f: TFunc;'#10;
+        wr += '    '#10;
         
-        res.Write('    protected f: ');
-        WriteFuncDef;
-        res.WriteLine(';');
+        wr += '    public constructor(';
+        WriteNumbered('q%: CommandQueue<TInp%>; ');
+        wr += 'f: TFunc);'#10;
         
-        res.WriteLine('    ');
+        wr += '    begin'#10;
+        WriteNumbered('      self.q% := q%;'#10);
+        wr += '      self.f := f;'#10;
+        wr += '    end;'#10;
+        wr += '    private constructor := raise new InvalidOperationException($''%Err:NoParamCtor%'');'#10;
+        wr += '    '#10;
         
-        res.Write('    public constructor(');
-        for var i := 1 to c do
-          res.Write($'q{i}: CommandQueue<TInp{i}>; ');
-        res.Write('f: ');
-        WriteFuncDef;
-        res.WriteLine(');');
+        wr += '    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;'#10;
+        wr += '    begin'#10;
+        WriteNumbered('      self.q%.RegisterWaitables(g, prev_hubs);'#10);
+        wr += '    end;'#10;
+        wr += '    '#10;
         
-        res.WriteLine('    begin');
-        for var i := 1 to c do
-          res.WriteLine($'      self.q{i} := q{i};');
-        res.WriteLine('      self.f := f;');
-        res.WriteLine('    end;');
-        res.WriteLine('    private constructor := raise new InvalidOperationException($''%Err:NoParamCtor%'');');
+        wr += '    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;'#10;
+        wr += '    begin'#10;
+        wr += '      sb += #10;'#10;
+        WriteNumbered('      self.q%.ToString(sb, tabs, index, delayed);'#10);
+        wr += '    end;'#10;
+        wr += '    '#10;
         
-        res.WriteLine('    ');
+        wr += '  end;'#10;
         
-        res.WriteLine('    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;');
-        res.WriteLine('    begin');
-        for var i := 1 to c do
-          res.WriteLine($'      self.q{i}.RegisterWaitables(g, prev_hubs);');
-        res.WriteLine('    end;');
-        
-        res.WriteLine('    ');
-        
-        res.WriteLine('    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;');
-        res.WriteLine('    begin');
-        res.WriteLine('      sb += #10;');
-        for var i := 1 to c do
-          res.WriteLine($'      self.q{i}.ToString(sb, tabs, index, delayed);');
-        res.WriteLine('    end;');
-        
-        res.WriteLine('    ');
-        
-        res.Write('    protected function ExecFunc(t: ');
-        WriteVTDef;
-        res.Write('; c: Context): TRes; override := f(');
-        for var i := 1 to c do
-          res.Write($'t.Item{i}, ');
-        res.WriteLine('c);');
-        
-        res.WriteLine('    ');
-        
-        res.WriteLine('  end;');
+        wr += '  '#10;
         
         {$endregion ConvQueueArrayBase}
         
-        res.WriteLine('  ');
+        var WriteDerBaseDef := procedure(exec_order: string; write_invoke: Action0)->
+        begin
+          WriteBaseDef(exec_order);
+          wr += '(ConvQueueArray';
+          wr += c;
+          wr += 'Base<';
+          WriteNumbered('TInp%, ');
+          wr += 'TRes, TFunc>)'#10;
+          wr += '  where TFunc: Delegate;'#10;
+          wr += '    '#10;
+          
+          wr += '    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<';
+          WriteVTDef;
+          wr += '>; override;'#10;
+          wr += '    begin'#10;
+          wr += '      var l := l_nil.WithPtrNeed(false);'#10;
+          write_invoke();
+          wr += '    end;'#10;
+          wr += '    '#10;
+          
+          wr += '  end;'#10;
+          wr += '  '#10;
+          
+          for var context := false to true do
+          begin
+            wr += '  Conv';
+            wr += exec_order;
+            wr += 'QueueArray';
+            wr += c;
+            if context then
+              wr += 'C';
+            wr += '<';
+            WriteNumbered('TInp%, ');
+            wr += 'TRes> = sealed class(Conv';
+            wr += exec_order;
+            wr += 'QueueArray';
+            wr += c;
+            wr += 'Base<';
+            WriteNumbered('TInp%, ');
+            wr += 'TRes, (';
+            WriteNumbered('TInp%!, ');
+            if context then
+              wr += ', Context';
+            wr += ')->TRes>)'#10;
+            wr += '    '#10;
+            
+            wr += '    protected function ExecFunc(t: ';
+            WriteVTDef;
+            wr += '; c: Context): TRes; override := f(';
+            WriteNumbered('t.Item%!, ');
+            if context then
+              wr += ', c';
+            wr += ');'#10;
+            wr += '    '#10;
+            
+            wr += '  end;'#10;
+          end;
+          wr += '  '#10;
+          
+        end;
         
-        {$region ConvSyncQueueArray}
+        {$region Sync}
         
-        res.Write($'  ConvSyncQueueArray{c}<');
-        for var i := 1 to c do
-          res.Write($'TInp{i}, ');
-        res.Write($'TRes> = sealed class(ConvQueueArrayBase{c}<');
-        for var i := 1 to c do
-          res.Write($'TInp{i}, ');
-        res.Write('TRes>)');
-        res.WriteLine;
-        res.WriteLine('    ');
+        WriteDerBaseDef('Sync', ()->
+        begin
+          
+          WriteNumbered('      var qr% := q%.Invoke(g, l); l.prev_ev := qr%.ev;'#10);
+          
+          wr += '      Result := new QueueResFunc<';
+          WriteVTDef;
+          wr += '>(()->ValueTuple.Create(';
+          WriteNumbered('qr%.GetRes()!, ');
+          wr += '), l.prev_ev);'#10;
+        end);
         
-        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<');
-        WriteVTDef;
-        res.WriteLine('>; override;');
-        res.WriteLine($'    begin');
-        res.WriteLine($'      var l := l_nil.WithPtrNeed(false);');
+        {$endregion Sync}
         
-        for var i := 1 to c do
-          res.WriteLine($'      var qr{i} := q{i}.Invoke(g, l); l.prev_ev := qr{i}.ev;');
+        {$region Async}
         
-        res.Write($'      Result := new QueueResFunc<');
-        WriteVTDef;
-        res.Write('>(()->ValueTuple.Create(qr1.GetRes()');
-        for var i := 2 to c do
-          res.Write($', qr{i}.GetRes()');
-        res.WriteLine('), l.prev_ev);');
+        WriteDerBaseDef('Async', ()->
+        begin
+          wr += '      if l.prev_ev.count<>0 then loop ';
+          wr += c-1;
+          wr += ' do l.prev_ev.Retain({$ifdef EventDebug}''for all async branches''{$endif});'#10;
+          
+          WriteNumbered('      var qr%: QueueRes<TInp%>;'#10);
+          
+          wr += '      g.ParallelInvoke(l, false, ';
+          wr += c;
+          wr += ', invoker->'#10;
+          wr += '      begin'#10;
+          WriteNumbered('        qr% := invoker.InvokeBranch(q%.Invoke);'#10);
+          wr += '      end);'#10;
+          
+          wr += '      Result := new QueueResFunc<';
+          WriteVTDef;
+          wr += '>(()->ValueTuple.Create(';
+          WriteNumbered('qr%.GetRes()!, ');
+          wr += '), ';
+          
+          wr += 'EventList.Combine(|';
+          WriteNumbered('qr%.ev!, ');
+          wr += '|));'#10;
+        end);
         
-        res.WriteLine($'    end;');
+        {$endregion Async}
         
-        res.WriteLine($'    ');
-        res.WriteLine($'  end;');
-        
-        {$endregion ConvSyncQueueArray}
-        
-        {$region ConvAsyncQueueArray}
-        
-        res.Write($'  ConvAsyncQueueArray{c}<');
-        for var i := 1 to c do
-          res.Write($'TInp{i}, ');
-        res.Write($'TRes> = sealed class(ConvQueueArrayBase{c}<');
-        for var i := 1 to c do
-          res.Write($'TInp{i}, ');
-        res.Write('TRes>)');
-        res.WriteLine;
-        res.WriteLine('    ');
-        
-        res.Write($'    protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<');
-        WriteVTDef;
-        res.WriteLine('>; override;');
-        res.WriteLine($'    begin');
-        res.WriteLine($'      var l := l_nil.WithPtrNeed(false);');
-        res.WriteLine($'      if l.prev_ev.count<>0 then loop {c-1} do l.prev_ev.Retain({{$ifdef EventDebug}}$''for all async branches''{{$endif}});');
-        
-        for var i := 1 to c do
-          res.WriteLine($'      var qr{i}: QueueRes<TInp{i}>;');
-        
-        res.WriteLine($'      g.ParallelInvoke(l, false, {c}, invoker->');
-        res.WriteLine($'      begin');
-        for var i := 1 to c do
-          res.WriteLine($'        qr{i} := invoker.InvokeBranch(q{i}.Invoke);');
-        res.WriteLine($'      end);');
-        
-        res.Write($'      Result := new QueueResFunc<');
-        WriteVTDef;
-        res.Write('>(()->ValueTuple.Create(qr1.GetRes()');
-        for var i := 2 to c do
-          res.Write($', qr{i}.GetRes()');
-        res.Write('), ');
-        
-        res.Write('EventList.Combine(|qr1.ev');
-        for var i := 2 to c do
-          res.Write($', qr{i}.ev');
-        res.WriteLine('|));');
-        
-        res.WriteLine($'    end;');
-        
-        res.WriteLine($'    ');
-        res.WriteLine($'  end;');
-        
-        {$endregion ConvAsyncQueueArray}
-        
-        loop 2 do res.WriteLine('  ');
-        res.Write('  ');
-        res.Close;
+        wr += '  '#10'  ';
+        wr.Close;
       end)
     *
       ProcTask(()->
       begin
-        var res := new System.IO.StreamWriter(GetFullPathRTA('ConvQueue\AllStaticArrays.template'), false, enc);
+        var wr := new FileWriter(GetFullPathRTA('ConvQueue\AllStaticArrays.template'));
+        loop 3 do wr += '  '#10;
         
-        loop 3 do res.WriteLine('  ');
         for var c := 2 to MaxQueueStaticArraySize do
         begin
-          res.WriteLine($'{{$region [{c}]}}');
-          res.WriteLine;
-          res.WriteLine($'{{%StaticArray[{c}]%}}');
-          res.WriteLine($'  ');
-          res.WriteLine($'{{$endregion [{c}]}}');
-          res.WriteLine;
+          wr += '{$region [';
+          wr += c;
+          wr += ']}'#10#10;
+          wr += '{%StaticArray[';
+          wr += c;
+          wr += ']%}'#10#10;
+          wr += '{$endregion [';
+          wr += c;
+          wr += ']}'#10#10;
         end;
-        loop 1 do res.WriteLine('  ');
-        res.Write('  ');
         
-        res.Close;
+        wr += '  '#10'  ';
+        wr.Close;
       end)
     ).SyncExec;
     

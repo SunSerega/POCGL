@@ -113,9 +113,10 @@ begin
           
           impl += ' := new Conv';
           impl += exec_order;
-          impl += 'QueueArray<TInp, TRes>(qs.ToArray, ';
-          impl += if need_context then 'conv' else '(a,c)->conv(a)';
-          impl += ');'#10;
+          impl += 'QueueArray';
+          if need_context then
+            impl += 'C';
+          impl += '<TInp, TRes>(qs.ToArray, conv);'#10;
           
         end;
         wr += #10;
@@ -144,24 +145,13 @@ begin
           impl += exec_order;
           impl += 'QueueArray';
           impl += c;
+          if need_context then
+            impl += 'C';
           impl += '<';
           WriteNumbered(impl, 'TInp%, ');
           impl += 'TRes>(';
           WriteNumbered(impl, 'q%, ');
-          if need_context then
-            impl += 'conv' else
-          begin
-            impl += '(';
-            WriteNumbered(impl, 'o%,');
-            impl += 'c)->conv(o1';
-            for var i := 2 to c do
-            begin
-              impl += ',o';
-              impl += i;
-            end;
-            impl += ')';
-          end;
-          impl += ');'#10;
+          impl += 'conv);'#10;
           
         end;
         wr += #10;

@@ -16,7 +16,7 @@ begin
   commands.Add( BasicGPUCommand&<MemorySegment>.MakeQueue(q) );
 end;
 
-function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc((o,c)->p(o)));
+function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc(p));
 function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc(p));
 
 function MemorySegmentCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeWait(marker));

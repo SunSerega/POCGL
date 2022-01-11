@@ -16,7 +16,7 @@ begin
   commands.Add( BasicGPUCommand&<CLArray<T>>.MakeQueue(q) );
 end;
 
-function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeProc((o,c)->p(o)));
+function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeProc(p));
 function CLArrayCCQ<T>.AddProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeProc(p));
 
 function CLArrayCCQ<T>.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeWait(marker));

@@ -150,9 +150,7 @@ begin
         res_Im += ' := AddCommand(self, BasicGPUCommand&<';
         res_Im += t;
         WriteGenerics(res_Im);
-        res_Im += '>.MakeProc(';
-        res_Im += if need_c then 'p' else '(o,c)->p(o)';
-        res_Im += '))';
+        res_Im += '>.MakeProc(p))';
         res += ';'#10;
       end;
       
