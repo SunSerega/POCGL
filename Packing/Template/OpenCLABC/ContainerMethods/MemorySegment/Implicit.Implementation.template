@@ -103,6 +103,66 @@ begin
   Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue&<TRecord>(val, mem_offset));
 end;
 
+function MemorySegment.WriteArray1<TRecord>(a: array of TRecord): MemorySegment; where TRecord: record;
+begin
+  Result := WriteArray1(new ConstQueue<array of TRecord>(a));
+end;
+
+function MemorySegment.WriteArray2<TRecord>(a: array[,] of TRecord): MemorySegment; where TRecord: record;
+begin
+  Result := WriteArray2(new ConstQueue<array[,] of TRecord>(a));
+end;
+
+function MemorySegment.WriteArray3<TRecord>(a: array[,,] of TRecord): MemorySegment; where TRecord: record;
+begin
+  Result := WriteArray3(new ConstQueue<array[,,] of TRecord>(a));
+end;
+
+function MemorySegment.ReadArray1<TRecord>(a: array of TRecord): MemorySegment; where TRecord: record;
+begin
+  Result := ReadArray1(new ConstQueue<array of TRecord>(a));
+end;
+
+function MemorySegment.ReadArray2<TRecord>(a: array[,] of TRecord): MemorySegment; where TRecord: record;
+begin
+  Result := ReadArray2(new ConstQueue<array[,] of TRecord>(a));
+end;
+
+function MemorySegment.ReadArray3<TRecord>(a: array[,,] of TRecord): MemorySegment; where TRecord: record;
+begin
+  Result := ReadArray3(new ConstQueue<array[,,] of TRecord>(a));
+end;
+
+function MemorySegment.WriteArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+begin
+  Result := WriteArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
+end;
+
+function MemorySegment.WriteArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+begin
+  Result := WriteArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
+end;
+
+function MemorySegment.WriteArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+begin
+  Result := WriteArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
+end;
+
+function MemorySegment.ReadArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+begin
+  Result := ReadArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
+end;
+
+function MemorySegment.ReadArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+begin
+  Result := ReadArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
+end;
+
+function MemorySegment.ReadArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
+begin
+  Result := ReadArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
+end;
+
 function MemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a));

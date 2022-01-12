@@ -118,14 +118,11 @@ begin
       res += ';'#10;
       res_Im += 'begin'#10;
       res_Im += '  Result := self;'#10;
-      res_Im += '  //TODO UseTyped'#10;
-      res_Im += '//  if q is IConstQueue then raise new System.ArgumentException($''%Err:AddQueue(Const)%'');'#10;
-      res_Im += '//  if q is ICastQueue(var cq) then q := cq.GetQ;'#10;
-      
-      res_Im += '  commands.Add( BasicGPUCommand&<';
+      res_Im += '  var comm := BasicGPUCommand&<';
       res_Im += t;
       WriteGenerics(res_Im);
-      res_Im += '>.MakeQueue(q) );'#10;
+      res_Im += '>.MakeQueue(q);'#10;
+      res_Im += '  if comm<>nil then commands.Add(comm);'#10;
       
       res_Im += 'end;'#10;
       

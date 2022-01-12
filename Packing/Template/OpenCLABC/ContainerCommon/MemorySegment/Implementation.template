@@ -10,10 +10,8 @@ constructor MemorySegmentCCQ.Create := inherited;
 function MemorySegmentCCQ.AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
 begin
   Result := self;
-  //TODO UseTyped
-//  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
-//  if q is ICastQueue(var cq) then q := cq.GetQ;
-  commands.Add( BasicGPUCommand&<MemorySegment>.MakeQueue(q) );
+  var comm := BasicGPUCommand&<MemorySegment>.MakeQueue(q);
+  if comm<>nil then commands.Add(comm);
 end;
 
 function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc(p));

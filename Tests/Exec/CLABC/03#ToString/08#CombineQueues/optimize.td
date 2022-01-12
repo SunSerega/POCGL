@@ -15,7 +15,6 @@ SimpleAsyncQueueArray<System.Object>#0
 MemorySegmentCCQ#0
 	CCCObj => MemorySegment[*] of size 1
 	QueueCommand
-		CastQueue<System.Int32, System.Object>#1
-			CommandQueueHostFunc<System.Int32>#2: Int32 <>lambda*()
+		CommandQueueHostFunc<System.Int32>#1: Int32 <>lambda*()
 
 

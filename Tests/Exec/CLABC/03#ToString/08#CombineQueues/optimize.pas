@@ -5,6 +5,7 @@ begin
   Writeln(HFQ(()->5).Cast&<object> * HFQ(()->5).Cast&<object>);
   
   MemorySegment.Create(1).NewQueue
+  .AddQueue(new ConstQueue<byte>(0))
   .AddQueue(HFQ(()->5).Cast&<object>)
   .Println;
   

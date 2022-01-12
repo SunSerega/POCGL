@@ -10,10 +10,8 @@ constructor CLArrayCCQ<T>.Create := inherited;
 function CLArrayCCQ<T>.AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
 begin
   Result := self;
-  //TODO UseTyped
-//  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
-//  if q is ICastQueue(var cq) then q := cq.GetQ;
-  commands.Add( BasicGPUCommand&<CLArray<T>>.MakeQueue(q) );
+  var comm := BasicGPUCommand&<CLArray<T>>.MakeQueue(q);
+  if comm<>nil then commands.Add(comm);
 end;
 
 function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeProc(p));

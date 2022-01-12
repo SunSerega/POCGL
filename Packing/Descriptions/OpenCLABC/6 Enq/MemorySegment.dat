@@ -82,51 +82,38 @@ len указывает кол-во задействованных элемент
 
 
 
-
-# MemorySegment.WriteArray1<TRecord>(CommandQueue<array of TRecord>)
-# MemorySegment.WriteArray2<TRecord>(CommandQueue<array[,] of TRecord>)
-# MemorySegment.WriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
-# MemorySegmentCCQ.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>)
-# MemorySegmentCCQ.AddWriteArray2<TRecord>(CommandQueue<array[,] of TRecord>)
-# MemorySegmentCCQ.AddWriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
+# MemorySegment[%.,CCQ.Add%]WriteArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %])
+# MemorySegment[%.,CCQ.Add%]WriteArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %])
+# MemorySegment[%.,CCQ.Add%]WriteArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %])
 Записывает весь массив в начало области памяти
 
-# MemorySegment.ReadArray1<TRecord>(CommandQueue<array of TRecord>)
-# MemorySegment.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>)
-# MemorySegment.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
-# MemorySegmentCCQ.AddReadArray1<TRecord>(CommandQueue<array of TRecord>)
-# MemorySegmentCCQ.AddReadArray2<TRecord>(CommandQueue<array[,] of TRecord>)
-# MemorySegmentCCQ.AddReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
+# MemorySegment[%.,CCQ.Add%]ReadArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %])
+# MemorySegment[%.,CCQ.Add%]ReadArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %])
+# MemorySegment[%.,CCQ.Add%]ReadArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %])
 Читает из области памяти достаточно байт чтоб заполнить весь массив
 
-# MemorySegment.WriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddWriteArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment[%.,CCQ.Add%]WriteArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # MemorySegment:WriteArrayDef
 Записывает указанный участок массива в область памяти
 %MemorySegment:ArrOffsetDef%
 %MemorySegment:ArrLenDef%
 %MemorySegment:OffsetDef%
 
-# MemorySegment.ReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddReadArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment[%.,CCQ.Add%]ReadArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # MemorySegment:ReadArrayDef
 Читает данные из области памяти в указанный участок массива
 %MemorySegment:ArrOffsetDef%
 %MemorySegment:ArrLenDef%
 %MemorySegment:OffsetDef%
 
-# MemorySegment.WriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegment.WriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddWriteArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddWriteArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment[%.,CCQ.Add%]WriteArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment[%.,CCQ.Add%]WriteArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 %MemorySegment:WriteArrayDef%
 
 %MemorySegment:ArrOffsetWarning%
 
-# MemorySegment.ReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegment.ReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddReadArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddReadArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment[%.,CCQ.Add%]ReadArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# MemorySegment[%.,CCQ.Add%]ReadArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 %MemorySegment:ReadArrayDef%
 
 %MemorySegment:ArrOffsetWarning%

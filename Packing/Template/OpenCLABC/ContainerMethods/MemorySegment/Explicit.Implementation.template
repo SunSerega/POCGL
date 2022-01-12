@@ -855,6 +855,114 @@ end;
 
 {$region WriteArray1AutoSize}
 
+function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddWriteArray1(new ConstQueue<array of TRecord>(a));
+end;
+
+{$endregion WriteArray1AutoSize}
+
+{$region WriteArray2AutoSize}
+
+function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddWriteArray2(new ConstQueue<array[,] of TRecord>(a));
+end;
+
+{$endregion WriteArray2AutoSize}
+
+{$region WriteArray3AutoSize}
+
+function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddWriteArray3(new ConstQueue<array[,,] of TRecord>(a));
+end;
+
+{$endregion WriteArray3AutoSize}
+
+{$region ReadArray1AutoSize}
+
+function MemorySegmentCCQ.AddReadArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddReadArray1(new ConstQueue<array of TRecord>(a));
+end;
+
+{$endregion ReadArray1AutoSize}
+
+{$region ReadArray2AutoSize}
+
+function MemorySegmentCCQ.AddReadArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddReadArray2(new ConstQueue<array[,] of TRecord>(a));
+end;
+
+{$endregion ReadArray2AutoSize}
+
+{$region ReadArray3AutoSize}
+
+function MemorySegmentCCQ.AddReadArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddReadArray3(new ConstQueue<array[,,] of TRecord>(a));
+end;
+
+{$endregion ReadArray3AutoSize}
+
+{$region WriteArray1}
+
+function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddWriteArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
+end;
+
+{$endregion WriteArray1}
+
+{$region WriteArray2}
+
+function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddWriteArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
+end;
+
+{$endregion WriteArray2}
+
+{$region WriteArray3}
+
+function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddWriteArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
+end;
+
+{$endregion WriteArray3}
+
+{$region ReadArray1}
+
+function MemorySegmentCCQ.AddReadArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddReadArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
+end;
+
+{$endregion ReadArray1}
+
+{$region ReadArray2}
+
+function MemorySegmentCCQ.AddReadArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddReadArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
+end;
+
+{$endregion ReadArray2}
+
+{$region ReadArray3}
+
+function MemorySegmentCCQ.AddReadArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddReadArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
+end;
+
+{$endregion ReadArray3}
+
+{$region WriteArray1AutoSize}
+
 type
   MemorySegmentCommandWriteArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<MemorySegment>)
   where TRecord: record;

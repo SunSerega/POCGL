@@ -51,6 +51,16 @@ cl.Enqueue{%mode%}Buffer(
 
 
 # [%mode:Write,Read%]Array[%rank:1,2,3%]!AutoSize
+a: array{%rank? : [,] : [,,] %} of TRecord
+!ShortDef
+{%mode%}Array{%rank%}(new ConstQueue<array{%rank? : [,] : [,,] %} of TRecord>(a));
+
+# [%mode:Write,Read%]Array[%rank:1,2,3%]
+a: array{%rank? : [,] : [,,] %} of TRecord; {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}, len, mem_offset: CommandQueue<integer>
+!ShortDef
+{%mode%}Array{%rank%}(new ConstQueue<array{%rank? : [,] : [,,] %} of TRecord>(a), {%rank? a_offset : a_offset1,a_offset2 : a_offset1,a_offset2,a_offset3 %}, len, mem_offset);
+
+# [%mode:Write,Read%]Array[%rank:1,2,3%]!AutoSize
 a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 !Enqueue
 //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize

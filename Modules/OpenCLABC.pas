@@ -25,8 +25,6 @@ unit OpenCLABC;
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
 
-//TODO MultiusableBase позволяет использовать вне модуля
-
 //TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
 //TODO Справка: В обработке исключений написать, что обработчики всегда Quick
 
@@ -38,8 +36,6 @@ unit OpenCLABC;
 // - В том числе проверки с помощью BlittableHelper
 // - BlittableHelper вроде уже всё проверяет, но проверок надо тучу
 //TODO А в самих cl.* вызовах - использовать OpenCLABCInnerException.RaiseIfError, ибо это внутренние проблемы
-
-//TODO Проверять ".IsReadOnly" перед запасным копированием коллекций
 
 //TODO В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
 
@@ -66,6 +62,13 @@ unit OpenCLABC;
 //
 //TODO Несколько TODO в:
 // - Queue converter's >> Wait
+
+//TODO CLArray2 и CLArray3?
+// - Основная проблема использовать только CLArray<> сейчас - через него не прочитаешь/не запишешь многомерные массивы из RAM
+// - Вообще на стороне OpenCL запутывает, по строкам или по столбцам передался массив?
+// - С этой стороны, лучше иметь только одномерный CLArray, ради безопасности
+// - По хорошему, в коде использующем OpenCLABC, надо объявляться MatrixByRows/MatrixByCols и т.п.
+// - Но это будет объёмно, а ради простых примеров...
 
 //TODO Интегрировать профайлинг очередей
 
@@ -96,6 +99,7 @@ unit OpenCLABC;
 //TODO Issue компилятора:
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
 // - #2221
+// - #2550
 // - #2589
 // - #2604
 // - #2607
@@ -849,7 +853,7 @@ type
   
   {$endregion Kernel}
   
-  {$region CLValue}
+  {$region NativeValue}
   
   NativeValue<T> = partial class(System.IDisposable)
   where T: record;
@@ -871,7 +875,7 @@ type
     
   end;
   
-  {$endregion CLValue}
+  {$endregion NativeValue}
   
   {$region MemorySegment}
   
@@ -5854,10 +5858,14 @@ type
     
   end;
   
-  QueueCommandFactory<TObj> = record(ITypedCQConverter<BasicGPUCommand<TObj>>)
+  QueueCommandFactory<TObj> = sealed class(ITypedCQConverter<BasicGPUCommand<TObj>>)
     
     public function ConvertNil(cq: CommandQueueNil): BasicGPUCommand<TObj> := new QueueCommandNil<TObj>(cq);
-    public function Convert<T>(cq: CommandQueue<T>): BasicGPUCommand<TObj> := new QueueCommand<TObj,T>(cq);
+    public function Convert<T>(cq: CommandQueue<T>): BasicGPUCommand<TObj> :=
+    if cq is ConstQueue<T> then nil else
+    if cq is CastQueueBase<T>(var ccq) then
+      ccq.SourceBase.ConvertTyped(self) else
+      new QueueCommand<TObj,T>(cq);
     
   end;
   
@@ -6121,7 +6129,8 @@ type
   end;
   
 static function KernelArg.operator implicit<T>(a_q: CLArrayCCQ<T>): KernelArg; where T: record;
-begin Result := FromCLArrayCQ(a_q); end;
+//TODO #2550
+begin Result := FromCLArrayCQ(a_q as object as GPUCommandContainer<CLArray<T>>); end;
 
 {%ContainerCommon\CLArray\Implementation!ContainerCommon.pas%}
 

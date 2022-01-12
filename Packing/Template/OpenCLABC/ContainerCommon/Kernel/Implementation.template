@@ -10,10 +10,8 @@ constructor KernelCCQ.Create := inherited;
 function KernelCCQ.AddQueue(q: CommandQueueBase): KernelCCQ;
 begin
   Result := self;
-  //TODO UseTyped
-//  if q is IConstQueue then raise new System.ArgumentException($'%Err:AddQueue(Const)%');
-//  if q is ICastQueue(var cq) then q := cq.GetQ;
-  commands.Add( BasicGPUCommand&<Kernel>.MakeQueue(q) );
+  var comm := BasicGPUCommand&<Kernel>.MakeQueue(q);
+  if comm<>nil then commands.Add(comm);
 end;
 
 function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc(p));
