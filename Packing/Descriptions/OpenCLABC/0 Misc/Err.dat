@@ -11,6 +11,11 @@
 
 
 
+# Err:MemorySegment:WrongNtvType
+Неправильный тип неуправляемого объекта памяти. Ожидалось [MEM_OBJECT_BUFFER], а не [{t}]
+
+
+
 # Err:Device:SplitCUCount
 Количество ядер должно быть положительным числом, а не {CUCount}
 

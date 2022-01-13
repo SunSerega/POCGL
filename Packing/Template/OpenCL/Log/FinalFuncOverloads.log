@@ -611,6 +611,8 @@
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var CommandQueueProperties	| IntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var cl_platform_id	| var UIntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var cl_platform_id	| IntPtr	|
+ ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var cl_device_id	| var UIntPtr	|
+ ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var cl_device_id	| IntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var DevicePartitionProperty	| var UIntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var DevicePartitionProperty	| IntPtr	|
  ErrorCode	| cl_device_id	| DeviceInfo	| UIntPtr	| var DeviceAffinityDomain	| var UIntPtr	|

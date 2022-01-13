@@ -13,7 +13,7 @@
 
 
 # Platform.(cl_platform_id)
-# Device.(cl_device_id)
+# Device.FromNative(cl_device_id)
 # Wrap:NtvCtor
 Создаёт обёртку для указанного неуправляемого объекта
 
@@ -21,7 +21,7 @@
 # Context.(cl_context)
 # ProgramCode.(cl_program)
 # Kernel.(cl_kernel, boolean)
-# MemorySegment.(cl_mem)
+# MemorySegment.FromNative(cl_mem)
 # CLArray<T>.(cl_mem)
 %Wrap:NtvCtor%
 При успешном создании обёртки вызывается cl.Retain
@@ -40,7 +40,6 @@
 # ProgramCode.Dispose
 # Kernel.Dispose
 # MemorySegment.Dispose
-# MemorySubSegment.Dispose
 # CLArray<T>.Dispose
 Позволяет OpenCL удалить неуправляемый объект
 Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён

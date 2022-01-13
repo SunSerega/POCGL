@@ -37,19 +37,11 @@ unit OpenCLABC;
 // - BlittableHelper вроде уже всё проверяет, но проверок надо тучу
 //TODO А в самих cl.* вызовах - использовать OpenCLABCInnerException.RaiseIfError, ибо это внутренние проблемы
 
-//TODO В методах вроде MemorySegment.AddWriteArray1 приходится добавлять &<>
-
 //TODO Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
 // - И в справке тогда убрать параграф...
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
-
-//TODO Перепродумать MemorySubSegment, в случае перевыделения основного буфера - он плохо себя ведёт...
-// - Уже не существует никакого перевыделения, память выделяется всего 1 раз, при создании
-// - Но стоит всё же кидать исключения, если родительский сегмент удалён
-
-//TODO Создание SubDevice из cl_device_id
 
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -359,7 +351,9 @@ type
   Device = partial class
     private ntv: cl_device_id;
     
-    public constructor(ntv: cl_device_id) := self.ntv := ntv;
+    private constructor(ntv: cl_device_id) := self.ntv := ntv;
+    public static function FromNative(ntv: cl_device_id): Device;
+    
     private constructor := raise new OpenCLABCInternalException;
     
     private function GetBasePlatform: Platform;
@@ -395,14 +389,15 @@ type
   {$region SubDevice}
   
   SubDevice = partial class(Device)
-    private _parent: Device;
-    public property Parent: Device read _parent;
+    private _parent: cl_device_id;
+    public property Parent: Device read Device.FromNative(_parent);
     
-    private constructor(dvc: cl_device_id; parent: Device);
+    private constructor(parent, ntv: cl_device_id);
     begin
-      inherited Create(dvc);
+      inherited Create(ntv);
       self._parent := parent;
     end;
+    
     private constructor := inherited;
     
     protected procedure Finalize; override :=
@@ -882,10 +877,13 @@ type
   MemorySegment = partial class
     private ntv: cl_mem;
     
-    private sz: UIntPtr;
-    public property Size: UIntPtr read sz;
-    public property Size32: UInt32 read sz.ToUInt32;
-    public property Size64: UInt64 read sz.ToUInt64;
+    private static function GetSize(ntv: cl_mem): UIntPtr;
+    begin
+      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(UIntPtr.Size), Result, IntPtr.Zero).RaiseIfError;
+    end;
+    public property Size: UIntPtr read GetSize(ntv);
+    public property Size32: UInt32 read Size.ToUInt32;
+    public property Size64: UInt64 read Size.ToUInt64;
     
     public function ToString: string; override :=
     $'{self.GetType.Name}[{ntv.val}] of size {Size}';
@@ -901,7 +899,6 @@ type
       
       GC.AddMemoryPressure(size.ToUInt64);
       
-      self.sz := size;
     end;
     public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
     public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
@@ -910,21 +907,13 @@ type
     public constructor(size: integer) := Create(new UIntPtr(size));
     public constructor(size: int64)   := Create(new UIntPtr(size));
     
-    private constructor(ntv: cl_mem; sz: UIntPtr);
+    private constructor(ntv: cl_mem);
     begin
-      self.sz := sz;
       self.ntv := ntv;
+      cl.RetainMemObject(ntv);
     end;
-    private static function GetMemSize(ntv: cl_mem): UIntPtr;
-    begin
-      cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(Marshal.SizeOf&<UIntPtr>), Result, IntPtr.Zero).RaiseIfError;
-    end;
-    public constructor(ntv: cl_mem);
-    begin
-      Create(ntv, GetMemSize(ntv));
-      cl.RetainMemObject(ntv).RaiseIfError;
-      GC.AddMemoryPressure(Size64);
-    end;
+    public static function FromNative(ntv: cl_mem): MemorySegment;
+    
     private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
@@ -932,6 +921,18 @@ type
     {%ContainerMethods\MemorySegment\Implicit.Interface!MethodGen.pas%}
     
     {%ContainerMethods\MemorySegment.Get\Implicit.Interface!GetMethodGen.pas%}
+    
+    private procedure InformGCOfRelease(prev_ntv: cl_mem); virtual :=
+    GC.RemoveMemoryPressure(GetSize(prev_ntv).ToUInt64);
+    
+    public procedure Dispose;
+    begin
+      var prev_ntv := new cl_mem( Interlocked.Exchange(self.ntv.val, IntPtr.Zero) );
+      if prev_ntv=cl_mem.Zero then exit;
+      InformGCOfRelease(prev_ntv);
+      cl.ReleaseMemObject(prev_ntv).RaiseIfError;
+    end;
+    protected procedure Finalize; override := Dispose;
     
   end;
   
@@ -941,31 +942,44 @@ type
   
   MemorySubSegment = partial class(MemorySegment)
     
-    private _parent: MemorySegment;
-    public property Parent: MemorySegment read _parent;
+    // Только чтоб не вызвалось GC.RemoveMemoryPressure
+    private parent_dispose_lock: MemorySegment;
+    
+    private _parent: cl_mem;
+    public property Parent: MemorySegment read MemorySegment.FromNative(_parent);
     
     public function ToString: string; override :=
     $'{inherited ToString} inside {Parent}';
     
     {$region constructor's}
     
-    private static function MakeSubNtv(ntv: cl_mem; reg: cl_buffer_region): cl_mem;
+    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region): cl_mem;
     begin
       var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(ntv, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      Result := cl.CreateSubBuffer(parent, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       ec.RaiseIfError;
     end;
-    private constructor(parent: MemorySegment; reg: cl_buffer_region);
-    begin
-      inherited Create(MakeSubNtv(parent.ntv, reg), reg.size);
-      self._parent := parent;
-    end;
-    public constructor(parent: MemorySegment; origin, size: UIntPtr) := Create(parent, new cl_buffer_region(origin, size));
     
+    public constructor(parent: MemorySegment; origin, size: UIntPtr);
+    begin
+      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size)) );
+      self._parent := parent.ntv;
+      self.parent_dispose_lock := parent;
+    end;
     public constructor(parent: MemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
     public constructor(parent: MemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
     
+    private constructor(parent, ntv: cl_mem);
+    begin
+      inherited Create(ntv);
+      self.parent_dispose_lock := nil;
+      self._parent := parent;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
     {$endregion constructor's}
+    
+    private procedure InformGCOfRelease(prev_ntv: cl_mem); override := exit;
     
   end;
   
@@ -1050,6 +1064,15 @@ type
     private procedure SetSectionProp(range: IntRange; value: array of T);
     public property Section[range: IntRange]: array of T read GetSectionProp write SetSectionProp;
     
+    public procedure Dispose;
+    begin
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      GC.RemoveMemoryPressure(ByteSize);
+      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
+    end;
+    protected procedure Finalize; override := Dispose;
+    
     {%ContainerMethods\CLArray\Implicit.Interface!MethodGen.pas%}
     
     {%ContainerMethods\CLArray.Get\Implicit.Interface!GetMethodGen.pas%}
@@ -1086,7 +1109,7 @@ type
       var res := new cl_device_id[int64(c)];
       cl.CreateSubDevices(self.ntv, props, c, res[0], IntPtr.Zero).RaiseIfError;
       
-      Result := res.ConvertAll(sdvc->new SubDevice(sdvc, self));
+      Result := res.ConvertAll(sdvc->new SubDevice(self.ntv, sdvc));
     end;
     
     public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
@@ -1122,43 +1145,6 @@ type
       DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
       DevicePartitionProperty.Create(0)
     );
-    
-  end;
-  
-  MemorySegment = partial class
-    
-    public procedure Dispose; virtual;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(Size64);
-      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
-    end;
-    protected procedure Finalize; override := Dispose;
-    
-  end;
-  
-  MemorySubSegment = partial class
-    
-    public procedure Dispose; override;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
-    end;
-    
-  end;
-  
-  CLArray<T> = partial class
-    
-    public procedure Dispose;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(ByteSize);
-      cl.ReleaseMemObject(new cl_mem(prev)).RaiseIfError;
-    end;
-    protected procedure Finalize; override := Dispose;
     
   end;
   
@@ -1964,6 +1950,52 @@ type
 {$endregion Properties}
 
 {$region Wrappers}
+
+{$region Device}
+
+static function Device.FromNative(ntv: cl_device_id): Device;
+begin
+  
+  var parent: cl_device_id;
+  OpenCLABCInternalException.RaiseIfError(
+    cl.GetDeviceInfo(ntv, DeviceInfo.DEVICE_PARENT_DEVICE, new UIntPtr(cl_device_id.Size), parent, IntPtr.Zero)
+  );
+  
+  if parent=cl_device_id.Zero then
+    Result := new Device(ntv) else
+    Result := new SubDevice(parent, ntv);
+  
+end;
+
+{$endregion Device}
+
+{$region MemorySegment}
+
+static function MemorySegment.FromNative(ntv: cl_mem): MemorySegment;
+begin
+  var t: MemObjectType;
+  OpenCLABCInternalException.RaiseIfError(
+    cl.GetMemObjectInfo(ntv, MemInfo.MEM_TYPE, new UIntPtr(sizeof(MemObjectType)), t, IntPtr.Zero)
+  );
+  
+  if t<>MemObjectType.MEM_OBJECT_BUFFER then
+    raise new ArgumentException($'%Err:MemorySegment:WrongNtvType%');
+  
+  var parent: cl_mem;
+  OpenCLABCInternalException.RaiseIfError(
+    cl.GetMemObjectInfo(ntv, MemInfo.MEM_ASSOCIATED_MEMOBJECT, new UIntPtr(cl_mem.Size), parent, IntPtr.Zero)
+  );
+  
+  if parent=cl_mem.Zero then
+  begin
+    Result := new MemorySegment(ntv);
+    GC.AddMemoryPressure(Result.Size64);
+  end else
+    Result := new MemorySubSegment(parent, ntv);
+  
+end;
+
+{$endregion MemorySegment}
 
 {$region CLArray}
 

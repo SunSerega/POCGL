@@ -12,7 +12,7 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs co
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (32) overloads of func [clGetDeviceInfo]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (34) overloads of func [clGetDeviceInfo]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueGenerateMipmapIMG]

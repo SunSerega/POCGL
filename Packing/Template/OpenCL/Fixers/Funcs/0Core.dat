@@ -15,7 +15,7 @@
 
 # clGetDeviceInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var DeviceType +var UInt32 +var UIntPtr +var UInt64 +var Bool +IntPtr +var DeviceFPConfig +var DeviceMemCacheType +var DeviceLocalMemType +var DeviceExecCapabilities +var CommandQueueProperties +var cl_platform_id +var DevicePartitionProperty +var DeviceAffinityDomain +var DeviceSVMCapabilities +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var DeviceType +var UInt32 +var UIntPtr +var UInt64 +var Bool +IntPtr +var DeviceFPConfig +var DeviceMemCacheType +var DeviceLocalMemType +var DeviceExecCapabilities +var CommandQueueProperties +var cl_platform_id +var cl_device_id +var DevicePartitionProperty +var DeviceAffinityDomain +var DeviceSVMCapabilities +pointer	| -array of UIntPtr	|
 
 # clGetDeviceAndHostTimer
 !possible_par_types
