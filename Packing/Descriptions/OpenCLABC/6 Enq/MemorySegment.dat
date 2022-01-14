@@ -194,18 +194,6 @@ len указывает кол-во копируемых байт
 
 
 
-# MemorySegment.GetData
-# MemorySegmentCCQ.AddGetData
-Выделяет область неуправляемой памяти и копирует в неё всё содержимое данной области памяти
-
-# MemorySegment.GetData(CommandQueue<integer>, CommandQueue<integer>)
-# MemorySegmentCCQ.AddGetData(CommandQueue<integer>, CommandQueue<integer>)
-Выделяет область неуправляемой памяти и копирует в неё часть содержимого данной области памяти
-%MemorySegment:OffsetDef%
-%MemorySegment:LenDef%
-
-
-
 # MemorySegment.GetValue<TRecord>
 # MemorySegmentCCQ.AddGetValue<TRecord>
 Читает значение указанного размерного типа из начала области памяти

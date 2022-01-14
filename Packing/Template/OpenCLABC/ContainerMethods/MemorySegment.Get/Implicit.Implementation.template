@@ -3,16 +3,6 @@
 
 {$region Get}
 
-function MemorySegment.GetData: IntPtr;
-begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetData);
-end;
-
-function MemorySegment.GetData(mem_offset, len: CommandQueue<integer>): IntPtr;
-begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetData(mem_offset, len));
-end;
-
 function MemorySegment.GetValue<TRecord>: TRecord; where TRecord: record;
 begin
   Result := GetValue&<TRecord>(0);

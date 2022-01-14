@@ -1,41 +1,6 @@
 
 
 
-# GetData!AutoSize
-!ResultType
-IntPtr
-!SetRes
-Marshal.AllocHGlobal(IntPtr(pointer(o.Size)));
-!Enqueue
-//TODO А что если результат уже получен и освобождёт сдедующей .ThenConvert
-// - Вообще .WhenError тут (и в +1 месте) - говнокод
-// - Лучше стоит сделать обёртку вроде SafeIntPtr (или использовать готовую)
-//tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
-cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, o.Size,
-  !res!,
-  !evs!
-);
-
-# GetData
-mem_offset, len: CommandQueue<integer>
-!ResultType
-IntPtr
-!SetRes
-Marshal.AllocHGlobal(!len!)
-!Enqueue
-//tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
-var ec := cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!mem_offset!), new UIntPtr(!len!),
-  !res!,
-  !evs!
-);
-OpenCLABCInternalException.RaiseIfError(ec);
-
-
-
 # GetValue
 !ResultType
 TRecord

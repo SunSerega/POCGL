@@ -3,10 +3,6 @@
     
     {$region Get}
     
-    public function GetData: IntPtr;
-    
-    public function GetData(mem_offset, len: CommandQueue<integer>): IntPtr;
-    
     public function GetValue<TRecord>: TRecord; where TRecord: record;
     
     public function GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord; where TRecord: record;
