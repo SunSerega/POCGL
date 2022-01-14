@@ -35,29 +35,31 @@ type
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
         var res_ev: cl_event;
         
-        o.UseExclusiveNative(ntv->
+        var ntv := o.UseExclusiveNative(ntv->
         begin
-          
           for var i := 0 to args.Length-1 do
             args[i].SetArg(ntv, i);
           
-          cl.EnqueueNDRangeKernel(
+          var ec := cl.EnqueueNDRangeKernel(
             cq, ntv, 1,
             nil,
             new UIntPtr[](new UIntPtr(sz1)),
             nil,
             evs.count, evs.evs, res_ev
-          ).RaiseIfError;
+          );
+          OpenCLABCInternalException.RaiseIfError(ec);
           
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachCallback(true, res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
+          Result := ntv;
         end);
+        
+        var args_hnd := GCHandle.Alloc(args);
+        
+        EventList.AttachCallback(true, res_ev, ()->
+        begin
+          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
+          args_hnd.Free;
+        end{$ifdef EventDebug}, 'custom afterwork'{$endif});
         
         Result := res_ev;
       end;
@@ -135,29 +137,31 @@ type
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
         var res_ev: cl_event;
         
-        o.UseExclusiveNative(ntv->
+        var ntv := o.UseExclusiveNative(ntv->
         begin
-          
           for var i := 0 to args.Length-1 do
             args[i].SetArg(ntv, i);
           
-          cl.EnqueueNDRangeKernel(
+          var ec := cl.EnqueueNDRangeKernel(
             cq, ntv, 2,
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
             nil,
             evs.count, evs.evs, res_ev
-          ).RaiseIfError;
+          );
+          OpenCLABCInternalException.RaiseIfError(ec);
           
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachCallback(true, res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
+          Result := ntv;
         end);
+        
+        var args_hnd := GCHandle.Alloc(args);
+        
+        EventList.AttachCallback(true, res_ev, ()->
+        begin
+          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
+          args_hnd.Free;
+        end{$ifdef EventDebug}, 'custom afterwork'{$endif});
         
         Result := res_ev;
       end;
@@ -245,29 +249,31 @@ type
         var args := args_qr.ConvertAll(temp1->temp1.GetRes);
         var res_ev: cl_event;
         
-        o.UseExclusiveNative(ntv->
+        var ntv := o.UseExclusiveNative(ntv->
         begin
-          
           for var i := 0 to args.Length-1 do
             args[i].SetArg(ntv, i);
           
-          cl.EnqueueNDRangeKernel(
+          var ec := cl.EnqueueNDRangeKernel(
             cq, ntv, 3,
             nil,
             new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
             nil,
             evs.count, evs.evs, res_ev
-          ).RaiseIfError;
+          );
+          OpenCLABCInternalException.RaiseIfError(ec);
           
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachCallback(true, res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
+          Result := ntv;
         end);
+        
+        var args_hnd := GCHandle.Alloc(args);
+        
+        EventList.AttachCallback(true, res_ev, ()->
+        begin
+          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
+          args_hnd.Free;
+        end{$ifdef EventDebug}, 'custom afterwork'{$endif});
         
         Result := res_ev;
       end;
@@ -360,29 +366,31 @@ type
         var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
         var res_ev: cl_event;
         
-        o.UseExclusiveNative(ntv->
+        var ntv := o.UseExclusiveNative(ntv->
         begin
-          
           for var i := 0 to args.Length-1 do
             args[i].SetArg(ntv, i);
           
-          cl.EnqueueNDRangeKernel(
+          var ec := cl.EnqueueNDRangeKernel(
             cq, ntv, global_work_size.Length,
             global_work_offset,
             global_work_size,
             local_work_size,
             evs.count, evs.evs, res_ev
-          ).RaiseIfError;
+          );
+          OpenCLABCInternalException.RaiseIfError(ec);
           
-          cl.RetainKernel(ntv).RaiseIfError;
-          var args_hnd := GCHandle.Alloc(args);
-          
-          EventList.AttachCallback(true, res_ev, ()->
-          begin
-            cl.ReleaseKernel(ntv).RaiseIfError();
-            args_hnd.Free;
-          end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
+          Result := ntv;
         end);
+        
+        var args_hnd := GCHandle.Alloc(args);
+        
+        EventList.AttachCallback(true, res_ev, ()->
+        begin
+          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
+          args_hnd.Free;
+        end{$ifdef EventDebug}, 'custom afterwork'{$endif});
         
         Result := res_ev;
       end;

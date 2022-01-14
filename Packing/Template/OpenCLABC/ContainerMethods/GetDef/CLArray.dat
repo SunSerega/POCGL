@@ -10,12 +10,13 @@ ind: CommandQueue<integer>
 &T
 !ForcePtrQr
 !Enqueue
-cl.EnqueueReadBuffer(
+var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(int64(!ind!) * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
   new IntPtr(!res_ptr!),
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 
 
@@ -26,12 +27,13 @@ array of &T
 new T[o.Length]
 !PinnRes
 !Enqueue
-cl.EnqueueReadBuffer(
+var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(o.ByteSize),
   !res_pinn_adr!,
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 # GetArray
 ind, len: CommandQueue<integer>
@@ -41,11 +43,12 @@ array of &T
 new T[!len!]
 !PinnRes
 !Enqueue
-cl.EnqueueReadBuffer(
+var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(int64(!ind!) * Marshal.SizeOf&<T>), new UIntPtr(int64(!len!) * Marshal.SizeOf&<T>),
   !res_pinn_adr!,
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 

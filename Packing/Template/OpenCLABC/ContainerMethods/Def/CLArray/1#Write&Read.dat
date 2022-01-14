@@ -4,12 +4,13 @@
 # [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
 ptr: CommandQueue<IntPtr>{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 !Enqueue
-cl.Enqueue{%mode%}Buffer(
+var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr({%AutoSize? 0 : !ind! * Marshal.SizeOf&<T> %}), new UIntPtr({%AutoSize? o.ByteSize : !len!*Marshal.SizeOf&<T> %}),
   !ptr!,
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 # [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
 ptr: pointer{%AutoSize?:; ind, len\: CommandQueue<integer>%}
@@ -21,33 +22,36 @@ ptr: pointer{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 # WriteValue![%Q:,Q%]
 val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
 !Enqueue
-cl.EnqueueWriteBuffer(
+var ec := cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
   new IntPtr(!val:ptr!),
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 # [%mode:Write,Read%]Value!N[%Q:,Q%]
 val: {%Q?NativeValue<&T>:CommandQueue<NativeValue<&T>>%}; ind: CommandQueue<integer>
 !Enqueue
-cl.Enqueue{%mode%}Buffer(
+var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
   !val!.ptr,
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 
 
 # [%mode:Write,Read%]Array![%AutoSize:AutoSize,%]
 a: CommandQueue<array of &T>{%AutoSize?:; ind, len, a_ind\: CommandQueue<integer>%}
 !Enqueue
-cl.Enqueue{%mode%}Buffer(
+var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
   {%AutoSize?UIntPtr.Zero:new UIntPtr(!ind!*Marshal.SizeOf&<T>)%}, new UIntPtr({%AutoSize? !a\:pinn!.Length*Marshal.SizeOf&<T> : !len!*Marshal.SizeOf&<T> %}),
   !a:pinn![{%AutoSize?0:!a_ind!%}],
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 

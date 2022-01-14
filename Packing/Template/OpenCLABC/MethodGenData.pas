@@ -238,6 +238,7 @@ type
     
     public def: sequence of string;
     public is_short_def: boolean;
+    public callback_lines: sequence of string;
     
     public implicit_only := false;
     
@@ -275,6 +276,8 @@ type
       end;
       
       'ImplicitOnly': implicit_only := true;
+      
+      'AttachCallback': callback_lines := setting_lns;
       
       else raise new System.InvalidOperationException($'!{setting_name} in {debug_tn}');
     end;
@@ -345,6 +348,8 @@ type
       if def=nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
       
       if implicit_only and not is_short_def then raise new System.NotSupportedException($'{debug_tn}({args_str})');
+      
+      if (callback_lines<>nil) and is_short_def then raise new System.NotSupportedException($'{debug_tn}({args_str})');
       
       foreach var arg_t in GetArgTNames do
       begin
@@ -713,10 +718,17 @@ type
       {$region FinallyCallback}
       
       args_with_GCHandle.AddRange(args_with_pinn);
-      if args_with_GCHandle.Count<>0 then
+      if (args_with_GCHandle.Count<>0) or (settings.callback_lines<>nil) then
       begin
         res_EIm += '        EventList.AttachCallback(true, res_ev, ()->'#10;
         res_EIm += '        begin'#10;
+        
+        if settings.callback_lines<>nil then foreach var l in settings.callback_lines do
+        begin
+          res_EIm += '          ';
+          res_EIm += l;
+          res_EIm += #10;
+        end;
         
         foreach var arg in args_with_GCHandle do
         begin
@@ -725,9 +737,30 @@ type
           res_EIm += '_hnd.Free;'#10;
         end;
         
-        res_EIm += '        end{$ifdef EventDebug}, ''GCHandle.Free for [';
-        res_EIm += args_with_GCHandle.JoinToString(', ');
-        res_EIm += ']''{$endif});'#10;
+        res_EIm += '        end{$ifdef EventDebug}, ''';
+        
+        var prev_expl := false;
+        var AddExpl := procedure->
+        begin
+          if prev_expl then res_EIm += ' and ';
+          prev_expl := true;
+        end;
+        
+        if args_with_GCHandle.Count<>0 then
+        begin
+          AddExpl;
+          res_EIm += 'GCHandle.Free for [';
+          res_EIm += args_with_GCHandle.JoinToString(', ');
+          res_EIm += ']';
+        end;
+        
+        if settings.callback_lines<>nil then
+        begin
+          AddExpl;
+          res_EIm += 'custom afterwork';
+        end;
+        
+        res_EIm += '''{$endif});'#10;
         res_EIm += '        '#10;
         
       end;

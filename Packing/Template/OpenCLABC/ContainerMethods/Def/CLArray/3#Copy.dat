@@ -4,11 +4,12 @@
 # Copy[%direction:To,From%]![%AutoSize:AutoSize,%]
 a: CommandQueue<CLArray<T>>{%AutoSize?:; from_ind, to_ind, len\: CommandQueue<integer>%}
 !Enqueue
-cl.EnqueueCopyBuffer(
+var ec := cl.EnqueueCopyBuffer(
   cq, {%direction? o.Native,!a!.Native : !a!.Native,o.Native %},
   {%AutoSize? UIntPtr.Zero, UIntPtr.Zero : new UIntPtr(!from_ind!*Marshal.SizeOf&<T>), new UIntPtr(!to_ind!*Marshal.SizeOf&<T>) %},
   new UIntPtr({%AutoSize? Min(o.ByteSize, a.ByteSize) : !len!*Marshal.SizeOf&<T> %}),
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 

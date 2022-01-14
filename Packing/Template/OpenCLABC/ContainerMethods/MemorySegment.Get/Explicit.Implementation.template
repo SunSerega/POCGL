@@ -90,12 +90,13 @@ type
         var res_ev: cl_event;
         
         //tsk.WhenErrorBase((tsk,err)->Marshal.FreeHGlobal(res));
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len),
           res,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -175,12 +176,13 @@ type
         var mem_offset := mem_offset_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf&<TRecord>),
           new IntPtr((own_qr as QueueResDelayedPtr<TRecord>).ptr),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         var own_qr_hnd := GCHandle.Alloc(own_qr);
         
@@ -247,12 +249,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(res.Length * Marshal.SizeOf&<TRecord>),
           res_hnd.AddrOfPinnedObject,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -314,12 +317,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf&<TRecord>),
           res[0],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -397,12 +401,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf&<TRecord>),
           res[0,0],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -490,12 +495,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf&<TRecord>),
           res[0,0,0],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin

@@ -4,12 +4,13 @@
 # FillData![%AutoSize:AutoSize,%]
 ptr: CommandQueue<IntPtr>; pattern_len{%AutoSize?:, ind, len%}: CommandQueue<integer>
 !Enqueue
-cl.EnqueueFillBuffer(
+var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
   !ptr!, new UIntPtr(!pattern_len!*Marshal.SizeOf&<&T>),
   {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<&T>), new UIntPtr(!len!*Marshal.SizeOf&<&T>) %},
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 # FillData![%AutoSize:AutoSize,%]
 ptr: pointer; pattern_len{%AutoSize?:, ind, len%}: CommandQueue<integer>
@@ -21,23 +22,25 @@ FillData(IntPtr(ptr), pattern_len{%AutoSize?:, ind, len%});
 # FillValue![%AutoSize:AutoSize,%][%Q:,Q%]
 val: {%Q?&T:CommandQueue<&T>%}{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 !Enqueue
-cl.EnqueueFillBuffer(
+var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
   new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<&T>),
   {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<&T>), new UIntPtr(!len!*Marshal.SizeOf&<&T>) %},
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 
 
 # FillArray![%AutoSize:AutoSize,%]
 a: CommandQueue<array of &T>{%AutoSize?:; a_offset,pattern_len, ind,len\: CommandQueue<integer>%}
 !Enqueue
-cl.EnqueueFillBuffer(
+var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
   !a:pinn![{%AutoSize?0:!a_offset!%}], new UIntPtr({%AutoSize? a.Length : !pattern_len! %}*Marshal.SizeOf&<&T>),
   {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<&T>), new UIntPtr(!len!*Marshal.SizeOf&<&T>) %},
   !evs!
-).RaiseIfError;
+);
+OpenCLABCInternalException.RaiseIfError(ec);
 
 

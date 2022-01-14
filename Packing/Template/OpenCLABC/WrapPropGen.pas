@@ -176,13 +176,13 @@ begin
       res_Im += info_t;
       res_Im += '; var sz: UIntPtr); override :='#10;
       
-      res_Im += '    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;'#10;
+      res_Im += '    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );'#10;
       
       res_Im += '    protected procedure GetValImpl(id: ';
       res_Im += info_t;
       res_Im += '; sz: UIntPtr; var res: byte); override :='#10;
       
-      res_Im += '    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;'#10;
+      res_Im += '    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );'#10;
       
       res_Im += '    '#10;
       

@@ -31,12 +31,13 @@ type
         var ptr := ptr_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(o.ByteSize),
           ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -105,12 +106,13 @@ type
         var len := len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len*Marshal.SizeOf&<T>),
           ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -179,12 +181,13 @@ type
         var ptr := ptr_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(o.ByteSize),
           ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -253,12 +256,13 @@ type
         var len := len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len*Marshal.SizeOf&<T>),
           ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -370,12 +374,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           new IntPtr(val),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -443,12 +448,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           new IntPtr(val.GetPtr),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         var val_hnd := GCHandle.Alloc(val);
         
@@ -521,12 +527,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           val.ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -594,12 +601,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           val.ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -665,12 +673,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           val.ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -738,12 +747,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           val.ptr,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -809,12 +819,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<T>),
           a[0],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -895,12 +906,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueWriteBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(len*Marshal.SizeOf&<T>),
           a[a_ind],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -981,12 +993,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<T>),
           a[0],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -1067,12 +1080,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(len*Marshal.SizeOf&<T>),
           a[a_ind],
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -1160,12 +1174,13 @@ type
         var pattern_len := pattern_len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           ptr, new UIntPtr(pattern_len*Marshal.SizeOf&<&T>),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -1244,12 +1259,13 @@ type
         var         len :=         len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           ptr, new UIntPtr(pattern_len*Marshal.SizeOf&<&T>),
           new UIntPtr(ind*Marshal.SizeOf&<&T>), new UIntPtr(len*Marshal.SizeOf&<&T>),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -1340,12 +1356,13 @@ type
       begin
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           new IntPtr(val), new UIntPtr(Marshal.SizeOf&<&T>),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -1403,12 +1420,13 @@ type
         var val := val_qr.ToPtr;
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           new IntPtr(val.GetPtr), new UIntPtr(Marshal.SizeOf&<&T>),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         var val_hnd := GCHandle.Alloc(val);
         
@@ -1486,12 +1504,13 @@ type
         var len := len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           new IntPtr(val), new UIntPtr(Marshal.SizeOf&<&T>),
           new UIntPtr(ind*Marshal.SizeOf&<&T>), new UIntPtr(len*Marshal.SizeOf&<&T>),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -1569,12 +1588,13 @@ type
         var len := len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           new IntPtr(val.GetPtr), new UIntPtr(Marshal.SizeOf&<&T>),
           new UIntPtr(ind*Marshal.SizeOf&<&T>), new UIntPtr(len*Marshal.SizeOf&<&T>),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         var val_hnd := GCHandle.Alloc(val);
         
@@ -1652,12 +1672,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           a[0], new UIntPtr(a.Length*Marshal.SizeOf&<&T>),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -1743,12 +1764,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueFillBuffer(
+        var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           a[a_offset], new UIntPtr(pattern_len*Marshal.SizeOf&<&T>),
           new UIntPtr(ind*Marshal.SizeOf&<&T>), new UIntPtr(len*Marshal.SizeOf&<&T>),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -1836,12 +1858,13 @@ type
         var a := a_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueCopyBuffer(
+        var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,a.Native,
           UIntPtr.Zero, UIntPtr.Zero,
           new UIntPtr(Min(o.ByteSize, a.ByteSize)),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -1915,12 +1938,13 @@ type
         var      len :=      len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueCopyBuffer(
+        var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,a.Native,
           new UIntPtr(from_ind*Marshal.SizeOf&<T>), new UIntPtr(to_ind*Marshal.SizeOf&<T>),
           new UIntPtr(len*Marshal.SizeOf&<T>),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -1994,12 +2018,13 @@ type
         var a := a_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueCopyBuffer(
+        var ec := cl.EnqueueCopyBuffer(
           cq, a.Native,o.Native,
           UIntPtr.Zero, UIntPtr.Zero,
           new UIntPtr(Min(o.ByteSize, a.ByteSize)),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;
@@ -2073,12 +2098,13 @@ type
         var      len :=      len_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueCopyBuffer(
+        var ec := cl.EnqueueCopyBuffer(
           cq, a.Native,o.Native,
           new UIntPtr(from_ind*Marshal.SizeOf&<T>), new UIntPtr(to_ind*Marshal.SizeOf&<T>),
           new UIntPtr(len*Marshal.SizeOf&<T>),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         Result := res_ev;
       end;

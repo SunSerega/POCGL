@@ -34,12 +34,13 @@ type
         var ind := ind_qr.GetRes;
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
           new IntPtr((own_qr as QueueResDelayedPtr<&T>).ptr),
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         var own_qr_hnd := GCHandle.Alloc(own_qr);
         
@@ -102,12 +103,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           res_hnd.AddrOfPinnedObject,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin
@@ -170,12 +172,13 @@ type
         
         var res_ev: cl_event;
         
-        cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(int64(len) * Marshal.SizeOf&<T>),
           res_hnd.AddrOfPinnedObject,
           evs.count, evs.evs, res_ev
-        ).RaiseIfError;
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
         EventList.AttachCallback(true, res_ev, ()->
         begin

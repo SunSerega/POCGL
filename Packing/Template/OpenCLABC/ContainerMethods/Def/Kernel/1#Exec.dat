@@ -4,57 +4,55 @@
 # Exec[%dims:1,2,3%]
 {%dims? sz1 : sz1,sz2 : sz1,sz2,sz3 %}: CommandQueue<integer>; params args: array of KernelArg
 !Enqueue
-o.UseExclusiveNative(ntv->
+var ntv := o.UseExclusiveNative(ntv->
 begin
-  
   for var i := 0 to !args!.Length-1 do
     !args![i].SetArg(ntv, i);
   
-  cl.EnqueueNDRangeKernel(
+  var ec := cl.EnqueueNDRangeKernel(
     cq, ntv, {%dims%},
     nil,
     new UIntPtr[](new UIntPtr(!sz1!){%dims?: ,new UIntPtr(!sz2!) : ,new UIntPtr(!sz2!),new UIntPtr(!sz3!) %}),
     nil,
     !evs!
-  ).RaiseIfError;
+  );
+  OpenCLABCInternalException.RaiseIfError(ec);
   
-  cl.RetainKernel(ntv).RaiseIfError;
-  var args_hnd := GCHandle.Alloc(!args!);
-  
-  EventList.AttachCallback(true, res_ev, ()->
-  begin
-    cl.ReleaseKernel(ntv).RaiseIfError();
-    args_hnd.Free;
-  end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+  OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
+  Result := ntv;
 end);
+
+var args_hnd := GCHandle.Alloc(!args!);
+!AttachCallback
+OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
+args_hnd.Free;
 
 
 
 # Exec
 global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg
 !Enqueue
-o.UseExclusiveNative(ntv->
+var ntv := o.UseExclusiveNative(ntv->
 begin
-  
   for var i := 0 to !args!.Length-1 do
     !args![i].SetArg(ntv, i);
   
-  cl.EnqueueNDRangeKernel(
+  var ec := cl.EnqueueNDRangeKernel(
     cq, ntv, !global_work_size!.Length,
     !global_work_offset!,
     !global_work_size!,
     !local_work_size!,
     !evs!
-  ).RaiseIfError;
+  );
+  OpenCLABCInternalException.RaiseIfError(ec);
   
-  cl.RetainKernel(ntv).RaiseIfError;
-  var args_hnd := GCHandle.Alloc(!args!);
-  
-  EventList.AttachCallback(true, res_ev, ()->
-  begin
-    cl.ReleaseKernel(ntv).RaiseIfError();
-    args_hnd.Free;
-  end{$ifdef EventDebug}, 'ReleaseKernel'{$endif});
+  OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
+  Result := ntv;
 end);
+
+var args_hnd := GCHandle.Alloc(!args!);
+!AttachCallback
+OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
+args_hnd.Free;
 
 
