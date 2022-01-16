@@ -312,6 +312,9 @@ var AllStages := HSet(
           var mns := ModuleStages.ToHashSet;
           var all_modules := mns.Count=0;
           if all_modules then mns := AllModules.ToHashSet;
+          foreach var mn in AllLLModules do
+            if mn+'ABC' in mns then
+              mns += mn;
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);

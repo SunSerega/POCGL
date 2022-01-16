@@ -352,6 +352,7 @@ Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing Modules.Packed\OpenCLABC.pas
+Packing Modules.Packed\OpenCL.pas
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample "Samples\OpenCL\MatrMlt.cl"
