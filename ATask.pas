@@ -220,7 +220,7 @@ begin
   
 end;
 
-function TaskForEach<T>(self: sequence of T; p: T->()); extensionmethod :=
+function TaskForEach<T>(self: sequence of T; p: T->(); max_cores: integer := System.Environment.ProcessorCount+1); extensionmethod :=
 self.Select(o->ProcTask(()->p(o))).CombineAsyncTask;
 
 end.
