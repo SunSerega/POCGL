@@ -1203,9 +1203,9 @@
  ErrorCode	| UInt32	| IntPtr	| IntPtr	|
 
 # clGetLayerInfo
- ErrorCode	| UIntPtr	| LayerInfo	| IntPtr	| array of UIntPtr	|
- ErrorCode	| UIntPtr	| LayerInfo	| IntPtr	| var UIntPtr	|
- ErrorCode	| UIntPtr	| LayerInfo	| IntPtr	| IntPtr	|
+ ErrorCode	| LayerInfo	| UIntPtr	| IntPtr	| array of UIntPtr	|
+ ErrorCode	| LayerInfo	| UIntPtr	| IntPtr	| var UIntPtr	|
+ ErrorCode	| LayerInfo	| UIntPtr	| IntPtr	| IntPtr	|
 
 # clInitLayer
  ErrorCode	| UInt32	| IntPtr	| array of UInt32	| array of IntPtr	|

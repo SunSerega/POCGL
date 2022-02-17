@@ -160,6 +160,7 @@ type
       foreach var e in n.Nodes['enum'] do
       begin
         var ename := e['name'];
+        if ename.StartsWith('Reserved for ') then continue; //TODO Временный костыль
         
         var val_str := e['value'];
         var val: int64;
