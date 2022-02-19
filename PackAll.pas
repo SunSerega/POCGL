@@ -337,7 +337,7 @@ var AllStages := HSet(
               System.IO.File.Copy( org_fname, pf_fname, true );
             except
               on System.UnauthorizedAccessException do
-                Otp($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\LibSource]');
+                Otp(new OtpLine($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\LibSource]', true));
             end;
           end;
           
@@ -355,7 +355,7 @@ var AllStages := HSet(
                 System.IO.File.Copy( org_fname, pf_fname, true );
               except
                 on System.UnauthorizedAccessException do
-                  Otp($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\Lib]');
+                  Otp(new OtpLine($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\Lib]', true));
               end else
                 Otp($'WARNING: {org_fname} not found!');
               
