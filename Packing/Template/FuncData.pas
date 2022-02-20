@@ -2011,7 +2011,7 @@ end;
 function GetDllNameForAPI(api: string): string;
 begin
   case api of
-    'cl':   Result := 'opencl.dll';
+    'cl':   Result := 'opencl';
     'gl':   Result := 'opengl32.dll';
     'wgl':  Result := 'opengl32.dll';
     'glx':  Result := 'libGL.so.1';
