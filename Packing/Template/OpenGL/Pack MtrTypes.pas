@@ -417,6 +417,62 @@ begin
     res += '    end;'#10;
     
   end;
+  
+  {$endregion function Det}
+  
+  {$region function Det}
+  
+  if t[0][0]=t[0][1] then
+  begin
+    res += '    '#10;
+    
+    res += '    public function TriDet: ';
+    res += t[2];
+    res += ';'#10;
+    res += '    begin'#10;
+    for var w := 2 to t[0][1] do
+      foreach var xs in Range(0, t[0][1]-1).Combinations(w) do
+      begin
+        if w = t[0][1] then
+          res += '      Result' else
+        begin
+          res += '      var det';
+          res += w.ToString;
+          res += '_';
+          res += xs.JoinToString('');
+        end;
+        for var i := 0 to xs.Length-1 do
+        begin
+          res +=
+            if i=0 then
+              ' := ' else
+            if i.IsEven then
+              ' + ' else
+              ' - ';
+          res += 'val';
+          res += (t[0][0]-w).ToString;
+          res += xs[i].ToString;
+          res += ' * ';
+          if w=2 then
+          begin
+            res += 'val';
+            res += (t[0][0]-1).ToString;
+            res += xs[(i+1) and 1].ToString;
+          end else
+          begin
+            res += 'det';
+            res += (w-1).ToString;
+            res += '_';
+            res += xs.Except(|xs[i]|).JoinToString('');
+          end;
+        end;
+        res += ';'#10;
+        if w = t[0][1] then break;
+      end;
+    res += '    end;'#10;
+    
+  end;
+  
   {$endregion function Det}
   
   {$region static function Random}
