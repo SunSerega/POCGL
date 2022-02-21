@@ -1,4 +1,4 @@
-﻿unit ATask;
+unit ATask;
 
 uses System.Threading;
 
@@ -221,6 +221,6 @@ begin
 end;
 
 function TaskForEach<T>(self: sequence of T; p: T->(); max_cores: integer := System.Environment.ProcessorCount+1); extensionmethod :=
-self.Select(o->ProcTask(()->p(o))).CombineAsyncTask;
+self.Select(o->ProcTask(()->p(o))).CombineAsyncTask(max_cores);
 
 end.
