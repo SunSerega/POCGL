@@ -19,8 +19,6 @@ Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Поиск фигур на поле\Поиск.pas"
-Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
