@@ -6002,10 +6002,10 @@ end;
 
 {$endregion Cast}
 
-{$region ThenConvert}
+{$region ThenBackgroundConvert}
 
 type
-  CommandQueueThenConvertBase<TInp, TRes, TFunc> = abstract class(HostQueue<TInp, TRes>)
+  CommandQueueThenBackgroundConvertBase<TInp, TRes, TFunc> = abstract class(HostQueue<TInp, TRes>)
   where TFunc: Delegate;
     private q: CommandQueue<TInp>;
     private f: TFunc;
@@ -6036,29 +6036,29 @@ type
     
   end;
   
-  CommandQueueThenConvert<TInp, TRes> = sealed class(CommandQueueThenConvertBase<TInp, TRes, TInp->TRes>)
+  CommandQueueThenBackgroundConvert<TInp, TRes> = sealed class(CommandQueueThenBackgroundConvertBase<TInp, TRes, TInp->TRes>)
     
     protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o);
     
   end;
-  CommandQueueThenConvertC<TInp, TRes> = sealed class(CommandQueueThenConvertBase<TInp, TRes, (TInp, Context)->TRes>)
+  CommandQueueThenBackgroundConvertC<TInp, TRes> = sealed class(CommandQueueThenBackgroundConvertBase<TInp, TRes, (TInp, Context)->TRes>)
     
     protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o, c);
     
   end;
   
 function CommandQueue<T>.ThenConvert<TOtp>(f: T->TOtp) :=
-new CommandQueueThenConvert<T, TOtp>(self, f);
+new CommandQueueThenBackgroundConvert<T, TOtp>(self, f);
 
 function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
-new CommandQueueThenConvertC<T, TOtp>(self, f);
+new CommandQueueThenBackgroundConvertC<T, TOtp>(self, f);
 
 {$endregion ThenConvert}
 
 {$region ThenUse}
 
 type
-  CommandQueueThenUseBase<T, TProc> = abstract class(CommandQueue<T>)
+  CommandQueueThenBackgroundUseBase<T, TProc> = abstract class(CommandQueue<T>)
   where TProc: Delegate;
     private q: CommandQueue<T>;
     private p: TProc;
@@ -6117,22 +6117,22 @@ type
     
   end;
   
-  CommandQueueThenUse<T> = sealed class(CommandQueueThenUseBase<T, T->()>)
+  CommandQueueThenBackgroundUse<T> = sealed class(CommandQueueThenBackgroundUseBase<T, T->()>)
     
     protected procedure ExecProc(o: T; c: Context); override := p(o);
     
   end;
-  CommandQueueThenUseC<T> = sealed class(CommandQueueThenUseBase<T, (T, Context)->()>)
+  CommandQueueThenBackgroundUseC<T> = sealed class(CommandQueueThenBackgroundUseBase<T, (T, Context)->()>)
     
     protected procedure ExecProc(o: T; c: Context); override := p(o, c);
     
   end;
   
 function CommandQueue<T>.ThenUse(p: T->()): CommandQueue<T> :=
-new CommandQueueThenUse<T>(self, p);
+new CommandQueueThenBackgroundUse<T>(self, p);
 
 function CommandQueue<T>.ThenUse(p: (T, Context)->()): CommandQueue<T> :=
-new CommandQueueThenUseC<T>(self, p);
+new CommandQueueThenBackgroundUseC<T>(self, p);
 
 {$endregion ThenUse}
 
