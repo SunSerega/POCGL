@@ -99,62 +99,74 @@ begin
         wr += reg_name;
         wr += '}'#10#10;
         
-        foreach var qs_def in qs_defs do
+        for var is_quick := false to true do
         begin
-          wr += 'function Combine';
-          wr += exec_order;
-          wr += 'Queue<TInp, TRes>(conv: Func<array of TInp, ';
-          wr += context_par;
-          wr += 'TRes>; ';
-          wr += qs_def;
-          wr += 'CommandQueue<TInp>)';
+          var quick_word := is_quick ? 'Quick' : 'Background';
           
-          intr += ': CommandQueue<TRes>;'#10;
+          foreach var qs_def in qs_defs do
+          begin
+            wr += 'function Combine';
+            if is_quick then wr += quick_word;
+            wr += exec_order;
+            wr += 'Queue<TInp, TRes>(conv: Func<array of TInp, ';
+            wr += context_par;
+            wr += 'TRes>; ';
+            wr += qs_def;
+            wr += 'CommandQueue<TInp>)';
+            
+            intr += ': CommandQueue<TRes>;'#10;
+            
+            impl += ' := new ';
+            impl += quick_word;
+            impl += 'Conv';
+            impl += exec_order;
+            impl += 'QueueArray';
+            if need_context then
+              impl += 'C';
+            impl += '<TInp, TRes>(qs.ToArray, conv);'#10;
+            
+          end;
+          wr += #10;
           
-          impl += ' := new Conv';
-          impl += exec_order;
-          impl += 'QueueArray';
-          if need_context then
-            impl += 'C';
-          impl += '<TInp, TRes>(qs.ToArray, conv);'#10;
+          for var c := 2 to MaxQueueStaticArraySize do
+          begin
+            var WriteNumbered := procedure(wr: Writer; a: string)->
+            for var i := 1 to c do wr += a.Replace('%', i.ToString);
+            
+            wr += 'function Combine';
+            if is_quick then wr += quick_word;
+            wr += exec_order;
+            wr += 'QueueN';
+            wr += c;
+            wr += '<';
+            WriteNumbered(wr, 'TInp%, ');
+            wr += 'TRes>(conv: Func<';
+            WriteNumbered(wr, 'TInp%, ');
+            wr += context_par;
+            wr += 'TRes>';
+            WriteNumbered(wr, '; q%: CommandQueue<TInp%>');
+            wr += ')';
+            
+            intr += ': CommandQueue<TRes>;'#10;
+            
+            impl += ' := new ';
+            impl += quick_word;
+            impl += 'Conv';
+            impl += exec_order;
+            impl += 'QueueArray';
+            impl += c;
+            if need_context then
+              impl += 'C';
+            impl += '<';
+            WriteNumbered(impl, 'TInp%, ');
+            impl += 'TRes>(';
+            WriteNumbered(impl, 'q%, ');
+            impl += 'conv);'#10;
+            
+          end;
+          wr += #10;
           
         end;
-        wr += #10;
-        
-        for var c := 2 to MaxQueueStaticArraySize do
-        begin
-          var WriteNumbered := procedure(wr: Writer; a: string)->
-          for var i := 1 to c do wr += a.Replace('%', i.ToString);
-          
-          wr += 'function Combine';
-          wr += exec_order;
-          wr += 'QueueN';
-          wr += c;
-          wr += '<';
-          WriteNumbered(wr, 'TInp%, ');
-          wr += 'TRes>(conv: Func<';
-          WriteNumbered(wr, 'TInp%, ');
-          wr += context_par;
-          wr += 'TRes>';
-          WriteNumbered(wr, '; q%: CommandQueue<TInp%>');
-          wr += ')';
-          
-          intr += ': CommandQueue<TRes>;'#10;
-          
-          impl += ' := new Conv';
-          impl += exec_order;
-          impl += 'QueueArray';
-          impl += c;
-          if need_context then
-            impl += 'C';
-          impl += '<';
-          WriteNumbered(impl, 'TInp%, ');
-          impl += 'TRes>(';
-          WriteNumbered(impl, 'q%, ');
-          impl += 'conv);'#10;
-          
-        end;
-        wr += #10;
         
         wr += '{$endregion ';
         wr += reg_name;

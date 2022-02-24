@@ -7,14 +7,14 @@ begin
   Writeln('-'*10);
   Context.Default.SyncInvoke(q
     .ThenUse(x->Println(x))
-    .ThenConvert(x->x*x)
+    .ThenConvert(x->(x*x).Println)
     .ThenUse(x->Println(x))
   );
   
   Writeln('-'*10);
   Context.Default.SyncInvoke(q
     .ThenQuickUse(x->Println(x))
-    .ThenQuickConvert(x->x*x)
+    .ThenQuickConvert(x->(x*x).Println)
     .ThenQuickUse(x->Println(x))
   );
   
