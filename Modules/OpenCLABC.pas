@@ -19,6 +19,13 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
+// - Посмотреть на всё что создаёт StartBackgroundWork
+
+//TODO Справка:
+// - Quick методы
+// - В обработке исключений написать, что обработчики всегда Quick
+
 //===================================
 // Запланированное:
 
@@ -27,9 +34,7 @@ unit OpenCLABC;
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
-
-//TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
-//TODO Справка: В обработке исключений написать, что обработчики всегда Quick
+// - Недодел своей ветке
 
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
@@ -43,7 +48,6 @@ unit OpenCLABC;
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
 //TODO .CycleWhile(***->boolean)
-// - Возможность передать свой обработчик ошибок как Exception->Exception
 //TODO В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 //TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
@@ -1397,6 +1401,12 @@ type
     public function ThenUse(p: T->()           ): CommandQueue<T>;
     public function ThenUse(p: (T, Context)->()): CommandQueue<T>;
     
+    public function ThenQuickConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
+    public function ThenQuickConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    
+    public function ThenQuickUse(p: T->()           ): CommandQueue<T>;
+    public function ThenQuickUse(p: (T, Context)->()): CommandQueue<T>;
+    
   end;
   
   {$endregion ThenConvert}
@@ -2603,7 +2613,7 @@ type
     
     {$endregion operator+}
     
-    {$region cl_event.AttachCallback}
+    {$region AttachCallback}
     
     private static procedure CheckEvErr(ev: cl_event{$ifdef EventDebug}; reason: string{$endif});
     begin
@@ -2645,9 +2655,9 @@ type
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    {$endregion cl_event.AttachCallback}
+    {$endregion AttachCallback}
     
-    {$region EventList.AttachCallback}
+    {$region MultiAttachCallback}
     
     private static procedure InvokeMultiAttachedCallback(ev: cl_event; st: CommandExecutionStatus; data: IntPtr);
     begin
@@ -2682,7 +2692,7 @@ type
       end;
     end;
     
-    {$endregion EventList.AttachCallback}
+    {$endregion MultiAttachCallback}
     
     {$region Retain/Release}
     
@@ -3445,7 +3455,7 @@ type
       if typeof(TInp)=typeof(object) then exit;
       try
         var res := TRes(object(default(TInp)));
-        res := res;
+        System.GC.KeepAlive(res);
       except
         raise new System.InvalidCastException($'%Err:Cast:TInp->TRes%');
       end;
@@ -3591,21 +3601,24 @@ type
       var prev_qr := q.Invoke(g, l);
       var c := g.c;
       
+      var err_handler := g.curr_err_handler;
       if prev_qr is QueueResFunc<T>(var prev_f_qr) then
       begin
         var qr := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
-        qr.ev := UserEvent.StartBackgroundWork(prev_qr.ev, ()->
+        qr.ev := UserEvent.StartBackgroundWork(prev_f_qr.ev, ()->
+        if not err_handler.HadError(true) then
         begin
-          var res := prev_qr.GetRes;
+          var res := prev_f_qr.GetRes;
           ExecProc(res, c);
           qr.SetRes(res);
         end, g{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
         Result := qr;
       end else
         Result := prev_qr.TrySetEv(
-          UserEvent.StartBackgroundWork(prev_qr.ev, ()->ExecProc(prev_qr.GetRes, c), g
-            {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
-          )
+          UserEvent.StartBackgroundWork(prev_qr.ev, ()->
+            if not err_handler.HadError(true) then
+              ExecProc(prev_qr.GetRes, c),
+          g{$ifdef EventDebug}, $'body of {self.GetType}'{$endif})
         );
       
     end;
@@ -3642,6 +3655,139 @@ function CommandQueue<T>.ThenUse(p: (T, Context)->()): CommandQueue<T> :=
 new CommandQueueThenUseC<T>(self, p);
 
 {$endregion ThenUse}
+
+{$region ThenQuickConvert}
+
+type
+  CommandQueueThenQuickConvertBase<TInp, TRes, TFunc> = abstract class(CommandQueue<TRes>)
+  where TFunc: Delegate;
+    private q: CommandQueue<TInp>;
+    private f: TFunc;
+    
+    public constructor(q: CommandQueue<TInp>; f: TFunc);
+    begin
+      self.q := q;
+      self.f := f;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function ExecFunc(o: TInp; c: Context): TRes; abstract;
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<TRes>; override;
+    begin
+      var c := g.c;
+      Result := q.Invoke(g, l).LazyQuickTransform(o->ExecFunc(o, c));
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.RegisterWaitables(g, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      q.ToString(sb, tabs, index, delayed);
+      
+      sb.Append(#9, tabs);
+      ToStringWriteDelegate(sb, f);
+      sb += #10;
+      
+    end;
+    
+  end;
+  
+  CommandQueueThenQuickConvert<TInp, TRes> = sealed class(CommandQueueThenQuickConvertBase<TInp, TRes, TInp->TRes>)
+    
+    protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o);
+    
+  end;
+  CommandQueueThenQuickConvertC<TInp, TRes> = sealed class(CommandQueueThenQuickConvertBase<TInp, TRes, (TInp, Context)->TRes>)
+    
+    protected function ExecFunc(o: TInp; c: Context): TRes; override := f(o, c);
+    
+  end;
+  
+function CommandQueue<T>.ThenQuickConvert<TOtp>(f: T->TOtp) :=
+new CommandQueueThenQuickConvert<T, TOtp>(self, f);
+
+function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, Context)->TOtp) :=
+new CommandQueueThenQuickConvertC<T, TOtp>(self, f);
+
+{$endregion ThenQuickConvert}
+
+{$region ThenQuickUse}
+
+type
+  CommandQueueThenQuickUseBase<T, TProc> = abstract class(CommandQueue<T>)
+  where TProc: Delegate;
+    private q: CommandQueue<T>;
+    private p: TProc;
+    
+    public constructor(q: CommandQueue<T>; p: TProc);
+    begin
+      self.q := q;
+      self.p := p;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure ExecProc(o: T; c: Context); abstract;
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    begin
+      var prev_qr := q.Invoke(g, l);
+      
+      var c := g.c;
+      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
+      var err_handler := g.curr_err_handler;
+      prev_qr.ev.MultiAttachCallback(false, ()->
+      try
+        if not err_handler.HadError(true) then
+          ExecProc(prev_qr.GetRes, c);
+        res_ev.SetComplete;
+      except
+        on e: Exception do
+        begin
+          err_handler.AddErr(e);
+          res_ev.SetComplete;
+        end;
+      end{$ifdef EventDebug}, $'{self.GetType} proc'{$endif});
+      
+      Result := prev_qr.TrySetEv(res_ev);
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.RegisterWaitables(g, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      q.ToString(sb, tabs, index, delayed);
+      
+      sb.Append(#9, tabs);
+      ToStringWriteDelegate(sb, p);
+      sb += #10;
+      
+    end;
+    
+  end;
+  
+  CommandQueueThenQuickUse<T> = sealed class(CommandQueueThenQuickUseBase<T, T->()>)
+    
+    protected procedure ExecProc(o: T; c: Context); override := p(o);
+    
+  end;
+  CommandQueueThenQuickUseC<T> = sealed class(CommandQueueThenQuickUseBase<T, (T, Context)->()>)
+    
+    protected procedure ExecProc(o: T; c: Context); override := p(o, c);
+    
+  end;
+  
+function CommandQueue<T>.ThenQuickUse(p: T->()) :=
+new CommandQueueThenQuickUse<T>(self, p);
+
+function CommandQueue<T>.ThenQuickUse(p: (T, Context)->()) :=
+new CommandQueueThenQuickUseC<T>(self, p);
+
+{$endregion ThenQuickUse}
 
 {$region +/*}
 
