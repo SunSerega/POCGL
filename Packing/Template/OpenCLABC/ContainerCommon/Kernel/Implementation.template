@@ -14,8 +14,10 @@ begin
   if comm<>nil then commands.Add(comm);
 end;
 
-function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc(p));
-function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeProc(p));
+function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
+function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
+function KernelCCQ.AddQuickProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
+function KernelCCQ.AddQuickProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
 
 function KernelCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeWait(marker));
 

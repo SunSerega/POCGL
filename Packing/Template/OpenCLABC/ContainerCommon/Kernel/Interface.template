@@ -11,6 +11,8 @@
     
     public function AddProc(p: Kernel->()): KernelCCQ;
     public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function AddQuickProc(p: Kernel->()): KernelCCQ;
+    public function AddQuickProc(p: (Kernel, Context)->()): KernelCCQ;
     
     public function AddWait(marker: WaitMarker): KernelCCQ;
     

@@ -14,8 +14,10 @@ begin
   if comm<>nil then commands.Add(comm);
 end;
 
-function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeProc(p));
-function CLArrayCCQ<T>.AddProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeProc(p));
+function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
+function CLArrayCCQ<T>.AddProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
+function CLArrayCCQ<T>.AddQuickProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
+function CLArrayCCQ<T>.AddQuickProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
 
 function CLArrayCCQ<T>.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeWait(marker));
 

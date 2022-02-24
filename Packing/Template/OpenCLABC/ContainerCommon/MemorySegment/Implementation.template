@@ -14,8 +14,10 @@ begin
   if comm<>nil then commands.Add(comm);
 end;
 
-function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc(p));
-function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeProc(p));
+function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeBackgroundProc(p));
+function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeBackgroundProc(p));
+function MemorySegmentCCQ.AddQuickProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeQuickProc(p));
+function MemorySegmentCCQ.AddQuickProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeQuickProc(p));
 
 function MemorySegmentCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeWait(marker));
 

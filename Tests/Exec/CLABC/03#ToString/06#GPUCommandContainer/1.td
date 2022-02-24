@@ -1,4 +1,4 @@
-﻿
+
 
 
 #ReqModules
@@ -16,7 +16,7 @@ KernelCCQ#0
 					CommandQueueHostFunc<OpenCLABC.MemorySegment>#4: OpenCLABC.MemorySegment <>lambda*()
 				QueueCommand
 					CommandQueueHostFunc<System.Int32>#5: Int32 <>lambda*()
-				ProcCommand: Void <>lambda*(OpenCLABC.MemorySegment)
+				BackgroundProcCommand: Void <>lambda*(OpenCLABC.MemorySegment)
 		args[1]: KernelArgValue<System.Int32> => 5
 
 

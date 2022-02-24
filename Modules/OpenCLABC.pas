@@ -6189,8 +6189,12 @@ type
     end;
     
     public static function MakeQueue(q: CommandQueueBase): BasicGPUCommand<T>;
-    public static function MakeProc(p: T->()): BasicGPUCommand<T>;
-    public static function MakeProc(p: (T,Context)->()): BasicGPUCommand<T>;
+    
+    public static function MakeBackgroundProc(p: T->()): BasicGPUCommand<T>;
+    public static function MakeBackgroundProc(p: (T,Context)->()): BasicGPUCommand<T>;
+    public static function MakeQuickProc(p: T->()): BasicGPUCommand<T>;
+    public static function MakeQuickProc(p: (T,Context)->()): BasicGPUCommand<T>;
+    
     public static function MakeWait(m: WaitMarker): BasicGPUCommand<T>;
     
   end;
@@ -6251,6 +6255,8 @@ static function BasicGPUCommand<T>.MakeQueue(q: CommandQueueBase) := q.ConvertTy
 
 {$region Proc}
 
+{$region Base}
+
 type
   ProcCommandBase<T, TProc> = abstract class(BasicGPUCommand<T>)
   where TProc: Delegate;
@@ -6260,6 +6266,23 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure ExecProc(o: T; c: Context); abstract;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ': ';
+      ToStringWriteDelegate(sb, p);
+      sb += #10;
+    end;
+    
+  end;
+  
+{$endregion Base}
+
+type
+  BackgroundProcCommandBase<T, TProc> = abstract class(ProcCommandBase<T, TProc>)
+  where TProc: Delegate;
     
     protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override :=
     UserEvent.StartBackgroundWork(l.prev_ev, ()->ExecProc(o, g.c), g
@@ -6274,30 +6297,82 @@ type
       );
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringWriteDelegate(sb, p);
-      sb += #10;
-    end;
-    
   end;
   
-  ProcCommand<T> = sealed class(ProcCommandBase<T, T->()>)
+  BackgroundProcCommand<T> = sealed class(BackgroundProcCommandBase<T, T->()>)
     
     protected procedure ExecProc(o: T; c: Context); override := p(o);
     
   end;
-  ProcCommandC<T> = sealed class(ProcCommandBase<T, (T,Context)->()>)
+  BackgroundProcCommandC<T> = sealed class(BackgroundProcCommandBase<T, (T,Context)->()>)
     
     protected procedure ExecProc(o: T; c: Context); override := p(o, c);
     
   end;
   
-static function BasicGPUCommand<T>.MakeProc(p: T->()) := new ProcCommand<T>(p);
-static function BasicGPUCommand<T>.MakeProc(p: (T,Context)->()) := new ProcCommandC<T>(p);
+static function BasicGPUCommand<T>.MakeBackgroundProc(p: T->()) := new BackgroundProcCommand<T>(p);
+static function BasicGPUCommand<T>.MakeBackgroundProc(p: (T,Context)->()) := new BackgroundProcCommandC<T>(p);
+
+type
+  QuickProcCommandBase<T, TProc> = abstract class(ProcCommandBase<T, TProc>)
+  where TProc: Delegate;
+    
+    protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    begin
+      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
+      
+      var c := g.c;
+      var err_handler := g.curr_err_handler;
+      l.prev_ev.MultiAttachCallback(false, ()->
+      begin
+        if not err_handler.HadError(true) then
+        try
+          ExecProc(o, c);
+        except
+          on e: Exception do err_handler.AddErr(e);
+        end;
+        res_ev.SetComplete;
+      end{$ifdef EventDebug}, $'const body of {self.GetType}'{$endif});
+      
+      Result := res_ev;
+    end;
+    
+    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    begin
+      var prev_qr := o_invoke(g, l);
+      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
+      
+      var c := g.c;
+      var err_handler := g.curr_err_handler;
+      prev_qr.ev.MultiAttachCallback(false, ()->
+      begin
+        if not err_handler.HadError(true) then
+        try
+          ExecProc(prev_qr.GetRes, c);
+        except
+          on e: Exception do err_handler.AddErr(e);
+        end;
+        res_ev.SetComplete;
+      end{$ifdef EventDebug}, $'queue body of {self.GetType}'{$endif});
+      
+      Result := res_ev;
+    end;
+    
+  end;
+  
+  QuickProcCommand<T> = sealed class(QuickProcCommandBase<T, T->()>)
+    
+    protected procedure ExecProc(o: T; c: Context); override := p(o);
+    
+  end;
+  QuickProcCommandC<T> = sealed class(QuickProcCommandBase<T, (T,Context)->()>)
+    
+    protected procedure ExecProc(o: T; c: Context); override := p(o, c);
+    
+  end;
+  
+static function BasicGPUCommand<T>.MakeQuickProc(p: T->()) := new QuickProcCommand<T>(p);
+static function BasicGPUCommand<T>.MakeQuickProc(p: (T,Context)->()) := new QuickProcCommandC<T>(p);
 
 {$endregion Proc}
 

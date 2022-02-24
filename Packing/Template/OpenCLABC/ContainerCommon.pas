@@ -133,22 +133,32 @@ begin
       
       {$region AddProc}
       
-      for var need_c := false to true do
+      for var is_quick := false to true do
       begin
-        WriteHeader('function', 'public');
-        res += 'AddProc(p: ';
-        if need_c then res += '(';
-        res += t;
-        WriteGenerics(res);
-        if need_c then res += ', Context)';
-        res += '->())';
-        res_In += ': ';
-        WriteCCQ(res_In);
-        res_Im += ' := AddCommand(self, BasicGPUCommand&<';
-        res_Im += t;
-        WriteGenerics(res_Im);
-        res_Im += '>.MakeProc(p))';
-        res += ';'#10;
+        var quick_word := if is_quick then 'Quick' else 'Background';
+        
+        for var need_c := false to true do
+        begin
+          WriteHeader('function', 'public');
+          res += 'Add';
+          if is_quick then res += quick_word;
+          res += 'Proc(p: ';
+          if need_c then res += '(';
+          res += t;
+          WriteGenerics(res);
+          if need_c then res += ', Context)';
+          res += '->())';
+          res_In += ': ';
+          WriteCCQ(res_In);
+          res_Im += ' := AddCommand(self, BasicGPUCommand&<';
+          res_Im += t;
+          WriteGenerics(res_Im);
+          res_Im += '>.Make';
+          res_Im += quick_word;
+          res_Im += 'Proc(p))';
+          res += ';'#10;
+        end;
+        
       end;
       
       res_In += '    ';

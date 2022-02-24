@@ -11,6 +11,8 @@
     
     public function AddProc(p: MemorySegment->()): MemorySegmentCCQ;
     public function AddProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
+    public function AddQuickProc(p: MemorySegment->()): MemorySegmentCCQ;
+    public function AddQuickProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
     
     public function AddWait(marker: WaitMarker): MemorySegmentCCQ;
     
