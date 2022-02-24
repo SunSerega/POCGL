@@ -49,6 +49,8 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\ThenConvUse_ConstDelayedFunc.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas"
@@ -204,6 +206,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\ThenConvUse_ConstDelayedFunc]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0]
 Tester: Done executing
