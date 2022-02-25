@@ -22,7 +22,7 @@ unit OpenCLABC;
 //TODO QueueResNil, так же подразделяющийся на Const и Func (хз нужен ли Delayed)
 // - Нужно чтобы реализовать очереди вроде .ThenQuickUse в качестве QueueRes'а, хранящего алгоритм
 // --- Иначе, сейчас реализовано как вызов .MultiAttachCallback - а это приводит к излишнему кол-ву UserEvent'ов
-// - Кроме того, сейчас нужны интерфейсы чтобы сделать общий код для EventList и QueueRes<T>
+// - Кроме того, сейчас нужет кривой IEventListContainer чтобы сделать общий код для EventList и QueueRes<T>
 // --- А если обернуть EventList в QueueResNil - всё будет менее костыльно
 
 //TODO Тесты:
@@ -3068,8 +3068,9 @@ type
 
 {$region QueueRes:Impl}
 
-  {$region MakeNew}
-  
+{$region MakeNew}
+
+type
   QueueRes<T> = abstract partial class(QueueResBase)
     
     public static function MakeNewConstOrPtr(need_ptr_qr: boolean; res: T; ev: EventList) :=
@@ -3082,17 +3083,10 @@ type
       new QueueResDelayedPtr<T> as QueueResDelayedBase<T> else
       new QueueResDelayedObj<T> as QueueResDelayedBase<T>;
     
-//    public static function MakeNewFuncOrPtr(g: CLTaskGlobalData; need_ptr_qr: boolean; f: ()->T; ev: EventList) :=
-//    if ev.count=0 then
-//      new QueueResConst<T>(f(), ev) as QueueRes<T> else
-//    if need_ptr_qr then
-//      (new QueueResFunc<T>(f, ev)).SoftStabilise(g, true) else
-//      new QueueResFunc<T>(f, ev) as QueueRes<T>;
-    
   end;
   
-  {$endregion MakeNew}
-  
+{$endregion MakeNew}
+
 function QueueResConst<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
 begin
   try
