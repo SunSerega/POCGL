@@ -29,14 +29,31 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Синхронные (с припиской Fast, а может Quick) варианты всего работающего по принципу HostQueue
-// - Посмотреть на всё что создаёт StartBackgroundWork
+//TODO QueueResNil, так же подразделяющийся на Const и Func (хз нужен ли Delayed)
+// - Нужно чтобы реализовать очереди вроде .ThenQuickUse в качестве QueueRes'а, хранящего алгоритм
+// --- Иначе, сейчас реализовано как вызов .MultiAttachCallback - а это приводит к излишнему кол-ву UserEvent'ов
+// - Кроме того, сейчас нужны интерфейсы чтобы сделать общий код для EventList и QueueRes<T>
+// --- А если обернуть EventList в QueueResNil - всё будет менее костыльно
+
+//TODO Тесты:
+// - .ThenQuickConvert.Multiusable: сколько раз вычисляется?
+// - Потеря результата Quick обработки:
+// --- HFQ(()->5).ThenQuickConvert.ThenQuickUse + HPQ(()->begin end)
+// --- CombineQuickConv + HPQ(()->begin end)
 
 //TODO Справка:
-// - Quick методы
-// --- ThenQuick[Convert,Use]
-// --- CombineQuick[Sync,Async]Queue
-// --- AddQuickProc
+// - Quick методы срабатывают... Когда сработает ивент, или в QueueRes.GetRes?
+// --- На ивенте придётся создавать лишний res_ev
+// --- А если в .GetRes - Multiusable будет дважды его вызывать... или не будет?
+// --- В итоге сделал всё чтобы переделать под выполнение в .GetRes
+// --- То есть надо создавать QueueResFunc, хранящий алгоритм
+//
+// - ThenQuick[Convert,Use]
+// - CombineQuickConv[Sync,Async]Queue
+// --- Добавил Conv в название!!!
+// - AddQuickProc
+// - HPQQ/HFQQ
+//
 // - В обработке исключений написать, что обработчики всегда Quick
 
 //===================================
@@ -3778,6 +3795,8 @@ function HFQ<T>(f: ()->T): CommandQueue<T>;
 ///Создаёт очередь, выполняющую указанную функцию на CPU
 ///И возвращающую результат этой функци
 function HFQ<T>(f: Context->T): CommandQueue<T>;
+function HFQQ<T>(f: ()->T): CommandQueue<T>;
+function HFQQ<T>(f: Context->T): CommandQueue<T>;
 
 ///Создаёт очередь, выполняющую указанную процедуру на CPU
 ///И возвращающую nil
@@ -3785,6 +3804,8 @@ function HPQ(p: ()->()): CommandQueueNil;
 ///Создаёт очередь, выполняющую указанную процедуру на CPU
 ///И возвращающую nil
 function HPQ(p: Context->()): CommandQueueNil;
+function HPQQ(p: ()->()): CommandQueueNil;
+function HPQQ(p: Context->()): CommandQueueNil;
 
 {$endregion HFQ/HPQ}
 
@@ -3849,46 +3870,46 @@ function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueu
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineQuickSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
@@ -3897,46 +3918,46 @@ function CombineQuickSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineQuickSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineQuickSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion Context}
 
@@ -3986,46 +4007,46 @@ function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQue
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineQuickAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
@@ -4034,46 +4055,46 @@ function CombineQuickAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 ///И возвращающую результат этой функции
-function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineQuickAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineQuickAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 {$endregion Context}
 
@@ -4939,6 +4960,8 @@ type
     
     procedure forbid_ev_swap;
     
+    function soft_stabilise_res(g: CLTaskGlobalData; need_ptr_qr: boolean): IEventListContainerT<TEventList>;
+    
   end;
   
 function set_ev<TC,TV>(self: TC; val: TV): TC; extensionmethod; where TC: IEventListContainerT<TV>;
@@ -4987,14 +5010,16 @@ type
     public evs: array of cl_event;
     public count := 0;
     
-    {$region IValueContainer}
+    {$region IEventListContainer}
     
     public function IEventListContainerT<TEventList>.get_ev: EventList := self;
     public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainerT<EventList> := val;
     
     public procedure IEventListContainerT<TEventList>.forbid_ev_swap := exit;
     
-    {$endregion IValueContainer}
+    public function IEventListContainerT<TEventList>.soft_stabilise_res(g: CLTaskGlobalData; need_ptr_qr: boolean): IEventListContainerT<EventList> := self;
+    
+    {$endregion IEventListContainer}
     
     {$region Misc}
     
@@ -5242,26 +5267,16 @@ type
     public ev: EventList;
     public can_set_ev := true;
     
-    public constructor(ev: EventList) :=
-    self.ev := ev;
+    public constructor(ev: EventList) := self.ev := ev;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function GetResBase: object; abstract;
-    
-    public function TrySetEvBase(new_ev: EventList): QueueResBase; abstract;
-    
-    public function CloneBase: QueueResBase; abstract;
-    
-    public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; abstract;
-    
-    public function StabiliseBase(err_handler: CLTaskErrHandler): QueueResBase; abstract;
+    public function SoftStabiliseBase(g: CLTaskGlobalData; need_ptr_qr: boolean): EventList; abstract;
     
   end;
   
   QueueRes<T> = abstract partial class(QueueResBase, IEventListContainer)
     
     public function GetRes: T; abstract;
-    public function GetResBase: object; override := GetRes;
     
     public function TrySetEv(new_ev: EventList): QueueRes<T>;
     begin
@@ -5272,29 +5287,31 @@ type
         Result.ev := new_ev;
       end;
     end;
-    public function TrySetEvBase(new_ev: EventList): QueueResBase; override := TrySetEv(new_ev);
     
-    public function CloneBase: QueueResBase; override := Clone;
     public function Clone: QueueRes<T>; abstract;
     
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
-    public function LazyQuickTransformBase<T2>(f: object->T2): QueueRes<T2>; override :=
-    LazyQuickTransform(f as object as Func<T,T2>); //TODO #2221
     
-    /// Должно выполнятся только после ожидания ивентов
+    // Only usable after waiting on .ev
     public function ToPtr: IPtrQueueRes<T>; abstract;
     
-    public function StabiliseBase(err_handler: CLTaskErrHandler): QueueResBase; override := Stabilise(err_handler);
-    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; abstract;
+    // Only usable after waiting on .ev
+    public function HardStabilise: QueueRes<T>; abstract;
+    // Usable right after .Invoke call
+    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; abstract;
+    public function SoftStabiliseBase(g: CLTaskGlobalData; need_ptr_qr: boolean): EventList; override :=
+    self.SoftStabilise(g, need_ptr_qr).ev;
     
-    {$region IValueContainer}
+    {$region IEventListContainer}
     
     public function IEventListContainerT<TEventList>.get_ev: EventList := ev;
     public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainer := self.TrySetEv(val);
     
     public procedure IEventListContainerT<TEventList>.forbid_ev_swap := self.can_set_ev := false;
     
-    {$endregion IValueContainer}
+    public function IEventListContainerT<TEventList>.soft_stabilise_res(g: CLTaskGlobalData; need_ptr_qr: boolean): IEventListContainer := SoftStabilise(g, need_ptr_qr);
+    
+    {$endregion IEventListContainer}
     
   end;
   
@@ -5322,7 +5339,8 @@ type
     
     public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
     
-    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; override := self;
+    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override := self;
+    public function HardStabilise: QueueRes<T>; override := self;
     
   end;
   
@@ -5343,14 +5361,30 @@ type
     
     public function Clone: QueueRes<T>; override := new QueueResFunc<T>(f, ev);
     
-    public function GetRes: T; override := f();
+    {$ifdef DEBUG}
+    private res_calculated := false;
+    {$endif DEBUG}
+    public function GetRes: T; override;
+    begin
+      {$ifdef DEBUG}
+      if res_calculated then raise new System.InvalidProgramException($'{self.GetType}: {System.Environment.StackTrace}');
+      res_calculated := true;
+      {$endif DEBUG}
+      Result := f();
+    end;
     
     public function LazyQuickTransform<T2>(f2: T->T2): QueueRes<T2>; override :=
-    new QueueResFunc<T2>(()->f2(self.f), self.ev);
+    new QueueResFunc<T2>(()->f2(self.GetRes), self.ev);
     
-    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(self.f());
+    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(self.GetRes);
     
-    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; override := new QueueResConst<T>(self.GetRes, self.ev);
+    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override;
+    public function HardStabilise: QueueRes<T>; override := new QueueResConst<T>(self.GetRes, self.ev);
+    
+    {$ifdef DEBUG}
+    protected procedure Finalize; override :=
+    if not res_calculated then raise new System.InvalidProgramException($'{self.GetType}');
+    {$endif DEBUG}
     
   end;
   
@@ -5371,7 +5405,8 @@ type
     public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
     new QueueResFunc<T2>(()->f(self.GetRes()), self.ev);
     
-    public function Stabilise(err_handler: CLTaskErrHandler): QueueRes<T>; override := self;
+    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override := self;
+    public function HardStabilise: QueueRes<T>; override := self;
     
   end;
   
@@ -5412,48 +5447,6 @@ type
   
   {$endregion Delayed}
   
-  {$region MakeNew}
-  
-  QueueResConst<T> = sealed partial class(QueueRes<T>)
-    
-    public static function MakeNew(need_ptr_qr: boolean; res: T; ev: EventList) :=
-    if need_ptr_qr then
-      new QueueResDelayedPtr<T>(res, ev) as QueueRes<T> else
-      new QueueResConst<T>(res, ev) as QueueRes<T>;
-    
-  end;
-  
-  QueueResDelayedBase<T> = abstract partial class(QueueRes<T>)
-    
-    public static function MakeNew(need_ptr_qr: boolean) :=
-    if need_ptr_qr then
-      new QueueResDelayedPtr<T> as QueueResDelayedBase<T> else
-      new QueueResDelayedObj<T> as QueueResDelayedBase<T>;
-    
-  end;
-  
-  {$endregion MakeNew}
-  
-function QueueResConst<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
-begin
-  var n_res: T2;
-  try
-    n_res := f(self.res);
-  except
-    on e: Exception do
-    begin
-      var edi := System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e);
-      Result := new QueueResFunc<T2>(()->
-      begin
-        Result := default(T2);
-        edi.Throw;
-      end, self.ev);
-      exit;
-    end;
-  end;
-  Result := new QueueResConst<T2>(n_res, self.ev);
-end;
-
 {$endregion QueueRes}
 
 {$region UserEvent}
@@ -5548,6 +5541,74 @@ type
   
 {$endregion UserEvent}
 
+{$region QueueRes:Impl}
+
+  {$region MakeNew}
+  
+  QueueRes<T> = abstract partial class(QueueResBase)
+    
+    public static function MakeNewConstOrPtr(need_ptr_qr: boolean; res: T; ev: EventList) :=
+    if need_ptr_qr then
+      new QueueResDelayedPtr<T>(res, ev) as QueueRes<T> else
+      new QueueResConst<T>(res, ev) as QueueRes<T>;
+    
+    public static function MakeNewDelayedOrPtr(need_ptr_qr: boolean) :=
+    if need_ptr_qr then
+      new QueueResDelayedPtr<T> as QueueResDelayedBase<T> else
+      new QueueResDelayedObj<T> as QueueResDelayedBase<T>;
+    
+//    public static function MakeNewFuncOrPtr(g: CLTaskGlobalData; need_ptr_qr: boolean; f: ()->T; ev: EventList) :=
+//    if ev.count=0 then
+//      new QueueResConst<T>(f(), ev) as QueueRes<T> else
+//    if need_ptr_qr then
+//      (new QueueResFunc<T>(f, ev)).SoftStabilise(g, true) else
+//      new QueueResFunc<T>(f, ev) as QueueRes<T>;
+    
+  end;
+  
+  {$endregion MakeNew}
+  
+function QueueResConst<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
+begin
+  try
+    var n_res := f(self.res);
+    Result := new QueueResConst<T2>(n_res, self.ev);
+  except
+    on e: Exception do
+    begin
+      var edi := System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e);
+      Result := new QueueResFunc<T2>(()->
+      begin
+        Result := default(T2);
+        edi.Throw;
+      end, self.ev);
+    end;
+  end;
+end;
+
+function QueueResFunc<T>.SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>;
+begin
+  var res := QueueRes&<T>.MakeNewDelayedOrPtr(need_ptr_qr);
+  var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for QueueResFunc<{typeof(T)}>.SoftStabilise'{$endif});
+  res.ev := res_ev;
+  
+  var err_handler := g.curr_err_handler;
+  self.ev.MultiAttachCallback(false, ()->
+  begin
+    if not err_handler.HadError(true) then
+    try
+      res.SetRes(self.GetRes);
+    except
+      on e: Exception do err_handler.AddErr(e);
+    end;
+    res_ev.SetComplete;
+  end{$ifdef EventDebug}, $'transfer of res for QueueResFunc<{typeof(T)}>.SoftStabilise'{$endif});
+  
+  Result := res;
+end;
+
+{$endregionQueueRes:Impl}
+
 {$region MultiusableBase}
 
 type
@@ -5571,6 +5632,7 @@ type
 type
   ICLTaskLocalData = interface
     property PrevEv: EventList read write;
+    property NeedPtrQr: boolean read;
   end;
   
   CLTaskLocalData = record(ICLTaskLocalData)
@@ -5579,6 +5641,7 @@ type
     
     //TODO #2607
     public property ICLTaskLocalData.PrevEv: EventList read EventList(prev_ev) write prev_ev := value;
+    public property ICLTaskLocalData.NeedPtrQr: boolean read boolean(need_ptr_qr);
     
     public procedure CheckInvalidNeedPtrQr(source: object) :=
     if need_ptr_qr then raise new OpenCLABCInternalException($'{source.GetType} with need_ptr_qr');
@@ -5589,6 +5652,7 @@ type
     
     //TODO #2607
     public property ICLTaskLocalData.PrevEv: EventList read EventList(prev_ev) write prev_ev := value;
+    public property ICLTaskLocalData.NeedPtrQr: boolean read boolean(false);
     
     public static function operator explicit(l: CLTaskLocalData): CLTaskLocalDataNil;
     begin
@@ -5780,7 +5844,7 @@ type
   ConstQueue<T> = sealed partial class(CommandQueue<T>)
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override :=
-    QueueResConst&<T>.MakeNew(l.need_ptr_qr, self.res, l.prev_ev);
+    QueueRes&<T>.MakeNewConstOrPtr(l.need_ptr_qr, self.res, l.prev_ev);
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
@@ -5803,7 +5867,7 @@ type
       var prev_qr := InvokeSubQs(g, CLTaskLocalDataNil(l));
       var c := g.c;
       
-      var qr := QueueResDelayedBase&<TRes>.MakeNew(l.need_ptr_qr);
+      var qr := QueueResDelayedBase&<TRes>.MakeNewDelayedOrPtr(l.need_ptr_qr);
       qr.ev := UserEvent.StartBackgroundWork(prev_qr.ev, ()->qr.SetRes( ExecFunc(prev_qr.GetRes(), c) ), g
         {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
       );
@@ -5867,7 +5931,7 @@ type
       begin
         self.q_res.ev.WaitAndRelease({$ifdef EventDebug}$'CLTask<T>.FinishExecution'{$endif});
         if not g_data.curr_err_handler.HadError(true) then
-          self.q_res := q_res.Stabilise(g_data.curr_err_handler);
+          self.q_res := q_res.HardStabilise;
         g_data.FinishExecution(self.err_lst);
         wh.Set;
       end);
@@ -6090,7 +6154,7 @@ type
       // QueueResFunc.GetRes shouldn't be called twice
       if prev_qr is QueueResFunc<T>(var prev_f_qr) then
       begin
-        var qr := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
+        var qr := QueueRes&<T>.MakeNewDelayedOrPtr(l.need_ptr_qr);
         qr.ev := UserEvent.StartBackgroundWork(prev_f_qr.ev, ()->
         if not err_handler.HadError(true) then
         begin
@@ -6227,7 +6291,7 @@ type
       // QueueResFunc.GetRes shouldn't be called twice
       if prev_qr is QueueResFunc<T>(var prev_f_qr) then
       begin
-        var qr := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
+        var qr := QueueRes&<T>.MakeNewDelayedOrPtr(l.need_ptr_qr);
         qr.ev := res_ev;
         prev_f_qr.ev.MultiAttachCallback(false, ()->
         begin
@@ -6318,7 +6382,7 @@ type
     function InvokeSync<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_last: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IEventListContainer;
     begin
       for var i := 0 to qs.Length-1 do
-        l.PrevEv := qs[i].InvokeBase(g, l.WithPtrNeed(false)).ev;
+        l.PrevEv := qs[i].InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false);
       
       Result := invoke_last(g, l);
     end;
@@ -6336,7 +6400,7 @@ type
         for var i := 0 to qs.Length-1 do
           //TODO #2610
           evs[i] := invoker.InvokeBranch&<EventList>((g,l)->
-            qs[i].InvokeBase(g, l.WithPtrNeed(false)).ev
+            qs[i].InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false)
           );
         var l_res := invoker.InvokeBranch(invoke_last);
         res := l_res;
@@ -6571,7 +6635,7 @@ type
       if qrs.All(qr->qr is QueueResConst<TInp>) then
       begin
         var res := ExecFunc(qrs.ConvertAll(qr->QueueResConst&<TInp>(qr).res), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueResConst&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->
         begin
@@ -6745,7 +6809,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), c), ev);
     end;
@@ -6948,7 +7012,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), c), ev);
     end;
@@ -7165,7 +7229,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), c), ev);
     end;
@@ -7396,7 +7460,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), cqr5.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), c), ev);
     end;
@@ -7641,7 +7705,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), cqr5.GetRes(), cqr6.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), qr6.GetRes(), c), ev);
     end;
@@ -7900,7 +7964,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), cqr5.GetRes(), cqr6.GetRes(), cqr7.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), qr6.GetRes(), qr7.GetRes(), c), ev);
     end;
@@ -8213,6 +8277,8 @@ type
         
         l.PrevEv := EventList.Empty;
         Result := invoke_q(g, l);
+        // QueueResFunc shouldn't have it's .GetRes be called twice
+        Result := TR(Result.soft_stabilise_res(g, l.NeedPtrQr));
         Result.forbid_ev_swap;
         var q_err_handler := g.curr_err_handler;
         
@@ -9272,7 +9338,7 @@ type
       var mid_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'mid_ev for {self.GetType}'{$endif});
       
       g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
-      var try_ev := try_do.InvokeBase(g, l.WithPtrNeed(false)).ev;
+      var try_ev := try_do.InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false);
       var try_handler := g.curr_err_handler;
       
       try_ev.MultiAttachCallback(false, ()->mid_ev.SetComplete(){$ifdef EventDebug}, $'Set mid_ev {mid_ev}'{$endif});
@@ -9370,7 +9436,7 @@ type
       var origin_err_handler := g.curr_err_handler;
       
       g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
-      var q_ev := q.InvokeBase(g, l.WithPtrNeed(false)).ev;
+      var q_ev := q.InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false);
       var q_err_handler := g.curr_err_handler;
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |q_err_handler|);
       
@@ -9423,7 +9489,7 @@ type
       var q_err_handler := g.curr_err_handler;
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |q_err_handler|);
       
-      var res := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
+      var res := QueueRes&<T>.MakeNewDelayedOrPtr(l.need_ptr_qr);
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
       res.ev := res_ev;
       
@@ -9481,7 +9547,7 @@ type
       var q_err_handler := new CLTaskErrHandlerThief(g.curr_err_handler);
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, new CLTaskErrHandler[](q_err_handler));
       
-      var res := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
+      var res := QueueRes&<T>.MakeNewDelayedOrPtr(l.need_ptr_qr);
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
       res.ev := res_ev;
       
@@ -10205,6 +10271,12 @@ type
     protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
     begin
       var prev_qr := o_invoke(g, l);
+      {$ifdef DEBUG}
+      // prev_qr.GetRes could be called >1 time
+      // But o_invoke wouldn't return QueueResFunc,
+      // because multiusable uses .SoftStabilise
+      if prev_qr is QueueResFunc<T> then raise new System.NotSupportedException;
+      {$endif DEBUG}
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
       
       var c := g.c;
@@ -10730,7 +10802,7 @@ type
       
       var inv_data: EnqueueableGetCommandInvData<TObj, TRes>;
       inv_data.prev_qr  := prev_qr;
-      inv_data.res_qr   := QueueResDelayedBase&<TRes>.MakeNew(l.need_ptr_qr or ForcePtrQr);
+      inv_data.res_qr   := QueueResDelayedBase&<TRes>.MakeNewDelayedOrPtr(l.need_ptr_qr or ForcePtrQr);
       
       Result := inv_data.res_qr;
       Result.ev := EnqueueableCore.Invoke(self, inv_data, g, prev_qr.ev, not (prev_qr is IQueueResConst));
@@ -18135,6 +18207,8 @@ end;
 
 {$region HFQ/HPQ}
 
+{$region Common}
+
 type
   CommandQueueHostCommon<TDelegate> = record
   where TDelegate: Delegate;
@@ -18149,9 +18223,14 @@ type
     
   end;
   
-  {$region Func}
-  
-  CommandQueueHostFuncBase<T, TFunc> = abstract class(CommandQueue<T>)
+{$endregion Common}
+
+{$region Backgound}
+
+{$region Func}
+
+type
+  CommandQueueHostBackgoundFuncBase<T, TFunc> = abstract class(CommandQueue<T>)
   where TFunc: Delegate;
     private data: CommandQueueHostCommon<TFunc>;
     
@@ -18164,7 +18243,7 @@ type
     begin
       var c := g.c;
       
-      var qr := QueueResDelayedBase&<T>.MakeNew(l.need_ptr_qr);
+      var qr := QueueRes&<T>.MakeNewDelayedOrPtr(l.need_ptr_qr);
       qr.ev := UserEvent.StartBackgroundWork(l.prev_ev, ()->qr.SetRes( ExecFunc(c) ), g
         {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
       );
@@ -18178,22 +18257,28 @@ type
     
   end;
   
-  CommandQueueHostFunc<T> = sealed class(CommandQueueHostFuncBase<T, ()->T>)
+  CommandQueueHostBackgoundFunc<T> = sealed class(CommandQueueHostBackgoundFuncBase<T, ()->T>)
     
     protected function ExecFunc(c: Context): T; override := data.d();
     
   end;
-  CommandQueueHostFuncC<T> = sealed class(CommandQueueHostFuncBase<T, Context->T>)
+  CommandQueueHostBackgoundFuncC<T> = sealed class(CommandQueueHostBackgoundFuncBase<T, Context->T>)
     
     protected function ExecFunc(c: Context): T; override := data.d(c);
     
   end;
   
-  {$endregion Func}
-  
-  {$region Proc}
-  
-  CommandQueueHostProcBase<TProc> = abstract class(CommandQueueNil)
+function HFQ<T>(f: ()->T) :=
+new CommandQueueHostBackgoundFunc<T>(f);
+function HFQ<T>(f: Context->T) :=
+new CommandQueueHostBackgoundFuncC<T>(f);
+
+{$endregion Func}
+
+{$region Proc}
+
+type
+  CommandQueueHostBackgoundProcBase<TProc> = abstract class(CommandQueueNil)
   where TProc: Delegate;
     private data: CommandQueueHostCommon<TProc>;
     
@@ -18218,28 +18303,157 @@ type
     
   end;
   
-  CommandQueueHostProc = sealed class(CommandQueueHostProcBase<()->()>)
+  CommandQueueHostBackgoundProc = sealed class(CommandQueueHostBackgoundProcBase<()->()>)
     
     protected procedure ExecProc(c: Context); override := data.d();
     
   end;
-  CommandQueueHostProcC = sealed class(CommandQueueHostProcBase<Context->()>)
+  CommandQueueHostBackgoundProcC = sealed class(CommandQueueHostBackgoundProcBase<Context->()>)
     
     protected procedure ExecProc(c: Context); override := data.d(c);
     
   end;
   
-  {$endregion Proc}
-  
-function HFQ<T>(f: ()->T) :=
-new CommandQueueHostFunc<T>(f);
-function HFQ<T>(f: Context->T) :=
-new CommandQueueHostFuncC<T>(f);
-
 function HPQ(p: ()->()) :=
-new CommandQueueHostProc(p);
+new CommandQueueHostBackgoundProc(p);
 function HPQ(p: Context->()) :=
-new CommandQueueHostProcC(p);
+new CommandQueueHostBackgoundProcC(p);
+
+{$endregion Proc}
+
+{$endregion Backgound}
+
+{$region Quick}
+
+{$region Func}
+
+type
+  CommandQueueHostQuickFuncBase<T, TFunc> = abstract class(CommandQueue<T>)
+  where TFunc: Delegate;
+    private data: CommandQueueHostCommon<TFunc>;
+    
+    public constructor(f: TFunc) := data.d := f;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function ExecFunc(c: Context): T; abstract;
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
+    begin
+      if l.prev_ev.count=0 then
+        Result := new QueueResConst<T>(ExecFunc(g.c), EventList.Empty) else
+      if l.need_ptr_qr then
+      begin
+        var c := g.c;
+        var res := new QueueResDelayedPtr<T>;
+        var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev of {self.GetType}'{$endif});
+        var err_handler := g.curr_err_handler;
+        l.prev_ev.MultiAttachCallback(false, ()->
+        begin
+          if not err_handler.HadError(true) then
+          try
+            res.SetRes(ExecFunc(c));
+          except
+            on e: Exception do err_handler.AddErr(e);
+          end;
+          res_ev.SetComplete;
+        end{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
+        res.ev := res_ev;
+        Result := res;
+      end else
+      begin
+        var c := g.c;
+        Result := new QueueResFunc<T>(()->ExecFunc(c), l.prev_ev);
+      end;
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := data.ToString(sb);
+    
+  end;
+  
+  CommandQueueHostQuickFunc<T> = sealed class(CommandQueueHostQuickFuncBase<T, ()->T>)
+    
+    protected function ExecFunc(c: Context): T; override := data.d();
+    
+  end;
+  CommandQueueHostQuickFuncC<T> = sealed class(CommandQueueHostQuickFuncBase<T, Context->T>)
+    
+    protected function ExecFunc(c: Context): T; override := data.d(c);
+    
+  end;
+  
+function HFQQ<T>(f: ()->T) :=
+new CommandQueueHostQuickFunc<T>(f);
+function HFQQ<T>(f: Context->T) :=
+new CommandQueueHostQuickFuncC<T>(f);
+
+{$endregion Func}
+
+{$region Proc}
+
+type
+  CommandQueueHostQuickProcBase<TProc> = abstract class(CommandQueueNil)
+  where TProc: Delegate;
+    private data: CommandQueueHostCommon<TProc>;
+    
+    public constructor(p: TProc) := data.d := p;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure ExecProc(c: Context); abstract;
+    
+    private procedure InvokeProc(err_handler: CLTaskErrHandler; c: Context) :=
+    if not err_handler.HadError(true) then
+    try
+      ExecProc(c);
+    except
+      on e: Exception do err_handler.AddErr(e);
+    end;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    begin
+      if l.prev_ev.count=0 then
+      begin
+        InvokeProc(g.curr_err_handler, g.c);
+        Result := EventList.Empty;
+      end else
+      begin
+        var c := g.c;
+        var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev of {self.GetType}'{$endif});
+        var err_handler := g.curr_err_handler;
+        l.prev_ev.MultiAttachCallback(false, ()->
+        begin
+          InvokeProc(err_handler, c);
+          res_ev.SetComplete;
+        end{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
+        Result := res_ev;
+      end;
+    end;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := data.ToString(sb);
+    
+  end;
+  
+  CommandQueueHostQuickProc = sealed class(CommandQueueHostQuickProcBase<()->()>)
+    
+    protected procedure ExecProc(c: Context); override := data.d();
+    
+  end;
+  CommandQueueHostQuickProcC = sealed class(CommandQueueHostQuickProcBase<Context->()>)
+    
+    protected procedure ExecProc(c: Context); override := data.d(c);
+    
+  end;
+  
+function HPQQ(p: ()->()) :=
+new CommandQueueHostQuickProc(p);
+function HPQQ(p: Context->()) :=
+new CommandQueueHostQuickProcC(p);
+
+{$endregion Proc}
+
+{$endregion Quick}
 
 {$endregion HFQ/HPQ}
 
@@ -18268,49 +18482,49 @@ function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueu
 
 {$region NonContext}
 
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 
-function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvSyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 
-function CombineQuickSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineQuickSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineQuickSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineQuickSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineQuickSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineQuickSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvSyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvSyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvSyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvSyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvSyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvSyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
-function CombineSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
 
-function CombineSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvSyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvSyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvSyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvSyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvSyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvSyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvSyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvSyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvSyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvSyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvSyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvSyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
-function CombineQuickSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvSyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
 
-function CombineQuickSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvSyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineQuickSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvSyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineQuickSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvSyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineQuickSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvSyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineQuickSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvSyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineQuickSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvSyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvSyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvSyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvSyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvSyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvSyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvSyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
 {$endregion Context}
 
@@ -18341,49 +18555,49 @@ function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQue
 
 {$region NonContext}
 
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 
-function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvAsyncQueueArray<TInp, TRes>(qs.ToArray, conv);
 
-function CombineQuickAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineQuickAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineQuickAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineQuickAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineQuickAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineQuickAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvAsyncQueueArray2<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvAsyncQueueArray3<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvAsyncQueueArray4<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvAsyncQueueArray5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvAsyncQueueArray6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvAsyncQueueArray7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
-function CombineAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new BackgroundConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
 
-function CombineAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvAsyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvAsyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvAsyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvAsyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvAsyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvAsyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new BackgroundConvAsyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new BackgroundConvAsyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new BackgroundConvAsyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new BackgroundConvAsyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new BackgroundConvAsyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new BackgroundConvAsyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
-function CombineQuickAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>) := new QuickConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>) := new QuickConvAsyncQueueArrayC<TInp, TRes>(qs.ToArray, conv);
 
-function CombineQuickAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvAsyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
-function CombineQuickAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvAsyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
-function CombineQuickAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvAsyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
-function CombineQuickAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvAsyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
-function CombineQuickAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvAsyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
-function CombineQuickAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvAsyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
+function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>) := new QuickConvAsyncQueueArray2C<TInp1, TInp2, TRes>(q1, q2, conv);
+function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>) := new QuickConvAsyncQueueArray3C<TInp1, TInp2, TInp3, TRes>(q1, q2, q3, conv);
+function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>) := new QuickConvAsyncQueueArray4C<TInp1, TInp2, TInp3, TInp4, TRes>(q1, q2, q3, q4, conv);
+function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>) := new QuickConvAsyncQueueArray5C<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(q1, q2, q3, q4, q5, conv);
+function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>) := new QuickConvAsyncQueueArray6C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(q1, q2, q3, q4, q5, q6, conv);
+function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>) := new QuickConvAsyncQueueArray7C<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(q1, q2, q3, q4, q5, q6, q7, conv);
 
 {$endregion Context}
 

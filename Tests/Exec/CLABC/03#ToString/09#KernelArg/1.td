@@ -1,4 +1,4 @@
-﻿
+
 
 
 #ReqModules
@@ -47,21 +47,21 @@ KernelArgMemorySegmentCQ
 
 Data:
 KernelArgDataCQ
-	CommandQueueHostFunc<System.IntPtr>#0: IntPtr <>lambda*()
+	CommandQueueHostBackgoundFunc<System.IntPtr>#0: IntPtr <>lambda*()
 	ConstQueue<System.UIntPtr>#1 { 0 }
 
 Value:
 KernelArgValueCQ<System.Int32>
-	CommandQueueHostFunc<System.Int32>#0: Int32 <>lambda*()
+	CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
 KernelArgValueCQ<System.Int32>
-	CommandQueueHostFunc<System.Int32>#0: Int32 <>lambda*()
+	CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
 
 Array:
 KernelArgArrayCQ<System.Double>
-	CommandQueueHostFunc<System.Double[]>#0: 1.<>local_variables_class_* => Double[] <>lambda*()
+	CommandQueueHostBackgoundFunc<System.Double[]>#0: 1.<>local_variables_class_* => Double[] <>lambda*()
 	ConstQueue<System.Int32>#1 { 1 }
 KernelArgArrayCQ<System.Double>
-	CommandQueueHostFunc<System.Double[]>#0: 1.<>local_variables_class_* => Double[] <>lambda*()
+	CommandQueueHostBackgoundFunc<System.Double[]>#0: 1.<>local_variables_class_* => Double[] <>lambda*()
 	ConstQueue<System.Int32>#1 { 0 }
 
 

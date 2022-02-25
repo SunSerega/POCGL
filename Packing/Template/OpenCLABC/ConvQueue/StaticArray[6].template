@@ -88,7 +88,7 @@ type
       if all_const then
       begin
         var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), cqr5.GetRes(), cqr6.GetRes(), c);
-        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
       end else
         Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), qr6.GetRes(), c), ev);
     end;

@@ -107,6 +107,7 @@ begin
           begin
             wr += 'function Combine';
             if is_quick then wr += quick_word;
+            wr += 'Conv';
             wr += exec_order;
             wr += 'Queue<TInp, TRes>(conv: Func<array of TInp, ';
             wr += context_par;
@@ -135,6 +136,7 @@ begin
             
             wr += 'function Combine';
             if is_quick then wr += quick_word;
+            wr += 'Conv';
             wr += exec_order;
             wr += 'QueueN';
             wr += c;

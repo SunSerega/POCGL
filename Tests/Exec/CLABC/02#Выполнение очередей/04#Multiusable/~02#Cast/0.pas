@@ -7,7 +7,7 @@ begin
     Result := 5;
   end).Cast&<object>.Multiusable;
   Context.Default.SyncInvoke(
-    CombineAsyncQueue(res->res,
+    CombineConvAsyncQueue(res->res,
       qs().ThenConvert(o->integer(o).Sqr),
       qs().ThenConvert(o->integer(o).Sqr.Sqr)
     )

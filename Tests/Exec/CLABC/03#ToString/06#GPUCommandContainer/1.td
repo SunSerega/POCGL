@@ -13,9 +13,9 @@ KernelCCQ#0
 		args[0]: KernelArgMemorySegmentCQ
 			MemorySegmentCCQ#3
 				CCCQueue
-					CommandQueueHostFunc<OpenCLABC.MemorySegment>#4: OpenCLABC.MemorySegment <>lambda*()
+					CommandQueueHostBackgoundFunc<OpenCLABC.MemorySegment>#4: OpenCLABC.MemorySegment <>lambda*()
 				QueueCommand
-					CommandQueueHostFunc<System.Int32>#5: Int32 <>lambda*()
+					CommandQueueHostBackgoundFunc<System.Int32>#5: Int32 <>lambda*()
 				BackgroundProcCommand: Void <>lambda*(OpenCLABC.MemorySegment)
 		args[1]: KernelArgValue<System.Int32> => 5
 

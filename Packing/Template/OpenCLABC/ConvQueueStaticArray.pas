@@ -110,7 +110,7 @@ begin
             wr += '        var res := ExecFunc(';
             WriteNumbered('cqr%.GetRes(), ');
             wr += 'c);'#10;
-            wr += '        Result := QueueResConst&<TRes>.MakeNew(need_ptr_qr, res, ev);'#10;
+            wr += '        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);'#10;
           end;
           wr += '      end else'#10;
           

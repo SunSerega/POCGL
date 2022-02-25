@@ -15,7 +15,7 @@ ConstQueue<System.Int32>#0 { 2 }
 4 
 4 
 ==============================
-CommandQueueHostFunc<System.Int32>#0: Int32 <>lambda*()
+CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
 ----------
 3 
 9 
@@ -26,7 +26,7 @@ CommandQueueHostFunc<System.Int32>#0: Int32 <>lambda*()
 9 
 ==============================
 CastQueue<System.Object, System.Int32>#0
-	CommandQueueHostFunc<System.Object>#1: System.Object <>lambda*()
+	CommandQueueHostBackgoundFunc<System.Object>#1: System.Object <>lambda*()
 ----------
 4 
 16 
