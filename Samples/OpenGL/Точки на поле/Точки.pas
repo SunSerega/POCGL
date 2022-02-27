@@ -207,7 +207,6 @@ begin
       if last_fragment_shader<>curr_fragment_shader then
       begin
         last_fragment_shader := curr_fragment_shader;
-        last_fragment_shader.Println;
         
         gl.DeleteProgram(sprog);
         sprog := InitProgram(
@@ -255,7 +254,7 @@ begin
 //      gl.GetNamedBufferSubData(buffer_temp, new IntPtr(2*sizeof(real)), new IntPtr(1*sizeof(real)), temp_data);
       
       var err := gl.GetError;
-      if err<>ErrorCode.NO_ERROR then Writeln(err);
+      if err<>ErrorCode.NO_ERROR then MessageBox.Show(err.ToString);
       
       gl.Finish;
       if need_set_resize_ev then
@@ -277,7 +276,7 @@ begin
   except
     on e: Exception do
     begin
-      Writeln(e);
+      MessageBox.Show(e.ToString);
       Halt;
     end;
   end);
