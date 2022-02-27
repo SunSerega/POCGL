@@ -27,47 +27,47 @@
  gl_program	| UInt32	| IntPtr	|
 
 # glBindBuffer
- BufferTargetARB	| gl_buffer	|
+ BufferTarget	| gl_buffer	|
 
 # glBindBufferBase
- BufferTargetARB	| UInt32	| gl_buffer	|
+ BufferTarget	| UInt32	| gl_buffer	|
 
 # glBindBufferRange
- BufferTargetARB	| UInt32	| gl_buffer	| IntPtr	| IntPtr	|
+ BufferTarget	| UInt32	| gl_buffer	| IntPtr	| IntPtr	|
 
 # glBindBuffersBase
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	|
 
 # glBindBuffersRange
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| array of IntPtr	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| array of IntPtr	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| array of IntPtr	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| var IntPtr	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| var IntPtr	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| var IntPtr	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| pointer	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| pointer	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| array of gl_buffer	| pointer	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| array of IntPtr	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| array of IntPtr	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| array of IntPtr	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| var IntPtr	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| var IntPtr	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| var IntPtr	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| pointer	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| pointer	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| var gl_buffer	| pointer	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| array of IntPtr	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| array of IntPtr	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| array of IntPtr	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| var IntPtr	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| var IntPtr	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| var IntPtr	| pointer	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| pointer	| array of IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| pointer	| var IntPtr	|
- BufferTargetARB	| UInt32	| Int32	| IntPtr	| pointer	| pointer	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| array of IntPtr	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| array of IntPtr	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| array of IntPtr	| pointer	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| var IntPtr	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| var IntPtr	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| var IntPtr	| pointer	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| pointer	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| pointer	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| array of gl_buffer	| pointer	| pointer	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| array of IntPtr	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| array of IntPtr	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| array of IntPtr	| pointer	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| var IntPtr	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| var IntPtr	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| var IntPtr	| pointer	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| pointer	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| pointer	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| var gl_buffer	| pointer	| pointer	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| array of IntPtr	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| array of IntPtr	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| array of IntPtr	| pointer	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| var IntPtr	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| var IntPtr	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| var IntPtr	| pointer	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| pointer	| array of IntPtr	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| pointer	| var IntPtr	|
+ BufferTarget	| UInt32	| Int32	| IntPtr	| pointer	| pointer	|
 
 # glBindFragDataLocation
  gl_program	| UInt32	| string	|
@@ -185,13 +185,13 @@
  gl_framebuffer	| gl_framebuffer	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| Int32	| ClearBufferMask	| BlitFramebufferFilter	|
 
 # glBufferData
- BufferTargetARB	| IntPtr	| IntPtr	| BufferUsageARB	|
+ BufferTarget	| IntPtr	| IntPtr	| BufferUsageARB	|
 
 # glBufferStorage
  BufferStorageTarget	| IntPtr	| IntPtr	| BufferStorageMask	|
 
 # glBufferSubData
- BufferTargetARB	| IntPtr	| IntPtr	| IntPtr	|
+ BufferTarget	| IntPtr	| IntPtr	| IntPtr	|
 
 # glCheckFramebufferStatus
  FramebufferStatus	| FramebufferTarget	|
@@ -222,7 +222,7 @@
  Buffer	| Int32	| IntPtr	|
 
 # glClearBufferSubData
- BufferTargetARB	| SizedInternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
+ BufferTarget	| SizedInternalFormat	| IntPtr	| IntPtr	| PixelFormat	| PixelType	| IntPtr	|
 
 # glClearBufferuiv
  Buffer	| Int32	| array of UInt32	|
@@ -607,7 +607,7 @@
  gl_sync	| SyncCondition	| DummyFlags	|
 
 # glFlushMappedBufferRange
- BufferTargetARB	| IntPtr	| IntPtr	|
+ BufferTarget	| IntPtr	| IntPtr	|
 
 # glFlushMappedNamedBufferRange
  gl_buffer	| IntPtr	| IntPtr	|
@@ -762,9 +762,9 @@
  Int32	| gl_program	| IntPtr	|
 
 # glGetBooleani_v
- BufferTargetARB	| UInt32	| array of boolean	|
- BufferTargetARB	| UInt32	| var boolean	|
- BufferTargetARB	| UInt32	| IntPtr	|
+ BufferTarget	| UInt32	| array of boolean	|
+ BufferTarget	| UInt32	| var boolean	|
+ BufferTarget	| UInt32	| IntPtr	|
 
 # glGetBooleanv
  GetPName	| array of boolean	|
@@ -772,21 +772,21 @@
  GetPName	| IntPtr	|
 
 # glGetBufferParameteri64v
- BufferTargetARB	| BufferPNameARB	| array of Int64	|
- BufferTargetARB	| BufferPNameARB	| var Int64	|
- BufferTargetARB	| BufferPNameARB	| IntPtr	|
+ BufferTarget	| BufferPNameARB	| array of Int64	|
+ BufferTarget	| BufferPNameARB	| var Int64	|
+ BufferTarget	| BufferPNameARB	| IntPtr	|
 
 # glGetBufferParameteriv
- BufferTargetARB	| BufferPNameARB	| array of Int32	|
- BufferTargetARB	| BufferPNameARB	| var Int32	|
- BufferTargetARB	| BufferPNameARB	| IntPtr	|
+ BufferTarget	| BufferPNameARB	| array of Int32	|
+ BufferTarget	| BufferPNameARB	| var Int32	|
+ BufferTarget	| BufferPNameARB	| IntPtr	|
 
 # glGetBufferPointerv
- BufferTargetARB	| BufferPointerNameARB	| var IntPtr	|
- BufferTargetARB	| BufferPointerNameARB	| pointer	|
+ BufferTarget	| BufferPointerNameARB	| var IntPtr	|
+ BufferTarget	| BufferPointerNameARB	| pointer	|
 
 # glGetBufferSubData
- BufferTargetARB	| IntPtr	| IntPtr	| IntPtr	|
+ BufferTarget	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetCompressedTexImage
  TextureTarget	| Int32	| IntPtr	|
@@ -895,6 +895,8 @@
  gl_buffer	| BufferPointerNameARB	| pointer	|
 
 # glGetNamedBufferSubData
+ gl_buffer	| IntPtr	| IntPtr	| array of T	|
+ gl_buffer	| IntPtr	| IntPtr	| var T	|
  gl_buffer	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetNamedFramebufferAttachmentParameteriv
@@ -1450,10 +1452,10 @@
  LogicOp	|
 
 # glMapBuffer
- IntPtr	| BufferTargetARB	| BufferAccessARB	|
+ IntPtr	| BufferTarget	| BufferAccessARB	|
 
 # glMapBufferRange
- IntPtr	| BufferTargetARB	| IntPtr	| IntPtr	| MapBufferAccessMask	|
+ IntPtr	| BufferTarget	| IntPtr	| IntPtr	| MapBufferAccessMask	|
 
 # glMapNamedBuffer
  IntPtr	| gl_buffer	| BufferAccessARB	|
@@ -1570,6 +1572,8 @@
  gl_buffer	| IntPtr	| IntPtr	| BufferStorageMask	|
 
 # glNamedBufferSubData
+ gl_buffer	| IntPtr	| IntPtr	| array of T	|
+ gl_buffer	| IntPtr	| IntPtr	| var T	|
  gl_buffer	| IntPtr	| IntPtr	| IntPtr	|
 
 # glNamedFramebufferDrawBuffer
@@ -2197,6 +2201,7 @@
 # glUniform1dv
  Int32	| Int32	| array of real	|
  Int32	| Int32	| var real	|
+ Int32	| Int32	| var Vec1d	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform1f
@@ -2205,6 +2210,7 @@
 # glUniform1fv
  Int32	| Int32	| array of single	|
  Int32	| Int32	| var single	|
+ Int32	| Int32	| var Vec1f	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform1i
@@ -2213,6 +2219,7 @@
 # glUniform1iv
  Int32	| Int32	| array of Int32	|
  Int32	| Int32	| var Int32	|
+ Int32	| Int32	| var Vec1i	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform1ui
@@ -2221,6 +2228,7 @@
 # glUniform1uiv
  Int32	| Int32	| array of UInt32	|
  Int32	| Int32	| var UInt32	|
+ Int32	| Int32	| var Vec1ui	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform2d
@@ -2229,6 +2237,7 @@
 # glUniform2dv
  Int32	| Int32	| array of real	|
  Int32	| Int32	| var real	|
+ Int32	| Int32	| var Vec2d	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform2f
@@ -2237,6 +2246,7 @@
 # glUniform2fv
  Int32	| Int32	| array of single	|
  Int32	| Int32	| var single	|
+ Int32	| Int32	| var Vec2f	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform2i
@@ -2245,6 +2255,7 @@
 # glUniform2iv
  Int32	| Int32	| array of Int32	|
  Int32	| Int32	| var Int32	|
+ Int32	| Int32	| var Vec2i	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform2ui
@@ -2253,6 +2264,7 @@
 # glUniform2uiv
  Int32	| Int32	| array of UInt32	|
  Int32	| Int32	| var UInt32	|
+ Int32	| Int32	| var Vec2ui	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform3d
@@ -2261,6 +2273,7 @@
 # glUniform3dv
  Int32	| Int32	| array of real	|
  Int32	| Int32	| var real	|
+ Int32	| Int32	| var Vec3d	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform3f
@@ -2269,6 +2282,7 @@
 # glUniform3fv
  Int32	| Int32	| array of single	|
  Int32	| Int32	| var single	|
+ Int32	| Int32	| var Vec3f	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform3i
@@ -2277,6 +2291,7 @@
 # glUniform3iv
  Int32	| Int32	| array of Int32	|
  Int32	| Int32	| var Int32	|
+ Int32	| Int32	| var Vec3i	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform3ui
@@ -2285,6 +2300,7 @@
 # glUniform3uiv
  Int32	| Int32	| array of UInt32	|
  Int32	| Int32	| var UInt32	|
+ Int32	| Int32	| var Vec3ui	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform4d
@@ -2293,6 +2309,7 @@
 # glUniform4dv
  Int32	| Int32	| array of real	|
  Int32	| Int32	| var real	|
+ Int32	| Int32	| var Vec4d	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform4f
@@ -2301,6 +2318,7 @@
 # glUniform4fv
  Int32	| Int32	| array of single	|
  Int32	| Int32	| var single	|
+ Int32	| Int32	| var Vec4f	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform4i
@@ -2309,6 +2327,7 @@
 # glUniform4iv
  Int32	| Int32	| array of Int32	|
  Int32	| Int32	| var Int32	|
+ Int32	| Int32	| var Vec4i	|
  Int32	| Int32	| IntPtr	|
 
 # glUniform4ui
@@ -2317,6 +2336,7 @@
 # glUniform4uiv
  Int32	| Int32	| array of UInt32	|
  Int32	| Int32	| var UInt32	|
+ Int32	| Int32	| var Vec4ui	|
  Int32	| Int32	| IntPtr	|
 
 # glUniformBlockBinding
@@ -2418,7 +2438,7 @@
  ShaderType	| Int32	| IntPtr	|
 
 # glUnmapBuffer
- boolean	| BufferTargetARB	|
+ boolean	| BufferTarget	|
 
 # glUnmapNamedBuffer
  boolean	| gl_buffer	|
@@ -4824,7 +4844,7 @@
  DummyEnum	| DummyEnum	| Int32	|
 
 # glFlushMappedBufferRangeAPPLE
- BufferTargetARB	| IntPtr	| IntPtr	|
+ BufferTarget	| IntPtr	| IntPtr	|
 
 # glObjectPurgeableAPPLE
  DummyEnum	| DummyEnum	| UInt32	| DummyEnum	|
@@ -6006,7 +6026,7 @@
  Int32	|
 
 # glBindBufferARB
- BufferTargetARB	| gl_buffer	|
+ BufferTarget	| gl_buffer	|
 
 # glDeleteBuffersARB
  Int32	| array of gl_buffer	|
@@ -6022,28 +6042,28 @@
  boolean	| gl_buffer	|
 
 # glBufferDataARB
- BufferTargetARB	| IntPtr	| IntPtr	| BufferUsageARB	|
+ BufferTarget	| IntPtr	| IntPtr	| BufferUsageARB	|
 
 # glBufferSubDataARB
- BufferTargetARB	| IntPtr	| IntPtr	| IntPtr	|
+ BufferTarget	| IntPtr	| IntPtr	| IntPtr	|
 
 # glGetBufferSubDataARB
- BufferTargetARB	| IntPtr	| IntPtr	| IntPtr	|
+ BufferTarget	| IntPtr	| IntPtr	| IntPtr	|
 
 # glMapBufferARB
- IntPtr	| BufferTargetARB	| BufferAccessARB	|
+ IntPtr	| BufferTarget	| BufferAccessARB	|
 
 # glUnmapBufferARB
- boolean	| BufferTargetARB	|
+ boolean	| BufferTarget	|
 
 # glGetBufferParameterivARB
- BufferTargetARB	| BufferPNameARB	| array of Int32	|
- BufferTargetARB	| BufferPNameARB	| var Int32	|
- BufferTargetARB	| BufferPNameARB	| IntPtr	|
+ BufferTarget	| BufferPNameARB	| array of Int32	|
+ BufferTarget	| BufferPNameARB	| var Int32	|
+ BufferTarget	| BufferPNameARB	| IntPtr	|
 
 # glGetBufferPointervARB
- BufferTargetARB	| BufferPointerNameARB	| var IntPtr	|
- BufferTargetARB	| BufferPointerNameARB	| pointer	|
+ BufferTarget	| BufferPointerNameARB	| var IntPtr	|
+ BufferTarget	| BufferPointerNameARB	| pointer	|
 
 # glVertexAttrib1dARB
  UInt32	| real	|
@@ -7158,9 +7178,9 @@
  GetPName	| UInt32	| IntPtr	|
 
 # glGetBooleanIndexedvEXT
- BufferTargetARB	| UInt32	| array of boolean	|
- BufferTargetARB	| UInt32	| var boolean	|
- BufferTargetARB	| UInt32	| IntPtr	|
+ BufferTarget	| UInt32	| array of boolean	|
+ BufferTarget	| UInt32	| var boolean	|
+ BufferTarget	| UInt32	| IntPtr	|
 
 # glCompressedTextureImage3DEXT
  gl_texture	| TextureTarget	| Int32	| InternalFormat	| Int32	| Int32	| Int32	| Int32	| Int32	| IntPtr	|
@@ -8168,7 +8188,7 @@
  TextureTarget	| Int32	| SizedInternalFormat	| Int32	| Int32	| Int32	| boolean	| UInt32	| UInt64	|
 
 # glBufferStorageMemEXT
- BufferTargetARB	| IntPtr	| UInt32	| UInt64	|
+ BufferTarget	| IntPtr	| UInt32	| UInt64	|
 
 # glTextureStorageMem2DEXT
  gl_texture	| Int32	| SizedInternalFormat	| Int32	| Int32	| UInt32	| UInt64	|
@@ -8590,13 +8610,13 @@
  PrimitiveType	|
 
 # glBindBufferRangeEXT
- BufferTargetARB	| UInt32	| gl_buffer	| IntPtr	| IntPtr	|
+ BufferTarget	| UInt32	| gl_buffer	| IntPtr	| IntPtr	|
 
 # glBindBufferOffsetEXT
- BufferTargetARB	| UInt32	| gl_buffer	| IntPtr	|
+ BufferTarget	| UInt32	| gl_buffer	| IntPtr	|
 
 # glBindBufferBaseEXT
- BufferTargetARB	| UInt32	| gl_buffer	|
+ BufferTarget	| UInt32	| gl_buffer	|
 
 # glTransformFeedbackVaryingsEXT
  gl_program	| Int32	| array of string	| DummyEnum	|
@@ -10292,7 +10312,7 @@
  TextureTarget	| UInt32	| UInt64	|
 
 # glBufferAttachMemoryNV
- BufferTargetARB	| UInt32	| UInt64	|
+ BufferTarget	| UInt32	| UInt64	|
 
 # glTextureAttachMemoryNV
  gl_texture	| UInt32	| UInt64	|
@@ -10829,9 +10849,9 @@
  boolean	| gl_buffer	|
 
 # glGetBufferParameterui64vNV
- BufferTargetARB	| DummyEnum	| array of UInt64	|
- BufferTargetARB	| DummyEnum	| var UInt64	|
- BufferTargetARB	| DummyEnum	| IntPtr	|
+ BufferTarget	| DummyEnum	| array of UInt64	|
+ BufferTarget	| DummyEnum	| var UInt64	|
+ BufferTarget	| DummyEnum	| IntPtr	|
 
 # glGetNamedBufferParameterui64vNV
  gl_buffer	| BufferPNameARB	| array of UInt64	|
@@ -10914,13 +10934,13 @@
  Int32	| IntPtr	| DummyEnum	|
 
 # glBindBufferRangeNV
- BufferTargetARB	| UInt32	| gl_buffer	| IntPtr	| IntPtr	|
+ BufferTarget	| UInt32	| gl_buffer	| IntPtr	| IntPtr	|
 
 # glBindBufferOffsetNV
- BufferTargetARB	| UInt32	| gl_buffer	| IntPtr	|
+ BufferTarget	| UInt32	| gl_buffer	| IntPtr	|
 
 # glBindBufferBaseNV
- BufferTargetARB	| UInt32	| gl_buffer	|
+ BufferTarget	| UInt32	| gl_buffer	|
 
 # glTransformFeedbackVaryingsNV
  gl_program	| Int32	| array of Int32	| DummyEnum	|
@@ -10961,7 +10981,7 @@
  Int32	| IntPtr	| Int32	| IntPtr	| DummyEnum	|
 
 # glBindTransformFeedbackNV
- BufferTargetARB	| gl_transform_feedback	|
+ BufferTarget	| gl_transform_feedback	|
 
 # glDeleteTransformFeedbacksNV
  Int32	| array of gl_transform_feedback	|

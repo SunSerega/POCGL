@@ -719,6 +719,48 @@
     
   end;
   
+  BufferTarget = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property PARAMETER_BUFFER:          BufferTarget read new BufferTarget($80EE);
+    public static property ARRAY_BUFFER:              BufferTarget read new BufferTarget($8892);
+    public static property ELEMENT_ARRAY_BUFFER:      BufferTarget read new BufferTarget($8893);
+    public static property PIXEL_PACK_BUFFER:         BufferTarget read new BufferTarget($88EB);
+    public static property PIXEL_UNPACK_BUFFER:       BufferTarget read new BufferTarget($88EC);
+    public static property UNIFORM_BUFFER:            BufferTarget read new BufferTarget($8A11);
+    public static property TEXTURE_BUFFER:            BufferTarget read new BufferTarget($8C2A);
+    public static property TRANSFORM_FEEDBACK_BUFFER: BufferTarget read new BufferTarget($8C8E);
+    public static property COPY_READ_BUFFER:          BufferTarget read new BufferTarget($8F36);
+    public static property COPY_WRITE_BUFFER:         BufferTarget read new BufferTarget($8F37);
+    public static property DRAW_INDIRECT_BUFFER:      BufferTarget read new BufferTarget($8F3F);
+    public static property SHADER_STORAGE_BUFFER:     BufferTarget read new BufferTarget($90D2);
+    public static property DISPATCH_INDIRECT_BUFFER:  BufferTarget read new BufferTarget($90EE);
+    public static property QUERY_BUFFER:              BufferTarget read new BufferTarget($9192);
+    public static property ATOMIC_COUNTER_BUFFER:     BufferTarget read new BufferTarget($92C0);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($80EE) then Result := 'PARAMETER_BUFFER' else
+      if self.val = UInt32($8892) then Result := 'ARRAY_BUFFER' else
+      if self.val = UInt32($8893) then Result := 'ELEMENT_ARRAY_BUFFER' else
+      if self.val = UInt32($88EB) then Result := 'PIXEL_PACK_BUFFER' else
+      if self.val = UInt32($88EC) then Result := 'PIXEL_UNPACK_BUFFER' else
+      if self.val = UInt32($8A11) then Result := 'UNIFORM_BUFFER' else
+      if self.val = UInt32($8C2A) then Result := 'TEXTURE_BUFFER' else
+      if self.val = UInt32($8C8E) then Result := 'TRANSFORM_FEEDBACK_BUFFER' else
+      if self.val = UInt32($8F36) then Result := 'COPY_READ_BUFFER' else
+      if self.val = UInt32($8F37) then Result := 'COPY_WRITE_BUFFER' else
+      if self.val = UInt32($8F3F) then Result := 'DRAW_INDIRECT_BUFFER' else
+      if self.val = UInt32($90D2) then Result := 'SHADER_STORAGE_BUFFER' else
+      if self.val = UInt32($90EE) then Result := 'DISPATCH_INDIRECT_BUFFER' else
+      if self.val = UInt32($9192) then Result := 'QUERY_BUFFER' else
+      if self.val = UInt32($92C0) then Result := 'ATOMIC_COUNTER_BUFFER' else
+        Result := $'BufferTarget[{self.val}]';
+    end;
+    
+  end;
+  
   ClearBufferMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9407,48 +9449,6 @@
       if self.val = UInt32($88BD) then Result := 'BUFFER_MAP_POINTER' else
       if self.val = UInt32($88BD) then Result := 'BUFFER_MAP_POINTER_ARB' else
         Result := $'BufferPointerNameARB[{self.val}]';
-    end;
-    
-  end;
-  
-  BufferTargetARB = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property PARAMETER_BUFFER:          BufferTargetARB read new BufferTargetARB($80EE);
-    public static property ARRAY_BUFFER:              BufferTargetARB read new BufferTargetARB($8892);
-    public static property ELEMENT_ARRAY_BUFFER:      BufferTargetARB read new BufferTargetARB($8893);
-    public static property PIXEL_PACK_BUFFER:         BufferTargetARB read new BufferTargetARB($88EB);
-    public static property PIXEL_UNPACK_BUFFER:       BufferTargetARB read new BufferTargetARB($88EC);
-    public static property UNIFORM_BUFFER:            BufferTargetARB read new BufferTargetARB($8A11);
-    public static property TEXTURE_BUFFER:            BufferTargetARB read new BufferTargetARB($8C2A);
-    public static property TRANSFORM_FEEDBACK_BUFFER: BufferTargetARB read new BufferTargetARB($8C8E);
-    public static property COPY_READ_BUFFER:          BufferTargetARB read new BufferTargetARB($8F36);
-    public static property COPY_WRITE_BUFFER:         BufferTargetARB read new BufferTargetARB($8F37);
-    public static property DRAW_INDIRECT_BUFFER:      BufferTargetARB read new BufferTargetARB($8F3F);
-    public static property SHADER_STORAGE_BUFFER:     BufferTargetARB read new BufferTargetARB($90D2);
-    public static property DISPATCH_INDIRECT_BUFFER:  BufferTargetARB read new BufferTargetARB($90EE);
-    public static property QUERY_BUFFER:              BufferTargetARB read new BufferTargetARB($9192);
-    public static property ATOMIC_COUNTER_BUFFER:     BufferTargetARB read new BufferTargetARB($92C0);
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($80EE) then Result := 'PARAMETER_BUFFER' else
-      if self.val = UInt32($8892) then Result := 'ARRAY_BUFFER' else
-      if self.val = UInt32($8893) then Result := 'ELEMENT_ARRAY_BUFFER' else
-      if self.val = UInt32($88EB) then Result := 'PIXEL_PACK_BUFFER' else
-      if self.val = UInt32($88EC) then Result := 'PIXEL_UNPACK_BUFFER' else
-      if self.val = UInt32($8A11) then Result := 'UNIFORM_BUFFER' else
-      if self.val = UInt32($8C2A) then Result := 'TEXTURE_BUFFER' else
-      if self.val = UInt32($8C8E) then Result := 'TRANSFORM_FEEDBACK_BUFFER' else
-      if self.val = UInt32($8F36) then Result := 'COPY_READ_BUFFER' else
-      if self.val = UInt32($8F37) then Result := 'COPY_WRITE_BUFFER' else
-      if self.val = UInt32($8F3F) then Result := 'DRAW_INDIRECT_BUFFER' else
-      if self.val = UInt32($90D2) then Result := 'SHADER_STORAGE_BUFFER' else
-      if self.val = UInt32($90EE) then Result := 'DISPATCH_INDIRECT_BUFFER' else
-      if self.val = UInt32($9192) then Result := 'QUERY_BUFFER' else
-      if self.val = UInt32($92C0) then Result := 'ATOMIC_COUNTER_BUFFER' else
-        Result := $'BufferTargetARB[{self.val}]';
     end;
     
   end;

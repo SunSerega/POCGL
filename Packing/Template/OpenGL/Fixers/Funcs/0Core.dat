@@ -5,8 +5,18 @@
 !possible_par_types
  *	| *	| -IntPtr +array of T +var T +IntPtr	| *	|
 
+# gl[%,Get%]NamedBufferSubData
+!possible_par_types
+ *	| *	| *	| -IntPtr +array of T +var T +IntPtr	|
+
 # glXGetProcAddress
 !possible_par_types
  *	| -array of Byte -var Byte -IntPtr +string +IntPtr	|
+
+
+
+# glUniform[%c:1,2,3,4%][%t:f,d,i,ui%]v
+!possible_par_types
+ *	| *	| -IntPtr +var Vec{%c%}{%t%} +IntPtr	|
 
 
