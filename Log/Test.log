@@ -23,7 +23,9 @@ Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Ис
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGL\Крутящийся треугольник 1 (простейший пример).pas"
+Tester: Compiling "Samples\OpenGL\!Крутящийся треугольник\Крутящийся треугольник.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenGL\Точки на поле\Точки.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK

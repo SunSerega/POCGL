@@ -19,12 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO QueueResNil, так же подразделяющийся на Const и Func (хз нужен ли Delayed)
-// - Нужно чтобы реализовать очереди вроде .ThenQuickUse в качестве QueueRes'а, хранящего алгоритм
-// --- Иначе, сейчас реализовано как вызов .MultiAttachCallback - а это приводит к излишнему кол-ву UserEvent'ов
-// - Кроме того, сейчас нужет кривой IEventListContainer чтобы сделать общий код для EventList и QueueRes<T>
-// --- А если обернуть EventList в QueueResNil - всё будет менее костыльно
-
 //TODO Тесты:
 // - .ThenQuickConvert.Multiusable: сколько раз вычисляется?
 // - Потеря результата Quick обработки:
@@ -2478,23 +2472,6 @@ type
 {$region EventList}
 
 type
-  IEventListContainerT<TEventList> = interface
-    
-    function get_ev: TEventList;
-    function set_ev_base(val: TEventList): IEventListContainerT<TEventList>;
-    
-    procedure forbid_ev_swap;
-    
-    function soft_stabilise_res(g: CLTaskGlobalData; need_ptr_qr: boolean): IEventListContainerT<TEventList>;
-    
-  end;
-  
-function set_ev<TC,TV>(self: TC; val: TV): TC; extensionmethod; where TC: IEventListContainerT<TV>;
-begin
-  Result := TC(self.set_ev_base(val));
-end;
-
-type
   AttachCallbackData = sealed class
     public work: Action;
     {$ifdef EventDebug}
@@ -2531,20 +2508,9 @@ type
     
   end;
   
-  EventList = record(IEventListContainerT<EventList>)
+  EventList = record
     public evs: array of cl_event;
     public count := 0;
-    
-    {$region IEventListContainer}
-    
-    public function IEventListContainerT<TEventList>.get_ev: EventList := self;
-    public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainerT<EventList> := val;
-    
-    public procedure IEventListContainerT<TEventList>.forbid_ev_swap := exit;
-    
-    public function IEventListContainerT<TEventList>.soft_stabilise_res(g: CLTaskGlobalData; need_ptr_qr: boolean): IEventListContainerT<EventList> := self;
-    
-    {$endregion IEventListContainer}
     
     {$region Misc}
     
@@ -2758,221 +2724,8 @@ type
     {$endregion Retain/Release}
     
   end;
-  IEventListContainer = IEventListContainerT<EventList>;
   
 {$endregion EventList}
-
-{$region QueueRes}
-
-type
-  {$region Misc}
-  
-  IPtrQueueRes<T> = interface
-    function GetPtr: ^T;
-  end;
-  QRPtrWrap<T> = sealed class(IPtrQueueRes<T>)
-    private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
-    
-    public constructor(val: T) := self.ptr^ := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(new IntPtr(ptr));
-    
-    public function GetPtr: ^T := ptr;
-    
-  end;
-  
-  {$endregion Misc}
-  
-  {$region Base}
-  
-  QueueRes<T> = abstract partial class end;
-  QueueResBase = abstract partial class
-    public ev: EventList;
-    public can_set_ev := true;
-    
-    public constructor(ev: EventList) := self.ev := ev;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public function SoftStabiliseBase(g: CLTaskGlobalData; need_ptr_qr: boolean): EventList; abstract;
-    
-  end;
-  
-  QueueRes<T> = abstract partial class(QueueResBase, IEventListContainer)
-    
-    public function GetRes: T; abstract;
-    
-    public function TrySetEv(new_ev: EventList): QueueRes<T>;
-    begin
-      if self.ev=new_ev then
-        Result := self else
-      begin
-        Result := if can_set_ev then self else Clone;
-        Result.ev := new_ev;
-      end;
-    end;
-    
-    public function Clone: QueueRes<T>; abstract;
-    
-    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
-    
-    // Only usable after waiting on .ev
-    public function ToPtr: IPtrQueueRes<T>; abstract;
-    
-    // Only usable after waiting on .ev
-    public function HardStabilise: QueueRes<T>; abstract;
-    // Usable right after .Invoke call
-    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; abstract;
-    public function SoftStabiliseBase(g: CLTaskGlobalData; need_ptr_qr: boolean): EventList; override :=
-    self.SoftStabilise(g, need_ptr_qr).ev;
-    
-    {$region IEventListContainer}
-    
-    public function IEventListContainerT<TEventList>.get_ev: EventList := ev;
-    public function IEventListContainerT<TEventList>.set_ev_base(val: EventList): IEventListContainer := self.TrySetEv(val);
-    
-    public procedure IEventListContainerT<TEventList>.forbid_ev_swap := self.can_set_ev := false;
-    
-    public function IEventListContainerT<TEventList>.soft_stabilise_res(g: CLTaskGlobalData; need_ptr_qr: boolean): IEventListContainer := SoftStabilise(g, need_ptr_qr);
-    
-    {$endregion IEventListContainer}
-    
-  end;
-  
-  {$endregion Base}
-  
-  {$region Const}
-  
-  IQueueResConst = interface end;
-  // Результат который просто есть
-  QueueResConst<T> = sealed partial class(QueueRes<T>, IQueueResConst)
-    private res: T;
-    
-    public constructor(res: T; ev: EventList);
-    begin
-      inherited Create(ev);
-      self.res := res;
-    end;
-    private constructor := inherited;
-    
-    public function Clone: QueueRes<T>; override := new QueueResConst<T>(res, ev);
-    
-    public function GetRes: T; override := res;
-    
-    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override;
-    
-    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
-    
-    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override := self;
-    public function HardStabilise: QueueRes<T>; override := self;
-    
-  end;
-  
-  {$endregion Const}
-  
-  {$region Func}
-  
-  // Результат который надо будет сначала дождаться, а потом ещё досчитать
-  QueueResFunc<T> = sealed partial class(QueueRes<T>)
-    private f: ()->T;
-    
-    public constructor(f: ()->T; ev: EventList);
-    begin
-      inherited Create(ev);
-      self.f := f;
-    end;
-    private constructor := inherited;
-    
-    public function Clone: QueueRes<T>; override := new QueueResFunc<T>(f, ev);
-    
-    {$ifdef DEBUG}
-    private res_calculated := false;
-    {$endif DEBUG}
-    public function GetRes: T; override;
-    begin
-      {$ifdef DEBUG}
-      if res_calculated then raise new System.InvalidProgramException($'{self.GetType}: {System.Environment.StackTrace}');
-      res_calculated := true;
-      {$endif DEBUG}
-      Result := f();
-    end;
-    
-    public function LazyQuickTransform<T2>(f2: T->T2): QueueRes<T2>; override :=
-    new QueueResFunc<T2>(()->f2(self.GetRes), self.ev);
-    
-    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(self.GetRes);
-    
-    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override;
-    public function HardStabilise: QueueRes<T>; override := new QueueResConst<T>(self.GetRes, self.ev);
-    
-    {$ifdef DEBUG}
-    protected procedure Finalize; override :=
-    if not res_calculated then raise new System.InvalidProgramException($'{self.GetType}');
-    {$endif DEBUG}
-    
-  end;
-  
-  {$endregion Func}
-  
-  {$region Delayed}
-  
-  // Результат который будет сохранён куда то, надо только дождаться
-  QueueResDelayedBase<T> = abstract partial class(QueueRes<T>)
-    
-    public constructor := inherited Create(EventList.Empty);
-    
-    // QueueResFunc, потому что результат сохраняется именно в этот объект, а не в клон
-    public function Clone: QueueRes<T>; override := new QueueResFunc<T>(self.GetRes, ev);
-    
-    public procedure SetRes(value: T); abstract;
-    
-    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override :=
-    new QueueResFunc<T2>(()->f(self.GetRes()), self.ev);
-    
-    public function SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override := self;
-    public function HardStabilise: QueueRes<T>; override := self;
-    
-  end;
-  
-  QueueResDelayedObj<T> = sealed partial class(QueueResDelayedBase<T>)
-    private res := default(T);
-    
-    public function GetRes: T; override := res;
-    public procedure SetRes(value: T); override := res := value;
-    
-    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
-    
-  end;
-  
-  IQueueResDelayedPtr = interface end;
-  QueueResDelayedPtr<T> = sealed partial class(QueueResDelayedBase<T>, IPtrQueueRes<T>, IQueueResDelayedPtr)
-    private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:QueueResDelayedPtr%');
-    
-    public constructor(res: T; ev: EventList);
-    begin
-      inherited Create(ev);
-      self.ptr^ := res;
-    end;
-    public constructor := inherited Create;
-    
-    public function GetPtr: ^T := ptr;
-    public function GetRes: T; override := ptr^;
-    public procedure SetRes(value: T); override := ptr^ := value;
-    
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(new IntPtr(ptr));
-    
-    public function ToPtr: IPtrQueueRes<T>; override := self;
-    
-  end;
-  
-  {$endregion Delayed}
-  
-{$endregion QueueRes}
 
 {$region UserEvent}
 
@@ -3066,11 +2819,250 @@ type
   
 {$endregion UserEvent}
 
-{$region QueueRes:Impl}
-
-{$region MakeNew}
+{$region QueueRes}
 
 type
+  {$region Base}
+  
+  QueueResBase = abstract partial class
+    public ev: EventList;
+    public can_set_ev := true;
+    
+    public constructor(ev: EventList) := self.ev := ev;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public function CloneBase(new_ev: EventList): QueueResBase; abstract;
+    
+    public function TrySetEvBase(new_ev: EventList): QueueResBase;
+    begin
+      if object.ReferenceEquals(self.ev.evs, new_ev.evs) then
+        Result := self else
+      if can_set_ev then
+      begin
+        self.ev := new_ev;
+        Result := self;
+      end else
+        Result := self.CloneBase(new_ev);
+    end;
+    
+    public function ThenInvokeIfDelegateRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueResBase; abstract;
+    
+  end;
+  
+  {$endregion Base}
+  
+  {$region Nil}
+  
+  {$region General}
+  
+  QueueResNil = abstract partial class(QueueResBase)
+    
+    public function CloneBase(new_ev: EventList): QueueResBase; override := Clone(new_ev);
+    public function Clone(new_ev: EventList): QueueResNil; abstract;
+    
+    public function TrySetEv(new_ev: EventList) := QueueResNil(TrySetEvBase(new_ev));
+    
+    public function ThenInvokeIfProcRes(g: CLTaskGlobalData): QueueResNil; abstract;
+    public function ThenInvokeIfDelegateRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueResBase; override := self.ThenInvokeIfProcRes(g);
+    
+  end;
+  
+  {$endregion General}
+  
+  {$region Const}
+  
+  QueueResConstNil = sealed partial class(QueueResNil)
+    
+    public function Clone(new_ev: EventList): QueueResNil; override := new QueueResConstNil(new_ev);
+    
+    public function ThenInvokeIfProcRes(g: CLTaskGlobalData): QueueResNil; override := self;
+    
+  end;
+  
+  {$endregion Const}
+  
+  {$region Proc}
+  
+  QueueResProcNil = sealed partial class(QueueResNil)
+    private p: ()->();
+    
+    public constructor(p: ()->(); ev: EventList);
+    begin
+      inherited Create(ev);
+      self.p := p;
+    end;
+    private constructor := inherited Create;
+    
+    public function Clone(new_ev: EventList): QueueResNil; override := new QueueResProcNil(self.p, new_ev);
+    
+    {$ifdef DEBUG}
+    private was_invoked := false;
+    {$endif DEBUG}
+    public procedure Invoke;
+    begin
+      {$ifdef DEBUG}
+      if was_invoked then raise new System.InvalidProgramException($'{self.GetType}: {System.Environment.StackTrace}');
+      was_invoked := true;
+      {$endif DEBUG}
+      p();
+    end;
+    
+    {$ifdef DEBUG}
+    protected procedure Finalize; override :=
+    if not was_invoked then raise new System.InvalidProgramException($'{self.GetType}');
+    {$endif DEBUG}
+    
+    public function ThenInvokeIfProcRes(g: CLTaskGlobalData): QueueResNil; override;
+    begin
+      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for QueueResProcNil.ThenInvokeIfProcRes'{$endif});
+      
+      var err_handler := g.curr_err_handler;
+      self.ev.MultiAttachCallback(false, ()->
+      begin
+        if not err_handler.HadError(true) then
+        try
+          self.Invoke;
+        except
+          on e: Exception do err_handler.AddErr(e);
+        end;
+        res_ev.SetComplete;
+      end{$ifdef EventDebug}, $'body of QueueResProcNil.ThenInvokeIfProcRes with res_ev={res_ev}'{$endif});
+      
+      
+      Result := new QueueResConstNil(res_ev);
+    end;
+    
+  end;
+  
+  {$endregion Proc}
+  
+  {$endregion Nil}
+  
+  {$region <T>}
+  
+  {$region Misc}
+  
+  IPtrQueueRes<T> = interface
+    function GetPtr: ^T;
+  end;
+  QRPtrWrap<T> = sealed class(IPtrQueueRes<T>)
+    private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
+    
+    public constructor(val: T) := self.ptr^ := val;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure Finalize; override :=
+    Marshal.FreeHGlobal(new IntPtr(ptr));
+    
+    public function GetPtr: ^T := ptr;
+    
+  end;
+  
+  {$endregion Misc}
+  
+  {$region General}
+  
+  QueueRes<T> = abstract partial class(QueueResBase)
+    
+    public function GetRes: T; abstract;
+    
+    public function TrySetEv(new_ev: EventList) := QueueRes&<T>(TrySetEvBase(new_ev));
+    
+    public function CloneBase(new_ev: EventList): QueueResBase; override := Clone(new_ev);
+    public function Clone(new_ev: EventList): QueueRes<T>; abstract;
+    
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; abstract;
+    
+    // Only usable after waiting on .ev
+    public function ToPtr: IPtrQueueRes<T>; abstract;
+    
+    public function ThenInvokeIfFuncRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; abstract;
+    public function ThenInvokeIfDelegateRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueResBase; override := self.ThenInvokeIfFuncRes(g, need_ptr_qr);
+    
+  end;
+  
+  {$endregion General}
+  
+  {$region Const}
+  
+  IQueueResConst = interface end;
+  // Результат который просто есть
+  QueueResConst<T> = sealed partial class(QueueRes<T>, IQueueResConst)
+    private res: T;
+    
+    public constructor(res: T; ev: EventList);
+    begin
+      inherited Create(ev);
+      self.res := res;
+    end;
+    private constructor := inherited;
+    
+    public function Clone(new_ev: EventList): QueueRes<T>; override := new QueueResConst<T>(res, new_ev);
+    
+    public function GetRes: T; override := res;
+    
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override;
+    
+    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
+    
+    public function ThenInvokeIfFuncRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override := self;
+    
+  end;
+  
+  {$endregion Const}
+  
+  {$region Delayed}
+  
+  // Результат который будет сохранён куда то, надо только дождаться
+  QueueResDelayedBase<T> = abstract partial class(QueueRes<T>)
+    
+    public constructor := inherited Create(EventList.Empty);
+    
+    public function Clone(new_ev: EventList): QueueRes<T>; override;
+    
+    public procedure SetRes(value: T); abstract;
+    
+    public function LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>; override;
+    
+    public function ThenInvokeIfFuncRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override := self;
+    
+  end;
+  
+  QueueResDelayedObj<T> = sealed partial class(QueueResDelayedBase<T>)
+    private res := default(T);
+    
+    public function GetRes: T; override := res;
+    public procedure SetRes(value: T); override := res := value;
+    
+    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(res);
+    
+  end;
+  
+  IQueueResDelayedPtr = interface end;
+  QueueResDelayedPtr<T> = sealed partial class(QueueResDelayedBase<T>, IPtrQueueRes<T>, IQueueResDelayedPtr)
+    private ptr: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
+    
+    static constructor :=
+    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:QueueResDelayedPtr%');
+    
+    public constructor(res: T; ev: EventList);
+    begin
+      inherited Create(ev);
+      self.ptr^ := res;
+    end;
+    public constructor := inherited Create;
+    
+    public function GetPtr: ^T := ptr;
+    public function GetRes: T; override := ptr^;
+    public procedure SetRes(value: T); override := ptr^ := value;
+    
+    protected procedure Finalize; override :=
+    Marshal.FreeHGlobal(new IntPtr(ptr));
+    
+    public function ToPtr: IPtrQueueRes<T>; override := self;
+    
+  end;
+  
   QueueRes<T> = abstract partial class(QueueResBase)
     
     public static function MakeNewConstOrPtr(need_ptr_qr: boolean; res: T; ev: EventList) :=
@@ -3085,8 +3077,72 @@ type
     
   end;
   
-{$endregion MakeNew}
-
+  {$endregion Delayed}
+  
+  {$region Func}
+  
+  // Результат который надо будет сначала дождаться, а потом ещё досчитать
+  QueueResFunc<T> = sealed partial class(QueueRes<T>)
+    private f: ()->T;
+    
+    public constructor(f: ()->T; ev: EventList);
+    begin
+      inherited Create(ev);
+      self.f := f;
+    end;
+    private constructor := inherited;
+    
+    public function Clone(new_ev: EventList): QueueRes<T>; override := new QueueResFunc<T>(f, new_ev);
+    
+    {$ifdef DEBUG}
+    private was_invoked := false;
+    {$endif DEBUG}
+    public function GetRes: T; override;
+    begin
+      {$ifdef DEBUG}
+      if was_invoked then raise new System.InvalidProgramException($'{self.GetType}: {System.Environment.StackTrace}');
+      was_invoked := true;
+      {$endif DEBUG}
+      Result := f();
+    end;
+    
+    {$ifdef DEBUG}
+    protected procedure Finalize; override :=
+    if not was_invoked then raise new System.InvalidProgramException($'{self.GetType}');
+    {$endif DEBUG}
+    
+    public function LazyQuickTransform<T2>(f2: T->T2): QueueRes<T2>; override :=
+    new QueueResFunc<T2>(()->f2(self.GetRes), self.ev);
+    
+    public function ToPtr: IPtrQueueRes<T>; override := new QRPtrWrap<T>(self.GetRes);
+    
+    public function ThenInvokeIfFuncRes(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>; override;
+    begin
+      var res := QueueRes&<T>.MakeNewDelayedOrPtr(need_ptr_qr);
+      var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for QueueResFunc<{typeof(T)}>.ThenInvokeIfFuncRes'{$endif});
+      res.ev := res_ev;
+      
+      var err_handler := g.curr_err_handler;
+      self.ev.MultiAttachCallback(false, ()->
+      begin
+        if not err_handler.HadError(true) then
+        try
+          res.SetRes(self.GetRes);
+        except
+          on e: Exception do err_handler.AddErr(e);
+        end;
+        res_ev.SetComplete;
+      end{$ifdef EventDebug}, $'body of QueueResFunc<{typeof(T)}>.ThenInvokeIfFuncRes with res_ev={res_ev}'{$endif});
+      
+      Result := res;
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$endregion <T>}
+  
 function QueueResConst<T>.LazyQuickTransform<T2>(f: T->T2): QueueRes<T2>;
 begin
   try
@@ -3105,38 +3161,23 @@ begin
   end;
 end;
 
-function QueueResFunc<T>.SoftStabilise(g: CLTaskGlobalData; need_ptr_qr: boolean): QueueRes<T>;
-begin
-  var res := QueueRes&<T>.MakeNewDelayedOrPtr(need_ptr_qr);
-  var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for QueueResFunc<{typeof(T)}>.SoftStabilise'{$endif});
-  res.ev := res_ev;
-  
-  var err_handler := g.curr_err_handler;
-  self.ev.MultiAttachCallback(false, ()->
-  begin
-    if not err_handler.HadError(true) then
-    try
-      res.SetRes(self.GetRes);
-    except
-      on e: Exception do err_handler.AddErr(e);
-    end;
-    res_ev.SetComplete;
-  end{$ifdef EventDebug}, $'transfer of res for QueueResFunc<{typeof(T)}>.SoftStabilise'{$endif});
-  
-  Result := res;
-end;
+function QueueResDelayedBase<T>.Clone(new_ev: EventList) :=
+new QueueResFunc<T>(self.GetRes, new_ev);
 
-{$endregionQueueRes:Impl}
+function QueueResDelayedBase<T>.LazyQuickTransform<T2>(f: T->T2) :=
+new QueueResFunc<T2>(()->f(self.GetRes()), self.ev);
+
+{$endregion QueueRes}
 
 {$region MultiusableBase}
 
 type
   IMultiusableCommandQueueHub = interface end;
   MultiuseableResultData = record
-    public qres: IEventListContainer;
+    public qres: QueueResBase;
     public err_handler: CLTaskErrHandler;
     
-    public constructor(qres: IEventListContainer; err_handler: CLTaskErrHandler);
+    public constructor(qres: QueueResBase; err_handler: CLTaskErrHandler);
     begin
       self.qres := qres;
       self.err_handler := err_handler;
@@ -3212,7 +3253,7 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function InvokeBranch<TR>(branch: (CLTaskGlobalData, TLData)->TR): TR; where TR: IEventListContainer;
+    function InvokeBranch<TR>(branch: (CLTaskGlobalData, TLData)->TR): TR; where TR: QueueResBase;
     begin
       g.curr_err_handler := make_base_err_handler();
       
@@ -3224,7 +3265,7 @@ type
         g.curr_inv_cq := cl_command_queue.Zero;
         if prev_cq=cl_command_queue.Zero then
           prev_cq := cq else
-          Result.get_ev.MultiAttachCallback(true, ()->
+          Result.ev.MultiAttachCallback(true, ()->
           begin
             {$ifdef QueueDebug}
             QueueDebug.Add(cq, '----- return -----');
@@ -3286,7 +3327,7 @@ type
       
       // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
       foreach var mrd in mu_res.Values do
-        mrd.qres.get_ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
+        mrd.qres.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
       mu_res := nil;
       
     end;
@@ -3334,16 +3375,15 @@ type
   
   CommandQueueNil = abstract partial class(CommandQueueBase)
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; abstract;
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): EventList;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; abstract;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;
     begin
       {$ifdef DEBUG}
       l.CheckInvalidNeedPtrQr(self);
       {$endif DEBUG}
       Result := Invoke(g, CLTaskLocalDataNil(l));
     end;
-    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override :=
-    new QueueResConst<object>(nil, Invoke(g,l));
+    protected function InvokeBase(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResBase; override := Invoke(g, l);
     
   end;
   
@@ -3418,7 +3458,7 @@ type
       var l_data := new CLTaskLocalDataNil;
       
       q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
-      var res_ev := q.Invoke(g_data, l_data);
+      var res_ev := q.Invoke(g_data, l_data).ThenInvokeIfProcRes(g_data).ev;
       g_data.FinishInvoke;
       
       NativeUtils.StartNewBgThread(()->
@@ -3443,14 +3483,12 @@ type
       var l_data := new CLTaskLocalData;
       
       q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
-      self.q_res := q.Invoke(g_data, l_data);
+      self.q_res := q.Invoke(g_data, l_data).ThenInvokeIfFuncRes(g_data, false);
       g_data.FinishInvoke;
       
       NativeUtils.StartNewBgThread(()->
       begin
         self.q_res.ev.WaitAndRelease({$ifdef EventDebug}$'CLTask<T>.FinishExecution'{$endif});
-        if not g_data.curr_err_handler.HadError(true) then
-          self.q_res := q_res.HardStabilise;
         g_data.FinishExecution(self.err_lst);
         wh.Set;
       end);
@@ -3499,7 +3537,7 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.RegisterWaitables(g, prev_hubs);
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := new QueueResConst<T>(nil_val, q.Invoke(g, l));
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := new QueueResConst<T>(nil_val, q.Invoke(g, l).ThenInvokeIfProcRes(g).ev);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -3802,44 +3840,23 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
-      var prev_qr := q.Invoke(g, l);
+      var prev_qr := q.Invoke(g, l).ThenInvokeIfFuncRes(g, l.need_ptr_qr);
+      
       var c := g.c;
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
       var err_handler := g.curr_err_handler;
-      
-      // QueueResFunc.GetRes shouldn't be called twice
-      if prev_qr is QueueResFunc<T>(var prev_f_qr) then
+      prev_qr.ev.MultiAttachCallback(false, ()->
       begin
-        var qr := QueueRes&<T>.MakeNewDelayedOrPtr(l.need_ptr_qr);
-        qr.ev := res_ev;
-        prev_f_qr.ev.MultiAttachCallback(false, ()->
-        begin
-          if not err_handler.HadError(true) then
-          try
-            var res := prev_f_qr.GetRes;
-            ExecProc(res, c);
-            qr.SetRes(res);
-          except
-            on e: Exception do err_handler.AddErr(e);
-          end;
-          res_ev.SetComplete;
-        end{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
-        Result := qr;
-      end else
-      begin
-        prev_qr.ev.MultiAttachCallback(false, ()->
-        begin
-          if not err_handler.HadError(true) then
-          try
-            ExecProc(prev_qr.GetRes, c);
-          except
-            on e: Exception do err_handler.AddErr(e);
-          end;
-          res_ev.SetComplete;
-        end{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
-        Result := prev_qr.TrySetEv(res_ev);
-      end;
+        if not err_handler.HadError(true) then
+        try
+          ExecProc(prev_qr.GetRes, c);
+        except
+          on e: Exception do err_handler.AddErr(e);
+        end;
+        res_ev.SetComplete;
+      end{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
       
+      Result := prev_qr.TrySetEv(res_ev);
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.RegisterWaitables(g, prev_hubs);
@@ -3898,16 +3915,16 @@ type
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function InvokeSync<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_last: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IEventListContainer;
+    function InvokeSync<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_last: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: QueueResBase;
     begin
       for var i := 0 to qs.Length-1 do
-        l.PrevEv := qs[i].InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false);
+        l.PrevEv := qs[i].InvokeBase(g, l.WithPtrNeed(false)).ThenInvokeIfDelegateRes(g, false).ev;
       
       Result := invoke_last(g, l);
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function InvokeAsync<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_last: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IEventListContainer;
+    function InvokeAsync<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_last: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: QueueResBase;
     begin
       if l.PrevEv.count<>0 then loop qs.Length do
         l.PrevEv.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
@@ -3918,15 +3935,15 @@ type
       begin
         for var i := 0 to qs.Length-1 do
           //TODO #2610
-          evs[i] := invoker.InvokeBranch&<EventList>((g,l)->
-            qs[i].InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false)
-          );
+          evs[i] := invoker.InvokeBranch&<QueueResBase>((g,l)->
+            qs[i].InvokeBase(g, l.WithPtrNeed(false)).ThenInvokeIfDelegateRes(g, false)
+          ).ev;
         var l_res := invoker.InvokeBranch(invoke_last);
         res := l_res;
-        evs[qs.Length] := l_res.get_ev;
+        evs[qs.Length] := l_res.ev;
       end);
       
-      Result := res.set_ev( EventList.Combine(evs) );
+      Result := TR(res.TrySetEvBase( EventList.Combine(evs) ));
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -3967,10 +3984,10 @@ type
   end;
   
   SimpleSyncQueueArrayNil = sealed class(SimpleQueueArrayNil, ISimpleSyncQueueArray)
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := data.InvokeSync(g, l, data.last.Invoke);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override := data.InvokeSync(g, l, data.last.Invoke);
   end;
   SimpleAsyncQueueArrayNil = sealed class(SimpleQueueArrayNil, ISimpleAsyncQueueArray)
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := data.InvokeAsync(g, l, data.last.Invoke);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override := data.InvokeAsync(g, l, data.last.Invoke);
   end;
   
   SimpleQueueArray<T> = abstract class(CommandQueue<T>, ISimpleQueueArray)
@@ -4388,7 +4405,7 @@ type
     if prev_hubs.Add(self) then q.RegisterWaitables(g, prev_hubs);
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_q: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IEventListContainer;
+    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_q: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: QueueResBase;
     begin
       var prev_ev := l.PrevEv;
       
@@ -4407,18 +4424,18 @@ type
         l.PrevEv := EventList.Empty;
         Result := invoke_q(g, l);
         // QueueResFunc shouldn't have it's .GetRes be called twice
-        Result := TR(Result.soft_stabilise_res(g, l.NeedPtrQr));
-        Result.forbid_ev_swap;
+        Result := TR(Result.ThenInvokeIfDelegateRes(g, l.NeedPtrQr));
+        Result.can_set_ev := false;
         var q_err_handler := g.curr_err_handler;
         
         g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(prev_err_handler, q_err_handler);
         g.mu_res[self] := new MultiuseableResultData(Result, q_err_handler);
       end;
       
-      var res_ev := Result.get_ev;
+      var res_ev := Result.ev;
       res_ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
       if prev_ev.count<>0 then
-        Result := Result.set_ev(res_ev+prev_ev);
+        Result := TR(Result.TrySetEvBase(res_ev+prev_ev));
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -4446,7 +4463,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := hub.RegisterWaitables(g, prev_hubs);
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := hub.Invoke(g, l);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override := hub.Invoke(g, l);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     hub.ToString(sb, tabs, index, delayed);
@@ -5214,11 +5231,11 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override;
     begin
       var err_handler := g.curr_err_handler;
       l.prev_ev.MultiAttachCallback(true, ()->if not err_handler.HadError(true) then m.SendSignal{$ifdef EventDebug}, $'SendSignal'{$endif});
-      Result := l.prev_ev;
+      Result := new QueueResConstNil(l.prev_ev);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -5284,7 +5301,7 @@ type
     procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>) := q.RegisterWaitables(g, prev_hubs);
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_q: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IEventListContainer;
+    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_q: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: QueueResBase;
     begin
       Result := invoke_q(g, l);
       var err_handler := g.curr_err_handler;
@@ -5292,7 +5309,7 @@ type
       if signal_in_finally then
         callback := wrap.SendSignal else
         callback := ()->if not err_handler.HadError(true) then wrap.SendSignal;
-      Result.get_ev.MultiAttachCallback(true, callback{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
+      Result.ev.MultiAttachCallback(true, callback{$ifdef EventDebug}, $'ExecuteMWHandlers'{$endif});
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -5316,7 +5333,7 @@ type
     data: DetachedMarkerSignalCommon<CommandQueueNil>;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := data.RegisterWaitables(g, prev_hubs);
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := data.Invoke(g, l, data.q.Invoke);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override := data.Invoke(g, l, data.q.Invoke);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -5357,8 +5374,8 @@ type
     public marker: WaitMarker;
     public constructor(marker: WaitMarker) := self.marker := marker;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override :=
-    marker.MakeWaitEv(g,l);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override :=
+    new QueueResConstNil(marker.MakeWaitEv(g,l));
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     marker.InitInnerHandles(g);
@@ -5459,7 +5476,7 @@ type
     end;
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_finally: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IEventListContainer;
+    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_finally: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: QueueResBase;
     begin
       var origin_err_handler := g.curr_err_handler;
       
@@ -5467,7 +5484,7 @@ type
       var mid_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'mid_ev for {self.GetType}'{$endif});
       
       g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
-      var try_ev := try_do.InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false);
+      var try_ev := try_do.InvokeBase(g, l.WithPtrNeed(false)).ThenInvokeIfDelegateRes(g, false).ev;
       var try_handler := g.curr_err_handler;
       
       try_ev.MultiAttachCallback(false, ()->mid_ev.SetComplete(){$ifdef EventDebug}, $'Set mid_ev {mid_ev}'{$endif});
@@ -5509,7 +5526,7 @@ type
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.RegisterWaitables(g, prev_hubs);
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := data.Invoke(g, l, data.do_finally.Invoke);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override := data.Invoke(g, l, data.do_finally.Invoke);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -5560,12 +5577,12 @@ type
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     q.RegisterWaitables(g, prev_hubs);
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override;
     begin
       var origin_err_handler := g.curr_err_handler;
       
       g.curr_err_handler := new CLTaskErrHandlerBranchBase(origin_err_handler);
-      var q_ev := q.InvokeBase(g, l.WithPtrNeed(false)).SoftStabiliseBase(g, false);
+      var q_ev := q.InvokeBase(g, l.WithPtrNeed(false)).ThenInvokeIfDelegateRes(g, false).ev;
       var q_err_handler := g.curr_err_handler;
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |q_err_handler|);
       
@@ -5576,7 +5593,7 @@ type
         res_ev.SetComplete;
       end{$ifdef EventDebug}, $'Set res_ev {res_ev}'{$endif});
       
-      Result := res_ev;
+      Result := new QueueResConstNil(res_ev);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -6289,12 +6306,14 @@ type
   
   QueueCommandNil<TObj> = sealed class(QueueCommandCommon<TObj,CommandQueueNil>)
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := q.Invoke(g, l);
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override :=
+    q.Invoke(g, l).ThenInvokeIfProcRes(g).ev;
     
   end;
   QueueCommand<TObj,TQRes> = sealed class(QueueCommandCommon<TObj,CommandQueue<TQRes>>)
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override := q.Invoke(g, l.WithPtrNeed(false)).ev;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override :=
+    q.Invoke(g, l.WithPtrNeed(false)).ThenInvokeIfFuncRes(g,false).ev;
     
   end;
   
@@ -6403,7 +6422,7 @@ type
       {$ifdef DEBUG}
       // prev_qr.GetRes could be called >1 time
       // But o_invoke wouldn't return QueueResFunc,
-      // because multiusable uses .SoftStabilise
+      // because multiusable uses .ThenInvokeIfDelegateRes
       if prev_qr is QueueResFunc<T> then raise new System.NotSupportedException;
       {$endif DEBUG}
       var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}'{$endif});
@@ -7023,14 +7042,15 @@ type
     
     protected procedure ExecProc(c: Context); abstract;
     
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override;
     begin
       var c := g.c;
       
-      Result :=  UserEvent.StartBackgroundWork(l.prev_ev, ()->ExecProc(c), g
+      var res_ev :=  UserEvent.StartBackgroundWork(l.prev_ev, ()->ExecProc(c), g
         {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
       );
       
+      Result := new QueueResConstNil(res_ev);
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
@@ -7145,24 +7165,11 @@ type
     except
       on e: Exception do err_handler.AddErr(e);
     end;
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): EventList; override;
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override;
     begin
-      if l.prev_ev.count=0 then
-      begin
-        InvokeProc(g.curr_err_handler, g.c);
-        Result := EventList.Empty;
-      end else
-      begin
-        var c := g.c;
-        var res_ev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev of {self.GetType}'{$endif});
-        var err_handler := g.curr_err_handler;
-        l.prev_ev.MultiAttachCallback(false, ()->
-        begin
-          InvokeProc(err_handler, c);
-          res_ev.SetComplete;
-        end{$ifdef EventDebug}, $'body of {self.GetType}'{$endif});
-        Result := res_ev;
-      end;
+      var c := g.c;
+      var err_handler := g.curr_err_handler;
+      Result := new QueueResProcNil(()->self.InvokeProc(err_handler, c), l.prev_ev); 
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;

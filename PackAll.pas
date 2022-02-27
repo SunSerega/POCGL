@@ -374,14 +374,26 @@ var AllStages := HSet(
         ProcTask(()->
         begin
           var c := 0;
-          var AllowedExtensions := HSet('.pas', '.cl', '.glsl');
+          var AllowedExtensions := HSet(
+            '.cl',
+            '.glsl', '.vert','.geom','.frag',
+            '.pas'
+          );
+          var DisallowedExtensions := HSet(
+            '.gitignore', '.td',
+            '.temp_bin',
+            '.exe', '.pdb', '.pcu'
+          );
           
           System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
-          .Where(fname->Path.GetExtension(fname) in AllowedExtensions)
           .Where(fname->not AllModules.Contains(Path.GetFileNameWithoutExtension(fname)))
           .ForEach(fname->
           begin
-            Otp($'Packing sample "{fname}"');
+            var ext := Path.GetExtension(fname);
+            if ext in DisallowedExtensions then exit;
+            if ext not in AllowedExtensions then
+              Otp('WARNING: Sample file with unknown extension:');
+            Otp($'Packing sample file "{fname}"');
             var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\OpenGL и OpenCL');
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_fname));
             System.IO.File.Copy(fname, res_fname);
