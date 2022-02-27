@@ -25,13 +25,14 @@
 # CLArrayCCQ<T>.AddQueue(CommandQueueBase)
 Добавляет выполнение очереди в список обычных команд для GPU
 
-# MemorySegmentCCQ.AddProc(MemorySegment->())
-# MemorySegmentCCQ.AddProc((MemorySegment, Context)->())
-# KernelCCQ.AddProc(Kernel->())
-# KernelCCQ.AddProc((Kernel, Context)->())
-# CLArrayCCQ<T>.AddProc(CLArray<T>->())
-# CLArrayCCQ<T>.AddProc((CLArray<T>, Context)->())
+# MemorySegmentCCQ.Add[%when:,Quick%]Proc(MemorySegment->())
+# MemorySegmentCCQ.Add[%when:,Quick%]Proc((MemorySegment, Context)->())
+# KernelCCQ.Add[%when:,Quick%]Proc(Kernel->())
+# KernelCCQ.Add[%when:,Quick%]Proc((Kernel, Context)->())
+# CLArrayCCQ<T>.Add[%when:,Quick%]Proc(CLArray<T>->())
+# CLArrayCCQ<T>.Add[%when:,Quick%]Proc((CLArray<T>, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
+%DelegateExec:{%when?Background:Quick%}% {%when?начинающуюся на ".AddQuick...":%}
 
 # [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWait(WaitMarker)
 Добавляет ожидание сигнала выполненности от заданного маркера

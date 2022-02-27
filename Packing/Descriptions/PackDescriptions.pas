@@ -22,22 +22,27 @@ type
     
     public static all := new Dictionary<string, CommentData>;
     public static procedure LoadFile(fname: string) :=
-    foreach var bl in FixerUtils.ReadBlocks(fname, true) do
-      if bl[0]=nil then
+    foreach var (bl_name, bl_lns) in FixerUtils.ReadBlocks(fname, true) do
+      if bl_name=nil then
         continue else // Комментарий в начале файла
-      if all.ContainsKey(bl[0]) then
-        Otp($'ERROR: key %{bl[0]}% found in "{all[bl[0]].source}" and "{GetRelativePathRTA(fname)}"') else
-        all[bl[0]] := new CommentData(GetRelativePathRTA(fname), bl[1].JoinToString(#10).Trim);
+      if all.ContainsKey(bl_name) then
+        Otp($'ERROR: key %{bl_name}% found in "{all[bl_name].source}" and "{GetRelativePathRTA(fname)}"') else
+        all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim);
     public static procedure LoadAll(nick: string);
     begin
       var path := GetFullPathRTA(nick);
       if not System.IO.Directory.Exists(path) then
-      begin
-        Otp($'WARNING: Skipped [{nick}], because data folder not found');
-        exit;
-      end;
+        System.IO.Directory.CreateDirectory(path) else
       foreach var fname in System.IO.Directory.EnumerateFiles(path, '*.dat', System.IO.SearchOption.AllDirectories) do
         LoadFile(fname);
+      
+//      foreach var bl_name in all.Keys do
+//      begin
+//        $'# {bl_name}'.Println;
+//        all[bl_name].comment.Println;
+//      end;
+//      Halt;
+      
     end;
     
     private static function GetPrintableData(key: string): string;

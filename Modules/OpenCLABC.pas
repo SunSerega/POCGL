@@ -24,19 +24,17 @@ unit OpenCLABC;
 // - Потеря результата Quick обработки:
 // --- HFQ(()->5).ThenQuickConvert.ThenQuickUse + HPQ(()->begin end)
 // --- CombineQuickConv + HPQ(()->begin end)
+// - HPQ + HPQQ + HPQ: HPQQ должен выполнится последним
 
 //TODO Справка:
-// - Quick методы срабатывают... Когда сработает ивент, или в QueueRes.GetRes?
-// --- На ивенте придётся создавать лишний res_ev
-// --- А если в .GetRes - Multiusable будет дважды его вызывать... или не будет?
-// --- В итоге сделал всё чтобы переделать под выполнение в .GetRes
-// --- То есть надо создавать QueueResFunc, хранящий алгоритм
-//
 // - ThenQuick[Convert,Use]
 // - CombineQuickConv[Sync,Async]Queue
 // --- Добавил Conv в название!!!
 // - AddQuickProc
 // - HPQQ/HFQQ
+//
+// - Quick очереди срабатывают в последний допустимый момент
+// --- HPQ + HPQQ + HPQ: HPQQ выполнится последним
 //
 // - В обработке исключений написать, что обработчики всегда Quick
 

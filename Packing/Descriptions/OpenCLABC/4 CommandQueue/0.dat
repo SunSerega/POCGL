@@ -45,23 +45,30 @@
 
 
 
-# CommandQueue<T>.ThenConvert<TOtp>(T->TOtp)
-# CQ:ThenConvertDef
+# CQ:ThenUseConvert:When:[%when:,Quick%]
+%DelegateExec:{%when?Background:Quick%}% {%when?начинающуюся на ".ThenQuick...":%}
+
+# CQ:Then[%when:,Quick%]ConvertDef
 Создаёт очередь, которая выполнит данную
 А затем выполнит на CPU функцию f, используя результат данной очереди
 
-# CommandQueue<T>.ThenConvert<TOtp>((T, Context)->TOtp)
-%CQ:ThenConvertDef% и контекст выполнения
+# CommandQueue<T>.Then[%when:,Quick%]Convert<TOtp>(T->TOtp)
+%CQ:Then{%when%}ConvertDef%
+%CQ:ThenUseConvert:When:{%when%}%
+# CommandQueue<T>.Then[%when:,Quick%]Convert<TOtp>((T, Context)->TOtp)
+%CQ:Then{%when%}ConvertDef% и контекст выполнения
+%CQ:ThenUseConvert:When:{%when%}%
 
-
-
-# CommandQueue<T>.ThenUse(T->())
-# CQ:ThenUseDef
+# CQ:Then[%when:,Quick%]UseDef
 Создаёт очередь, которая выполнит данную и вернёт её результат
 Но перед этим выполнит на CPU процедуру p, используя полученный результат
 
-# CommandQueue<T>.ThenUse((T, Context)->())
-%CQ:ThenUseDef% и контекст выполнения
+# CommandQueue<T>.Then[%when:,Quick%]Use(T->())
+%CQ:Then{%when%}UseDef%
+%CQ:ThenUseConvert:When:{%when%}%
+# CommandQueue<T>.Then[%when:,Quick%]Use((T, Context)->())
+%CQ:Then{%when%}UseDef% и контекст выполнения
+%CQ:ThenUseConvert:When:{%when%}%
 
 
 

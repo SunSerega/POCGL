@@ -1,15 +1,18 @@
 
 
 
-# HFQ<T>(()->T)
-# HFQ<T>(Context->T)
+# HostQueue:When:[%when:,Q%]
+%DelegateExec:{%when?Background:Quick%}% {%when?с дополнительным "Q" (что значит Quick) в конце:%}
+
+# HFQ[%when:,Q%]<T>([%(),Context%]->T)
 Создаёт очередь, выполняющую указанную функцию на CPU
 И возвращающую результат этой функци
+%HostQueue:When:{%when%}%
 
-# HPQ(()->())
-# HPQ(Context->())
+# HPQ[%when:,Q%]([%(),Context%]->())
 Создаёт очередь, выполняющую указанную процедуру на CPU
 И возвращающую nil
+%HostQueue:When:{%when%}%
 
 
 
@@ -39,24 +42,16 @@
 
 
 
-# CombineConv[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
-# CombineConv[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
-# CombineConv[%mode:Sync,Async%]QueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
-# CombineConv[%mode:Sync,Async%]QueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
-# CombineConv[%mode:Sync,Async%]QueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
-# CombineConv[%mode:Sync,Async%]QueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
-# CombineConv[%mode:Sync,Async%]QueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
-# CombineConv[%mode:Sync,Async%]QueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
-# CombineConv[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
-# CombineConv[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
-# CombineConv[%mode:Sync,Async%]QueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
-# CombineConv[%mode:Sync,Async%]QueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
-# CombineConv[%mode:Sync,Async%]QueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
-# CombineConv[%mode:Sync,Async%]QueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
-# CombineConv[%mode:Sync,Async%]QueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
-# CombineConv[%mode:Sync,Async%]QueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]Queue<TInp, TRes>(Func<array of TInp[%,\, Context%], TRes>, [%array,sequence%] of CommandQueue<TInp>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]QueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2[%,\, Context%], TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]QueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3[%,\, Context%], TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]QueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4[%,\, Context%], TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]QueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5[%,\, Context%], TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]QueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6[%,\, Context%], TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+# Combine[%when:,Quick%]Conv[%mode:Sync,Async%]QueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7[%,\, Context%], TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
 Создаёт очередь, выполняющую указанные очереди {%mode? одну за другой : одновременно %}
 Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
 И возвращающую результат этой функции
+%DelegateExec:{%when?Background:Quick%}% {%when?начинающуюся на "CombineQuick...":%}
 
 
