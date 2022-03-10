@@ -28,14 +28,13 @@ type
     
     protected function CombineQRs(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; ev: EventList): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>;
     begin
-      //TODO #????
-      var all_const := (qr1 is QueueResConst<TInp1>(var cqr1)) and (qr2 is QueueResConst<TInp2>(var cqr2)) and (qr3 is QueueResConst<TInp3>(var cqr3)) and (qr4 is QueueResConst<TInp4>(var cqr4)) and (qr5 is QueueResConst<TInp5>(var cqr5)) and (qr6 is QueueResConst<TInp6>(var cqr6)) and (qr7 is QueueResConst<TInp7>(var cqr7));
-      if all_const then
+      if qr1.IsConst and qr2.IsConst and qr3.IsConst and qr4.IsConst and qr5.IsConst and qr6.IsConst and qr7.IsConst then
       begin
-        var res := ValueTuple.Create(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), cqr5.GetRes(), cqr6.GetRes(), cqr7.GetRes());
-        Result := new QueueResConst<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(res, ev);
+        var res := ValueTuple.Create(qr1.GetResImpl, qr2.GetResImpl, qr3.GetResImpl, qr4.GetResImpl, qr5.GetResImpl, qr6.GetResImpl, qr7.GetResImpl);
+        Result := new QueueResVal<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(ev, res);
       end else
-        Result := new QueueResFunc<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(()->ValueTuple.Create(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), qr6.GetRes(), qr7.GetRes()), ev);
+        Result := new QueueResVal<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(ev);
+        Result.AddResSetter(()->ValueTuple.Create(qr1.GetResImpl, qr2.GetResImpl, qr3.GetResImpl, qr4.GetResImpl, qr5.GetResImpl, qr6.GetResImpl, qr7.GetResImpl));
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
@@ -89,14 +88,13 @@ type
     
     protected function CombineQRs(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; ev: EventList; need_ptr_qr: boolean; c: Context): QueueRes<TRes>;
     begin
-      //TODO #????
-      var all_const := (qr1 is QueueResConst<TInp1>(var cqr1)) and (qr2 is QueueResConst<TInp2>(var cqr2)) and (qr3 is QueueResConst<TInp3>(var cqr3)) and (qr4 is QueueResConst<TInp4>(var cqr4)) and (qr5 is QueueResConst<TInp5>(var cqr5)) and (qr6 is QueueResConst<TInp6>(var cqr6)) and (qr7 is QueueResConst<TInp7>(var cqr7));
-      if all_const then
+      if qr1.IsConst and qr2.IsConst and qr3.IsConst and qr4.IsConst and qr5.IsConst and qr6.IsConst and qr7.IsConst then
       begin
-        var res := ExecFunc(cqr1.GetRes(), cqr2.GetRes(), cqr3.GetRes(), cqr4.GetRes(), cqr5.GetRes(), cqr6.GetRes(), cqr7.GetRes(), c);
-        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);
+        var res := ExecFunc(qr1.GetResImpl, qr2.GetResImpl, qr3.GetResImpl, qr4.GetResImpl, qr5.GetResImpl, qr6.GetResImpl, qr7.GetResImpl, c);
+        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, ev, res);
       end else
-        Result := new QueueResFunc<TRes>(()->ExecFunc(qr1.GetRes(), qr2.GetRes(), qr3.GetRes(), qr4.GetRes(), qr5.GetRes(), qr6.GetRes(), qr7.GetRes(), c), ev);
+        Result := QueueRes&<TRes>.MakeNewDelayedOrPtr(need_ptr_qr, ev);
+        Result.AddResSetter(()->ExecFunc(qr1.GetResImpl, qr2.GetResImpl, qr3.GetResImpl, qr4.GetResImpl, qr5.GetResImpl, qr6.GetResImpl, qr7.GetResImpl, c));
     end;
     
     protected function ExecFunc(o1: TInp1; o2: TInp2; o3: TInp3; o4: TInp4; o5: TInp5; o6: TInp6; o7: TInp7; c: Context): TRes; abstract;
@@ -132,13 +130,13 @@ type
     protected function InvokeSubQs(g: CLTaskGlobalData; l_nil: CLTaskLocalDataNil): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>; override;
     begin
       var l := l_nil.WithPtrNeed(false);
-      var qr1 := q1.Invoke(g, l); l.prev_ev := qr1.ev;
-      var qr2 := q2.Invoke(g, l); l.prev_ev := qr2.ev;
-      var qr3 := q3.Invoke(g, l); l.prev_ev := qr3.ev;
-      var qr4 := q4.Invoke(g, l); l.prev_ev := qr4.ev;
-      var qr5 := q5.Invoke(g, l); l.prev_ev := qr5.ev;
-      var qr6 := q6.Invoke(g, l); l.prev_ev := qr6.ev;
-      var qr7 := q7.Invoke(g, l); l.prev_ev := qr7.ev;
+      var qr1 := q1.Invoke(g, l); l.prev_ev := qr1.ThenAttachInvokeActions(g);
+      var qr2 := q2.Invoke(g, l); l.prev_ev := qr2.ThenAttachInvokeActions(g);
+      var qr3 := q3.Invoke(g, l); l.prev_ev := qr3.ThenAttachInvokeActions(g);
+      var qr4 := q4.Invoke(g, l); l.prev_ev := qr4.ThenAttachInvokeActions(g);
+      var qr5 := q5.Invoke(g, l); l.prev_ev := qr5.ThenAttachInvokeActions(g);
+      var qr6 := q6.Invoke(g, l); l.prev_ev := qr6.ThenAttachInvokeActions(g);
+      var qr7 := q7.Invoke(g, l); l.prev_ev := qr7.ThenAttachInvokeActions(g);
       Result := CombineQRs(qr1, qr2, qr3, qr4, qr5, qr6, qr7, l.prev_ev);
     end;
     
@@ -179,7 +177,7 @@ type
         qr6 := invoker.InvokeBranch(q6.Invoke);
         qr7 := invoker.InvokeBranch(q7.Invoke);
       end);
-      var res_ev := EventList.Combine(|qr1.ev, qr2.ev, qr3.ev, qr4.ev, qr5.ev, qr6.ev, qr7.ev|);
+      var res_ev := EventList.Combine(|qr1.ThenAttachInvokeActions(g), qr2.ThenAttachInvokeActions(g), qr3.ThenAttachInvokeActions(g), qr4.ThenAttachInvokeActions(g), qr5.ThenAttachInvokeActions(g), qr6.ThenAttachInvokeActions(g), qr7.ThenAttachInvokeActions(g)|);
       Result := CombineQRs(qr1, qr2, qr3, qr4, qr5, qr6, qr7, res_ev);
     end;
     
@@ -201,13 +199,13 @@ type
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<TRes>; override;
     begin
-      var qr1 := q1.Invoke(g, l); l.prev_ev := qr1.ev;
-      var qr2 := q2.Invoke(g, l); l.prev_ev := qr2.ev;
-      var qr3 := q3.Invoke(g, l); l.prev_ev := qr3.ev;
-      var qr4 := q4.Invoke(g, l); l.prev_ev := qr4.ev;
-      var qr5 := q5.Invoke(g, l); l.prev_ev := qr5.ev;
-      var qr6 := q6.Invoke(g, l); l.prev_ev := qr6.ev;
-      var qr7 := q7.Invoke(g, l); l.prev_ev := qr7.ev;
+      var qr1 := q1.Invoke(g, l); l.prev_ev := qr1.ThenAttachInvokeActions(g);
+      var qr2 := q2.Invoke(g, l); l.prev_ev := qr2.ThenAttachInvokeActions(g);
+      var qr3 := q3.Invoke(g, l); l.prev_ev := qr3.ThenAttachInvokeActions(g);
+      var qr4 := q4.Invoke(g, l); l.prev_ev := qr4.ThenAttachInvokeActions(g);
+      var qr5 := q5.Invoke(g, l); l.prev_ev := qr5.ThenAttachInvokeActions(g);
+      var qr6 := q6.Invoke(g, l); l.prev_ev := qr6.ThenAttachInvokeActions(g);
+      var qr7 := q7.Invoke(g, l); l.prev_ev := qr7.ThenAttachInvokeActions(g);
       Result := CombineQRs(qr1, qr2, qr3, qr4, qr5, qr6, qr7, l.prev_ev, l.need_ptr_qr, g.c);
     end;
     
@@ -247,7 +245,7 @@ type
         qr6 := invoker.InvokeBranch(q6.Invoke);
         qr7 := invoker.InvokeBranch(q7.Invoke);
       end);
-      var res_ev := EventList.Combine(|qr1.ev, qr2.ev, qr3.ev, qr4.ev, qr5.ev, qr6.ev, qr7.ev|);
+      var res_ev := EventList.Combine(|qr1.ThenAttachInvokeActions(g), qr2.ThenAttachInvokeActions(g), qr3.ThenAttachInvokeActions(g), qr4.ThenAttachInvokeActions(g), qr5.ThenAttachInvokeActions(g), qr6.ThenAttachInvokeActions(g), qr7.ThenAttachInvokeActions(g)|);
       Result := CombineQRs(qr1, qr2, qr3, qr4, qr5, qr6, qr7, res_ev, l.need_ptr_qr, g.c);
     end;
     

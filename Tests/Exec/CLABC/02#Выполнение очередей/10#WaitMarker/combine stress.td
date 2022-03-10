@@ -307,5 +307,8 @@ WaitMarkerAny#0
 		WaitMarkerDummy#2
 	WaitMarkerAll#103
 		WaitMarkerDummy#4 * 100
+[EventDebug]: 0 event's created 
+[QueueDebug]: 0 queue's created 
+[WaitDebug]: 0 wait handler's created 
 
 

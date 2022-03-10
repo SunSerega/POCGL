@@ -1,4 +1,4 @@
-﻿unit MethodGenData;
+unit MethodGenData;
 
 uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
@@ -302,16 +302,6 @@ type
         arg_usage[arg_name] := usage;
         
         sb += arg_name;
-        if usage<>nil then
-        case usage of
-          
-          'ptr': if args.Single(arg->arg.name=arg_name).t.IsCQ then sb += '.GetPtr';
-          
-          'pinn': ;
-          
-          else raise new System.InvalidOperationException;
-        end;
-        
       end;
     end;
     protected function ProcessDefLine(l: string; debug_tn: string): string;
@@ -443,7 +433,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: TSettings); abstract;
     protected procedure WriteInvokeFHeader; abstract;
-    protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
+    protected procedure AddGCHandleArgs(args_keep_alive, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
     protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
     
     private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
@@ -475,7 +465,9 @@ type
           end else
             break;
         
-        res_EIm += 'QueueRes<';
+        res_EIm += 'QueueRes';
+        if settings.arg_usage[arg.name]='ptr' then res_EIm += 'Ptr';
+        res_EIm += '<';
         if arg.t.IsKA then
           res_EIm += 'ISetableKernelArg' else
           res_EIm += MethodArgTypeCQ(t).next.org_text;
@@ -564,22 +556,31 @@ type
 //            res_EIm += 'CLTaskLocalDataNil(l)';
           res_EIm += ')';
         end;
-        res_EIm += '); ';
-        
-        res_EIm += 'if ';
+        res_EIm += ')';
+        //TODO Не сильно красиво реализовывал, потому что не должно быть необходимо если убрать need_ptr_qr
         if settings.arg_usage[arg.name]='ptr' then
         begin
-          res_EIm += '(';
-          WriteQRName;
-          res_EIm += ' is IQueueResDelayedPtr) or ';
+          res_EIm += 'as QueueResPtr<';
+          res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
+          res_EIm += '>';
         end;
-        res_EIm += '(';
+        res_EIm += '; ';
+        
+        if settings.arg_usage[arg.name]<>'ptr' then
+        begin
+          res_EIm += 'if ';
+          WriteQRName;
+          res_EIm += '.IsConst then ';
+        end;
+        res_EIm += 'enq_evs.AddL2(';
         WriteQRName;
-        res_EIm += ' is IQueueResConst) then enq_evs.AddL2(';
-        WriteQRName;
-        res_EIm += '.ev) else enq_evs.AddL1(';
-        WriteQRName;
-        res_EIm += '.ev)';
+        res_EIm += '.ResEv)';
+        if settings.arg_usage[arg.name]<>'ptr' then
+        begin
+          res_EIm += ' else enq_evs.AddL1(';
+          WriteQRName;
+          res_EIm += '.ResEv)';
+        end;
         
         if arg.t is MethodArgTypeArray then res_EIm += '; end';
         loop arg.t.ArrLvl do res_EIm += ')';
@@ -610,7 +611,7 @@ type
       
       {$region param .GetRes's}
       
-      var args_with_GCHandle := new List<string>;
+      var args_keep_alive := new List<string>;
       var args_with_pinn := new List<string>;
       if settings.args <> nil then
         foreach var arg in settings.args do
@@ -639,8 +640,8 @@ type
               
               'ptr':
               begin
-                res_EIm += '.ToPtr';
-                args_with_GCHandle += arg.name;
+                res_EIm += '.GetPtr';
+                args_keep_alive += arg.name+'_qr';
               end;
               
               'pinn':
@@ -657,7 +658,7 @@ type
             res_EIm += ';'#10;
             
           end;
-      AddGCHandleArgs(args_with_GCHandle, args_with_pinn, settings);
+      AddGCHandleArgs(args_keep_alive, args_with_pinn, settings);
       
       {$endregion param .GetRes's}
       
@@ -692,35 +693,15 @@ type
         res_EIm += l;
         res_EIm += #10;
       end;
-      
       res_EIm += '        '#10;
       
-      {$region GCHandle for ptrs}
-      
-      var max_awg_w := args_with_GCHandle.Select(arg->arg.Length).DefaultIfEmpty(0).Max;
-      if args_with_GCHandle.Count<>0 then
-      begin
-        
-        foreach var arg in args_with_GCHandle do
-        begin
-          res_EIm += '        var ';
-          res_EIm += arg.PadLeft(max_awg_w);
-          res_EIm += '_hnd := GCHandle.Alloc(';
-          res_EIm += arg.PadLeft(max_awg_w);
-          res_EIm += ');'#10;
-        end;
-        res_EIm += '        '#10;
-        
-      end;
-      
-      {$endregion GCHandle for ptrs}
+      res_EIm += '        Result := new DirectEnqRes(res_ev, ';
       
       {$region FinallyCallback}
       
-      args_with_GCHandle.AddRange(args_with_pinn);
-      if (args_with_GCHandle.Count<>0) or (settings.callback_lines<>nil) then
+      if (args_keep_alive.Count<>0) or (args_with_pinn.Count<>0) or (settings.callback_lines<>nil) then
       begin
-        res_EIm += '        EventList.AttachCallback(true, res_ev, ()->'#10;
+        res_EIm += '()->'#10;
         res_EIm += '        begin'#10;
         
         if settings.callback_lines<>nil then foreach var l in settings.callback_lines do
@@ -730,44 +711,28 @@ type
           res_EIm += #10;
         end;
         
-        foreach var arg in args_with_GCHandle do
+        var max_aka_w := args_keep_alive.Select(arg->arg.Length).DefaultIfEmpty(0).Max;
+        foreach var arg in args_keep_alive do
+        begin
+          res_EIm += '          GC.KeepAlive(';
+          res_EIm += arg.PadLeft(max_aka_w);
+          res_EIm += ');'#10;
+        end;
+        
+        foreach var arg in args_with_pinn do
         begin
           res_EIm += '          ';
-          res_EIm += arg.PadLeft(max_awg_w);
+          res_EIm += arg.PadLeft(max_awp_w);
           res_EIm += '_hnd.Free;'#10;
         end;
         
-        res_EIm += '        end{$ifdef EventDebug}, ''';
-        
-        var prev_expl := false;
-        var AddExpl := procedure->
-        begin
-          if prev_expl then res_EIm += ' and ';
-          prev_expl := true;
-        end;
-        
-        if args_with_GCHandle.Count<>0 then
-        begin
-          AddExpl;
-          res_EIm += 'GCHandle.Free for [';
-          res_EIm += args_with_GCHandle.JoinToString(', ');
-          res_EIm += ']';
-        end;
-        
-        if settings.callback_lines<>nil then
-        begin
-          AddExpl;
-          res_EIm += 'custom afterwork';
-        end;
-        
-        res_EIm += '''{$endif});'#10;
-        res_EIm += '        '#10;
-        
-      end;
+        res_EIm += '        end';
+      end else
+        res_EIm += 'nil';
       
       {$endregion FinallyCallback}
       
-      res_EIm += '        Result := res_ev;'#10;
+      res_EIm += ');'#10;
       res_EIm += '      end;'#10;
       
       res_EIm += '      '#10;

@@ -19,4 +19,8 @@ KernelCCQ#0
 				BackgroundProcCommand: Void <>lambda*(OpenCLABC.MemorySegment)
 		args[1]: KernelArgValue<System.Int32> => 5
 
+[EventDebug]: 0 event's created 
+[QueueDebug]: 0 queue's created 
+[WaitDebug]: 0 wait handler's created 
+
 
