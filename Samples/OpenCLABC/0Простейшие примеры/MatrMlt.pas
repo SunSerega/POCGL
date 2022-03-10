@@ -1,4 +1,4 @@
-﻿uses OpenCLABC;
+uses OpenCLABC;
 
 const
   MatrW = 4; // Можно поменять на любое положительное значение
@@ -60,7 +60,7 @@ begin
     
     var Otp_C_Q :=
       C.NewQueue.AddReadArray2(A_Matr) +
-      HPQ(()->
+      HPQQ(()->
       begin
         'Матрица С = A*B:'.Println;
         A_Matr.Println;
@@ -77,7 +77,7 @@ begin
     
     var Otp_V2_Q :=
       V2.NewQueue.AddReadArray1(V1_Arr) +
-      HPQ(()->
+      HPQQ(()->
       begin
         'Вектор V2 = C*V1:'.Println;
         V1_Arr.Println;

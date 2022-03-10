@@ -47,9 +47,9 @@ type
       
       'res_ptr':
       begin
-        sb += '(own_qr as QueueResDelayedPtr<';
+        sb += '(own_qr as QueueResPtr<';
         sb += result_type.org_text;
-        sb += '>).ptr';
+        sb += '>).res';
       end;
       
       'res_pinn_adr':
@@ -111,17 +111,17 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList, QueueResDelayedBase<';
+      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList, QueueRes<';
       res_EIm += settings.result_type.org_text;
-      res_EIm += '>)->cl_event; override;'#10;
+      res_EIm += '>)->DirectEnqRes; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
     begin
       res_EIm += '(o, cq, err_handler, evs, own_qr)->'#10;
     end;
-    protected procedure AddGCHandleArgs(args_with_GCHandle, args_with_pinn: List<string>; settings: GetMethodSettings); override :=
+    protected procedure AddGCHandleArgs(args_keep_alive, args_with_pinn: List<string>; settings: GetMethodSettings); override :=
     if settings.force_ptr_qr then
-      args_with_GCHandle += 'own_qr' else
+      args_keep_alive += 'own_qr' else
     if settings.need_pinn then
       args_with_pinn += 'res';
     protected procedure WriteResInit(wr: Writer; settings: GetMethodSettings); override :=

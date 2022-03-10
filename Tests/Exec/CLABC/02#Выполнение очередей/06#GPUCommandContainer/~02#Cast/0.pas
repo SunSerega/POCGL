@@ -1,7 +1,5 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  var mem := new MemorySegment(sizeof(integer));
-  mem.WriteValue&<integer>( HFQ(()->5 as object).Cast&<integer> );
-  mem.GetValue&<integer>.Println;
-end.
+var mem := new MemorySegment(sizeof(integer));
+mem.WriteValue&<integer>( HFQ(()->5 as object).Cast&<integer> );
+mem.GetValue&<integer>.Println;

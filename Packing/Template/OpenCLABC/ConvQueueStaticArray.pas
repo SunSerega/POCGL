@@ -90,42 +90,42 @@ begin
           wr += '>;'#10;
           wr += '    begin'#10;
           
-          wr += '      //TODO #????'#10;
-          wr += '      var all_const := ';
-          WriteNumbered('(qr% is QueueResConst<TInp%>(var cqr%))! and ');
-          wr += ';'#10;
-          wr += '      if all_const then'#10;
+          wr += '      if ';
+          WriteNumbered('qr%.IsConst! and ');
+          wr += ' then'#10;
           
           wr += '      begin'#10;
           if not is_quick then
           begin
             wr += '        var res := ValueTuple.Create(';
-            WriteNumbered('cqr%.GetRes()!, ');
+            WriteNumbered('qr%.GetResImpl!, ');
             wr += ');'#10;
-            wr += '        Result := new QueueResConst<';
+            wr += '        Result := new QueueResVal<';
             WriteVTDef;
-            wr += '>(res, ev);'#10;
+            wr += '>(ev, res);'#10;
           end else
           begin
             wr += '        var res := ExecFunc(';
-            WriteNumbered('cqr%.GetRes(), ');
+            WriteNumbered('qr%.GetResImpl, ');
             wr += 'c);'#10;
-            wr += '        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, res, ev);'#10;
+            wr += '        Result := QueueRes&<TRes>.MakeNewConstOrPtr(need_ptr_qr, ev, res);'#10;
           end;
           wr += '      end else'#10;
           
           if not is_quick then
           begin
-            wr += '        Result := new QueueResFunc<';
+            wr += '        Result := new QueueResVal<';
             WriteVTDef;
-            wr += '>(()->ValueTuple.Create(';
-            WriteNumbered('qr%.GetRes()!, ');
-            wr += '), ev);'#10;
+            wr += '>(ev);'#10;
+            wr += '        Result.AddResSetter(()->ValueTuple.Create(';
+            WriteNumbered('qr%.GetResImpl!, ');
+            wr += '));'#10;
           end else
           begin
-            wr += '        Result := new QueueResFunc<TRes>(()->ExecFunc(';
-            WriteNumbered('qr%.GetRes(), ');
-            wr += 'c), ev);'#10;
+            wr += '        Result := QueueRes&<TRes>.MakeNewDelayedOrPtr(need_ptr_qr, ev);'#10;
+            wr += '        Result.AddResSetter(()->ExecFunc(';
+            WriteNumbered('qr%.GetResImpl, ');
+            wr += 'c));'#10;
           end;
           
           wr += '    end;'#10;
@@ -250,7 +250,7 @@ begin
           wr += '    begin'#10;
           wr += '      var l := l_nil.WithPtrNeed(false);'#10;
           
-          WriteNumbered('      var qr% := q%.Invoke(g, l); l.prev_ev := qr%.ev;'#10);
+          WriteNumbered('      var qr% := q%.Invoke(g, l); l.prev_ev := qr%.ThenAttachInvokeActions(g);'#10);
           
         end);
         
@@ -280,7 +280,7 @@ begin
           wr += '      end);'#10;
           
           wr += '      var res_ev := EventList.Combine(|';
-          WriteNumbered('qr%.ev!, ');
+          WriteNumbered('qr%.ThenAttachInvokeActions(g)!, ');
           wr += '|);'#10;
           
         end);
@@ -298,7 +298,7 @@ begin
           wr += '    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<TRes>; override;'#10;
           wr += '    begin'#10;
           
-          WriteNumbered('      var qr% := q%.Invoke(g, l); l.prev_ev := qr%.ev;'#10);
+          WriteNumbered('      var qr% := q%.Invoke(g, l); l.prev_ev := qr%.ThenAttachInvokeActions(g);'#10);
           
         end);
         
@@ -325,7 +325,7 @@ begin
           wr += '      end);'#10;
           
           wr += '      var res_ev := EventList.Combine(|';
-          WriteNumbered('qr%.ev!, ');
+          WriteNumbered('qr%.ThenAttachInvokeActions(g)!, ');
           wr += '|);'#10;
           
         end);
