@@ -22,10 +22,9 @@ begin
   Result := ntv;
 end);
 
-var args_hnd := GCHandle.Alloc(!args!);
 !AttachCallback
 OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-args_hnd.Free;
+GC.KeepAlive(args);
 
 
 
@@ -50,9 +49,8 @@ begin
   Result := ntv;
 end);
 
-var args_hnd := GCHandle.Alloc(!args!);
 !AttachCallback
 OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-args_hnd.Free;
+GC.KeepAlive(args);
 
 

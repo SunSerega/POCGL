@@ -19,19 +19,7 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Посмотреть где останутся AttachCallback'и
-// - Поидее midway больше не нужен
-
-//TODO По возможности позаменять GCHandle на GC.KeepAlive
-
 //TODO Тесты:
-// - .ThenQuickConvert.Multiusable: сколько раз вычисляется?
-// - Потеря результата Quick обработки:
-// --- HFQ(()->5).ThenQuickConvert.ThenQuickUse + HPQ(()->begin end)
-// --- CombineQuickConv + HPQ(()->begin end)
-// - HPQ * HPQQ * HPQ: HPQQ должен выполнится последним
-// - HFQ.ThenQuickUse.Then[Finally]Wait
-// --- QuickUse должен выполнится до ожидания
 
 //TODO Справка:
 // - ThenQuick[Convert,Use]
@@ -41,8 +29,7 @@ unit OpenCLABC;
 // - AddQuickProc
 // - HPQQ/HFQQ
 //
-// - Quick очереди срабатывают в последний допустимый момент
-// --- HPQ + HPQQ + HPQ: HPQQ выполнится последним
+// - CQ
 //
 // - В обработке исключений написать, что обработчики всегда Quick
 
@@ -1947,6 +1934,12 @@ type
   
 {$region Global subprograms}
 
+{$region ConstQueue}
+
+function CQ<T>(o: T): CommandQueue<T>;
+
+{$endregion ConstQueue}
+
 {$region HFQ/HPQ}
 
 function HFQ<T>(f: ()->T): CommandQueue<T>;
@@ -2654,15 +2647,8 @@ type
     end;
     private static attachable_callback: EventCallback := InvokeAttachedCallback;
     
-    public static procedure AttachCallback(midway: boolean; ev: cl_event; work: Action{$ifdef EventDebug}; reason: string{$endif});
+    public static procedure AttachCallback(ev: cl_event; work: Action{$ifdef EventDebug}; reason: string{$endif});
     begin
-      if midway then
-      begin
-        {$ifdef EventDebug}
-        EventDebug.RegisterEventRetain(ev, $'retained before midway callback, working on {reason}');
-        {$endif EventDebug}
-        OpenCLABCInternalException.RaiseIfError(cl.RetainEvent(ev));
-      end;
       var cb_data := new AttachCallbackData(work{$ifdef EventDebug}, reason{$endif});
       var ec := cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, attachable_callback, GCHandle.ToIntPtr(GCHandle.Alloc(cb_data)));
       OpenCLABCInternalException.RaiseIfError(ec);
@@ -2688,13 +2674,12 @@ type
     end;
     private static multi_attachable_callback: EventCallback := InvokeMultiAttachedCallback;
     
-    public procedure MultiAttachCallback(midway: boolean; work: Action{$ifdef EventDebug}; reason: string{$endif}) :=
+    public procedure MultiAttachCallback(work: Action{$ifdef EventDebug}; reason: string{$endif}) :=
     case self.count of
       0: work;
-      1: AttachCallback(midway, self.evs[0], work{$ifdef EventDebug}, reason{$endif});
+      1: AttachCallback(self.evs[0], work{$ifdef EventDebug}, reason{$endif});
       else
       begin
-        if midway then self.Retain({$ifdef EventDebug}$'retained before midway multi-callback, working on {reason}'{$endif});
         var cb_data := new MultiAttachCallbackData(work, self.count{$ifdef EventDebug}, reason{$endif});
         var hnd_ptr := GCHandle.ToIntPtr(GCHandle.Alloc(cb_data));
         for var i := 0 to count-1 do
@@ -3281,7 +3266,7 @@ begin
   Result := uev;
   
   var err_handler := g.curr_err_handler;
-  self.ResEv.MultiAttachCallback(false, ()->
+  self.ResEv.MultiAttachCallback(()->
   begin
     if not err_handler.HadError(true) then
       self.InvokeActions;
@@ -4651,7 +4636,7 @@ type
       self.gc_hnd := GCHandle.Alloc(self);
       
       var err_handler := g.curr_err_handler;
-      l.prev_ev.MultiAttachCallback(false, ()->
+      l.prev_ev.MultiAttachCallback(()->
       begin
         if err_handler.HadError(true) then
         begin
@@ -6865,7 +6850,7 @@ type
         );
         
         var post_params_handler := g.curr_err_handler;
-        ev_l1.MultiAttachCallback(false, ()->
+        ev_l1.MultiAttachCallback(()->
         begin
           // Can't cache, ev_l2 wasn't completed yet
           if post_params_handler.HadError(false) then
@@ -6875,7 +6860,7 @@ type
             exit;
           end;
           var (enq_ev, enq_act) := ExecuteEnqFunc(cq, q, enq_f, inv_data, ev_l2, post_params_handler);
-          enq_ev.MultiAttachCallback(false, ()->
+          enq_ev.MultiAttachCallback(()->
           begin
             if enq_act<>nil then enq_act;
             g.ReturnCQ(cq);
@@ -7035,6 +7020,12 @@ type
 {$endregion Enqueueable's}
 
 {$region Global subprograms}
+
+{$region CQ}
+
+function CQ<T>(o: T) := CommandQueue&<T>(o);
+
+{$endregion CQ}
 
 {$region HFQ/HPQ}
 

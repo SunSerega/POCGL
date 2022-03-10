@@ -53,12 +53,10 @@ type
           Result := ntv;
         end);
         
-        var args_hnd := GCHandle.Alloc(args);
-        
         Result := new DirectEnqRes(res_ev, ()->
         begin
           OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          args_hnd.Free;
+          GC.KeepAlive(args);
         end);
       end;
       
@@ -153,12 +151,10 @@ type
           Result := ntv;
         end);
         
-        var args_hnd := GCHandle.Alloc(args);
-        
         Result := new DirectEnqRes(res_ev, ()->
         begin
           OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          args_hnd.Free;
+          GC.KeepAlive(args);
         end);
       end;
       
@@ -263,12 +259,10 @@ type
           Result := ntv;
         end);
         
-        var args_hnd := GCHandle.Alloc(args);
-        
         Result := new DirectEnqRes(res_ev, ()->
         begin
           OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          args_hnd.Free;
+          GC.KeepAlive(args);
         end);
       end;
       
@@ -378,12 +372,10 @@ type
           Result := ntv;
         end);
         
-        var args_hnd := GCHandle.Alloc(args);
-        
         Result := new DirectEnqRes(res_ev, ()->
         begin
           OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          args_hnd.Free;
+          GC.KeepAlive(args);
         end);
       end;
       

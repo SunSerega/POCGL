@@ -1,6 +1,11 @@
 
 
 
+# CQ<T>(T)
+Создаёт константную очередь с указанным результатом
+
+
+
 # HostQueue:When:[%when:,Q%]
 %DelegateExec:{%when?Background:Quick%}% {%when?с дополнительным "Q" (что значит Quick) в конце:%}
 
