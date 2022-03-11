@@ -1,5 +1,7 @@
-﻿uses FuncData in '..\FuncData';
-uses POCGL_Utils in '..\..\..\POCGL_Utils';
+﻿uses CodeGen      in '..\..\..\Utils\CodeGen';
+uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+
+uses FuncData     in '..\FuncData';
 
 begin
   try
@@ -18,36 +20,33 @@ begin
     
     var res := new StringBuilder;
     
-    Otp($'Constructing structs code');
-    res += '  '#10;
-    res += '  '#10;
-    res += '  '#10;
-    Struct.WriteAll(res);
-    res += '  '#10;
-    res += '  ';
-    WriteAllText(GetFullPathRTA('Structs.template'), res.ToString);
-    res.Clear;
+    begin
+      Otp($'Constructing structs code');
+      var structs_wr := new FileWriter(GetFullPathRTA('Structs.template'));
+      loop 3 do structs_wr += '  '#10;
+      Struct.WriteAll(structs_wr);
+      structs_wr += '  '#10'  ';
+      structs_wr.Close;
+    end;
     
-    Otp($'Constructing enums code');
-    res += '  '#10;
-    res += '  '#10;
-    res += '  '#10;
-    Group.WriteAll(res);
-    res += '  '#10;
-    res += '  ';
-    WriteAllText(GetFullPathRTA('Groups.template'), res.ToString);
-    res.Clear;
+    begin
+      Otp($'Constructing enums code');
+      var group_wr := new FileWriter(GetFullPathRTA('Groups.template'));
+      loop 3 do group_wr += '  '#10;
+      Group.WriteAll(group_wr);
+      group_wr += '  '#10'  ';
+      group_wr.Close;
+    end;
     
-    Otp($'Constructing funcs code');
-    res += '  '#10;
-    res += '  '#10;
-    res += '  '#10;
-    Feature.WriteAll(res, nil);
-    Extension.WriteAll(res, nil);
-    res += '  '#10;
-    res += '  ';
-    WriteAllText(GetFullPathRTA('Funcs.template'), res.ToString);
-    res.Clear;
+    begin
+      Otp($'Constructing funcs code');
+      var funcs_wr := new FileWriter(GetFullPathRTA('Funcs.template'));
+      loop 3 do funcs_wr += '  '#10;
+      Feature.WriteAll(funcs_wr, nil);
+      Extension.WriteAll(funcs_wr, nil);
+      funcs_wr += '  '#10'  ';
+      funcs_wr.Close;
+    end;
     
     FinishAll;
   except

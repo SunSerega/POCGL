@@ -71,6 +71,8 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~07#HostExec\Quick+MU.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder.pas"
@@ -86,6 +88,8 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~05#Wait\QuickUse.ThenWait.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.pas"
 Tester: Compiling: OK
@@ -229,6 +233,8 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~07#HostExec\Quick+MU]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder]
@@ -244,6 +250,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~05#Wait\QuickUse.ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0]
 Tester: Done executing

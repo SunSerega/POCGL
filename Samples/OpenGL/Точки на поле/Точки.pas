@@ -14,6 +14,7 @@
 uses System.Windows.Forms;
 uses System;
 uses OpenGL;
+uses OpenGLABC;
 
 uses Common in '..\Common';
 
@@ -164,9 +165,9 @@ begin
   end;
   {$endregion Управление}
   
-  gl_gdi.SetupControlRedrawing(f, gl_gdi.InitControl(f), EndFrame->
+  OpenGLABC.RedrawHelper.SetupRedrawThread(OpenGLABC.gl_gdi.InitControl(f), (pl, EndFrame)->
   try
-    gl := new OpenGL.gl<PlWin>;
+    gl := new OpenGL.gl(pl);
     
     var sprog: gl_program;
     var last_fragment_shader := -1;

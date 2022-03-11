@@ -1,0 +1,1240 @@
+﻿
+
+
+type gl = sealed partial class(api_with_loader) end;
+constructor gl.Create(loader: PlatformLoader) := inherited Create(loader);
+function gl.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glD = sealed partial class(api_with_loader) end;
+constructor glD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTbuffer3DFX = sealed partial class(api_with_loader) end;
+constructor glTbuffer3DFX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTbuffer3DFX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDebugOutputAMD = sealed partial class(api_with_loader) end;
+constructor glDebugOutputAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDebugOutputAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawBuffersBlendAMD = sealed partial class(api_with_loader) end;
+constructor glDrawBuffersBlendAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawBuffersBlendAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferMultisampleAdvancedAMD = sealed partial class(api_with_loader) end;
+constructor glFramebufferMultisampleAdvancedAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferMultisampleAdvancedAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferSamplePositionsAMD = sealed partial class(api_with_loader) end;
+constructor glFramebufferSamplePositionsAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferSamplePositionsAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuShaderInt64AMD = sealed partial class(api_with_loader) end;
+constructor glGpuShaderInt64AMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuShaderInt64AMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInterleavedElementsAMD = sealed partial class(api_with_loader) end;
+constructor glInterleavedElementsAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInterleavedElementsAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultiDrawIndirectAMD = sealed partial class(api_with_loader) end;
+constructor glMultiDrawIndirectAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultiDrawIndirectAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glNameGenDeleteAMD = sealed partial class(api_with_loader) end;
+constructor glNameGenDeleteAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glNameGenDeleteAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glOcclusionQueryEventAMD = sealed partial class(api_with_loader) end;
+constructor glOcclusionQueryEventAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glOcclusionQueryEventAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPerformanceMonitorAMD = sealed partial class(api_with_loader) end;
+constructor glPerformanceMonitorAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPerformanceMonitorAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSamplePositionsAMD = sealed partial class(api_with_loader) end;
+constructor glSamplePositionsAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSamplePositionsAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSparseTextureAMD = sealed partial class(api_with_loader) end;
+constructor glSparseTextureAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSparseTextureAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glStencilOperationExtendedAMD = sealed partial class(api_with_loader) end;
+constructor glStencilOperationExtendedAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glStencilOperationExtendedAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexShaderTessellatorAMD = sealed partial class(api_with_loader) end;
+constructor glVertexShaderTessellatorAMD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexShaderTessellatorAMD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glElementArrayAPPLE = sealed partial class(api_with_loader) end;
+constructor glElementArrayAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glElementArrayAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFenceAPPLE = sealed partial class(api_with_loader) end;
+constructor glFenceAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFenceAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFlushBufferRangeAPPLE = sealed partial class(api_with_loader) end;
+constructor glFlushBufferRangeAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFlushBufferRangeAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glObjectPurgeableAPPLE = sealed partial class(api_with_loader) end;
+constructor glObjectPurgeableAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glObjectPurgeableAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureRangeAPPLE = sealed partial class(api_with_loader) end;
+constructor glTextureRangeAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureRangeAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayObjectAPPLE = sealed partial class(api_with_loader) end;
+constructor glVertexArrayObjectAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayObjectAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayRangeAPPLE = sealed partial class(api_with_loader) end;
+constructor glVertexArrayRangeAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayRangeAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexProgramEvaluatorsAPPLE = sealed partial class(api_with_loader) end;
+constructor glVertexProgramEvaluatorsAPPLE.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexProgramEvaluatorsAPPLE.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glES2CompatibilityARB = sealed partial class(api_with_loader) end;
+constructor glES2CompatibilityARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glES2CompatibilityARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glES31CompatibilityARB = sealed partial class(api_with_loader) end;
+constructor glES31CompatibilityARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glES31CompatibilityARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glES32CompatibilityARB = sealed partial class(api_with_loader) end;
+constructor glES32CompatibilityARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glES32CompatibilityARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBaseInstanceARB = sealed partial class(api_with_loader) end;
+constructor glBaseInstanceARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBaseInstanceARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBindlessTextureARB = sealed partial class(api_with_loader) end;
+constructor glBindlessTextureARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBindlessTextureARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendFuncExtendedARB = sealed partial class(api_with_loader) end;
+constructor glBlendFuncExtendedARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendFuncExtendedARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBufferStorageARB = sealed partial class(api_with_loader) end;
+constructor glBufferStorageARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBufferStorageARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glClEventARB = sealed partial class(api_with_loader) end;
+constructor glClEventARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glClEventARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glClearBufferObjectARB = sealed partial class(api_with_loader) end;
+constructor glClearBufferObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glClearBufferObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glClearTextureARB = sealed partial class(api_with_loader) end;
+constructor glClearTextureARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glClearTextureARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glClipControlARB = sealed partial class(api_with_loader) end;
+constructor glClipControlARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glClipControlARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glColorBufferFloatARB = sealed partial class(api_with_loader) end;
+constructor glColorBufferFloatARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glColorBufferFloatARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glComputeShaderARB = sealed partial class(api_with_loader) end;
+constructor glComputeShaderARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glComputeShaderARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glComputeVariableGroupSizeARB = sealed partial class(api_with_loader) end;
+constructor glComputeVariableGroupSizeARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glComputeVariableGroupSizeARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCopyBufferARB = sealed partial class(api_with_loader) end;
+constructor glCopyBufferARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCopyBufferARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCopyImageARB = sealed partial class(api_with_loader) end;
+constructor glCopyImageARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCopyImageARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDebugOutputARB = sealed partial class(api_with_loader) end;
+constructor glDebugOutputARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDebugOutputARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDirectStateAccessARB = sealed partial class(api_with_loader) end;
+constructor glDirectStateAccessARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDirectStateAccessARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawBuffersARB = sealed partial class(api_with_loader) end;
+constructor glDrawBuffersARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawBuffersARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawBuffersBlendARB = sealed partial class(api_with_loader) end;
+constructor glDrawBuffersBlendARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawBuffersBlendARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawElementsBaseVertexARB = sealed partial class(api_with_loader) end;
+constructor glDrawElementsBaseVertexARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawElementsBaseVertexARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawIndirectARB = sealed partial class(api_with_loader) end;
+constructor glDrawIndirectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawIndirectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawInstancedARB = sealed partial class(api_with_loader) end;
+constructor glDrawInstancedARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawInstancedARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFragmentProgramARB = sealed partial class(api_with_loader) end;
+constructor glFragmentProgramARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFragmentProgramARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferNoAttachmentsARB = sealed partial class(api_with_loader) end;
+constructor glFramebufferNoAttachmentsARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferNoAttachmentsARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferObjectARB = sealed partial class(api_with_loader) end;
+constructor glFramebufferObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGeometryShader4ARB = sealed partial class(api_with_loader) end;
+constructor glGeometryShader4ARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGeometryShader4ARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGetProgramBinaryARB = sealed partial class(api_with_loader) end;
+constructor glGetProgramBinaryARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGetProgramBinaryARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGetTextureSubImageARB = sealed partial class(api_with_loader) end;
+constructor glGetTextureSubImageARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGetTextureSubImageARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGlSpirvARB = sealed partial class(api_with_loader) end;
+constructor glGlSpirvARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGlSpirvARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuShaderFp64ARB = sealed partial class(api_with_loader) end;
+constructor glGpuShaderFp64ARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuShaderFp64ARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuShaderInt64ARB = sealed partial class(api_with_loader) end;
+constructor glGpuShaderInt64ARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuShaderInt64ARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glImagingARB = sealed partial class(api_with_loader) end;
+constructor glImagingARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glImagingARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glIndirectParametersARB = sealed partial class(api_with_loader) end;
+constructor glIndirectParametersARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glIndirectParametersARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInstancedArraysARB = sealed partial class(api_with_loader) end;
+constructor glInstancedArraysARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInstancedArraysARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInternalformatQueryARB = sealed partial class(api_with_loader) end;
+constructor glInternalformatQueryARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInternalformatQueryARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInternalformatQuery2ARB = sealed partial class(api_with_loader) end;
+constructor glInternalformatQuery2ARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInternalformatQuery2ARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInvalidateSubdataARB = sealed partial class(api_with_loader) end;
+constructor glInvalidateSubdataARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInvalidateSubdataARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMapBufferRangeARB = sealed partial class(api_with_loader) end;
+constructor glMapBufferRangeARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMapBufferRangeARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMatrixPaletteARB = sealed partial class(api_with_loader) end;
+constructor glMatrixPaletteARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMatrixPaletteARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultiBindARB = sealed partial class(api_with_loader) end;
+constructor glMultiBindARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultiBindARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultiDrawIndirectARB = sealed partial class(api_with_loader) end;
+constructor glMultiDrawIndirectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultiDrawIndirectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultisampleARB = sealed partial class(api_with_loader) end;
+constructor glMultisampleARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultisampleARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultitextureARB = sealed partial class(api_with_loader) end;
+constructor glMultitextureARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultitextureARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glOcclusionQueryARB = sealed partial class(api_with_loader) end;
+constructor glOcclusionQueryARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glOcclusionQueryARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glParallelShaderCompileARB = sealed partial class(api_with_loader) end;
+constructor glParallelShaderCompileARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glParallelShaderCompileARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPointParametersARB = sealed partial class(api_with_loader) end;
+constructor glPointParametersARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPointParametersARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPolygonOffsetClampARB = sealed partial class(api_with_loader) end;
+constructor glPolygonOffsetClampARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPolygonOffsetClampARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glProgramInterfaceQueryARB = sealed partial class(api_with_loader) end;
+constructor glProgramInterfaceQueryARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glProgramInterfaceQueryARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glProvokingVertexARB = sealed partial class(api_with_loader) end;
+constructor glProvokingVertexARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glProvokingVertexARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glRobustnessARB = sealed partial class(api_with_loader) end;
+constructor glRobustnessARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glRobustnessARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSampleLocationsARB = sealed partial class(api_with_loader) end;
+constructor glSampleLocationsARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSampleLocationsARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSampleShadingARB = sealed partial class(api_with_loader) end;
+constructor glSampleShadingARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSampleShadingARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSamplerObjectsARB = sealed partial class(api_with_loader) end;
+constructor glSamplerObjectsARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSamplerObjectsARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSeparateShaderObjectsARB = sealed partial class(api_with_loader) end;
+constructor glSeparateShaderObjectsARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSeparateShaderObjectsARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderAtomicCountersARB = sealed partial class(api_with_loader) end;
+constructor glShaderAtomicCountersARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderAtomicCountersARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderImageLoadStoreARB = sealed partial class(api_with_loader) end;
+constructor glShaderImageLoadStoreARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderImageLoadStoreARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderObjectsARB = sealed partial class(api_with_loader) end;
+constructor glShaderObjectsARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderObjectsARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderStorageBufferObjectARB = sealed partial class(api_with_loader) end;
+constructor glShaderStorageBufferObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderStorageBufferObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderSubroutineARB = sealed partial class(api_with_loader) end;
+constructor glShaderSubroutineARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderSubroutineARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShadingLanguageIncludeARB = sealed partial class(api_with_loader) end;
+constructor glShadingLanguageIncludeARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShadingLanguageIncludeARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSparseBufferARB = sealed partial class(api_with_loader) end;
+constructor glSparseBufferARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSparseBufferARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSparseTextureARB = sealed partial class(api_with_loader) end;
+constructor glSparseTextureARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSparseTextureARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSyncARB = sealed partial class(api_with_loader) end;
+constructor glSyncARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSyncARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTessellationShaderARB = sealed partial class(api_with_loader) end;
+constructor glTessellationShaderARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTessellationShaderARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureBarrierARB = sealed partial class(api_with_loader) end;
+constructor glTextureBarrierARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureBarrierARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureBufferObjectARB = sealed partial class(api_with_loader) end;
+constructor glTextureBufferObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureBufferObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureBufferRangeARB = sealed partial class(api_with_loader) end;
+constructor glTextureBufferRangeARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureBufferRangeARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureCompressionARB = sealed partial class(api_with_loader) end;
+constructor glTextureCompressionARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureCompressionARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureMultisampleARB = sealed partial class(api_with_loader) end;
+constructor glTextureMultisampleARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureMultisampleARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureStorageARB = sealed partial class(api_with_loader) end;
+constructor glTextureStorageARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureStorageARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureStorageMultisampleARB = sealed partial class(api_with_loader) end;
+constructor glTextureStorageMultisampleARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureStorageMultisampleARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureViewARB = sealed partial class(api_with_loader) end;
+constructor glTextureViewARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureViewARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTimerQueryARB = sealed partial class(api_with_loader) end;
+constructor glTimerQueryARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTimerQueryARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransformFeedback2ARB = sealed partial class(api_with_loader) end;
+constructor glTransformFeedback2ARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransformFeedback2ARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransformFeedback3ARB = sealed partial class(api_with_loader) end;
+constructor glTransformFeedback3ARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransformFeedback3ARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransformFeedbackInstancedARB = sealed partial class(api_with_loader) end;
+constructor glTransformFeedbackInstancedARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransformFeedbackInstancedARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransposeMatrixARB = sealed partial class(api_with_loader) end;
+constructor glTransposeMatrixARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransposeMatrixARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glUniformBufferObjectARB = sealed partial class(api_with_loader) end;
+constructor glUniformBufferObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glUniformBufferObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayObjectARB = sealed partial class(api_with_loader) end;
+constructor glVertexArrayObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexAttrib64bitARB = sealed partial class(api_with_loader) end;
+constructor glVertexAttrib64bitARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexAttrib64bitARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexAttribBindingARB = sealed partial class(api_with_loader) end;
+constructor glVertexAttribBindingARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexAttribBindingARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexBlendARB = sealed partial class(api_with_loader) end;
+constructor glVertexBlendARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexBlendARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexBufferObjectARB = sealed partial class(api_with_loader) end;
+constructor glVertexBufferObjectARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexBufferObjectARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexProgramARB = sealed partial class(api_with_loader) end;
+constructor glVertexProgramARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexProgramARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexShaderARB = sealed partial class(api_with_loader) end;
+constructor glVertexShaderARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexShaderARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexType2101010RevARB = sealed partial class(api_with_loader) end;
+constructor glVertexType2101010RevARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexType2101010RevARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glViewportArrayARB = sealed partial class(api_with_loader) end;
+constructor glViewportArrayARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glViewportArrayARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glWindowPosARB = sealed partial class(api_with_loader) end;
+constructor glWindowPosARB.Create(loader: PlatformLoader) := inherited Create(loader);
+function glWindowPosARB.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawBuffersATI = sealed partial class(api_with_loader) end;
+constructor glDrawBuffersATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawBuffersATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glElementArrayATI = sealed partial class(api_with_loader) end;
+constructor glElementArrayATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glElementArrayATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glEnvmapBumpmapATI = sealed partial class(api_with_loader) end;
+constructor glEnvmapBumpmapATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glEnvmapBumpmapATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFragmentShaderATI = sealed partial class(api_with_loader) end;
+constructor glFragmentShaderATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFragmentShaderATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMapObjectBufferATI = sealed partial class(api_with_loader) end;
+constructor glMapObjectBufferATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMapObjectBufferATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPnTrianglesATI = sealed partial class(api_with_loader) end;
+constructor glPnTrianglesATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPnTrianglesATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSeparateStencilATI = sealed partial class(api_with_loader) end;
+constructor glSeparateStencilATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSeparateStencilATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayObjectATI = sealed partial class(api_with_loader) end;
+constructor glVertexArrayObjectATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayObjectATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexAttribArrayObjectATI = sealed partial class(api_with_loader) end;
+constructor glVertexAttribArrayObjectATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexAttribArrayObjectATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexStreamsATI = sealed partial class(api_with_loader) end;
+constructor glVertexStreamsATI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexStreamsATI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glEGLImageStorageEXT = sealed partial class(api_with_loader) end;
+constructor glEGLImageStorageEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glEGLImageStorageEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBindableUniformEXT = sealed partial class(api_with_loader) end;
+constructor glBindableUniformEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBindableUniformEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendColorEXT = sealed partial class(api_with_loader) end;
+constructor glBlendColorEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendColorEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendEquationSeparateEXT = sealed partial class(api_with_loader) end;
+constructor glBlendEquationSeparateEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendEquationSeparateEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendFuncSeparateEXT = sealed partial class(api_with_loader) end;
+constructor glBlendFuncSeparateEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendFuncSeparateEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendMinmaxEXT = sealed partial class(api_with_loader) end;
+constructor glBlendMinmaxEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendMinmaxEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glColorSubtableEXT = sealed partial class(api_with_loader) end;
+constructor glColorSubtableEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glColorSubtableEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCompiledVertexArrayEXT = sealed partial class(api_with_loader) end;
+constructor glCompiledVertexArrayEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCompiledVertexArrayEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConvolutionEXT = sealed partial class(api_with_loader) end;
+constructor glConvolutionEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConvolutionEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCoordinateFrameEXT = sealed partial class(api_with_loader) end;
+constructor glCoordinateFrameEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCoordinateFrameEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCopyTextureEXT = sealed partial class(api_with_loader) end;
+constructor glCopyTextureEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCopyTextureEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCullVertexEXT = sealed partial class(api_with_loader) end;
+constructor glCullVertexEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCullVertexEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDebugLabelEXT = sealed partial class(api_with_loader) end;
+constructor glDebugLabelEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDebugLabelEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDebugMarkerEXT = sealed partial class(api_with_loader) end;
+constructor glDebugMarkerEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDebugMarkerEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDepthBoundsTestEXT = sealed partial class(api_with_loader) end;
+constructor glDepthBoundsTestEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDepthBoundsTestEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDirectStateAccessEXT = sealed partial class(api_with_loader) end;
+constructor glDirectStateAccessEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDirectStateAccessEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawBuffers2EXT = sealed partial class(api_with_loader) end;
+constructor glDrawBuffers2EXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawBuffers2EXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawInstancedEXT = sealed partial class(api_with_loader) end;
+constructor glDrawInstancedEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawInstancedEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawRangeElementsEXT = sealed partial class(api_with_loader) end;
+constructor glDrawRangeElementsEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawRangeElementsEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glExternalBufferEXT = sealed partial class(api_with_loader) end;
+constructor glExternalBufferEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glExternalBufferEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFogCoordEXT = sealed partial class(api_with_loader) end;
+constructor glFogCoordEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFogCoordEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferBlitEXT = sealed partial class(api_with_loader) end;
+constructor glFramebufferBlitEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferBlitEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferMultisampleEXT = sealed partial class(api_with_loader) end;
+constructor glFramebufferMultisampleEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferMultisampleEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferObjectEXT = sealed partial class(api_with_loader) end;
+constructor glFramebufferObjectEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferObjectEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGeometryShader4EXT = sealed partial class(api_with_loader) end;
+constructor glGeometryShader4EXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGeometryShader4EXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuProgramParametersEXT = sealed partial class(api_with_loader) end;
+constructor glGpuProgramParametersEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuProgramParametersEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuShader4EXT = sealed partial class(api_with_loader) end;
+constructor glGpuShader4EXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuShader4EXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glHistogramEXT = sealed partial class(api_with_loader) end;
+constructor glHistogramEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glHistogramEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glIndexFuncEXT = sealed partial class(api_with_loader) end;
+constructor glIndexFuncEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glIndexFuncEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glIndexMaterialEXT = sealed partial class(api_with_loader) end;
+constructor glIndexMaterialEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glIndexMaterialEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glLightTextureEXT = sealed partial class(api_with_loader) end;
+constructor glLightTextureEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glLightTextureEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMemoryObjectEXT = sealed partial class(api_with_loader) end;
+constructor glMemoryObjectEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMemoryObjectEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMemoryObjectFdEXT = sealed partial class(api_with_loader) end;
+constructor glMemoryObjectFdEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMemoryObjectFdEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMemoryObjectWin32EXT = sealed partial class(api_with_loader) end;
+constructor glMemoryObjectWin32EXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMemoryObjectWin32EXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultiDrawArraysEXT = sealed partial class(api_with_loader) end;
+constructor glMultiDrawArraysEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultiDrawArraysEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultisampleEXT = sealed partial class(api_with_loader) end;
+constructor glMultisampleEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultisampleEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPalettedTextureEXT = sealed partial class(api_with_loader) end;
+constructor glPalettedTextureEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPalettedTextureEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPixelTransformEXT = sealed partial class(api_with_loader) end;
+constructor glPixelTransformEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPixelTransformEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPointParametersEXT = sealed partial class(api_with_loader) end;
+constructor glPointParametersEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPointParametersEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPolygonOffsetEXT = sealed partial class(api_with_loader) end;
+constructor glPolygonOffsetEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPolygonOffsetEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPolygonOffsetClampEXT = sealed partial class(api_with_loader) end;
+constructor glPolygonOffsetClampEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPolygonOffsetClampEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glProvokingVertexEXT = sealed partial class(api_with_loader) end;
+constructor glProvokingVertexEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glProvokingVertexEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glRasterMultisampleEXT = sealed partial class(api_with_loader) end;
+constructor glRasterMultisampleEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glRasterMultisampleEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSemaphoreEXT = sealed partial class(api_with_loader) end;
+constructor glSemaphoreEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSemaphoreEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSemaphoreFdEXT = sealed partial class(api_with_loader) end;
+constructor glSemaphoreFdEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSemaphoreFdEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSemaphoreWin32EXT = sealed partial class(api_with_loader) end;
+constructor glSemaphoreWin32EXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSemaphoreWin32EXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSecondaryColorEXT = sealed partial class(api_with_loader) end;
+constructor glSecondaryColorEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSecondaryColorEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSeparateShaderObjectsEXT = sealed partial class(api_with_loader) end;
+constructor glSeparateShaderObjectsEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSeparateShaderObjectsEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderFramebufferFetchNonCoherentEXT = sealed partial class(api_with_loader) end;
+constructor glShaderFramebufferFetchNonCoherentEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderFramebufferFetchNonCoherentEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderImageLoadStoreEXT = sealed partial class(api_with_loader) end;
+constructor glShaderImageLoadStoreEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderImageLoadStoreEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glStencilClearTagEXT = sealed partial class(api_with_loader) end;
+constructor glStencilClearTagEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glStencilClearTagEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glStencilTwoSideEXT = sealed partial class(api_with_loader) end;
+constructor glStencilTwoSideEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glStencilTwoSideEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSubtextureEXT = sealed partial class(api_with_loader) end;
+constructor glSubtextureEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSubtextureEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTexture3DEXT = sealed partial class(api_with_loader) end;
+constructor glTexture3DEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTexture3DEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureArrayEXT = sealed partial class(api_with_loader) end;
+constructor glTextureArrayEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureArrayEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureBufferObjectEXT = sealed partial class(api_with_loader) end;
+constructor glTextureBufferObjectEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureBufferObjectEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureIntegerEXT = sealed partial class(api_with_loader) end;
+constructor glTextureIntegerEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureIntegerEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureObjectEXT = sealed partial class(api_with_loader) end;
+constructor glTextureObjectEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureObjectEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTexturePerturbNormalEXT = sealed partial class(api_with_loader) end;
+constructor glTexturePerturbNormalEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTexturePerturbNormalEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureStorageEXT = sealed partial class(api_with_loader) end;
+constructor glTextureStorageEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureStorageEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTimelineSemaphoreNV = sealed partial class(api_with_loader) end;
+constructor glTimelineSemaphoreNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTimelineSemaphoreNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTimerQueryEXT = sealed partial class(api_with_loader) end;
+constructor glTimerQueryEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTimerQueryEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransformFeedbackEXT = sealed partial class(api_with_loader) end;
+constructor glTransformFeedbackEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransformFeedbackEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayEXT = sealed partial class(api_with_loader) end;
+constructor glVertexArrayEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexAttrib64bitEXT = sealed partial class(api_with_loader) end;
+constructor glVertexAttrib64bitEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexAttrib64bitEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexShaderEXT = sealed partial class(api_with_loader) end;
+constructor glVertexShaderEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexShaderEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexWeightingEXT = sealed partial class(api_with_loader) end;
+constructor glVertexWeightingEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexWeightingEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glWin32KeyedMutexEXT = sealed partial class(api_with_loader) end;
+constructor glWin32KeyedMutexEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glWin32KeyedMutexEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glWindowRectanglesEXT = sealed partial class(api_with_loader) end;
+constructor glWindowRectanglesEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glWindowRectanglesEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glX11SyncObjectEXT = sealed partial class(api_with_loader) end;
+constructor glX11SyncObjectEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glX11SyncObjectEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFrameTerminatorGREMEDY = sealed partial class(api_with_loader) end;
+constructor glFrameTerminatorGREMEDY.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFrameTerminatorGREMEDY.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glStringMarkerGREMEDY = sealed partial class(api_with_loader) end;
+constructor glStringMarkerGREMEDY.Create(loader: PlatformLoader) := inherited Create(loader);
+function glStringMarkerGREMEDY.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glImageTransformHP = sealed partial class(api_with_loader) end;
+constructor glImageTransformHP.Create(loader: PlatformLoader) := inherited Create(loader);
+function glImageTransformHP.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultimodeDrawArraysIBM = sealed partial class(api_with_loader) end;
+constructor glMultimodeDrawArraysIBM.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultimodeDrawArraysIBM.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glStaticDataIBM = sealed partial class(api_with_loader) end;
+constructor glStaticDataIBM.Create(loader: PlatformLoader) := inherited Create(loader);
+function glStaticDataIBM.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayListsIBM = sealed partial class(api_with_loader) end;
+constructor glVertexArrayListsIBM.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayListsIBM.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendFuncSeparateINGR = sealed partial class(api_with_loader) end;
+constructor glBlendFuncSeparateINGR.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendFuncSeparateINGR.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferCMAAINTEL = sealed partial class(api_with_loader) end;
+constructor glFramebufferCMAAINTEL.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferCMAAINTEL.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMapTextureINTEL = sealed partial class(api_with_loader) end;
+constructor glMapTextureINTEL.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMapTextureINTEL.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glParallelArraysINTEL = sealed partial class(api_with_loader) end;
+constructor glParallelArraysINTEL.Create(loader: PlatformLoader) := inherited Create(loader);
+function glParallelArraysINTEL.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPerformanceQueryINTEL = sealed partial class(api_with_loader) end;
+constructor glPerformanceQueryINTEL.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPerformanceQueryINTEL.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendEquationAdvancedKHR = sealed partial class(api_with_loader) end;
+constructor glBlendEquationAdvancedKHR.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendEquationAdvancedKHR.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDebugKHR = sealed partial class(api_with_loader) end;
+constructor glDebugKHR.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDebugKHR.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glRobustnessKHR = sealed partial class(api_with_loader) end;
+constructor glRobustnessKHR.Create(loader: PlatformLoader) := inherited Create(loader);
+function glRobustnessKHR.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glParallelShaderCompileKHR = sealed partial class(api_with_loader) end;
+constructor glParallelShaderCompileKHR.Create(loader: PlatformLoader) := inherited Create(loader);
+function glParallelShaderCompileKHR.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferFlipYMESA = sealed partial class(api_with_loader) end;
+constructor glFramebufferFlipYMESA.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferFlipYMESA.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glResizeBuffersMESA = sealed partial class(api_with_loader) end;
+constructor glResizeBuffersMESA.Create(loader: PlatformLoader) := inherited Create(loader);
+function glResizeBuffersMESA.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glWindowPosMESA = sealed partial class(api_with_loader) end;
+constructor glWindowPosMESA.Create(loader: PlatformLoader) := inherited Create(loader);
+function glWindowPosMESA.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConditionalRenderNVX = sealed partial class(api_with_loader) end;
+constructor glConditionalRenderNVX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConditionalRenderNVX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glLinkedGpuMulticastNVX = sealed partial class(api_with_loader) end;
+constructor glLinkedGpuMulticastNVX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glLinkedGpuMulticastNVX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glAlphaToCoverageDitherControlNV = sealed partial class(api_with_loader) end;
+constructor glAlphaToCoverageDitherControlNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glAlphaToCoverageDitherControlNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBindlessMultiDrawIndirectNV = sealed partial class(api_with_loader) end;
+constructor glBindlessMultiDrawIndirectNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBindlessMultiDrawIndirectNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBindlessMultiDrawIndirectCountNV = sealed partial class(api_with_loader) end;
+constructor glBindlessMultiDrawIndirectCountNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBindlessMultiDrawIndirectCountNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBindlessTextureNV = sealed partial class(api_with_loader) end;
+constructor glBindlessTextureNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBindlessTextureNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glBlendEquationAdvancedNV = sealed partial class(api_with_loader) end;
+constructor glBlendEquationAdvancedNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glBlendEquationAdvancedNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glClipSpaceWScalingNV = sealed partial class(api_with_loader) end;
+constructor glClipSpaceWScalingNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glClipSpaceWScalingNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCommandListNV = sealed partial class(api_with_loader) end;
+constructor glCommandListNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCommandListNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConditionalRenderNV = sealed partial class(api_with_loader) end;
+constructor glConditionalRenderNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConditionalRenderNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConservativeRasterNV = sealed partial class(api_with_loader) end;
+constructor glConservativeRasterNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConservativeRasterNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConservativeRasterDilateNV = sealed partial class(api_with_loader) end;
+constructor glConservativeRasterDilateNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConservativeRasterDilateNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConservativeRasterPreSnapTrianglesNV = sealed partial class(api_with_loader) end;
+constructor glConservativeRasterPreSnapTrianglesNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConservativeRasterPreSnapTrianglesNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glCopyImageNV = sealed partial class(api_with_loader) end;
+constructor glCopyImageNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glCopyImageNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDepthBufferFloatNV = sealed partial class(api_with_loader) end;
+constructor glDepthBufferFloatNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDepthBufferFloatNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawTextureNV = sealed partial class(api_with_loader) end;
+constructor glDrawTextureNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawTextureNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDrawVulkanImageNV = sealed partial class(api_with_loader) end;
+constructor glDrawVulkanImageNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDrawVulkanImageNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glEvaluatorsNV = sealed partial class(api_with_loader) end;
+constructor glEvaluatorsNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glEvaluatorsNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glExplicitMultisampleNV = sealed partial class(api_with_loader) end;
+constructor glExplicitMultisampleNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glExplicitMultisampleNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFenceNV = sealed partial class(api_with_loader) end;
+constructor glFenceNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFenceNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFragmentCoverageToColorNV = sealed partial class(api_with_loader) end;
+constructor glFragmentCoverageToColorNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFragmentCoverageToColorNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFragmentProgramNV = sealed partial class(api_with_loader) end;
+constructor glFragmentProgramNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFragmentProgramNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferMixedSamplesNV = sealed partial class(api_with_loader) end;
+constructor glFramebufferMixedSamplesNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferMixedSamplesNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramebufferMultisampleCoverageNV = sealed partial class(api_with_loader) end;
+constructor glFramebufferMultisampleCoverageNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferMultisampleCoverageNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGeometryProgram4NV = sealed partial class(api_with_loader) end;
+constructor glGeometryProgram4NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGeometryProgram4NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuProgram4NV = sealed partial class(api_with_loader) end;
+constructor glGpuProgram4NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuProgram4NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuProgram5NV = sealed partial class(api_with_loader) end;
+constructor glGpuProgram5NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuProgram5NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuShader5NV = sealed partial class(api_with_loader) end;
+constructor glGpuShader5NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuShader5NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glHalfFloatNV = sealed partial class(api_with_loader) end;
+constructor glHalfFloatNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glHalfFloatNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInternalformatSampleQueryNV = sealed partial class(api_with_loader) end;
+constructor glInternalformatSampleQueryNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInternalformatSampleQueryNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuMulticastNV = sealed partial class(api_with_loader) end;
+constructor glGpuMulticastNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuMulticastNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGpuMulticast2NVX = sealed partial class(api_with_loader) end;
+constructor glGpuMulticast2NVX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGpuMulticast2NVX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glProgressFenceNVX = sealed partial class(api_with_loader) end;
+constructor glProgressFenceNVX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glProgressFenceNVX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMemoryAttachmentNV = sealed partial class(api_with_loader) end;
+constructor glMemoryAttachmentNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMemoryAttachmentNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMemoryObjectSparseNV = sealed partial class(api_with_loader) end;
+constructor glMemoryObjectSparseNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMemoryObjectSparseNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMeshShaderNV = sealed partial class(api_with_loader) end;
+constructor glMeshShaderNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMeshShaderNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glOcclusionQueryNV = sealed partial class(api_with_loader) end;
+constructor glOcclusionQueryNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glOcclusionQueryNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glParameterBufferObjectNV = sealed partial class(api_with_loader) end;
+constructor glParameterBufferObjectNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glParameterBufferObjectNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPathRenderingNV = sealed partial class(api_with_loader) end;
+constructor glPathRenderingNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPathRenderingNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPixelDataRangeNV = sealed partial class(api_with_loader) end;
+constructor glPixelDataRangeNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPixelDataRangeNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPointSpriteNV = sealed partial class(api_with_loader) end;
+constructor glPointSpriteNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPointSpriteNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPresentVideoNV = sealed partial class(api_with_loader) end;
+constructor glPresentVideoNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPresentVideoNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPrimitiveRestartNV = sealed partial class(api_with_loader) end;
+constructor glPrimitiveRestartNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPrimitiveRestartNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glQueryResourceNV = sealed partial class(api_with_loader) end;
+constructor glQueryResourceNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glQueryResourceNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glQueryResourceTagNV = sealed partial class(api_with_loader) end;
+constructor glQueryResourceTagNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glQueryResourceTagNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glRegisterCombinersNV = sealed partial class(api_with_loader) end;
+constructor glRegisterCombinersNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glRegisterCombinersNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glRegisterCombiners2NV = sealed partial class(api_with_loader) end;
+constructor glRegisterCombiners2NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glRegisterCombiners2NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSampleLocationsNV = sealed partial class(api_with_loader) end;
+constructor glSampleLocationsNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSampleLocationsNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glScissorExclusiveNV = sealed partial class(api_with_loader) end;
+constructor glScissorExclusiveNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glScissorExclusiveNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShaderBufferLoadNV = sealed partial class(api_with_loader) end;
+constructor glShaderBufferLoadNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShaderBufferLoadNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glShadingRateImageNV = sealed partial class(api_with_loader) end;
+constructor glShadingRateImageNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glShadingRateImageNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureBarrierNV = sealed partial class(api_with_loader) end;
+constructor glTextureBarrierNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureBarrierNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureMultisampleNV = sealed partial class(api_with_loader) end;
+constructor glTextureMultisampleNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureMultisampleNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransformFeedbackNV = sealed partial class(api_with_loader) end;
+constructor glTransformFeedbackNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransformFeedbackNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTransformFeedback2NV = sealed partial class(api_with_loader) end;
+constructor glTransformFeedback2NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTransformFeedback2NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVdpauInteropNV = sealed partial class(api_with_loader) end;
+constructor glVdpauInteropNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVdpauInteropNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVdpauInterop2NV = sealed partial class(api_with_loader) end;
+constructor glVdpauInterop2NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVdpauInterop2NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexArrayRangeNV = sealed partial class(api_with_loader) end;
+constructor glVertexArrayRangeNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexArrayRangeNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexAttribInteger64bitNV = sealed partial class(api_with_loader) end;
+constructor glVertexAttribInteger64bitNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexAttribInteger64bitNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexBufferUnifiedMemoryNV = sealed partial class(api_with_loader) end;
+constructor glVertexBufferUnifiedMemoryNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexBufferUnifiedMemoryNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexProgramNV = sealed partial class(api_with_loader) end;
+constructor glVertexProgramNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexProgramNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexProgram4NV = sealed partial class(api_with_loader) end;
+constructor glVertexProgram4NV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexProgram4NV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVideoCaptureNV = sealed partial class(api_with_loader) end;
+constructor glVideoCaptureNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVideoCaptureNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glViewportSwizzleNV = sealed partial class(api_with_loader) end;
+constructor glViewportSwizzleNV.Create(loader: PlatformLoader) := inherited Create(loader);
+function glViewportSwizzleNV.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glByteCoordinatesOES = sealed partial class(api_with_loader) end;
+constructor glByteCoordinatesOES.Create(loader: PlatformLoader) := inherited Create(loader);
+function glByteCoordinatesOES.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFixedPointOES = sealed partial class(api_with_loader) end;
+constructor glFixedPointOES.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFixedPointOES.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glQueryMatrixOES = sealed partial class(api_with_loader) end;
+constructor glQueryMatrixOES.Create(loader: PlatformLoader) := inherited Create(loader);
+function glQueryMatrixOES.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSinglePrecisionOES = sealed partial class(api_with_loader) end;
+constructor glSinglePrecisionOES.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSinglePrecisionOES.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultiviewOVR = sealed partial class(api_with_loader) end;
+constructor glMultiviewOVR.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultiviewOVR.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMiscHintsPGI = sealed partial class(api_with_loader) end;
+constructor glMiscHintsPGI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMiscHintsPGI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glDetailTextureSGIS = sealed partial class(api_with_loader) end;
+constructor glDetailTextureSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glDetailTextureSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFogFunctionSGIS = sealed partial class(api_with_loader) end;
+constructor glFogFunctionSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFogFunctionSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMultisampleSGIS = sealed partial class(api_with_loader) end;
+constructor glMultisampleSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMultisampleSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPixelTextureSGIS = sealed partial class(api_with_loader) end;
+constructor glPixelTextureSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPixelTextureSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPointParametersSGIS = sealed partial class(api_with_loader) end;
+constructor glPointParametersSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPointParametersSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSharpenTextureSGIS = sealed partial class(api_with_loader) end;
+constructor glSharpenTextureSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSharpenTextureSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTexture4DSGIS = sealed partial class(api_with_loader) end;
+constructor glTexture4DSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTexture4DSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureColorMaskSGIS = sealed partial class(api_with_loader) end;
+constructor glTextureColorMaskSGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureColorMaskSGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTextureFilter4SGIS = sealed partial class(api_with_loader) end;
+constructor glTextureFilter4SGIS.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTextureFilter4SGIS.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glAsyncSGIX = sealed partial class(api_with_loader) end;
+constructor glAsyncSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glAsyncSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFlushRasterSGIX = sealed partial class(api_with_loader) end;
+constructor glFlushRasterSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFlushRasterSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFragmentLightingSGIX = sealed partial class(api_with_loader) end;
+constructor glFragmentLightingSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFragmentLightingSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glFramezoomSGIX = sealed partial class(api_with_loader) end;
+constructor glFramezoomSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramezoomSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glIglooInterfaceSGIX = sealed partial class(api_with_loader) end;
+constructor glIglooInterfaceSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glIglooInterfaceSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glInstrumentsSGIX = sealed partial class(api_with_loader) end;
+constructor glInstrumentsSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glInstrumentsSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glListPrioritySGIX = sealed partial class(api_with_loader) end;
+constructor glListPrioritySGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glListPrioritySGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPixelTextureSGIX = sealed partial class(api_with_loader) end;
+constructor glPixelTextureSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPixelTextureSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glPolynomialFfdSGIX = sealed partial class(api_with_loader) end;
+constructor glPolynomialFfdSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glPolynomialFfdSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glReferencePlaneSGIX = sealed partial class(api_with_loader) end;
+constructor glReferencePlaneSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glReferencePlaneSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glSpriteSGIX = sealed partial class(api_with_loader) end;
+constructor glSpriteSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glSpriteSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTagSampleBufferSGIX = sealed partial class(api_with_loader) end;
+constructor glTagSampleBufferSGIX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTagSampleBufferSGIX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glColorTableSGI = sealed partial class(api_with_loader) end;
+constructor glColorTableSGI.Create(loader: PlatformLoader) := inherited Create(loader);
+function glColorTableSGI.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glConstantDataSUNX = sealed partial class(api_with_loader) end;
+constructor glConstantDataSUNX.Create(loader: PlatformLoader) := inherited Create(loader);
+function glConstantDataSUNX.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glGlobalAlphaSUN = sealed partial class(api_with_loader) end;
+constructor glGlobalAlphaSUN.Create(loader: PlatformLoader) := inherited Create(loader);
+function glGlobalAlphaSUN.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glMeshArraySUN = sealed partial class(api_with_loader) end;
+constructor glMeshArraySUN.Create(loader: PlatformLoader) := inherited Create(loader);
+function glMeshArraySUN.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glTriangleListSUN = sealed partial class(api_with_loader) end;
+constructor glTriangleListSUN.Create(loader: PlatformLoader) := inherited Create(loader);
+function glTriangleListSUN.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glVertexSUN = sealed partial class(api_with_loader) end;
+constructor glVertexSUN.Create(loader: PlatformLoader) := inherited Create(loader);
+function glVertexSUN.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+

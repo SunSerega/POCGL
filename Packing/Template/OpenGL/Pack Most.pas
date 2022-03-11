@@ -1,5 +1,7 @@
-﻿uses FuncData     in '..\FuncData';
+﻿uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+
+uses FuncData     in '..\FuncData';
 
 begin
   try
@@ -14,31 +16,37 @@ begin
     Feature.FixGL_GDI;
     MarkUsed;
     
-    Otp($'Constructing structs code');
-    var structs_sb := new StringBuilder;
-    loop 3 do structs_sb += '  '#10;
-    Struct.WriteAll(structs_sb);
-    structs_sb += '  '#10'  ';
-    WriteAllText(GetFullPathRTA('Structs.template'), structs_sb.ToString);
+    begin
+      Otp($'Constructing structs code');
+      var structs_wr := new FileWriter(GetFullPathRTA('Structs.template'));
+      loop 3 do structs_wr += '  '#10;
+      Struct.WriteAll(structs_wr);
+      structs_wr += '  '#10'  ';
+      structs_wr.Close;
+    end;
     
-    Otp($'Constructing enums code');
-    var groups_sb := new StringBuilder;
-    loop 3 do groups_sb += '  '#10;
-    Group.WriteAll(groups_sb);
-    groups_sb += '  '#10'  ';
-    WriteAllText(GetFullPathRTA('Groups.template'), groups_sb.ToString);
+    begin
+      Otp($'Constructing enums code');
+      var group_wr := new FileWriter(GetFullPathRTA('Groups.template'));
+      loop 3 do group_wr += '  '#10;
+      Group.WriteAll(group_wr);
+      group_wr += '  '#10'  ';
+      group_wr.Close;
+    end;
     
-    Otp($'Constructing funcs code');
-    var funcs_sb := new StringBuilder;
-    var funcs_ntv_sb := new StringBuilder;
-    loop 3 do funcs_sb += '  '#10;
-    loop 3 do funcs_ntv_sb += '  '#10;
-    Feature.WriteAll(funcs_sb, funcs_ntv_sb);
-    Extension.WriteAll(funcs_sb, funcs_ntv_sb);
-    funcs_sb += '  '#10'  ';
-    funcs_ntv_sb += '  '#10'  ';
-    WriteAllText(GetFullPathRTA('Funcs.template'), funcs_sb.ToString);
-    WriteAllText(GetFullPathRTA('FuncsNtv.template'), funcs_ntv_sb.ToString);
+    begin
+      Otp($'Constructing funcs code');
+      var funcs_wr := new FileWriter(GetFullPathRTA('Funcs.template'));
+      var funcs_impl_wr := new FileWriter(GetFullPathRTA(GetFullPathRTA('Funcs.Implementation.template')));
+      loop 3 do funcs_wr += '  '#10;
+      loop 3 do funcs_impl_wr += #10;
+      Feature.WriteAll(funcs_wr, funcs_impl_wr);
+      Extension.WriteAll(funcs_wr, funcs_impl_wr);
+      funcs_wr += '  '#10'  ';
+      funcs_impl_wr += #10;
+      funcs_wr.Close;
+      funcs_impl_wr.Close;
+    end;
     
     FinishAll;
   except

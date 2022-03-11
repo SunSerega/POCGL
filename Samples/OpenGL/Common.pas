@@ -3,7 +3,7 @@
 uses System;
 uses OpenGL;
 
-var gl: OpenGL.gl<PlWin>;
+var gl: OpenGL.gl;
 
 {$region Shader}
 

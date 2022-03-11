@@ -2,7 +2,9 @@
 
 interface
 
+uses CodeGen      in '..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\POCGL_Utils';
+
 uses PackingUtils;
 
 uses AOtp         in '..\..\Utils\AOtp';
@@ -176,7 +178,7 @@ type
           Otp($'WARNING: Group [{gr.name}] was explicitly added, but wasn''t used') else
           log.Otp($'Group [{gr.name}] was skipped');
     
-    public procedure Write(sb: StringBuilder);
+    public procedure Write(wr: Writer);
     begin
       log_groups.Otp($'# {name}[{t}]');
       foreach var ename in enums.Keys do
@@ -187,71 +189,71 @@ type
       
       if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
       var max_scr_w := screened_enums.Values.DefaultIfEmpty('').Max(ename->ename.Length);
-      sb +=       $'  {name} = record' + #10;
+      wr +=       $'  {name} = record' + #10;
       
-      sb +=       $'    public val: {t};' + #10;
-      sb +=       $'    public constructor(val: {t}) := self.val := val;' + #10;
+      wr +=       $'    public val: {t};' + #10;
+      wr +=       $'    public constructor(val: {t}) := self.val := val;' + #10;
       if t = 'IntPtr' then
-        sb +=     $'    public constructor(val: Int32) := self.val := new {t}(val);' + #10;
-      sb +=       $'    ' + #10;
+        wr +=     $'    public constructor(val: Int32) := self.val := new {t}(val);' + #10;
+      wr +=       $'    ' + #10;
       
       foreach var ename in EnumrKeys do
-        sb +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {name} read new {name}({ValueStr[ename]});' + #10;
-      sb +=       $'    ' + #10;
+        wr +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {name} read new {name}({ValueStr[ename]});' + #10;
+      wr +=       $'    ' + #10;
       
       if bitmask then
       begin
         
-        sb +=     $'    public static function operator+(f1,f2: {name}) := new {name}(f1.val or f2.val);' + #10;
-        sb +=     $'    public static function operator or(f1,f2: {name}) := f1+f2;' + #10;
-        sb +=     $'    ' + #10;
+        wr +=     $'    public static function operator+(f1,f2: {name}) := new {name}(f1.val or f2.val);' + #10;
+        wr +=     $'    public static function operator or(f1,f2: {name}) := f1+f2;' + #10;
+        wr +=     $'    ' + #10;
         
         foreach var ename in EnumrKeys do
           if enums[ename]<>0 then
-            sb += $'    public property HAS_FLAG_{screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else
-            sb += $'    public property ANY_FLAGS: boolean read self.val<>0;' + #10;
-        sb +=     $'    ' + #10;
+            wr += $'    public property HAS_FLAG_{screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else
+            wr += $'    public property ANY_FLAGS: boolean read self.val<>0;' + #10;
+        wr +=     $'    ' + #10;
         
       end;
       
-      sb +=       $'    public function ToString: string; override;' + #10;
-      sb +=       $'    begin' + #10;
+      wr +=       $'    public function ToString: string; override;' + #10;
+      wr +=       $'    begin' + #10;
       if bitmask then
-        sb +=     $'      var res := new StringBuilder;'+#10;
+        wr +=     $'      var res := new StringBuilder;'+#10;
       foreach var ename in EnumrKeys do
       begin
-        sb +=     $'      if self.val ';
+        wr +=     $'      if self.val ';
         var val_str := ValueStr[ename];
-        if bitmask then sb += $'and {t}({val_str}) ';
-        sb += $'= {t}({val_str}) then ';
+        if bitmask then wr += $'and {t}({val_str}) ';
+        wr += $'= {t}({val_str}) then ';
         if bitmask then
-          sb +=   $'res += ''{ename}+'';' else
-          sb +=   $'Result := ''{ename}'' else';
-        sb += #10;
+          wr +=   $'res += ''{ename}+'';' else
+          wr +=   $'Result := ''{ename}'' else';
+        wr += #10;
       end;
       if bitmask then
       begin
-        sb +=     $'      if res.Length<>0 then'+#10;
-        sb +=     $'      begin'+#10;
-        sb +=     $'        res.Length -= 1;'+#10;
-        sb +=     $'        Result := res.ToString;'+#10;
-        sb +=     $'      end else'+#10;
+        wr +=     $'      if res.Length<>0 then'+#10;
+        wr +=     $'      begin'+#10;
+        wr +=     $'        res.Length -= 1;'+#10;
+        wr +=     $'        Result := res.ToString;'+#10;
+        wr +=     $'      end else'+#10;
       end;
-      sb +=       $'        Result := $''{name}[{{self.val}}]'';'+#10;
-      sb +=       $'    end;' + #10;
-      sb +=       $'    ' + #10;
+      wr +=       $'        Result := $''{name}[{{self.val}}]'';'+#10;
+      wr +=       $'    end;' + #10;
+      wr +=       $'    ' + #10;
       
       foreach var m in custom_members do
       begin
         foreach var l in m do
-          sb +=   $'    {l}' + #10;
-        sb +=     $'    ' + #10;
+          wr +=   $'    {l}' + #10;
+        wr +=     $'    ' + #10;
       end;
       
-      sb +=       $'  end;'+#10;
-      sb +=       $'  ' + #10;
+      wr +=       $'  end;'+#10;
+      wr +=       $'  ' + #10;
     end;
-    public static procedure WriteAll(sb: StringBuilder) :=
+    public static procedure WriteAll(wr: Writer) :=
     foreach var g in All.GroupBy(gr->gr.ext_name).OrderBy(g->
     begin
       case g.Key of
@@ -266,14 +268,14 @@ type
       if gn='' then gn := 'Core';
       if not g.Any(gr->gr.used) then continue;
       
-      sb += $'  {{$region {gn}}}'+#10;
-      sb += $'  '+#10;
+      wr += $'  {{$region {gn}}}'+#10;
+      wr += $'  '+#10;
       
       foreach var gr in g.OrderBy(gr->gr.name) do
-        gr.Write(sb);
+        gr.Write(wr);
       
-      sb += $'  {{$endregion {gn}}}'+#10;
-      sb += $'  '+#10;
+      wr += $'  {{$endregion {gn}}}'+#10;
+      wr += $'  '+#10;
     end;
     
   end;
@@ -346,27 +348,27 @@ type
       Result := res.ToString;
     end;
     
-    public procedure Write(sb: StringBuilder);
+    public procedure Write(wr: Writer);
     begin
-      sb += '    ';
+      wr += '    ';
       if name<>nil then
       begin
-        sb += vis;
-        sb += ' ';
-        sb += self.MakeDef;
+        wr += vis;
+        wr += ' ';
+        wr += self.MakeDef;
         if def_val<>nil then
         begin
-          sb += ' := ';
-          sb += def_val;
+          wr += ' := ';
+          wr += def_val;
         end;
-        sb += ';';
+        wr += ';';
         if comment<>nil then
         begin
-          sb += ' // ';
-          sb += comment;
+          wr += ' // ';
+          wr += comment;
         end;
       end;
-      sb += #10;
+      wr += #10;
     end;
     
   end;
@@ -423,7 +425,7 @@ type
           log.Otp($'Struct [{s.name}] was skipped');
     
     private static ValueStringNamesCache := new HashSet<string>;
-    private function MakeValueString(sb: StringBuilder; len: integer): string;
+    private function MakeValueString(wr: Writer; len: integer): string;
     begin
       Result := $'_ValueString_{len}';
       if not ValueStringNamesCache.Add(Result) then exit;
@@ -434,52 +436,52 @@ type
       
       if not used then exit;
       
-      sb += '  [StructLayout(LayoutKind.Explicit, Size = ';
-      sb += len.ToString;
-      sb += ')]'#10;
+      wr += '  [StructLayout(LayoutKind.Explicit, Size = ';
+      wr += len.ToString;
+      wr += ')]'#10;
       
-      sb += '  ///--'#10;
-      sb += '  ';
-      sb += Result;
-      sb += ' = record'#10;
-      sb += '    '#10;
+      wr += '  ///--'#10;
+      wr += '  ';
+      wr += Result;
+      wr += ' = record'#10;
+      wr += '    '#10;
       
-      sb += '    public property NtvChars[i: integer]: Byte'#10;
-      sb += '    read Marshal.ReadByte(new IntPtr(@self), i)'#10;
-      sb += '    write Marshal.WriteByte(new IntPtr(@self), i, value);';
+      wr += '    public property NtvChars[i: integer]: Byte'#10;
+      wr += '    read Marshal.ReadByte(new IntPtr(@self), i)'#10;
+      wr += '    write Marshal.WriteByte(new IntPtr(@self), i, value);';
       
-      sb += '    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;'#10;
-      sb += '    '#10;
+      wr += '    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;'#10;
+      wr += '    '#10;
       
-      sb += '    public constructor(s: string);'#10;
-      sb += '    begin'#10;
-      sb += '      if s.Length >= ';
-      sb += len.ToString;
-      sb += ' then raise new System.OverflowException;'#10;
-      sb += '      '#10;
-      sb += '      for var i := 0 to s.Length-1 do'#10;
-      sb += '        self[i] := s[i+1];'#10;
-      sb += '      self.NtvChars[s.Length] := 0;'#10;
-      sb += '      '#10;
-      sb += '    end;'#10;
-      sb += '    '#10;
+      wr += '    public constructor(s: string);'#10;
+      wr += '    begin'#10;
+      wr += '      if s.Length >= ';
+      wr += len.ToString;
+      wr += ' then raise new System.OverflowException;'#10;
+      wr += '      '#10;
+      wr += '      for var i := 0 to s.Length-1 do'#10;
+      wr += '        self[i] := s[i+1];'#10;
+      wr += '      self.NtvChars[s.Length] := 0;'#10;
+      wr += '      '#10;
+      wr += '    end;'#10;
+      wr += '    '#10;
       
-      sb += '    public function ToString: string; override :='#10;
-      sb += '    Marshal.PtrToStringAnsi(new IntPtr(@self));'#10;
-      sb += '    '#10;
+      wr += '    public function ToString: string; override :='#10;
+      wr += '    Marshal.PtrToStringAnsi(new IntPtr(@self));'#10;
+      wr += '    '#10;
       
-      sb += '  end;'#10;
-      sb += '  '#10;
+      wr += '  end;'#10;
+      wr += '  '#10;
       
     end;
     
-    public procedure Write(sb: StringBuilder);
+    public procedure Write(wr: Writer);
     begin
       foreach var fld in flds do
         if fld.rep_c<>1 then
         begin
           if fld.t<>'ntv_char' then raise new System.NotSupportedException;
-          fld.t := MakeValueString(sb, fld.rep_c);
+          fld.t := MakeValueString(wr, fld.rep_c);
           fld.rep_c := 1;
         end;
       
@@ -490,28 +492,28 @@ type
       
       if not used then exit;
       
-      sb += $'  {name} = record' + #10;
+      wr += $'  {name} = record' + #10;
       
       foreach var fld in flds do
-        fld.Write(sb);
-      sb += '    '#10;
+        fld.Write(wr);
+      wr += '    '#10;
       
       var constr_flds := flds.ToList;
       constr_flds.RemoveAll(fld->fld.name=nil);
       constr_flds.RemoveAll(fld->fld.def_val<>nil);
-      sb += '    public constructor(';
-      sb += constr_flds.Select(fld->fld.MakeDef).JoinToString('; ');
-      sb += ');'#10;
-      sb += '    begin'#10;
+      wr += '    public constructor(';
+      wr += constr_flds.Select(fld->fld.MakeDef).JoinToString('; ');
+      wr += ');'#10;
+      wr += '    begin'#10;
       foreach var fld in constr_flds do
-        sb += $'      self.{fld.name} := {fld.name};'+#10;
-      sb += '    end;'#10;
-      sb += '    '#10;
+        wr += $'      self.{fld.name} := {fld.name};'+#10;
+      wr += '    end;'#10;
+      wr += '    '#10;
       
-      sb +=       '  end;'#10;
-      sb +=       '  '#10;
+      wr +=       '  end;'#10;
+      wr +=       '  '#10;
     end;
-    public static procedure WriteAll(sb: StringBuilder);
+    public static procedure WriteAll(wr: Writer);
     begin
       var sorted := new List<Struct>;
       foreach var s in All.OrderBy(s->s.name) do
@@ -521,7 +523,7 @@ type
           sorted += s else
           sorted.Insert(ind, s);
       end;
-      foreach var s in sorted do s.Write(sb);
+      foreach var s in sorted do s.Write(wr);
     end;
     
   end;
@@ -912,7 +914,7 @@ type
     {$endregion MarkUsed}
     
     public static prev_func_names := new HashSet<string>;
-    public procedure Write(sb, ntv_sb: StringBuilder; ntv_t_name, api, version: string; static_container: boolean);
+    public procedure Write(wr: Writer; api, version: string; static_container: boolean);
     begin
       InitOverloads;
       var arr_hlp_ovr_par := new FuncParamT(false, 0, 'IntPtr');
@@ -957,84 +959,57 @@ type
         log.Otp($'Func [{name}] had api [{api}], which isn''t start of it''s name');
       prev_func_names += l_name.ToLower;
       
-      var use_external := static_container;
-      case api of
-        'gl': use_external := (version<>nil) and (version <= '1.1');
-      end;
-      if not use_external then
-        sb += $'    private z_{l_name}_adr := GetFuncAdr(''{name}'');' + #10;
+      if not static_container then
+        wr += $'    private z_{l_name}_adr := GetProcAddress(''{name}'');' + #10;
       
       {$endregion MiscInit}
       
       {$region WriteOvrT}
       
-      var WriteOvrT := procedure(sb: StringBuilder; ovr: FuncOverload; generic_names: List<string>; name: string; is_static, allow_skip_arr_hlp: boolean)->
+      var WriteOvrT := procedure(wr: Writer; ovr: FuncOverload; generic_names: List<string>; name: string; allow_skip_arr_hlp: boolean)->
       begin
         
-        var use_standart_dt := false; // единственное применение - в "Marshal.GetDelegateForFunctionPointer". Но он их и не принимает
-        if use_standart_dt then
-        begin
-          sb += is_proc ? 'Action' : 'Func';
-        end else
-        begin
-          if is_static and (name<>nil) then sb += 'static ';
-          sb += is_proc ? 'procedure' : 'function';
-        end;
+        if static_container and (name<>nil) then wr += 'static ';
+        wr += is_proc ? 'procedure' : 'function';
+        
         if name<>nil then
         begin
-          sb += ' ';
-          sb += name;
+          wr += ' ';
+          wr += name;
           if (generic_names<>nil) and (generic_names.Count<>0) then
           begin
-            sb += '<';
-            foreach var gn in generic_names do
-            begin
-              sb += gn;
-              sb += ',';
-            end;
-            sb.Length -= 1;
-            sb += '>';
+            wr += '<';
+            wr += generic_names.JoinToString(',');
+            wr += '>';
           end;
         end;
         
         if ovr.pars.Length>1 then
         begin
-          sb += use_standart_dt ? '<' : '(';
+          wr += '(';
+          var first_par := true;
           for var par_i := 1 to ovr.pars.Length-1 do
           begin
             var par := ovr.pars[par_i];
             if allow_skip_arr_hlp and par.arr_hlp_skip then continue;
-            if not use_standart_dt then
-            begin
-              if par.var_arg then sb += 'var ';
-              sb += org_par[par_i].name;
-              sb += ': ';
-            end;
-            loop par.arr_lvl do sb += 'array of ';
-            if par.tname.ToLower in prev_func_names then sb += 'OpenGL.';
-            sb += par.tname;
-            sb += use_standart_dt ? ', ' : '; ';
+            if first_par then
+              first_par := false else
+              wr += '; ';
+            if par.var_arg then wr += 'var ';
+            wr += org_par[par_i].name;
+            wr += ': ';
+            loop par.arr_lvl do wr += 'array of ';
+            if par.tname.ToLower in prev_func_names then wr += 'OpenGL.';
+            wr += par.tname;
           end;
-          sb.Length -= 2; // лишнее '; '
-          sb += use_standart_dt ? '>' : ')';
+          wr += ')';
         end;
         
         if not is_proc then
-          if use_standart_dt then
-          begin
-            if ovr.pars.Length>1 then
-            begin
-              sb.Length -= 1;
-              sb += ', ';
-            end else
-              sb += '<';
-            sb += ovr.pars[0].ToString(true);
-            sb += '>';
-          end else
-          begin
-            sb += ': ';
-            sb += ovr.pars[0].ToString(true);
-          end;
+        begin
+          wr += ': ';
+          wr += ovr.pars[0].ToString(true);
+        end;
         
       end;
       
@@ -1253,8 +1228,6 @@ type
             
             {$region Name construction}
             
-            var is_static := static_container;
-            
             var ovr_name: (string,array of boolean);
             var vis := 'public';
             if m_ovr_i=max_marshal_chain-1 then
@@ -1267,7 +1240,6 @@ type
               exit;
             end else
             begin
-              is_static := is_static or use_external;
               var ovr_name_str: string;
               var ovr_name_arr_nil := nil_arr_par_flags;
               
@@ -1301,31 +1273,24 @@ type
             begin
               {$region ntv}
               
-              if use_external then
+              if static_container then
               begin
-                var ext_ovr_name := {'_'+}ovr_name_str;
                 
-                ntv_sb += '    ';
-                ntv_sb += ntv_t_name<>nil ? 'public' : 'private';
-                ntv_sb += ' ';
-                WriteOvrT(ntv_sb, curr_ovr,nil, ext_ovr_name, true, false);
-                ntv_sb += ';'#10;
-                ntv_sb += $'    external ''{GetDllNameForAPI(api)}'' name ''{name}'';'+#10;
-                
-//                sb += $'    {vis} static {ovr_name_str}';
-//                if (org_par.Length=1) and not is_proc then
-//                begin
-//                  sb += ': ';
-//                  WriteOvrT(curr_ovr,nil, nil, false, false);
-//                end;
-//                sb += $' := {ext_ovr_name};' + #10;
+                wr += '    private ';
+                WriteOvrT(wr, curr_ovr,nil, ovr_name_str, false);
+                wr += ';'#10;
+                wr += '    external ''';
+                wr += GetDllNameForAPI(api);
+                wr += ''' name ''';
+                wr += name;
+                wr += ''';'#10;
                 
               end else
               begin
                 
-                sb += $'    private {ovr_name_str} := GetFuncOrNil&<';
-                WriteOvrT(sb, curr_ovr,nil, nil, false, false);
-                sb += $'>(z_{l_name}_adr);'+#10;
+                wr += $'    private {ovr_name_str} := GetProcOrNil&<';
+                WriteOvrT(wr, curr_ovr,nil, nil, false);
+                wr += $'>(z_{l_name}_adr);'+#10;
                 
               end;
               
@@ -1347,49 +1312,44 @@ type
                 need_init or need_fnls
               ;
               
-              sb += $'    {vis} [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-              WriteOvrT(sb, curr_ovr, generic_names, ovr_name_str, is_static, m_ovr_i>0);
+              wr += $'    {vis} [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
+              WriteOvrT(wr, curr_ovr, generic_names, ovr_name_str, m_ovr_i>0);
               
               if need_block then
               begin
-                sb += ';';
+                wr += ';';
                 if generic_names.Count<>0 then
                 begin
-                  sb += ' where ';
-                  foreach var gn in generic_names do
-                  begin
-                    sb += gn;
-                    sb += ', ';
-                  end;
-                  sb.Length -= 2;
-                  sb += ': record;';
+                  wr += ' where ';
+                  wr += generic_names.JoinToString(', ');
+                  wr += ': record;';
                 end;
-                sb += #10;
-                sb += '    begin'#10;
+                wr += #10;
+                wr += '    begin'#10;
               end else
-                sb += ' :='#10;
+                wr += ' :='#10;
               
               foreach var g in ms.Where(m->m?.vars<>nil).SelectMany(m->m.vars).GroupBy(t->t[1], t->t[0]).OrderBy(g->g.Key) do
               begin
-                sb += '  '*3;
-                sb += 'var ';
-                sb += g.JoinToString(', ');
-                sb += ': ';
-                sb += g.Key;
-                sb += ';'#10;
+                wr += '  '*3;
+                wr += 'var ';
+                wr += g.JoinToString(', ');
+                wr += ': ';
+                wr += g.Key;
+                wr += ';'#10;
               end;
               
               if need_init then
               begin
                 
-                if need_fnls then sb += '      try'#10;
+                if need_fnls then wr += '      try'#10;
                 var padding := '  '*(3+integer(need_fnls));
                 foreach var m in ms do
                   if m?.init<>nil then foreach var l in m.init do
                   begin
-                    sb += padding;
-                    sb += l;
-                    sb += #10;
+                    wr += padding;
+                    wr += l;
+                    wr += #10;
                   end;
                 
               end;
@@ -1410,10 +1370,10 @@ type
                   
                   if nil_arr_call_flags.Count in arr_par_inds then
                   begin
-                    sb += '  '*tabs;
+                    wr += '  '*tabs;
                     var par_call_str := ms[nil_arr_call_flags.Count].call_str;
-                    sb += $'if ({par_call_str}<>nil) and ({par_call_str}.Length<>0) then';
-                    sb += #10;
+                    wr += $'if ({par_call_str}<>nil) and ({par_call_str}.Length<>0) then';
+                    wr += #10;
                     tabs += 1;
                   end;
                   
@@ -1421,43 +1381,42 @@ type
                 end else
                 begin
                   
-                  sb += '  '*tabs;
+                  wr += '  '*tabs;
                   if need_block and not is_proc then
                   begin
-                    sb += ms[0]=nil ? 'Result' : ms[0].call_str;
-                    sb += ' := '
+                    wr += ms[0]=nil ? 'Result' : ms[0].call_str;
+                    wr += ' := '
                   end;
                   
-                  sb += prev_ovr_name[0];
+                  wr += prev_ovr_name[0];
                   if prev_ovr_name[1].Any(b->b) or nil_arr_call_flags.Any(b->b) then
                   begin
-                    sb += '_anh';
+                    wr += '_anh';
                     for var par_i := 0 to curr_ovr.pars.Length-1 do
-                      sb += prev_ovr_name[1][par_i] or nil_arr_call_flags[par_i] ? '1' : '0';
+                      wr += prev_ovr_name[1][par_i] or nil_arr_call_flags[par_i] ? '1' : '0';
                   end;
                   
                   if curr_ovr.pars.Length>1 then
                   begin
-                    sb += '(';
+                    wr += '(';
+                    var first_par := true;
                     for var par_i := 1 to ms.Length-1 do
                     begin
+                      if nil_arr_call_flags[par_i] and (m_ovr_i>1) then continue;
+                      if first_par then
+                        first_par := false else
+                        wr += ', ';
                       if nil_arr_call_flags[par_i] then
-                      begin
-                        if m_ovr_i>1 then continue;
-                        sb += 'IntPtr.Zero';
-                      end else
+                        wr += 'IntPtr.Zero' else
                       if nil_arr_par_flags[par_i] then
-                        sb += 'PByte(nil)^' else
+                        wr += 'PByte(nil)^' else
                       begin
-                        sb += ms[par_i]=nil ? org_par[par_i].name : ms[par_i].call_str;
-                        if arr_par_inds.Contains(par_i) and (curr_ovr.pars[par_i].arr_lvl <> 0) then sb += '[0]';
+                        wr += ms[par_i]=nil ? org_par[par_i].name : ms[par_i].call_str;
+                        if arr_par_inds.Contains(par_i) and (curr_ovr.pars[par_i].arr_lvl <> 0) then wr += '[0]';
                       end;
-                      sb += ', ';
                     end;
-                    sb.Length -= ', '.Length;
-                    sb += ')';
+                    wr += ')';
                   end;
-                  sb += ' else'#10;
                   
                   while true do
                   begin
@@ -1482,39 +1441,33 @@ type
                     end;
                   end;
                   
+                  if cont_call_cascade then wr += ' else'#10;
                 end;
-              sb.Length -= ' else'#10.Length;
-              sb += ';'#10;
+              wr += ';'#10;
               
               if need_fnls then
               begin
-                if need_init then sb += '      finally'#10;
+                if need_init then wr += '      finally'#10;
                 var padding := '  '*(3+integer(need_init));
                 
                 foreach var m in ms do
                   if m?.fnls<>nil then foreach var l in m.fnls do
                   begin
-                    sb += padding;
-                    sb += l;
-                    sb += #10;
+                    wr += padding;
+                    wr += l;
+                    wr += #10;
                   end;
                 
-                if need_init then sb += '      end;'#10;
+                if need_init then wr += '      end;'#10;
               end;
               
               if need_block then
-                sb += '    end;'#10;
+                wr += '    end;'#10;
               
               {$endregion non-ntv}
             end;
             
           end);
-          
-          if use_external and (ntv_t_name<>nil) then
-            relevant_ovr_name := (
-              $'{ntv_t_name}.{relevant_ovr_name[0]}',
-              relevant_ovr_name[1]
-            );
           
         end;
         
@@ -1522,9 +1475,7 @@ type
         
       end;
       
-      if use_external and (ntv_t_name<>nil) then
-        ntv_sb += '    '#10;
-      sb += '    '#10;
+      wr += '    '#10;
     end;
     
   end;
@@ -1628,7 +1579,7 @@ type
       end;
     end;
     
-    public static procedure WriteAll(sb, ntv_sb: StringBuilder) :=
+    public static procedure WriteAll(wr, impl_wr: Writer) :=
     foreach var api in Feature.ByApi.Keys do
     begin
       
@@ -1665,94 +1616,74 @@ type
       log_func_ver.Close;
       
       var is_dynamic := IsAPIDynamic(api);
-      var class_type := is_dynamic ? 'sealed' : 'static';
+      var class_type := is_dynamic ? 'sealed partial' : 'static';
       
-      var ntv_t_name := default(string);
-      if is_dynamic then
+      var WriteAPI := procedure(api_funcs: sequence of Func; add_ver, depr_ver: Func->string)->
       begin
-        ntv_t_name := api + '_ntv';
-        ntv_sb += '  [PCUNotRestore]'#10;
-        ntv_sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
-        ntv_sb += '  ///--'#10;
-        ntv_sb += '  ';
-        ntv_sb += ntv_t_name;
-        ntv_sb += ' = static class'#10;
-        ntv_sb += '    '#10;
-      end;
-      
-      sb += '  [PCUNotRestore]'#10;
-      sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
-      sb += '  ';
-      sb += api;
-      if is_dynamic then
-        sb += '<TPlatformAPI>';
-      sb += ' = ';
-      sb += class_type;
-      sb += ' class'#10;
-      if is_dynamic then
-      begin
-        sb += '  where TPlatformAPI: record, IPlatformAPI;'#10;
-        sb += '    private static platform_api := default(TPlatformAPI);'#10;
-        sb += '    private static function GetFuncAdr(lpszProc: string) := platform_api.GetProcAddress(lpszProc);'#10;
-        sb += '    private static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
-        sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
-        sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
-      end;
-      
-      sb += '    '#10;
-      
-      foreach var f in all_funcs.Keys.OrderBy(f->f.name) do
-        if not deprecated.ContainsKey(f) then
+        wr += '  [PCUNotRestore]'#10;
+        wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
+        wr += '  ';
+        wr += api;
+        if depr_ver<>nil then wr += 'D';
+        wr += ' = ';
+        wr += class_type;
+        wr += ' class'#10;
+        if is_dynamic then
         begin
-          if api<>'gdi' then
-            sb += $'    // added in {api}{all_funcs[f]}'+#10;
-          f.Write(sb, is_dynamic ? ntv_sb : sb, ntv_t_name, api,all_funcs[f], not is_dynamic);
+          
+          wr += '    public constructor(loader: PlatformLoader);'#10;
+          wr += '    private constructor := raise new System.NotSupportedException;'#10;
+          wr += '    private function GetProcAddress(name: string): IntPtr;'#10;
+          
+          impl_wr += 'type ';
+          impl_wr += api;
+          if depr_ver<>nil then impl_wr += 'D';
+          impl_wr += ' = ';
+          impl_wr += class_type;
+          impl_wr += ' class(api_with_loader) end;'#10;
+          impl_wr += 'constructor ';
+          impl_wr += api;
+          if depr_ver<>nil then impl_wr += 'D';
+          impl_wr += '.Create(loader: PlatformLoader) := inherited Create(loader);'#10;
+          impl_wr += 'function ';
+          impl_wr += api;
+          if depr_ver<>nil then impl_wr += 'D';
+          impl_wr += '.GetProcAddress(name: string) := loader.GetProcAddress(name);'#10;
+          impl_wr += #10;
+          
+          wr += '    private static function GetProcOrNil<T>(fadr: IntPtr) :='#10;
+          wr += '    fadr=IntPtr.Zero ? default(T) :'#10;
+          wr += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
         end;
+        
+        wr += '    '#10;
+        
+        foreach var f in api_funcs.OrderBy(f->f.name) do
+          begin
+            if api<>'gdi' then
+            begin
+              wr += '    // added in ';
+              wr += api;
+              wr += add_ver(f);
+              if depr_ver<>nil then
+              begin
+                wr += ', deprecated in ';
+                wr += api;
+                wr += depr_ver(f);
+              end;
+              wr += #10;
+            end;
+            f.Write(wr, api,all_funcs[f], not is_dynamic);
+          end;
+        
+        Func.prev_func_names.Clear;
+        wr += $'  end;'+#10;
+        wr += $'  '+#10;
+      end;
       
-      Func.prev_func_names.Clear;
-      sb += $'  end;'+#10;
-      sb += $'  '+#10;
-      
+      WriteAPI(all_funcs.Keys.Where(f->not deprecated.ContainsKey(f)), f->all_funcs[f], nil);
       if not deprecated.Any then continue;
-      sb += '  [PCUNotRestore]'#10;
-      sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
-      
-      sb += '  ';
-      sb += api;
-      sb += 'D';
-      if is_dynamic then
-        sb += '<TPlatformAPI>';
-      sb += ' = ';
-      sb += class_type;
-      sb += ' class'#10;
-      if is_dynamic then
-      begin
-        sb += '  where TPlatformAPI: record, IPlatformAPI;'#10;
-        sb += '    private static platform_api := default(TPlatformAPI);'#10;
-        sb += '    private static function GetFuncAdr(lpszProc: string) := platform_api.GetProcAddress(lpszProc);'#10;
-        sb += '    private static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
-        sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
-        sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
-      end;
-      
-      sb += $'    '+#10;
-      
-      foreach var f in all_funcs.Keys.Where(deprecated.ContainsKey).OrderBy(f->f.name) do
-      begin
-        if api<>'gdi' then
-          sb += $'    // added in {api}{all_funcs[f]}, deprecated in {api}{deprecated[f]}'+#10;
-        f.Write(sb, ntv_t_name<>nil ? ntv_sb : sb, ntv_t_name, api,all_funcs[f], not is_dynamic);
-      end;
-      
-      Func.prev_func_names.Clear;
-      sb += '  end;'#10;
-      sb += '  '#10;
-      
-      if is_dynamic then
-      begin
-        ntv_sb += '  end;'#10;
-        ntv_sb += '  '#10;
-      end;
+      WriteAPI(all_funcs.Keys.Where(f->    deprecated.ContainsKey(f)), f->all_funcs[f], f->deprecated[f]);
       
     end;
     
@@ -1834,74 +1765,77 @@ type
       end;
     end;
     
-    public procedure Write(sb, ntv_sb: StringBuilder);
+    public procedure Write(wr, impl_wr: Writer);
     begin
       if add.Count=0 then exit;
       
-      sb += '  [PCUNotRestore]'#10;
-      sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
+      var is_dynamic := Extension.IsAPIDynamic(api);
+      var need_loader := Feature.IsAPIDynamic(api);
+      var class_type := is_dynamic ? 'sealed partial' : 'static';
       
-      sb += '  ';
-      sb += display_name;
-      if Feature.IsAPIDynamic(api) then
-        sb += '<TPlatformAPI>';
-      sb += ' = ';
-      var is_dynamic := IsAPIDynamic(api);
-      sb += is_dynamic ? 'sealed' : 'static';
-      sb += ' class'#10;
+      wr += '  [PCUNotRestore]'#10;
+      wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
       
-      var ntv_t_name := default(string);
-//      if is_dynamic then
-//      begin
-//        ntv_t_name := display_name + '_ntv';
-//        ntv_sb += '  [PCUNotRestore]'#10;
-//        ntv_sb += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
-//        ntv_sb += '  ///--'#10;
-//        ntv_sb += '  ';
-//        ntv_sb += ntv_t_name;
-//        ntv_sb += ' = static class'#10;
-//        ntv_sb += '    '#10;
-//      end;
+      wr += '  ';
+      wr += display_name;
+      wr += ' = ';
+      wr += class_type;
+      wr += ' class'#10;
       
       if is_dynamic then
       begin
-        if Feature.IsAPIDynamic(api) then
+        if need_loader then
         begin
-          sb += '  where TPlatformAPI: record, IPlatformAPI;'#10;
-          sb += '    private static platform_api := default(TPlatformAPI);'#10;
-          sb += '    private static function GetFuncAdr(lpszProc: string) := platform_api.GetProcAddress(lpszProc);'#10;
-        end else
-        begin
-          sb += $'    private static function GetFuncAdr(lpszProc: string) := {api}.GetProcAddress(lpszProc);'+#10;
+          wr += '    public constructor(loader: PlatformLoader);'#10;
+          wr += '    private constructor := raise new System.NotSupportedException;'#10;
+          
+          impl_wr += 'type ';
+          impl_wr += display_name;
+          impl_wr += ' = ';
+          impl_wr += class_type;
+          impl_wr += ' class(api_with_loader) end;'#10;
+          impl_wr += 'constructor ';
+          impl_wr += display_name;
+          impl_wr += '.Create(loader: PlatformLoader) := inherited Create(loader);'#10;
+          impl_wr += 'function ';
+          impl_wr += display_name;
+          impl_wr += '.GetProcAddress(name: string) := loader.GetProcAddress(name);'#10;
+          impl_wr += #10;
+          
         end;
-        sb += '    private static function GetFuncOrNil<T>(fadr: IntPtr) :='#10;
-        sb += '    fadr=IntPtr.Zero ? default(T) :'#10;
-        sb += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
+        
+        wr += '    private function GetProcAddress(name: string)';
+        if need_loader then
+          wr += ': IntPtr' else
+        begin
+          wr += ' := ';
+          wr += api;
+          wr += '.GetProcAddress(name)';
+        end;
+        wr += ';'#10;
+        
+        wr += '    private static function GetProcOrNil<T>(fadr: IntPtr) :='#10;
+        wr += '    fadr=IntPtr.Zero ? default(T) :'#10;
+        wr += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
       end;
       
-      sb += $'    public const _ExtStr = ''{name}'';'+#10;
-      sb += $'    '+#10;
+      wr += $'    public const _ExtStr = ''{name}'';'+#10;
+      wr += $'    '+#10;
       
       foreach var f in add do
-        f.Write(sb, ntv_t_name<>nil ? ntv_sb : sb, ntv_t_name, api,nil, not is_dynamic);
+        f.Write(wr, api,nil, not is_dynamic);
       Func.prev_func_names.Clear;
-      sb += $'  end;'+#10;
-      sb += $'  '+#10;
-      
-//      if is_dynamic then
-//      begin
-//        ntv_sb += $'  end;'+#10;
-//        ntv_sb += $'  '+#10;
-//      end;
+      wr += $'  end;'+#10;
+      wr += $'  '+#10;
       
     end;
-    public static procedure WriteAll(sb, ntv_sb: StringBuilder);
+    public static procedure WriteAll(wr, impl_wr: Writer);
     begin
-      sb += '  {$region Extensions}'#10;
-      sb += '  '#10;
-      foreach var ext in All do ext.Write(sb, ntv_sb);
-      sb += '  {$endregion Extensions}'#10;
-      sb += '  '#10;
+      wr += '  {$region Extensions}'#10;
+      wr += '  '#10;
+      foreach var ext in All do ext.Write(wr, impl_wr);
+      wr += '  {$endregion Extensions}'#10;
+      wr += '  '#10;
     end;
     
   end;
@@ -2012,7 +1946,6 @@ function GetDllNameForAPI(api: string): string;
 begin
   case api of
     'cl':   Result := 'opencl';
-    'gl':   Result := 'opengl32.dll';
     'wgl':  Result := 'opengl32.dll';
     'glx':  Result := 'libGL.so.1';
     'gdi':  Result := 'gdi32.dll';
