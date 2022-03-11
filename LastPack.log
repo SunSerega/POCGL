@@ -182,9 +182,9 @@ Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Ис
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGL\!Крутящийся треугольник\Крутящийся треугольник.pas"
+Tester: Compiling "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGL\Точки на поле\Точки.pas"
+Tester: Compiling "Samples\OpenGLABC\Точки на поле\Точки.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
@@ -499,8 +499,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
 Tester: Done executing
 Tester: Cleanup
-Tester: WARNING: File "G:\0Prog\POCGL\Samples\OpenGL\!Крутящийся треугольник\Крутящийся треугольник.td" updated
-Tester: WARNING: File "G:\0Prog\POCGL\Samples\OpenGL\Точки на поле\Точки.td" updated
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
@@ -535,17 +533,17 @@ Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.p
 Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\0.cl"
 Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
 Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
-Packing sample file "Samples\OpenGL\Common.pas"
-Packing sample file "Samples\OpenGL\!Крутящийся треугольник\Крутящийся треугольник.pas"
-Packing sample file "Samples\OpenGL\!Крутящийся треугольник\Крутящийся треугольник.vert"
-Packing sample file "Samples\OpenGL\Точки на поле\Empty.vert"
-Packing sample file "Samples\OpenGL\Точки на поле\Mandelbrot.frag"
-Packing sample file "Samples\OpenGL\Точки на поле\SinglePointToScreen.geom"
-Packing sample file "Samples\OpenGL\Точки на поле\Волны.frag"
-Packing sample file "Samples\OpenGL\Точки на поле\Минимум расстояний.frag"
-Packing sample file "Samples\OpenGL\Точки на поле\Спирали.frag"
-Packing sample file "Samples\OpenGL\Точки на поле\Сумма расстояний.frag"
-Packing sample file "Samples\OpenGL\Точки на поле\Точки.pas"
+Packing sample file "Samples\OpenGLABC\Common.pas"
+Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
+Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.vert"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Empty.vert"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Mandelbrot.frag"
+Packing sample file "Samples\OpenGLABC\Точки на поле\SinglePointToScreen.geom"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Волны.frag"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Минимум расстояний.frag"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Спирали.frag"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Сумма расстояний.frag"
+Packing sample file "Samples\OpenGLABC\Точки на поле\Точки.pas"
 Packed 27 sample files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing reference [Гайд по использованию OpenGL и OpenCL.html]
