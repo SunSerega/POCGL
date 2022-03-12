@@ -115,12 +115,15 @@ begin
         res += '    public static function operator=(wr1, wr2: ';
         res += t;
         WriteGenerics;
-        res += '): boolean := wr1.ntv = wr2.ntv;'#10;
+        res += '): boolean :='#10;
+        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
         
         res += '    public static function operator<>(wr1, wr2: ';
         res += t;
         WriteGenerics;
-        res += '): boolean := wr1.ntv <> wr2.ntv;'#10;
+        //TODO #????: not (wr1=wr2)
+        res += '): boolean := false='#10;
+        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
         
         res += '    '#10;
       end;

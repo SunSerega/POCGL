@@ -159,6 +159,7 @@ type
       end;
       
     end;
+    protected function GetRegisterWaitablesExtra: string; override := 'prev_commands.RegisterWaitables(g, prev_hubs)';
     
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: GetMethodSettings); override;
     begin

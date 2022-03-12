@@ -1,4 +1,4 @@
-unit MethodGenData;
+﻿unit MethodGenData;
 
 uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';
@@ -744,6 +744,7 @@ type
     protected procedure WriteCommandBaseTypeName(t: string; settings: TSettings); abstract;
     protected procedure WriteCommandTypeInhConstructor; virtual := exit;
     protected procedure WriteMiscMethods(settings: TSettings); virtual := exit;
+    protected function GetRegisterWaitablesExtra: string; virtual := nil;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin
       
@@ -912,12 +913,24 @@ type
       
       {$region RegisterWaitables}
       
+      var register_waitables_extra := GetRegisterWaitablesExtra;
       res_EIm += '    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override';
       if settings.args = nil then
-        res_EIm += ' := exit;'#10 else
+      begin
+        res_EIm += ' := ';
+        res_EIm += register_waitables_extra ?? 'exit';
+        res_EIm += ';'#10;
+      end else
       begin
         res_EIm += ';'#10;
         res_EIm += '    begin'#10;
+        
+        if register_waitables_extra<>nil then
+        begin
+          res_EIm += '      ';
+          res_EIm += register_waitables_extra;
+          res_EIm += ';'#10;
+        end;
         
         foreach var arg in settings.args.OrderBy(arg->arg.t.ArrLvl) do
           if arg.t.IsKA or arg.t.IsCQ then

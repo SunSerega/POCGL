@@ -22,6 +22,9 @@ unit OpenCLABC;
 //TODO Тесты:
 // - WriteValue(HFQ(Sleep), HFQQ)
 // --- HFQQ Должно выполнится первым
+// - HPQ+CombineAsync(HPQQ,HPQQ,HPQQ)
+// --- Во скольки разных потоках будут выполнятся Async ветки? Будет ли использован поток HPQ?
+// --- То же самое для какого-то cl.Enqueue вместо HPQ
 
 //TODO Справка:
 // - ThenQuick[Convert,Use]
@@ -43,6 +46,9 @@ unit OpenCLABC;
 
 //===================================
 // Запланированное:
+
+//TODO KernelArg.FromArray принимает индекс но не длину
+// - А FromCLArray вообще не может ссылаться на диапазон в массиве
 
 //TODO Вместо .StripResult лучше передавать необходимость результата через CLTaskLocalData
 
@@ -6111,6 +6117,7 @@ type
   where TRecord: record;
     private hnd: GCHandle;
     private offset: integer;
+    private sz: UIntPtr;
     
     static constructor :=
     BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
@@ -6119,6 +6126,7 @@ type
     begin
       self.hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
       self.offset := Marshal.SizeOf&<TRecord> * ind;
+      self.sz := new UIntPtr(Marshal.SizeOf&<TRecord> * (a.Length-ind));
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -6126,7 +6134,7 @@ type
     if hnd.IsAllocated then hnd.Free;
     
     public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), (hnd.AddrOfPinnedObject+offset).ToPointer) ); 
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, sz, (hnd.AddrOfPinnedObject+offset).ToPointer) ); 
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin

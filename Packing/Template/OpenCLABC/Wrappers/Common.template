@@ -13,8 +13,10 @@
     end;
     public property Properties: PlatformProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Platform): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Platform): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Platform): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Platform): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is Platform(var wr)) and (self = wr);
@@ -33,8 +35,10 @@
     end;
     public property Properties: DeviceProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Device): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Device): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Device): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Device): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is Device(var wr)) and (self = wr);
@@ -53,8 +57,10 @@
     end;
     public property Properties: ContextProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Context): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Context): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Context): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Context): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is Context(var wr)) and (self = wr);
@@ -73,8 +79,10 @@
     end;
     public property Properties: ProgramCodeProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: ProgramCode): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: ProgramCode): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: ProgramCode): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: ProgramCode): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is ProgramCode(var wr)) and (self = wr);
@@ -93,8 +101,10 @@
     end;
     public property Properties: KernelProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Kernel): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Kernel): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Kernel): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Kernel): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is Kernel(var wr)) and (self = wr);
@@ -113,8 +123,10 @@
     end;
     public property Properties: MemorySegmentProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: MemorySegment): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: MemorySegment): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: MemorySegment): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: MemorySegment): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is MemorySegment(var wr)) and (self = wr);
@@ -145,8 +157,10 @@
     end;
     public property Properties: CLArrayProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: CLArray<T>): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: CLArray<T>): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: CLArray<T>): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLArray<T>): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLArray<T>(var wr)) and (self = wr);

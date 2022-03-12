@@ -32,6 +32,9 @@ unit OpenCLABC;
 //TODO Тесты:
 // - WriteValue(HFQ(Sleep), HFQQ)
 // --- HFQQ Должно выполнится первым
+// - HPQ+CombineAsync(HPQQ,HPQQ,HPQQ)
+// --- Во скольки разных потоках будут выполнятся Async ветки? Будет ли использован поток HPQ?
+// --- То же самое для какого-то cl.Enqueue вместо HPQ
 
 //TODO Справка:
 // - ThenQuick[Convert,Use]
@@ -53,6 +56,9 @@ unit OpenCLABC;
 
 //===================================
 // Запланированное:
+
+//TODO KernelArg.FromArray принимает индекс но не длину
+// - А FromCLArray вообще не может ссылаться на диапазон в массиве
 
 //TODO Вместо .StripResult лучше передавать необходимость результата через CLTaskLocalData
 
@@ -2192,8 +2198,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: PlatformProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Platform): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Platform): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Platform): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Platform): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -2216,8 +2224,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: DeviceProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Device): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Device): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Device): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Device): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -2240,8 +2250,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: ContextProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Context): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Context): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Context): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Context): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -2264,8 +2276,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: ProgramCodeProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: ProgramCode): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: ProgramCode): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: ProgramCode): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: ProgramCode): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -2288,8 +2302,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: KernelProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Kernel): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: Kernel): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: Kernel): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: Kernel): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -2312,8 +2328,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: MemorySegmentProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: MemorySegment): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: MemorySegment): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: MemorySegment): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: MemorySegment): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -2350,8 +2368,10 @@ type
     ///Возвращает контейнер свойств неуправляемого объекта
     public property Properties: CLArrayProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: CLArray<T>): boolean := wr1.ntv = wr2.ntv;
-    public static function operator<>(wr1, wr2: CLArray<T>): boolean := wr1.ntv <> wr2.ntv;
+    public static function operator=(wr1, wr2: CLArray<T>): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLArray<T>): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -10416,6 +10436,7 @@ type
   where TRecord: record;
     private hnd: GCHandle;
     private offset: integer;
+    private sz: UIntPtr;
     
     static constructor :=
     BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
@@ -10424,6 +10445,7 @@ type
     begin
       self.hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
       self.offset := Marshal.SizeOf&<TRecord> * ind;
+      self.sz := new UIntPtr(Marshal.SizeOf&<TRecord> * (a.Length-ind));
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -10431,7 +10453,7 @@ type
     if hnd.IsAllocated then hnd.Free;
     
     public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), (hnd.AddrOfPinnedObject+offset).ToPointer) ); 
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, sz, (hnd.AddrOfPinnedObject+offset).ToPointer) ); 
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -15818,6 +15840,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       mem_offset.RegisterWaitables(g, prev_hubs);
     end;
     
@@ -15885,7 +15908,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -15953,6 +15976,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       len.RegisterWaitables(g, prev_hubs);
     end;
     
@@ -16035,6 +16059,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       len1.RegisterWaitables(g, prev_hubs);
       len2.RegisterWaitables(g, prev_hubs);
     end;
@@ -16127,6 +16152,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       len1.RegisterWaitables(g, prev_hubs);
       len2.RegisterWaitables(g, prev_hubs);
       len3.RegisterWaitables(g, prev_hubs);
@@ -18542,6 +18568,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
     end;
     
@@ -18605,7 +18632,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -18674,6 +18701,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
       len.RegisterWaitables(g, prev_hubs);
     end;

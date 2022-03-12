@@ -52,6 +52,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
     end;
     
@@ -115,7 +116,7 @@ type
       
     end;
     
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.RegisterWaitables(g, prev_hubs);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
@@ -184,6 +185,7 @@ type
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      prev_commands.RegisterWaitables(g, prev_hubs);
       ind.RegisterWaitables(g, prev_hubs);
       len.RegisterWaitables(g, prev_hubs);
     end;
