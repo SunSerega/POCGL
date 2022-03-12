@@ -121,9 +121,9 @@
 
 
 # CommandQueueBase.ToString
-%ToString:ToString%
+%CQ:ToString%
 
 # CommandQueue[%Base,Nil,<T>%].Print[%ln:,ln%]
-%ToString:Print{%ln%}%
+%CQ:Print{%ln%}%
 
 

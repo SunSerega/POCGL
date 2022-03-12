@@ -46,9 +46,9 @@ signal_in_finally указывает, будут ли проигнорирова
 
 
 # WaitMarker.ToString
-%ToString:ToString%
+%CQ:ToString%
 
 # WaitMarker.Print[%ln:,ln%]
-%ToString:Print{%ln%}%
+%CQ:Print{%ln%}%
 
 

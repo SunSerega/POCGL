@@ -34,18 +34,20 @@
 # Context.MakeSibling(Device)
 Создаёт совместимый контекст, равный данному с одним отличием - MainDevice заменён на dvc
 
-# Context.BeginInvoke(CommandQueueBase)
-# Context.BeginInvoke(CommandQueueNil)
-# Context.BeginInvoke<T>(CommandQueue<T>)
+
+
+# Context.BeginInvoke(CommandQueueBase, array of ParameterQueueSetter)
+# Context.BeginInvoke(CommandQueueNil, array of ParameterQueueSetter)
+# Context.BeginInvoke<T>(CommandQueue<T>, array of ParameterQueueSetter)
 Запускает данную очередь и все её подочереди
 Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
 
 # Context:SyncInvoke
-# Context.SyncInvoke(CommandQueueBase)
-# Context.SyncInvoke(CommandQueueNil)
+# Context.SyncInvoke(CommandQueueBase, array of ParameterQueueSetter)
+# Context.SyncInvoke(CommandQueueNil, array of ParameterQueueSetter)
 Запускает данную очередь и все её подочереди
 Затем ожидает окончания выполнения
-# Context.SyncInvoke<T>(CommandQueue<T>)
+# Context.SyncInvoke<T>(CommandQueue<T>, array of ParameterQueueSetter)
 %Context:SyncInvoke% и возвращает полученный результат
 
 # Context.MakeNewDefaultContext

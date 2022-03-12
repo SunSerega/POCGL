@@ -47,65 +47,69 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\ThenConvUse_ConstDelayedFunc.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\ThenConvUse_ConstDelayedFunc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0c.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~07#HostExec\Quick+MU.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~07#HostExec\Quick+MU.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~05#Wait\QuickUse.ThenWait.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\~00#Err\err while async.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\q count.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\~00#Err\err while async.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\combine stress.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\invoke WaitAll.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\marker after err.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.pas"
 Tester: Compiling: OK
@@ -119,51 +123,55 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#Const\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Parameter\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\typed nil.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#Cast\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#ThenConvert\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#Cast\typed nil.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#Multiusable\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#ThenConvert\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Wait\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Multiusable\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#Wait\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#HostExec\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#GPUCommandContainer\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#HostExec\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\conv1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\inline.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\optimize.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\remove last const.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#KernelArg\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\01#Platform\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#WaitMarker\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\02#Device\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\12#Finally+Handle\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\03#Context\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\CLArray\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\CLArray\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\05#Kernel\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
@@ -209,65 +217,69 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\ThenConvUse_ConstDelayedFunc]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\ThenConvUse_ConstDelayedFunc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0c]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~07#HostExec\Quick+MU]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~07#HostExec\Quick+MU]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~05#Wait\QuickUse.ThenWait]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\~00#Err\err while async]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\q count]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\~00#Err\err while async]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\combine stress]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\invoke WaitAll]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\marker after err]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel]
 Tester: Done executing
@@ -281,51 +293,55 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#Const\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Parameter\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\typed nil]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#Cast\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#ThenConvert\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#Cast\typed nil]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#Multiusable\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#ThenConvert\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Multiusable\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#Wait\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#GPUCommandContainer\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#HostExec\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\conv1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\inline]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\optimize]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\remove last const]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#KernelArg\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\01#Platform\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#WaitMarker\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\02#Device\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\12#Finally+Handle\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\03#Context\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\CLArray\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\SubSegment1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\CLArray\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\05#Kernel\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\SubSegment1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing

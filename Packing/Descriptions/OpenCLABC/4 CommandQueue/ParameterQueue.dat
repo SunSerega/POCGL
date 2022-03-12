@@ -1,0 +1,34 @@
+
+
+
+# ParameterQueue<T>
+Представляет очередь-параметр
+Очереди-параметры ничего не выполняют, но возвращает установленное при запуске очереди значение
+
+
+
+# ParameterQueue:WillUseDefault
+будет использоваться если при запуске очереди значение небыло установлено
+
+# ParameterQueue<T>.(T)
+Создаёт новую очередь-параметр
+Указанное значение %ParameterQueue:WillUseDefault%
+
+# ParameterQueue<T>.Default
+Значение, которое %ParameterQueue:WillUseDefault%
+
+
+
+# ParameterQueueSetter:How
+Если передать этот установщик в метод запуска очереди,
+при выполнении параметр будет иметь указанное значение
+
+# ParameterQueue<T>.NewSetter(T)
+Создаёт установщик данного параметра
+%ParameterQueueSetter:How%
+
+# ParameterQueueSetter
+Представляет установщик очереди-параметра ParameterQueue<T>, созданный методом .NewSetter
+%ParameterQueueSetter:How%
+
+

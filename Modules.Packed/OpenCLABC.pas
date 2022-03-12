@@ -30,6 +30,8 @@ unit OpenCLABC;
 // Обязательно сделать до следующей стабильной версии:
 
 //TODO Тесты:
+// - WriteValue(HFQ(Sleep), HFQQ)
+// --- HFQQ Должно выполнится первым
 
 //TODO Справка:
 // - ThenQuick[Convert,Use]
@@ -41,6 +43,12 @@ unit OpenCLABC;
 //
 // - CQ
 //
+// - ParameterQueue
+// - Сейчас есть альтернатива в виде HFQQ(()->par), но:
+// --- 1. Это приводит к лишним юзер-ивентам, потому что значение этой HFQQ должно вычислить асинхронно с другими параметрами
+// --- 2. Это привязывает всю очередь к глобальному состоянию - таким образом её нельзя выполнить 2 раза одновременно
+
+//
 // - В обработке исключений написать, что обработчики всегда Quick
 
 //===================================
@@ -50,6 +58,8 @@ unit OpenCLABC;
 
 //TODO В "HFQQ+HFQQ+HFQQ" нет смысла делать юзер-ивенты, вместо этого можно переливать делегаты предыдущего результата в новый, но без делегата-сеттера
 // - Это же касается и CCQ, но в нём надо чтобы GPUCommand возвращало QueueResNil а не EventList. Это значительно сократит лишние юзер-ивенты
+
+//TODO .DiscardResult, чтобы явно возвращать CommandQueueNil
 
 //TODO Разделить InvokeToVal и InvokeToPtr, убрав need_ptr_qr
 // - Если need_ptr_qr=true - результат нужен QueueResPtr, преобразовывать к общему QueueRes плохо
@@ -2451,6 +2461,20 @@ type
       typeof(T) else
     if val = default(T) then
       nil else val.GetType;
+    private static procedure ToStringRuntimeValue<T>(sb: StringBuilder; val: T);
+    begin
+      var rt := GetValueRuntimeType(val);
+      if typeof(T) <> rt then
+      begin
+        sb.Append(rt);
+        sb += '{ ';
+      end;
+      if rt<>nil then
+        sb.Append(_ObjectToString(val)) else
+        sb += 'nil';
+      if typeof(T) <> rt then
+        sb += ' }';
+    end;
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
@@ -2616,28 +2640,22 @@ type
   {$region Const}
   
   ///Представляет константную очередь
-  ///Константные очереди ничего не выполняют и возвращает заданное при создании значение
+  ///Константные очереди ничего не выполняют и возвращают заданное при создании значение
   ConstQueue<T> = sealed partial class(CommandQueue<T>)
     private res: T;
     
-    ///Создаёт новую константную очередь из заданного значения
+    ///Создаёт новую константную очередь, возвращающую указанное значения
     public constructor(o: T) := self.res := o;
     private constructor := raise new OpenCLABCInternalException;
     
-    ///Возвращает значение из которого была создана данная константная очередь
-    public property Val: T read self.res;
+    ///Значение, которого возвращает данная константная очередь
+    public property Value: T read res write res;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' ';
-      var rt := GetValueRuntimeType(res);
-      if typeof(T) <> rt then
-        sb.Append(rt);
-      sb += '{ ';
-      if rt<>nil then
-        sb.Append(Val) else
-        sb += 'nil';
-      sb += ' }'#10;
+      sb += ': ';
+      ToStringRuntimeValue(sb, self.res);
+      sb += #10;
     end;
     
   end;
@@ -2655,6 +2673,52 @@ type
   end;
   
   {$endregion Const}
+  
+  {$region Parameter}
+  
+  ///Представляет установщик очереди-параметра ParameterQueue<T>, созданный методом .NewSetter
+  ///Если передать этот установщик в метод запуска очереди,
+  ///при выполнении параметр будет иметь указанное значение
+  ParameterQueueSetter = sealed class
+    private par_q: CommandQueueBase;
+    private val: object;
+    
+    private constructor(par_q: CommandQueueBase; val: object);
+    begin
+      self.par_q := par_q;
+      self.val := val;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+  end;
+  ///Представляет очередь-параметр
+  ///Очереди-параметры ничего не выполняют, но возвращает установленное при запуске очереди значение
+  ParameterQueue<T> = sealed partial class(CommandQueue<T>)
+    private def: T;
+    
+    ///Создаёт новую очередь-параметр
+    ///Указанное значение будет использоваться если при запуске очереди значение небыло установлено
+    public constructor(def: T) := self.def := def;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    ///Значение, которое будет использоваться если при запуске очереди значение небыло установлено
+    public property &Default: T read def write def;
+    
+    ///Создаёт установщик данного параметра
+    ///Если передать этот установщик в метод запуска очереди,
+    ///при выполнении параметр будет иметь указанное значение
+    public function NewSetter(val: T) := new ParameterQueueSetter(self, val);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ': Default=';
+      ToStringRuntimeValue(sb, self.def);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Parameter}
   
   {$region Cast}
   
@@ -3107,23 +3171,23 @@ type
     
     ///Запускает данную очередь и все её подочереди
     ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
-    public function BeginInvoke(q: CommandQueueBase): CLTaskBase;
+    public function BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter): CLTaskBase;
     ///Запускает данную очередь и все её подочереди
     ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
-    public function BeginInvoke(q: CommandQueueNil): CLTaskNil;
+    public function BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter): CLTaskNil;
     ///Запускает данную очередь и все её подочереди
     ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
-    public function BeginInvoke<T>(q: CommandQueue<T>): CLTask<T>;
+    public function BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter): CLTask<T>;
     
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения
-    public procedure SyncInvoke(q: CommandQueueBase) := BeginInvoke(q).Wait;
+    public procedure SyncInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := BeginInvoke(q, parameters).Wait;
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения
-    public procedure SyncInvoke(q: CommandQueueNil) := BeginInvoke(q).Wait;
+    public procedure SyncInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := BeginInvoke(q, parameters).Wait;
     ///Запускает данную очередь и все её подочереди
     ///Затем ожидает окончания выполнения и возвращает полученный результат
-    public function SyncInvoke<T>(q: CommandQueue<T>) := BeginInvoke(q).WaitRes;
+    public function SyncInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := BeginInvoke(q, parameters).WaitRes;
     
   end;
   
@@ -3143,6 +3207,8 @@ type
     ///Создаёт аргумент kernel'а, представляющий область памяти GPU
     public static function FromMemorySegmentCQ(mem_q: CommandQueue<MemorySegment>): KernelArg;
     public static function operator implicit(mem_q: CommandQueue<MemorySegment>): KernelArg := FromMemorySegmentCQ(mem_q);
+    public static function operator implicit(mem_q: ConstQueue<MemorySegment>): KernelArg := FromMemorySegmentCQ(mem_q);
+    public static function operator implicit(mem_q: ParameterQueue<MemorySegment>): KernelArg := FromMemorySegmentCQ(mem_q);
     
     {$endregion MemorySegment}
     
@@ -3150,13 +3216,13 @@ type
     
     ///Создаёт аргумент kernel'а, представляющий массив данных, хранимых на GPU
     public static function FromCLArray<T>(a: CLArray<T>): KernelArg; where T: record;
-    public static function operator implicit<T>(a: CLArray<T>): KernelArg; where T: record;
-    begin Result := FromCLArray(a); end;
+    public static function operator implicit<T>(a: CLArray<T>): KernelArg; where T: record; begin Result := FromCLArray(a); end;
     
     ///Создаёт аргумент kernel'а, представляющий массив данных, хранимых на GPU
     public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-    begin Result := FromCLArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ConstQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
     
     {$endregion CLArray}
     
@@ -3183,6 +3249,8 @@ type
     ///Создаёт аргумент kernel'а, представляющий небольшое значение размерного типа
     public static function FromValueCQ<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(valq: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(valq); end;
+    public static function operator implicit<TRecord>(valq: ConstQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(valq); end;
+    public static function operator implicit<TRecord>(valq: ParameterQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(valq); end;
     
     {$endregion Value}
     
@@ -3195,6 +3263,8 @@ type
     ///Создаёт аргумент kernel'а, ссылающийся на неуправляемое значение
     public static function FromNativeValueCQ<TRecord>(valq: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(valq: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(valq); end;
+    public static function operator implicit<TRecord>(valq: ConstQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(valq); end;
+    public static function operator implicit<TRecord>(valq: ParameterQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(valq); end;
     
     {$endregion NativeValue}
     
@@ -3207,12 +3277,15 @@ type
     ///Создаёт аргумент kernel'а, ссылающийся на указанный массив, на элемент с индексом ind
     public static function FromArrayCQ<TRecord>(a_q: CommandQueue<array of TRecord>; ind_q: CommandQueue<integer> := 0): KernelArg; where TRecord: record;
     public static function operator implicit<TRecord>(a_q: CommandQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
+    public static function operator implicit<TRecord>(a_q: ConstQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
+    public static function operator implicit<TRecord>(a_q: ParameterQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
     
     {$endregion Array}
     
     {$region ToString}
     
     private function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
+    private static procedure ToStringRuntimeValue<T>(sb: StringBuilder; val: T) := CommandQueueBase.ToStringRuntimeValue(sb, val);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -6176,6 +6249,12 @@ begin
   begin
     Result := self.ResEv;
     exit;
+  end else
+  if self.ResEv.count=0 then
+  begin
+    self.InvokeActions;
+    Result := EventList.Empty;
+    exit;
   end;
   
   var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}.ThenAttachInvokeActions, after [{self.ResEv.evs?.JoinToString}]'{$endif});
@@ -6302,6 +6381,8 @@ type
   
   CLTaskGlobalData = sealed partial class
     
+    public parameters := new Dictionary<CommandQueueBase, object>;
+    
     public mu_res := new Dictionary<IMultiusableCommandQueueHub, MultiuseableResultData>;
     
     public constructor(tsk: CLTaskBase);
@@ -6339,6 +6420,13 @@ type
       self.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_handler, invoker.branch_handlers.ToArray);
       
       self.curr_inv_cq := invoker.prev_cq;
+    end;
+    
+    public procedure ApplyParameters(pars: array of ParameterQueueSetter) :=
+    foreach var par in pars do
+    begin
+      if not parameters.ContainsKey(par.par_q) then continue;
+      parameters[par.par_q] := par.val;
     end;
     
     public procedure FinishInvoke;
@@ -6423,6 +6511,24 @@ type
   
 {$endregion Const}
 
+{$region Parameter}
+
+type
+  ParameterQueue<T> = sealed partial class(CommandQueue<T>)
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override :=
+    QueueRes&<T>.MakeNewConstOrPtr(l.need_ptr_qr, l.prev_ev, T(g.parameters[self]));
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      if g.parameters.ContainsKey(self) then exit;
+      g.parameters[self] := self.def;
+    end;
+    
+  end;
+  
+{$endregion Parameter}
+
 {$region Host}
 
 type
@@ -6461,7 +6567,7 @@ type
   
   CLTaskNil = sealed partial class(CLTaskBase)
     
-    private constructor(q: CommandQueueNil; c: Context);
+    private constructor(q: CommandQueueNil; c: Context; pars: array of ParameterQueueSetter);
     begin
       self.q := q;
       self.org_c := c;
@@ -6470,6 +6576,7 @@ type
       var l_data := new CLTaskLocalDataNil;
       
       q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
+      g_data.ApplyParameters(pars);
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
@@ -6487,7 +6594,7 @@ type
   CLTask<T> = sealed partial class(CLTaskBase)
     private res: T;
     
-    private constructor(q: CommandQueue<T>; c: Context);
+    private constructor(q: CommandQueue<T>; c: Context; pars: array of ParameterQueueSetter);
     begin
       self.q := q;
       self.org_c := c;
@@ -6496,6 +6603,7 @@ type
       var l_data := new CLTaskLocalData;
       
       q.RegisterWaitables(g_data, new HashSet<IMultiusableCommandQueueHub>);
+      g_data.ApplyParameters(pars);
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
@@ -6513,17 +6621,22 @@ type
   
   CLTaskFactory = record(ITypedCQConverter<CLTaskBase>)
     private c: Context;
-    public constructor(c: Context) := self.c := c;
+    private pars: array of ParameterQueueSetter;
+    public constructor(c: Context; pars: array of ParameterQueueSetter);
+    begin
+      self.c := c;
+      self.pars := pars;
+    end;
     public constructor := raise new OpenCLABCInternalException;
     
-    public function ConvertNil(cq: CommandQueueNil): CLTaskBase := new CLTaskNil(cq, c);
-    public function Convert<T>(cq: CommandQueue<T>): CLTaskBase := new CLTask<T>(cq, c);
+    public function ConvertNil(cq: CommandQueueNil): CLTaskBase := new CLTaskNil(cq, c, pars);
+    public function Convert<T>(cq: CommandQueue<T>): CLTaskBase := new CLTask<T>(cq, c, pars);
     
   end;
   
-function Context.BeginInvoke(q: CommandQueueBase) := q.ConvertTyped(new CLTaskFactory(self));
-function Context.BeginInvoke(q: CommandQueueNil) := new CLTaskNil(q, self);
-function Context.BeginInvoke<T>(q: CommandQueue<T>) := new CLTask<T>(q, self);
+function Context.BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := q.ConvertTyped(new CLTaskFactory(self, parameters));
+function Context.BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := new CLTaskNil(q, self, parameters);
+function Context.BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := new CLTask<T>(q, self, parameters);
 
 function CLTask<T>.WaitRes: T;
 begin
@@ -6614,7 +6727,7 @@ type
         Result := cqb.SourceBase.Cast&<TRes> else
       if cq is ConstQueue<TInp>(var ccq) then
       try
-        Result := new ConstQueue<TRes>(TRes(object(ccq.Val)))
+        Result := new ConstQueue<TRes>(TRes(object(ccq.Value)))
       except
         on e: InvalidCastException do
           raise new System.InvalidCastException($'.Cast не может преобразовывать {typeof(TInp)} в {typeof(TRes)}');
@@ -8799,9 +8912,8 @@ type
     if prev_hubs.Add(self) then q.RegisterWaitables(g, prev_hubs);
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_q: (CLTaskGlobalData,TLData)->TR): TR; where TLData: ICLTaskLocalData; where TR: IQueueRes;
+    function Invoke<TLData,TR>(g: CLTaskGlobalData; l: TLData; invoke_q: CLTaskGlobalData->TR): TR; where TLData: ICLTaskLocalData; where TR: IQueueRes;
     begin
-      var prev_ev := l.PrevEv;
       
       var res_data: MultiuseableResultData;
       // Потоко-безопасно, потому что все .Invoke выполняются синхронно
@@ -8811,8 +8923,7 @@ type
         var prev_err_handler := g.curr_err_handler;
         g.curr_err_handler := new CLTaskErrHandlerEmpty;
         
-        l.PrevEv := EventList.Empty;
-        Result := invoke_q(g, l);
+        Result := invoke_q(g);
         var ev := Result.ThenAttachInvokeActions(g);
         
         res_data := new MultiuseableResultData(Result, ev, g.curr_err_handler);
@@ -8823,7 +8934,7 @@ type
       g.curr_err_handler := new CLTaskErrHandlerMultiusableRepeater(g.curr_err_handler, res_data.err_handler);
       
       res_data.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
-      l.PrevEv := res_data.ev+prev_ev;
+      l.PrevEv := res_data.ev+l.PrevEv;
       Result := TR(res_data.qres.Clone(l));
     end;
     
@@ -8841,7 +8952,7 @@ type
   MultiusableCommandQueueHubNil = sealed class(MultiusableCommandQueueHubCommon< CommandQueueNil >)
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil) := Invoke(g, l, q.Invoke);
+    function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil) := Invoke(g, l, g->q.Invoke(g, new CLTaskLocalDataNil));
     
     public function MakeNode: CommandQueueNil;
     
@@ -8862,7 +8973,7 @@ type
   MultiusableCommandQueueHub<T> = sealed class(MultiusableCommandQueueHubCommon< CommandQueue<T> >)
     
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-    function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) := Invoke(g, l, q.Invoke);
+    function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) := Invoke(g, l, g->q.Invoke(g, new CLTaskLocalData));
     
     public function MakeNode: CommandQueue<T>;
     
@@ -10034,8 +10145,8 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(def);
+      sb += ': ';
+      ToStringRuntimeValue(sb, self.def);
       sb += #10;
       
       q.ToString(sb, tabs, index, delayed);
@@ -10162,8 +10273,8 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(a);
+      sb += ': ';
+      ToStringRuntimeValue(sb, self.a);
       sb += #10;
     end;
     
@@ -10188,8 +10299,8 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(mem);
+      sb += ': ';
+      ToStringRuntimeValue(sb, self.mem);
       sb += #10;
     end;
     
@@ -10258,8 +10369,8 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(val^);
+      sb += ': ';
+      ToStringRuntimeValue(sb, self.val^);
       sb += #10;
     end;
     
@@ -10324,8 +10435,8 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(_ObjectToString(hnd.Target));
+      sb += ': ';
+      ToStringRuntimeValue(sb, hnd.Target as array of TRecord);
       if offset<>0 then
       begin
         sb += '+';
@@ -10929,8 +11040,8 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
-      sb.Append(o);
+      sb += ': ';
+      CommandQueueBase.ToStringRuntimeValue(sb, self.o);
       sb += #10;
     end;
     

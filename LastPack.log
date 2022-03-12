@@ -1,47 +1,9 @@
-﻿Executing default stages:
-Reference + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+﻿Executing selected stages:
+OpenCLABC + Compile + Test + Release
 Start packing
-=================================== References ===================================
-Compiling "Packing\Reference\ReferencePacker.pas"
-Compiling: OK
-Runing ReferencePacker
-ReferencePacker: Packing reference "Гайд по использованию OpenGL и OpenCL"
-ReferencePacker: Done packing feference "Гайд по использованию OpenGL и OpenCL"
-ReferencePacker: Packing reference "Справка OpenGLABC"
-ReferencePacker: Done packing feference "Справка OpenGLABC"
-ReferencePacker: Packing reference "Справка OpenCLABC"
-ReferencePacker: Done packing feference "Справка OpenCLABC"
-Finished runing ReferencePacker
-===================================== OpenCL =====================================
+==================================== OpenCLABC ===================================
 Compiling "Packing\Template\Pack Template.pas"
 Compiling: OK
-Runing Template[OpenCL]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
-Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
-Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (34) overloads of func [clGetDeviceInfo]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueGenerateMipmapIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetKernelSuggestedLocalWorkSizeKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueWaitSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueSignalSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandBarrierWithWaitListKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandCopyBufferKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandFillBufferKHR]
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
-Finished runing Template[OpenCL]
-==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapPropGen.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -81,92 +43,16 @@ Compiling "Packing\Descriptions\PackDescriptions.pas"
 Compiling: OK
 Runing Descriptions[OpenCLABC]
 Finished runing Descriptions[OpenCLABC]
-===================================== OpenGL =====================================
-Runing Template[OpenGL]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferRange] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glBindBufferBase] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Func [glProgramParameteri] was added in versions [4.1] and [4.1]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glVertexArrayVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiDrawElementsBaseVertex]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindBuffersRange]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glBindVertexBuffers]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glWaitSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glSignalSemaphoreEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawArraysIBM]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glMultiModeDrawElementsIBM]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glDrawCommandsStatesAddressNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glListDrawCommandsStatesClientNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyBufferSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glAsyncCopyImageSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatARB]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [wglChoosePixelFormatEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglSetGammaTableI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglAssociateImageBufferEventsI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglQueryFrameTrackingI3D]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglGetSyncValuesOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForMscOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [wglWaitForSbcOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glXGetSyncValuesOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glXWaitForMscOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (27) overloads of func [glXWaitForSbcOML]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glXQueryChannelRectSGIX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Too many (81) overloads of func [glXQueryChannelDeltasSGIX]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Finished runing Template[OpenGL]
-==================================== OpenGLABC ===================================
-Runing Template[OpenGLABC]
-Finished runing Template[OpenGLABC]
-Runing Descriptions[OpenGLABC]
-Finished runing Descriptions[OpenGLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
-Compiling: OK
-Compiling "Modules.Packed\OpenGLABC.pas"
 Compiling: OK
 ===================================== Testing ====================================
 Compiling "Tests\Tester.pas"
 Compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
+Tester: OpenCLABC
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\DebugPCU\OpenGLABC.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Compiling: OK
@@ -181,10 +67,6 @@ Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGLABC\Точки на поле\Точки.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
@@ -206,65 +88,69 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\ThenConvUse_ConstDelayedFunc.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\ThenConvUse_ConstDelayedFunc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0c.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~01#Const\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~07#HostExec\Quick+MU.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~07#HostExec\Quick+MU.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~05#Wait\QuickUse.ThenWait.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\~00#Err\err while async.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\q count.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\~00#Err\err while async.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\combine stress.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\invoke WaitAll.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\marker after err.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel.pas"
 Tester: Compiling: OK
@@ -278,68 +164,58 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#ConstQueue\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#Const\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Parameter\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Cast\typed nil.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#Cast\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#ThenConvert\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#Cast\typed nil.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#Multiusable\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#ThenConvert\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Wait\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Multiusable\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#Wait\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#HostExec\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#GPUCommandContainer\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#HostExec\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\conv1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\inline.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\optimize.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#KernelArg\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\remove last const.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#KernelArg\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\01#Platform\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#WaitMarker\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\02#Device\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\12#Finally+Handle\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\03#Context\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\CLArray\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\CLArray\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\05#Kernel\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\SubSegment1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Det.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Random.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Vec.Cross.pas"
-Tester: Compiling: OK
-Tester: Executing Test[Samples\OpenCL\MatrMlt]
-Tester: Done executing
-Tester: Executing Test[Samples\OpenCL\SimpleAddition]
-Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -368,65 +244,69 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Cast\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\ThenConvUse_ConstDelayedFunc]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~00#Err\0c]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\ThenConvUse_ConstDelayedFunc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#ThenConvert\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0c]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\errоr multiuse]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~00#Err\multi errоr multiuse]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~01#Const\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~01#Const\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#Multiusable\~07#HostExec\Quick+MU]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\ThenWait]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Wait\WaitOrder]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~07#HostExec\Quick+MU]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddProc]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~00#Err\AddQueue]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#GPUCommandContainer\~02#Cast\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#HostExec\~05#Wait\QuickUse.ThenWait]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\0]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\q count]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#CombineQueues\~00#Err\err while async]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\q count]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\~00#Err\err while async]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\combine stress]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\invoke WaitAll]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#WaitMarker\~00#Err\marker after err]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\BranchCancel]
 Tester: Done executing
@@ -440,81 +320,69 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle\~00#Err\marker in finally]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#ConstQueue\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#Const\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Parameter\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Cast\typed nil]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#Cast\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#ThenConvert\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#Cast\typed nil]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#Multiusable\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#ThenConvert\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Wait\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Multiusable\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#GPUCommandContainer\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#Wait\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#HostExec\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#GPUCommandContainer\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#HostExec\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\conv1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\inline]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\conv1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\optimize]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\inline]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#CombineQueues\remove last const]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\optimize]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#KernelArg\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\remove last const]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#KernelArg\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\01#Platform\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#WaitMarker\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\02#Device\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\12#Finally+Handle\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\03#Context\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\CLArray\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\04#Memory\MemorySegment\SubSegment1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\CLArray\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\05#Kernel\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Wrap\06#ProgramCode\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\MemorySegment\SubSegment1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Det]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Random]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing Modules.Packed\OpenCL.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
 Packing Modules.Packed\OpenCLABC.pas
 WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenGL.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenGL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenGLABC.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenGLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+Packing Modules.Packed\OpenCL.pas
+WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
 WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenGL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenGLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample file "Samples\OpenCL\MatrMlt.cl"

@@ -37,9 +37,9 @@
 
 
 # KernelArg.ToString
-%ToString:ToString%
+%CQ:ToString%
 
 # KernelArg.Print[%ln:,ln%]
-%ToString:Print{%ln%}%
+%CQ:Print{%ln%}%
 
 
