@@ -31,56 +31,59 @@ begin
   
   {$region Инициализация переменных}
   
-  var vertex_pos_buffer: gl_buffer;
-  gl.CreateBuffers(1, vertex_pos_buffer);
-  gl.NamedBufferData(
-    vertex_pos_buffer,
-    new IntPtr(3*sizeof(Vec2f)),
-    ArrGen(3, i->
-    begin
-      var rot := i * Pi * 2 / 3;
-      
-      Result := new Vec2f(
-        Sin(rot),
-        Cos(rot) + dy
-      );
-      
-    end),
-    VertexBufferObjectUsage.STATIC_DRAW
-  );
-  
-  var vertex_clr_buffer: gl_buffer;
-  gl.CreateBuffers(1, vertex_clr_buffer);
-  gl.NamedBufferData(
-    vertex_clr_buffer,
-    new IntPtr(3*sizeof(Vec3f)),
-    new Vec3f[](
-      new Vec3f(1,0,0),
-      new Vec3f(0,1,0),
-      new Vec3f(0,0,1)
-    ),
-    VertexBufferObjectUsage.STATIC_DRAW
-  );
-  
-  var element_buffer: gl_buffer;
-  gl.CreateBuffers(1, element_buffer);
-  gl.NamedBufferData(
-    element_buffer,
-    new IntPtr(3*sizeof(byte)),
-    new byte[](
-      0,1,2
-    ),
-    VertexBufferObjectUsage.STATIC_DRAW
-  );
-  
-  var vertex_shader := InitShader('Крутящийся треугольник.vert', ShaderType.VERTEX_SHADER);
-  
-  var sprog := InitProgram(vertex_shader{, другие_шейдеры});
+  var sprog := InitProgram(
+    InitShader('Крутящийся треугольник.vert', ShaderType.VERTEX_SHADER)
+  {, другие_шейдеры});
+  gl.UseProgram(sprog);
   
   var uniform_rot_k :=     gl.GetUniformLocation(sprog, 'rot_k');
   
-  var attribute_position := gl.GetAttribLocation(sprog, 'position');
-  var attribute_color :=    gl.GetAttribLocation(sprog, 'color');
+  // Значения, которые будут передаваться в атрибут "position" в шейдере
+  begin
+    var vertex_pos_buffer: gl_buffer;
+    gl.CreateBuffers(1, vertex_pos_buffer);
+    gl.NamedBufferData(
+      vertex_pos_buffer,
+      new IntPtr(3*sizeof(Vec2f)),
+      ArrGen(3, i->
+      begin
+        var rot := i * Pi * 2 / 3;
+        
+        Result := new Vec2f(
+          Sin(rot),
+          Cos(rot) + dy
+        );
+        
+      end),
+      VertexBufferObjectUsage.STATIC_DRAW
+    );
+    var attribute_position := gl.GetAttribLocation(sprog, 'position');
+    // Оставляем всё настроенным и привязанным
+    // В данном случае можно, потому что шейдерная программа одна
+    gl.VertexAttribFormat(attribute_position, 2,VertexAttribType.FLOAT, false, 0);
+    gl.BindVertexBuffer(attribute_position, vertex_pos_buffer, IntPtr.Zero, sizeof(Vec2f));
+    gl.EnableVertexAttribArray(attribute_position);
+  end;
+  
+  // Значения, которые будут передаваться в атрибут "color" в шейдере
+  begin
+    var vertex_clr_buffer: gl_buffer;
+    gl.CreateBuffers(1, vertex_clr_buffer);
+    gl.NamedBufferData(
+      vertex_clr_buffer,
+      new IntPtr(3*sizeof(Vec3f)),
+      |
+        new Vec3f(1,0,0),
+        new Vec3f(0,1,0),
+        new Vec3f(0,0,1)
+      |,
+      VertexBufferObjectUsage.STATIC_DRAW
+    );
+    var attribute_color := gl.GetAttribLocation(sprog, 'color');
+    gl.VertexAttribFormat(attribute_color, 3,VertexAttribType.FLOAT, false, 0);
+    gl.BindVertexBuffer(attribute_color, vertex_clr_buffer, IntPtr.Zero, sizeof(Vec3f));
+    gl.EnableVertexAttribArray(attribute_color);
+  end;
   
   var t := new Stopwatch;
   t.Start;
@@ -105,42 +108,11 @@ begin
     
     
     
-    gl.UseProgram(sprog);
-    
     gl.Uniform1f(uniform_rot_k, Cos( t.Elapsed.Ticks * 0.0000002 ) );
     
-    gl.BindBuffer(BufferTarget.ARRAY_BUFFER, vertex_pos_buffer);
-    gl.VertexAttribPointer(
-      attribute_position,
-      2,
-      VertexAttribPointerType.FLOAT,
-      false,
-      8,
-      IntPtr.Zero
-    );
-    gl.EnableVertexAttribArray(attribute_position);
-    
-    gl.BindBuffer(BufferTarget.ARRAY_BUFFER, vertex_clr_buffer);
-    gl.VertexAttribPointer(
-      attribute_color,
-      3,
-      VertexAttribPointerType.FLOAT,
-      false,
-      12,
-      IntPtr.Zero
-    );
-    gl.EnableVertexAttribArray(attribute_color);
-    
-    gl.BindBuffer(BufferTarget.ELEMENT_ARRAY_BUFFER, element_buffer);
-    gl.DrawElements(
-      PrimitiveType.TRIANGLES,
-      3,
-      DrawElementsType.UNSIGNED_BYTE,
-      IntPtr.Zero
-    );
-    
-    gl.DisableVertexAttribArray(attribute_position);
-    gl.DisableVertexAttribArray(attribute_color);
+    // Рисуем треугольники из всего 3 вершин (то есть получится 1 треугольник)
+    // Для каждой вершины берём 1 значение из vertex_pos_buffer и 1 из vertex_clr_buffer
+    gl.DrawArrays(PrimitiveType.TRIANGLES, 0,3);
     
     
     

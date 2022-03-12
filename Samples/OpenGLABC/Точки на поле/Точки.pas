@@ -175,7 +175,7 @@ begin
     var uniform_point_count := 0;
     var buffer_points: gl_buffer;
     gl.CreateBuffers(1, buffer_points);
-	  gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 0, buffer_points);
+    gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 0, buffer_points);
     
     var uniform_aspect  := 1;
     var uniform_scale   := 2;
@@ -185,7 +185,7 @@ begin
 //    var buffer_temp: gl_buffer;
 //    gl.CreateBuffers(1, buffer_temp);
 //    gl.NamedBufferData(buffer_temp, new IntPtr(3*sizeof(real)), IntPtr.Zero, VertexBufferObjectUsage.DYNAMIC_READ);
-//	  gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 1, buffer_temp);
+//    gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 1, buffer_temp);
     
     var timings_max_count := 30;
     var timings := new Queue<TimeSpan>(timings_max_count);
@@ -199,10 +199,10 @@ begin
       begin
         var w_size := f.ClientSize;
         
-		    gl.Viewport(0,0, w_size.Width,w_size.Height);
-		    need_set_resize_ev := true;
-		    
-			  camera.aspect := w_size.Width/w_size.Height;
+        gl.Viewport(0,0, w_size.Width,w_size.Height);
+        need_set_resize_ev := true;
+        
+        camera.aspect := w_size.Width/w_size.Height;
       end;
       
       if last_fragment_shader<>curr_fragment_shader then
