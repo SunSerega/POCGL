@@ -25,6 +25,8 @@ unit OpenCLABC;
 // - HPQ+CombineAsync(HPQQ,HPQQ,HPQQ)
 // --- Во скольки разных потоках будут выполнятся Async ветки? Будет ли использован поток HPQ?
 // --- То же самое для какого-то cl.Enqueue вместо HPQ
+// - WriteArray(HFQQ(raise))
+// --- Ошибка возникнет в .GetRes, её должно словить и не дать выполнить cl.Enqueue с nil массивом
 
 //TODO Справка:
 // - ThenQuick[Convert,Use]
@@ -40,9 +42,10 @@ unit OpenCLABC;
 // - Сейчас есть альтернатива в виде HFQQ(()->par), но:
 // --- 1. Это приводит к лишним юзер-ивентам, потому что значение этой HFQQ должно вычислить асинхронно с другими параметрами
 // --- 2. Это привязывает всю очередь к глобальному состоянию - таким образом её нельзя выполнить 2 раза одновременно
-
 //
 // - В обработке исключений написать, что обработчики всегда Quick
+
+//TODO cl.WaitForEvents тратит время процессора??? Это вообще нормально?
 
 //===================================
 // Запланированное:
@@ -2780,17 +2783,15 @@ type
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseEvent(evs[i]) );
     end;
     
-    public procedure WaitAndRelease({$ifdef EventDebug}reason: string{$endif});
+    // cl.WaitForEvents uses processor time to wait
+    // so if we need to wait it's better to use ManualResetEvent
+    public function ToMRE({$ifdef EventDebug}reason: string{$endif}): ManualResetEvent;
     begin
-      if count=0 then exit;
-      
-      var ec := cl.WaitForEvents(self.count, self.evs);
-      if ec<>ErrorCode.EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST then
-        OpenCLABCInternalException.RaiseIfError(ec) else
-      for var i := 0 to count-1 do
-        CheckEvErr(evs[i]{$ifdef EventDebug}, reason{$endif});
-      
-      self.Release({$ifdef EventDebug}$'discarding after being waited upon for {reason}'{$endif EventDebug});
+      Result := nil;
+      if self.count=0 then exit;
+      Result := new ManualResetEvent(false);
+      var mre := Result;
+      self.MultiAttachCallback(()->mre.Set(){$ifdef EventDebug}, $'setting mre for {reason}'{$endif});
     end;
     
     {$endregion Retain/Release}
@@ -2921,9 +2922,10 @@ type
       
       var err_handler := g.curr_err_handler;
       
+      var mre := after.ToMRE({$ifdef EventDebug}$'Background work with res_ev={res}'{$endif});
       NativeUtils.StartNewBgThread(()->
       begin
-        after.WaitAndRelease({$ifdef EventDebug}$'Background work with res_ev={res}'{$endif});
+        if mre<>nil then mre.WaitOne;
         
         if err_handler.HadError(true) then
         begin
@@ -3659,9 +3661,10 @@ type
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
+      var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTaskNil.FinishExecution'{$endif});
       NativeUtils.StartNewBgThread(()->
       begin
-        qr.ResEv.WaitAndRelease({$ifdef EventDebug}$'CLTaskNil.FinishExecution'{$endif});
+        if mre<>nil then mre.WaitOne;
         qr.InvokeActions;
         g_data.FinishExecution(self.err_lst);
         wh.Set;
@@ -3686,9 +3689,10 @@ type
       var qr := q.Invoke(g_data, l_data);
       g_data.FinishInvoke;
       
+      var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTask<{typeof(T)}>.FinishExecution'{$endif});
       NativeUtils.StartNewBgThread(()->
       begin
-        qr.ResEv.WaitAndRelease({$ifdef EventDebug}$'CLTask<T>.FinishExecution'{$endif});
+        if mre<>nil then mre.WaitOne;
         self.res := qr.GetRes;
         g_data.FinishExecution(self.err_lst);
         wh.Set;
