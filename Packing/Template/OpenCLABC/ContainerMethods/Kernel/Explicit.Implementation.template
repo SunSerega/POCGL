@@ -25,14 +25,14 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.ResEv) else enq_evs.AddL1(sz1_qr.ResEv);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ResEv) else enq_evs.AddL1(Result.ResEv); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.ThenAttachInvokeActions(g));
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ThenAttachInvokeActions(g)) else enq_evs.AddL1(Result.ThenAttachInvokeActions(g)); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetRes;
-        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        var  sz1 :=  sz1_qr.GetResImpl;
+        var args := args_qr.ConvertAll(temp1->temp1.GetResImpl);
         var res_ev: cl_event;
         
         var ntv := o.UseExclusiveNative(ntv->
@@ -121,16 +121,16 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.ResEv) else enq_evs.AddL1(sz1_qr.ResEv);
-         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz2.Invoke(g, l.WithPtrNeed(False))); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.ResEv) else enq_evs.AddL1(sz2_qr.ResEv);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ResEv) else enq_evs.AddL1(Result.ResEv); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.ThenAttachInvokeActions(g));
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz2.Invoke(g, l.WithPtrNeed(False))); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.ThenAttachInvokeActions(g));
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ThenAttachInvokeActions(g)) else enq_evs.AddL1(Result.ThenAttachInvokeActions(g)); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetRes;
-        var  sz2 :=  sz2_qr.GetRes;
-        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        var  sz1 :=  sz1_qr.GetResImpl;
+        var  sz2 :=  sz2_qr.GetResImpl;
+        var args := args_qr.ConvertAll(temp1->temp1.GetResImpl);
         var res_ev: cl_event;
         
         var ntv := o.UseExclusiveNative(ntv->
@@ -227,18 +227,18 @@ type
       var args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.ResEv) else enq_evs.AddL1(sz1_qr.ResEv);
-         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz2.Invoke(g, l.WithPtrNeed(False))); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.ResEv) else enq_evs.AddL1(sz2_qr.ResEv);
-         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz3.Invoke(g, l.WithPtrNeed(False))); if sz3_qr.IsConst then enq_evs.AddL2(sz3_qr.ResEv) else enq_evs.AddL1(sz3_qr.ResEv);
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ResEv) else enq_evs.AddL1(Result.ResEv); end);
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz1.Invoke(g, l.WithPtrNeed(False))); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.ThenAttachInvokeActions(g));
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz2.Invoke(g, l.WithPtrNeed(False))); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.ThenAttachInvokeActions(g));
+         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->sz3.Invoke(g, l.WithPtrNeed(False))); if sz3_qr.IsConst then enq_evs.AddL2(sz3_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(sz3_qr.ThenAttachInvokeActions(g));
+        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ThenAttachInvokeActions(g)) else enq_evs.AddL1(Result.ThenAttachInvokeActions(g)); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetRes;
-        var  sz2 :=  sz2_qr.GetRes;
-        var  sz3 :=  sz3_qr.GetRes;
-        var args := args_qr.ConvertAll(temp1->temp1.GetRes);
+        var  sz1 :=  sz1_qr.GetResImpl;
+        var  sz2 :=  sz2_qr.GetResImpl;
+        var  sz3 :=  sz3_qr.GetResImpl;
+        var args := args_qr.ConvertAll(temp1->temp1.GetResImpl);
         var res_ev: cl_event;
         
         var ntv := o.UseExclusiveNative(ntv->
@@ -340,18 +340,18 @@ type
       var               args_qr: array of QueueRes<ISetableKernelArg>;
       g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
       begin
-        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->global_work_offset.Invoke(g, l.WithPtrNeed(False))); if global_work_offset_qr.IsConst then enq_evs.AddL2(global_work_offset_qr.ResEv) else enq_evs.AddL1(global_work_offset_qr.ResEv);
-          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->global_work_size.Invoke(g, l.WithPtrNeed(False))); if global_work_size_qr.IsConst then enq_evs.AddL2(global_work_size_qr.ResEv) else enq_evs.AddL1(global_work_size_qr.ResEv);
-           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->local_work_size.Invoke(g, l.WithPtrNeed(False))); if local_work_size_qr.IsConst then enq_evs.AddL2(local_work_size_qr.ResEv) else enq_evs.AddL1(local_work_size_qr.ResEv);
-                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ResEv) else enq_evs.AddL1(Result.ResEv); end);
+        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->global_work_offset.Invoke(g, l.WithPtrNeed(False))); if global_work_offset_qr.IsConst then enq_evs.AddL2(global_work_offset_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(global_work_offset_qr.ThenAttachInvokeActions(g));
+          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->global_work_size.Invoke(g, l.WithPtrNeed(False))); if global_work_size_qr.IsConst then enq_evs.AddL2(global_work_size_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(global_work_size_qr.ThenAttachInvokeActions(g));
+           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>((g,l)->local_work_size.Invoke(g, l.WithPtrNeed(False))); if local_work_size_qr.IsConst then enq_evs.AddL2(local_work_size_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(local_work_size_qr.ThenAttachInvokeActions(g));
+                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueRes<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.ThenAttachInvokeActions(g)) else enq_evs.AddL1(Result.ThenAttachInvokeActions(g)); end);
       end);
       
       Result := (o, cq, err_handler, evs)->
       begin
-        var global_work_offset := global_work_offset_qr.GetRes;
-        var   global_work_size :=   global_work_size_qr.GetRes;
-        var    local_work_size :=    local_work_size_qr.GetRes;
-        var               args :=               args_qr.ConvertAll(temp1->temp1.GetRes);
+        var global_work_offset := global_work_offset_qr.GetResImpl;
+        var   global_work_size :=   global_work_size_qr.GetResImpl;
+        var    local_work_size :=    local_work_size_qr.GetResImpl;
+        var               args :=               args_qr.ConvertAll(temp1->temp1.GetResImpl);
         var res_ev: cl_event;
         
         var ntv := o.UseExclusiveNative(ntv->

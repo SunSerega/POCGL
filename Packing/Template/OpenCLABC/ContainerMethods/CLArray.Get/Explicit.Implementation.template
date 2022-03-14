@@ -26,12 +26,12 @@ type
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ResEv) else enq_evs.AddL1(ind_qr.ResEv);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
       begin
-        var ind := ind_qr.GetRes;
+        var ind := ind_qr.GetResImpl;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
@@ -153,14 +153,14 @@ type
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ResEv) else enq_evs.AddL1(ind_qr.ResEv);
-        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ResEv) else enq_evs.AddL1(len_qr.ResEv);
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
       end);
       
       Result := (o, cq, err_handler, evs, own_qr)->
       begin
-        var ind := ind_qr.GetRes;
-        var len := len_qr.GetRes;
+        var ind := ind_qr.GetResImpl;
+        var len := len_qr.GetResImpl;
         var res := new T[len];
         own_qr.SetRes(res);
         var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);

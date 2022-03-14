@@ -552,8 +552,8 @@ type
             res_EIm += ')';
           end else
             // Если есть аргументы без PtrNeed - лучше передавать в ParallelInvoke CLTaskLocalDataNil, чтобы кидать меньше данных
-            raise new System.NotSupportedException;
 //            res_EIm += 'CLTaskLocalDataNil(l)';
+            raise new System.NotSupportedException;
           res_EIm += ')';
         end;
         res_EIm += ')';
@@ -574,12 +574,12 @@ type
         end;
         res_EIm += 'enq_evs.AddL2(';
         WriteQRName;
-        res_EIm += '.ResEv)';
+        res_EIm += '.ThenAttachInvokeActions(g))';
         if settings.arg_usage[arg.name]<>'ptr' then
         begin
           res_EIm += ' else enq_evs.AddL1(';
           WriteQRName;
-          res_EIm += '.ResEv)';
+          res_EIm += '.ThenAttachInvokeActions(g))';
         end;
         
         if arg.t is MethodArgTypeArray then res_EIm += '; end';
@@ -635,19 +635,19 @@ type
             
             var usage := settings.arg_usage[arg.name];
             if usage=nil then
-              res_EIm += '.GetRes' else
+              res_EIm += '.GetResImpl' else
             case usage of
               
               'ptr':
               begin
-                res_EIm += '.GetPtr';
+                res_EIm += '.res';
                 args_keep_alive += arg.name+'_qr';
               end;
               
               'pinn':
               begin
                 if not (arg.t.Enmr.SkipWhile(t->t is MethodArgTypeCQ).First is MethodArgTypeArray) then raise new System.NotSupportedException(arg.name);
-                res_EIm += '.GetRes';
+                res_EIm += '.GetResImpl';
                 args_with_pinn += arg.name;
               end;
               

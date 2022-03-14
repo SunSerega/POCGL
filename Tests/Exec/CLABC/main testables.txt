@@ -27,10 +27,8 @@
 		- AddProc
 	- 08#HostExec
 	- 09#CombineQueues
-	- 10#KernelArg
-	- 11#WaitMarker
-	- 12#Finally+Handle
-	- 13#CLTask
+	- 10#WaitMarker
+	- 11#Finally+Handle
 
 - 03#ToString
 	- 01#Const
@@ -47,9 +45,9 @@
 		- AddProc
 	- 08#HostExec
 	- 09#CombineQueues
-	- 10#KernelArg
-	- 11#WaitMarker
-	- 12#Finally+Handle
+	- 10#WaitMarker
+	- 11#Finally+Handle
+	- 12#KernelArg
 	- 13#Wrap
 		- 01#Platform
 		- 02#Device

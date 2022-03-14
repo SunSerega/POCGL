@@ -20,13 +20,6 @@ unit OpenCLABC;
 // Обязательно сделать до следующей стабильной версии:
 
 //TODO Тесты:
-// - WriteValue(HFQ(Sleep), HFQQ)
-// --- HFQQ Должно выполнится первым
-// - HPQ+CombineAsync(HPQQ,HPQQ,HPQQ)
-// --- Во скольки разных потоках будут выполнятся Async ветки? Будет ли использован поток HPQ?
-// --- То же самое для какого-то cl.Enqueue вместо HPQ
-// - WriteArray(HFQQ(raise))
-// --- Ошибка возникнет в .GetRes, её должно словить и не дать выполнить cl.Enqueue с nil массивом
 
 //TODO Справка:
 // - ThenQuick[Convert,Use]
@@ -45,7 +38,7 @@ unit OpenCLABC;
 //
 // - В обработке исключений написать, что обработчики всегда Quick
 
-//TODO cl.WaitForEvents тратит время процессора??? Это вообще нормально?
+//TODO cl.WaitForEvents тратит время процессора??? Почему?
 
 //===================================
 // Запланированное:
@@ -2577,14 +2570,16 @@ type
     public left_c: integer;
     {$ifdef EventDebug}
     public reason: string;
+    public all_evs: sequence of cl_event;
     {$endif EventDebug}
     
-    public constructor(work: Action; left_c: integer{$ifdef EventDebug}; reason: string{$endif});
+    public constructor(work: Action; left_c: integer{$ifdef EventDebug}; reason: string; all_evs: sequence of cl_event{$endif});
     begin
       self.work := work;
       self.left_c := left_c;
       {$ifdef EventDebug}
       self.reason := reason;
+      self.all_evs := all_evs;
       {$endif EventDebug}
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -2736,7 +2731,7 @@ type
       // st копирует значение переданное в cl.SetEventCallback, поэтому он не подходит
       CheckEvErr(ev{$ifdef EventDebug}, cb_data.reason{$endif});
       {$ifdef EventDebug}
-      EventDebug.RegisterEventRelease(ev, $'released in multi-callback, working on {cb_data.reason}');
+      EventDebug.RegisterEventRelease(ev, $'released in multi-callback, working on {cb_data.reason}, together with evs: {cb_data.all_evs.JoinToString}');
       {$endif EventDebug}
       OpenCLABCInternalException.RaiseIfError(cl.ReleaseEvent(ev));
       if Interlocked.Decrement(cb_data.left_c) <> 0 then exit;
@@ -2751,7 +2746,7 @@ type
       1: AttachCallback(self.evs[0], work{$ifdef EventDebug}, reason{$endif});
       else
       begin
-        var cb_data := new MultiAttachCallbackData(work, self.count{$ifdef EventDebug}, reason{$endif});
+        var cb_data := new MultiAttachCallbackData(work, self.count{$ifdef EventDebug}, reason, evs.Take(count){$endif});
         var hnd_ptr := GCHandle.ToIntPtr(GCHandle.Alloc(cb_data));
         for var i := 0 to count-1 do
         begin
@@ -2769,7 +2764,7 @@ type
     for var i := 0 to count-1 do
     begin
       {$ifdef EventDebug}
-      EventDebug.RegisterEventRetain(evs[i], $'{reason}, together with evs: {evs.JoinToString}');
+      EventDebug.RegisterEventRetain(evs[i], $'{reason}, together with evs: {evs.Take(count).JoinToString}');
       {$endif EventDebug}
       OpenCLABCInternalException.RaiseIfError( cl.RetainEvent(evs[i]) );
     end;
@@ -2778,7 +2773,7 @@ type
     for var i := 0 to count-1 do
     begin
       {$ifdef EventDebug}
-      EventDebug.RegisterEventRelease(evs[i], $'{reason}, together with evs: {evs.JoinToString}');
+      EventDebug.RegisterEventRelease(evs[i], $'{reason}, together with evs: {evs.Take(count).JoinToString}');
       {$endif EventDebug}
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseEvent(evs[i]) );
     end;
@@ -3243,12 +3238,6 @@ type
     protected procedure SetResImpl(res: T); override := self.res^ := res;
     protected function GetResImpl: T; override := self.res^;
     
-    public function GetPtr: ^T;
-    begin
-      InvokeActions;
-      Result := self.res;
-    end;
-    
   end;
   
   {$endregion Ptr}
@@ -3501,6 +3490,7 @@ type
       self.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_handler, invoker.branch_handlers.ToArray);
       
       self.curr_inv_cq := invoker.prev_cq;
+      if outer_cq<>cl_command_queue.Zero then self.GetCQ(false);
     end;
     
     public procedure ApplyParameters(pars: array of ParameterQueueSetter) :=
@@ -6955,7 +6945,15 @@ type
       {$endif QueueDebug}
       
       if ev_l1.count=0 then
-        Result := ExecuteEnqFunc(cq, q, enq_f, inv_data, ev_l2, g.curr_err_handler) else
+      begin
+        var post_params_handler := g.curr_err_handler;
+        if post_params_handler.HadError(true) then
+        begin
+          Result := new EnqRes(ev_l2, nil);
+          exit;
+        end;
+        Result := ExecuteEnqFunc(cq, q, enq_f, inv_data, ev_l2, post_params_handler);
+      end else
       begin
         var res_ev := new UserEvent(g.cl_c
           {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
