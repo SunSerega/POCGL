@@ -90,7 +90,11 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\ConstSwap.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\realistic use.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1.pas"
 Tester: Compiling: OK
@@ -254,7 +258,11 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\ConstSwap]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\realistic use]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1]
 Tester: Done executing

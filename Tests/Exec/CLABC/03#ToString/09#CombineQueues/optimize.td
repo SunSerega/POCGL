@@ -5,7 +5,8 @@
 OpenCLABC
 
 #ExpOtp
-ConstQueue<System.Object>#0: System.Byte{ 5 }
+CastQueue<System.Byte, System.Object>#0
+	ConstQueue<System.Byte>#1: 5
 
 SimpleAsyncQueueArray<System.Object>#0
 	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()

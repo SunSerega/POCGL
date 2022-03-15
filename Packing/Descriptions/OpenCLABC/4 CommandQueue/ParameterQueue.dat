@@ -8,12 +8,22 @@
 
 
 # ParameterQueue:WillUseDefault
-будет использоваться если при запуске очереди значение небыло установлено
+будет использоваться если при запуске очереди значение параметра небыло установлено
 
-# ParameterQueue<T>.(T)
+# ParameterQueue<T>.(string)
+# ParameterQueue:ctor
 Создаёт новую очередь-параметр
+name указывает имя параметра
+
+# ParameterQueue<T>.(string, T)
+%ParameterQueue:ctor%
 Указанное значение %ParameterQueue:WillUseDefault%
 
+# ParameterQueue<T>.Name
+Имя параметра
+
+# ParameterQueue<T>.DefaultDefined
+Указывает, установлено ли значение, которое %ParameterQueue:WillUseDefault%
 # ParameterQueue<T>.Default
 Значение, которое %ParameterQueue:WillUseDefault%
 
@@ -31,4 +41,14 @@
 Представляет установщик очереди-параметра ParameterQueue<T>, созданный методом .NewSetter
 %ParameterQueueSetter:How%
 
+
+
+# Err:Parameter:SetAgain
+Значение параметра {name} установлено больше одного раза
+
+# Err:Parameter:UnSet
+Значение параметра {name} небыло установлено
+
+# Err:Parameter:NotFound
+Параметр {par.Name} не используется 
 

@@ -22,26 +22,20 @@ unit OpenCLABC;
 //TODO Тесты:
 
 //TODO Справка:
-// - ThenQuick[Convert,Use]
-// - CombineQuickConv[Sync,Async]Queue
-// --- Добавил Conv в название!!!
-// --- И CombineQuickConvSyncQueueN7 нормально задокументировать
-// - AddQuickProc
-// - HPQQ/HFQQ
-//
-// - CQ
-//
-// - ParameterQueue
-// - Сейчас есть альтернатива в виде HFQQ(()->par), но:
-// --- 1. Это приводит к лишним юзер-ивентам, потому что значение этой HFQQ должно вычислить асинхронно с другими параметрами
-// --- 2. Это привязывает всю очередь к глобальному состоянию - таким образом её нельзя выполнить 2 раза одновременно
-//
-// - В обработке исключений написать, что обработчики всегда Quick
-
-//TODO cl.WaitForEvents тратит время процессора??? Почему?
 
 //===================================
 // Запланированное:
+
+//TODO cl.WaitForEvents тратит время процессора??? Почему?
+
+//TODO .Add методы не сочитаются со всем остальным модулем
+// - Можно сделать .ThenWriteValue, возвращающий новый CCQ
+// - Но чтобы не перевыделять массив для каждой комманды - можно чтобы старый и новый CCQ ссылались на общий массив комманд, но имели разные count: integer
+// --- Тогда при добавлении в старый CCQ придётся сначала перевыделить массив - но это меньшее зло
+// - Пройтись по всем .Add в .pas и .md файлах, позаменять их
+
+//TODO CommandQueueNil.Cast имеющий "where T: class"
+// - Чтобы ловить такие ошибки на этапе компиляции
 
 //TODO KernelArg.FromArray принимает индекс но не длину
 // - А FromCLArray вообще не может ссылаться на диапазон в массиве
@@ -58,6 +52,7 @@ unit OpenCLABC;
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
+//TODO Попробовать получать информацию о параметрах Kernel'а и выдавать адекватные ошибки, если передают что-то не то
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
@@ -1462,31 +1457,52 @@ type
   
   {$region Parameter}
   
-  ParameterQueueSetter = sealed class
-    private par_q: CommandQueueBase;
+  ParameterQueueSetter = sealed partial class
     private val: object;
     
-    private constructor(par_q: CommandQueueBase; val: object);
-    begin
-      self.par_q := par_q;
-      self.val := val;
-    end;
     private constructor := raise new OpenCLABCInternalException;
     
   end;
   ParameterQueue<T> = sealed partial class(CommandQueue<T>)
+    private _name: string;
     private def: T;
+    private def_is_set: boolean;
     
-    public constructor(def: T) := self.def := def;
+    public constructor(name: string);
+    begin
+      self._name := name;
+      self.def_is_set := false;
+    end;
+    public constructor(name: string; def: T);
+    begin
+      self.name := name;
+      self.def := def;
+      self.def_is_set := true;
+    end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public property &Default: T read def write def;
+    public property Name: string read _name write _name;
+    public property DefaultDefined: boolean read def_is_set;
     
-    public function NewSetter(val: T) := new ParameterQueueSetter(self, val);
+    private function GetDefault: T;
+    begin
+      if not def_is_set then
+        raise new InvalidOperationException($'%Err:Parameter:UnSet%');
+      Result := self.def;
+    end;
+    public property &Default: T read def write
+    begin
+      self.def := value;
+      self.def_is_set := true;
+    end;
+    
+    public function NewSetter(val: T): ParameterQueueSetter;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ': Default=';
+      sb += '["';
+      sb += Name;
+      sb += '"]: Default=';
       ToStringRuntimeValue(sb, self.def);
       sb += #10;
     end;
@@ -2839,6 +2855,57 @@ begin
 end;
 
 type
+  IParameterQueue = interface
+    
+    property Name: string read;
+    
+  end;
+  ParameterQueueSetter = sealed partial class
+    par_q: IParameterQueue;
+    
+    public constructor(par_q: IParameterQueue; val: object);
+    begin
+      self.par_q := par_q;
+      self.val := val;
+    end;
+    
+    public property Name: string read par_q.Name;
+    
+  end;
+  ParameterQueue<T> = sealed partial class(CommandQueue<T>, IParameterQueue)
+    
+  end;
+  
+//TODO #????
+function ParameterQueue<T>.NewSetter(val: T) := new ParameterQueueSetter(self as object as IParameterQueue, val);
+
+type
+  CLTaskParameterData = record
+    val: object;
+    state: (TPS_Empty, TPS_Default, TPS_Set);
+    
+    public constructor :=
+    self.state := TPS_Empty;
+    public constructor(def: object);
+    begin
+      self.val := def;
+      self.state := TPS_Default;
+    end;
+    
+    public function &Set(name: string; val: object): CLTaskParameterData;
+    begin
+      if self.state=TPS_Set then
+        raise new ArgumentException($'%Err:Parameter:SetAgain%');
+      Result.val := val;
+      Result.state := TPS_Set;
+    end;
+    
+    public procedure TestSet(name: string) :=
+    if self.state=TPS_Empty then
+      raise new ArgumentException($'%Err:Parameter:UnSet%');
+    
+  end;
+  
   CLTaskGlobalData = sealed partial class
     public tsk: CLTaskBase;
     
@@ -2883,6 +2950,19 @@ type
       {$ifdef QueueDebug}
       QueueDebug.Add(cq, '----- return -----');
       {$endif QueueDebug}
+    end;
+    
+    public parameters := new Dictionary<IParameterQueue, CLTaskParameterData>;
+    public procedure ApplyParameters(pars: array of ParameterQueueSetter);
+    begin
+      foreach var par in pars do
+      begin
+        if not parameters.ContainsKey(par.par_q) then
+          raise new ArgumentException($'%Err:Parameter:NotFound%');
+        parameters[par.par_q] := parameters[par.par_q].Set(par.Name, par.val);
+      end;
+      foreach var kvp in self.parameters do
+        kvp.Value.TestSet(kvp.Key.Name);
     end;
     
   end;
@@ -3288,7 +3368,7 @@ type
     public [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
     static function MakeNewTransformed<TPrev>(err_handler: CLTaskErrHandler; need_ptr_qr, can_insta_call: boolean; prev_qr: QueueRes<TPrev>; transform: TPrev->T): QueueRes<T>;
     begin
-      if can_insta_call and prev_qr.IsConst then
+      if (can_insta_call or (prev_qr.ResEv.count=0)) and prev_qr.IsConst then
         Result := MakeNewConstOrPtr(need_ptr_qr, prev_qr.base, transform(prev_qr.GetResImpl)) else
       begin
         Result := MakeNewDelayedOrPtr(need_ptr_qr, prev_qr.ResEv);
@@ -3451,8 +3531,6 @@ type
   
   CLTaskGlobalData = sealed partial class
     
-    public parameters := new Dictionary<CommandQueueBase, object>;
-    
     public mu_res := new Dictionary<IMultiusableCommandQueueHub, MultiuseableResultData>;
     
     public constructor(tsk: CLTaskBase);
@@ -3491,13 +3569,6 @@ type
       
       self.curr_inv_cq := invoker.prev_cq;
       if outer_cq<>cl_command_queue.Zero then self.GetCQ(false);
-    end;
-    
-    public procedure ApplyParameters(pars: array of ParameterQueueSetter) :=
-    foreach var par in pars do
-    begin
-      if not parameters.ContainsKey(par.par_q) then continue;
-      parameters[par.par_q] := par.val;
     end;
     
     public procedure FinishInvoke;
@@ -3585,15 +3656,20 @@ type
 {$region Parameter}
 
 type
-  ParameterQueue<T> = sealed partial class(CommandQueue<T>)
+  ParameterQueue<T> = sealed partial class(CommandQueue<T>, IParameterQueue)
     
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override :=
-    QueueRes&<T>.MakeNewConstOrPtr(l.need_ptr_qr, l.prev_ev, T(g.parameters[self]));
+    //TODO #????
+    QueueRes&<T>.MakeNewConstOrPtr(l.need_ptr_qr, l.prev_ev, T(g.parameters[self as object as IParameterQueue].val));
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      if g.parameters.ContainsKey(self) then exit;
-      g.parameters[self] := self.def;
+      //TODO #????
+      if g.parameters.ContainsKey(self as object as IParameterQueue) then exit;
+      //TODO #????
+      g.parameters[self as object as IParameterQueue] := if self.def_is_set then
+        new CLTaskParameterData(self.def) else
+        new CLTaskParameterData;
     end;
     
   end;
@@ -3798,13 +3874,6 @@ type
     begin
       if cq is CastQueueBase<TInp>(var cqb) then
         Result := cqb.SourceBase.Cast&<TRes> else
-      if cq is ConstQueue<TInp>(var ccq) then
-      try
-        Result := new ConstQueue<TRes>(TRes(object(ccq.Value)))
-      except
-        on e: InvalidCastException do
-          raise new System.InvalidCastException($'%Err:Cast:TInp->TRes%');
-      end else
         Result := new CastQueue<TInp, TRes>(cq);
     end;
     
@@ -4044,9 +4113,13 @@ type
     protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override;
     begin
       Result := q.Invoke(g, l);
-      var qr := Result;
-      var c := g.c;
-      qr.AddAction(()->ExecProc(qr.GetResImpl, c));
+      if (Result.ResEv.count=0) and Result.IsConst then
+        ExecProc(Result.GetResImpl, g.c) else
+      begin
+        var qr := Result;
+        var c := g.c;
+        qr.AddAction(()->ExecProc(qr.GetResImpl, c));
+      end;
     end;
     
     protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.RegisterWaitables(g, prev_hubs);
@@ -4523,6 +4596,7 @@ type
       if has_next then
       begin
         if cq is ConstQueue<T> then exit;
+        if cq is ParameterQueue<T> then exit;
         if cq is CastQueueBase<T>(var cqb) then
         begin
           cqb.SourceBase.UseTyped(self);
@@ -6502,6 +6576,7 @@ type
     public function ConvertNil(cq: CommandQueueNil): BasicGPUCommand<TObj> := new QueueCommandNil<TObj>(cq);
     public function Convert<T>(cq: CommandQueue<T>): BasicGPUCommand<TObj> :=
     if cq is ConstQueue<T> then nil else
+    if cq is ParameterQueue<T> then nil else
     if cq is CastQueueBase<T>(var ccq) then
       ccq.SourceBase.ConvertTyped(self) else
       new QueueCommand<TObj,T>(cq);
