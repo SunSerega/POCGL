@@ -19,40 +19,40 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Тесты:
-
-//TODO Справка:
-
-//===================================
-// Запланированное:
-
-//TODO cl.WaitForEvents тратит время процессора??? Почему?
-
 //TODO .Add методы не сочитаются со всем остальным модулем
 // - Можно сделать .ThenWriteValue, возвращающий новый CCQ
 // - Но чтобы не перевыделять массив для каждой комманды - можно чтобы старый и новый CCQ ссылались на общий массив комманд, но имели разные count: integer
 // --- Тогда при добавлении в старый CCQ придётся сначала перевыделить массив - но это меньшее зло
 // - Пройтись по всем .Add в .pas и .md файлах, позаменять их
-
-//TODO CommandQueueNil.Cast имеющий "where T: class"
-// - Чтобы ловить такие ошибки на этапе компиляции
-
-//TODO KernelArg.FromArray принимает индекс но не длину
-// - А FromCLArray вообще не может ссылаться на диапазон в массиве
+// - По случаю поперемещать .dat и .template файлы в кодогенератора: сейчас там мусорка
 
 //TODO Вместо .StripResult лучше передавать необходимость результата через CLTaskLocalData
 
 //TODO В "HFQQ+HFQQ+HFQQ" нет смысла делать юзер-ивенты, вместо этого можно переливать делегаты предыдущего результата в новый, но без делегата-сеттера
 // - Это же касается и CCQ, но в нём надо чтобы GPUCommand возвращало QueueResNil а не EventList. Это значительно сократит лишние юзер-ивенты
 
-//TODO .DiscardResult, чтобы явно возвращать CommandQueueNil
-
 //TODO Разделить InvokeToVal и InvokeToPtr, убрав need_ptr_qr
 // - Если need_ptr_qr=true - результат нужен QueueResPtr, преобразовывать к общему QueueRes плохо
+
+//TODO Тесты:
+// - CQQ.AddQueue(self)
+
+//TODO Справка:
+// - CQQ.AddQueue(self)
+// - DiscardResult
+
+//===================================
+// Запланированное:
+
+//TODO cl.WaitForEvents тратит время процессора??? Почему?
+
+//TODO KernelArg.FromArray принимает индекс но не длину
+// - А FromCLArray вообще не может ссылаться на диапазон в массиве
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 //TODO Попробовать получать информацию о параметрах Kernel'а и выдавать адекватные ошибки, если передают что-то не то
+// - Адрес RAM всегда превращается в read-only копию на стороне OpenCL-C?
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
@@ -60,9 +60,6 @@ unit OpenCLABC;
 
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
-
-//TODO Может всё же сделать защиту от дурака для "q.AddQueue(q)"?
-// - И в справке тогда убрать параграф...
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
@@ -1519,7 +1516,40 @@ type
     
   end;
   
+  CommandQueueNil = abstract partial class(CommandQueueBase)
+    
+    public function Cast<T>: CommandQueue<T>; where T: class;
+    
+  end;
+  
+  CommandQueue<T> = abstract partial class(CommandQueueBase) end;
+  
   {$endregion Cast}
+  
+  {$region DiscardResult}
+  
+  CommandQueueBase = abstract partial class
+    
+    private function DiscardResultBase: CommandQueueNil; abstract;
+    public function DiscardResult := DiscardResultBase;
+    
+  end;
+  
+  CommandQueueNil = abstract partial class(CommandQueueBase)
+    
+    private function DiscardResultBase: CommandQueueNil; override := DiscardResult;
+    public function DiscardResult := self;
+    
+  end;
+  
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
+    
+    private function DiscardResultBase: CommandQueueNil; override := DiscardResult;
+    public function DiscardResult: CommandQueueNil;
+    
+  end;
+  
+  {$endregion DiscardResult}
   
   {$region ThenConvert}
   
@@ -3893,7 +3923,37 @@ begin
   end;
 end;
 
+function CommandQueueNil.Cast<T> := new TypedNilQueue<T>(self);
+
 {$endregion Cast}
+
+{$region DiscardResult}
+
+type
+  CommandQueueDiscardResult<T> = sealed class(CommandQueueNil)
+    private q: CommandQueue<T>;
+    
+    public constructor(q: CommandQueue<T>) := self.q := q;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalDataNil): QueueResNil; override :=
+    q.Invoke(g, l.WithPtrNeed(false)).StripResult;
+    
+    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    q.RegisterWaitables(g, prev_hubs);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+function CommandQueue<T>.DiscardResult :=
+new CommandQueueDiscardResult<T>(self);
+
+{$endregion DiscardResult}
 
 {$region ThenBackgroundConvert}
 
@@ -3946,9 +4006,9 @@ new CommandQueueThenBackgroundConvert<T, TOtp>(self, f);
 function CommandQueue<T>.ThenConvert<TOtp>(f: (T, Context)->TOtp) :=
 new CommandQueueThenBackgroundConvertC<T, TOtp>(self, f);
 
-{$endregion ThenConvert}
+{$endregion ThenBackgroundConvert}
 
-{$region ThenUse}
+{$region ThenBackgroundUse}
 
 type
   CommandQueueThenBackgroundUseBase<T, TProc> = abstract class(CommandQueue<T>)
@@ -4028,7 +4088,7 @@ new CommandQueueThenBackgroundUse<T>(self, p);
 function CommandQueue<T>.ThenUse(p: (T, Context)->()): CommandQueue<T> :=
 new CommandQueueThenBackgroundUseC<T>(self, p);
 
-{$endregion ThenUse}
+{$endregion ThenBackgroundUse}
 
 {$region ThenQuickConvert}
 

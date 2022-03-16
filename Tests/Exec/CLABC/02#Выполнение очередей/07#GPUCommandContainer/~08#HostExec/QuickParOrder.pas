@@ -2,7 +2,7 @@
 
 function HFQw<T>(x: integer; o: T) := HFQ(()->
 begin
-  Sleep(50);
+  Sleep(100);
   lock output do Writeln(x);
   Result := o;
 end);

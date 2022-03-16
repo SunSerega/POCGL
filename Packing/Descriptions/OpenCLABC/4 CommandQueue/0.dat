@@ -42,6 +42,17 @@
 # CommandQueueBase.Cast<T>
 Если данная очередь проходит по условию "... is CommandQueue<T>" - возвращает себя же
 Иначе возвращает очередь-обёртку, выполняющую "res := T(res)", где res - результат данной очереди
+# CommandQueueNil.Cast<T>
+Создаёт константную очередь, выполняющую данную и возвращающую T(nil)
+Для этого T должен быть ссылочным
+
+
+
+# CommandQueueBase.DiscardResult
+# CommandQueue<T>.DiscardResult
+Возвращает данную очередь но без результата
+# CommandQueueNil.DiscardResult
+Возвращает данную очередь
 
 
 
