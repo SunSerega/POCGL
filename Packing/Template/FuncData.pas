@@ -949,7 +949,7 @@ type
       if all_overloads.Count>18 then Otp($'WARNING: Too many ({all_overloads.Count}) overloads of func [{name}]');
       
       for var par_i := 1 to org_par.Length-1 do
-        if all_overloads.Any(ovr->ovr.pars[par_i].tname.ToLower=org_par[par_i].name.ToLower) then
+        if all_overloads.Any(ovr->ovr.pars.Skip(1).Any(ovr_par->ovr_par.tname.ToLower=org_par[par_i].name.ToLower)) then
           org_par[par_i].name := '_' + org_par[par_i].name;
       
       var l_name := name;
