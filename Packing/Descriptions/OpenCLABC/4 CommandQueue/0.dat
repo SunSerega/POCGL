@@ -48,11 +48,12 @@
 
 
 
+# CommandQueueNil.DiscardResult
+# CQ:DiscardResult
+Возвращает данную очередь
 # CommandQueueBase.DiscardResult
 # CommandQueue<T>.DiscardResult
-Возвращает данную очередь но без результата
-# CommandQueueNil.DiscardResult
-Возвращает данную очередь
+%CQ:DiscardResult% но без результата
 
 
 
