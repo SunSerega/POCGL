@@ -6,11 +6,14 @@ uses PackingUtils in '..\PackingUtils';
 
 begin
   try
-    var res := new FileWriter(GetFullPathRTA('Wrappers\Common.template'));
+    var dir := GetFullPathRTA('Wrappers');
+    System.IO.Directory.CreateDirectory(dir);
+    
+    var res := new FileWriter(GetFullPath('Common.template', dir));
     loop 3 do res += '  '#10;
     
     var prev := new HashSet<string>;
-    foreach var l in ReadLines(GetFullPathRTA('Wrappers\Def.dat')) do
+    foreach var l in ReadLines(GetFullPathRTA('!Def\Wrappers.dat')) do
     begin
       var sl := l.Split(':');
       if sl.Length<2 then continue;

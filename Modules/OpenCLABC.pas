@@ -1,4 +1,4 @@
-﻿
+
 {%..\LicenseHeader%}
 
 ///
@@ -375,7 +375,7 @@ type
   
   {$region Properties}
   
-  {%WrapperProperties\Interface!WrapPropGen.pas%}
+  {%WrapperProperties\Interface!WrapperProperties.pas%}
   
   {$endregion Properties}
   
@@ -929,7 +929,7 @@ type
     
     {$endregion UseExclusiveNative}
     
-    {%ContainerMethods\Kernel\Implicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\Kernel\Implicit.Interface!ContainerMethods.pas%}
     
   end;
   
@@ -1025,9 +1025,9 @@ type
     
     {$endregion constructor's}
     
-    {%ContainerMethods\MemorySegment\Implicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\MemorySegment\Implicit.Interface!ContainerMethods.pas%}
     
-    {%ContainerMethods\MemorySegment.Get\Implicit.Interface!GetMethodGen.pas%}
+    {%ContainerMethods\MemorySegment.Get\Implicit.Interface!ContainerGetMethods.pas%}
     
     private procedure InformGCOfRelease(prev_ntv: cl_mem); virtual :=
     GC.RemoveMemoryPressure( GetSize(prev_ntv).ToUInt64 );
@@ -1182,9 +1182,9 @@ type
     end;
     protected procedure Finalize; override := Dispose;
     
-    {%ContainerMethods\CLArray\Implicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\CLArray\Implicit.Interface!ContainerMethods.pas%}
     
-    {%ContainerMethods\CLArray.Get\Implicit.Interface!GetMethodGen.pas%}
+    {%ContainerMethods\CLArray.Get\Implicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -1192,7 +1192,7 @@ type
   
   {$region Common}
   
-  {%Wrappers\Common!WrapGen.pas%}
+  {%Wrappers\Common!Wrappers.pas%}
   
   {$endregion Common}
   
@@ -1995,7 +1995,7 @@ type
     
     {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\Kernel\Explicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\Kernel\Explicit.Interface!ContainerMethods.pas%}
     
   end;
   
@@ -2011,9 +2011,9 @@ type
     
     {%ContainerCommon\MemorySegment\Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\MemorySegment\Explicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\MemorySegment\Explicit.Interface!ContainerMethods.pas%}
     
-    {%ContainerMethods\MemorySegment.Get\Explicit.Interface!GetMethodGen.pas%}
+    {%ContainerMethods\MemorySegment.Get\Explicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -2034,9 +2034,9 @@ type
     
     {%ContainerCommon\CLArray\Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\CLArray\Explicit.Interface!MethodGen.pas%}
+    {%ContainerMethods\CLArray\Explicit.Interface!ContainerMethods.pas%}
     
-    {%ContainerMethods\CLArray.Get\Explicit.Interface!GetMethodGen.pas%}
+    {%ContainerMethods\CLArray.Get\Explicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -2086,7 +2086,7 @@ function WaitFor(marker: WaitMarker): CommandQueueNil;
 
 {$region CombineQueue's}
 
-{%Global\CombineQueues\Interface!CombineQueues.pas%}
+{%CombineQueues\Interface!CombineQueues.pas%}
 
 {$endregion CombineQueue's}
 
@@ -2176,7 +2176,7 @@ type
   
 {$endregion Base}
 
-{%WrapperProperties\Implementation!WrapPropGen.pas%}
+{%WrapperProperties\Implementation!WrapperProperties.pas%}
 
 {$endregion Properties}
 
@@ -4645,7 +4645,7 @@ type
   where TFunc: Delegate;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; combine_qrs: Func<array of QueueRes<TInp>, Context, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
+    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; combine_qrs: Func<array of QueueRes<TInp>, CLTaskLocalData, Context, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
     begin
       var qrs := new QueueRes<TInp>[qs.Length];
       var evs := new EventList[qs.Length];
@@ -4659,7 +4659,7 @@ type
       end);
       
       var res_ev := EventList.Combine(evs);
-      Result := combine_qrs(qrs, g.c, new CLTaskLocalData(res_ev));
+      Result := combine_qrs(qrs, new CLTaskLocalData(res_ev), g.c);
     end;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, CombineQRsNil);
@@ -7368,13 +7368,13 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\Kernel\Implicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\Kernel\Implicit.Implementation!ContainerMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\Kernel\Explicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\Kernel\Explicit.Implementation!ContainerMethods.pas%}
 
 {$endregion Explicit}
 
@@ -7384,17 +7384,17 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\MemorySegment\Implicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\MemorySegment\Implicit.Implementation!ContainerMethods.pas%}
 
-{%ContainerMethods\MemorySegment.Get\Implicit.Implementation!GetMethodGen.pas%}
+{%ContainerMethods\MemorySegment.Get\Implicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\MemorySegment\Explicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\MemorySegment\Explicit.Implementation!ContainerMethods.pas%}
 
-{%ContainerMethods\MemorySegment.Get\Explicit.Implementation!GetMethodGen.pas%}
+{%ContainerMethods\MemorySegment.Get\Explicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Explicit}
 
@@ -7404,17 +7404,17 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLArray\Implicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\CLArray\Implicit.Implementation!ContainerMethods.pas%}
 
-{%ContainerMethods\CLArray.Get\Implicit.Implementation!GetMethodGen.pas%}
+{%ContainerMethods\CLArray.Get\Implicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\CLArray\Explicit.Implementation!MethodGen.pas%}
+{%ContainerMethods\CLArray\Explicit.Implementation!ContainerMethods.pas%}
 
-{%ContainerMethods\CLArray.Get\Explicit.Implementation!GetMethodGen.pas%}
+{%ContainerMethods\CLArray.Get\Explicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Explicit}
 
@@ -7692,7 +7692,7 @@ new CommandQueueHostQuickProcC(p);
 
 {$region CombineQueue's}
 
-{%Global\CombineQueues\Implementation!CombineQueues.pas%}
+{%CombineQueues\Implementation!CombineQueues.pas%}
 
 {$endregion CombineQueue's}
 

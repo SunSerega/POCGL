@@ -33,8 +33,11 @@ type
   
 begin
   try
-    var res_In := new FileWriter(GetFullPathRTA('WrapperProperties\Interface.template'));
-    var res_Im := new FileWriter(GetFullPathRTA('WrapperProperties\Implementation.template'));
+    var dir := GetFullPathRTA('WrapperProperties');
+    System.IO.Directory.CreateDirectory(dir);
+    
+    var res_In := new FileWriter(GetFullPath(     'Interface.template', dir));
+    var res_Im := new FileWriter(GetFullPath('Implementation.template', dir));
     var res := res_In * res_Im;
     
     loop 3 do
@@ -43,7 +46,7 @@ begin
       res += #10;
     end;
     
-    foreach var fname in EnumerateFiles(GetFullPathRTA('WrapperProperties\Def'), '*.dat') do
+    foreach var fname in EnumerateFiles(GetFullPathRTA('!Def\WrapperProperties'), '*.dat') do
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
       if t.Contains('#') then t := t.Remove(0, t.IndexOf('#')+1);

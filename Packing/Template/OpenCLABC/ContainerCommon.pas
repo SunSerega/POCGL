@@ -8,7 +8,7 @@ uses PackingUtils in '..\PackingUtils';
 begin
   try
     
-    FixerUtils.ReadBlocks(GetFullPathRTA('ContainerCommon\Def.dat'), false).TaskForEach(bl->
+    FixerUtils.ReadBlocks(GetFullPathRTA('!Def\ContainerCommon.dat'), false).TaskForEach(bl->
     begin
       var t := bl[0];
       

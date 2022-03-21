@@ -1,13 +1,13 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses MethodGenData;
+uses ContainerMethodData;
 
 uses ATask        in '..\..\..\Utils\ATask';
 
 {$string_nullbased+}
 
 type
-  MethodSettings = sealed class(MethodGenData.MethodSettings) end;
-  MethodGenerator = sealed class(MethodGenData.MethodGenerator<MethodSettings>)
+  MethodSettings = sealed class(ContainerMethodData.MethodSettings) end;
+  MethodGenerator = sealed class(ContainerMethodData.MethodGenerator<MethodSettings>)
     
     protected function MakeOtpFileName(t: string): string; override := $'{t}.';
     
@@ -64,7 +64,7 @@ type
 begin
   try
     
-    EnumerateDirectories(GetFullPathRTA('ContainerMethods\Def'))
+    EnumerateDirectories(GetFullPathRTA('!Def\ContainerMethods'))
     .TaskForEach(dir->
     begin
       var t := System.IO.Path.GetFileName(dir);

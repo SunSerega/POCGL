@@ -11,11 +11,13 @@ if is_quick then 'Quick' else 'Background';
 
 begin
   try
+    var dir := GetFullPathRTA('ConvQueue');
+    System.IO.Directory.CreateDirectory(dir);
     
     (
       Range(2, MaxQueueStaticArraySize).TaskForEach(c->
       begin
-        var wr := new FileWriter(GetFullPathRTA($'ConvQueue\StaticArray[{c}].template'));
+        var wr := new FileWriter(GetFullPath($'StaticArray[{c}].template', dir));
         loop 3 do wr += #10;
         wr += 'type'#10;
         
@@ -340,7 +342,7 @@ begin
     *
       ProcTask(()->
       begin
-        var wr := new FileWriter(GetFullPathRTA('ConvQueue\AllStaticArrays.template'));
+        var wr := new FileWriter(GetFullPath('AllStaticArrays.template', dir));
         loop 3 do wr += '  '#10;
         
         for var c := 2 to MaxQueueStaticArraySize do

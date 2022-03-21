@@ -1,4 +1,4 @@
-﻿unit MethodGenData;
+﻿unit ContainerMethodData;
 
 uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses POCGL_Utils  in '..\..\..\POCGL_Utils';

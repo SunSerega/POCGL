@@ -1,5 +1,5 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses MethodGenData;
+uses ContainerMethodData;
 
 uses ATask        in '..\..\..\Utils\ATask';
 
@@ -181,7 +181,7 @@ type
 begin
   try
     
-    EnumerateFiles(GetFullPathRTA('ContainerMethods\GetDef'), '*.dat')
+    EnumerateFiles(GetFullPathRTA('!Def\ContainerGetMethods'), '*.dat')
     .TaskForEach(fname->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
