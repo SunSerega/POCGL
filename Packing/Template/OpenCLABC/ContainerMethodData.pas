@@ -479,7 +479,7 @@ type
       end;
       
       // Always need to ParallelInvoke, event if there is only one parameter
-      res_EIm += '      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->'#10;
+      res_EIm += '      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->'#10;
       res_EIm += '      begin'#10;
       
       foreach var arg in useful_args do

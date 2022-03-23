@@ -28,7 +28,7 @@ type
     protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<&T>)->DirectEnqRes; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
         ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
@@ -156,7 +156,7 @@ type
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
         ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
         len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));

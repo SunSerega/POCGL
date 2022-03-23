@@ -27,7 +27,7 @@ WriteValue(val, 0);
 # [%mode:Write,Read%]Value!N[%Q:,Q%]
 val: {%Q?NativeValue<TRecord>:CommandQueue<NativeValue<TRecord>>%}
 !ShortDef
-WriteValue(val, 0);
+{%mode%}Value(val, 0);
 
 # WriteValue![%Q:,Q%]
 val: {%Q?TRecord:CommandQueue<TRecord>%}; mem_offset: CommandQueue<integer>

@@ -29,7 +29,7 @@ type
     begin
       var  sz1_qr: QueueRes<integer>;
       var args_qr: array of QueueResVal<ISetableKernelArg>;
-      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
         args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueResVal<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.AttachInvokeActions(g)) else enq_evs.AddL1(Result.AttachInvokeActions(g)); end);
@@ -126,7 +126,7 @@ type
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var args_qr: array of QueueResVal<ISetableKernelArg>;
-      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
          sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.InvokeToAny); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.AttachInvokeActions(g));
@@ -233,7 +233,7 @@ type
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
       var args_qr: array of QueueResVal<ISetableKernelArg>;
-      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
          sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.InvokeToAny); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.AttachInvokeActions(g));
@@ -346,7 +346,7 @@ type
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
       var               args_qr: array of QueueResVal<ISetableKernelArg>;
-      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
         global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.InvokeToAny); if global_work_offset_qr.IsConst then enq_evs.AddL2(global_work_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_offset_qr.AttachInvokeActions(g));
           global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(  global_work_size.InvokeToAny); if global_work_size_qr.IsConst then enq_evs.AddL2(global_work_size_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_size_qr.AttachInvokeActions(g));

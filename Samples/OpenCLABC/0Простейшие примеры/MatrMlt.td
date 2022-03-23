@@ -32,7 +32,7 @@ OpenCLABC
 Вектор V2 = C*V1: 
 43.549829529219 38.1055105291197 44.5335618220427 23.6192068006406
 
-[EventDebug]: 16 event's created 
+[EventDebug]: 13 event's created 
 [QueueDebug]: 3 queue's created 
 [WaitDebug]: 0 wait handler's created 
 

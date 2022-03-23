@@ -169,21 +169,14 @@ type
     
     protected function InvokeSubQs(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<ValueTuple<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>; override;
     begin
-      var qr1 := q1.InvokeToAny(g, l); l := qr1.base;
-      var qr2 := q2.InvokeToAny(g, l); l := qr2.base;
-      var qr3 := q3.InvokeToAny(g, l); l := qr3.base;
-      var qr4 := q4.InvokeToAny(g, l); l := qr4.base;
-      var qr5 := q5.InvokeToAny(g, l); l := qr5.base;
-      var qr6 := q6.InvokeToAny(g, l); l := qr6.base;
-      var qr7 := q7.InvokeToAny(g, l); l := qr7.base;
+      var qr1 := q1.InvokeToAny(g, l); l := qr1.TakeBaseOut;
+      var qr2 := q2.InvokeToAny(g, l); l := qr2.TakeBaseOut;
+      var qr3 := q3.InvokeToAny(g, l); l := qr3.TakeBaseOut;
+      var qr4 := q4.InvokeToAny(g, l); l := qr4.TakeBaseOut;
+      var qr5 := q5.InvokeToAny(g, l); l := qr5.TakeBaseOut;
+      var qr6 := q6.InvokeToAny(g, l); l := qr6.TakeBaseOut;
+      var qr7 := q7.InvokeToAny(g, l); l := qr7.TakeBaseOut;
       Result := CombineQRs(qr1, qr2, qr3, qr4, qr5, qr6, qr7, l);
-      qr1.TransplantActionsNowhere;
-      qr2.TransplantActionsNowhere;
-      qr3.TransplantActionsNowhere;
-      qr4.TransplantActionsNowhere;
-      qr5.TransplantActionsNowhere;
-      qr6.TransplantActionsNowhere;
-      qr7.TransplantActionsNowhere;
     end;
     
   end;
@@ -244,21 +237,14 @@ type
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<QueueRes<TInp1>, QueueRes<TInp2>, QueueRes<TInp3>, QueueRes<TInp4>, QueueRes<TInp5>, QueueRes<TInp6>, QueueRes<TInp7>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
     begin
-      var qr1 := q1.InvokeToAny(g, l); l := qr1.base;
-      var qr2 := q2.InvokeToAny(g, l); l := qr2.base;
-      var qr3 := q3.InvokeToAny(g, l); l := qr3.base;
-      var qr4 := q4.InvokeToAny(g, l); l := qr4.base;
-      var qr5 := q5.InvokeToAny(g, l); l := qr5.base;
-      var qr6 := q6.InvokeToAny(g, l); l := qr6.base;
-      var qr7 := q7.InvokeToAny(g, l); l := qr7.base;
+      var qr1 := q1.InvokeToAny(g, l); l := qr1.TakeBaseOut;
+      var qr2 := q2.InvokeToAny(g, l); l := qr2.TakeBaseOut;
+      var qr3 := q3.InvokeToAny(g, l); l := qr3.TakeBaseOut;
+      var qr4 := q4.InvokeToAny(g, l); l := qr4.TakeBaseOut;
+      var qr5 := q5.InvokeToAny(g, l); l := qr5.TakeBaseOut;
+      var qr6 := q6.InvokeToAny(g, l); l := qr6.TakeBaseOut;
+      var qr7 := q7.InvokeToAny(g, l); l := qr7.TakeBaseOut;
       Result := CombineQRs(qr1, qr2, qr3, qr4, qr5, qr6, qr7, g, l);
-      qr1.TransplantActionsNowhere;
-      qr2.TransplantActionsNowhere;
-      qr3.TransplantActionsNowhere;
-      qr4.TransplantActionsNowhere;
-      qr5.TransplantActionsNowhere;
-      qr6.TransplantActionsNowhere;
-      qr7.TransplantActionsNowhere;
     end;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, CombineQRsNil);

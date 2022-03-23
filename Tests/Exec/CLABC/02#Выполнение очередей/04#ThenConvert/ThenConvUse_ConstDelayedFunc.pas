@@ -15,7 +15,7 @@ begin
   Context.Default.SyncInvoke(q
     .ThenQuickUse(x->Println(x))
     .ThenQuickConvert(x->(x*x).Println)
-    .ThenQuickUse(x->Println(x))
+    .ThenQuickUse(x->Println(x+1))
   );
   
   Writeln('='*30);

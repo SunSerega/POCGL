@@ -224,8 +224,6 @@ begin
             else raise new System.InvalidOperationException(exec_order);
           end;
           wr += ');'#10;
-          if exec_order='Sync' then
-            WriteNumbered('      qr%.TransplantActionsNowhere;'#10);
           wr += '    end;'#10;
           wr += '    '#10;
           
@@ -337,7 +335,7 @@ begin
           wr += '>; override;'#10;
           wr += '    begin'#10;
           
-          WriteNumbered('      var qr% := q%.InvokeToAny(g, l); l := qr%.base;'#10);
+          WriteNumbered('      var qr% := q%.InvokeToAny(g, l); l := qr%.TakeBaseOut;'#10);
           
         end);
         
@@ -383,7 +381,7 @@ begin
           wr += 'CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;'#10;
           wr += '    begin'#10;
           
-          WriteNumbered('      var qr% := q%.InvokeToAny(g, l); l := qr%.base;'#10);
+          WriteNumbered('      var qr% := q%.InvokeToAny(g, l); l := qr%.TakeBaseOut;'#10);
           
         end);
         
