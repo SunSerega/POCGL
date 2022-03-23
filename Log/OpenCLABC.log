@@ -1,25 +1,25 @@
 ﻿Runing Template[OpenCLABC]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapPropGen.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapperProperties.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapPropGen.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapPropGen.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\MethodGen.pas"
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\MethodGen.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [Kernel]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\MethodGen.exe]: Packed methods for [MemorySegment]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\MethodGen.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\GetMethodGen.pas"
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [Kernel]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [MemorySegment]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\GetMethodGen.exe]: Packed .Get methods for [MemorySegment]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\GetMethodGen.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapGen.pas"
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [MemorySegment]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\Wrappers.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapGen.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapGen.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\Wrappers.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\Wrappers.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerCommon.exe]

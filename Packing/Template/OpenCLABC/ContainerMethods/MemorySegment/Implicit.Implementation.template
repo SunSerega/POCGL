@@ -65,12 +65,12 @@ end;
 
 function MemorySegment.ReadValue<TRecord>(val: NativeValue<TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := WriteValue(val, 0);
+  Result := ReadValue(val, 0);
 end;
 
 function MemorySegment.ReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegment; where TRecord: record;
 begin
-  Result := WriteValue(val, 0);
+  Result := ReadValue(val, 0);
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;

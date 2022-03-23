@@ -15,10 +15,10 @@ const MaxQueueStaticArraySize = 7;
 
 begin
   try
-    System.IO.Directory.CreateDirectory(GetFullPathRTA('Global\CombineQueues'));
+    System.IO.Directory.CreateDirectory(GetFullPathRTA('CombineQueues'));
     
-    var intr := new FileWriter(GetFullPathRTA('Global\CombineQueues\Interface.template'));
-    var impl := new FileWriter(GetFullPathRTA('Global\CombineQueues\Implementation.template'));
+    var intr := new FileWriter(GetFullPathRTA('CombineQueues\Interface.template'));
+    var impl := new FileWriter(GetFullPathRTA('CombineQueues\Implementation.template'));
     var wr := intr * impl;
     
     loop 3 do wr += #10;

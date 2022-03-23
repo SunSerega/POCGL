@@ -105,7 +105,7 @@ OpenCLABC
                           █  █ █    █                      █                    █               █ █ 
                          █ █   █    █      █         █  █ █         █          ██                   
                         ██ ██      █        █        █   █          ██        █ █                   
-[EventDebug]: 154 event's created 
+[EventDebug]: 103 event's created 
 [QueueDebug]: 2 queue's created 
 [WaitDebug]: 0 wait handler's created 
 

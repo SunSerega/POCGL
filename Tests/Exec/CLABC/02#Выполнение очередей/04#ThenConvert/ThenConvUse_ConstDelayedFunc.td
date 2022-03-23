@@ -13,7 +13,7 @@ ConstQueue<System.Int32>#0: 2
 ----------
 2 
 4 
-4 
+5 
 ==============================
 CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
 ----------
@@ -23,7 +23,7 @@ CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
 ----------
 3 
 9 
-9 
+10 
 ==============================
 CastQueue<System.Object, System.Int32>#0
 	CommandQueueHostBackgoundFunc<System.Object>#1: System.Object <>lambda*()
@@ -34,7 +34,7 @@ CastQueue<System.Object, System.Int32>#0
 ----------
 4 
 16 
-16 
+17 
 ==============================
 [EventDebug]: 13 event's created 
 [QueueDebug]: 0 queue's created 

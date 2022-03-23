@@ -1,5 +1,5 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses MethodGenData;
+uses ContainerMethodData;
 
 uses ATask        in '..\..\..\Utils\ATask';
 
@@ -111,13 +111,13 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList, QueueRes<';
+      res_EIm += ', cl_command_queue, EventList, QueueRes<';
       res_EIm += settings.result_type.org_text;
       res_EIm += '>)->DirectEnqRes; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
     begin
-      res_EIm += '(o, cq, err_handler, evs, own_qr)->'#10;
+      res_EIm += '(o, cq, evs, own_qr)->'#10;
     end;
     protected procedure AddGCHandleArgs(args_keep_alive, args_with_pinn: List<string>; settings: GetMethodSettings); override :=
     if settings.force_ptr_qr then
@@ -135,7 +135,10 @@ type
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: GetMethodSettings); override;
     begin
-      res_EIm += 'EnqueueableGetCommand<';
+      res_EIm += 'EnqueueableGet';
+      if settings.force_ptr_qr then
+        res_EIm += 'Ptr';
+      res_EIm += 'Command<';
       res_EIm += t;
       if generics.Count <> 0 then
       begin
@@ -149,17 +152,7 @@ type
     end;
     protected procedure WriteCommandTypeInhConstructor; override :=
     res_EIm += '      inherited Create(ccq);'#10;
-    protected procedure WriteMiscMethods(settings: GetMethodSettings); override;
-    begin
-      
-      if settings.force_ptr_qr then
-      begin
-        res_EIm += '    public function ForcePtrQr: boolean; override := true;'#10;
-        res_EIm += '    '#10;
-      end;
-      
-    end;
-    protected function GetRegisterWaitablesExtra: string; override := 'prev_commands.RegisterWaitables(g, prev_hubs)';
+    protected function GetInitBeforeInvokeExtra: string; override := 'prev_commands.InitBeforeInvoke(g, prev_hubs)';
     
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: GetMethodSettings); override;
     begin
@@ -181,7 +174,7 @@ type
 begin
   try
     
-    EnumerateFiles(GetFullPathRTA('ContainerMethods\GetDef'), '*.dat')
+    EnumerateFiles(GetFullPathRTA('!Def\ContainerGetMethods'), '*.dat')
     .TaskForEach(fname->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);

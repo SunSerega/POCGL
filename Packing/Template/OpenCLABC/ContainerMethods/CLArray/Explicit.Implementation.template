@@ -18,17 +18,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ptr.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.ThenAttachInvokeActions(g));
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ptr := ptr_qr.GetResImpl;
+        var ptr := ptr_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -42,11 +47,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ptr.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -87,23 +87,30 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ptr.InitBeforeInvoke(g, prev_hubs);
+      ind.InitBeforeInvoke(g, prev_hubs);
+      len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.ThenAttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ptr := ptr_qr.GetResImpl;
-        var ind := ind_qr.GetResImpl;
-        var len := len_qr.GetResImpl;
+        var ptr := ptr_qr.GetResDirect;
+        var ind := ind_qr.GetResDirect;
+        var len := len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -117,13 +124,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ptr.RegisterWaitables(g, prev_hubs);
-      ind.RegisterWaitables(g, prev_hubs);
-      len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -168,17 +168,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ptr.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.ThenAttachInvokeActions(g));
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ptr := ptr_qr.GetResImpl;
+        var ptr := ptr_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
@@ -192,11 +197,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ptr.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -237,23 +237,30 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ptr.InitBeforeInvoke(g, prev_hubs);
+      ind.InitBeforeInvoke(g, prev_hubs);
+      len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.Invoke); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.ThenAttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ptr := ptr_qr.GetResImpl;
-        var ind := ind_qr.GetResImpl;
-        var len := len_qr.GetResImpl;
+        var ptr := ptr_qr.GetResDirect;
+        var ind := ind_qr.GetResDirect;
+        var len := len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
@@ -267,13 +274,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ptr.RegisterWaitables(g, prev_hubs);
-      ind.RegisterWaitables(g, prev_hubs);
-      len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -361,17 +361,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ind := ind_qr.GetResImpl;
+        var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -385,11 +390,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -432,20 +432,26 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.InitBeforeInvoke(g, prev_hubs);
+      ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var val_qr: QueueResPtr<&T>;
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<&T>>((g,l)->val.Invoke(g, l.WithPtrNeed( True)))as QueueResPtr<&T>; enq_evs.AddL2(val_qr.ThenAttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->ind.Invoke(g, l.WithPtrNeed(False))); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        val_qr := invoker.InvokeBranch&<QueueResPtr<&T>>(val.InvokeToPtr); enq_evs.AddL2(val_qr.AttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
         var val := val_qr.res;
-        var ind := ind_qr.GetResImpl;
+        var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -456,18 +462,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           GC.KeepAlive(val_qr);
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      val.RegisterWaitables(g, prev_hubs);
-      ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -510,17 +510,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ind := ind_qr.GetResImpl;
+        var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -534,11 +539,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -581,20 +581,26 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.InitBeforeInvoke(g, prev_hubs);
+      ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var val_qr: QueueRes<NativeValue<&T>>;
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.Invoke); if val_qr.IsConst then enq_evs.AddL2(val_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(val_qr.ThenAttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResImpl;
-        var ind := ind_qr.GetResImpl;
+        var val := val_qr.GetResDirect;
+        var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -608,12 +614,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      val.RegisterWaitables(g, prev_hubs);
-      ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -656,17 +656,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ind := ind_qr.GetResImpl;
+        var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
@@ -680,11 +685,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -727,20 +727,26 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.InitBeforeInvoke(g, prev_hubs);
+      ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var val_qr: QueueRes<NativeValue<&T>>;
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.Invoke); if val_qr.IsConst then enq_evs.AddL2(val_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(val_qr.ThenAttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
+        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResImpl;
-        var ind := ind_qr.GetResImpl;
+        var val := val_qr.GetResDirect;
+        var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
@@ -754,12 +760,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      val.RegisterWaitables(g, prev_hubs);
-      ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -800,17 +800,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var a_qr: QueueRes<array of &T>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
+        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResImpl;
+        var a := a_qr.GetResDirect;
         var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
         
         var res_ev: cl_event;
@@ -823,17 +828,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           a_hnd.Free;
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -876,26 +876,34 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+          a.InitBeforeInvoke(g, prev_hubs);
+        ind.InitBeforeInvoke(g, prev_hubs);
+        len.InitBeforeInvoke(g, prev_hubs);
+      a_ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var   ind_qr: QueueRes<integer>;
       var   len_qr: QueueRes<integer>;
       var a_ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(    a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
-          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
-        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.Invoke); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.ThenAttachInvokeActions(g));
+            a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(    a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
+        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var     a :=     a_qr.GetResImpl;
-        var   ind :=   ind_qr.GetResImpl;
-        var   len :=   len_qr.GetResImpl;
-        var a_ind := a_ind_qr.GetResImpl;
+        var     a :=     a_qr.GetResDirect;
+        var   ind :=   ind_qr.GetResDirect;
+        var   len :=   len_qr.GetResDirect;
+        var a_ind := a_ind_qr.GetResDirect;
         var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
         
         var res_ev: cl_event;
@@ -908,20 +916,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           a_hnd.Free;
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-          a.RegisterWaitables(g, prev_hubs);
-        ind.RegisterWaitables(g, prev_hubs);
-        len.RegisterWaitables(g, prev_hubs);
-      a_ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -970,17 +970,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var a_qr: QueueRes<array of &T>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
+        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResImpl;
+        var a := a_qr.GetResDirect;
         var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
         
         var res_ev: cl_event;
@@ -993,17 +998,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           a_hnd.Free;
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1046,26 +1046,34 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+          a.InitBeforeInvoke(g, prev_hubs);
+        ind.InitBeforeInvoke(g, prev_hubs);
+        len.InitBeforeInvoke(g, prev_hubs);
+      a_ind.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var   ind_qr: QueueRes<integer>;
       var   len_qr: QueueRes<integer>;
       var a_ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(    a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
-          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
-        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.Invoke); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.ThenAttachInvokeActions(g));
+            a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(    a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
+        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var     a :=     a_qr.GetResImpl;
-        var   ind :=   ind_qr.GetResImpl;
-        var   len :=   len_qr.GetResImpl;
-        var a_ind := a_ind_qr.GetResImpl;
+        var     a :=     a_qr.GetResDirect;
+        var   ind :=   ind_qr.GetResDirect;
+        var   len :=   len_qr.GetResDirect;
+        var a_ind := a_ind_qr.GetResDirect;
         var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
         
         var res_ev: cl_event;
@@ -1078,20 +1086,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           a_hnd.Free;
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-          a.RegisterWaitables(g, prev_hubs);
-        ind.RegisterWaitables(g, prev_hubs);
-        len.RegisterWaitables(g, prev_hubs);
-      a_ind.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1146,20 +1146,26 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+              ptr.InitBeforeInvoke(g, prev_hubs);
+      pattern_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.ThenAttachInvokeActions(g));
-        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.ThenAttachInvokeActions(g));
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.InvokeToAny); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var         ptr :=         ptr_qr.GetResImpl;
-        var pattern_len := pattern_len_qr.GetResImpl;
+        var         ptr :=         ptr_qr.GetResDirect;
+        var pattern_len := pattern_len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -1173,12 +1179,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-              ptr.RegisterWaitables(g, prev_hubs);
-      pattern_len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1225,26 +1225,34 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+              ptr.InitBeforeInvoke(g, prev_hubs);
+      pattern_len.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+              len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
       var         ind_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.Invoke); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.ThenAttachInvokeActions(g));
-        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.ThenAttachInvokeActions(g));
-                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+                ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(        ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.InvokeToAny); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var         ptr :=         ptr_qr.GetResImpl;
-        var pattern_len := pattern_len_qr.GetResImpl;
-        var         ind :=         ind_qr.GetResImpl;
-        var         len :=         len_qr.GetResImpl;
+        var         ptr :=         ptr_qr.GetResDirect;
+        var pattern_len := pattern_len_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var         len :=         len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -1258,14 +1266,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-              ptr.RegisterWaitables(g, prev_hubs);
-      pattern_len.RegisterWaitables(g, prev_hubs);
-              ind.RegisterWaitables(g, prev_hubs);
-              len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1337,10 +1337,14 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
         var res_ev: cl_event;
         
@@ -1355,10 +1359,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1395,15 +1395,20 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var val_qr: QueueResPtr<&T>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(True), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<&T>>(val.Invoke)as QueueResPtr<&T>; enq_evs.AddL2(val_qr.ThenAttachInvokeActions(g));
+        val_qr := invoker.InvokeBranch&<QueueResPtr<&T>>(val.InvokeToPtr); enq_evs.AddL2(val_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
         var val := val_qr.res;
         var res_ev: cl_event;
@@ -1416,17 +1421,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           GC.KeepAlive(val_qr);
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      val.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1472,20 +1472,26 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      ind.InitBeforeInvoke(g, prev_hubs);
+      len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var ind := ind_qr.GetResImpl;
-        var len := len_qr.GetResImpl;
+        var ind := ind_qr.GetResDirect;
+        var len := len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -1499,12 +1505,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ind.RegisterWaitables(g, prev_hubs);
-      len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1553,23 +1553,30 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      val.InitBeforeInvoke(g, prev_hubs);
+      ind.InitBeforeInvoke(g, prev_hubs);
+      len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var val_qr: QueueResPtr<&T>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create, true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<&T>>((g,l)->val.Invoke(g, l.WithPtrNeed( True)))as QueueResPtr<&T>; enq_evs.AddL2(val_qr.ThenAttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->ind.Invoke(g, l.WithPtrNeed(False))); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-        len_qr := invoker.InvokeBranch&<QueueRes<integer>>((g,l)->len.Invoke(g, l.WithPtrNeed(False))); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+        val_qr := invoker.InvokeBranch&<QueueResPtr<&T>>(val.InvokeToPtr); enq_evs.AddL2(val_qr.AttachInvokeActions(g));
+        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
         var val := val_qr.res;
-        var ind := ind_qr.GetResImpl;
-        var len := len_qr.GetResImpl;
+        var ind := ind_qr.GetResDirect;
+        var len := len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -1580,19 +1587,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           GC.KeepAlive(val_qr);
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      val.RegisterWaitables(g, prev_hubs);
-      ind.RegisterWaitables(g, prev_hubs);
-      len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1637,17 +1637,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var a_qr: QueueRes<array of &T>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
+        a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResImpl;
+        var a := a_qr.GetResDirect;
         var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
         
         var res_ev: cl_event;
@@ -1660,17 +1665,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           a_hnd.Free;
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1715,29 +1715,38 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+                a.InitBeforeInvoke(g, prev_hubs);
+         a_offset.InitBeforeInvoke(g, prev_hubs);
+      pattern_len.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+              len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var           a_qr: QueueRes<array of &T>;
       var    a_offset_qr: QueueRes<integer>;
       var pattern_len_qr: QueueRes<integer>;
       var         ind_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(          a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
-           a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   a_offset.Invoke); if a_offset_qr.IsConst then enq_evs.AddL2(a_offset_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_offset_qr.ThenAttachInvokeActions(g));
-        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.Invoke); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.ThenAttachInvokeActions(g));
-                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.Invoke); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.ThenAttachInvokeActions(g));
-                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+                  a_qr := invoker.InvokeBranch&<QueueRes<array of &T>>(          a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+           a_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   a_offset.InvokeToAny); if a_offset_qr.IsConst then enq_evs.AddL2(a_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_offset_qr.AttachInvokeActions(g));
+        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.InvokeToAny); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var           a :=           a_qr.GetResImpl;
-        var    a_offset :=    a_offset_qr.GetResImpl;
-        var pattern_len := pattern_len_qr.GetResImpl;
-        var         ind :=         ind_qr.GetResImpl;
-        var         len :=         len_qr.GetResImpl;
+        var           a :=           a_qr.GetResDirect;
+        var    a_offset :=    a_offset_qr.GetResDirect;
+        var pattern_len := pattern_len_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var         len :=         len_qr.GetResDirect;
         var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
         
         var res_ev: cl_event;
@@ -1750,21 +1759,12 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        Result := new DirectEnqRes(res_ev, ()->
+        Result := new DirectEnqRes(res_ev, c->
         begin
           a_hnd.Free;
         end);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-                a.RegisterWaitables(g, prev_hubs);
-         a_offset.RegisterWaitables(g, prev_hubs);
-      pattern_len.RegisterWaitables(g, prev_hubs);
-              ind.RegisterWaitables(g, prev_hubs);
-              len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1821,17 +1821,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var a_qr: QueueRes<CLArray<T>>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
+        a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResImpl;
+        var a := a_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueCopyBuffer(
@@ -1845,11 +1850,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1892,26 +1892,34 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+             a.InitBeforeInvoke(g, prev_hubs);
+      from_ind.InitBeforeInvoke(g, prev_hubs);
+        to_ind.InitBeforeInvoke(g, prev_hubs);
+           len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var        a_qr: QueueRes<CLArray<T>>;
       var from_ind_qr: QueueRes<integer>;
       var   to_ind_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(       a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
-        from_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_ind.Invoke); if from_ind_qr.IsConst then enq_evs.AddL2(from_ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(from_ind_qr.ThenAttachInvokeActions(g));
-          to_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_ind.Invoke); if to_ind_qr.IsConst then enq_evs.AddL2(to_ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(to_ind_qr.ThenAttachInvokeActions(g));
-             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+               a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(       a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+        from_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_ind.InvokeToAny); if from_ind_qr.IsConst then enq_evs.AddL2(from_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(from_ind_qr.AttachInvokeActions(g));
+          to_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_ind.InvokeToAny); if to_ind_qr.IsConst then enq_evs.AddL2(to_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(to_ind_qr.AttachInvokeActions(g));
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var        a :=        a_qr.GetResImpl;
-        var from_ind := from_ind_qr.GetResImpl;
-        var   to_ind :=   to_ind_qr.GetResImpl;
-        var      len :=      len_qr.GetResImpl;
+        var        a :=        a_qr.GetResDirect;
+        var from_ind := from_ind_qr.GetResDirect;
+        var   to_ind :=   to_ind_qr.GetResDirect;
+        var      len :=      len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueCopyBuffer(
@@ -1925,14 +1933,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-             a.RegisterWaitables(g, prev_hubs);
-      from_ind.RegisterWaitables(g, prev_hubs);
-        to_ind.RegisterWaitables(g, prev_hubs);
-           len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -1981,17 +1981,22 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var a_qr: QueueRes<CLArray<T>>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
+        a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResImpl;
+        var a := a_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueCopyBuffer(
@@ -2005,11 +2010,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -2052,26 +2052,34 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+             a.InitBeforeInvoke(g, prev_hubs);
+      from_ind.InitBeforeInvoke(g, prev_hubs);
+        to_ind.InitBeforeInvoke(g, prev_hubs);
+           len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
     begin
       var        a_qr: QueueRes<CLArray<T>>;
       var from_ind_qr: QueueRes<integer>;
       var   to_ind_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
-      g.ParallelInvoke(CLTaskLocalDataNil.Create.WithPtrNeed(False), true, enq_evs.Capacity-1, invoker->
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(       a.Invoke); if a_qr.IsConst then enq_evs.AddL2(a_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(a_qr.ThenAttachInvokeActions(g));
-        from_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_ind.Invoke); if from_ind_qr.IsConst then enq_evs.AddL2(from_ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(from_ind_qr.ThenAttachInvokeActions(g));
-          to_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_ind.Invoke); if to_ind_qr.IsConst then enq_evs.AddL2(to_ind_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(to_ind_qr.ThenAttachInvokeActions(g));
-             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.Invoke); if len_qr.IsConst then enq_evs.AddL2(len_qr.ThenAttachInvokeActions(g)) else enq_evs.AddL1(len_qr.ThenAttachInvokeActions(g));
+               a_qr := invoker.InvokeBranch&<QueueRes<CLArray<T>>>(       a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+        from_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_ind.InvokeToAny); if from_ind_qr.IsConst then enq_evs.AddL2(from_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(from_ind_qr.AttachInvokeActions(g));
+          to_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_ind.InvokeToAny); if to_ind_qr.IsConst then enq_evs.AddL2(to_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(to_ind_qr.AttachInvokeActions(g));
+             len_qr := invoker.InvokeBranch&<QueueRes<integer>>(     len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, err_handler, evs)->
+      Result := (o, cq, evs)->
       begin
-        var        a :=        a_qr.GetResImpl;
-        var from_ind := from_ind_qr.GetResImpl;
-        var   to_ind :=   to_ind_qr.GetResImpl;
-        var      len :=      len_qr.GetResImpl;
+        var        a :=        a_qr.GetResDirect;
+        var from_ind := from_ind_qr.GetResDirect;
+        var   to_ind :=   to_ind_qr.GetResDirect;
+        var      len :=      len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueCopyBuffer(
@@ -2085,14 +2093,6 @@ type
         Result := new DirectEnqRes(res_ev, nil);
       end;
       
-    end;
-    
-    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-             a.RegisterWaitables(g, prev_hubs);
-      from_ind.RegisterWaitables(g, prev_hubs);
-        to_ind.RegisterWaitables(g, prev_hubs);
-           len.RegisterWaitables(g, prev_hubs);
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;

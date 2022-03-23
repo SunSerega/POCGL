@@ -1,13 +1,13 @@
 ﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses MethodGenData;
+uses ContainerMethodData;
 
 uses ATask        in '..\..\..\Utils\ATask';
 
 {$string_nullbased+}
 
 type
-  MethodSettings = sealed class(MethodGenData.MethodSettings) end;
-  MethodGenerator = sealed class(MethodGenData.MethodGenerator<MethodSettings>)
+  MethodSettings = sealed class(ContainerMethodData.MethodSettings) end;
+  MethodGenerator = sealed class(ContainerMethodData.MethodGenerator<MethodSettings>)
     
     protected function MakeOtpFileName(t: string): string; override := $'{t}.';
     
@@ -21,11 +21,11 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;'#10;
+      res_EIm += ', cl_command_queue, EventList)->DirectEnqRes; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
     begin
-      res_EIm += '(o, cq, err_handler, evs)->'#10;
+      res_EIm += '(o, cq, evs)->'#10;
     end;
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: MethodSettings); override;
@@ -64,7 +64,7 @@ type
 begin
   try
     
-    EnumerateDirectories(GetFullPathRTA('ContainerMethods\Def'))
+    EnumerateDirectories(GetFullPathRTA('!Def\ContainerMethods'))
     .TaskForEach(dir->
     begin
       var t := System.IO.Path.GetFileName(dir);
