@@ -354,7 +354,7 @@ begin
           
           WriteNumbered('      var qr%: QueueRes<TInp%>;'#10);
           
-          wr += '      g.ParallelInvoke(l, false, ';
+          wr += '      g.ParallelInvoke(l, ';
           wr += c;
           wr += ', invoker->'#10;
           wr += '      begin'#10;
@@ -401,7 +401,7 @@ begin
           
           WriteNumbered('      var qr%: QueueRes<TInp%>;'#10);
           
-          wr += '      g.ParallelInvoke(l, false, ';
+          wr += '      g.ParallelInvoke(l, ';
           wr += c;
           wr += ', invoker->'#10;
           wr += '      begin'#10;

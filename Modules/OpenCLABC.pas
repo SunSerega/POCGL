@@ -3530,20 +3530,20 @@ type
 
 type
   CLTaskBranchInvoker = sealed class
-    private prev_cq: cl_command_queue;
     private g: CLTaskGlobalData;
     private prev_ev: EventList;
+    private prev_cq := cl_command_queue.Zero;
     private branch_handlers := new List<CLTaskErrHandler>;
     private make_base_err_handler: ()->CLTaskErrHandler;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    constructor(g: CLTaskGlobalData; prev_ev: EventList; as_new: boolean; capacity: integer);
+    constructor(g: CLTaskGlobalData; prev_ev: EventList; capacity: integer);
     begin
-      self.prev_cq := if as_new then g.curr_inv_cq else cl_command_queue.Zero;
+//      self.prev_cq := if prev_ev.count=0 then g.curr_inv_cq else cl_command_queue.Zero;
       self.g := g;
       self.prev_ev := prev_ev;
       self.branch_handlers.Capacity := capacity;
-      if as_new then
+      if prev_ev.count=0 then
         self.make_base_err_handler := ()->new CLTaskErrHandlerEmpty else
       begin
         var origin_handler := g.curr_err_handler;
@@ -3588,17 +3588,19 @@ type
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure ParallelInvoke(l: CLTaskLocalData; as_new: boolean; capacity: integer; use: Action<CLTaskBranchInvoker>);
+    procedure ParallelInvoke(l: CLTaskLocalData; capacity: integer; use: Action<CLTaskBranchInvoker>);
     begin
+      if l.ShouldInstaCallAction and self.curr_err_handler.HadError(true) then exit;
       var prev_ev := QueueResNil.Create(l).AttachInvokeActions(self);
       if prev_ev.count<>0 then loop capacity-1 do
         prev_ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
       
-      var invoker := new CLTaskBranchInvoker(self, prev_ev, as_new, capacity);
+      var invoker := new CLTaskBranchInvoker(self, prev_ev, capacity);
       var origin_handler := self.curr_err_handler;
       
-      // Только в случае A + B*C, то есть "not as_new", можно использовать curr_inv_cq - и только как outer_cq
-      if not as_new and (curr_inv_cq<>cl_command_queue.Zero) then
+      // Take only if ParallelInvoke is said to wait for event of current cq
+      // Otherwise command parameters would be added to outer cq, causing them to wait anyway
+      if (prev_ev.count<>0) and (curr_inv_cq<>cl_command_queue.Zero) then
       begin
         {$ifdef DEBUG}
         if outer_cq<>cl_command_queue.Zero then raise new OpenCLABCInternalException($'OuterCQ confusion');
@@ -4358,7 +4360,7 @@ type
       var evs := new EventList[qs.Length+1];
       
       var res: TR;
-      g.ParallelInvoke(l, false, qs.Length+1, invoker->
+      g.ParallelInvoke(l, qs.Length+1, invoker->
       begin
         for var i := 0 to qs.Length-1 do
           //TODO #2610
@@ -4565,7 +4567,7 @@ type
       var qrs := new QueueRes<TInp>[qs.Length];
       var evs := new EventList[qs.Length];
       
-      g.ParallelInvoke(l, false, qs.Length, invoker->
+      g.ParallelInvoke(l, qs.Length, invoker->
       for var i := 0 to qs.Length-1 do
       begin
         var qr := invoker.InvokeBranch(qs[i].InvokeToAny);
@@ -4710,7 +4712,7 @@ type
       var qrs := new QueueRes<TInp>[qs.Length];
       var evs := new EventList[qs.Length];
       
-      g.ParallelInvoke(l, false, qs.Length, invoker->
+      g.ParallelInvoke(l, qs.Length, invoker->
       for var i := 0 to qs.Length-1 do
       begin
         var qr := invoker.InvokeBranch(qs[i].InvokeToAny);
@@ -6576,7 +6578,7 @@ type
       var ptr_qr: QueueRes<IntPtr>;
       var  sz_qr: QueueRes<UIntPtr>;
       // as_new=false, because KernelArg should be invoked as new (independant of prev errors and events)
-      g.ParallelInvoke(l, false, 2, invoker->
+      g.ParallelInvoke(l, 2, invoker->
       begin
         ptr_qr := invoker.InvokeBranch(ptr_q.InvokeToAny);
          sz_qr := invoker.InvokeBranch( sz_q.InvokeToAny);
@@ -6717,7 +6719,7 @@ type
     begin
       var   a_qr: QueueRes<array of TRecord>;
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(l, false, 2, invoker->
+      g.ParallelInvoke(l, 2, invoker->
       begin
           a_qr := invoker.InvokeBranch(  a_q.InvokeToAny);
         ind_qr := invoker.InvokeBranch(ind_q.InvokeToAny);

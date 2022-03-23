@@ -466,7 +466,10 @@ type
             break;
         
         res_EIm += 'QueueRes';
-        if settings.arg_usage[arg.name]='ptr' then res_EIm += 'Ptr';
+        if arg.t.IsKA then
+          res_EIm += 'Val' else
+        if settings.arg_usage[arg.name]='ptr' then
+          res_EIm += 'Ptr';
         res_EIm += '<';
         if arg.t.IsKA then
           res_EIm += 'ISetableKernelArg' else
@@ -475,28 +478,14 @@ type
         
       end;
       
-      var default_need_ptr: boolean?;
-      begin
-        var useful_usages := useful_args.Select(arg->settings.arg_usage[arg.name]);
-        default_need_ptr :=
-          if useful_args.Any(arg->arg.t.IsKA) then nil else
-          if not useful_usages.Any(use->use='ptr') then false else
-          if useful_usages.All(use->use='ptr') then true else
-            nil;
-      end;
-      // Надо всегда, потому что даже если параметр 1 - его надо начинать выполнять асинхронно от всего остального
-      res_EIm += '      g.ParallelInvoke(CLTaskLocalDataNil.Create';
-      if default_need_ptr<>nil then
-      begin
-        res_EIm += '.WithPtrNeed(';
-        res_EIm += default_need_ptr.Value.ToString;
-        res_EIm += ')';
-      end;
-      res_EIm += ', true, enq_evs.Capacity-1, invoker->'#10;
+      // Always need to ParallelInvoke, event if there is only one parameter
+      res_EIm += '      g.ParallelInvoke(new CLTaskLocalData, enq_evs.Capacity-1, invoker->'#10;
       res_EIm += '      begin'#10;
       
       foreach var arg in useful_args do
       begin
+        var local_ptr_need := if arg.t.IsKA then nil else settings.arg_usage[arg.name]='ptr';
+        
         res_EIm += '        ';
         res_EIm += arg.name.PadLeft(max_arg_w);
         res_EIm += '_qr := ';
@@ -516,19 +505,21 @@ type
         
         if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
         
-        res_EIm += 'invoker.InvokeBranch&<QueueRes<';
+        res_EIm += 'invoker.InvokeBranch';
         //TODO #2564
         begin
+          res_EIm += '&<QueueRes';
+          if arg.t.IsKA then
+            res_EIm += 'Val' else
+          if local_ptr_need.Value then
+            res_EIm += 'Ptr';
+          res_EIm += '<';
           if arg.t.IsKA then
             res_EIm += 'ISetableKernelArg' else
             res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
+          res_EIm += '>>';
         end;
-        res_EIm += '>>(';
-        
-        var local_ptr_need := if arg.t.IsKA then nil else settings.arg_usage[arg.name]='ptr';
-        var need_change_ptr_need := local_ptr_need <> default_need_ptr;
-        if need_change_ptr_need then
-          res_EIm += '(g,l)->';
+        res_EIm += '(';
         
         var WriteQRName := procedure->
         if arg.t is MethodArgTypeArray then
@@ -539,33 +530,13 @@ type
         end;
         
         //TODO вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
-        res_EIm += if need_change_ptr_need or (arg.t.ArrLvl<>0) then arg_name else arg_name.PadLeft(max_arg_w);
+        res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
         
         res_EIm += '.Invoke';
-        if need_change_ptr_need then
-        begin
-          res_EIm += '(g, ';
-          if local_ptr_need<>nil then
-          begin
-            res_EIm += 'l.WithPtrNeed(';
-            res_EIm += local_ptr_need.Value.ToString.PadLeft(5);
-            res_EIm += ')';
-          end else
-            // Если есть аргументы без PtrNeed - лучше передавать в ParallelInvoke CLTaskLocalDataNil, чтобы кидать меньше данных
-//            res_EIm += 'CLTaskLocalDataNil(l)';
-            raise new System.NotSupportedException;
-          res_EIm += ')';
-        end;
-        res_EIm += ')';
-        //TODO Не сильно красиво реализовывал, потому что не должно быть необходимо если убрать need_ptr_qr
-        if settings.arg_usage[arg.name]='ptr' then
-        begin
-          res_EIm += 'as QueueResPtr<';
-          res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
-          res_EIm += '>';
-        end;
-        res_EIm += '; ';
+        if local_ptr_need<>nil then
+          res_EIm += if local_ptr_need.Value then 'ToPtr' else 'ToAny';
         
+        res_EIm += '); ';
         if settings.arg_usage[arg.name]<>'ptr' then
         begin
           res_EIm += 'if ';
@@ -574,12 +545,12 @@ type
         end;
         res_EIm += 'enq_evs.AddL2(';
         WriteQRName;
-        res_EIm += '.ThenAttachInvokeActions(g))';
+        res_EIm += '.AttachInvokeActions(g))';
         if settings.arg_usage[arg.name]<>'ptr' then
         begin
           res_EIm += ' else enq_evs.AddL1(';
           WriteQRName;
-          res_EIm += '.ThenAttachInvokeActions(g))';
+          res_EIm += '.AttachInvokeActions(g))';
         end;
         
         if arg.t is MethodArgTypeArray then res_EIm += '; end';
@@ -635,7 +606,7 @@ type
             
             var usage := settings.arg_usage[arg.name];
             if usage=nil then
-              res_EIm += '.GetResImpl' else
+              res_EIm += '.GetResDirect' else
             case usage of
               
               'ptr':
@@ -647,7 +618,7 @@ type
               'pinn':
               begin
                 if not (arg.t.Enmr.SkipWhile(t->t is MethodArgTypeCQ).First is MethodArgTypeArray) then raise new System.NotSupportedException(arg.name);
-                res_EIm += '.GetResImpl';
+                res_EIm += '.GetResDirect';
                 args_with_pinn += arg.name;
               end;
               
@@ -697,11 +668,11 @@ type
       
       res_EIm += '        Result := new DirectEnqRes(res_ev, ';
       
-      {$region FinallyCallback}
+      {$region FinallyAction}
       
       if (args_keep_alive.Count<>0) or (args_with_pinn.Count<>0) or (settings.callback_lines<>nil) then
       begin
-        res_EIm += '()->'#10;
+        res_EIm += 'c->'#10;
         res_EIm += '        begin'#10;
         
         if settings.callback_lines<>nil then foreach var l in settings.callback_lines do
@@ -730,7 +701,7 @@ type
       end else
         res_EIm += 'nil';
       
-      {$endregion FinallyCallback}
+      {$endregion FinallyAction}
       
       res_EIm += ');'#10;
       res_EIm += '      end;'#10;
@@ -743,8 +714,7 @@ type
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: TSettings); abstract;
     protected procedure WriteCommandTypeInhConstructor; virtual := exit;
-    protected procedure WriteMiscMethods(settings: TSettings); virtual := exit;
-    protected function GetRegisterWaitablesExtra: string; virtual := nil;
+    protected function GetInitBeforeInvokeExtra: string; virtual := nil;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin
       
@@ -831,8 +801,6 @@ type
         res_EIm += '    '#10;
       end;
       
-      WriteMiscMethods(settings);
-      
       res_EIm += '    public function EnqEvCapacity: integer; override := ';
       begin
         var param_count := new List<MethodArgEvCount>;
@@ -903,32 +871,28 @@ type
         res_EIm += '    private constructor := raise new System.InvalidOperationException;'#10;
       end;
       
+      res_EIm += '    '#10;
+      
       {$endregion constructor}
       
-      res_EIm += '    '#10;
+      {$region InitBeforeInvoke}
       
-      WriteCommandTypeInvoke(fn, max_arg_w, settings);
-      
-      res_EIm += '    '#10;
-      
-      {$region RegisterWaitables}
-      
-      var register_waitables_extra := GetRegisterWaitablesExtra;
-      res_EIm += '    protected procedure RegisterWaitables(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override';
+      var init_before_invoke_extra := GetInitBeforeInvokeExtra;
+      res_EIm += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override';
       if settings.args = nil then
       begin
         res_EIm += ' := ';
-        res_EIm += register_waitables_extra ?? 'exit';
+        res_EIm += init_before_invoke_extra ?? 'exit';
         res_EIm += ';'#10;
       end else
       begin
         res_EIm += ';'#10;
         res_EIm += '    begin'#10;
         
-        if register_waitables_extra<>nil then
+        if init_before_invoke_extra<>nil then
         begin
           res_EIm += '      ';
-          res_EIm += register_waitables_extra;
+          res_EIm += init_before_invoke_extra;
           res_EIm += ';'#10;
         end;
         
@@ -950,7 +914,7 @@ type
             end;
             
             res_EIm += arg.t is MethodArgTypeArray ? vname : vname.PadLeft(max_arg_w);
-            res_EIm += '.RegisterWaitables(g, prev_hubs);'#10;
+            res_EIm += '.InitBeforeInvoke(g, prev_hubs);'#10;
           end;
         
         res_EIm += '    end;'#10;
@@ -958,7 +922,10 @@ type
       
       res_EIm += '    '#10;
       
-      {$endregion RegisterWaitables}
+      {$endregion InitBeforeInvoke}
+      
+      WriteCommandTypeInvoke(fn, max_arg_w, settings);
+      res_EIm += '    '#10;
       
       {$region ToStringImpl}
       

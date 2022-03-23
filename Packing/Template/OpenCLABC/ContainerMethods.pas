@@ -21,11 +21,11 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, CLTaskErrHandler, EventList)->DirectEnqRes; override;'#10;
+      res_EIm += ', cl_command_queue, EventList)->DirectEnqRes; override;'#10;
     end;
     protected procedure WriteInvokeFHeader; override;
     begin
-      res_EIm += '(o, cq, err_handler, evs)->'#10;
+      res_EIm += '(o, cq, evs)->'#10;
     end;
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: MethodSettings); override;
