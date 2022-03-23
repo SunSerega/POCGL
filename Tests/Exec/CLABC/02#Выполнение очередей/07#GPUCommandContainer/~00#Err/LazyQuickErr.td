@@ -20,4 +20,7 @@ System.AggregateException: При выполнении очереди было �
    в OpenCLABC_implementation______.CommandQueueHostQuickFunc`1.ExecFunc(Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*(Context <>c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
 
+#DelegateCount
+4
+
 

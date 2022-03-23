@@ -11,4 +11,7 @@ System.InvalidProgramException: Преобразовывать комбинац�
    в invoke WaitAll.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.pas:строка *
    в invoke WaitAll.Program.Main()
 
+#DelegateCount
+3
+
 

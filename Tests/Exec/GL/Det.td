@@ -26,4 +26,7 @@ OpenGL
 └                            ┘
 -1532.24770167371 
 
+#DelegateCount
+3
+
 

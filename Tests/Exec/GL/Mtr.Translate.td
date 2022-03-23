@@ -96,4 +96,7 @@ OpenGL
 │ +10.00, +20.00, +30.00 │
 └                        ┘
 
+#DelegateCount
+1
+
 

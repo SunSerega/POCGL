@@ -386,6 +386,23 @@ type
               DialogResult.Cancel: Halt(-1);
             end;
           
+          begin
+            
+            var dom := System.AppDomain.CreateDomain($'Getting delegate count of {fwoe}');
+            dom.SetData('fname', System.IO.Path.ChangeExtension(t.pas_fname, '.exe'));
+            dom.DoCallBack(CheckDelegateCount);
+            var delegate_count := dom.GetData('c').ToString;
+            System.AppDomain.Unload(dom);
+            
+            if t.all_settings.Get('#DelegateCount') <> delegate_count then
+            begin
+              t.all_settings['#DelegateCount'] := delegate_count;
+              t.used_settings += '#DelegateCount';
+              t.resave_settings := true;
+            end;
+            
+          end;
+          
           if t.test_mode.Contains('Exec') then
             t.loaded_test := new ExecutingTest(System.IO.Path.ChangeExtension(t.pas_fname, '.exe'), MaxExecTime, true);
         end;
@@ -396,6 +413,16 @@ type
       .CombineAsyncTask
       .SyncExec;
       
+    end;
+    private static procedure CheckDelegateCount;
+    begin
+      var dom := System.AppDomain.CurrentDomain;
+      var fname := string(dom.GetData('fname'));
+      
+      var a := System.Reflection.Assembly.LoadFrom(fname);
+      var c := a.GetTypes.Count(t->t.IsSubclassOf(typeof(System.Delegate)));
+      
+      dom.SetData('c', c);
     end;
     
     {$endregion Comp}
@@ -668,6 +695,8 @@ type
   
 begin
   try
+//    TestInfo.auto_update := true;
+    
     (**)
     TestInfo.LoadCLA;
     TestInfo.MakeDebugPCU;
@@ -676,7 +705,6 @@ begin
     TestInfo.LoadAll('Samples',     HSet('Comp'));
     TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
     (*)
-//    TestInfo.auto_update := true;
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
     TestInfo.LoadAll('C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle',  HSet('Comp','Exec'));

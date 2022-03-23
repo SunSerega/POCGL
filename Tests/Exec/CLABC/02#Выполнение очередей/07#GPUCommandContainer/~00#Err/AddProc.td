@@ -20,4 +20,7 @@ System.AggregateException: При выполнении очереди было �
    в OpenCLABC_implementation______.BackgroundProcCommand`1.ExecProc(T o, Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*`2.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
 
+#DelegateCount
+3
+
 

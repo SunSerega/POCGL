@@ -20,4 +20,7 @@ System.AggregateException: При выполнении очереди было �
    в OpenCLABC_implementation______.CommandQueueThenBackgroundConvertC`2.ExecFunc(TInp o, Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*`3.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
 
+#DelegateCount
+3
+
 

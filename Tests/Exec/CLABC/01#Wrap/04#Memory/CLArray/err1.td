@@ -13,4 +13,7 @@ System.TypeInitializationException: Инициализатор типа "OpenCLA
    в err1.Program.$Main() в *\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\CLArray\err1.pas:строка *
    в err1.Program.Main()
 
+#DelegateCount
+4
+
 

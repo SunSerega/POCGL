@@ -36,13 +36,6 @@ unit OpenCLABC;
 // - Пройтись по всем .Add в .pas и .md файлах, позаменять их
 // - По случаю поперемещать .dat и .template файлы в кодогенератора: сейчас там мусорка
 
-//TODO В .td сохранять кол-во типов-делегатов, использованных в программе
-// - Это можно и без запуска: прочитав сборку сразу после компиляции
-
-//TODO Почистить пример матриц:
-// - Ловить агрегатную ошибку
-// - Использовать QuickUse? Но тогда лишний массив будет выделен...
-
 //TODO Тесты:
 // - CQQ.AddQueue(self)
 
@@ -7265,7 +7258,7 @@ type
       Result := own_qr;
       
       var d := QueueResActionUtils.HandlerWrap(g.curr_err_handler, ExecProc);
-      if prev_qr.ShouldInstaCallAction then
+      if Result.ShouldInstaCallAction then
         d(prev_qr.GetResDirect, g.c) else
         Result.AddAction(c->d(prev_qr.GetResDirect, c));
       

@@ -37,4 +37,7 @@ SimpleSyncQueueArray<integer>#0
 [QueueDebug]: 0 queue's created 
 [WaitDebug]: 0 wait handler's created 
 
+#DelegateCount
+3
+
 
