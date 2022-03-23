@@ -19,8 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Использовать TypeToTypeName и TypeName
-
 //TODO .Add методы не сочитаются со всем остальным модулем
 // - Можно сделать .ThenWriteValue, возвращающий новый CCQ
 // - Но чтобы не перевыделять массив для каждой комманды - можно чтобы старый и новый CCQ ссылались на общий массив комманд, но имели разные count: integer
@@ -120,6 +118,11 @@ unit OpenCLABC;
 // --- Буферы, хранящие список комманд
 // - cl_khr_semaphore
 // --- Как cl_event, но многоразовые
+
+//TODO Вообще CommandQueue это CommandTree - и уже давно
+// - Но чтобы исправить это название - придётся вывернуть на изнанку абсолютно всё в модуле, включая кодо-генерируемую часть и справку
+// - И совместимость со старым модулем будет нереально сделать
+// - Поэтому пока что лучше не делать
 
 //===================================
 
@@ -1283,7 +1286,7 @@ type
       if t.IsGenericType then
       begin
         var ind := Result.IndexOf('`');
-        Result := Result.Remove(ind) + '<' + t.GenericTypeArguments.JoinToString(', ') + '>';
+        Result := Result.Remove(ind) + '<' + t.GenericTypeArguments.Select(TypeToTypeName).JoinToString(', ') + '>';
       end;
       
     end;
@@ -1300,7 +1303,7 @@ type
       var rt := GetValueRuntimeType(val);
       if typeof(T) <> rt then
       begin
-        sb.Append(rt);
+        if rt<>nil then sb.Append(TypeToTypeName(rt));
         sb += '{ ';
       end;
       if rt<>nil then
@@ -1328,13 +1331,53 @@ type
       
     end;
     private static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate);
+    const lambda='lambda';
+    const sugar_begin='<>';
+    const par_separator='; ';
     begin
       if d.Target<>nil then
       begin
-        sb += d.Target.ToString;
+        sb += _ObjectToString(d.Target);
         sb += ' => ';
       end;
-      sb += d.Method.ToString;
+      var mi := d.Method;
+      var rt := mi.ReturnType;
+      if rt=typeof(Void) then rt := nil;
+      
+      sb += if rt=nil then 'procedure' else 'function';
+      sb += ' ';
+      begin
+        var name := mi.Name;
+        if name.StartsWith(sugar_begin) then
+          name := if lambda in name then
+            lambda else name.Substring(sugar_begin.Length);
+        sb += name;
+      end;
+      
+      var pars := mi.GetParameters;
+      if pars.Length<>0 then
+      begin
+        sb += '(';
+        foreach var par in pars do
+        begin
+          var name := par.Name;
+          if name.StartsWith(sugar_begin) then
+            name := name.Substring(sugar_begin.Length);
+          sb += name;
+          sb += ': ';
+          sb += TypeToTypeName(par.ParameterType);
+          sb += par_separator;
+        end;
+        sb.Length -= par_separator.Length;
+        sb += ')';
+      end;
+      
+      if rt<>nil then
+      begin
+        sb += ': ';
+        sb += TypeToTypeName(rt);
+      end;
+      
     end;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
     begin

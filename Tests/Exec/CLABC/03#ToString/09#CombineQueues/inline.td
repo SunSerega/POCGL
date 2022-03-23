@@ -5,33 +5,33 @@
 OpenCLABC
 
 #ExpOtp
-SimpleSyncQueueArray<System.Int32>#0
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
+SimpleSyncQueueArray<integer>#0
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
 
-SimpleAsyncQueueArray<System.Int32>#0
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
+SimpleAsyncQueueArray<integer>#0
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
 
-SimpleAsyncQueueArray<System.Int32>#0
-	SimpleSyncQueueArray<System.Int32>#1
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
-	SimpleSyncQueueArray<System.Int32>#3
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
+SimpleAsyncQueueArray<integer>#0
+	SimpleSyncQueueArray<integer>#1
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
+	SimpleSyncQueueArray<integer>#3
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
 
-SimpleSyncQueueArray<System.Int32>#0
-	SimpleAsyncQueueArray<System.Int32>#1
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
-	SimpleAsyncQueueArray<System.Int32>#3
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
-		CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
+SimpleSyncQueueArray<integer>#0
+	SimpleAsyncQueueArray<integer>#1
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
+	SimpleAsyncQueueArray<integer>#3
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
+		CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 

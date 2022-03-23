@@ -1,25 +1,25 @@
-
+﻿
 
 
 #ReqModules
 OpenCLABC
 
 #ExpOtp
-CommandQueueTryFinally<System.Int32>#0
-	CommandQueueHostQuickFunc<System.Int32>#1: Int32 <>lambda*()
-	CommandQueueHostQuickFunc<System.Int32>#1: Int32 <>lambda*()
+CommandQueueTryFinally<integer>#0
+	CommandQueueHostQuickFunc<integer>#1: function lambda: integer
+	CommandQueueHostQuickFunc<integer>#1: function lambda: integer
 
 CommandQueueHandleWithoutRes#0
-	CommandQueueHostQuickFunc<System.Int32>#1: Int32 <>lambda*()
-	Boolean <>lambda*(System.Exception)
+	CommandQueueHostQuickFunc<integer>#1: function lambda: integer
+	function lambda(e: Exception): boolean
 
-CommandQueueHandleDefaultRes<System.Int32>#0: 2
-	CommandQueueHostQuickFunc<System.Int32>#1: Int32 <>lambda*()
-	Boolean <>lambda*(System.Exception)
+CommandQueueHandleDefaultRes<integer>#0: 2
+	CommandQueueHostQuickFunc<integer>#1: function lambda: integer
+	function lambda(e: Exception): boolean
 
-CommandQueueHandleReplaceRes<System.Int32>#0
-	CommandQueueHostQuickFunc<System.Int32>#1: Int32 <>lambda*()
-	Int32 <>lambda*(System.Collections.Generic.List`1[System.Exception])
+CommandQueueHandleReplaceRes<integer>#0
+	CommandQueueHostQuickFunc<integer>#1: function lambda: integer
+	function lambda(lst: List<Exception>): integer
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 

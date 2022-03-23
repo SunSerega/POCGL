@@ -5,15 +5,15 @@
 OpenCLABC
 
 #ExpOtp
-BackgroundConvSyncQueueArray<System.Object, System.String>#0
-	ConstQueue<System.Object>#1: { nil }
-	ConstQueue<System.Object>#1: { nil }
-	System.String <>lambda*(System.Object[])
+BackgroundConvSyncQueueArray<Object, string>#0
+	ConstQueue<Object>#1: { nil }
+	ConstQueue<Object>#1: { nil }
+	function lambda(a: array of Object): string
 
-BackgroundConvAsyncQueueArray<System.Object, System.String>#0
-	ConstQueue<System.Object>#1: { nil }
-	ConstQueue<System.Object>#1: { nil }
-	System.String <>lambda*(System.Object[])
+BackgroundConvAsyncQueueArray<Object, string>#0
+	ConstQueue<Object>#1: { nil }
+	ConstQueue<Object>#1: { nil }
+	function lambda(a: array of Object): string
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 
