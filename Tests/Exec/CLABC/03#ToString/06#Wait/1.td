@@ -71,7 +71,7 @@ MemorySegmentCCQ#0
 
 ------------------------------
 
-SimpleSyncQueueArray<OpenCLABC.MemorySegment>#0
+SimpleSyncQueueArray<MemorySegment>#0
 	WaitMarkerDummyExecutor#1
 		WaitMarkerDummy#2
 	MemorySegmentCCQ#3

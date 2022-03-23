@@ -8,16 +8,16 @@ OpenCLABC
 KernelCCQ#0
 	CCCObj: Kernel[p1:*] from ProgramCode[*]
 	KernelCommandExec2
-		sz1: ConstQueue<System.Int32>#1: 1
-		sz2: ConstQueue<System.Int32>#2: 1
+		sz1: ConstQueue<integer>#1: 1
+		sz2: ConstQueue<integer>#2: 1
 		args[0]: KernelArgMemorySegmentCQ
 			MemorySegmentCCQ#3
 				CCCQueue
-					CommandQueueHostBackgoundFunc<OpenCLABC.MemorySegment>#4: OpenCLABC.MemorySegment <>lambda*()
+					CommandQueueHostBackgoundFunc<MemorySegment>#4: function lambda: MemorySegment
 				QueueCommand
-					CommandQueueHostBackgoundFunc<System.Int32>#5: Int32 <>lambda*()
-				BackgroundProcCommand: Void <>lambda*(OpenCLABC.MemorySegment)
-		args[1]: KernelArgValue<System.Int32>: 5
+					CommandQueueHostBackgoundFunc<integer>#5: function lambda: integer
+				BackgroundProcCommand: procedure lambda(ms: MemorySegment)
+		args[1]: KernelArgValue<integer>: 5
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 

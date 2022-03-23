@@ -5,7 +5,7 @@
 OpenCLABC
 
 #ExpOtp
-ConstQueue<System.Int32>#0: 2
+ConstQueue<integer>#0: 2
 ----------
 2 
 4 
@@ -15,7 +15,7 @@ ConstQueue<System.Int32>#0: 2
 4 
 5 
 ==============================
-CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
+CommandQueueHostBackgoundFunc<integer>#0: function lambda: integer
 ----------
 3 
 9 
@@ -25,8 +25,8 @@ CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
 9 
 10 
 ==============================
-CastQueue<System.Object, System.Int32>#0
-	CommandQueueHostBackgoundFunc<System.Object>#1: System.Object <>lambda*()
+CastQueue<Object, integer>#0
+	CommandQueueHostBackgoundFunc<Object>#1: function lambda: Object
 ----------
 4 
 16 

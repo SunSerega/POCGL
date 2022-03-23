@@ -5,18 +5,18 @@
 OpenCLABC
 
 #ExpOtp
-CastQueue<System.Byte, System.Object>#0
-	ConstQueue<System.Byte>#1: 5
+CastQueue<byte, Object>#0
+	ConstQueue<byte>#1: 5
 
-SimpleAsyncQueueArray<System.Object>#0
-	CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
-	CastQueue<System.Int32, System.Object>#2
-		CommandQueueHostBackgoundFunc<System.Int32>#3: Int32 <>lambda*()
+SimpleAsyncQueueArray<Object>#0
+	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
+	CastQueue<integer, Object>#2
+		CommandQueueHostBackgoundFunc<integer>#3: function lambda: integer
 
 MemorySegmentCCQ#0
 	CCCObj: MemorySegment[*] of size 1
 	QueueCommand
-		CommandQueueHostBackgoundFunc<System.Int32>#1: Int32 <>lambda*()
+		CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 

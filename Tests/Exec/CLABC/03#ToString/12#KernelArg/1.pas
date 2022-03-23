@@ -6,7 +6,7 @@ procedure TestArg(arg: KernelArg) := Write(arg);
 
 var cl_a := new CLArray<byte>(1);
 var mem := new MemorySegment(1);
-var a := new real[1];
+var a := |5.0|;
 
 
 

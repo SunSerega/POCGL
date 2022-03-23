@@ -9,41 +9,41 @@ WaitMarkerDummy#0
 
 ------------------------------
 
-DetachedMarkerSignal<System.Int32>#0
-	DetachedMarkerSignalWrapper<System.Int32>#1
-	CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
+DetachedMarkerSignal<integer>#0
+	DetachedMarkerSignalWrapper<integer>#1
+	CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
 
 ------------------------------
 
-DetachedMarkerSignalWrapper<System.Int32>#0
-	DetachedMarkerSignal<System.Int32>#1
+DetachedMarkerSignalWrapper<integer>#0
+	DetachedMarkerSignal<integer>#1
 
 ------------------------------
 
-DetachedMarkerSignal<System.Int32>#0
-	DetachedMarkerSignalWrapper<System.Int32>#1
-	CommandQueueHostBackgoundFunc<System.Int32>#2: Int32 <>lambda*()
+DetachedMarkerSignal<integer>#0
+	DetachedMarkerSignalWrapper<integer>#1
+	CommandQueueHostBackgoundFunc<integer>#2: function lambda: integer
 
 ------------------------------
 
-SimpleAsyncQueueArray<System.Int32>#0
+SimpleAsyncQueueArray<integer>#0
 	CommandQueueWaitFor#1
-		DetachedMarkerSignalWrapper<System.Int32>#2
-			DetachedMarkerSignal<System.Int32>#3
-	DetachedMarkerSignal<System.Int32>#3
-		DetachedMarkerSignalWrapper<System.Int32>#2
-		CommandQueueHostBackgoundFunc<System.Int32>#4: Int32 <>lambda*()
+		DetachedMarkerSignalWrapper<integer>#2
+			DetachedMarkerSignal<integer>#3
+	DetachedMarkerSignal<integer>#3
+		DetachedMarkerSignalWrapper<integer>#2
+		CommandQueueHostBackgoundFunc<integer>#4: function lambda: integer
 
 ------------------------------
 
 WaitMarkerAll#0
-	DetachedMarkerSignalWrapper<System.Int32>#1
-		DetachedMarkerSignal<System.Int32>#2 * 2
+	DetachedMarkerSignalWrapper<integer>#1
+		DetachedMarkerSignal<integer>#2 * 2
 
 ------------------------------
 
-DetachedMarkerSignalWrapper<System.Int32>#0
-	DetachedMarkerSignal<System.Int32>#1
+DetachedMarkerSignalWrapper<integer>#0
+	DetachedMarkerSignal<integer>#1
 
 ------------------------------
 

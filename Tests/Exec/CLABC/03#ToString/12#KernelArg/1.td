@@ -8,8 +8,8 @@ OpenCLABC
 >>> Const
 
 CLArray:
-KernelArgCLArray<System.Byte>: CLArray<Byte>[*] of size 1
-KernelArgCLArray<System.Byte>: CLArray<Byte>[*] of size 1
+KernelArgCLArray<byte>: CLArray<Byte>[*] of size 1
+KernelArgCLArray<byte>: CLArray<Byte>[*] of size 1
 
 MemorySegment:
 KernelArgMemorySegment: MemorySegment[*] of size 1
@@ -20,20 +20,20 @@ KernelArgData => 1[2]
 KernelArgData => 3[4]
 
 Value:
-KernelArgValue<System.Int32>: 1
-KernelArgValue<System.Int32>: 1
+KernelArgValue<integer>: 1
+KernelArgValue<integer>: 1
 
 Array:
-KernelArgArray<System.Double>: [0]+8b
-KernelArgArray<System.Double>: [0]
+KernelArgArray<real>: [5]+8b
+KernelArgArray<real>: [5]
 
 
 
 >>> Invokable
 
 CLArray:
-KernelArgCLArrayCQ<System.Byte>
-	CLArrayCCQ<System.Byte>#0
+KernelArgCLArrayCQ<byte>
+	CLArrayCCQ<byte>#0
 		CCCObj: CLArray<Byte>[*] of size 1
 TODO: implicit CLArray
 
@@ -47,22 +47,22 @@ KernelArgMemorySegmentCQ
 
 Data:
 KernelArgDataCQ
-	CommandQueueHostBackgoundFunc<System.IntPtr>#0: IntPtr <>lambda*()
-	ConstQueue<System.UIntPtr>#1: 0
+	CommandQueueHostBackgoundFunc<>#0: function lambda: 
+	ConstQueue<>#1: 0
 
 Value:
-KernelArgValueCQ<System.Int32>
-	CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
-KernelArgValueCQ<System.Int32>
-	CommandQueueHostBackgoundFunc<System.Int32>#0: Int32 <>lambda*()
+KernelArgValueCQ<integer>
+	CommandQueueHostBackgoundFunc<integer>#0: function lambda: integer
+KernelArgValueCQ<integer>
+	CommandQueueHostBackgoundFunc<integer>#0: function lambda: integer
 
 Array:
-KernelArgArrayCQ<System.Double>
-	CommandQueueHostBackgoundFunc<System.Double[]>#0: 1.<>local_variables_class_* => Double[] <>lambda*()
-	ConstQueue<System.Int32>#1: 1
-KernelArgArrayCQ<System.Double>
-	CommandQueueHostBackgoundFunc<System.Double[]>#0: 1.<>local_variables_class_* => Double[] <>lambda*()
-	ConstQueue<System.Int32>#1: 0
+KernelArgArrayCQ<real>
+	CommandQueueHostBackgoundFunc<array of real>#0: ([5]) => function lambda: array of real
+	ConstQueue<integer>#1: 1
+KernelArgArrayCQ<real>
+	CommandQueueHostBackgoundFunc<array of real>#0: ([5]) => function lambda: array of real
+	ConstQueue<integer>#1: 0
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 

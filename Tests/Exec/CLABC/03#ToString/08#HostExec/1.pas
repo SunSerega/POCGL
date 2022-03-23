@@ -1,7 +1,7 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  HFQ(()->1).Println;
-  //TODO Почему без begin не работает?
-  HPQ(()->begin exit() end).Println;
-end.
+HFQ(()->1).Println;
+HPQ(()->begin end).Println;
+
+HFQ(с->1).Println;
+HPQ(с->begin end).Println;
