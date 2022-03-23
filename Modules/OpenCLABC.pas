@@ -4490,7 +4490,7 @@ type
     foreach var q in qs do q.InitBeforeInvoke(g, inited_hubs);
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function CombineQRs(qrs: array of QueueRes<TInp>; l: CLTaskLocalData): QueueRes<array of TInp>;
+    function CombineQRs(qrs: array of QueueRes<TInp>; l: CLTaskLocalData): QueueResVal<array of TInp>;
     begin
       if qrs.All(qr->qr.IsConst) then
       begin
@@ -4536,6 +4536,8 @@ type
       end;
       
       Result := CombineQRs(qrs, l);
+      for var i := 0 to qs.Length-1 do
+        qrs[i].TransplantActionsNowhere;
     end;
     
   end;
@@ -4661,7 +4663,7 @@ type
   where TFunc: Delegate;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; combine_qrs: Func<array of QueueRes<TInp>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
+    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<array of QueueRes<TInp>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
     begin
       var qrs := new QueueRes<TInp>[qs.Length];
       
@@ -4669,11 +4671,12 @@ type
       begin
         var qr := qs[i].InvokeToAny(g, l);
         l := qr.base;
-        qr.base := default(QueueResData);
         qrs[i] := qr;
       end;
       
-      Result := combine_qrs(qrs, g, l);
+      Result := CombineQRs(qrs, g, l);
+      for var i := 0 to qs.Length-1 do
+        qrs[i].TransplantActionsNowhere;
     end;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, CombineQRsNil);
@@ -4702,7 +4705,7 @@ type
   where TFunc: Delegate;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; combine_qrs: Func<array of QueueRes<TInp>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
+    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<array of QueueRes<TInp>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
     begin
       var qrs := new QueueRes<TInp>[qs.Length];
       var evs := new EventList[qs.Length];
@@ -4716,7 +4719,7 @@ type
       end);
       
       var res_ev := EventList.Combine(evs);
-      Result := combine_qrs(qrs, g, new CLTaskLocalData(res_ev));
+      Result := CombineQRs(qrs, g, new CLTaskLocalData(res_ev));
     end;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, CombineQRsNil);
