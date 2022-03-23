@@ -61,7 +61,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteDataAutoSize<T>(ptr));
 end;
@@ -146,7 +146,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteData<T>(ptr, ind, len));
 end;
@@ -211,7 +211,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadDataAutoSize<T>(ptr));
 end;
@@ -296,7 +296,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadData<T>(ptr, ind, len));
 end;
@@ -305,36 +305,36 @@ end;
 
 {$region WriteDataAutoSize}
 
-function CLArrayCCQ<T>.AddWriteData(ptr: pointer): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: pointer): CLArrayCCQ<T>;
 begin
-  Result := AddWriteData(IntPtr(ptr));
+  Result := ThenWriteData(IntPtr(ptr));
 end;
 
 {$endregion WriteDataAutoSize}
 
 {$region WriteData}
 
-function CLArrayCCQ<T>.AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddWriteData(IntPtr(ptr), ind, len);
+  Result := ThenWriteData(IntPtr(ptr), ind, len);
 end;
 
 {$endregion WriteData}
 
 {$region ReadDataAutoSize}
 
-function CLArrayCCQ<T>.AddReadData(ptr: pointer): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: pointer): CLArrayCCQ<T>;
 begin
-  Result := AddReadData(IntPtr(ptr));
+  Result := ThenReadData(IntPtr(ptr));
 end;
 
 {$endregion ReadDataAutoSize}
 
 {$region ReadData}
 
-function CLArrayCCQ<T>.AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddReadData(IntPtr(ptr), ind, len);
+  Result := ThenReadData(IntPtr(ptr), ind, len);
 end;
 
 {$endregion ReadData}
@@ -408,7 +408,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValue<T>(val, ind));
 end;
@@ -486,7 +486,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
 end;
@@ -557,7 +557,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValueN<T>(val, ind));
 end;
@@ -632,7 +632,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValueNQ<T>(val, ind));
 end;
@@ -703,7 +703,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadValueN<T>(val, ind));
 end;
@@ -778,7 +778,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadValueNQ<T>(val, ind));
 end;
@@ -848,7 +848,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteArrayAutoSize<T>(a));
 end;
@@ -948,7 +948,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteArray<T>(a, ind, len, a_ind));
 end;
@@ -1018,7 +1018,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadArrayAutoSize<T>(a));
 end;
@@ -1118,7 +1118,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadArray<T>(a, ind, len, a_ind));
 end;
@@ -1197,7 +1197,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillDataAutoSize<T>(ptr, pattern_len));
 end;
@@ -1292,7 +1292,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillData<T>(ptr, pattern_len, ind, len));
 end;
@@ -1301,18 +1301,18 @@ end;
 
 {$region FillDataAutoSize}
 
-function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddFillData(IntPtr(ptr), pattern_len);
+  Result := ThenFillData(IntPtr(ptr), pattern_len);
 end;
 
 {$endregion FillDataAutoSize}
 
 {$region FillData}
 
-function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddFillData(IntPtr(ptr), pattern_len, ind, len);
+  Result := ThenFillData(IntPtr(ptr), pattern_len, ind, len);
 end;
 
 {$endregion FillData}
@@ -1373,7 +1373,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: &T): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: &T): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValueAutoSize<T>(val));
 end;
@@ -1441,7 +1441,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValueAutoSizeQ<T>(val));
 end;
@@ -1527,7 +1527,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValue<T>(val, ind, len));
 end;
@@ -1615,7 +1615,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValueQ<T>(val, ind, len));
 end;
@@ -1685,7 +1685,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillArrayAutoSize<T>(a));
 end;
@@ -1795,7 +1795,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillArray<T>(a, a_offset, pattern_len, ind, len));
 end;
@@ -1864,7 +1864,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyToAutoSize<T>(a));
 end;
@@ -1959,7 +1959,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyTo<T>(a, from_ind, to_ind, len));
 end;
@@ -2024,7 +2024,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyFromAutoSize<T>(a));
 end;
@@ -2119,7 +2119,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyFrom<T>(a, from_ind, to_ind, len));
 end;

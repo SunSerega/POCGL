@@ -7,19 +7,18 @@ constructor CLArrayCCQ<T>.Create := inherited;
 
 {$region Special .Add's}
 
-function CLArrayCCQ<T>.AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
 begin
-  Result := self;
   var comm := BasicGPUCommand&<CLArray<T>>.MakeQueue(q);
-  if comm<>nil then commands.Add(comm);
+  Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
-function CLArrayCCQ<T>.AddProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
-function CLArrayCCQ<T>.AddQuickProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
-function CLArrayCCQ<T>.AddQuickProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
+function CLArrayCCQ<T>.ThenProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
+function CLArrayCCQ<T>.ThenProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
+function CLArrayCCQ<T>.ThenQuickProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
+function CLArrayCCQ<T>.ThenQuickProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
 
-function CLArrayCCQ<T>.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeWait(marker));
+function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeWait(marker));
 
 {$endregion Special .Add's}
 

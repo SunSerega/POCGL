@@ -3,77 +3,77 @@
     
     {$region 1#Write&Read}
     
-    public function AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
     
-    public function AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
     
-    public function AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteData(ptr: pointer): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: pointer): CLArrayCCQ<T>;
     
-    public function AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddReadData(ptr: pointer): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: pointer): CLArrayCCQ<T>;
     
-    public function AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    public function ThenWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
-    public function AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    public function ThenReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
-    public function AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFillValue(val: &T): CLArrayCCQ<T>;
+    public function ThenFillValue(val: &T): CLArrayCCQ<T>;
     
-    public function AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
+    public function ThenFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
     
-    public function AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    public function ThenFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
-    public function AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 2#Fill}
     
     {$region 3#Copy}
     
-    public function AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+    public function ThenCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
     
-    public function AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
     
-    public function AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 3#Copy}
     

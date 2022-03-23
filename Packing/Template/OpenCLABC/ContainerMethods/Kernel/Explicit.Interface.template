@@ -3,13 +3,13 @@
     
     {$region 1#Exec}
     
-    public function AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
     
-    public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
     
-    public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
     
-    public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
     
     {$endregion 1#Exec}
     

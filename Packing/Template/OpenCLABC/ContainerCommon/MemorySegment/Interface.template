@@ -7,14 +7,14 @@
     
     {$region Special .Add's}
     
-    public function AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
+    public function ThenQueue(q: CommandQueueBase): MemorySegmentCCQ;
     
-    public function AddProc(p: MemorySegment->()): MemorySegmentCCQ;
-    public function AddProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
-    public function AddQuickProc(p: MemorySegment->()): MemorySegmentCCQ;
-    public function AddQuickProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
+    public function ThenProc(p: MemorySegment->()): MemorySegmentCCQ;
+    public function ThenProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
+    public function ThenQuickProc(p: MemorySegment->()): MemorySegmentCCQ;
+    public function ThenQuickProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
     
-    public function AddWait(marker: WaitMarker): MemorySegmentCCQ;
+    public function ThenWait(marker: WaitMarker): MemorySegmentCCQ;
     
     {$endregion Special .Add's}
     

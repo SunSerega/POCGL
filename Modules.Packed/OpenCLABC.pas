@@ -37,12 +37,13 @@ unit OpenCLABC;
 // - По случаю поперемещать .dat и .template файлы в кодогенератора: сейчас там мусорка
 
 //TODO Тесты:
-// - CQQ.AddQueue(self)
+// - CQQ.ThenQueue(self)
 
 //TODO Справка:
-// - CQQ.AddQueue(self)
 // - DiscardResult
-// - AddGet не выполняются если их результат не использован
+// - .Add => .Then
+// - CQQ.ThenQueue(self)
+// - ThenGet не выполняются если их результат не использован
 
 //===================================
 // Запланированное:
@@ -3480,51 +3481,51 @@ type
     {$region Special .Add's}
     
     ///Добавляет выполнение очереди в список обычных команд для GPU
-    public function AddQueue(q: CommandQueueBase): KernelCCQ;
+    public function ThenQueue(q: CommandQueueBase): KernelCCQ;
     
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".AddQuick..."
-    public function AddProc(p: Kernel->()): KernelCCQ;
+    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
+    public function ThenProc(p: Kernel->()): KernelCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".AddQuick..."
-    public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
+    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
+    public function ThenProc(p: (Kernel, Context)->()): KernelCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function AddQuickProc(p: Kernel->()): KernelCCQ;
+    public function ThenQuickProc(p: Kernel->()): KernelCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function AddQuickProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function ThenQuickProc(p: (Kernel, Context)->()): KernelCCQ;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
-    public function AddWait(marker: WaitMarker): KernelCCQ;
+    public function ThenWait(marker: WaitMarker): KernelCCQ;
     
     {$endregion Special .Add's}
     
     {$region 1#Exec}
     
     ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
     
     ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
     
     ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
     
     ///Выполняет kernel с расширенным набором параметров
     ///Данная перегрузка используется в первую очередь для тонких оптимизаций
     ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
-    public function AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
     
     {$endregion 1#Exec}
     
@@ -3553,145 +3554,135 @@ type
     {$region Special .Add's}
     
     ///Добавляет выполнение очереди в список обычных команд для GPU
-    public function AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
+    public function ThenQueue(q: CommandQueueBase): MemorySegmentCCQ;
     
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".AddQuick..."
-    public function AddProc(p: MemorySegment->()): MemorySegmentCCQ;
+    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
+    public function ThenProc(p: MemorySegment->()): MemorySegmentCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".AddQuick..."
-    public function AddProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
+    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
+    public function ThenProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function AddQuickProc(p: MemorySegment->()): MemorySegmentCCQ;
+    public function ThenQuickProc(p: MemorySegment->()): MemorySegmentCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function AddQuickProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
+    public function ThenQuickProc(p: (MemorySegment, Context)->()): MemorySegmentCCQ;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
-    public function AddWait(marker: WaitMarker): MemorySegmentCCQ;
+    public function ThenWait(marker: WaitMarker): MemorySegmentCCQ;
     
     {$endregion Special .Add's}
     
     {$region 1#Write&Read}
     
     ///Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-    public function AddWriteData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
     
     ///Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Читает всё содержимое области памяти в RAM, по указанному адресу
-    public function AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
     
     ///Читает часть содержимого области памяти в RAM, по указанному адресу
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-    public function AddWriteData(ptr: pointer): MemorySegmentCCQ;
+    public function ThenWriteData(ptr: pointer): MemorySegmentCCQ;
     
     ///Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Читает всё содержимое области памяти в RAM, по указанному адресу
-    public function AddReadData(ptr: pointer): MemorySegmentCCQ;
+    public function ThenReadData(ptr: pointer): MemorySegmentCCQ;
     
     ///Читает часть содержимого области памяти в RAM, по указанному адресу
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function AddWriteValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function AddWriteValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function AddWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function AddReadValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function AddReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddWriteValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddReadValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function AddWriteArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function AddWriteArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function AddWriteArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает из области памяти достаточно байт чтоб заполнить весь массив
-    public function AddReadArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает из области памяти достаточно байт чтоб заполнить весь массив
-    public function AddReadArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает из области памяти достаточно байт чтоб заполнить весь массив
-    public function AddReadArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///a_offset(-ы) указывают индекс в массиве
     ///len указывает кол-во задействованных элементов массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddWriteArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddWriteArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///a_offset(-ы) указывают индекс в массиве
@@ -3701,57 +3692,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddWriteArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddReadArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddReadArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
-    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddReadArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает весь массив в начало области памяти
-    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает весь массив в начало области памяти
-    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает весь массив в начало области памяти
-    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает из области памяти достаточно байт чтоб заполнить весь массив
-    public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает из области памяти достаточно байт чтоб заполнить весь массив
-    public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает из области памяти достаточно байт чтоб заполнить весь массив
-    public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///a_offset(-ы) указывают индекс в массиве
-    ///len указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///a_offset(-ы) указывают индекс в массиве
@@ -3761,7 +3702,57 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    public function ThenReadArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenReadArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Читает из области памяти достаточно байт чтоб заполнить весь массив
+    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Читает из области памяти достаточно байт чтоб заполнить весь массив
+    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Читает из области памяти достаточно байт чтоб заполнить весь массив
+    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает указанный участок массива в область памяти
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///a_offset(-ы) указывают индекс в массиве
@@ -3771,13 +3762,23 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает указанный участок массива в область памяти
+    ///a_offset(-ы) указывают индекс в массиве
+    ///len указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
+    ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///a_offset(-ы) указывают индекс в массиве
     ///len указывает кол-во задействованных элементов массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///a_offset(-ы) указывают индекс в массиве
@@ -3787,7 +3788,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///a_offset(-ы) указывают индекс в массиве
@@ -3797,51 +3798,51 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
     ///Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями всю область памяти
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Читает pattern_len байт из RAM по указанному адресу и заполняет их копиями часть области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function AddFillValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function AddFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddFillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function AddFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного массива
-    public function AddFillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного массива
-    public function AddFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного массива
-    public function AddFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями части указанного массива
     ///a_offset(-ы) указывают индекс в массиве
     ///pattern_len указывает кол-во задействованных элементов массива
     ///len указывает кол-во задействованных в операции байт
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями части указанного массива
     ///a_offset(-ы) указывают индекс в массиве
@@ -3852,7 +3853,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями части указанного массива
     ///a_offset(-ы) указывают индекс в массиве
@@ -3863,7 +3864,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1]
     ///прочитает элементы [0,1], [0,2], [1,0], [1,1]. Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function AddFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
     
     {$endregion 2#Fill}
     
@@ -3871,46 +3872,46 @@ type
     
     ///Копирует данные из текущей области памяти в mem
     ///Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
-    public function AddCopyTo(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
+    public function ThenCopyTo(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
     
     ///Копирует данные из текущей области памяти в mem
     ///from_pos указывает отступ в байтах от начала области памяти, из которой копируют
     ///to_pos указывает отступ в байтах от начала области памяти, в которую копируют
     ///len указывает кол-во копируемых байт
-    public function AddCopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenCopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     ///Копирует данные из mem в текущюу область памяти
     ///Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
-    public function AddCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
+    public function ThenCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
     
     ///Копирует данные из mem в текущюу область памяти
     ///from_pos указывает отступ в байтах от начала области памяти, из которой копируют
     ///to_pos указывает отступ в байтах от начала области памяти, в которую копируют
     ///len указывает кол-во копируемых байт
-    public function AddCopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
+    public function ThenCopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
     
     {$endregion 3#Copy}
     
     {$region Get}
     
     ///Читает значение указанного размерного типа из начала области памяти
-    public function AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+    public function ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
     
     ///Читает значение указанного размерного типа из области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+    public function ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
     
     ///Читает массив максимального размера, на сколько хватит байт данной области памяти
-    public function AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+    public function ThenGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
     
     ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое данный области памяти
-    public function AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+    public function ThenGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
     
     ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое данный области памяти
-    public function AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+    public function ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
     
     ///Создаёт массив с указанным кол-вом элементов и копирует в него содержимое данный области памяти
-    public function AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+    public function ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
     
     {$endregion Get}
     
@@ -3945,126 +3946,126 @@ type
     {$region Special .Add's}
     
     ///Добавляет выполнение очереди в список обычных команд для GPU
-    public function AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
+    public function ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
     
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".AddQuick..."
-    public function AddProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
+    public function ThenProc(p: CLArray<T>->()): CLArrayCCQ<T>;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".AddQuick..."
-    public function AddProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
+    public function ThenProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function AddQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    public function ThenQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function AddQuickProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenQuickProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
-    public function AddWait(marker: WaitMarker): CLArrayCCQ<T>;
+    public function ThenWait(marker: WaitMarker): CLArrayCCQ<T>;
     
     {$endregion Special .Add's}
     
     {$region 1#Write&Read}
     
     ///Заполняет весь данный объект CLArray<T> данными, находящимися по указанному адресу в RAM
-    public function AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
     
     ///Заполняет len элементов начиная с индекса ind данного объекта CLArray<T> данными, находящимися по указанному адресу в RAM
-    public function AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Читает всё содержимое данного объекта CLArray<T> в RAM, по указанному адресу
-    public function AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
     
     ///Читает len элементов начиная с индекса ind данного объекта CLArray<T> в RAM, по указанному адресу
-    public function AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Заполняет весь данный объект CLArray<T> данными, находящимися по указанному адресу в RAM
-    public function AddWriteData(ptr: pointer): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: pointer): CLArrayCCQ<T>;
     
     ///Заполняет len элементов начиная с индекса ind данного объекта CLArray<T> данными, находящимися по указанному адресу в RAM
-    public function AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Читает всё содержимое данного объекта CLArray<T> в RAM, по указанному адресу
-    public function AddReadData(ptr: pointer): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: pointer): CLArrayCCQ<T>;
     
     ///Читает len элементов начиная с индекса ind данного объекта CLArray<T> в RAM, по указанному адресу
-    public function AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function AddWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает указанное значение по индексу ind
-    public function AddWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Читает значение по индексу ind в указанное значение
-    public function AddReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Читает значение по индексу ind в указанное значение
-    public function AddReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Записывает весь указанный массив в начало данного объекта CLArray<T>
-    public function AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    public function ThenWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
     ///Записывает len элементов массива a, начиная с индекса a_ind, в данный объект CLArray<T> по индексу ind
-    public function AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Читает начало данного объекта CLArray<T> в указанный массив
-    public function AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    public function ThenReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
     ///Читает len элементов данного объекта CLArray<T>, начиная с индекса ind, в массив a по индексу a_ind
-    public function AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
     ///Чиатет pattern_len элементов из RAM по указанному адресу и заполняет их копиями весь данный объект CLArray<T>
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Чиатет pattern_len элементов из RAM по указанному адресу и заполняет их копиями len элементов начиная с индекса ind данного объекта CLArray<T>
-    public function AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Чиатет pattern_len элементов из RAM по указанному адресу и заполняет их копиями весь данный объект CLArray<T>
-    public function AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Чиатет pattern_len элементов из RAM по указанному адресу и заполняет их копиями len элементов начиная с индекса ind данного объекта CLArray<T>
-    public function AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Заполняет весь массив копиями указанного значения
-    public function AddFillValue(val: &T): CLArrayCCQ<T>;
+    public function ThenFillValue(val: &T): CLArrayCCQ<T>;
     
     ///Заполняет весь массив копиями указанного значения
-    public function AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
+    public function ThenFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
     
     ///Заполняет len элементов начиная с индекса ind копиями указанного значения
-    public function AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Заполняет len элементов начиная с индекса ind копиями указанного значения
-    public function AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Заполняет данный объект CLArray<T> компиями указанного массива
-    public function AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+    public function ThenFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
     
     ///Заполняет len элементов начиная с индекса ind компиями части указанного массива
     ///Из указанного массива берётся pattern_len элементов, начиная с индекса a_offset
-    public function AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 2#Fill}
     
@@ -4072,36 +4073,36 @@ type
     
     ///Копирует данные из текущего массива в a
     ///Если у массивов разный размер - копируется кол-во элементов меньшего массива
-    public function AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+    public function ThenCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
     
     ///Копирует данные из текущего массива в a
     ///from_ind указывает индекс в массиве, из которого копируют
     ///to_ind указывает индекс в массиве, в который копируют
     ///len указывает кол-во копируемых элементов
-    public function AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Копирует данные из a в текущий массив
     ///Если у массивов разный размер - копируется кол-во элементов меньшего массива
-    public function AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
     
     ///Копирует данные из a в текущий массив
     ///from_ind указывает индекс в массиве, из которого копируют
     ///to_ind указывает индекс в массиве, в который копируют
     ///len указывает кол-во копируемых элементов
-    public function AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 3#Copy}
     
     {$region Get}
     
     ///Читает элемент по указанному индексу
-    public function AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T>;
+    public function ThenGetValue(ind: CommandQueue<integer>): CommandQueue<&T>;
     
     ///Читает весь CLArray<T> как обычный массив array of T
-    public function AddGetArray: CommandQueue<array of &T>;
+    public function ThenGetArray: CommandQueue<array of &T>;
     
     ///Читает len элементов начиная с индекса ind из CLArray<T> как обычный массив array of T
-    public function AddGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
+    public function ThenGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
     
     {$endregion Get}
     
@@ -11681,14 +11682,11 @@ type
     private constructor := raise new OpenCLABCInternalException;
   end;
   GPUCommandContainerCore<T> = abstract class
-    private cc: GPUCommandContainer<T>;
-    protected constructor(cc: GPUCommandContainer<T>) := self.cc := cc;
-    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; abstract;
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; abstract;
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResVal<T>; abstract;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
@@ -11706,15 +11704,31 @@ type
   GPUCommandContainer<T> = abstract partial class(CommandQueue<T>)
     protected core: GPUCommandContainerCore<T>;
     protected commands := new List<GPUCommand<T>>;
+    // Not nil only when commands are nil
+    private commands_in: GPUCommandContainer<T>;
+    private old_command_count: integer;
+    
+    private procedure TakeCommandsBack;
+    begin
+      if commands_in=nil then exit;
+      while commands_in.commands_in<>nil do
+        commands_in := commands_in.commands_in;
+      self.commands := new List<GPUCommand<T>>(old_command_count);
+      for var i := 0 to old_command_count-1 do self.commands += commands_in.commands[i];
+      commands_in := nil;
+    end;
+    
+    public function Clone: GPUCommandContainer<T>; abstract;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       core.InitBeforeInvoke(g, inited_hubs);
-      foreach var comm in commands do comm.InitBeforeInvoke(g, inited_hubs);
+      TakeCommandsBack;
+      foreach var comm in self.commands do comm.InitBeforeInvoke(g, inited_hubs);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override    := core.InvokeToNil(g, l);
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := core.InvokeToVal(g, l);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override    := core.InvokeToNil(g, l, self.commands);
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := core.InvokeToVal(g, l, self.commands);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
       Result := nil;
@@ -11725,16 +11739,22 @@ type
     begin
       sb += #10;
       core.ToString(sb, tabs, index, delayed);
+      TakeCommandsBack;
       foreach var comm in commands do
         comm.ToString(sb, tabs, index, delayed);
     end;
     
   end;
   
-function AddCommand<TContainer, TRes>(cc: TContainer; comm: GPUCommand<TRes>): TContainer; where TContainer: GPUCommandContainer<TRes>;
+function AddCommand<TContainer, T>(cc: TContainer; comm: GPUCommand<T>): TContainer; where TContainer: GPUCommandContainer<T>;
 begin
-  cc.commands += comm;
-  Result := cc;
+  cc.TakeCommandsBack;
+  Result := TContainer(cc.Clone);
+  cc.commands_in := Result;
+  //TODO #????
+  cc.old_command_count := (cc as GPUCommandContainer<T>).commands.Count;
+  cc.commands := nil;
+  Result.commands += comm;
 end;
 
 {$endregion Base}
@@ -11745,27 +11765,24 @@ type
   CCCObj<T> = sealed class(GPUCommandContainerCore<T>)
     public o: T;
     
-    public constructor(cc: GPUCommandContainer<T>; o: T);
-    begin
-      inherited Create(cc);
-      self.o := o;
-    end;
+    public constructor(o: T) := self.o := o;
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: (CLTaskLocalData, T)->TR): TR;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>; make_qr: (CLTaskLocalData, T)->TR): TR;
     begin
       var o := self.o;
       
-      foreach var comm in cc.commands do
+      foreach var comm in commands do
         l := comm.InvokeObj(o, g, l).base;
       
       Result := make_qr(l, o);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override    := Invoke(g, l, (l,o)->new QueueResNil(l));
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := Invoke(g, l, (l,o)->new QueueResVal<T>(l,o));
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; override    := Invoke(g, l, commands, (l,o)->new QueueResNil(l));
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResVal<T>; override := Invoke(g, l, commands, (l,o)->new QueueResVal<T>(l,o));
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -11779,28 +11796,25 @@ type
   CCCQueue<T> = sealed class(GPUCommandContainerCore<T>)
     public hub: MultiusableCommandQueueHub<T>;
     
-    public constructor(cc: GPUCommandContainer<T>; q: CommandQueue<T>);
-    begin
-      inherited Create(cc);
-      self.hub := new MultiusableCommandQueueHub<T>(q);
-    end;
+    public constructor(q: CommandQueue<T>) := self.hub := new MultiusableCommandQueueHub<T>(q);
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     hub.q.InitBeforeInvoke(g, inited_hubs);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: (GPUCommandObjInvoker<T>,CLTaskGlobalData,CLTaskLocalData)->TR): TR;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>; make_qr: (GPUCommandObjInvoker<T>,CLTaskGlobalData,CLTaskLocalData)->TR): TR;
     begin
       var invoke_plug: GPUCommandObjInvoker<T> := hub.MakeNode.InvokeToVal;
       
-      foreach var comm in cc.commands do
+      foreach var comm in commands do
         l := comm.InvokeQueue(invoke_plug, g, l).base;
       
       Result := make_qr(invoke_plug, g, l);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, (inv,g,l)->new QueueResNil(l));
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := Invoke(g, l, (inv,g,l)->inv(g,l));
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil;    override := Invoke(g, l, commands, (inv,g,l)->new QueueResNil(l));
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResVal<T>; override := Invoke(g, l, commands, (inv,g,l)->inv(g,l));
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -11813,10 +11827,16 @@ type
   GPUCommandContainer<T> = abstract partial class
     
     protected constructor(o: T) :=
-    self.core := new CCCObj<T>(self, o);
+    self.core := new CCCObj<T>(o);
     
     protected constructor(q: CommandQueue<T>) :=
-    self.core := new CCCQueue<T>(self, q);
+    self.core := new CCCQueue<T>(q);
+    
+    protected constructor(ccq: GPUCommandContainer<T>);
+    begin
+      self.core := ccq.core;
+      self.commands := ccq.commands;
+    end;
     
   end;
   
@@ -11827,6 +11847,9 @@ type
 type
   KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
     
+    private constructor(ccq: GPUCommandContainer<Kernel>) := inherited;
+    public function Clone: GPUCommandContainer<Kernel>; override := new KernelCCQ(self);
+    
   end;
   
 constructor KernelCCQ.Create(o: Kernel) := inherited;
@@ -11835,19 +11858,18 @@ constructor KernelCCQ.Create := inherited;
 
 {$region Special .Add's}
 
-function KernelCCQ.AddQueue(q: CommandQueueBase): KernelCCQ;
+function KernelCCQ.ThenQueue(q: CommandQueueBase): KernelCCQ;
 begin
-  Result := self;
   var comm := BasicGPUCommand&<Kernel>.MakeQueue(q);
-  if comm<>nil then commands.Add(comm);
+  Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function KernelCCQ.AddProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
-function KernelCCQ.AddProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
-function KernelCCQ.AddQuickProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
-function KernelCCQ.AddQuickProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
+function KernelCCQ.ThenProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
+function KernelCCQ.ThenProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
+function KernelCCQ.ThenQuickProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
+function KernelCCQ.ThenQuickProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
 
-function KernelCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeWait(marker));
+function KernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeWait(marker));
 
 {$endregion Special .Add's}
 
@@ -11857,6 +11879,9 @@ function KernelCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUComma
 
 type
   MemorySegmentCCQ = sealed partial class(GPUCommandContainer<MemorySegment>)
+    
+    private constructor(ccq: GPUCommandContainer<MemorySegment>) := inherited;
+    public function Clone: GPUCommandContainer<MemorySegment>; override := new MemorySegmentCCQ(self);
     
   end;
   
@@ -11868,19 +11893,18 @@ constructor MemorySegmentCCQ.Create := inherited;
 
 {$region Special .Add's}
 
-function MemorySegmentCCQ.AddQueue(q: CommandQueueBase): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenQueue(q: CommandQueueBase): MemorySegmentCCQ;
 begin
-  Result := self;
   var comm := BasicGPUCommand&<MemorySegment>.MakeQueue(q);
-  if comm<>nil then commands.Add(comm);
+  Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function MemorySegmentCCQ.AddProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeBackgroundProc(p));
-function MemorySegmentCCQ.AddProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeBackgroundProc(p));
-function MemorySegmentCCQ.AddQuickProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeQuickProc(p));
-function MemorySegmentCCQ.AddQuickProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeQuickProc(p));
+function MemorySegmentCCQ.ThenProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeBackgroundProc(p));
+function MemorySegmentCCQ.ThenProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeBackgroundProc(p));
+function MemorySegmentCCQ.ThenQuickProc(p: MemorySegment->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeQuickProc(p));
+function MemorySegmentCCQ.ThenQuickProc(p: (MemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeQuickProc(p));
 
-function MemorySegmentCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeWait(marker));
+function MemorySegmentCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<MemorySegment>.MakeWait(marker));
 
 {$endregion Special .Add's}
 
@@ -11890,6 +11914,9 @@ function MemorySegmentCCQ.AddWait(marker: WaitMarker) := AddCommand(self, BasicG
 
 type
   CLArrayCCQ<T> = sealed partial class(GPUCommandContainer<CLArray<T>>)
+    
+    private constructor(ccq: GPUCommandContainer<CLArray<T>>) := inherited;
+    public function Clone: GPUCommandContainer<CLArray<T>>; override := new CLArrayCCQ<T>(self);
     
   end;
   
@@ -11903,19 +11930,18 @@ constructor CLArrayCCQ<T>.Create := inherited;
 
 {$region Special .Add's}
 
-function CLArrayCCQ<T>.AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
 begin
-  Result := self;
   var comm := BasicGPUCommand&<CLArray<T>>.MakeQueue(q);
-  if comm<>nil then commands.Add(comm);
+  Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLArrayCCQ<T>.AddProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
-function CLArrayCCQ<T>.AddProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
-function CLArrayCCQ<T>.AddQuickProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
-function CLArrayCCQ<T>.AddQuickProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
+function CLArrayCCQ<T>.ThenProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
+function CLArrayCCQ<T>.ThenProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeBackgroundProc(p));
+function CLArrayCCQ<T>.ThenQuickProc(p: CLArray<T>->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
+function CLArrayCCQ<T>.ThenQuickProc(p: (CLArray<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeQuickProc(p));
 
-function CLArrayCCQ<T>.AddWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeWait(marker));
+function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLArray<T>>.MakeWait(marker));
 
 {$endregion Special .Add's}
 
@@ -12204,22 +12230,22 @@ type
 
 function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddExec1(sz1, args));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec1(sz1, args));
 end;
 
 function Kernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): Kernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddExec2(sz1, sz2, args));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec2(sz1, sz2, args));
 end;
 
 function Kernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): Kernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddExec3(sz1, sz2, sz3, args));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec3(sz1, sz2, sz3, args));
 end;
 
 function Kernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddExec(global_work_offset, global_work_size, local_work_size, args));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec(global_work_offset, global_work_size, local_work_size, args));
 end;
 
 {$endregion 1#Exec}
@@ -12316,7 +12342,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec1(sz1, args));
 end;
@@ -12419,7 +12445,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
 end;
@@ -12532,7 +12558,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
 end;
@@ -12645,7 +12671,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
 end;
@@ -12666,22 +12692,22 @@ end;
 
 function MemorySegment.WriteData(ptr: CommandQueue<IntPtr>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
 end;
 
 function MemorySegment.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, mem_offset, len));
 end;
 
 function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
 end;
 
 function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, mem_offset, len));
 end;
 
 function MemorySegment.WriteData(ptr: pointer): MemorySegment;
@@ -12736,32 +12762,32 @@ end;
 
 function MemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.ReadValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.ReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteArray1<TRecord>(a: array of TRecord): MemorySegment; where TRecord: record;
@@ -12826,62 +12852,62 @@ end;
 
 function MemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a));
 end;
 
 function MemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a));
 end;
 
 function MemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a));
 end;
 
 function MemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray1&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a));
 end;
 
 function MemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray2&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a));
 end;
 
 function MemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray3&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a));
 end;
 
 function MemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a, a_offset, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a, a_offset, len, mem_offset));
 end;
 
 function MemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
 end;
 
 function MemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
 end;
 
 function MemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray1&<TRecord>(a, a_offset, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a, a_offset, len, mem_offset));
 end;
 
 function MemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
 end;
 
 function MemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -12890,62 +12916,62 @@ end;
 
 function MemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len));
 end;
 
 function MemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len, mem_offset, len));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, len));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, len));
 end;
 
 function MemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray1&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a));
 end;
 
 function MemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray2&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a));
 end;
 
 function MemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray3&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a));
 end;
 
 function MemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray1&<TRecord>(a, a_offset, pattern_len, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a, a_offset, pattern_len, len, mem_offset));
 end;
 
 function MemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray2&<TRecord>(a, a_offset1, a_offset2, pattern_len, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a, a_offset1, a_offset2, pattern_len, len, mem_offset));
 end;
 
 function MemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, pattern_len, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, pattern_len, len, mem_offset));
 end;
 
 {$endregion 2#Fill}
@@ -12954,22 +12980,22 @@ end;
 
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem, from_pos, to_pos, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, from_pos, to_pos, len));
 end;
 
 function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
 function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem, from_pos, to_pos, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, from_pos, to_pos, len));
 end;
 
 {$endregion 3#Copy}
@@ -12983,27 +13009,27 @@ end;
 
 function MemorySegment.GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetValue&<TRecord>(mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue&<TRecord>(mem_offset));
 end;
 
 function MemorySegment.GetArray1<TRecord>: array of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord>);
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray1&<TRecord>);
 end;
 
 function MemorySegment.GetArray1<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray1&<TRecord>(len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray1&<TRecord>(len));
 end;
 
 function MemorySegment.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray2&<TRecord>(len1, len2));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray2&<TRecord>(len1, len2));
 end;
 
 function MemorySegment.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray3&<TRecord>(len1, len2, len3));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray3&<TRecord>(len1, len2, len3));
 end;
 
 {$endregion Get}
@@ -13071,7 +13097,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenWriteData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteDataAutoSize(ptr));
 end;
@@ -13155,7 +13181,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteData(ptr, mem_offset, len));
 end;
@@ -13219,7 +13245,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenReadData(ptr: CommandQueue<IntPtr>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadDataAutoSize(ptr));
 end;
@@ -13303,7 +13329,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadData(ptr, mem_offset, len));
 end;
@@ -13312,90 +13338,90 @@ end;
 
 {$region WriteDataAutoSize}
 
-function MemorySegmentCCQ.AddWriteData(ptr: pointer): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenWriteData(ptr: pointer): MemorySegmentCCQ;
 begin
-  Result := AddWriteData(IntPtr(ptr));
+  Result := ThenWriteData(IntPtr(ptr));
 end;
 
 {$endregion WriteDataAutoSize}
 
 {$region WriteData}
 
-function MemorySegmentCCQ.AddWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
-  Result := AddWriteData(IntPtr(ptr), mem_offset, len);
+  Result := ThenWriteData(IntPtr(ptr), mem_offset, len);
 end;
 
 {$endregion WriteData}
 
 {$region ReadDataAutoSize}
 
-function MemorySegmentCCQ.AddReadData(ptr: pointer): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenReadData(ptr: pointer): MemorySegmentCCQ;
 begin
-  Result := AddReadData(IntPtr(ptr));
+  Result := ThenReadData(IntPtr(ptr));
 end;
 
 {$endregion ReadDataAutoSize}
 
 {$region ReadData}
 
-function MemorySegmentCCQ.AddReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
-  Result := AddReadData(IntPtr(ptr), mem_offset, len);
+  Result := ThenReadData(IntPtr(ptr), mem_offset, len);
 end;
 
 {$endregion ReadData}
 
 {$region WriteValue}
 
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteValue(val, 0);
+  Result := ThenWriteValue(val, 0);
 end;
 
 {$endregion WriteValue}
 
 {$region WriteValueQ}
 
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteValue(val, 0);
+  Result := ThenWriteValue(val, 0);
 end;
 
 {$endregion WriteValueQ}
 
 {$region WriteValueN}
 
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteValue(val, 0);
+  Result := ThenWriteValue(val, 0);
 end;
 
 {$endregion WriteValueN}
 
 {$region WriteValueNQ}
 
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteValue(val, 0);
+  Result := ThenWriteValue(val, 0);
 end;
 
 {$endregion WriteValueNQ}
 
 {$region ReadValueN}
 
-function MemorySegmentCCQ.AddReadValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadValue<TRecord>(val: NativeValue<TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadValue(val, 0);
+  Result := ThenReadValue(val, 0);
 end;
 
 {$endregion ReadValueN}
 
 {$region ReadValueNQ}
 
-function MemorySegmentCCQ.AddReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadValue(val, 0);
+  Result := ThenReadValue(val, 0);
 end;
 
 {$endregion ReadValueNQ}
@@ -13473,7 +13499,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteValue<TRecord>(val, mem_offset));
 end;
@@ -13555,7 +13581,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteValueQ<TRecord>(val, mem_offset));
 end;
@@ -13630,7 +13656,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteValueN<TRecord>(val, mem_offset));
 end;
@@ -13709,7 +13735,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteValueNQ<TRecord>(val, mem_offset));
 end;
@@ -13784,7 +13810,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadValueN<TRecord>(val, mem_offset));
 end;
@@ -13863,7 +13889,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadValueNQ<TRecord>(val, mem_offset));
 end;
@@ -13872,108 +13898,108 @@ end;
 
 {$region WriteArray1AutoSize}
 
-function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteArray1(new ConstQueue<array of TRecord>(a));
+  Result := ThenWriteArray1(new ConstQueue<array of TRecord>(a));
 end;
 
 {$endregion WriteArray1AutoSize}
 
 {$region WriteArray2AutoSize}
 
-function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteArray2(new ConstQueue<array[,] of TRecord>(a));
+  Result := ThenWriteArray2(new ConstQueue<array[,] of TRecord>(a));
 end;
 
 {$endregion WriteArray2AutoSize}
 
 {$region WriteArray3AutoSize}
 
-function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteArray3(new ConstQueue<array[,,] of TRecord>(a));
+  Result := ThenWriteArray3(new ConstQueue<array[,,] of TRecord>(a));
 end;
 
 {$endregion WriteArray3AutoSize}
 
 {$region ReadArray1AutoSize}
 
-function MemorySegmentCCQ.AddReadArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray1<TRecord>(a: array of TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadArray1(new ConstQueue<array of TRecord>(a));
+  Result := ThenReadArray1(new ConstQueue<array of TRecord>(a));
 end;
 
 {$endregion ReadArray1AutoSize}
 
 {$region ReadArray2AutoSize}
 
-function MemorySegmentCCQ.AddReadArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadArray2(new ConstQueue<array[,] of TRecord>(a));
+  Result := ThenReadArray2(new ConstQueue<array[,] of TRecord>(a));
 end;
 
 {$endregion ReadArray2AutoSize}
 
 {$region ReadArray3AutoSize}
 
-function MemorySegmentCCQ.AddReadArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadArray3(new ConstQueue<array[,,] of TRecord>(a));
+  Result := ThenReadArray3(new ConstQueue<array[,,] of TRecord>(a));
 end;
 
 {$endregion ReadArray3AutoSize}
 
 {$region WriteArray1}
 
-function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
+  Result := ThenWriteArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
 end;
 
 {$endregion WriteArray1}
 
 {$region WriteArray2}
 
-function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
+  Result := ThenWriteArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
 end;
 
 {$endregion WriteArray2}
 
 {$region WriteArray3}
 
-function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddWriteArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
+  Result := ThenWriteArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
 end;
 
 {$endregion WriteArray3}
 
 {$region ReadArray1}
 
-function MemorySegmentCCQ.AddReadArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray1<TRecord>(a: array of TRecord; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
+  Result := ThenReadArray1(new ConstQueue<array of TRecord>(a), a_offset, len, mem_offset);
 end;
 
 {$endregion ReadArray1}
 
 {$region ReadArray2}
 
-function MemorySegmentCCQ.AddReadArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
+  Result := ThenReadArray2(new ConstQueue<array[,] of TRecord>(a), a_offset1,a_offset2, len, mem_offset);
 end;
 
 {$endregion ReadArray2}
 
 {$region ReadArray3}
 
-function MemorySegmentCCQ.AddReadArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddReadArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
+  Result := ThenReadArray3(new ConstQueue<array[,,] of TRecord>(a), a_offset1,a_offset2,a_offset3, len, mem_offset);
 end;
 
 {$endregion ReadArray3}
@@ -14046,7 +14072,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteArray1AutoSize<TRecord>(a));
 end;
@@ -14121,7 +14147,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteArray2AutoSize<TRecord>(a));
 end;
@@ -14196,7 +14222,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteArray3AutoSize<TRecord>(a));
 end;
@@ -14271,7 +14297,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadArray1AutoSize<TRecord>(a));
 end;
@@ -14346,7 +14372,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadArray2AutoSize<TRecord>(a));
 end;
@@ -14421,7 +14447,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadArray3AutoSize<TRecord>(a));
 end;
@@ -14525,7 +14551,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteArray1<TRecord>(a, a_offset, len, mem_offset));
 end;
@@ -14639,7 +14665,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteArray2<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
 end;
@@ -14763,7 +14789,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandWriteArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
 end;
@@ -14867,7 +14893,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadArray1<TRecord>(a, a_offset, len, mem_offset));
 end;
@@ -14981,7 +15007,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadArray2<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
 end;
@@ -15105,7 +15131,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandReadArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
 end;
@@ -15183,7 +15209,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillDataAutoSize(ptr, pattern_len));
 end;
@@ -15277,7 +15303,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillData(ptr, pattern_len, mem_offset, len));
 end;
@@ -15344,7 +15370,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillValue<TRecord>(val: TRecord): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillValueAutoSize<TRecord>(val));
 end;
@@ -15416,7 +15442,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillValueAutoSizeQ<TRecord>(val));
 end;
@@ -15506,7 +15532,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillValue<TRecord>(val, mem_offset, len));
 end;
@@ -15598,7 +15624,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillValueQ<TRecord>(val, mem_offset, len));
 end;
@@ -15673,7 +15699,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillArray1AutoSize<TRecord>(a));
 end;
@@ -15748,7 +15774,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillArray2AutoSize<TRecord>(a));
 end;
@@ -15823,7 +15849,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillArray3AutoSize<TRecord>(a));
 end;
@@ -15937,7 +15963,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillArray1<TRecord>(a, a_offset, pattern_len, len, mem_offset));
 end;
@@ -16061,7 +16087,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillArray2<TRecord>(a, a_offset1, a_offset2, pattern_len, len, mem_offset));
 end;
@@ -16195,7 +16221,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
+function MemorySegmentCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegmentCCQ; where TRecord: record;
 begin
   Result := AddCommand(self, new MemorySegmentCommandFillArray3<TRecord>(a, a_offset1, a_offset2, a_offset3, pattern_len, len, mem_offset));
 end;
@@ -16263,7 +16289,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddCopyTo(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenCopyTo(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandCopyToAutoSize(mem));
 end;
@@ -16357,7 +16383,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddCopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenCopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandCopyTo(mem, from_pos, to_pos, len));
 end;
@@ -16421,7 +16447,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenCopyFrom(mem: CommandQueue<MemorySegment>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandCopyFromAutoSize(mem));
 end;
@@ -16515,7 +16541,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddCopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
+function MemorySegmentCCQ.ThenCopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegmentCCQ;
 begin
   Result := AddCommand(self, new MemorySegmentCommandCopyFrom(mem, from_pos, to_pos, len));
 end;
@@ -16528,9 +16554,9 @@ end;
 
 {$region GetValue}
 
-function MemorySegmentCCQ.AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
 begin
-  Result := AddGetValue&<TRecord>(0);
+  Result := ThenGetValue&<TRecord>(0);
 end;
 
 {$endregion GetValue}
@@ -16602,7 +16628,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
 end;
@@ -16660,7 +16686,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray1AutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 end;
@@ -16738,7 +16764,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray1<TRecord>(self, len) as CommandQueue<array of TRecord>;
 end;
@@ -16826,7 +16852,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
 end;
@@ -16924,7 +16950,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
 end;
@@ -16945,22 +16971,22 @@ end;
 
 function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
 end;
 
 function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, ind, len));
 end;
 
 function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
 end;
 
 function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, ind, len));
 end;
 
 function CLArray<T>.WriteData(ptr: pointer): CLArray<T>;
@@ -16985,52 +17011,52 @@ end;
 
 function CLArray<T>.WriteValue(val: &T; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue(val, ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.ReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue(val, ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadValue(val, ind));
 end;
 
 function CLArray<T>.ReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue(val, ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadValue(val, ind));
 end;
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a));
 end;
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray(a, ind, len, a_ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a, ind, len, a_ind));
 end;
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray(a));
 end;
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray(a, ind, len, a_ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray(a, ind, len, a_ind));
 end;
 
 {$endregion 1#Write&Read}
@@ -17039,12 +17065,12 @@ end;
 
 function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len));
 end;
 
 function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len, ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len, ind, len));
 end;
 
 function CLArray<T>.FillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArray<T>;
@@ -17059,32 +17085,32 @@ end;
 
 function CLArray<T>.FillValue(val: &T): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
 end;
 
 function CLArray<T>.FillValue(val: CommandQueue<&T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
 end;
 
 function CLArray<T>.FillValue(val: &T; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
 end;
 
 function CLArray<T>.FillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue(val, ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
 end;
 
 function CLArray<T>.FillArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray(a));
 end;
 
 function CLArray<T>.FillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray(a, a_offset, pattern_len, ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray(a, a_offset, pattern_len, ind, len));
 end;
 
 {$endregion 2#Fill}
@@ -17093,22 +17119,22 @@ end;
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a));
 end;
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(a, from_ind, to_ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a, from_ind, to_ind, len));
 end;
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a));
 end;
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(a, from_ind, to_ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a, from_ind, to_ind, len));
 end;
 
 {$endregion 3#Copy}
@@ -17117,17 +17143,17 @@ end;
 
 function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetValue(ind));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue(ind));
 end;
 
 function CLArray<T>.GetArray: array of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray);
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray);
 end;
 
 function CLArray<T>.GetArray(ind, len: CommandQueue<integer>): array of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddGetArray(ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray(ind, len));
 end;
 
 {$endregion Get}
@@ -17196,7 +17222,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteDataAutoSize<T>(ptr));
 end;
@@ -17281,7 +17307,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteData<T>(ptr, ind, len));
 end;
@@ -17346,7 +17372,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: CommandQueue<IntPtr>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadDataAutoSize<T>(ptr));
 end;
@@ -17431,7 +17457,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadData<T>(ptr, ind, len));
 end;
@@ -17440,36 +17466,36 @@ end;
 
 {$region WriteDataAutoSize}
 
-function CLArrayCCQ<T>.AddWriteData(ptr: pointer): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: pointer): CLArrayCCQ<T>;
 begin
-  Result := AddWriteData(IntPtr(ptr));
+  Result := ThenWriteData(IntPtr(ptr));
 end;
 
 {$endregion WriteDataAutoSize}
 
 {$region WriteData}
 
-function CLArrayCCQ<T>.AddWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddWriteData(IntPtr(ptr), ind, len);
+  Result := ThenWriteData(IntPtr(ptr), ind, len);
 end;
 
 {$endregion WriteData}
 
 {$region ReadDataAutoSize}
 
-function CLArrayCCQ<T>.AddReadData(ptr: pointer): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: pointer): CLArrayCCQ<T>;
 begin
-  Result := AddReadData(IntPtr(ptr));
+  Result := ThenReadData(IntPtr(ptr));
 end;
 
 {$endregion ReadDataAutoSize}
 
 {$region ReadData}
 
-function CLArrayCCQ<T>.AddReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddReadData(IntPtr(ptr), ind, len);
+  Result := ThenReadData(IntPtr(ptr), ind, len);
 end;
 
 {$endregion ReadData}
@@ -17543,7 +17569,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: &T; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValue<T>(val, ind));
 end;
@@ -17621,7 +17647,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
 end;
@@ -17692,7 +17718,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValueN<T>(val, ind));
 end;
@@ -17767,7 +17793,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteValueNQ<T>(val, ind));
 end;
@@ -17838,7 +17864,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadValue(val: NativeValue<&T>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadValueN<T>(val, ind));
 end;
@@ -17913,7 +17939,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadValueNQ<T>(val, ind));
 end;
@@ -17983,7 +18009,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteArrayAutoSize<T>(a));
 end;
@@ -18083,7 +18109,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandWriteArray<T>(a, ind, len, a_ind));
 end;
@@ -18153,7 +18179,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadArrayAutoSize<T>(a));
 end;
@@ -18253,7 +18279,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadArray(a: CommandQueue<array of &T>; ind, len, a_ind: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandReadArray<T>(a, ind, len, a_ind));
 end;
@@ -18332,7 +18358,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillDataAutoSize<T>(ptr, pattern_len));
 end;
@@ -18427,7 +18453,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillData<T>(ptr, pattern_len, ind, len));
 end;
@@ -18436,18 +18462,18 @@ end;
 
 {$region FillDataAutoSize}
 
-function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddFillData(IntPtr(ptr), pattern_len);
+  Result := ThenFillData(IntPtr(ptr), pattern_len);
 end;
 
 {$endregion FillDataAutoSize}
 
 {$region FillData}
 
-function CLArrayCCQ<T>.AddFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillData(ptr: pointer; pattern_len, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddFillData(IntPtr(ptr), pattern_len, ind, len);
+  Result := ThenFillData(IntPtr(ptr), pattern_len, ind, len);
 end;
 
 {$endregion FillData}
@@ -18508,7 +18534,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: &T): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: &T): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValueAutoSize<T>(val));
 end;
@@ -18576,7 +18602,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: CommandQueue<&T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValueAutoSizeQ<T>(val));
 end;
@@ -18662,7 +18688,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: &T; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValue<T>(val, ind, len));
 end;
@@ -18750,7 +18776,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillValueQ<T>(val, ind, len));
 end;
@@ -18820,7 +18846,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillArray(a: CommandQueue<array of &T>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillArrayAutoSize<T>(a));
 end;
@@ -18930,7 +18956,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillArray(a: CommandQueue<array of &T>; a_offset,pattern_len, ind,len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandFillArray<T>(a, a_offset, pattern_len, ind, len));
 end;
@@ -18999,7 +19025,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyTo(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyToAutoSize<T>(a));
 end;
@@ -19094,7 +19120,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyTo(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyTo<T>(a, from_ind, to_ind, len));
 end;
@@ -19159,7 +19185,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyFrom(a: CommandQueue<CLArray<T>>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyFromAutoSize<T>(a));
 end;
@@ -19254,7 +19280,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyFrom(a: CommandQueue<CLArray<T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := AddCommand(self, new CLArrayCommandCopyFrom<T>(a, from_ind, to_ind, len));
 end;
@@ -19328,7 +19354,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetValue(ind: CommandQueue<integer>): CommandQueue<&T>;
+function CLArrayCCQ<T>.ThenGetValue(ind: CommandQueue<integer>): CommandQueue<&T>;
 begin
   Result := new CLArrayCommandGetValue<T>(self, ind) as CommandQueue<&T>;
 end;
@@ -19382,7 +19408,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetArray: CommandQueue<array of &T>;
+function CLArrayCCQ<T>.ThenGetArray: CommandQueue<array of &T>;
 begin
   Result := new CLArrayCommandGetArrayAutoSize<T>(self) as CommandQueue<array of &T>;
 end;
@@ -19466,7 +19492,7 @@ type
     
   end;
   
-function CLArrayCCQ<T>.AddGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
+function CLArrayCCQ<T>.ThenGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
 begin
   Result := new CLArrayCommandGetArray<T>(self, ind, len) as CommandQueue<array of &T>;
 end;

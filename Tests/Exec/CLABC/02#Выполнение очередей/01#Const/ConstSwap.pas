@@ -9,9 +9,9 @@ type
     // Эта очередь ничего полезного не делает, но это только пример
     public constructor := self.Q :=
     MemorySegment.Create(sizeof(integer)).NewQueue
-    .AddWriteValue( self.par1 )
-    .AddQueue( self.par2.ThenQuickUse(x->Writeln(x)) )
-    .AddGetValue&<integer>;
+    .ThenWriteValue( self.par1 )
+    .ThenQueue( self.par2.ThenQuickUse(x->Writeln(x)) )
+    .ThenGetValue&<integer>;
     
     public function Invoke(par1: integer; par2: string): integer;
     begin

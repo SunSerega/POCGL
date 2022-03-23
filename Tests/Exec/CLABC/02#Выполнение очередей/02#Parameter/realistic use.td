@@ -4,6 +4,9 @@
 #ReqModules
 OpenCLABC
 
+#DelegateCount
+4
+
 #ExpOtp
 abc
 1 
@@ -12,8 +15,5 @@ def
 [EventDebug]: 4 event's created 
 [QueueDebug]: 2 queue's created 
 [WaitDebug]: 0 wait handler's created 
-
-#DelegateCount
-4
 
 

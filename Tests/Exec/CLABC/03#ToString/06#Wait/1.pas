@@ -26,6 +26,6 @@ Writeln('='*50);
 Writeln;
 
 var mem := new MemorySegment(1);
-Test( mem.NewQueue.AddWait(M1) );
-Test( M1+mem.NewQueue.AddWait(M1) );
-Test( mem.NewQueue.AddWait(M1)+M1 );
+Test( mem.NewQueue.ThenWait(M1) );
+Test( M1+mem.NewQueue.ThenWait(M1) );
+Test( mem.NewQueue.ThenWait(M1)+M1 );

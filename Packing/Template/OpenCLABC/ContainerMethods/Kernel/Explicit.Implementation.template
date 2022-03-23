@@ -89,7 +89,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec1(sz1, args));
 end;
@@ -192,7 +192,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
 end;
@@ -305,7 +305,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
 end;
@@ -418,7 +418,7 @@ type
     
   end;
   
-function KernelCCQ.AddExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+function KernelCCQ.ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
 begin
   Result := AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
 end;

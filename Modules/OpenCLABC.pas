@@ -27,12 +27,13 @@ unit OpenCLABC;
 // - По случаю поперемещать .dat и .template файлы в кодогенератора: сейчас там мусорка
 
 //TODO Тесты:
-// - CQQ.AddQueue(self)
+// - CQQ.ThenQueue(self)
 
 //TODO Справка:
-// - CQQ.AddQueue(self)
 // - DiscardResult
-// - AddGet не выполняются если их результат не использован
+// - .Add => .Then
+// - CQQ.ThenQueue(self)
+// - ThenGet не выполняются если их результат не использован
 
 //===================================
 // Запланированное:
@@ -7067,14 +7068,11 @@ type
     private constructor := raise new OpenCLABCInternalException;
   end;
   GPUCommandContainerCore<T> = abstract class
-    private cc: GPUCommandContainer<T>;
-    protected constructor(cc: GPUCommandContainer<T>) := self.cc := cc;
-    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; abstract;
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; abstract;
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResVal<T>; abstract;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
@@ -7092,15 +7090,31 @@ type
   GPUCommandContainer<T> = abstract partial class(CommandQueue<T>)
     protected core: GPUCommandContainerCore<T>;
     protected commands := new List<GPUCommand<T>>;
+    // Not nil only when commands are nil
+    private commands_in: GPUCommandContainer<T>;
+    private old_command_count: integer;
+    
+    private procedure TakeCommandsBack;
+    begin
+      if commands_in=nil then exit;
+      while commands_in.commands_in<>nil do
+        commands_in := commands_in.commands_in;
+      self.commands := new List<GPUCommand<T>>(old_command_count);
+      for var i := 0 to old_command_count-1 do self.commands += commands_in.commands[i];
+      commands_in := nil;
+    end;
+    
+    public function Clone: GPUCommandContainer<T>; abstract;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       core.InitBeforeInvoke(g, inited_hubs);
-      foreach var comm in commands do comm.InitBeforeInvoke(g, inited_hubs);
+      TakeCommandsBack;
+      foreach var comm in self.commands do comm.InitBeforeInvoke(g, inited_hubs);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override    := core.InvokeToNil(g, l);
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := core.InvokeToVal(g, l);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override    := core.InvokeToNil(g, l, self.commands);
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := core.InvokeToVal(g, l, self.commands);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
       Result := nil;
@@ -7111,16 +7125,22 @@ type
     begin
       sb += #10;
       core.ToString(sb, tabs, index, delayed);
+      TakeCommandsBack;
       foreach var comm in commands do
         comm.ToString(sb, tabs, index, delayed);
     end;
     
   end;
   
-function AddCommand<TContainer, TRes>(cc: TContainer; comm: GPUCommand<TRes>): TContainer; where TContainer: GPUCommandContainer<TRes>;
+function AddCommand<TContainer, T>(cc: TContainer; comm: GPUCommand<T>): TContainer; where TContainer: GPUCommandContainer<T>;
 begin
-  cc.commands += comm;
-  Result := cc;
+  cc.TakeCommandsBack;
+  Result := TContainer(cc.Clone);
+  cc.commands_in := Result;
+  //TODO #????
+  cc.old_command_count := (cc as GPUCommandContainer<T>).commands.Count;
+  cc.commands := nil;
+  Result.commands += comm;
 end;
 
 {$endregion Base}
@@ -7131,27 +7151,24 @@ type
   CCCObj<T> = sealed class(GPUCommandContainerCore<T>)
     public o: T;
     
-    public constructor(cc: GPUCommandContainer<T>; o: T);
-    begin
-      inherited Create(cc);
-      self.o := o;
-    end;
+    public constructor(o: T) := self.o := o;
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: (CLTaskLocalData, T)->TR): TR;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>; make_qr: (CLTaskLocalData, T)->TR): TR;
     begin
       var o := self.o;
       
-      foreach var comm in cc.commands do
+      foreach var comm in commands do
         l := comm.InvokeObj(o, g, l).base;
       
       Result := make_qr(l, o);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override    := Invoke(g, l, (l,o)->new QueueResNil(l));
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := Invoke(g, l, (l,o)->new QueueResVal<T>(l,o));
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; override    := Invoke(g, l, commands, (l,o)->new QueueResNil(l));
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResVal<T>; override := Invoke(g, l, commands, (l,o)->new QueueResVal<T>(l,o));
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -7165,28 +7182,25 @@ type
   CCCQueue<T> = sealed class(GPUCommandContainerCore<T>)
     public hub: MultiusableCommandQueueHub<T>;
     
-    public constructor(cc: GPUCommandContainer<T>; q: CommandQueue<T>);
-    begin
-      inherited Create(cc);
-      self.hub := new MultiusableCommandQueueHub<T>(q);
-    end;
+    public constructor(q: CommandQueue<T>) := self.hub := new MultiusableCommandQueueHub<T>(q);
+    private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     hub.q.InitBeforeInvoke(g, inited_hubs);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: (GPUCommandObjInvoker<T>,CLTaskGlobalData,CLTaskLocalData)->TR): TR;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>; make_qr: (GPUCommandObjInvoker<T>,CLTaskGlobalData,CLTaskLocalData)->TR): TR;
     begin
       var invoke_plug: GPUCommandObjInvoker<T> := hub.MakeNode.InvokeToVal;
       
-      foreach var comm in cc.commands do
+      foreach var comm in commands do
         l := comm.InvokeQueue(invoke_plug, g, l).base;
       
       Result := make_qr(invoke_plug, g, l);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, (inv,g,l)->new QueueResNil(l));
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<T>; override := Invoke(g, l, (inv,g,l)->inv(g,l));
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil;    override := Invoke(g, l, commands, (inv,g,l)->new QueueResNil(l));
+    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResVal<T>; override := Invoke(g, l, commands, (inv,g,l)->inv(g,l));
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -7199,10 +7213,16 @@ type
   GPUCommandContainer<T> = abstract partial class
     
     protected constructor(o: T) :=
-    self.core := new CCCObj<T>(self, o);
+    self.core := new CCCObj<T>(o);
     
     protected constructor(q: CommandQueue<T>) :=
-    self.core := new CCCQueue<T>(self, q);
+    self.core := new CCCQueue<T>(q);
+    
+    protected constructor(ccq: GPUCommandContainer<T>);
+    begin
+      self.core := ccq.core;
+      self.commands := ccq.commands;
+    end;
     
   end;
   
@@ -7212,6 +7232,9 @@ type
 
 type
   KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
+    
+    private constructor(ccq: GPUCommandContainer<Kernel>) := inherited;
+    public function Clone: GPUCommandContainer<Kernel>; override := new KernelCCQ(self);
     
   end;
   
@@ -7223,6 +7246,9 @@ type
 
 type
   MemorySegmentCCQ = sealed partial class(GPUCommandContainer<MemorySegment>)
+    
+    private constructor(ccq: GPUCommandContainer<MemorySegment>) := inherited;
+    public function Clone: GPUCommandContainer<MemorySegment>; override := new MemorySegmentCCQ(self);
     
   end;
   
@@ -7236,6 +7262,9 @@ static function KernelArg.operator implicit(mem_q: MemorySegmentCCQ): KernelArg 
 
 type
   CLArrayCCQ<T> = sealed partial class(GPUCommandContainer<CLArray<T>>)
+    
+    private constructor(ccq: GPUCommandContainer<CLArray<T>>) := inherited;
+    public function Clone: GPUCommandContainer<CLArray<T>>; override := new CLArrayCCQ<T>(self);
     
   end;
   

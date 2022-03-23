@@ -5,11 +5,11 @@ begin
   var k := code['p1'];
   
   k.NewQueue
-  .AddExec2(1,1,
+  .ThenExec2(1,1,
     
     MemorySegmentCCQ.Create(HFQ(()->new MemorySegment(1)))
-    .AddQueue(HFQ(()->5))
-    .AddProc(ms->begin exit() end),
+    .ThenQueue(HFQ(()->5))
+    .ThenProc(ms->begin exit() end),
     
     5
   ).Println;

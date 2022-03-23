@@ -3,17 +3,17 @@
     
     {$region Get}
     
-    public function AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+    public function ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
     
-    public function AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+    public function ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
     
-    public function AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+    public function ThenGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
     
-    public function AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+    public function ThenGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
     
-    public function AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+    public function ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
     
-    public function AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+    public function ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
     
     {$endregion Get}
     

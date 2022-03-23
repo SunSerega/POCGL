@@ -7,14 +7,14 @@
     
     {$region Special .Add's}
     
-    public function AddQueue(q: CommandQueueBase): KernelCCQ;
+    public function ThenQueue(q: CommandQueueBase): KernelCCQ;
     
-    public function AddProc(p: Kernel->()): KernelCCQ;
-    public function AddProc(p: (Kernel, Context)->()): KernelCCQ;
-    public function AddQuickProc(p: Kernel->()): KernelCCQ;
-    public function AddQuickProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function ThenProc(p: Kernel->()): KernelCCQ;
+    public function ThenProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function ThenQuickProc(p: Kernel->()): KernelCCQ;
+    public function ThenQuickProc(p: (Kernel, Context)->()): KernelCCQ;
     
-    public function AddWait(marker: WaitMarker): KernelCCQ;
+    public function ThenWait(marker: WaitMarker): KernelCCQ;
     
     {$endregion Special .Add's}
     
