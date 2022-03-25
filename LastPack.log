@@ -128,6 +128,8 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\OldClone.Add.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ThenQueue(self).pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue.pas"
@@ -297,6 +299,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\OldClone.Add]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ThenQueue(self)]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc]
 Tester: Done executing
