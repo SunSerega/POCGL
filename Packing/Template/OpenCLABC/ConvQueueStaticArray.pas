@@ -130,8 +130,8 @@ begin
             end else
             begin
               if need_res then
-                wr += '        var res: TRes;';
-              wr += '        if not g.curr_err_handler.HadError(true) then'#10;
+                wr += '        var res: TRes;'#10;
+              wr += '        if not g.curr_err_handler.HadError then'#10;
               wr += '        try'#10;
               
               wr += '          ';
@@ -166,7 +166,7 @@ begin
               wr += '        Result.';
               wr += if need_res then 'AddResSetter' else 'AddAction';
               wr += '(c->'#10;
-              wr += '        if not err_handler.HadError(true) then'#10;
+              wr += '        if not err_handler.HadError then'#10;
               wr += '        try'#10;
               
               wr += '          ';

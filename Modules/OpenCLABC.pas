@@ -31,12 +31,6 @@ unit OpenCLABC;
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
 
-//TODO err_handler: can_cache может лучше заменить на can_cache_from?
-// - Сейчас, вроде, can_cache:=false только в одном месте: и там кешировать нельзя НЕ все ноды
-// - А нет, вроде can_cache=false вообще только на 1 уровень распространяется, а предыдущие хендлеры всё равно можно кешировать
-// - В таком случае параметр лучше вообще убрать, и сделать отдельную HadError, не устанавливающую кеш
-// - Ещё перепроверить, перед тем как делать
-
 //TODO KernelArg.FromDataCQ(mu().ThenQConv(data->data.ptr), mu().ThenQConv(data->data.size))
 // - Как то корявенько, когда надо из 1 значения сделать FromDataCQ
 // - Может альтернативный вариант с передачей какой-то записи?
@@ -2419,16 +2413,20 @@ type
     end;
     
     private had_error_cache := default(boolean?);
-    protected function HadErrorInPrev(can_cache: boolean): boolean; abstract;
-    public function HadError(can_cache: boolean): boolean;
+    protected function HadErrorInPrev: boolean; abstract;
+    public function HadErrorWithoutCache: boolean;
     begin
       if had_error_cache<>nil then
       begin
         Result := had_error_cache.Value;
         exit;
       end;
-      Result := (local_err_lst.Count<>0) or HadErrorInPrev(can_cache);
-      if can_cache then had_error_cache := Result;
+      Result := (local_err_lst.Count<>0) or HadErrorInPrev;
+    end;
+    public function HadError: boolean;
+    begin
+      Result := HadErrorWithoutCache;
+      had_error_cache := Result;
     end;
     
     protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; abstract;
@@ -2449,7 +2447,7 @@ type
     protected procedure FillErrLst(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>);
     begin
       {$ifndef DEBUG}
-      if not HadError(true) then exit;
+      if not HadError then exit;
       {$endif DEBUG}
       
       FillErrLstWithPrev(origin_cache, lst);
@@ -2467,7 +2465,7 @@ type
 //        raise new OpenCLABCInternalException($'SanityCheck expects all had_error_cache to exist');
       
       begin
-        var had_error := self.HadError(true);
+        var had_error := self.HadError;
         if had_error <> (err_lst.Count<>0) then
           raise new OpenCLABCInternalException($'{had_error} <> {err_lst.Count}');
       end;
@@ -2480,7 +2478,7 @@ type
     
     public constructor := exit;
     
-    protected function HadErrorInPrev(can_cache: boolean): boolean; override := false;
+    protected function HadErrorInPrev: boolean; override := false;
     
     protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override := false;
     
@@ -2494,7 +2492,7 @@ type
     public constructor(origin: CLTaskErrHandler) := self.origin := origin;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected function HadErrorInPrev(can_cache: boolean): boolean; override := origin.HadError(can_cache);
+    protected function HadErrorInPrev: boolean; override := origin.HadError;
     
     protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
@@ -2522,13 +2520,13 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected function HadErrorInPrev(can_cache: boolean): boolean; override;
+    protected function HadErrorInPrev: boolean; override;
     begin
-      Result := origin.HadError(can_cache);
+      Result := origin.HadError;
       if Result then exit;
       foreach var h in branches do
       begin
-        Result := h.HadError(can_cache);
+        Result := h.HadError;
         if Result then exit;
       end;
     end;
@@ -2571,15 +2569,15 @@ type
       victim := nil;
     end;
     
-    protected function HadErrorInVictim(can_cache: boolean): boolean :=
-    (victim<>nil) and victim.HadError(can_cache);
+    protected function HadErrorInVictim: boolean :=
+    (victim<>nil) and victim.HadError;
     
   end;
   CLTaskErrHandlerThief = sealed class(CLTaskErrHandlerThiefBase)
     
     protected function CanSteal: boolean; override := true;
     
-    protected function HadErrorInPrev(can_cache: boolean): boolean; override := HadErrorInVictim(can_cache);
+    protected function HadErrorInPrev: boolean; override := HadErrorInVictim;
     
     protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
@@ -2605,12 +2603,12 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected function CanSteal: boolean; override :=
-    not prev_handler.HadError(true);
+    not prev_handler.HadError;
     
-    protected function HadErrorInPrev(can_cache: boolean): boolean; override :=
+    protected function HadErrorInPrev: boolean; override :=
     // mu_handler.HadError would be called more often,
     // so it's more likely to already have cache
-    HadErrorInVictim(can_cache) or prev_handler.HadError(can_cache);
+    HadErrorInVictim or prev_handler.HadError;
     
     protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
@@ -3087,21 +3085,21 @@ type
   QueueResActionUtils = static class
     
     static function HandlerWrap(err_handler: CLTaskErrHandler; d: QueueResAction): QueueResAction := c->
-    if not err_handler.HadError(true) then
+    if not err_handler.HadError then
     try
       d(c);
     except
       on e: Exception do err_handler.AddErr(e);
     end;
     static function HandlerWrap<T>(err_handler: CLTaskErrHandler; d: QueueResSetter<T>): QueueResSetter<T> := c->
-    if not err_handler.HadError(true) then
+    if not err_handler.HadError then
     try
       Result := d(c);
     except
       on e: Exception do err_handler.AddErr(e);
     end;
     static function HandlerWrapStrip<T>(err_handler: CLTaskErrHandler; d: QueueResSetter<T>): QueueResAction := c->
-    if not err_handler.HadError(true) then
+    if not err_handler.HadError then
     try
       d(c);
     except
@@ -3109,21 +3107,21 @@ type
     end;
     
     static function HandlerWrap<T>(err_handler: CLTaskErrHandler; d: (T,Context)->()): (T,Context)->() := (o,c)->
-    if not err_handler.HadError(true) then
+    if not err_handler.HadError then
     try
       d(o,c);
     except
       on e: Exception do err_handler.AddErr(e);
     end;
     static function HandlerWrap<T,TRes>(err_handler: CLTaskErrHandler; d: (T,Context)->TRes): (T,Context)->TRes := (o,c)->
-    if not err_handler.HadError(true) then
+    if not err_handler.HadError then
     try
       Result := d(o,c);
     except
       on e: Exception do err_handler.AddErr(e);
     end;
     static function HandlerWrapStrip<T,TRes>(err_handler: CLTaskErrHandler; d: (T,Context)->TRes): (T,Context)->() := (o,c)->
-    if not err_handler.HadError(true) then
+    if not err_handler.HadError then
     try
       d(o,c);
     except
@@ -3987,7 +3985,7 @@ type
     private function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action := ()->
     begin
       var inp := prev_qr.GetRes(c);
-      if err_handler.HadError(true) then exit;
+      if err_handler.HadError then exit;
       try
         ExecFunc(inp, c);
       except
@@ -3999,7 +3997,7 @@ type
       Result := ()->
       begin
         var inp := prev_qr.GetRes(c);
-        if err_handler.HadError(true) then exit;
+        if err_handler.HadError then exit;
         var res: TRes;
         try
           res := ExecFunc(inp, c);
@@ -4106,7 +4104,7 @@ type
     private function MakeNilBody    (prev_qr: QueueRes<T>; err_handler: CLTaskErrHandler; c: Context): Action := ()->
     begin
       var res := prev_qr.GetRes(c);
-      if err_handler.HadError(true) then exit;
+      if err_handler.HadError then exit;
       try
         ExecProc(res, c);
       except
@@ -4118,7 +4116,7 @@ type
       Result := ()->
       begin
         var res := prev_qr.GetRes(c);
-        if err_handler.HadError(true) then exit;
+        if err_handler.HadError then exit;
         try
           ExecProc(res, c);
         except
@@ -5038,7 +5036,7 @@ type
       var err_handler := g.curr_err_handler;
       prev_ev.MultiAttachCallback(()->
       begin
-        if err_handler.HadError(true) then
+        if err_handler.HadError then
         begin
           {$ifdef WaitDebug}
           WaitDebug.RegisterAction(self, $'Aborted');
@@ -5736,12 +5734,12 @@ type
       
       if Result.ShouldInstaCallAction then
       begin
-        if not g.curr_err_handler.HadError(true) then
+        if not g.curr_err_handler.HadError then
           m.SendSignal;
       end else
       begin
         var err_handler := g.curr_err_handler;
-        Result.AddAction(c->if not err_handler.HadError(true) then m.SendSignal);
+        Result.AddAction(c->if not err_handler.HadError then m.SendSignal);
       end;
       
     end;
@@ -5813,12 +5811,12 @@ type
     begin
       if prev_qr.ShouldInstaCallAction then
       begin
-        if signal_in_finally or not err_handler.HadError(true) then
+        if signal_in_finally or not err_handler.HadError then
           wrap.SendSignal;
       end else
       if signal_in_finally then
         prev_qr.AddAction(c->wrap.SendSignal()) else
-        prev_qr.AddAction(c->if not err_handler.HadError(true) then wrap.SendSignal);
+        prev_qr.AddAction(c->if not err_handler.HadError then wrap.SendSignal);
       Result := prev_qr;
     end;
     
@@ -6191,7 +6189,7 @@ type
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, |post_inv_handler|);
       
       Result := prev_qr.TransformResult(qr_factory, g.c, true, (prev_res,c)->
-      if not post_inv_handler.HadError(true) then
+      if not post_inv_handler.HadError then
         Result := prev_res else
       try
         post_inv_handler.TryRemoveErrors(self.handler);
@@ -6244,7 +6242,7 @@ type
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, new CLTaskErrHandler[](post_inv_handler));
       
       Result.AddAction(c->
-      if post_inv_handler.HadError(true) then
+      if post_inv_handler.HadError then
       begin
         post_inv_handler.StealPrevErrors;
         try
@@ -6267,7 +6265,7 @@ type
       g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, new CLTaskErrHandler[](post_inv_handler));
       
       Result := prev_qr.TransformResult(qr_factory, g.c, true, (prev_res,c)->
-      if not post_inv_handler.HadError(true) then
+      if not post_inv_handler.HadError then
         Result := prev_res else
       begin
         post_inv_handler.StealPrevErrors;
@@ -7390,7 +7388,7 @@ type
       var enq_f := q.InvokeParams(g, enq_evs);
       // After InvokeParams, because parameters
       // should not care about prev events and errors
-      if pre_params_handler.HadError(true) then
+      if pre_params_handler.HadError then
       begin
         Result := new EnqRes(enq_evs.CombineAll, nil);
         exit;
@@ -7402,7 +7400,7 @@ type
       var post_params_handler := g.curr_err_handler;
       // When inv is async, post_params_handler
       // could be appened later, until ev_l2 is completed
-      if post_params_handler.HadError(not need_async_inv) then
+      if need_async_inv ? post_params_handler.HadErrorWithoutCache : post_params_handler.HadError then
       begin
         Result := new EnqRes(ev_l2, nil);
         exit;
@@ -7650,7 +7648,7 @@ type
     private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: Context; err_handler: CLTaskErrHandler; own_qr: QueueResNil): Action := ()->
     begin
       prev_d.Invoke(c);
-      if err_handler.HadError(true) then exit;
+      if err_handler.HadError then exit;
       try
         ExecFunc(c);
       except
@@ -7662,7 +7660,7 @@ type
       Result := ()->
       begin
         prev_d.Invoke(c);
-        if err_handler.HadError(true) then exit;
+        if err_handler.HadError then exit;
         var res: T;
         try
           res := ExecFunc(c);
@@ -7726,7 +7724,7 @@ type
     private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: CLTaskErrHandler; c: Context): Action := ()->
     begin
       prev_d.Invoke(c);
-      if err_handler.HadError(true) then exit;
+      if err_handler.HadError then exit;
       try
         ExecProc(c);
       except
