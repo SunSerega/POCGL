@@ -7,14 +7,14 @@
     
     {$region Special .Add's}
     
-    public function AddQueue(q: CommandQueueBase): CLArrayCCQ<T>;
+    public function ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
     
-    public function AddProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function AddProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
-    public function AddQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function AddQuickProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    public function ThenProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    public function ThenQuickProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     
-    public function AddWait(marker: WaitMarker): CLArrayCCQ<T>;
+    public function ThenWait(marker: WaitMarker): CLArrayCCQ<T>;
     
     {$endregion Special .Add's}
     

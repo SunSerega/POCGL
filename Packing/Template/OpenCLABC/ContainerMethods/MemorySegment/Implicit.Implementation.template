@@ -5,22 +5,22 @@
 
 function MemorySegment.WriteData(ptr: CommandQueue<IntPtr>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
 end;
 
 function MemorySegment.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteData(ptr, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, mem_offset, len));
 end;
 
 function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
 end;
 
 function MemorySegment.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadData(ptr, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, mem_offset, len));
 end;
 
 function MemorySegment.WriteData(ptr: pointer): MemorySegment;
@@ -75,32 +75,32 @@ end;
 
 function MemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.ReadValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.ReadValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadValue&<TRecord>(val, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadValue&<TRecord>(val, mem_offset));
 end;
 
 function MemorySegment.WriteArray1<TRecord>(a: array of TRecord): MemorySegment; where TRecord: record;
@@ -165,62 +165,62 @@ end;
 
 function MemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a));
 end;
 
 function MemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a));
 end;
 
 function MemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a));
 end;
 
 function MemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray1&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a));
 end;
 
 function MemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray2&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a));
 end;
 
 function MemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray3&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a));
 end;
 
 function MemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray1&<TRecord>(a, a_offset, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a, a_offset, len, mem_offset));
 end;
 
 function MemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
 end;
 
 function MemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddWriteArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
 end;
 
 function MemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray1&<TRecord>(a, a_offset, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a, a_offset, len, mem_offset));
 end;
 
 function MemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a, a_offset1, a_offset2, len, mem_offset));
 end;
 
 function MemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddReadArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, len, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -229,62 +229,62 @@ end;
 
 function MemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len));
 end;
 
 function MemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_len, mem_offset, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillData(ptr, pattern_len, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len, mem_offset, len));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: TRecord): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: TRecord; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, len));
 end;
 
 function MemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, len: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillValue&<TRecord>(val, mem_offset, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, len));
 end;
 
 function MemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray1&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a));
 end;
 
 function MemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray2&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a));
 end;
 
 function MemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray3&<TRecord>(a));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a));
 end;
 
 function MemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_offset, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray1&<TRecord>(a, a_offset, pattern_len, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a, a_offset, pattern_len, len, mem_offset));
 end;
 
 function MemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_offset1,a_offset2, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray2&<TRecord>(a, a_offset1, a_offset2, pattern_len, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a, a_offset1, a_offset2, pattern_len, len, mem_offset));
 end;
 
 function MemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_offset1,a_offset2,a_offset3, pattern_len, len, mem_offset: CommandQueue<integer>): MemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddFillArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, pattern_len, len, mem_offset));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a, a_offset1, a_offset2, a_offset3, pattern_len, len, mem_offset));
 end;
 
 {$endregion 2#Fill}
@@ -293,22 +293,22 @@ end;
 
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
 function MemorySegment.CopyTo(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyTo(mem, from_pos, to_pos, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, from_pos, to_pos, len));
 end;
 
 function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
 function MemorySegment.CopyFrom(mem: CommandQueue<MemorySegment>; from_pos, to_pos, len: CommandQueue<integer>): MemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.AddCopyFrom(mem, from_pos, to_pos, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, from_pos, to_pos, len));
 end;
 
 {$endregion 3#Copy}

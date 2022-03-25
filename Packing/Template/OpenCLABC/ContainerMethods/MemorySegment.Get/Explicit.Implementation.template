@@ -5,9 +5,9 @@
 
 {$region GetValue}
 
-function MemorySegmentCCQ.AddGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
 begin
-  Result := AddGetValue&<TRecord>(0);
+  Result := ThenGetValue&<TRecord>(0);
 end;
 
 {$endregion GetValue}
@@ -79,7 +79,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
 end;
@@ -137,7 +137,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray1<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray1AutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 end;
@@ -215,7 +215,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray1<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray1<TRecord>(self, len) as CommandQueue<array of TRecord>;
 end;
@@ -303,7 +303,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
 end;
@@ -401,7 +401,7 @@ type
     
   end;
   
-function MemorySegmentCCQ.AddGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+function MemorySegmentCCQ.ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
 begin
   Result := new MemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
 end;

@@ -46,7 +46,7 @@ Context.Default.SyncInvoke(Q
 Для таких случаев используется `Quick` версии очередей:
 ```
 ## uses OpenCLABC;
-var Q := HFQ(()->5);
+var Q := HFQQ(()->5);
 
 Context.Default.SyncInvoke(Q
   .ThenQuickUse(x->Println($'x*2 = {x*2}'))
@@ -64,7 +64,7 @@ Context.Default.SyncInvoke(Q
 Если вам необходимо быстро преобразовать тип возвращаемого значения очереди - можно использовать `.ThenQuickConvert`:
 ```
 ## uses OpenCLABC;
-var Q := HFQ(()->1 as object);
+var Q := HFQQ(()->1 as object);
 
 Context.Default.SyncInvoke(
   Q.ThenQuickConvert(x->integer(x))
@@ -88,7 +88,7 @@ begin
   // Можно, потому что к object можно преобразовать всё
   Context.Default.SyncInvoke( Q1.Cast&<object> );
   
-  //Ошибка: .Cast не может преобразовывать System.Int32 в System.Byte
+  //Ошибка: .Cast не может преобразовывать integer в byte
   // Преобразование записей меняет представление данных в памяти
   // Можно преобразовывать только object в запись и назад
 //  Context.Default.SyncInvoke( Q1.Cast&<byte> );
@@ -102,10 +102,11 @@ begin
   
   //Ошибка: Не удалось привести тип объекта "t1" к типу "t2".
   // Q4 возвращает не t2 а именно t1
-//  Context.Default.SyncInvoke( Q4.Cast&<t2> );
+//  Context.Default.SyncInvoke( Q4.Cast&<t2>.HandleDefaultRes(e->e.Message.Println<>nil, new t2) );
   
   // Можно, потому что t2 наследует от t1
   Context.Default.SyncInvoke( Q5.Cast&<t1> );
+  
 end.
 ```
 Кроме того, `.Cast` можно применять к очередям без типа результата:

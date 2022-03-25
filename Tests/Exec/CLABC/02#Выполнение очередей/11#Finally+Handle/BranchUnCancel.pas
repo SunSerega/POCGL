@@ -4,7 +4,7 @@ var A := HPQ(()->raise new Exception('TestOK'));
 var S := new CLArray<byte>(1);
 
 Context.Default.SyncInvoke(
-  (A + S.NewQueue.AddWriteValue(0, HFQ(()->
+  (A + S.NewQueue.ThenWriteValue(0, HFQ(()->
   begin
     lock output do Writeln('Calculated anyway');
     Result := 0;

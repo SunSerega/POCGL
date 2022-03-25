@@ -110,28 +110,27 @@ begin
       res_In += '    ';
       res += #10;
       
-      {$region AddQueue}
+      {$region ThenQueue}
       
       WriteHeader('function', 'public');
-      res += 'AddQueue(q: CommandQueueBase): ';
+      res += 'ThenQueue(q: CommandQueueBase): ';
       WriteCCQ(res);
       res += ';'#10;
       res_Im += 'begin'#10;
-      res_Im += '  Result := self;'#10;
       res_Im += '  var comm := BasicGPUCommand&<';
       res_Im += t;
       WriteGenerics(res_Im);
       res_Im += '>.MakeQueue(q);'#10;
-      res_Im += '  if comm<>nil then commands.Add(comm);'#10;
+      res_Im += '  Result := if comm=nil then self else AddCommand(self, comm);'#10;
       
       res_Im += 'end;'#10;
       
       res_In += '    ';
       res += #10;
       
-      {$endregion AddQueue}
+      {$endregion ThenQueue}
       
-      {$region AddProc}
+      {$region ThenProc}
       
       for var is_quick := false to true do
       begin
@@ -140,7 +139,7 @@ begin
         for var need_c := false to true do
         begin
           WriteHeader('function', 'public');
-          res += 'Add';
+          res += 'Then';
           if is_quick then res += quick_word;
           res += 'Proc(p: ';
           if need_c then res += '(';
@@ -164,12 +163,12 @@ begin
       res_In += '    ';
       res += #10;
       
-      {$endregion AddProc}
+      {$endregion ThenProc}
       
-      {$region AddWait}
+      {$region ThenWait}
       
       WriteHeader('function', 'public');
-      res += 'AddWait(marker: WaitMarker)';
+      res += 'ThenWait(marker: WaitMarker)';
       res_In += ': ';
       WriteCCQ(res_In);
       res_Im += ' := AddCommand(self, BasicGPUCommand&<';
@@ -181,7 +180,7 @@ begin
       res_In += '    ';
       res += #10;
       
-      {$endregion AddWait}
+      {$endregion ThenWait}
       
       res_In += '    ';
       res += '{$endregion Special .Add''s}'#10;

@@ -1066,7 +1066,7 @@ type
         l_res_Im += '>';
       end;
       l_res_Im += '.';
-      l_res_E += 'Add';
+      l_res_E += 'Then';
       l_res += fn;
       l_res += settings.generics_str;
       if settings.args_str <> nil then
@@ -1095,14 +1095,14 @@ type
       if settings.is_short_def then
       begin
         
-        l_res_EIm += 'Add';
+        l_res_EIm += 'Then';
         l_res_Im += settings.def.Single;
         l_res_Im += #10;
         
       end else
       begin
         
-        res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Add';
+        res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Then';
         res_IIm += fn;
         if settings.generics_str <> nil then
         begin

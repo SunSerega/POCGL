@@ -397,10 +397,10 @@ type
             if t.all_settings.Get('#DelegateCount') <> delegate_count then
             begin
               t.all_settings['#DelegateCount'] := delegate_count;
-              t.used_settings += '#DelegateCount';
               t.resave_settings := true;
             end;
             
+            t.used_settings += '#DelegateCount';
           end;
           
           if t.test_mode.Contains('Exec') then

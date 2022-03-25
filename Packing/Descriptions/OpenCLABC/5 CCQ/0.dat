@@ -20,21 +20,21 @@
 
 
 
-# MemorySegmentCCQ.AddQueue(CommandQueueBase)
-# KernelCCQ.AddQueue(CommandQueueBase)
-# CLArrayCCQ<T>.AddQueue(CommandQueueBase)
+# MemorySegmentCCQ.ThenQueue(CommandQueueBase)
+# KernelCCQ.ThenQueue(CommandQueueBase)
+# CLArrayCCQ<T>.ThenQueue(CommandQueueBase)
 Добавляет выполнение очереди в список обычных команд для GPU
 
-# MemorySegmentCCQ.Add[%when:,Quick%]Proc(MemorySegment->())
-# MemorySegmentCCQ.Add[%when:,Quick%]Proc((MemorySegment, Context)->())
-# KernelCCQ.Add[%when:,Quick%]Proc(Kernel->())
-# KernelCCQ.Add[%when:,Quick%]Proc((Kernel, Context)->())
-# CLArrayCCQ<T>.Add[%when:,Quick%]Proc(CLArray<T>->())
-# CLArrayCCQ<T>.Add[%when:,Quick%]Proc((CLArray<T>, Context)->())
+# MemorySegmentCCQ.Then[%when:,Quick%]Proc(MemorySegment->())
+# MemorySegmentCCQ.Then[%when:,Quick%]Proc((MemorySegment, Context)->())
+# KernelCCQ.Then[%when:,Quick%]Proc(Kernel->())
+# KernelCCQ.Then[%when:,Quick%]Proc((Kernel, Context)->())
+# CLArrayCCQ<T>.Then[%when:,Quick%]Proc(CLArray<T>->())
+# CLArrayCCQ<T>.Then[%when:,Quick%]Proc((CLArray<T>, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-%DelegateExec:{%when?Background:Quick%}% {%when?начинающуюся на ".AddQuick...":%}
+%DelegateExec:{%when?Background:Quick%}% {%when?начинающуюся на ".ThenQuick...":%}
 
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].AddWait(WaitMarker)
+# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].ThenWait(WaitMarker)
 Добавляет ожидание сигнала выполненности от заданного маркера
 
 

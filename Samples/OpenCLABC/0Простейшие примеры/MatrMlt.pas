@@ -53,9 +53,9 @@ begin
     
     var Calc_C_Q :=
       // Выделяем ядра в форме квадрата, всего MatrW*MatrW ядер
-      code['MatrMltMatr'].NewQueue.AddExec2(MatrW, MatrW,
-        A.NewQueue.AddWriteArray2(A_Matr),
-        B.NewQueue.AddWriteArray2(B_Mart),
+      code['MatrMltMatr'].NewQueue.ThenExec2(MatrW, MatrW,
+        A.NewQueue.ThenWriteArray2(A_Matr),
+        B.NewQueue.ThenWriteArray2(B_Mart),
         C,
         W
       // DiscardResult не обязательно, но желательно
@@ -63,7 +63,7 @@ begin
       ).DiscardResult;
     
     var Otp_C_Q :=
-      C.NewQueue.AddGetArray2&<real>(MatrW, MatrW)
+      C.NewQueue.ThenGetArray2&<real>(MatrW, MatrW)
       .ThenQuickUse(C_Matr->
       begin
         'Матрица С = A*B:'.Println;
@@ -72,15 +72,15 @@ begin
       end).DiscardResult;
     
     var Calc_V2_Q :=
-      code['MatrMltVec'].NewQueue.AddExec1(MatrW,
+      code['MatrMltVec'].NewQueue.ThenExec1(MatrW,
         C,
-        V1.NewQueue.AddWriteArray1(V1_Arr),
+        V1.NewQueue.ThenWriteArray1(V1_Arr),
         V2,
         W
       ).DiscardResult;
     
     var Otp_V2_Q :=
-      V2.NewQueue.AddGetArray1&<real>
+      V2.NewQueue.ThenGetArray1&<real>
       .ThenQuickUse(V2_Arr->
       begin
         'Вектор V2 = C*V1:'.Println;
@@ -88,7 +88,7 @@ begin
         Println;
       // Единственный DiscardResult, меняющий поведение очереди:
       // С ним не выделяются ресурсы на то, чтобы передать V2_Arr
-      // Из результата AddGetArray1 в результат SyncInvoke
+      // Из результата ThenGetArray1 в результат SyncInvoke
       end).DiscardResult;
     
     // Выполнение всего и сразу асинхронный вывод
