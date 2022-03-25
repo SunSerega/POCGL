@@ -33,7 +33,6 @@ unit OpenCLABC;
 // - DiscardResult
 // - .Add => .Then
 // - CQQ.ThenQueue(self)
-// - ThenGet не выполняются если их результат не использован
 
 //===================================
 // Запланированное:
@@ -81,7 +80,11 @@ unit OpenCLABC;
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 //TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
 // - Или может метод MarkerQueue.Abort?
-//
+//TODO .DelayInit, чтобы ветки .ThenIf можно было не инициализировать заранее
+// - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
+//TODO CCQ.ThenIf(cond, command, nil)
+// - Подумать как можно сделать это красивее, чем через MU
+
 //TODO Несколько TODO в:
 // - Queue converter's >> Wait
 
@@ -99,6 +102,8 @@ unit OpenCLABC;
 
 //TODO А что если передавать в делегаты QueueRes'ов Context и возможно err_handler
 // - Надо будет сразу сравнить скорость
+
+//TODO CombineUse? А то CombineConv есть, а Use нету...
 
 //===================================
 // Сделать когда-нибуть:

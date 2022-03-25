@@ -35,10 +35,10 @@ main_dvc должен быть в списке устройств контекс
 
 
 # Err:Blittable:Main
-Значения типа {t} нельзя {source_name}
+Значения типа {TypeToTypeName(t)} нельзя {source_name}
 
 # Err:Blittable:Blame
-%Err:Blittable:Main%, потому что он содержит тип {blame}
+%Err:Blittable:Main%, потому что он содержит тип {TypeToTypeName(blame)}
 
 # Err:Blittable:Source:CLArray
 использовать как элементы CLArray<>
@@ -94,10 +94,10 @@ main_dvc должен быть в списке устройств контекс
 
 
 # Err:Cast:nil->T
-.Cast не может преобразовывать nil в {typeof(T)}
+.Cast не может преобразовывать nil в {TypeToTypeName(typeof(T))}
 
 # Err:Cast:TInp->TRes
-.Cast не может преобразовывать {typeof(TInp)} в {typeof(TRes)}
+.Cast не может преобразовывать {TypeToTypeName(typeof(TInp))} в {TypeToTypeName(typeof(TRes))}
 
 
 

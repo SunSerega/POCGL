@@ -43,7 +43,6 @@ unit OpenCLABC;
 // - DiscardResult
 // - .Add => .Then
 // - CQQ.ThenQueue(self)
-// - ThenGet не выполняются если их результат не использован
 
 //===================================
 // Запланированное:
@@ -91,7 +90,11 @@ unit OpenCLABC;
 // - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
 //TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
 // - Или может метод MarkerQueue.Abort?
-//
+//TODO .DelayInit, чтобы ветки .ThenIf можно было не инициализировать заранее
+// - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
+//TODO CCQ.ThenIf(cond, command, nil)
+// - Подумать как можно сделать это красивее, чем через MU
+
 //TODO Несколько TODO в:
 // - Queue converter's >> Wait
 
@@ -109,6 +112,8 @@ unit OpenCLABC;
 
 //TODO А что если передавать в делегаты QueueRes'ов Context и возможно err_handler
 // - Надо будет сразу сравнить скорость
+
+//TODO CombineUse? А то CombineConv есть, а Use нету...
 
 //===================================
 // Сделать когда-нибуть:
@@ -5257,7 +5262,7 @@ WriteArray(value, range.Low, range.High-range.Low+1, 0);
 type
   BlittableException = sealed class(Exception)
     public constructor(t, blame: System.Type; source_name: string) :=
-    inherited Create(t=blame ? $'Значения типа {t} нельзя {source_name}' : $'Значения типа {t} нельзя {source_name}, потому что он содержит тип {blame}' );
+    inherited Create(t=blame ? $'Значения типа {TypeToTypeName(t)} нельзя {source_name}' : $'Значения типа {TypeToTypeName(t)} нельзя {source_name}, потому что он содержит тип {TypeToTypeName(blame)}' );
   end;
   BlittableHelper = static class
     
@@ -6819,7 +6824,7 @@ type
     static constructor;
     begin
       if object(nil_val)<>nil then
-        raise new System.InvalidCastException($'.Cast не может преобразовывать nil в {typeof(T)}');
+        raise new System.InvalidCastException($'.Cast не может преобразовывать nil в {TypeToTypeName(typeof(T))}');
     end;
     public constructor(q: CommandQueueNil) := self.q := q;
     private constructor := raise new OpenCLABCInternalException;
@@ -6854,7 +6859,7 @@ type
         var res := TRes(object(default(TInp)));
         System.GC.KeepAlive(res);
       except
-        raise new System.InvalidCastException($'.Cast не может преобразовывать {typeof(TInp)} в {typeof(TRes)}');
+        raise new System.InvalidCastException($'.Cast не может преобразовывать {TypeToTypeName(typeof(TInp))} в {TypeToTypeName(typeof(TRes))}');
       end;
     end;
     public constructor(q: CommandQueue<TInp>) := self.q := q;
