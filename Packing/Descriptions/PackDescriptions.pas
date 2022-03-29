@@ -11,7 +11,8 @@ uses DescriptionsData;
 
 type
   CommentData = sealed class
-    private used: boolean;
+    private used := false;
+    private directly_used := false;
     private source: string;
     private comment: string;
     
@@ -58,18 +59,23 @@ type
       if all.TryGetValue(key, cd) then
       begin
         cd.used := true;
+        var no_prev := prev=nil;
+        cd.directly_used := cd.directly_used or no_prev;
+        
+        if no_prev then
+          prev := new List<string> else
+        if key in prev then
+          raise new MessageException($'Comment loop chain:{#10}{prev.Select(GetPrintableData).JoinToString(#10)}]');
+        prev += key;
+        
         Result := Apply(cd.comment, missing_keys, prev);
+        cd.comment := Result;
       end else
         missing_keys.Enq(key);
     end;
     
     static function Apply(l: string; missing_keys: AsyncQueue<string>; prev: List<string> := nil): string;
     begin
-      if prev=nil then
-        prev := new List<string> else
-      if l in prev then
-        raise new MessageException($'Comment loop chain:{#10}{prev.Select(GetPrintableData).JoinToString(#10)}]');
-      prev += l;
       var res := new StringBuilder;
       
       var ind_comment := l.IndexOf('//');
@@ -87,7 +93,7 @@ type
         res.Append(l, last_ind, ind1-last_ind);
         ind1 += 1;
         
-        res += ApplyToKey(l.Substring(ind1,ind2-ind1), missing_keys);
+        res += ApplyToKey(l.Substring(ind1,ind2-ind1), missing_keys, prev);
         
         last_ind := ind2+1;
         if last_ind=l.Length then break;
@@ -161,6 +167,7 @@ begin
         var wr_skipped := new FileWriter(GetFullPathRTA($'{nick}.skipped.log'));
         var wr_missing := new FileWriter(GetFullPathRTA($'{nick}.missing.log'));
         var wr_unused  := new FileWriter(GetFullPathRTA($'{nick}.unused.log'));
+        var wr_used    := new FileWriter(GetFullPathRTA($'{nick}.used.log'));
         
         var skipped_types := new HashSet<string>;
         
@@ -175,7 +182,24 @@ begin
             wr_unused += #10;
           end;
         
-        (wr_skipped * wr_missing * wr_unused).Close;
+        CommentData.all
+        .Select(kvp->(kvp.Key,kvp.Value))
+        .Where(\(key,cd)->cd.directly_used)
+        .OrderBy(\(key,cd)->key)
+        .GroupBy(\(key,cd)->cd.comment)
+        .Foreach(g->
+        begin
+          foreach var (key,cd) in g do
+          begin
+            wr_used += '# ';
+            wr_used += key;
+            wr_used += #10;
+          end;
+          wr_used += g.Key;
+          wr_used += #10#10;
+        end);
+        
+        (wr_skipped * wr_missing * wr_unused * wr_used).Close;
       end)
     *
       fls.Select(fname->ProcTask(()->
@@ -187,8 +211,11 @@ begin
         var already_commented := false;
         foreach var c in CommentableBase.FindAllCommentalbes(ReadLines(fname), l->
         begin
-          already_commented := (last_line<>nil) and last_line.TrimStart(' ').StartsWith('///');
-          if last_line<>nil then res.WriteLine(last_line);
+          if last_line<>nil then
+          begin
+            already_commented := last_line.TrimStart(' ').StartsWith('///');
+            res.WriteLine(last_line);
+          end;
           
           last_line := CommentData.Apply(l, log_data.missing);
           
