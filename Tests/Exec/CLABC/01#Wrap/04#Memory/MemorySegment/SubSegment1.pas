@@ -3,9 +3,9 @@
 begin
   var align := Context.Default.MainDevice.Properties.MemBaseAddrAlign;
   
-  var mem := new MemorySegment(align*2);
-  var mem1 := new MemorySubSegment(mem, 0, 1);
-  var mem2 := new MemorySubSegment(mem, align, align);
+  var mem := new CLMemorySegment(align*2);
+  var mem1 := new CLMemorySubSegment(mem, 0, 1);
+  var mem2 := new CLMemorySubSegment(mem, align, align);
   
   Writeln(mem.Size64/align);
   Writeln(mem.Properties.GetType);

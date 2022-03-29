@@ -1,0 +1,13 @@
+﻿
+
+
+{$region Get}
+
+function CLValue<T>.GetValue: &T;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue);
+end;
+
+{$endregion Get}
+
+

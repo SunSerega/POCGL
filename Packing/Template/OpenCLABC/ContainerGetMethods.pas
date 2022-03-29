@@ -119,11 +119,11 @@ type
     begin
       res_EIm += '(o, cq, evs, own_qr)->'#10;
     end;
-    protected procedure AddGCHandleArgs(args_keep_alive, args_with_pinn: List<string>; settings: GetMethodSettings); override :=
+    protected procedure AddGCHandleArgs(args_keep_alive: List<string>; args_with_pinn: List<(string,string)>; settings: GetMethodSettings); override :=
     if settings.force_ptr_qr then
       args_keep_alive += 'own_qr' else
     if settings.need_pinn then
-      args_with_pinn += 'res';
+      args_with_pinn += ('res','res');
     protected procedure WriteResInit(wr: Writer; settings: GetMethodSettings); override :=
     if settings.result_init<>nil then
     begin

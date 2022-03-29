@@ -1,0 +1,11 @@
+﻿    
+    
+    
+    {$region Get}
+    
+    public function GetValue: &T;
+    
+    {$endregion Get}
+    
+    
+    

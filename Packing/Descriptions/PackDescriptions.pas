@@ -5,6 +5,7 @@ uses ATask        in '..\..\Utils\ATask';
 uses AQueue       in '..\..\Utils\AQueue';
 uses CLArgs       in '..\..\Utils\CLArgs';
 uses Fixers       in '..\..\Utils\Fixers';
+uses CodeGen      in '..\..\Utils\CodeGen';
 
 uses DescriptionsData;
 
@@ -51,18 +52,18 @@ type
       Result := $'Comment [{key}] from [{val.source}]';
     end;
     
-    public static function ApplyToKey(key: string; prev: List<string> := nil): string;
+    public static function ApplyToKey(key: string; missing_keys: AsyncQueue<string>; prev: List<string> := nil): string;
     begin
       var cd: CommentData;
       if all.TryGetValue(key, cd) then
       begin
         cd.used := true;
-        Result := Apply(cd.comment, prev);
+        Result := Apply(cd.comment, missing_keys, prev);
       end else
-        Otp($'ERROR: key %{key}% wasn''t found!');
+        missing_keys.Enq(key);
     end;
     
-    static function Apply(l: string; prev: List<string> := nil): string;
+    static function Apply(l: string; missing_keys: AsyncQueue<string>; prev: List<string> := nil): string;
     begin
       if prev=nil then
         prev := new List<string> else
@@ -86,7 +87,7 @@ type
         res.Append(l, last_ind, ind1-last_ind);
         ind1 += 1;
         
-        res += ApplyToKey(l.Substring(ind1,ind2-ind1));
+        res += ApplyToKey(l.Substring(ind1,ind2-ind1), missing_keys);
         
         last_ind := ind2+1;
         if last_ind=l.Length then break;
@@ -94,6 +95,44 @@ type
       
       res.Append(l, last_ind,l.Length-last_ind);
       Result := res.ToString;
+    end;
+    
+  end;
+  
+  FileLogData = record
+    skipped := new AsyncQueue<CommentableBase>;
+    missing := new AsyncQueue<string>;
+    
+    static procedure WriteAll(s: sequence of string; wr: Writer) :=
+    foreach var c in s do
+    begin
+      wr += '# ';
+      wr += c;
+      wr += #10;
+    end;
+    
+    procedure Finish;
+    begin
+      skipped.Finish;
+      missing.Finish;
+    end;
+    
+    procedure Write(skipped_types: HashSet<string>; wr_skipped, wr_missing: Writer);
+    begin
+      WriteAll(skipped.Where(c->
+      begin
+        match c with
+          
+          CommentableType(var ct): Result :=
+          skipped_types.Add(ct.FullName);
+          
+          CommentableTypeMember(var cm): Result :=
+          (cm.Type=nil) or not skipped_types.Contains(cm.Type.FullName);
+          
+          else raise new System.NotImplementedException($'{c.GetType}');
+        end;
+      end).Select(c->c.FullName), wr_skipped);
+      WriteAll(missing, wr_missing);
     end;
     
   end;
@@ -113,36 +152,36 @@ begin
     
     CommentData.LoadAll(nick);
     
-    var all_skipped := new Dictionary<string, AsyncQueue<CommentableBase>>;
-    foreach var fname in fls do all_skipped[fname] := new AsyncQueue<CommentableBase>;
+    var all_log_data := new Dictionary<string, FileLogData>;
+    foreach var fname in fls do all_log_data[fname] := new FileLogData;
     
     (
       ProcTask(()->
       begin
-        var skipped_types := new HashSet<string>;
-        var skipped := new System.IO.StreamWriter(GetFullPathRTA($'{nick}.skipped.log'), false, enc);
+        var wr_skipped := new FileWriter(GetFullPathRTA($'{nick}.skipped.log'));
+        var wr_missing := new FileWriter(GetFullPathRTA($'{nick}.missing.log'));
+        var wr_unused  := new FileWriter(GetFullPathRTA($'{nick}.unused.log'));
         
-        foreach var q in all_skipped.Values do
-          foreach var c in q do
-          match c with
-            
-            CommentableType(var ct):
-            if skipped_types.Add(ct.FullName) then
-              skipped.WriteLine(ct.FullName);
-            
-            CommentableTypeMember(var cm):
-            if (cm.Type=nil) or not skipped_types.Contains(cm.Type.FullName) then
-              skipped.WriteLine(cm.FullName);
-            
+        var skipped_types := new HashSet<string>;
+        
+        foreach var log_data in all_log_data.Values do
+          log_data.Write(skipped_types, wr_skipped, wr_missing);
+        
+        foreach var key in CommentData.all.Keys do
+          if not CommentData.all[key].used then
+          begin
+            wr_unused += '# ';
+            wr_unused += key;
+            wr_unused += #10;
           end;
         
-        skipped.Close;
+        (wr_skipped * wr_missing * wr_unused).Close;
       end)
     *
       fls.Select(fname->ProcTask(()->
       begin
         var res := new System.IO.StreamWriter($'{fname}.docres', false, enc);
-        var skipped := all_skipped[fname];
+        var log_data := all_log_data[fname];
         
         var last_line: string := nil;
         var already_commented := false;
@@ -151,7 +190,7 @@ begin
           already_commented := (last_line<>nil) and last_line.TrimStart(' ').StartsWith('///');
           if last_line<>nil then res.WriteLine(last_line);
           
-          last_line := CommentData.Apply(l);
+          last_line := CommentData.Apply(l, log_data.missing);
           
           Result := true;
         end) do
@@ -160,10 +199,10 @@ begin
           var key := c.FullName;
           
           if not CommentData.all.ContainsKey(key) then
-            skipped.Enq(c) else
+            log_data.skipped.Enq(c) else
           begin
             var spaces := last_line.TakeWhile(ch->ch=' ').Count;
-            foreach var l in CommentData.ApplyToKey(key).Split(#10) do
+            foreach var l in CommentData.ApplyToKey(key, log_data.missing).Split(#10) do
             begin
               res.Write(' ' * spaces);
               res.Write('///');
@@ -175,7 +214,7 @@ begin
         if last_line<>nil then res.Write(last_line);
         
         res.Close;
-        skipped.Finish;
+        log_data.Finish;
         
 //        if is_secondary_proc then
         begin
@@ -185,10 +224,6 @@ begin
         
       end)).CombineAsyncTask
     ).SyncExec;
-    
-    foreach var key in CommentData.all.Keys do
-      if not CommentData.all[key].used then
-        Otp($'WARNING: key %{key}% wasn''t used!');
     
   except
     on e: Exception do ErrOtp(e);

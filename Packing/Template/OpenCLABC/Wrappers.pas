@@ -4,100 +4,118 @@ uses CodeGen      in '..\..\..\Utils\CodeGen';
 
 uses PackingUtils in '..\PackingUtils';
 
+type
+  TypeDescr = sealed class
+    private name: string;
+    private base := default(string);
+    private generics := new List<string>;
+    private to_string_def := default(string);
+    
+    public constructor(name: string) := self.name := name;
+    private constructor := raise new System.InvalidOperationException;
+    
+    private static All := new Dictionary<string, TypeDescr>;
+    public static function ByName(name: string): TypeDescr;
+    begin
+      if All.TryGetValue(name, Result) then exit;
+      Result := new TypeDescr(name);
+      All[name] := Result;
+    end;
+    
+  end;
+  
 begin
   try
+    foreach var (tname, lines) in FixerUtils.ReadBlocks(GetFullPathRTA('!Def\Wrappers.dat'), true) do
+    begin
+      if tname=nil then continue;
+      var t := TypeDescr.ByName(tname);
+      
+      foreach var (setting_name, setting_lines) in FixerUtils.ReadBlocks(lines, '!', false) do
+        match setting_name with
+          
+          nil:
+          if t.base<>nil then
+            raise new System.InvalidOperationException else
+            t.base := setting_lines.Single;
+          
+          'Generic':
+          t.generics.AddRange(setting_lines);
+          
+          'ToString':
+          if t.to_string_def<>nil then
+            raise new System.InvalidOperationException else
+            t.to_string_def := setting_lines.Single;
+          
+          else raise new System.InvalidOperationException($'#{tname}!{setting_name}');
+        end;
+      
+    end;
+    
     var dir := GetFullPathRTA('Wrappers');
     System.IO.Directory.CreateDirectory(dir);
     
     var res := new FileWriter(GetFullPath('Common.template', dir));
     loop 3 do res += '  '#10;
     
-    var prev := new HashSet<string>;
-    foreach var l in ReadLines(GetFullPathRTA('!Def\Wrappers.dat')) do
-    begin
-      var sl := l.Split(':');
-      if sl.Length<2 then continue;
-      
-      var t := sl[0].Trim;
-      var base_t := sl[1].Trim;
-      
-      // (name, where)
-      var generics := new List<(string,string)>;
-      
-      foreach var g_str in sl.Skip(2) do
-      begin
-        var ind := g_str.IndexOf('=');
-        generics += (
-          (if ind=-1 then g_str else g_str.Remove(ind)).Trim,
-          if ind=-1 then nil else g_str.Substring(ind+1).Trim
-        );
-      end;
-      
-      prev.Add(t);
-      var is_wrap := not prev.Contains(base_t);
-      
-      
+    foreach var t: TypeDescr in TypeDescr.All.Values do
+    begin  
+      var is_direct_wrap := t.base not in TypeDescr.All.Keys;
       
       var WriteGenerics := procedure->
-      if generics.Count<>0 then
+      if t.generics.Count<>0 then
       begin
         res += '<';
-        res += generics.Select(g->g[0]).JoinToString(', ');
+        res += t.generics.JoinToString(', ');
         res += '>';
       end;
       
-      
+      {$region header}
       
       res += '  ';
-      res += t;
+      res += t.name;
       WriteGenerics;
       res += ' = partial class';
-      if not is_wrap then
+      if not is_direct_wrap then
       begin
         res += '(';
-        res += base_t;
+        res += t.base;
         res += ')';
       end;
       res += #10;
       
-//      foreach var g in generics do
-//      begin
-//        if g[1]=nil then continue;
-//        res += '  where ';
-//        res += g[0];
-//        res += ': ';
-//        res += g[1];
-//        res += ';'#10
-//      end;
-      
       res += '    '#10;
       
+      {$endregion header}
       
+      {$region Native}
       
-      if is_wrap then
+      if is_direct_wrap then
       begin
         
         res += '    public property Native: ';
-        res += base_t;
+        res += t.base;
         res += ' read ntv;'#10;
         
         res += '    '#10;
       end;
       
+      {$endregion Native}
       
+      {$region Properties}
       
       res += '    private prop: ';
-      res += t;
+      res += t.name;
       res += 'Properties;'#10;
       
       res += '    private function GetProperties: ';
-      res += t;
+      res += t.name;
       res += 'Properties;'#10;
       
       res += '    begin'#10;
       
       res += '      if prop=nil then prop := new ';
-      res += t;
+      res += t.name;
       res += 'Properties(ntv);'#10;
       
       res += '      Result := prop;'#10;
@@ -105,54 +123,59 @@ begin
       res += '    end;'#10;
       
       res += '    public property Properties: ';
-      res += t;
+      res += t.name;
       res += 'Properties read GetProperties;'#10;
       
       res += '    '#10;
       
+      {$endregion Properties}
       
+      {$region operator=}
       
-      if is_wrap then
+      if is_direct_wrap then
       begin
         
         res += '    public static function operator=(wr1, wr2: ';
-        res += t;
+        res += t.name;
         WriteGenerics;
         res += '): boolean :='#10;
         res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
         
         res += '    public static function operator<>(wr1, wr2: ';
-        res += t;
+        res += t.name;
         WriteGenerics;
         //TODO #????: not (wr1=wr2)
         res += '): boolean := false='#10;
         res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
         
         res += '    '#10;
-      end;
-      
-      
-      
-      if is_wrap then
-      begin
         
         res += '    public function Equals(obj: object): boolean; override :='#10;
         
         res += '    (obj is ';
-        res += t;
+        res += t.name;
         WriteGenerics;
         res += '(var wr)) and (self = wr);'#10;
         
         res += '    '#10;
       end;
       
+      {$endregion operator=}
       
+      {$region ToString}
+      
+      res += '    public function ToString: string; override :='#10;
+      res += '    $''';
+      res += t.to_string_def ?? '{TypeName(self)}[{ntv.val}]';
+      res += ''';'#10;
+      
+      res += '    '#10;
+      
+      {$endregion ToString}
       
       res += '  end;'#10;
       
       res += '  '#10;
-      
-      
       
     end;
     

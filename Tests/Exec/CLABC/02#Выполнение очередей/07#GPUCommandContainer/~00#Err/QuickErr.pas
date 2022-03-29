@@ -1,7 +1,7 @@
 ## uses OpenCLABC;
 
 Context.Default.SyncInvoke(
-  MemorySegment.Create(1).NewQueue.ThenWriteArray1(HFQQ(()->
+  CLMemorySegment.Create(1).NewQueue.ThenWriteArray1(HFQQ(()->
   begin
     Result := new byte[0];
     raise new Exception('TestOK');

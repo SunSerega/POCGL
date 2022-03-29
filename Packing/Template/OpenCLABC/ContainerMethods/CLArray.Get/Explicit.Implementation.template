@@ -132,15 +132,13 @@ end;
 type
   CLArrayCommandGetArray<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
   where T: record;
-    private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(ccq: CLArrayCCQ<T>; ind, len: CommandQueue<integer>);
+    public constructor(ccq: CLArrayCCQ<T>; len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
-      self.ind := ind;
       self.len := len;
     end;
     private constructor := raise new System.InvalidOperationException;
@@ -148,25 +146,21 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
-      ind.InitBeforeInvoke(g, prev_hubs);
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array of &T>)->DirectEnqRes; override;
     begin
-      var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
         len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs, own_qr)->
       begin
-        var ind := ind_qr.GetResDirect;
         var len := len_qr.GetResDirect;
-        var res := new T[len];
+        var res := new &T[len];
         own_qr.SetRes(res);
         var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);
         
@@ -174,8 +168,8 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(int64(len) * Marshal.SizeOf&<T>),
-          res_hnd.AddrOfPinnedObject,
+          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf&<T>),
+          res[0],
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -193,10 +187,6 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
       sb += 'len: ';
       len.ToString(sb, tabs, index, delayed, false);
       
@@ -204,12 +194,190 @@ type
     
   end;
   
-function CLArrayCCQ<T>.ThenGetArray(ind, len: CommandQueue<integer>): CommandQueue<array of &T>;
+function CLArrayCCQ<T>.ThenGetArray(len: CommandQueue<integer>): CommandQueue<array of &T>;
 begin
-  Result := new CLArrayCommandGetArray<T>(self, ind, len) as CommandQueue<array of &T>;
+  Result := new CLArrayCommandGetArray<T>(self, len) as CommandQueue<array of &T>;
 end;
 
 {$endregion GetArray}
+
+{$region GetArray2}
+
+type
+  CLArrayCommandGetArray2<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array[,] of &T>)
+  where T: record;
+    private len1: CommandQueue<integer>;
+    private len2: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(ccq: CLArrayCCQ<T>; len1,len2: CommandQueue<integer>);
+    begin
+      inherited Create(ccq);
+      self.len1 := len1;
+      self.len2 := len2;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      prev_commands.InitBeforeInvoke(g, prev_hubs);
+      len1.InitBeforeInvoke(g, prev_hubs);
+      len2.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array[,] of &T>)->DirectEnqRes; override;
+    begin
+      var len1_qr: QueueRes<integer>;
+      var len2_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.InvokeToAny); if len1_qr.IsConst then enq_evs.AddL2(len1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len1_qr.AttachInvokeActions(g));
+        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs, own_qr)->
+      begin
+        var len1 := len1_qr.GetResDirect;
+        var len2 := len2_qr.GetResDirect;
+        var res := new &T[len1,len2];
+        own_qr.SetRes(res);
+        var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf&<T>),
+          res[0,0],
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          res_hnd.Free;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'len1: ';
+      len1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'len2: ';
+      len2.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenGetArray2(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of &T>;
+begin
+  Result := new CLArrayCommandGetArray2<T>(self, len1, len2) as CommandQueue<array[,] of &T>;
+end;
+
+{$endregion GetArray2}
+
+{$region GetArray3}
+
+type
+  CLArrayCommandGetArray3<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array[,,] of &T>)
+  where T: record;
+    private len1: CommandQueue<integer>;
+    private len2: CommandQueue<integer>;
+    private len3: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(ccq: CLArrayCCQ<T>; len1,len2,len3: CommandQueue<integer>);
+    begin
+      inherited Create(ccq);
+      self.len1 := len1;
+      self.len2 := len2;
+      self.len3 := len3;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      prev_commands.InitBeforeInvoke(g, prev_hubs);
+      len1.InitBeforeInvoke(g, prev_hubs);
+      len2.InitBeforeInvoke(g, prev_hubs);
+      len3.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array[,,] of &T>)->DirectEnqRes; override;
+    begin
+      var len1_qr: QueueRes<integer>;
+      var len2_qr: QueueRes<integer>;
+      var len3_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.InvokeToAny); if len1_qr.IsConst then enq_evs.AddL2(len1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len1_qr.AttachInvokeActions(g));
+        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
+        len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.InvokeToAny); if len3_qr.IsConst then enq_evs.AddL2(len3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len3_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs, own_qr)->
+      begin
+        var len1 := len1_qr.GetResDirect;
+        var len2 := len2_qr.GetResDirect;
+        var len3 := len3_qr.GetResDirect;
+        var res := new &T[len1,len2,len3];
+        own_qr.SetRes(res);
+        var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf&<T>),
+          res[0,0,0],
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          res_hnd.Free;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'len1: ';
+      len1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'len2: ';
+      len2.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'len3: ';
+      len3.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenGetArray3(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of &T>;
+begin
+  Result := new CLArrayCommandGetArray3<T>(self, len1, len2, len3) as CommandQueue<array[,,] of &T>;
+end;
+
+{$endregion GetArray3}
 
 {$endregion Get}
 

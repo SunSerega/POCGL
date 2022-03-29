@@ -1,40 +1,45 @@
 
 
 
-# [%t:MemorySegment,Kernel%]CCQ
-# [%t:CLArray%]CCQ<T>
+# [%t:CLMemorySegment,Kernel%]CCQ
+# [%t:CLValue,CLArray%]CCQ<T>
 Представляет очередь-контейнер для команд GPU, применяемых к объекту типа {%t%}
 
 
 
-# MemorySegmentCCQ.(MemorySegment)
+# CLMemorySegmentCCQ.(CLMemorySegment)
 # KernelCCQ.(Kernel)
+# CLValueCCQ<T>.(CLValue<T>)
 # CLArrayCCQ<T>.(CLArray<T>)
 Создаёт контейнер команд, который будет применять команды к указанному объекту
 
-# MemorySegmentCCQ.(CommandQueue<MemorySegment>)
+# CLMemorySegmentCCQ.(CommandQueue<CLMemorySegment>)
 # KernelCCQ.(CommandQueue<Kernel>)
+# CLValueCCQ<T>.(CommandQueue<CLValue<T>>)
 # CLArrayCCQ<T>.(CommandQueue<CLArray<T>>)
 Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
 За каждое одно выполнение контейнера - q выполнится ровно один раз
 
 
 
-# MemorySegmentCCQ.ThenQueue(CommandQueueBase)
+# CLMemorySegmentCCQ.ThenQueue(CommandQueueBase)
 # KernelCCQ.ThenQueue(CommandQueueBase)
+# CLValueCCQ<T>.ThenQueue(CommandQueueBase)
 # CLArrayCCQ<T>.ThenQueue(CommandQueueBase)
 Добавляет выполнение очереди в список обычных команд для GPU
 
-# MemorySegmentCCQ.Then[%when:,Quick%]Proc(MemorySegment->())
-# MemorySegmentCCQ.Then[%when:,Quick%]Proc((MemorySegment, Context)->())
+# CLMemorySegmentCCQ.Then[%when:,Quick%]Proc(CLMemorySegment->())
+# CLMemorySegmentCCQ.Then[%when:,Quick%]Proc((CLMemorySegment, Context)->())
 # KernelCCQ.Then[%when:,Quick%]Proc(Kernel->())
 # KernelCCQ.Then[%when:,Quick%]Proc((Kernel, Context)->())
+# CLValueCCQ<T>.Then[%when:,Quick%]Proc(CLValue<T>->())
+# CLValueCCQ<T>.Then[%when:,Quick%]Proc((CLValue<T>, Context)->())
 # CLArrayCCQ<T>.Then[%when:,Quick%]Proc(CLArray<T>->())
 # CLArrayCCQ<T>.Then[%when:,Quick%]Proc((CLArray<T>, Context)->())
 Добавляет выполнение процедуры на CPU в список обычных команд для GPU
 %DelegateExec:{%when?Background:Quick%}% {%when?начинающуюся на ".ThenQuick...":%}
 
-# [%MemorySegmentCCQ,KernelCCQ,CLArrayCCQ<T>%].ThenWait(WaitMarker)
+# [%CLMemorySegmentCCQ,KernelCCQ,CLValueCCQ<T>,CLArrayCCQ<T>%].ThenWait(WaitMarker)
 Добавляет ожидание сигнала выполненности от заданного маркера
 
 

@@ -71,7 +71,17 @@ type
     end;
     
   end;
-  MethodArgTypeNV = sealed class(MethodArgType)
+  
+  MethodArgTypeKernelArg = sealed class(MethodArgType)
+    
+    public function Enmr: sequence of MethodArgType; override := new MethodArgType[](self);
+    
+    public constructor(s: string) := org_text := s;
+    
+  end;
+  
+  MethodArgTypeGeneric = sealed class(MethodArgType)
+    public name: string;
     public next: MethodArgType;
     
     public function Enmr: sequence of MethodArgType; override;
@@ -81,20 +91,17 @@ type
     end;
     
     public constructor(s: string);
-    const nv_def = 'NativeValue<';
     begin
       org_text := s;
       
-      next := MethodArgType.FromString(s.Substring(nv_def.Length, s.Length-nv_def.Length-1));
+      var ind1 := s.IndexOf('<');
+      var ind2 := s.LastIndexOf('>');
+      self.name := s.Remove(ind1);
+      ind1 += 1;
+      self.next := MethodArgType.FromString(s.Substring(ind1, ind2-ind1));
+      if ind2<>s.Length-1 then raise new System.NotSupportedException;
+      
     end;
-    
-  end;
-  
-  MethodArgTypeKernelArg = sealed class(MethodArgType)
-    
-    public function Enmr: sequence of MethodArgType; override := new MethodArgType[](self);
-    
-    public constructor(s: string) := org_text := s;
     
   end;
   
@@ -114,8 +121,8 @@ begin
     Result := new MethodArgTypeArray(s) else
   if s.StartsWith('CommandQueue<') then
     Result := new MethodArgTypeCQ(s) else
-  if s.StartsWith('NativeValue<') then
-    Result := new MethodArgTypeNV(s) else
+  if '<' in s then
+    Result := new MethodArgTypeGeneric(s) else
   if s = 'KernelArg' then
     Result := new MethodArgTypeKernelArg(s) else
     Result := new MethodArgTypeBasic(s);
@@ -433,7 +440,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: TSettings); abstract;
     protected procedure WriteInvokeFHeader; abstract;
-    protected procedure AddGCHandleArgs(args_keep_alive, args_with_pinn: List<string>; settings: TSettings); virtual := exit;
+    protected procedure AddGCHandleArgs(args_keep_alive: List<string>; args_with_pinn: List<(string,string)>; settings: TSettings); virtual := exit;
     protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
     
     private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
@@ -583,7 +590,7 @@ type
       {$region param .GetRes's}
       
       var args_keep_alive := new List<string>;
-      var args_with_pinn := new List<string>;
+      var args_with_pinn := new List<(string,string)>;
       if settings.args <> nil then
         foreach var arg in settings.args do
           if settings.arg_usage.ContainsKey(arg.name) then
@@ -617,9 +624,15 @@ type
               
               'pinn':
               begin
-                if not (arg.t.Enmr.SkipWhile(t->t is MethodArgTypeCQ).First is MethodArgTypeArray) then raise new System.NotSupportedException(arg.name);
                 res_EIm += '.GetResDirect';
-                args_with_pinn += arg.name;
+                var pinn_name := arg.name;
+                var t := arg.t;
+                if t is MethodArgTypeCQ(var cqt) then t := cqt.next;
+                if (t is MethodArgTypeGeneric(var gt)) and (gt.name = 'ArraySegment') then
+                  pinn_name += '.Array' else
+                if not (t is MethodArgTypeArray) then
+                  raise new System.NotSupportedException(arg.name);
+                args_with_pinn += (arg.name, pinn_name);
               end;
               
               else raise new System.NotImplementedException;
@@ -637,16 +650,16 @@ type
       
       {$region GCHandle for arrays}
       
-      var max_awp_w := args_with_pinn.Select(arg->arg.Length).DefaultIfEmpty(0).Max;
+      var max_awp_w := args_with_pinn.Select(\(arg_name, pinn_o)->arg_name.Length).DefaultIfEmpty(0).Max;
       if args_with_pinn.Count<>0 then
       begin
         
-        foreach var arg in args_with_pinn do
+        foreach var (arg_name, pinn_o) in args_with_pinn do
         begin
           res_EIm += '        var ';
-          res_EIm += arg.PadLeft(max_awp_w);
+          res_EIm += arg_name.PadLeft(max_awp_w);
           res_EIm += '_hnd := GCHandle.Alloc(';
-          res_EIm += arg.PadLeft(max_awp_w);
+          res_EIm += pinn_o;
           res_EIm += ', GCHandleType.Pinned);'#10;
         end;
         res_EIm += '        '#10;
@@ -690,10 +703,10 @@ type
           res_EIm += ');'#10;
         end;
         
-        foreach var arg in args_with_pinn do
+        foreach var (arg_name, pinn_o) in args_with_pinn do
         begin
           res_EIm += '          ';
-          res_EIm += arg.PadLeft(max_awp_w);
+          res_EIm += arg_name.PadLeft(max_awp_w);
           res_EIm += '_hnd.Free;'#10;
         end;
         

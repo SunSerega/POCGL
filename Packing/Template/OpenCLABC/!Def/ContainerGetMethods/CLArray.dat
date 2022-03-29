@@ -35,18 +35,18 @@ var ec := cl.EnqueueReadBuffer(
 );
 OpenCLABCInternalException.RaiseIfError(ec);
 
-# GetArray
-ind, len: CommandQueue<integer>
+# GetArray[%rank:,2,3%]
+{%rank? len : len1,len2 : len1,len2,len3 %}: CommandQueue<integer>
 !ResultType
-array of &T
+array{%rank? : [,] : [,,] %} of &T
 !SetRes
-new T[!len!]
+new &T[{%rank? !len! : !len1!,!len2! : !len1!,!len2!,!len3! %}]
 !PinnRes
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(int64(!ind!) * Marshal.SizeOf&<T>), new UIntPtr(int64(!len!) * Marshal.SizeOf&<T>),
-  !res_pinn_adr!,
+  UIntPtr.Zero, new UIntPtr(!res!.Length * Marshal.SizeOf&<T>),
+  !res![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

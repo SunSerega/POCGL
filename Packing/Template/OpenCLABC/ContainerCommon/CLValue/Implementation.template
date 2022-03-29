@@ -1,0 +1,25 @@
+﻿
+
+
+constructor CLValueCCQ<T>.Create(o: CLValue<T>) := inherited;
+constructor CLValueCCQ<T>.Create(q: CommandQueue<CLValue<T>>) := inherited;
+constructor CLValueCCQ<T>.Create := inherited;
+
+{$region Special .Add's}
+
+function CLValueCCQ<T>.ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
+begin
+  var comm := BasicGPUCommand&<CLValue<T>>.MakeQueue(q);
+  Result := if comm=nil then self else AddCommand(self, comm);
+end;
+
+function CLValueCCQ<T>.ThenProc(p: CLValue<T>->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeBackgroundProc(p));
+function CLValueCCQ<T>.ThenProc(p: (CLValue<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeBackgroundProc(p));
+function CLValueCCQ<T>.ThenQuickProc(p: CLValue<T>->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeQuickProc(p));
+function CLValueCCQ<T>.ThenQuickProc(p: (CLValue<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeQuickProc(p));
+
+function CLValueCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeWait(marker));
+
+{$endregion Special .Add's}
+
+

@@ -1,0 +1,82 @@
+﻿
+
+
+{$region 1#Write&Read}
+
+function CLValue<T>.WriteValue(val: &T): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
+end;
+
+function CLValue<T>.WriteValue(val: CommandQueue<&T>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
+end;
+
+function CLValue<T>.WriteData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+end;
+
+function CLValue<T>.ReadData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+end;
+
+function CLValue<T>.WriteData(ptr: pointer): CLValue<T>;
+begin
+  Result := WriteData(IntPtr(ptr));
+end;
+
+function CLValue<T>.ReadData(ptr: pointer): CLValue<T>;
+begin
+  Result := ReadData(IntPtr(ptr));
+end;
+
+function CLValue<T>.WriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(val));
+end;
+
+function CLValue<T>.ReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(val));
+end;
+
+{$endregion 1#Write&Read}
+
+{$region 3#Copy}
+
+function CLValue<T>.CopyTo(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+begin
+  Result := CopyTo(mem, 0);
+end;
+
+function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+begin
+  Result := CopyFrom(mem, 0);
+end;
+
+function CLValue<T>.CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset));
+end;
+
+function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset));
+end;
+
+function CLValue<T>.CopyTo(val: CommandQueue<CLValue<&T>>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(val));
+end;
+
+function CLValue<T>.CopyFrom(val: CommandQueue<CLValue<&T>>): CLValue<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(val));
+end;
+
+{$endregion 3#Copy}
+
+

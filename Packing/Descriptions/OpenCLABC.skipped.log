@@ -1,12 +1,14 @@
-﻿EventRetainReleaseData
-EventDebug
-QueueDebug
-WaitDebug
-PlatformProperties
-DeviceProperties
-ContextProperties
-ProgramCodeProperties
-KernelProperties
-MemorySegmentProperties
-MemorySubSegmentProperties
-CLArrayProperties
+﻿# EventRetainReleaseData
+# EventDebug
+# QueueDebug
+# WaitDebug
+# PlatformProperties
+# DeviceProperties
+# SubDeviceProperties
+# ContextProperties
+# ProgramCodeProperties
+# KernelProperties
+# CLMemorySegmentProperties
+# CLMemorySubSegmentProperties
+# CLValueProperties
+# CLArrayProperties

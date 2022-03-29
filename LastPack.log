@@ -13,14 +13,16 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLValue]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [Kernel]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [MemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\Wrappers.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -213,7 +215,8 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Finally+Handle\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\12#KernelArg\1.pas"
-Tester: Compiling: OK
+Tester: Compiling: Compile errоrs:
+Tester: Compiling: [26,19] 1.pas: Wrong number of function parameters
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1.pas"
@@ -384,8 +387,7 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Finally+Handle\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\12#KernelArg\1]
-Tester: Done executing
+Tester: WARNING: Test[G:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\12#KernelArg\1] wasn't executed because of prior errоrs
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1]

@@ -21,6 +21,9 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Platform(var wr)) and (self = wr);
     
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}]';
+    
   end;
   
   Device = partial class
@@ -42,6 +45,24 @@
     
     public function Equals(obj: object): boolean; override :=
     (obj is Device(var wr)) and (self = wr);
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}]';
+    
+  end;
+  
+  SubDevice = partial class(Device)
+    
+    private prop: SubDeviceProperties;
+    private function GetProperties: SubDeviceProperties;
+    begin
+      if prop=nil then prop := new SubDeviceProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: SubDeviceProperties read GetProperties;
+    
+    public function ToString: string; override :=
+    $'{inherited ToString} of {Parent}';
     
   end;
   
@@ -65,6 +86,9 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Context(var wr)) and (self = wr);
     
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}';
+    
   end;
   
   ProgramCode = partial class
@@ -86,6 +110,9 @@
     
     public function Equals(obj: object): boolean; override :=
     (obj is ProgramCode(var wr)) and (self = wr);
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -109,39 +136,73 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Kernel(var wr)) and (self = wr);
     
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{Name}:{ntv.val}] from {code}';
+    
   end;
   
-  MemorySegment = partial class
+  CLMemorySegment = partial class
     
     public property Native: cl_mem read ntv;
     
-    private prop: MemorySegmentProperties;
-    private function GetProperties: MemorySegmentProperties;
+    private prop: CLMemorySegmentProperties;
+    private function GetProperties: CLMemorySegmentProperties;
     begin
-      if prop=nil then prop := new MemorySegmentProperties(ntv);
+      if prop=nil then prop := new CLMemorySegmentProperties(ntv);
       Result := prop;
     end;
-    public property Properties: MemorySegmentProperties read GetProperties;
+    public property Properties: CLMemorySegmentProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: MemorySegment): boolean :=
+    public static function operator=(wr1, wr2: CLMemorySegment): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: MemorySegment): boolean := false=
+    public static function operator<>(wr1, wr2: CLMemorySegment): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is MemorySegment(var wr)) and (self = wr);
+    (obj is CLMemorySegment(var wr)) and (self = wr);
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}] of size {Size}';
     
   end;
   
-  MemorySubSegment = partial class(MemorySegment)
+  CLMemorySubSegment = partial class(CLMemorySegment)
     
-    private prop: MemorySubSegmentProperties;
-    private function GetProperties: MemorySubSegmentProperties;
+    private prop: CLMemorySubSegmentProperties;
+    private function GetProperties: CLMemorySubSegmentProperties;
     begin
-      if prop=nil then prop := new MemorySubSegmentProperties(ntv);
+      if prop=nil then prop := new CLMemorySubSegmentProperties(ntv);
       Result := prop;
     end;
-    public property Properties: MemorySubSegmentProperties read GetProperties;
+    public property Properties: CLMemorySubSegmentProperties read GetProperties;
+    
+    public function ToString: string; override :=
+    $'{inherited ToString} inside {Parent}';
+    
+  end;
+  
+  CLValue<T> = partial class
+    
+    public property Native: cl_mem read ntv;
+    
+    private prop: CLValueProperties;
+    private function GetProperties: CLValueProperties;
+    begin
+      if prop=nil then prop := new CLValueProperties(ntv);
+      Result := prop;
+    end;
+    public property Properties: CLValueProperties read GetProperties;
+    
+    public static function operator=(wr1, wr2: CLValue<T>): boolean :=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLValue<T>): boolean := false=
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    
+    public function Equals(obj: object): boolean; override :=
+    (obj is CLValue<T>(var wr)) and (self = wr);
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -164,6 +225,9 @@
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLArray<T>(var wr)) and (self = wr);
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}[{ntv.val}] of length {Length}';
     
   end;
   

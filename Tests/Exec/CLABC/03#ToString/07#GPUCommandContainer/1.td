@@ -1,4 +1,4 @@
-﻿
+
 
 
 #ReqModules
@@ -10,13 +10,13 @@ KernelCCQ#0
 	KernelCommandExec2
 		sz1: ConstQueue<integer>#1: 1
 		sz2: ConstQueue<integer>#2: 1
-		args[0]: KernelArgMemorySegmentCQ
-			MemorySegmentCCQ#3
+		args[0]: KernelArgCLMemorySegmentCQ
+			CLMemorySegmentCCQ#3
 				CCCQueue
-					CommandQueueHostBackgoundFunc<MemorySegment>#4: function lambda: MemorySegment
+					CommandQueueHostBackgoundFunc<CLMemorySegment>#4: function lambda: CLMemorySegment
 				QueueCommand
 					CommandQueueHostBackgoundFunc<integer>#5: function lambda: integer
-				BackgroundProcCommand: procedure lambda(ms: MemorySegment)
+				BackgroundProcCommand: procedure lambda(ms: CLMemorySegment)
 		args[1]: KernelArgValue<integer>: 5
 
 [EventDebug]: 0 event's created 

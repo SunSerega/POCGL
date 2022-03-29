@@ -1,0 +1,201 @@
+﻿    
+    
+    
+    {$region 1#Write&Read}
+    
+    public function WriteValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+    
+    public function WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+    
+    public function ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteData(ptr: pointer): CLMemorySegment;
+    
+    public function WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadData(ptr: pointer): CLMemorySegment;
+    
+    public function ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    public function FillValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillData(data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    
+    public function FillData(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    public function CopyTo(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+    
+    public function CopyTo(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function CopyFrom(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+    
+    public function CopyFrom(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+    
+    {$endregion 3#Copy}
+    
+    
+    

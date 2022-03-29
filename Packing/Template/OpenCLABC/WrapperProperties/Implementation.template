@@ -91,6 +91,7 @@ function DeviceProperties.GetPipeMaxActiveReservations          := GetVal&<UInt3
 function DeviceProperties.GetPipeMaxPacketSize                  := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_PACKET_SIZE);
 function DeviceProperties.GetMaxParameterSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_PARAMETER_SIZE);
 function DeviceProperties.GetMemBaseAddrAlign                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MEM_BASE_ADDR_ALIGN);
+function DeviceProperties.GetMinDataTypeAlignSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_MIN_DATA_TYPE_ALIGN_SIZE);
 function DeviceProperties.GetSingleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_SINGLE_FP_CONFIG);
 function DeviceProperties.GetDoubleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_DOUBLE_FP_CONFIG);
 function DeviceProperties.GetGlobalMemCacheType                 := GetVal&<DeviceMemCacheType>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_TYPE);
@@ -104,12 +105,14 @@ function DeviceProperties.GetGlobalVariablePreferredTotalSize   := GetVal&<UIntP
 function DeviceProperties.GetLocalMemType                       := GetVal&<DeviceLocalMemType>(DeviceInfo.DEVICE_LOCAL_MEM_TYPE);
 function DeviceProperties.GetLocalMemSize                       := GetVal&<UInt64>(DeviceInfo.DEVICE_LOCAL_MEM_SIZE);
 function DeviceProperties.GetErrorCorrectionSupport             := GetVal&<Bool>(DeviceInfo.DEVICE_ERROR_CORRECTION_SUPPORT);
+function DeviceProperties.GetHostUnifiedMemory                  := GetVal&<Bool>(DeviceInfo.DEVICE_HOST_UNIFIED_MEMORY);
 function DeviceProperties.GetProfilingTimerResolution           := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PROFILING_TIMER_RESOLUTION);
 function DeviceProperties.GetEndianLittle                       := GetVal&<Bool>(DeviceInfo.DEVICE_ENDIAN_LITTLE);
 function DeviceProperties.GetAvailable                          := GetVal&<Bool>(DeviceInfo.DEVICE_AVAILABLE);
 function DeviceProperties.GetCompilerAvailable                  := GetVal&<Bool>(DeviceInfo.DEVICE_COMPILER_AVAILABLE);
 function DeviceProperties.GetLinkerAvailable                    := GetVal&<Bool>(DeviceInfo.DEVICE_LINKER_AVAILABLE);
 function DeviceProperties.GetExecutionCapabilities              := GetVal&<DeviceExecCapabilities>(DeviceInfo.DEVICE_EXECUTION_CAPABILITIES);
+function DeviceProperties.GetQueueProperties                    := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_PROPERTIES);
 function DeviceProperties.GetQueueOnHostProperties              := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_HOST_PROPERTIES);
 function DeviceProperties.GetQueueOnDeviceProperties            := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PROPERTIES);
 function DeviceProperties.GetQueueOnDevicePreferredSize         := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE);
@@ -119,6 +122,7 @@ function DeviceProperties.GetMaxOnDeviceEvents                  := GetVal&<UInt3
 function DeviceProperties.GetBuiltInKernels                     := GetString(DeviceInfo.DEVICE_BUILT_IN_KERNELS);
 function DeviceProperties.GetName                               := GetString(DeviceInfo.DEVICE_NAME);
 function DeviceProperties.GetVendor                             := GetString(DeviceInfo.DEVICE_VENDOR);
+function DeviceProperties.GetDriverVersion                      := GetString(DeviceInfo.DRIVER_VERSION);
 function DeviceProperties.GetProfile                            := GetString(DeviceInfo.DEVICE_PROFILE);
 function DeviceProperties.GetVersion                            := GetString(DeviceInfo.DEVICE_VERSION);
 function DeviceProperties.GetOpenclCVersion                     := GetString(DeviceInfo.DEVICE_OPENCL_C_VERSION);
@@ -138,6 +142,28 @@ function DeviceProperties.GetMaxNumSubGroups                    := GetVal&<UInt3
 function DeviceProperties.GetSubGroupIndependentForwardProgress := GetVal&<Bool>(DeviceInfo.DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS);
 
 {$endregion Device}
+
+{$region SubDevice}
+
+type
+  SubDeviceProperties = partial class(DeviceProperties)
+    
+    private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetDeviceInfo';
+    private static function clGetVal(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetDeviceInfo';
+    
+    protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
+    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
+    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    
+  end;
+  
+constructor SubDeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
+
+
+{$endregion SubDevice}
 
 {$region Context}
 
@@ -219,10 +245,10 @@ function KernelProperties.GetAttributes     := GetString(KernelInfo.KERNEL_ATTRI
 
 {$endregion Kernel}
 
-{$region MemorySegment}
+{$region CLMemorySegment}
 
 type
-  MemorySegmentProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
+  CLMemorySegmentProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -236,20 +262,20 @@ type
     
   end;
   
-constructor MemorySegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
+constructor CLMemorySegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
 
-function MemorySegmentProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
-function MemorySegmentProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
-function MemorySegmentProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
-function MemorySegmentProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
-function MemorySegmentProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
+function CLMemorySegmentProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
+function CLMemorySegmentProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
+function CLMemorySegmentProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
+function CLMemorySegmentProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
+function CLMemorySegmentProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
 
-{$endregion MemorySegment}
+{$endregion CLMemorySegment}
 
-{$region MemorySubSegment}
+{$region CLMemorySubSegment}
 
 type
-  MemorySubSegmentProperties = partial class(MemorySegmentProperties)
+  CLMemorySubSegmentProperties = partial class(CLMemorySegmentProperties)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -263,11 +289,38 @@ type
     
   end;
   
-constructor MemorySubSegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
+constructor CLMemorySubSegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
 
-function MemorySubSegmentProperties.GetOffset := GetVal&<UIntPtr>(MemInfo.MEM_OFFSET);
+function CLMemorySubSegmentProperties.GetOffset := GetVal&<UIntPtr>(MemInfo.MEM_OFFSET);
 
-{$endregion MemorySubSegment}
+{$endregion CLMemorySubSegment}
+
+{$region CLValue}
+
+type
+  CLValueProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
+    
+    private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetMemObjectInfo';
+    private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl.dll' name 'clGetMemObjectInfo';
+    
+    protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
+    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
+    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    
+  end;
+  
+constructor CLValueProperties.Create(ntv: cl_mem) := inherited Create(ntv);
+
+function CLValueProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
+function CLValueProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
+function CLValueProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
+function CLValueProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
+function CLValueProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
+
+{$endregion CLValue}
 
 {$region CLArray}
 

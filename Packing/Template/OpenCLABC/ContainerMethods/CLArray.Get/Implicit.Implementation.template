@@ -13,9 +13,19 @@ begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray);
 end;
 
-function CLArray<T>.GetArray(ind, len: CommandQueue<integer>): array of &T;
+function CLArray<T>.GetArray(len: CommandQueue<integer>): array of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray(ind, len));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray(len));
+end;
+
+function CLArray<T>.GetArray2(len1,len2: CommandQueue<integer>): array[,] of &T;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray2(len1, len2));
+end;
+
+function CLArray<T>.GetArray3(len1,len2,len3: CommandQueue<integer>): array[,,] of &T;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray3(len1, len2, len3));
 end;
 
 {$endregion Get}

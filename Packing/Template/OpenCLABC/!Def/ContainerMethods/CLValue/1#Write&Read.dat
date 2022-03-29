@@ -1,0 +1,53 @@
+
+
+
+# WriteValue![%Q:,Q%]
+val: {%Q?&T:CommandQueue<&T>%}
+!Enqueue
+var ec := cl.EnqueueWriteBuffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
+  new IntPtr(!val:ptr!),
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+
+
+
+
+
+
+
+# [%mode:Write,Read%]Data
+ptr: CommandQueue<IntPtr>
+!Enqueue
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
+  !ptr!,
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+# [%mode:Write,Read%]Data
+ptr: pointer
+!ShortDef
+{%mode%}Data(IntPtr(ptr));
+
+
+
+# [%mode:Write,Read%]NativeValue
+val: CommandQueue<NativeValue<&T>>
+!Enqueue
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  UIntPtr.Zero, !val!.MemoryArea.sz,
+  !val!.MemoryArea.ptr,
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+

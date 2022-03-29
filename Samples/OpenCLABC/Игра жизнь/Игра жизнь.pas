@@ -1,4 +1,4 @@
-﻿## uses OpenCLABC, GraphWPF;
+## uses OpenCLABC, GraphWPF;
 
 try
   var W := 100;
@@ -33,10 +33,8 @@ try
     
   end, fps);
   
-  //TODO Использовать CLArray2<byte> когда будет
-  var B := new MemorySegment(W*W*sizeof(byte));
-  B.WriteArray2(MatrGen(W,W, (x,y)->byte(Random(2))));
-  var B_temp := new MemorySegment(B.Size);
+  var B := new CLArray<byte>(ArrGen(W*W, i->byte(Random(2))));
+  var B_temp := new CLArray<byte>(B.Length);
   
   var code := new ProgramCode(ReadAllText('Игра жизнь.cl'));
   
@@ -50,7 +48,7 @@ try
  ;
  var Q_Otp :=
     B.NewQueue
-    .ThenGetArray2&<byte>(W,W)
+    .ThenGetArray2(W,W)
     .ThenUse(field->
     begin
       // Если уже слишком далеко вперёд насчитали - можно немного отдохнуть
@@ -68,9 +66,7 @@ try
   end;
   
 except
-  on e: Exception do
-  begin
-    Writeln(e);
-    Halt;
-  end;
+  on ae: System.AggregateException do
+    foreach var e in ae.InnerExceptions do
+      Println(e);
 end;

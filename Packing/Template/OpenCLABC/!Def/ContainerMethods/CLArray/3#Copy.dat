@@ -1,8 +1,36 @@
 
 
 
-# Copy[%direction:To,From%]![%AutoSize:AutoSize,%]
-a: CommandQueue<CLArray<T>>{%AutoSize?:; from_ind, to_ind, len\: CommandQueue<integer>%}
+# Copy[%direction:To,From%]!CLMemorySegment[%AutoSize:AutoSize,%]
+mem: CommandQueue<CLMemorySegment>{%AutoSize?:; mem_offset, ind, len\: CommandQueue<integer>%}
+!Enqueue
+var uptr_mem_offset := {%AutoSize? UIntPtr.Zero : new UIntPtr(!mem_offset!) %};
+var uptr_own_offset := {%AutoSize? UIntPtr.Zero : new UIntPtr(!ind!*Marshal.SizeOf&<T>) %};
+var ec := cl.EnqueueCopyBuffer(
+  cq, {%direction? o.Native,!mem!.Native : !mem!.Native,o.Native %},
+  {%direction? uptr_own_offset,uptr_mem_offset : uptr_mem_offset,uptr_own_offset %},
+  new UIntPtr({%AutoSize? Min(o.ByteSize, !mem!.Size64) : !len!*Marshal.SizeOf&<T> %}),
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+# Copy[%direction:To,From%]!CLValue
+val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>
+!Enqueue
+var ec := cl.EnqueueCopyBuffer(
+  cq, {%direction? o.Native,!val!.Native : !val!.Native,o.Native %},
+  {%direction? new UIntPtr(!ind!*Marshal.SizeOf&<T>),UIntPtr.Zero : UIntPtr.Zero,new UIntPtr(!ind!*Marshal.SizeOf&<T>) %},
+  new UIntPtr(Marshal.SizeOf&<T>),
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+# Copy[%direction:To,From%]!CLArray[%AutoSize:AutoSize,%]
+a: CommandQueue<CLArray<&T>>{%AutoSize?:; from_ind, to_ind, len\: CommandQueue<integer>%}
 !Enqueue
 var ec := cl.EnqueueCopyBuffer(
   cq, {%direction? o.Native,!a!.Native : !a!.Native,o.Native %},

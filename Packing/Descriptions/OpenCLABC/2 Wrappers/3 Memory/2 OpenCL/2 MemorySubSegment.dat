@@ -1,0 +1,21 @@
+
+
+
+# CLMemorySubSegment
+Представляет виртуальную область памяти, выделенную внутри CLMemorySegment
+
+
+
+# CLMemorySubSegment.Parent
+Возвращает родительскую область памяти
+
+
+
+# CLMemorySubSegment.(CLMemorySegment, UIntPtr, UIntPtr)
+# CLMemorySubSegment.(CLMemorySegment, UInt32, UInt32)
+# CLMemorySubSegment.(CLMemorySegment, UInt64, UInt64)
+Создаёт виртуальную область памяти, использующую указанную область из parent
+origin указывает отступ в байтах от начала parent
+size указывает размер новой области памяти
+
+

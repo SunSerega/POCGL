@@ -1,5 +1,5 @@
 ﻿uses OpenCLABC;
 
 begin
-  Writeln(new MemorySubSegment(new MemorySegment(1), 0, 1));
+  Writeln(new CLMemorySubSegment(new CLMemorySegment(1), 0, 1));
 end.

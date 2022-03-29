@@ -1,13 +1,58 @@
 
 
 
-Platform			: cl_platform_id
-Device				: cl_device_id
-Context				: cl_context
-ProgramCode			: cl_program
-Kernel				: cl_kernel
-MemorySegment		: cl_mem
-MemorySubSegment	: MemorySegment
-CLArray				: cl_mem			: T=record
+# Platform
+cl_platform_id
+
+
+
+# Device
+cl_device_id
+
+# SubDevice
+Device
+!ToString
+{inherited ToString} of {Parent}
+
+
+
+# Context
+cl_context
+!ToString
+{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}
+
+
+
+# ProgramCode
+cl_program
+
+# Kernel
+cl_kernel
+!ToString
+{TypeName(self)}[{Name}:{ntv.val}] from {code}
+
+
+
+# CLMemorySegment
+cl_mem
+!ToString
+{TypeName(self)}[{ntv.val}] of size {Size}
+
+# CLMemorySubSegment
+CLMemorySegment
+!ToString
+{inherited ToString} inside {Parent}
+
+
+
+# CLValue
+# CLArray
+cl_mem
+!Generic
+T
+
+# CLArray
+!ToString
+{TypeName(self)}[{ntv.val}] of length {Length}
 
 
