@@ -22,7 +22,6 @@ unit OpenCLABC;
 //TODO Дамп использованных блоков описаний
 
 //TODO Тесты:
-// - ToString
 
 //TODO Справка:
 // - KernelArg
@@ -993,7 +992,7 @@ type
     public procedure CopyTo<T>(a: array of T) := CopyTo(a[0]);
     
     public procedure CopyFrom<T>(var el: T) := RtlCopyMemory(self.ptr, PByte(pointer(@el))^, self.sz);
-    public procedure CopyFrom<T>(a: array of T) := CopyTo(a[0]);
+    public procedure CopyFrom<T>(a: array of T) := CopyFrom(a[0]);
     
     {$endregion Copy}
     
@@ -6979,7 +6978,7 @@ type
       sb += ': ';
       ToStringRuntimeValue(sb, new ArraySegment<TRecord>(
         hnd.Target as array of TRecord,
-        (hnd.AddrOfPinnedObject.ToInt64-ptr.ToInt64) div Marshal.SizeOf&<TRecord>,
+        (ptr.ToInt64-hnd.AddrOfPinnedObject.ToInt64) div Marshal.SizeOf&<TRecord>,
         sz.ToUInt64 div Marshal.SizeOf&<TRecord>
       ));
       sb += #10;
@@ -7009,8 +7008,9 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
+      sb += ': ';
       sb.Append(data);
+      sb += #10;
     end;
     
   end;
@@ -7042,7 +7042,7 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
+      sb += ': ';
       ToStringRuntimeValue(sb, val);
       sb += #10;
     end;
@@ -7071,7 +7071,7 @@ type
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
-      sb += ' => ';
+      sb += ': ';
       ToStringRuntimeValue(sb, a);
       sb += #10;
     end;

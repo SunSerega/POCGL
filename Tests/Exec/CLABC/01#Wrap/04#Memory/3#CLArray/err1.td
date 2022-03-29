@@ -10,7 +10,7 @@ System.TypeInitializationException: Инициализатор типа "OpenCLA
    в OpenCLABC.CLArray`1..cctor() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    --- Конец трассировки внутреннего стека исключений ---
    в OpenCLABC.CLArray`1..ctor(Int32 len)
-   в err1.Program.$Main() в *\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\CLArray\err1.pas:строка *
+   в err1.Program.$Main() в *\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1.pas:строка *
    в err1.Program.Main()
 
 #DelegateCount

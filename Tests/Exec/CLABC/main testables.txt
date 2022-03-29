@@ -6,8 +6,9 @@
 	- 02#Device
 	- 03#Context
 	- 04#Memory
-		- CLArray
-		- MemorySegment
+		- 1#CLMemorySegment
+		- 2#CLValue
+		- 3#CLArray
 	- 05#Kernel
 	- 06#ProgramCode
 
@@ -53,8 +54,9 @@
 		- 02#Device
 		- 03#Context
 		- 04#Memory
-			- CLArray
-			- MemorySegment
+			- 1#CLMemorySegment
+			- 2#CLValue
+			- 3#CLArray
 		- 05#Kernel
 		- 06#ProgramCode
 
