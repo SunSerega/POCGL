@@ -2815,21 +2815,19 @@ type
         exit;
       end;
       
-      foreach var fld in t.GetFields(System.Reflection.BindingFlags.Instance or System.Reflection.BindingFlags.Public or System.Reflection.BindingFlags.NonPublic) do
-        if fld.FieldType<>t then
+      var o := System.Activator.CreateInstance(t);
+      try
+        GCHandle.Alloc(o, GCHandleType.Pinned).Free;
+      except
+        on System.ArgumentException do
         begin
-          Result := Blame(fld.FieldType);
-          if Result<>nil then break;
-        end;
-      
-      if Result=nil then
-      begin
-        var o := System.Activator.CreateInstance(t);
-        try
-          GCHandle.Alloc(o, GCHandleType.Pinned).Free;
-        except
-          on System.ArgumentException do
-            Result := t;
+          foreach var fld in t.GetFields(System.Reflection.BindingFlags.Instance or System.Reflection.BindingFlags.Public or System.Reflection.BindingFlags.NonPublic) do
+            if fld.FieldType<>t then
+            begin
+              Result := Blame(fld.FieldType);
+              if Result<>nil then break;
+            end;
+          if Result=nil then Result := t;
         end;
       end;
       
