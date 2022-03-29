@@ -4251,7 +4251,7 @@ type
   ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
   CLTaskBase = abstract partial class
     private org_c: Context;
-    private wh := new ManualResetEvent(false);
+    private wh := new ManualResetEventSlim(false);
     private err_lst: List<Exception>;
     
     private function OrgQueueBase: CommandQueueBase; abstract;
@@ -4265,7 +4265,7 @@ type
     ///Кидает System.AggregateException, содержащие ошибки при выполнении очереди, если такие имеются
     public procedure Wait;
     begin
-      wh.WaitOne;
+      wh.Wait;
       if err_lst.Count=0 then exit;
       raise new AggregateException($'При выполнении очереди было вызвано {err_lst.Count} исключений. Используйте try чтоб получить больше информации', err_lst.ToArray);
     end;
@@ -7420,14 +7420,14 @@ type
     end;
     
     // cl.WaitForEvents uses processor time to wait
-    // so if we need to wait it's better to use ManualResetEvent
-    public function ToMRE({$ifdef EventDebug}reason: string{$endif}): ManualResetEvent;
+    // so if we need to wait it's better to use ManualResetEventSlim
+    public function ToMRE({$ifdef EventDebug}reason: string{$endif}): ManualResetEventSlim;
     begin
       Result := nil;
       if self.count=0 then exit;
-      Result := new ManualResetEvent(false);
+      Result := new ManualResetEventSlim(false);
       var mre := Result;
-      self.MultiAttachCallback(()->mre.Set(){$ifdef EventDebug}, $'setting mre for {reason}'{$endif});
+      self.MultiAttachCallback(mre.Set{$ifdef EventDebug}, $'setting mre for {reason}'{$endif});
     end;
     
     {$endregion Retain/Release}
@@ -7582,7 +7582,7 @@ type
       var mre := after.ToMRE({$ifdef EventDebug}$'Background work with res_ev={res}'{$endif});
       NativeUtils.StartNewBgThread(()->
       begin
-        if mre<>nil then mre.WaitOne;
+        if mre<>nil then mre.Wait;
         
         try
           work;
@@ -8340,7 +8340,7 @@ type
       var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTaskNil.FinishExecution'{$endif});
       NativeUtils.StartNewBgThread(()->
       begin
-        if mre<>nil then mre.WaitOne;
+        if mre<>nil then mre.Wait;
         qr.InvokeActions(self.org_c);
         g.FinishExecution(self.err_lst);
         self.wh.Set;
@@ -8367,7 +8367,7 @@ type
       var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTask<{typeof(T)}>.FinishExecution'{$endif});
       NativeUtils.StartNewBgThread(()->
       begin
-        if mre<>nil then mre.WaitOne;
+        if mre<>nil then mre.Wait;
         self.res := qr.GetRes(self.org_c);
         g.FinishExecution(self.err_lst);
         self.wh.Set;
