@@ -40,13 +40,12 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
-//TODO CombineUse? А то CombineConv есть, а Use нету...
-
 //TODO cl.WaitForEvents тратит время процессора??? Почему?
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
-//TODO Вроде как реализация может не отсылать комманды некоторое время без cl.Finish (а может cl.Flush?)
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
+
+//TODO CombineUse? А то CombineConv есть, а Use нету...
 
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -8154,7 +8153,10 @@ type
         g.curr_inv_cq := cl_command_queue.Zero;
         if prev_cq=cl_command_queue.Zero then
           prev_cq := cq else
+        begin
+          OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           Result.AddAction(c->self.g.ReturnCQ(cq));
+        end;
       end;
       
       branch_handlers += g.curr_err_handler;
@@ -8217,7 +8219,10 @@ type
     begin
       
       if curr_inv_cq<>cl_command_queue.Zero then
+      begin
+        OpenCLABCInternalException.RaiseIfError( cl.Flush(curr_inv_cq) );
         ReturnCQ(curr_inv_cq);
+      end;
       
       foreach var cq in free_cqs do
         OpenCLABCInternalException.RaiseIfError( cl.ReleaseCommandQueue(cq) );
@@ -13907,6 +13912,7 @@ type
         ev_l1.MultiAttachCallback(()->
         begin
           var (enq_ev, enq_act) := ExecuteEnqFunc(inv_data, g.c, cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif});
+          OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           enq_ev.MultiAttachCallback(()->
           begin
             if enq_act<>nil then enq_act(g.c);

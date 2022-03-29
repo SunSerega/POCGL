@@ -1,4 +1,4 @@
-## uses OpenCLABC, GraphWPF;
+﻿## uses OpenCLABC, GraphWPF;
 
 try
   var W := 100;
@@ -42,9 +42,11 @@ try
     code['CalcStep']
     .NewQueue
     .ThenExec2(W,W,
-      B, B_temp, W
+      HFQQ(()->B),
+      HFQQ(()->B_temp),
+      W
     ) +
-    B.NewQueue.ThenCopyFrom(B_temp)
+    HPQQ(()->Swap(B,B_temp))
  ;
  var Q_Otp :=
     B.NewQueue
