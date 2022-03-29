@@ -1,12 +1,13 @@
 
 
 
-# MemorySegment
-
 # Kernel
 
+# CLMemorySegment
+
+# CLValue
 # CLArray
 !Generic
-T: record
+T
 
 

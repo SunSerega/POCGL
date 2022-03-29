@@ -11,7 +11,7 @@
 
 
 
-# Err:MemorySegment:WrongNtvType
+# Err:CLMemorySegment:WrongNtvType
 Неправильный тип неуправляемого объекта памяти. Ожидалось [MEM_OBJECT_BUFFER], а не [{t}]
 
 
@@ -34,11 +34,25 @@ main_dvc должен быть в списке устройств контекс
 
 
 
+#Err:NativeArray:SliceCopy:WriteSize
+Массив присваиваемый свойству NativeArray<>.SliceCopy должен иметь размер ({value.Length}), равный размеру среза ({expected_len})
+
+
+
 # Err:Blittable:Main
 Значения типа {TypeToTypeName(t)} нельзя {source_name}
 
 # Err:Blittable:Blame
 %Err:Blittable:Main%, потому что он содержит тип {TypeToTypeName(blame)}
+
+# Err:Blittable:Source:NativeValue
+использовать как тип значения NativeValue<>
+
+# Err:Blittable:Source:NativeArray
+использовать как элементы NativeArray<>
+
+# Err:Blittable:Source:CLValue
+использовать как тип значения CLValue<>
 
 # Err:Blittable:Source:CLArray
 использовать как элементы CLArray<>
@@ -46,42 +60,52 @@ main_dvc должен быть в списке устройств контекс
 # Err:Blittable:Source:KernelArg
 передавать в качестве параметров kernel''а
 
-# Err:Blittable:Source:MemorySegment:WriteValue
-# Err:Blittable:Source:MemorySegment:WriteValueQ
-# Err:Blittable:Source:MemorySegment:WriteValueN
-# Err:Blittable:Source:MemorySegment:WriteValueNQ
-# Err:Blittable:Source:MemorySegment:WriteArray1AutoSize
-# Err:Blittable:Source:MemorySegment:WriteArray2AutoSize
-# Err:Blittable:Source:MemorySegment:WriteArray3AutoSize
-# Err:Blittable:Source:MemorySegment:WriteArray1
-# Err:Blittable:Source:MemorySegment:WriteArray2
-# Err:Blittable:Source:MemorySegment:WriteArray3
-# Err:Blittable:Source:MemorySegment:FillValueAutoSize
-# Err:Blittable:Source:MemorySegment:FillValue
-# Err:Blittable:Source:MemorySegment:FillValueAutoSizeQ
-# Err:Blittable:Source:MemorySegment:FillValueQ
-# Err:Blittable:Source:MemorySegment:FillArray1AutoSize
-# Err:Blittable:Source:MemorySegment:FillArray2AutoSize
-# Err:Blittable:Source:MemorySegment:FillArray3AutoSize
-# Err:Blittable:Source:MemorySegment:FillArray1
-# Err:Blittable:Source:MemorySegment:FillArray2
-# Err:Blittable:Source:MemorySegment:FillArray3
+# Err:Blittable:Source:CLMemorySegment:WriteValue
+# Err:Blittable:Source:CLMemorySegment:WriteValueQ
+# Err:Blittable:Source:CLMemorySegment:WriteArray1AutoSize
+# Err:Blittable:Source:CLMemorySegment:WriteArray2AutoSize
+# Err:Blittable:Source:CLMemorySegment:WriteArray3AutoSize
+# Err:Blittable:Source:CLMemorySegment:WriteArray1
+# Err:Blittable:Source:CLMemorySegment:WriteArray2
+# Err:Blittable:Source:CLMemorySegment:WriteArray3
+# Err:Blittable:Source:CLMemorySegment:WriteNativeValue
+# Err:Blittable:Source:CLMemorySegment:WriteNativeArrayAutoSize
+# Err:Blittable:Source:CLMemorySegment:WriteNativeArray
+# Err:Blittable:Source:CLMemorySegment:FillValueAutoSize
+# Err:Blittable:Source:CLMemorySegment:FillValue
+# Err:Blittable:Source:CLMemorySegment:FillValueAutoSizeQ
+# Err:Blittable:Source:CLMemorySegment:FillValueQ
+# Err:Blittable:Source:CLMemorySegment:FillArray1AutoSize
+# Err:Blittable:Source:CLMemorySegment:FillArray2AutoSize
+# Err:Blittable:Source:CLMemorySegment:FillArray3AutoSize
+# Err:Blittable:Source:CLMemorySegment:FillArray1
+# Err:Blittable:Source:CLMemorySegment:FillArray2
+# Err:Blittable:Source:CLMemorySegment:FillArray3
+# Err:Blittable:Source:CLMemorySegment:FillArraySegmentAutoSize
+# Err:Blittable:Source:CLMemorySegment:FillArraySegment
+# Err:Blittable:Source:CLMemorySegment:FillNativeValueAutoSize
+# Err:Blittable:Source:CLMemorySegment:FillNativeValue
+# Err:Blittable:Source:CLMemorySegment:FillNativeArrayAutoSize
+# Err:Blittable:Source:CLMemorySegment:FillNativeArray
 записывать в область памяти OpenCL
 
-# Err:Blittable:Source:MemorySegment:ReadValueN
-# Err:Blittable:Source:MemorySegment:ReadValueNQ
-# Err:Blittable:Source:MemorySegment:ReadArray1AutoSize
-# Err:Blittable:Source:MemorySegment:ReadArray2AutoSize
-# Err:Blittable:Source:MemorySegment:ReadArray3AutoSize
-# Err:Blittable:Source:MemorySegment:ReadArray1
-# Err:Blittable:Source:MemorySegment:ReadArray2
-# Err:Blittable:Source:MemorySegment:ReadArray3
-# Err:Blittable:Source:MemorySegment:GetValue
-# Err:Blittable:Source:MemorySegment:GetArray1AutoSize
-# Err:Blittable:Source:MemorySegment:GetArray1
-# Err:Blittable:Source:MemorySegment:GetArray2
-# Err:Blittable:Source:MemorySegment:GetArray3
+# Err:Blittable:Source:CLMemorySegment:ReadArray1AutoSize
+# Err:Blittable:Source:CLMemorySegment:ReadArray2AutoSize
+# Err:Blittable:Source:CLMemorySegment:ReadArray3AutoSize
+# Err:Blittable:Source:CLMemorySegment:ReadArray1
+# Err:Blittable:Source:CLMemorySegment:ReadArray2
+# Err:Blittable:Source:CLMemorySegment:ReadArray3
+# Err:Blittable:Source:CLMemorySegment:ReadNativeValue
+# Err:Blittable:Source:CLMemorySegment:ReadNativeArrayAutoSize
+# Err:Blittable:Source:CLMemorySegment:ReadNativeArray
+# Err:Blittable:Source:CLMemorySegment:GetValue
+# Err:Blittable:Source:CLMemorySegment:GetArrayAutoSize
+# Err:Blittable:Source:CLMemorySegment:GetArray
+# Err:Blittable:Source:CLMemorySegment:GetArray2
+# Err:Blittable:Source:CLMemorySegment:GetArray3
 читать из области памяти OpenCL
+
+
 
 # Err:Blittable:Source:QueueResPtr
 использовать в некоторой внутренней ситуации (напишите об этом в issue)

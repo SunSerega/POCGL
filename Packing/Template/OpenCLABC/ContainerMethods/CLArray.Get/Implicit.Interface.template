@@ -7,7 +7,11 @@
     
     public function GetArray: array of &T;
     
-    public function GetArray(ind, len: CommandQueue<integer>): array of &T;
+    public function GetArray(len: CommandQueue<integer>): array of &T;
+    
+    public function GetArray2(len1,len2: CommandQueue<integer>): array[,] of &T;
+    
+    public function GetArray3(len1,len2,len3: CommandQueue<integer>): array[,,] of &T;
     
     {$endregion Get}
     

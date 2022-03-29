@@ -1,0 +1,68 @@
+
+
+
+
+
+
+# CLValue[%<T>.,CCQ<T>.Then%]WriteData(CommandQueue<IntPtr>)
+# CLValue[%<T>.,CCQ<T>.Then%]WriteData(pointer)
+Записывает данные из RAM по указанному адресу в данное значение
+
+# CLValue[%<T>.,CCQ<T>.Then%]ReadData(CommandQueue<IntPtr>)
+# CLValue[%<T>.,CCQ<T>.Then%]ReadData(pointer)
+Читает данное значение в RAM по указанному адресу
+
+
+
+
+
+
+
+
+
+
+# CLValue[%<T>.,CCQ<T>.Then%]WriteValue(&T)
+# CLValue[%<T>.,CCQ<T>.Then%]WriteValue(CommandQueue<&T>)
+# CLValue[%<T>.,CCQ<T>.Then%]WriteNativeValue(CommandQueue<NativeValue<&T>>)
+Записывает указанное значение в данное
+
+# CLValue[%<T>.,CCQ<T>.Then%]ReadNativeValue(CommandQueue<NativeValue<&T>>)
+Читает данное значение в указанное
+
+
+
+# CLValue[%<T>.,CCQ<T>.Then%]GetValue
+Читает данное значение
+
+
+
+
+
+
+
+
+
+
+# CLValue:Copy:CLMemorySegment:To
+Копирует данные из данного значения в mem
+# CLValue:Copy:CLMemorySegment:From
+Копирует данные из mem в данное значение
+
+# CLValue[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLMemorySegment>)
+%CLValue:Copy:CLMemorySegment:{%dir%}%
+
+# CLValue[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLMemorySegment>, CommandQueue<integer>)
+%CLValue:Copy:CLMemorySegment:{%dir%}%
+%CLMemorySegment:OffsetDef%
+
+
+
+# CLValue:Copy:CLValue:To
+Копирует данные из данного значения в val
+# CLValue:Copy:CLValue:From
+Копирует данные из val в данное значение
+
+# CLValue[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLValue<&T>>)
+%CLValue:Copy:CLValue:{%dir%}%
+
+

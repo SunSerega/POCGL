@@ -64,26 +64,26 @@ SimpleSyncQueueArrayNil#0
 
 ==================================================
 
-MemorySegmentCCQ#0
-	CCCObj: MemorySegment[*] of size 1
+CLMemorySegmentCCQ#0
+	CCCObj: CLMemorySegment[*] of size 1
 	WaitCommand
 		WaitMarkerDummy#1
 
 ------------------------------
 
-SimpleSyncQueueArray<MemorySegment>#0
+SimpleSyncQueueArray<CLMemorySegment>#0
 	WaitMarkerDummyExecutor#1
 		WaitMarkerDummy#2
-	MemorySegmentCCQ#3
-		CCCObj: MemorySegment[*] of size 1
+	CLMemorySegmentCCQ#3
+		CCCObj: CLMemorySegment[*] of size 1
 		WaitCommand
 			WaitMarkerDummy#2
 
 ------------------------------
 
 SimpleSyncQueueArrayNil#0
-	MemorySegmentCCQ#1
-		CCCObj: MemorySegment[*] of size 1
+	CLMemorySegmentCCQ#1
+		CCCObj: CLMemorySegment[*] of size 1
 		WaitCommand
 			WaitMarkerDummy#2
 	WaitMarkerDummyExecutor#3

@@ -6,33 +6,56 @@
 
 
 
-# KernelArg:From
-Создаёт аргумент kernel'а,
+# KernelArg:From:Copy
+Создаёт аргумент kernel'а, при выполнении копирующий в kernel
+# KernelArg:From:Ref
+Создаёт аргумент kernel'а, ссылающийся на
 
-# KernelArg.FromCLArray<T>(CLArray<T>)
-# KernelArg.FromCLArrayCQ<T>(CommandQueue<CLArray<T>>)
-%KernelArg:From% представляющий массив данных, хранимых на GPU
 
-# KernelArg.FromMemorySegment(MemorySegment)
-# KernelArg.FromMemorySegmentCQ(CommandQueue<MemorySegment>)
-%KernelArg:From% представляющий область памяти GPU
-
-# KernelArg.FromData(IntPtr, UIntPtr)
-# KernelArg.FromDataCQ(CommandQueue<IntPtr>, CommandQueue<UIntPtr>)
-# KernelArg.FromValueData<TRecord>(^TRecord)
-%KernelArg:From% представляющий адрес в неуправляемой памяти или на стэке
 
 # KernelArg.FromValue<TRecord>(TRecord)
 # KernelArg.FromValueCQ<TRecord>(CommandQueue<TRecord>)
-%KernelArg:From% представляющий небольшое значение размерного типа
+%KernelArg:From:Copy% небольшое значение размерного типа
+
+# KernelArg.FromArray<TRecord>(array of TRecord)
+# KernelArg.FromArrayCQ<TRecord>(CommandQueue<array of TRecord>)
+# KernelArg.FromArray2<TRecord>(array[,] of TRecord)
+# KernelArg.FromArray2CQ<TRecord>(CommandQueue<array[,] of TRecord>)
+# KernelArg.FromArray3<TRecord>(array[,,] of TRecord)
+# KernelArg.FromArray3CQ<TRecord>(CommandQueue<array[,,] of TRecord>)
+%KernelArg:From:Copy% массив
+
+# KernelArg.FromArraySegment<TRecord>(ArraySegment<TRecord>)
+# KernelArg.FromArraySegmentCQ<TRecord>(CommandQueue<ArraySegment<TRecord>>)
+%KernelArg:From:Copy% часть массива
+
+
+
+# KernelArg.FromData(NativeMemoryArea)
+# KernelArg.FromDataCQ(CommandQueue<NativeMemoryArea>)
+%KernelArg:From:Copy% область неуправляемой памяти
 
 # KernelArg.FromNativeValue<TRecord>(NativeValue<TRecord>)
 # KernelArg.FromNativeValueCQ<TRecord>(CommandQueue<NativeValue<TRecord>>)
-%KernelArg:From% ссылающийся на неуправляемое значение
+%KernelArg:From:Copy% небольшое значение размерного типа
 
-# KernelArg.FromArray<TRecord>(array of TRecord, integer)
-# KernelArg.FromArrayCQ<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>)
-%KernelArg:From% ссылающийся на указанный массив, на элемент с индексом ind
+# KernelArg.FromNativeArray<TRecord>(NativeArray<TRecord>)
+# KernelArg.FromNativeArrayCQ<TRecord>(CommandQueue<NativeArray<TRecord>>)
+%KernelArg:From:Copy% массив
+
+
+
+# KernelArg.FromCLMemorySegment(CLMemorySegment)
+# KernelArg.FromCLMemorySegmentCQ(CommandQueue<CLMemorySegment>)
+%KernelArg:From:Ref% область памяти OpenCL
+
+# KernelArg.FromCLValue<T>(CLValue<T>)
+# KernelArg.FromCLValueCQ<T>(CommandQueue<CLValue<T>>)
+%KernelArg:From:Ref% небольшое значение размерного типа
+
+# KernelArg.FromCLArray<T>(CLArray<T>)
+# KernelArg.FromCLArrayCQ<T>(CommandQueue<CLArray<T>>)
+%KernelArg:From:Ref% массив
 
 
 

@@ -1,0 +1,12 @@
+cl_mem
+MemInfo
+clGetMemObjectInfo
+
+!Base
+CLMemorySegment
+
+
+
+# OFFSET:			UIntPtr
+
+

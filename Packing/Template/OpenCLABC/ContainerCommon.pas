@@ -8,26 +8,15 @@ uses PackingUtils in '..\PackingUtils';
 begin
   try
     
-    FixerUtils.ReadBlocks(GetFullPathRTA('!Def\ContainerCommon.dat'), false).TaskForEach(bl->
+    FixerUtils.ReadBlocks(GetFullPathRTA('!Def\ContainerCommon.dat'), true).TaskForEach(\(t,lines)->
     begin
-      var t := bl[0];
+      var generics := new List<string>;
       
-      // (name, where)
-      // Вообще where ни на что не используется, потому что эта программа не описывает свои классы
-      var generics := new List<(string,string)>;
-      
-      foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl[1], '!', false) do
+      foreach var (setting_name, setting_lines) in FixerUtils.ReadBlocks(lines, '!', false) do
       match setting_name with
         
         'Generic':
-        foreach var l in setting_data do
-        begin
-          var ind := l.IndexOf(':');
-          generics += (
-            (if ind=-1 then l else l.Remove(ind)).Trim,
-            if ind=-1 then nil else l.Substring(ind+1).Trim
-          );
-        end;
+        generics.AddRange(setting_lines);
         
         else raise new System.InvalidOperationException(setting_name);
       end;
@@ -50,7 +39,7 @@ begin
       if generics.Count<>0 then
       begin
         wr += '<';
-        wr += generics.Select(g->g[0]).JoinToString(', ');
+        wr += generics.JoinToString(', ');
         wr += '>';
       end;
       

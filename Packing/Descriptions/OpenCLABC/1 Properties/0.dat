@@ -4,8 +4,8 @@
  # PlatformProperties
  # DeviceProperties
  # ContextProperties
- # MemorySegmentProperties
- # MemorySubSegmentProperties
+ # CLMemorySegmentProperties
+ # CLMemorySubSegmentProperties
  # KernelProperties
  # ProgramProperties
 

@@ -1,0 +1,46 @@
+
+
+
+# NativeMemoryArea
+Описывает неуправляемою область памяти
+
+# NativeMemoryArea.(IntPtr, UIntPtr)
+Создаёт описание указанной области памяти
+
+
+
+# NativeMemoryArea.FillZero
+Заполняет всю область памяти нулевыми байтами
+# NativeMemoryArea.Fill(byte)
+Заполняет всю область памяти указанными байтами
+
+
+
+# NativeMemoryArea:Copy:CanOverlap:
+Области памяти не должны пересекаться. Иначе поведение неопределено
+Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+# NativeMemoryArea:Copy:CanOverlap:Overlapped
+Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+
+# NativeMemoryArea:Copy:Dir:To
+Копирует данные из данной области памяти в указанную
+# NativeMemoryArea:Copy:Dir:From
+Копирует данные из указанной области памяти в данную
+
+# NativeMemoryArea:Copy[%Overlapped:,Overlapped%][%dir:To,From%]
+# NativeMemoryArea.Copy[%Overlapped:,Overlapped%][%dir:To,From%]<T>(T)
+# NativeMemoryArea.Copy[%Overlapped:,Overlapped%][%dir:To,From%]<T>(array of T)
+%NativeMemoryArea:Copy:Dir:{%dir%}%
+%NativeMemoryArea:Copy:CanOverlap:{%Overlapped%}%
+Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+
+# NativeMemoryArea.Copy[%Overlapped:,Overlapped%][%dir:To,From%](NativeMemoryArea)
+%NativeMemoryArea:Copy{%Overlapped%}{%dir%}%
+Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.Copy{%Overlapped%}MinSize
+
+# NativeMemoryArea.Copy[%Overlapped:,Overlapped%]MinSize(NativeMemoryArea, NativeMemoryArea)
+Копирует данные между указанными областями памяти
+%NativeMemoryArea:Copy:CanOverlap:{%Overlapped%}%
+Количество копируемых байт равняется минимальному размеру указанных областей памяти
+
+

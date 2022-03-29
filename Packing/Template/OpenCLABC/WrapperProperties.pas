@@ -22,7 +22,7 @@ type
       base_name := wds[0].Trim;
       t := wds[1].Trim;
       
-      name := base_name.ToWords('_').Select(FixWord).JoinToString('');
+      name := base_name.TrimStart('!').ToWords('_').Select(FixWord).JoinToString('');
       escaped_name := if name.ToLower in pas_keywords then '&'+name else name;
       
       special_args.AddRange(data);
@@ -70,9 +70,9 @@ begin
               else raise new System.InvalidOperationException(setting_name);
             end;
       
-      var max_type_len := ps.Max(p->p.t.Length);
-      var max_name_len := ps.Max(p->p.name.Length);
-      var max_esc_name_len := ps.Max(p->p.escaped_name.Length);
+      var max_type_len := ps.Select(p->p.t.Length).DefaultIfEmpty(0).Max;
+      var max_name_len := ps.Select(p->p.name.Length).DefaultIfEmpty(0).Max;
+      var max_esc_name_len := ps.Select(p->p.escaped_name.Length).DefaultIfEmpty(0).Max;
       
       
       
@@ -128,8 +128,8 @@ begin
         res_In += ';'#10;
         
       end;
-      
-      res_In += '    '#10;
+      if ps.Any then
+        res_In += '    '#10;
       
       
       
@@ -146,8 +146,8 @@ begin
         res_In += ';'#10;
         
       end;
-      
-      res_In += '    '#10;
+      if ps.Any then
+        res_In += '    '#10;
       
       
       
@@ -230,9 +230,12 @@ begin
         res_Im += '(';
         res_Im += info_t;
         res_Im += '.';
-        res_Im += info_t.Remove(info_t.Length-'Info'.Length).ToUpper;
-        res_Im += '_';
-        res_Im += p.base_name;
+        if not p.base_name.StartsWith('!') then
+        begin
+          res_Im += info_t.Remove(info_t.Length-'Info'.Length).ToUpper;
+          res_Im += '_';
+        end;
+        res_Im += p.base_name.TrimStart('!');
         foreach var arg in p.special_args do
         begin
           res_Im += ', ';

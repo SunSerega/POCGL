@@ -71,7 +71,7 @@ type
       Result := new QueueResNil(l);
       if l.ShouldInstaCallAction then
       begin
-        if not g.curr_err_handler.HadError(true) then
+        if not g.curr_err_handler.HadError then
         try
           ExecFunc(qr1.GetResDirect, qr2.GetResDirect, g.c);
         except
@@ -81,7 +81,7 @@ type
       begin
         var err_handler := g.curr_err_handler;
         Result.AddAction(c->
-        if not err_handler.HadError(true) then
+        if not err_handler.HadError then
         try
           ExecFunc(qr1.GetResDirect, qr2.GetResDirect, c);
         except
@@ -94,7 +94,8 @@ type
     begin
       if l.ShouldInstaCallAction then
       begin
-        var res: TRes;        if not g.curr_err_handler.HadError(true) then
+        var res: TRes;
+        if not g.curr_err_handler.HadError then
         try
           res := ExecFunc(qr1.GetResDirect, qr2.GetResDirect, g.c);
         except
@@ -106,7 +107,7 @@ type
         Result := TF.Create.MakeDelayed(l);
         var err_handler := g.curr_err_handler;
         Result.AddResSetter(c->
-        if not err_handler.HadError(true) then
+        if not err_handler.HadError then
         try
           Result := ExecFunc(qr1.GetResDirect, qr2.GetResDirect, c);
         except

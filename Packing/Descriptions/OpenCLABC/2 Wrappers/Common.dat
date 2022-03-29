@@ -1,0 +1,111 @@
+
+
+
+# Platform.Native
+# Device.Native
+# Context.Native
+# ProgramCode.Native
+# Kernel.Native
+# CLMemorySegment.Native
+# CLValue<T>.Native
+# CLArray<T>.Native
+Возвращает имя (дескриптор) неуправляемого объекта
+
+
+
+# Platform.(cl_platform_id)
+# Device.FromNative(cl_device_id)
+# Wrap:NtvCtor
+Создаёт обёртку для указанного неуправляемого объекта
+
+# Context.(cl_context, Device)
+# Context.(cl_context)
+# ProgramCode.(cl_program)
+# Kernel.(cl_kernel, boolean)
+# CLMemorySegment.FromNative(cl_mem)
+# CLValue<T>.(cl_mem)
+# CLArray<T>.(cl_mem)
+%Wrap:NtvCtor%
+При успешном создании обёртки вызывается cl.Retain
+А во время вызова .Dispose - cl.Release
+
+
+
+# Kernel.NewQueue
+# CLMemorySegment.NewQueue
+# CLValue<T>.NewQueue
+# CLArray<T>.NewQueue
+Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
+
+
+
+# Wrap:AutoDispose
+Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+
+# Context.Dispose
+# ProgramCode.Dispose
+# Kernel.Dispose
+# CLMemorySegment.Dispose
+# CLValue<T>.Dispose
+# CLArray<T>.Dispose
+Позволяет OpenCL удалить неуправляемый объект
+%Wrap:AutoDispose%
+
+
+
+# Platform.Properties
+# Device.Properties
+# SubDevice.Properties
+# Context.Properties
+# ProgramCode.Properties
+# Kernel.Properties
+# CLMemorySegment.Properties
+# CLMemorySubSegment.Properties
+# CLValue<T>.Properties
+# CLArray<T>.Properties
+Возвращает контейнер свойств неуправляемого объекта
+
+
+
+# SubDevice.Finalize
+# Context.Finalize
+# ProgramCode.Finalize
+# Kernel.Finalize
+# NativeValue<T>.Finalize
+# NativeArray<T>.Finalize
+# CLMemorySegment.Finalize
+# CLValue<T>.Finalize
+# CLArray<T>.Finalize
+Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
+Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
+
+
+
+# Platform.ToString
+# Device.ToString
+# SubDevice.ToString
+# Context.ToString
+# ProgramCode.ToString
+# Kernel.ToString
+# NativeMemoryArea.ToString
+# NativeValue<T>.ToString
+# NativeArray<T>.ToString
+# CLMemorySegment.ToString
+# CLMemorySubSegment.ToString
+# CLValue<T>.ToString
+# CLArray<T>.ToString
+Возвращает строку с основными данными о данном объекте
+
+
+
+# Platform.Equals(object)
+# Device.Equals(object)
+# Context.Equals(object)
+# ProgramCode.Equals(object)
+# Kernel.Equals(object)
+# CLMemorySegment.Equals(object)
+# CLValue<T>.Equals(object)
+# CLArray<T>.Equals(object)
+--
+
+

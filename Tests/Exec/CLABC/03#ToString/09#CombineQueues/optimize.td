@@ -13,8 +13,8 @@ SimpleAsyncQueueArray<Object>#0
 	CastQueue<integer, Object>#2
 		CommandQueueHostBackgoundFunc<integer>#3: function lambda: integer
 
-MemorySegmentCCQ#0
-	CCCObj: MemorySegment[*] of size 1
+CLMemorySegmentCCQ#0
+	CCCObj: CLMemorySegment[*] of size 1
 	QueueCommand
 		CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
 

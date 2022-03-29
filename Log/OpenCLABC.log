@@ -7,14 +7,16 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLValue]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [Kernel]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [MemorySegment]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [MemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\Wrappers.pas"
 Template[OpenCLABC]: Compiling: OK

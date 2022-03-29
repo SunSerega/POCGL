@@ -1,0 +1,476 @@
+﻿
+
+
+{$region 1#Write&Read}
+
+function CLMemorySegment.WriteValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteValue(val, 0);
+end;
+
+function CLMemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteValue(val, 0);
+end;
+
+function CLMemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
+end;
+
+function CLMemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
+end;
+
+function CLMemorySegment.WriteArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray1(CQ(a));
+end;
+
+function CLMemorySegment.WriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray2(CQ(a));
+end;
+
+function CLMemorySegment.WriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray3(CQ(a));
+end;
+
+function CLMemorySegment.ReadArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray1(CQ(a));
+end;
+
+function CLMemorySegment.ReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray2(CQ(a));
+end;
+
+function CLMemorySegment.ReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray3(CQ(a));
+end;
+
+function CLMemorySegment.WriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray1(CQ(a), a_ind, el_count, mem_offset);
+end;
+
+function CLMemorySegment.WriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray2(CQ(a), a_ind1,a_ind2, el_count, mem_offset);
+end;
+
+function CLMemorySegment.WriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray3(CQ(a), a_ind1,a_ind2,a_ind3, el_count, mem_offset);
+end;
+
+function CLMemorySegment.ReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray1(CQ(a), a_ind, el_count, mem_offset);
+end;
+
+function CLMemorySegment.ReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray2(CQ(a), a_ind1,a_ind2, el_count, mem_offset);
+end;
+
+function CLMemorySegment.ReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray3(CQ(a), a_ind1,a_ind2,a_ind3, el_count, mem_offset);
+end;
+
+function CLMemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a));
+end;
+
+function CLMemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a));
+end;
+
+function CLMemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a));
+end;
+
+function CLMemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a));
+end;
+
+function CLMemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a));
+end;
+
+function CLMemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a));
+end;
+
+function CLMemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a, a_ind, el_count, mem_offset));
+end;
+
+function CLMemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
+end;
+
+function CLMemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
+end;
+
+function CLMemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a, a_ind, el_count, mem_offset));
+end;
+
+function CLMemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
+end;
+
+function CLMemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
+end;
+
+function CLMemorySegment.WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteArray1(CQ(a.Array), a.Offset, a.Count, mem_offset);
+end;
+
+function CLMemorySegment.ReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadArray1(CQ(a.Array), a.Offset, a.Count, mem_offset);
+end;
+
+function CLMemorySegment.WriteData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+end;
+
+function CLMemorySegment.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, mem_offset, len));
+end;
+
+function CLMemorySegment.ReadData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+end;
+
+function CLMemorySegment.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, mem_offset, len));
+end;
+
+function CLMemorySegment.WriteData(ptr: pointer): CLMemorySegment;
+begin
+  Result := WriteData(IntPtr(ptr));
+end;
+
+function CLMemorySegment.WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := WriteData(IntPtr(ptr), mem_offset, len);
+end;
+
+function CLMemorySegment.ReadData(ptr: pointer): CLMemorySegment;
+begin
+  Result := ReadData(IntPtr(ptr));
+end;
+
+function CLMemorySegment.ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := ReadData(IntPtr(ptr), mem_offset, len);
+end;
+
+function CLMemorySegment.WriteData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(data, mem_offset));
+end;
+
+function CLMemorySegment.ReadData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(data, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeValue(CQ(val), 0);
+end;
+
+function CLMemorySegment.WriteNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeValue(CQ(val), mem_offset);
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValue(CQ(val), 0);
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValue(CQ(val), mem_offset);
+end;
+
+function CLMemorySegment.WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeValue(val, 0);
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValue(val, 0);
+end;
+
+function CLMemorySegment.WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue&<TRecord>(val, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue&<TRecord>(val, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeArray(CQ(a));
+end;
+
+function CLMemorySegment.WriteNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeArray(CQ(a),a_ind,el_count,mem_offset);
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArray(CQ(a));
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArray(CQ(a),a_ind,el_count,mem_offset);
+end;
+
+function CLMemorySegment.WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(a));
+end;
+
+function CLMemorySegment.WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(a, a_ind, el_count, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(a));
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(a, a_ind, el_count, mem_offset));
+end;
+
+{$endregion 1#Write&Read}
+
+{$region 2#Fill}
+
+function CLMemorySegment.FillValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
+end;
+
+function CLMemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
+end;
+
+function CLMemorySegment.FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillArray1(CQ(a));
+end;
+
+function CLMemorySegment.FillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillArray2(CQ(a));
+end;
+
+function CLMemorySegment.FillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillArray3(CQ(a));
+end;
+
+function CLMemorySegment.FillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillArray1(CQ(a), a_ind, pattern_byte_len, mem_offset, fill_byte_len);
+end;
+
+function CLMemorySegment.FillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillArray2(CQ(a), a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len);
+end;
+
+function CLMemorySegment.FillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillArray3(CQ(a), a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len);
+end;
+
+function CLMemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a));
+end;
+
+function CLMemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a));
+end;
+
+function CLMemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a));
+end;
+
+function CLMemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a));
+end;
+
+function CLMemorySegment.FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len));
+end;
+
+function CLMemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := FillData(IntPtr(ptr), pattern_byte_len);
+end;
+
+function CLMemorySegment.FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := FillData(IntPtr(ptr), pattern_byte_len, mem_offset, fill_byte_len);
+end;
+
+function CLMemorySegment.FillData(data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data));
+end;
+
+function CLMemorySegment.FillData(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillNativeValue(CQ(val));
+end;
+
+function CLMemorySegment.FillNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillNativeValue(CQ(val),mem_offset,fill_byte_len);
+end;
+
+function CLMemorySegment.FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(val));
+end;
+
+function CLMemorySegment.FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(val, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillNativeArray(CQ(a));
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillNativeArray(CQ(a),a_ind,pattern_byte_len, mem_offset,fill_byte_len);
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(a));
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
+end;
+
+{$endregion 2#Fill}
+
+{$region 3#Copy}
+
+function CLMemorySegment.CopyTo(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
+end;
+
+function CLMemorySegment.CopyTo(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, from_offset, to_offset, len));
+end;
+
+function CLMemorySegment.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
+end;
+
+function CLMemorySegment.CopyFrom(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, from_offset, to_offset, len));
+end;
+
+{$endregion 3#Copy}
+
+

@@ -1,0 +1,58 @@
+﻿
+
+
+{$region Get}
+
+{$region GetValue}
+
+type
+  CLValueCommandGetValue<T> = sealed class(EnqueueableGetPtrCommand<CLValue<T>, &T>)
+  where T: record;
+    
+    public function EnqEvCapacity: integer; override := 0;
+    
+    public constructor(ccq: CLValueCCQ<T>);
+    begin
+      inherited Create(ccq);
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
+    
+    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList, QueueRes<&T>)->DirectEnqRes; override;
+    begin
+      
+      Result := (o, cq, evs, own_qr)->
+      begin
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
+          new IntPtr((own_qr as QueueResPtr<&T>).res),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          GC.KeepAlive(own_qr);
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
+    
+  end;
+  
+function CLValueCCQ<T>.ThenGetValue: CommandQueue<&T>;
+begin
+  Result := new CLValueCommandGetValue<T>(self) as CommandQueue<&T>;
+end;
+
+{$endregion GetValue}
+
+{$endregion Get}
+
+
