@@ -314,11 +314,16 @@ const fix_links = (page)=>{
 		if (!lnk.path) continue;
 		lnk.removeAttribute("path");
 		
-		start_folder = currently_loading_folder;
+		let start_folder = currently_loading_folder;
 		while (lnk.path.startsWith("../"))
 		{
 			start_folder = start_folder.root;
+			if (!start_folder) break;
 			lnk.path = lnk.path.substr(3);
+		}
+		if (!start_folder) {
+			console.error(`Path "root/${lnk.path}" referenced in "${page.tree_obj.path}" goes under root`);
+			continue;
 		}
 		lnk.path = start_folder.path+lnk.path;
 		
