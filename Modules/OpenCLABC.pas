@@ -19,23 +19,51 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Background=>Threaded +в интерфейсе, чтобы их сортировало [Const,Quick,Threaded]
+//TODO CLMemorySegment=>CLMemory
+
+//TODO ConstConvert: Обычно как QuickConvert, но конвертирование может быть вызвано в момент Invoke или даже создания очереди
+// - ThenConstConvert
+// - CombineConstConvert
+// - Кхм, ParameterQueue.ThenConstUse?????
+// - Тогда и CCQ.Create(Par).AddConstProc имеет смысл
+//TODO Тесты и справка:
+// - (HPQ+Par).ThenQuickUse.ThenConstConvert
+//TODO CombineUse? А то CombineConv есть, а Use нету...
+
 //TODO Тесты:
+// - Автоматически генерировать тест KernelArg'ов
+// --- Используя инклюды, потому что там несколько отдельных файлов
 
 //TODO Справка:
 // - KernelArg
+// --- KernelArg, как и всю остальную очередь, желательно создавать заранее, но KernelArgGlobal из массива - блокирует этот массив в памяти
 // - NativeArray
 // - CLValue
 // - !CL!Memory[Sub]Segment
+// - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
+// - MemoryUsage
+//
+// - Native*<T>.FromExistingMemory
+// - implicit ^T -> NativeValue<T>
+//
+// - new CLValue<byte>(new CLMemorySubSegment(cl_a))
+// --- CLArray и CLValue неявно конвертируются в CLMemorySegment
+// --- И их можно создать назад конструктором
 
 //===================================
 // Запланированное:
+
+//TODO Разделить .html справку и гайт по OpenCLABC
+//TODO github.io
 
 //TODO cl.WaitForEvents тратит время процессора??? Почему?
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
 
-//TODO CombineUse? А то CombineConv есть, а Use нету...
+//TODO Аргументы компиляции OpenCL-C кода
+// - #define-ы особо полезны, но там куча всего...
 
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -52,10 +80,12 @@ unit OpenCLABC;
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 //TODO Попробовать получать информацию о параметрах Kernel'а и выдавать адекватные ошибки, если передают что-то не то
-// - Адрес RAM всегда превращается в read-only копию на стороне OpenCL-C?
+// - clGetKernelArgInfo
+// - Для этого нужна опция "-cl-kernel-arg-info" при компиляции
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
+// - В комбинации с .Cycle вообще возможно добиться детерминированности?
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
@@ -71,7 +101,12 @@ unit OpenCLABC;
 // - При этом сделать его кросс-платформенным
 
 //TODO Исправить перегрузки Kernel.Exec
-// - Сначала решить как исправлять
+// - Но сначала решить как исправлять
+
+//TODO MEM_ALLOC_HOST_PTR, на сколько я понял он:
+// - Медленнее чем MEM_USE_HOST_PTR для выровеных данных, потому что копирование
+// - Быстрее чем MEM_USE_HOST_PTR в остальных случаях
+// - Протестировать
 
 //===================================
 // Сделать когда-нибуть:
@@ -79,27 +114,29 @@ unit OpenCLABC;
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
 // - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
-// - MemFlags кроме MemFlags.MEM_READ_WRITE
 // - Другие типы cl_mem (сейчас используется только буфер)
 // - clEnqueueNativeKernel
 // --- CL_DEVICE_BUILT_IN_KERNELS
 
-//TODO Фичи OpenCL3.0, которого у меня нет
-// - CL_DEVICE_ILS_WITH_VERSION
-// - CL_DEVICE_BUILT_IN_KERNELS_WITH_VERSION
-// - CL_DEVICE_NUMERIC_VERSION
-// - CL_DEVICE_OPENCL_C_ALL_VERSIONS
-// - CL_DEVICE_OPENCL_C_FEATURES
-// - CL_DEVICE_EXTENSIONS_WITH_VERSION
-// - CL_DEVICE_ATOMIC_MEMORY_CAPABILITIES
-// - CL_DEVICE_ATOMIC_FENCE_CAPABILITIES
-// - CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT
-// - CL_DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT
-// - CL_DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT
-// - CL_DEVICE_DEVICE_ENQUEUE_CAPABILITIES
-// - CL_DEVICE_PIPE_SUPPORT
-// - CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
-// - CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
+//TODO Фичи версий OpenCL, которых у меня нет:
+// - OpenCL2.0
+// --- SVM
+// - OpenCL3.0
+// --- CL_DEVICE_ILS_WITH_VERSION
+// --- CL_DEVICE_BUILT_IN_KERNELS_WITH_VERSION
+// --- CL_DEVICE_NUMERIC_VERSION
+// --- CL_DEVICE_OPENCL_C_ALL_VERSIONS
+// --- CL_DEVICE_OPENCL_C_FEATURES
+// --- CL_DEVICE_EXTENSIONS_WITH_VERSION
+// --- CL_DEVICE_ATOMIC_MEMORY_CAPABILITIES
+// --- CL_DEVICE_ATOMIC_FENCE_CAPABILITIES
+// --- CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT
+// --- CL_DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT
+// --- CL_DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT
+// --- CL_DEVICE_DEVICE_ENQUEUE_CAPABILITIES
+// --- CL_DEVICE_PIPE_SUPPORT
+// --- CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
+// --- CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
 
 //TODO Слишком новые фичи, которые могут много чего изменить:
 // - cl_khr_command_buffer
@@ -180,11 +217,8 @@ type
 //    inherited Create($'{message} with {ec}');
     private constructor(ec: ErrorCode) :=
     inherited Create(OpenCLException.Create(ec).Message);
-    private constructor;
-    begin
-      inherited Create($'%Err:NoParamCtor%');
-      raise self;
-    end;
+    private constructor :=
+    inherited Create($'%Err:NoParamCtor%');
     
     private static procedure RaiseIfError(ec: ErrorCode) :=
     if ec.IS_ERROR then raise new OpenCLABCInternalException(ec);
@@ -227,8 +261,9 @@ type
     private static function RefCounterFor(ev: cl_event) := RefCounter.GetOrAdd(ev, ev->new ConcurrentQueue<EventRetainReleaseData>);
     
     public static procedure RegisterEventRetain(ev: cl_event; reason: string) :=
+    if ev=cl_event.Zero then raise new OpenCLABCInternalException($'Zero event retain') else
     RefCounterFor(ev).Enqueue(new EventRetainReleaseData(false, reason));
-    public static procedure RegisterEventRelease(ev: cl_event; reason: string);
+    public static procedure RegisterEventRelease(ev: cl_event; reason: string) :=
     begin
       EventDebug.CheckExists(ev, reason);
       RefCounterFor(ev).Enqueue(new EventRetainReleaseData(true, reason));
@@ -375,7 +410,7 @@ type
   {$endregion WrapperProperties}
   
   {$region Wrappers}
-  // For parameters of OpenCL_command-methods
+  // For parameters of CCQ-involved methods
   CommandQueue<T> = abstract partial class end;
   KernelArg = abstract partial class end;
   
@@ -630,21 +665,18 @@ type
   ProgramCode = partial class
     private ntv: cl_program;
     
-    private _c: Context;
-    public property BaseContext: Context read _c;
-    
     {$region constructor's}
     
-    private procedure Build;
+    private procedure Build(c: Context);
     begin
-      var ec := cl.BuildProgram(self.ntv, _c.dvcs.Count,_c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
+      var ec := cl.BuildProgram(self.ntv, c.dvcs.Count,c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
       if not ec.IS_ERROR then exit;
       
       if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
       begin
         var sb := new StringBuilder($'%Err:ProgramCode:BuildFail%');
         
-        foreach var dvc in _c.AllDevices do
+        foreach var dvc in c.AllDevices do
         begin
           sb += #10#10;
           sb += dvc.ToString;
@@ -680,28 +712,15 @@ type
       self.ntv := cl.CreateProgramWithSource(c.ntv, file_texts.Length, file_texts, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      self._c := c;
-      self.Build;
+      self.Build(c);
     end;
     public constructor(params file_texts: array of string) := Create(Context.Default, file_texts);
     
-    private constructor(ntv: cl_program; c: Context);
+    private constructor(ntv: cl_program);
     begin
       OpenCLABCInternalException.RaiseIfError( cl.RetainProgram(ntv) );
-      self._c := c;
       self.ntv := ntv;
     end;
-    
-    private static function GetProgContext(ntv: cl_program): Context;
-    begin
-      var c: cl_context;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(Marshal.SizeOf&<cl_context>), c, IntPtr.Zero)
-      );
-      Result := new Context(c);
-    end;
-    public constructor(ntv: cl_program) :=
-    Create(ntv, GetProgContext(ntv));
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -714,6 +733,18 @@ type
     protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
+    
+    private function GetBuildContext: Context;
+    begin
+      
+      var c_ntv: cl_context;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramInfo(self.ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(cl_context.Size), c_ntv, IntPtr.Zero)
+      );
+      
+      Result := new Context(c_ntv);
+    end;
+    public property BuildContext: Context read GetBuildContext;
     
     {$region Serialize}
     
@@ -778,8 +809,8 @@ type
       );
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      Result := new ProgramCode(ntv, c);
-      Result.Build;
+      Result := new ProgramCode(ntv);
+      Result.Build(c);
       
     end;
     
@@ -809,7 +840,6 @@ type
   {$region Kernel}
   
   Kernel = partial class
-    private ntv: cl_kernel;
     
     private code: ProgramCode;
     public property CodeContainer: ProgramCode read code;
@@ -817,22 +847,22 @@ type
     private k_name: string;
     public property Name: string read k_name;
     
-    {$region constructor's}
-    
-    protected function MakeNewNtv: cl_kernel;
+    private function ntv: cl_kernel;
     begin
       var ec: ErrorCode;
       Result := cl.CreateKernel(code.ntv, k_name, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
-    private constructor(code: ProgramCode; name: string);
+    
+    {$region constructor's}
+    
+    private constructor(code: ProgramCode; k_name: string);
     begin
       self.code := code;
       self.k_name := name;
-      self.ntv := self.MakeNewNtv;
     end;
     
-    public constructor(ntv: cl_kernel; retain: boolean := true);
+    public constructor(ntv: cl_kernel);
     begin
       
       var code_ntv: cl_program;
@@ -855,64 +885,12 @@ type
         Marshal.FreeHGlobal(str_ptr);
       end;
       
-      if retain then OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
-      self.ntv := ntv;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public procedure Dispose;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(new cl_kernel(prev)) );
-    end;
-    protected procedure Finalize; override := Dispose;
-    
     {$endregion constructor's}
     
-    {$region UseExclusiveNative}
-    
-    private ntv_in_use := 0;
-    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure UseExclusiveNative(p: cl_kernel->()) :=
-    if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
-    try
-      p(self.ntv);
-    finally
-      ntv_in_use := 0;
-    end else
-    begin
-      var k := MakeNewNtv;
-      try
-        p(k);
-      finally
-        OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(k) );
-      end;
-    end;
-    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function UseExclusiveNative<T>(f: cl_kernel->T): T;
-    begin
-      
-      if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
-      try
-        Result := f(self.ntv);
-      finally
-        ntv_in_use := 0;
-      end else
-      begin
-        var k := MakeNewNtv;
-        try
-          Result := f(k);
-        finally
-          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(k) );
-        end;
-      end;
-      
-    end;
-    
-    {$endregion UseExclusiveNative}
-    
-    {%ContainerMethods\Kernel\Implicit.Interface!ContainerMethods.pas%}
+    {%ContainerMethods\Kernel.Exec\Implicit.Interface!ContainerExecMethods.pas%}
     
   end;
   
@@ -929,7 +907,7 @@ type
       var res := new cl_kernel[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, c, res[0], IntPtr.Zero) );
       
-      Result := res.ConvertAll(k->new Kernel(k, false));
+      Result := res.ConvertAll(k->new Kernel(k));
     end;
     
   end;
@@ -940,7 +918,7 @@ type
   
   {$region Memory}
   
-  {$region Native}
+  {$region NativeArea}
   
   {$region NativeMemoryArea}
   
@@ -948,13 +926,27 @@ type
     public ptr: IntPtr;
     public sz: UIntPtr;
     
+    {$region constructor's}
+    
     public constructor(ptr: IntPtr; sz: UIntPtr);
     begin
       self.ptr := ptr;
       self.sz := sz;
     end;
-    ///--
-    public constructor := exit;
+    public constructor(sz: UIntPtr);
+    begin
+      self.sz := sz;
+      Alloc;
+    end;
+    public constructor;
+    begin
+      self.ptr := IntPtr.Zero;
+      self.sz := UIntPtr.Zero;
+    end;
+    
+    {$endregion constructor's}
+    
+    {$region Method's}
     
     {$region Fill}
     
@@ -1018,36 +1010,277 @@ type
     
     {$endregion CopyOverlapped}
     
+    {$endregion Method's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      self.ptr := Marshal.AllocHGlobal(IntPtr(self.sz.ToPointer));
+      GC.AddMemoryPressure(self.sz.ToUInt64);
+    end;
+    public procedure Release;
+    begin
+      GC.RemoveMemoryPressure(self.sz.ToUInt64);
+      Marshal.FreeHGlobal(self.ptr);
+      self.ptr := IntPtr.Zero;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := new NativeMemoryArea(
+        Interlocked.Exchange(self.ptr, IntPtr.Zero),
+        self.sz
+      );
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
     public function ToString: string; override :=
-    $'{ptr}[{sz}]';
+    $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
     
   end;
   
   {$endregion NativeMemoryArea}
   
+  {$region NativeValueArea}
+  
+  NativeValueArea<T> = record
+  where T: record;
+    public ptr: IntPtr;
+    
+    {$region constructor's}
+    
+    static constructor;
+    
+    public constructor(ptr: IntPtr) := self.ptr := ptr;
+    public constructor(alloc: boolean := false) :=
+    if alloc then self.Alloc else
+    self.ptr := IntPtr.Zero;
+    
+    public static function operator implicit(p: ^T): NativeValueArea<T> := new NativeValueArea<T>(new IntPtr(p));
+    public static function operator implicit(area: NativeValueArea<T>): ^T := area.Pointer;
+    public static function operator implicit(area: NativeValueArea<T>): NativeMemoryArea := area.UntypedArea;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public static property ValueSize: integer read Marshal.SizeOf&<T>;
+    public property ByteSize: UIntPtr read new UIntPtr(ValueSize);
+    
+    //TODO #????
+    private function PointerUntyped := pointer(ptr);
+    public property Pointer: ^T read PointerUntyped();
+    public property Value: T read Pointer^ write Pointer^ := value;
+    
+    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.ptr, self.ByteSize);
+    
+    {$endregion property's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      var temp := self.UntypedArea;
+      temp.Alloc;
+      self.ptr := temp.ptr;
+    end;
+    public procedure Release;
+    begin
+      var temp := self.UntypedArea;
+      temp.Release;
+      self.ptr := temp.ptr;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := self.UntypedArea;
+      temp.ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${ptr.ToString(''X'')}';
+    
+  end;
+  
+  {$endregion NativeValueArea}
+  
+  {$region NativeArrayArea}
+  
+  NativeArrayArea<T> = record
+  where T: record;
+    public first_ptr: IntPtr;
+    public item_count: UInt32;
+    
+    {$region constructor's}
+    
+    static constructor;
+    
+    public constructor(first_ptr: IntPtr; item_count: UInt32);
+    begin
+      self.first_ptr  := first_ptr;
+      self.item_count := item_count;
+    end;
+    public constructor(item_count: UInt32);
+    begin
+      self.item_count := item_count;
+      Alloc;
+    end;
+    public constructor;
+    begin
+      self.first_ptr  := IntPtr.Zero;
+      self.item_count := 0;
+    end;
+    
+    public static function operator implicit(area: NativeArrayArea<T>): NativeMemoryArea := area.UntypedArea;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public static property ItemSize: integer read Marshal.SizeOf&<T>;
+    public property ByteSize: UIntPtr read new UIntPtr( item_count*uint64(ItemSize) );
+    
+    public property Length: cardinal read self.item_count;
+    
+    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read new NativeValueArea<T>(self.first_ptr + i*ItemSize);
+    
+    private function GetAndCheckItemArea(i: integer): NativeValueArea<T>;
+    begin
+      if cardinal(i)>=self.item_count then raise new IndexOutOfRangeException;
+      Result := ItemAreaUnchecked[i];
+    end;
+    public property ItemArea[i: integer]: NativeValueArea<T> read GetAndCheckItemArea;
+    public property Item[i: integer]: T read ItemArea[i].Value write ItemArea[i].Value := value; default;
+    
+    public property SliceUnchecked[r: IntRange]: NativeArrayArea<T> read
+    new NativeArrayArea<T>( ItemAreaUnchecked[r.Low].ptr, r.High-r.Low+1 );
+    private function GetSliceAndCheck(r: IntRange): NativeArrayArea<T>;
+    begin
+      if r.Low<0 then raise new IndexOutOfRangeException('r.Low');
+      if cardinal(r.High)>=self.item_count then raise new IndexOutOfRangeException('r.High');
+      Result := SliceUnchecked[r];
+      if integer(Result.item_count)<0 then raise new ArgumentOutOfRangeException('r.Count');
+    end;
+    public property Slice[r: IntRange]: NativeArrayArea<T> read GetSliceAndCheck;
+    
+    private function GetManagedCopy: array of T;
+    begin
+      Result := new T[self.item_count];
+      self.UntypedArea.CopyTo(Result);
+    end;
+    public property ManagedCopy: array of T read GetManagedCopy write
+    begin
+      if value.Length<>self.item_count then raise new ArgumentException($'%Err:NativeArrayArea:ManagedCopy:WriteSize%');
+      self.UntypedArea.CopyFrom(value);
+    end;
+    
+    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.first_ptr, self.ByteSize);
+    
+    {$endregion property's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.first_ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      var temp := self.UntypedArea;
+      temp.Alloc;
+      self.first_ptr := temp.ptr;
+    end;
+    public procedure Release;
+    begin
+      var temp := self.UntypedArea;
+      temp.Release;
+      self.first_ptr := temp.ptr;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := self.UntypedArea;
+      temp.ptr := Interlocked.Exchange(self.first_ptr, IntPtr.Zero);
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.first_ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
+    
+  end;
+  
+  {$endregion NativeArrayArea}
+  
+  {$endregion NativeArea}
+  
+  {$region Native}
+  
+  {$region NativeMemory}
+  
+  NativeMemory = partial class(IDisposable)
+    private _area: NativeMemoryArea;
+    
+    {$region constructor's}
+    
+    public constructor(sz: UIntPtr);
+    begin
+      self._area.sz := sz;
+      self._area.Alloc;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public property Area: NativeMemoryArea read _area;
+    
+    {$endregion property's}
+    
+    {$region IDisposable}
+    
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
+    protected procedure Finalize; override := Dispose;
+    
+    {$endregion IDisposable}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+    
+  end;
+  
+  {$endregion NativeMemory}
+  
   {$region NativeValue}
   
   NativeValue<T> = partial class(IDisposable)
   where T: record;
-    private ptr: IntPtr;
+    private _area := new NativeValueArea<T>(true);
     
     {$region constructor's}
     
-    private procedure Init;
-    begin
-      self.ptr := Marshal.AllocHGlobal(value_size);
-      GC.AddMemoryPressure(value_size);
-    end;
-    public constructor;
-    begin
-      Init;
-      self.MemoryArea.FillZero;
-    end;
-    public constructor(o: T);
-    begin
-      Init;
-      self.Value := o;
-    end;
+    public constructor := self.AreaUntyped.FillZero;
+    public constructor(o: T) := self.Value := o;
     public static function operator implicit(o: T): NativeValue<T> := new NativeValue<T>(o);
     
     {$endregion constructor's}
@@ -1057,23 +1290,18 @@ type
     private static value_size := Marshal.SizeOf&<T>;
     public static property ValueSize: integer read value_size;
     
-    public property MemoryArea: NativeMemoryArea read new NativeMemoryArea(ptr, new UIntPtr(value_size));
+    public property Area: NativeValueArea<T> read _area;
+    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
     
-    private function PtrUntyped := pointer(ptr);
-    public property Pointer: ^T read PtrUntyped();
-    public property Value: T read Pointer^ write Pointer^ := value;
+    public property Pointer: ^T read Area.Pointer;
+    public property Value: T read Area.Value write Area.Value := value;
     
     {$endregion property's}
     
     {$region IDisposable}
     
-    public procedure Dispose;
-    begin
-      var l_ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
-      if l_ptr=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(value_size);
-      Marshal.FreeHGlobal(l_ptr);
-    end;
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
     protected procedure Finalize; override := Dispose;
     
     {$endregion IDisposable}
@@ -1089,29 +1317,24 @@ type
   
   NativeArray<T> = partial class
   where T: record;
-    private area: NativeMemoryArea;
+    private _area: NativeArrayArea<T>;
     
     {$region constructor's}
     
-    private procedure AllocArea(length: integer);
-    begin
-      var sz := int64(item_size) * length;
-      self.area := new NativeMemoryArea(
-        Marshal.AllocHGlobal(new IntPtr(sz)),
-        new UIntPtr(sz)
-      );
-      GC.AddMemoryPressure(sz);
-    end;
-    public constructor(length: integer);
+    private procedure AllocArea(length: UInt32) :=
+    self._area := new NativeArrayArea<T>(length);
+    public constructor(length: UInt32);
     begin
       AllocArea(length);
-      self.area.FillZero;
+      self.AreaUntyped.FillZero;
     end;
     public constructor(a: array of T);
     begin
       AllocArea(a.Length);
-      self.area.CopyFrom(a);
+      self.AreaUntyped.CopyFrom(a);
     end;
+    
+    private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
     
@@ -1120,7 +1343,7 @@ type
     public function IndexOf(item: T): integer?;
     begin
       Result := nil;
-      for var i := 0 to ItemCount-1 do
+      for var i := 0 to Length-1 do
         if self.Item[i]=item then
         begin
           Result := i;
@@ -1132,48 +1355,19 @@ type
     
     {$region property's}
     
-    private static item_size := Marshal.SizeOf&<T>;
-    public static property ItemSize: integer read item_size;
+    public static property ItemSize: integer read Marshal.SizeOf&<T>;
     
-    public property MemoryArea: NativeMemoryArea read self.area;
-    public property ItemCount: cardinal read self.area.sz.ToUInt64 div item_size;
+    public property Area: NativeArrayArea<T> read self._area;
+    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
     
-    private function ItemPtrUntyped(i: integer) := pointer(area.ptr + i*item_size);
-    public property ItemPtrUnchecked[i: integer]: ^T read ItemPtrUntyped(i);
+    public property Length: cardinal read self.Area.item_count;
     
-    private function GetAndCheckItemPtr(i: integer): ^T;
-    begin
-      if cardinal(i)>=ItemCount then raise new IndexOutOfRangeException;
-      Result := ItemPtrUnchecked[i];
-    end;
-    public property ItemPtr[i: integer]: ^T read GetAndCheckItemPtr;
-    public property Item[i: integer]: T read ItemPtr[i]^ write ItemPtr[i]^ := value; default;
+    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read Area.ItemAreaUnchecked[i];
+    public property ItemArea[i: integer]: NativeValueArea<T> read Area.ItemArea[i];
+    public property Item[i: integer]: T read Area[i] write Area[i] := value; default;
     
-    public property SliceAreaUnchecked[r: IntRange]: NativeMemoryArea read new NativeMemoryArea(
-      self.area.ptr + r.Low*ItemSize,
-      new UIntPtr((r.High-r.Low+1) * int64(ItemSize))
-    );
-    private function GetSliceAreaAndCheck(r: IntRange): NativeMemoryArea;
-    begin
-      if r.Low<0 then raise new IndexOutOfRangeException('Low');
-      if cardinal(r.High)>=ItemCount then raise new IndexOutOfRangeException('High');
-      Result := SliceAreaUnchecked[r];
-    end;
-    public property SliceArea[r: IntRange]: NativeMemoryArea read GetSliceAreaAndCheck;
-    
-    private function GetSliceCopy(r: IntRange): array of T;
-    begin
-      var area := SliceArea[r];
-      Result := new T[r.High-r.Low+1];
-      area.CopyTo(Result);
-    end;
-    public property SliceCopy[r: IntRange]: array of T read GetSliceCopy write
-    begin
-      var expected_len := r.High-r.Low+1;
-      if value.Length<>expected_len then raise new ArgumentException($'%Err:NativeArray:SliceCopy:WriteSize%');
-      var area := SliceArea[r];
-      area.CopyFrom(value);
-    end;
+    public property SliceAreaUnchecked[r: IntRange]: NativeArrayArea<T> read Area.SliceUnchecked[r];
+    public property SliceArea[r: IntRange]: NativeArrayArea<T> read Area.Slice[r];
     
     {$endregion property's}
     
@@ -1195,7 +1389,7 @@ type
     public function MoveNext: boolean;
     begin
       i += 1;
-      Result := i < a.ItemCount;
+      Result := i < a.Length;
     end;
     public procedure Reset := self.i := -1;
     
@@ -1220,7 +1414,7 @@ type
     
     //TODO #????
     ///--
-    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.ItemCount;
+    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.Length;
     public property System.Collections.Generic.ICollection<T>.IsReadOnly: boolean read boolean(true);
     
     public procedure System.Collections.Generic.ICollection<T>.Add(item: T) := raise new NotSupportedException;
@@ -1235,8 +1429,8 @@ type
     
     public procedure CopyTo(&array: array of T; arrayIndex: integer);
     begin
-      if arrayIndex+self.ItemCount > &array.Length then raise new IndexOutOfRangeException;
-      self.area.CopyTo(&array[arrayIndex]);
+      if arrayIndex+self.Length > &array.Length then raise new IndexOutOfRangeException;
+      self.AreaUntyped.CopyTo(&array[arrayIndex]);
     end;
     
     {$endregion ICollection}
@@ -1250,13 +1444,8 @@ type
     
     {$region IDisposable}
     
-    public procedure Dispose;
-    begin
-      var l_ptr := Interlocked.Exchange(self.area.ptr, IntPtr.Zero);
-      if l_ptr=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(area.sz.ToUInt64);
-      Marshal.FreeHGlobal(l_ptr);
-    end;
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
     protected procedure Finalize; override := Dispose;
     
     {$endregion IDisposable}
@@ -1266,7 +1455,7 @@ type
       var sb := new StringBuilder;
       sb += TypeName(self);
       sb += '{';
-      if self.ItemCount<>0 then
+      if self.Length<>0 then
       begin
         sb += ' ';
         //TODO #????: as
@@ -1290,6 +1479,77 @@ type
   
   {$region OpenCL}
   
+  {$region MemoryUsage}
+  
+  MemoryUsage = record
+    private data: integer;
+    
+    private const can_read_bit = 1;
+    private const can_write_bit = 2
+    private const none_bits = 0;
+    private const read_write_bits = can_read_bit + can_write_bit;
+    
+    private constructor(data: integer) := self.data := data;
+    public constructor(can_read, can_write: boolean) := Create(
+      integer(can_read ) * can_read_bit +
+      integer(can_write) * can_write_bit
+    );
+    private static function operator implicit(data: integer): MemoryUsage := new MemoryUsage(data);
+    
+    public static property None:      MemoryUsage read new MemoryUsage(false, false);
+    public static property ReadOnly:  MemoryUsage read new MemoryUsage(true,  false);
+    public static property WriteOnly: MemoryUsage read new MemoryUsage(false, true);
+    public static property ReadWrite: MemoryUsage read new MemoryUsage(true,  true);
+    
+    public property CanRead: boolean read data and can_read_bit <> 0;
+    public property CanWrite: boolean read data and can_write_bit <> 0;
+    
+    private static function MakeCLFlags(kernel_use, map_use: MemoryUsage): MemFlags;
+    begin
+      
+      case kernel_use.data of
+        none_bits:
+          raise new ArgumentException($'%Err:MemoryUsage:NoKernelAccess%');
+        can_read_bit:
+          Result := MemFlags.MEM_READ_ONLY;
+        can_write_bit:
+          Result := MemFlags.MEM_WRITE_ONLY;
+        read_write_bits:
+          Result := MemFlags.MEM_READ_WRITE;
+        else
+          raise new ArgumentException($'%Err:MemoryUsage:Invalid%');
+      end;
+      
+      case map_use.data of
+        none_bits:
+          Result += MemFlags.MEM_HOST_NO_ACCESS;
+        can_read_bit:
+          Result += MemFlags.MEM_HOST_READ_ONLY;
+        can_write_bit:
+          Result += MemFlags.MEM_HOST_WRITE_ONLY;
+        read_write_bits:
+          ;
+        else
+          raise new ArgumentException($'%Err:MemoryUsage:Invalid%');
+      end;
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += typeof(MemoryUsage).Name;
+      res += '[';
+      if CanRead  then res += 'Read';
+      if CanWrite then res += 'Write';
+      res += ']';
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion MemoryUsage}
+  
   {$region CLMemorySegment}
   
   CLMemorySegment = partial class(IDisposable)
@@ -1297,22 +1557,25 @@ type
     
     {$region constructor's}
     
-    public constructor(size: UIntPtr; c: Context);
+    public constructor(size: UIntPtr; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), size, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(size.ToUInt64);
-      
     end;
-    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
-    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
+    public constructor(size: integer; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), c, kernel_use, map_use);
+    public constructor(size: int64;   c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), c, kernel_use, map_use);
     
-    public constructor(size: UIntPtr) := Create(size, Context.Default);
-    public constructor(size: integer) := Create(new UIntPtr(size));
-    public constructor(size: int64)   := Create(new UIntPtr(size));
+    public constructor(size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(size, Context.Default, kernel_use, map_use);
+    public constructor(size: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), kernel_use, map_use);
+    public constructor(size: int64;   kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), kernel_use, map_use);
     
     private constructor(ntv: cl_mem);
     begin
@@ -1341,21 +1604,18 @@ type
     
     {$region IDisposable}
     
-    private procedure FinishReleasing(prev_ntv: cl_mem); virtual :=
-    GC.RemoveMemoryPressure( GetSize(prev_ntv).ToUInt64 );
-    
     public procedure Dispose;
     begin
       var prev_ntv := new cl_mem( Interlocked.Exchange(self.ntv.val, IntPtr.Zero) );
       if prev_ntv=cl_mem.Zero then exit;
-      FinishReleasing(prev_ntv);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(prev_ntv) );
+      GC.SuppressFinalize(self);
     end;
     protected procedure Finalize; override := Dispose;
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLMemorySegment\Implicit.Interface!ContainerMethods.pas%}
+    {%ContainerMethods\CLMemorySegment\Implicit.Interface!ContainerOtherMethods.pas%}
     
     {%ContainerMethods\CLMemorySegment.Get\Implicit.Interface!ContainerGetMethods.pas%}
     
@@ -1367,32 +1627,30 @@ type
   
   CLMemorySubSegment = partial class(CLMemorySegment)
     private _parent: cl_mem;
-    // Forbid parent from disposing itself
-    private parent_dispose_lock: CLMemorySegment;
     
     {$region constructor's}
     
-    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region): cl_mem;
+    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region; flags: MemFlags): cl_mem;
     begin
       var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(parent, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      Result := cl.CreateSubBuffer(parent, flags, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    public constructor(parent: CLMemorySegment; origin, size: UIntPtr);
+    public constructor(parent: CLMemorySegment; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
-      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size)) );
+      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), MemoryUsage.MakeCLFlags(kernel_use, map_use)) );
       self._parent := parent.ntv;
-      self.parent_dispose_lock := parent;
     end;
-    public constructor(parent: CLMemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    public constructor(parent: CLMemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    public constructor(parent: CLMemorySegment; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
+    public constructor(parent: CLMemorySegment; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
     // For the CLMemorySegment.FromNative
     private constructor(parent, ntv: cl_mem);
     begin
       inherited Create(ntv);
-      self.parent_dispose_lock := nil;
       self._parent := parent;
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -1404,13 +1662,6 @@ type
     public property Parent: CLMemorySegment read CLMemorySegment.FromNative(_parent);
     
     {$endregion property's}
-    
-    {$region IDisposable}
-    
-    private procedure FinishReleasing(prev_ntv: cl_mem); override :=
-    self.parent_dispose_lock := nil;
-    
-    {$endregion IDisposable}
     
   end;
   
@@ -1424,34 +1675,36 @@ type
     
     {$region constructor's}
     
-    public constructor(c: Context);
+    public constructor(c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, new UIntPtr(ValueSize), IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ValueSize);
     end;
-    public constructor(c: Context; val: T);
+    public constructor(c: Context; val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ValueSize);
     end;
     
-    public constructor := Create(Context.Default);
-    public constructor(val: T) := Create(Context.Default, val);
+    public constructor(kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, kernel_use, map_use);
+    public constructor(val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, val, kernel_use, map_use);
     
     public constructor(ntv: cl_mem);
     begin
       self.ntv := ntv;
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
-      GC.AddMemoryPressure(ValueSize);
     end;
+    
+    public static function operator implicit(mem: CLValue<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
+    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
     
     {$endregion constructor's}
     
@@ -1468,14 +1721,14 @@ type
     begin
       var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
       if prev=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(ValueSize);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(new cl_mem(prev)) );
+      GC.SuppressFinalize(self);
     end;
     protected procedure Finalize; override := Dispose;
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLValue\Implicit.Interface!ContainerMethods.pas%}
+    {%ContainerMethods\CLValue\Implicit.Interface!ContainerOtherMethods.pas%}
     
     {%ContainerMethods\CLValue.Get\Implicit.Interface!ContainerGetMethods.pas%}
     
@@ -1491,45 +1744,46 @@ type
     
     {$region constructor's}
     
-    private procedure InitByLen(c: Context);
+    private procedure InitByLen(c: Context; kernel_use, map_use: MemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, new UIntPtr(ByteSize), IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ByteSize);
     end;
-    private procedure InitByVal(c: Context; var els: T);
+    private procedure InitByVal(c: Context; var els: T; kernel_use, map_use: MemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ByteSize);
     end;
     
-    public constructor(c: Context; len: integer);
+    public constructor(c: Context; len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       self.len := len;
-      InitByLen(c);
+      InitByLen(c, kernel_use, map_use);
     end;
-    public constructor(len: integer) := Create(Context.Default, len);
+    public constructor(len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, len, kernel_use, map_use);
     
-    public constructor(c: Context; els: array of T);
+    public constructor(c: Context; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       self.len := els.Length;
-      InitByVal(c, els[0]);
+      InitByVal(c, els[0], kernel_use, map_use);
     end;
-    public constructor(els: array of T) := Create(Context.Default, els);
+    public constructor(els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, els, kernel_use, map_use);
     
-    public constructor(c: Context; els_from, len: integer; params els: array of T);
+    public constructor(c: Context; els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       self.len := len;
-      InitByVal(c, els[els_from]);
+      InitByVal(c, els[els_from], kernel_use, map_use);
     end;
-    public constructor(els_from, len: integer; params els: array of T) := Create(Context.Default, els_from, len, els);
+    public constructor(els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, els_from, len, els, kernel_use, map_use);
     
     public constructor(ntv: cl_mem);
     begin
@@ -1543,8 +1797,11 @@ type
       self.ntv := ntv;
       
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
-      GC.AddMemoryPressure(ByteSize);
     end;
+    
+    public static function operator implicit(mem: CLArray<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
+    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
+    
     private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
@@ -1574,14 +1831,14 @@ type
     begin
       var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
       if prev=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(ByteSize);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(new cl_mem(prev)) );
+      GC.SuppressFinalize(self);
     end;
     protected procedure Finalize; override := Dispose;
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLArray\Implicit.Interface!ContainerMethods.pas%}
+    {%ContainerMethods\CLArray\Implicit.Interface!ContainerOtherMethods.pas%}
     
     {%ContainerMethods\CLArray.Get\Implicit.Interface!ContainerGetMethods.pas%}
     
@@ -1670,18 +1927,6 @@ type
   
   CommandQueueBase = abstract partial class
     
-    private static function DisplayNameForType(t: System.Type): string;
-    begin
-      Result := t.Name;
-      
-      if t.IsGenericType then
-      begin
-        var ind := Result.IndexOf('`');
-        Result := Result.Remove(ind) + '<' + t.GenericTypeArguments.Select(TypeToTypeName).JoinToString(', ') + '>';
-      end;
-      
-    end;
-    private function DisplayName: string; virtual := DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private static function GetValueRuntimeType<T>(val: T) :=
@@ -1706,7 +1951,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += DisplayName;
+      sb += TypeName(self);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -1882,7 +2127,7 @@ type
     public constructor(o: T) := self.res := o;
     private constructor := raise new OpenCLABCInternalException;
     
-    public property Value: T read res write res;
+    public property Value: T read res;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -1938,7 +2183,7 @@ type
         raise new InvalidOperationException($'%Err:Parameter:UnSet%');
       Result := self.def;
     end;
-    public property &Default: T read def write
+    public property &Default: T read GetDefault write
     begin
       self.def := value;
       self.def_is_set := true;
@@ -2022,6 +2267,9 @@ type
     
     public function ThenQuickUse(p: T->()           ): CommandQueue<T>;
     public function ThenQuickUse(p: (T, Context)->()): CommandQueue<T>;
+    
+    public function ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
+    public function ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
     
   end;
   
@@ -2148,7 +2396,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += DisplayName;
+      sb += TypeName(self);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -2163,7 +2411,6 @@ type
       sb.Append(ind);
       
     end;
-    private function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -2312,59 +2559,134 @@ type
   
   {$endregion CLTask}
   
+  {$region CCQ's}
+  
+  {$region KernelCCQ}
+  
+  KernelCCQ = sealed partial class
+    
+    {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
+    
+    {%ContainerMethods\Kernel.Exec\Explicit.Interface!ContainerExecMethods.pas%}
+    
+  end;
+  
+  Kernel = partial class
+    public function NewQueue := new KernelCCQ({%>self%});
+  end;
+  
+  {$endregion KernelCCQ}
+  
+  {$region MemorySegmentCCQ}
+  
+  CLMemorySegmentCCQ = sealed partial class
+    
+    {%ContainerCommon\CLMemorySegment\Interface!ContainerCommon.pas%}
+    
+    {%ContainerMethods\CLMemorySegment\Explicit.Interface!ContainerOtherMethods.pas%}
+    
+    {%ContainerMethods\CLMemorySegment.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    
+  end;
+  
+  CLMemorySegment = partial class
+    public function NewQueue := new CLMemorySegmentCCQ({%>self%});
+  end;
+  
+  {$endregion MemorySegmentCCQ}
+  
+  {$region CLValueCCQ}
+  
+  CLValueCCQ<T> = sealed partial class
+  where T: record;
+    
+    {%ContainerCommon\CLValue\Interface!ContainerCommon.pas%}
+    
+    {%ContainerMethods\CLValue\Explicit.Interface!ContainerOtherMethods.pas%}
+    
+    {%ContainerMethods\CLValue.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    
+  end;
+  
+  CLValue<T> = partial class
+    public function NewQueue := new CLValueCCQ<T>({%>self%});
+  end;
+  
+  {$endregion CLValueCCQ}
+  
+  {$region CLArrayCCQ}
+  
+  CLArrayCCQ<T> = sealed partial class
+  where T: record;
+    
+    {%ContainerCommon\CLArray\Interface!ContainerCommon.pas%}
+    
+    {%ContainerMethods\CLArray\Explicit.Interface!ContainerOtherMethods.pas%}
+    
+    {%ContainerMethods\CLArray.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    
+  end;
+  
+  CLArray<T> = partial class
+    public function NewQueue := new CLArrayCCQ<T>({%>self%});
+  end;
+  
+  {$endregion CLArrayCCQ}
+  
+  {$endregion CCQ's}
+  
   {$region KernelArg}
   
-  KernelArg = abstract partial class
+  {%KernelArg\interface!KernelArg.pas%}
+  
+  {$region Old}
+  (*)
+  
+  {$region Global}
+  
+  KernelGlobalArg = sealed class
+    private arg: KernelArg;
+    private constructor(arg: KernelArg) := self.arg := arg;
+    private constructor := raise new OpenCLABCInternalException;
+    public static function operator implicit(a: KernelGlobalArg): KernelArg := a.arg;
     
     {$region Managed}
-    
-    {$region Value}
-    
-    public static function FromValue<TRecord>(val: TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromValue(val); end;
-    
-    public static function FromValueCQ<TRecord>(val_q: CommandQueue<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val_q: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ConstQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ParameterQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(val_q); end;
-    
-    {$endregion Value}
     
     {$region Array}
     
     {$region 1}
     
-    public static function FromArray<TRecord>(a: array of TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: array of TRecord): KernelArg; where TRecord: record; begin Result := FromArray(a); end;
+    public static function FromArray<T>(a: array of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a: array of T): KernelGlobalArg; where T: record; begin Result := FromArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array of T>): KernelGlobalArg; where T: record; begin Result := FromArray(a_q.Value); end;
     
-    public static function FromArrayCQ<TRecord>(a_q: CommandQueue<array of TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
+    public static function FromArrayCQ<T>(a_q: CommandQueue<array of T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<array of T>): KernelGlobalArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array of T>): KernelGlobalArg; where T: record; begin Result := FromArrayCQ(a_q); end;
     
     {$endregion 1}
     
     {$region 2}
     
-    public static function FromArray2<TRecord>(a: array[,] of TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: array[,] of TRecord): KernelArg; where TRecord: record; begin Result := FromArray2(a); end;
+    public static function FromArray2<T>(a: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a: array[,] of T): KernelGlobalArg; where T: record; begin Result := FromArray2(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,] of T>): KernelGlobalArg; where T: record; begin Result := FromArray2(a_q.Value); end;
     
-    public static function FromArray2CQ<TRecord>(a_q: CommandQueue<array[,] of TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<array[,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray2CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<array[,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray2CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<array[,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray2CQ(a_q); end;
+    public static function FromArray2CQ<T>(a_q: CommandQueue<array[,] of T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,] of T>): KernelGlobalArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,] of T>): KernelGlobalArg; where T: record; begin Result := FromArray2CQ(a_q); end;
     
     {$endregion 2}
     
     {$region 3}
     
-    public static function FromArray3<TRecord>(a: array[,,] of TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: array[,,] of TRecord): KernelArg; where TRecord: record; begin Result := FromArray3(a); end;
+    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a: array[,,] of T): KernelGlobalArg; where T: record; begin Result := FromArray3(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,,] of T>): KernelGlobalArg; where T: record; begin Result := FromArray3(a_q.Value); end;
     
-    public static function FromArray3CQ<TRecord>(a_q: CommandQueue<array[,,] of TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<array[,,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray3CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<array[,,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray3CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<array[,,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray3CQ(a_q); end;
+    public static function FromArray3CQ<T>(a_q: CommandQueue<array[,,] of T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,,] of T>): KernelGlobalArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,,] of T>): KernelGlobalArg; where T: record; begin Result := FromArray3CQ(a_q); end;
     
     {$endregion 3}
     
@@ -2372,52 +2694,87 @@ type
     
     {$region ArraySegment}
     
-    public static function FromArraySegment<TRecord>(a: ArraySegment<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: ArraySegment<TRecord>): KernelArg; where TRecord: record; begin Result := FromArraySegment(a); end;
+    public static function FromArraySegment<T>(a: ArraySegment<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a: ArraySegment<T>): KernelGlobalArg; where T: record; begin Result := FromArraySegment(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<ArraySegment<T>>): KernelGlobalArg; where T: record; begin Result := FromArraySegment(a_q.Value); end;
     
-    public static function FromArraySegmentCQ<TRecord>(a_q: CommandQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record; begin Result := FromArraySegmentCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record; begin Result := FromArraySegmentCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record; begin Result := FromArraySegmentCQ(a_q); end;
+    public static function FromArraySegmentCQ<T>(a_q: CommandQueue<ArraySegment<T>>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<ArraySegment<T>>): KernelGlobalArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<ArraySegment<T>>): KernelGlobalArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
     
     {$endregion ArraySegment}
     
     {$endregion Managed}
     
-    {$region Native}
+    {$region NativeArea}
     
     {$region NativeMemoryArea}
     
-    public static function FromData(data: NativeMemoryArea): KernelArg;
-    public static function operator implicit(data: NativeMemoryArea): KernelArg := FromData(data);
-    public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record;
+    public static function FromNativeArea(area: NativeMemoryArea; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg;
+    public static function operator implicit(area: NativeMemoryArea): KernelGlobalArg := FromNativeArea(area);
     
-    public static function FromDataCQ(data_q: CommandQueue<NativeMemoryArea>): KernelArg;
-    public static function operator implicit(data_q: CommandQueue<NativeMemoryArea>): KernelArg := FromDataCQ(data_q);
+    public static function FromNativeMemoryAreaCQ(area_q: CommandQueue<NativeMemoryArea>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg;
+    public static function operator implicit(area_q: CommandQueue<NativeMemoryArea>): KernelGlobalArg := FromNativeMemoryAreaCQ(area_q);
     
     {$endregion NativeMemoryArea}
     
+    {$region NativeValueArea}
+    
+    public static function operator implicit<T>(area: NativeValueArea<T>): KernelGlobalArg; where T: record; begin FromNativeArea(area); end;
+    public static function operator implicit<T>(area_q: ConstQueue<NativeValueArea<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArea(area_q.Value); end;
+    
+    public static function FromNativeValueAreaCQ<T>(area_q: CommandQueue<NativeValueArea<T>>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(area_q: CommandQueue<NativeValueArea<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeValueAreaCQ(area_q); end;
+    public static function operator implicit<T>(area_q: ParameterQueue<NativeValueArea<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeValueAreaCQ(area_q); end;
+    
+    {$endregion NativeValueArea}
+    
+    {$region NativeArrayArea}
+    
+    public static function operator implicit<T>(area: NativeArrayArea<T>): KernelGlobalArg; where T: record; begin FromNativeArea(area); end;
+    public static function operator implicit<T>(area_q: ConstQueue<NativeArrayArea<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArea(area_q.Value); end;
+    
+    public static function FromNativeArrayAreaCQ<T>(area_q: CommandQueue<NativeArrayArea<T>>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(area_q: CommandQueue<NativeArrayArea<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArrayAreaCQ(area_q); end;
+    public static function operator implicit<T>(area_q: ParameterQueue<NativeArrayArea<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArrayAreaCQ(area_q); end;
+    
+    {$endregion NativeArrayArea}
+    
+    {$endregion NativeArea}
+    
+    {$region Native}
+    
+    {$region NativeMemorySegment}
+    
+    public static function FromNativeMemorySegment(mem: NativeMemorySegment; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg;
+    public static function operator implicit(mem: NativeMemorySegment): KernelGlobalArg := FromNativeMemorySegment(mem);
+    
+    public static function FromNativeMemorySegmentCQ(mem_q: CommandQueue<NativeMemorySegment>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg;
+    public static function operator implicit(mem_q: CommandQueue<NativeMemorySegment>): KernelGlobalArg := FromNativeMemorySegmentCQ(mem_q);
+    
+    {$endregion NativeMemorySegment}
+    
     {$region NativeValue}
     
-    public static function FromNativeValue<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record; begin Result := FromNativeValue(val); end;
+    public static function FromNativeValue<T>(val: NativeValue<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(val: NativeValue<T>): KernelGlobalArg; where T: record; begin Result := FromNativeValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<NativeValue<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeValue(val_q.Value); end;
     
-    public static function FromNativeValueCQ<TRecord>(val_q: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val_q: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ConstQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ParameterQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(val_q); end;
+    public static function FromNativeValueCQ<T>(val_q: CommandQueue<NativeValue<T>>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(val_q:   CommandQueue<NativeValue<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<NativeValue<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
     
-    {$endregion NativeValue}
+    {$endregion  NativeValue}
     
     {$region NativeArray}
     
-    public static function FromNativeArray<TRecord>(a: NativeArray<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: NativeArray<TRecord>): KernelArg; where TRecord: record; begin Result := FromNativeArray(a); end;
+    public static function FromNativeArray<T>(a: NativeArray<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a: NativeArray<T>): KernelGlobalArg; where T: record; begin Result := FromNativeArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<NativeArray<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArray(a_q.Value); end;
     
-    public static function FromNativeArrayCQ<TRecord>(a_q: CommandQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeArrayCQ(a_q); end;
+    public static function FromNativeArrayCQ<T>(a_q: CommandQueue<NativeArray<T>>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<NativeArray<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<NativeArray<T>>): KernelGlobalArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
     
     {$endregion NativeArray}
     
@@ -2427,53 +2784,580 @@ type
     
     {$region CLMemorySegment}
     
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelArg;
-    public static function operator implicit(mem: CLMemorySegment): KernelArg := FromCLMemorySegment(mem);
-    public static function operator implicit(mem: CLMemorySubSegment): KernelArg := FromCLMemorySegment(mem);
+    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelGlobalArg;
+    public static function operator implicit(mem: CLMemorySegment): KernelGlobalArg := FromCLMemorySegment(mem);
     
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelArg;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: ConstQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: ParameterQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
+    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg;
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg := FromCLMemorySegmentCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelGlobalArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
     
     {$endregion CLMemorySegment}
     
     {$region CLValue}
     
-    public static function FromCLValue<T>(val: CLValue<T>): KernelArg; where T: record;
-    public static function operator implicit<T>(val: CLValue<T>): KernelArg; where T: record; begin Result := FromCLValue(val); end;
+    public static function FromCLValue<T>(val: CLValue<T>): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(val: CLValue<T>): KernelGlobalArg; where T: record; begin Result := FromCLValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<CLValue<T>>): KernelGlobalArg; where T: record; begin Result := FromCLValue(val_q.Value); end;
     
-    public static function FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(val_q: CommandQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
-    public static function operator implicit<T>(val_q: ConstQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
+    public static function FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(val_q:   CommandQueue<CLValue<T>>): KernelGlobalArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<CLValue<T>>): KernelGlobalArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
+    
+    {$endregion CLValue}
+    
+    {$region CLArray}
+    
+    public static function FromCLArray<T>(a: CLArray<T>): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a: CLArray<T>): KernelGlobalArg; where T: record; begin Result := FromCLArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<CLArray<T>>): KernelGlobalArg; where T: record; begin Result := FromCLArray(a_q.Value); end;
+    
+    public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelGlobalArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<CLArray<T>>): KernelGlobalArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<CLArray<T>>): KernelGlobalArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    
+    {$endregion CLArray}
+    
+    {$endregion OpenCL}
+    
+    public function ToString: string; override := arg.ToString;
+    
+  end;
+  
+  {$endregion Global}
+  
+  {$region Constant}
+  
+  KernelConstantArg = sealed class
+    private arg: KernelArg;
+    private constructor(arg: KernelArg) := self.arg := arg;
+    private constructor := raise new OpenCLABCInternalException;
+    public static function operator implicit(a: KernelConstantArg): KernelArg := a.arg;
+    
+    {$region Managed}
+    
+    {$region Array}
+    
+    {$region 1}
+    
+    public static function FromArray<T>(a: array of T; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArray(a, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a: array of T): KernelConstantArg; where T: record; begin Result := FromArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array of T>): KernelConstantArg; where T: record; begin Result := FromArray(a_q.Value); end;
+    
+    public static function FromArrayCQ<T>(a_q: CommandQueue<array of T>; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArrayCQ(a_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a_q:   CommandQueue<array of T>): KernelConstantArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array of T>): KernelConstantArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    
+    {$endregion 1}
+    
+    {$region 2}
+    
+    public static function FromArray2<T>(a: array[,] of T; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArray2(a, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a: array[,] of T): KernelConstantArg; where T: record; begin Result := FromArray2(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,] of T>): KernelConstantArg; where T: record; begin Result := FromArray2(a_q.Value); end;
+    
+    public static function FromArray2CQ<T>(a_q: CommandQueue<array[,] of T>; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArray2CQ(a_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,] of T>): KernelConstantArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,] of T>): KernelConstantArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    
+    {$endregion 2}
+    
+    {$region 3}
+    
+    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArray3(a, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a: array[,,] of T): KernelConstantArg; where T: record; begin Result := FromArray3(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,,] of T>): KernelConstantArg; where T: record; begin Result := FromArray3(a_q.Value); end;
+    
+    public static function FromArray3CQ<T>(a_q: CommandQueue<array[,,] of T>; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArray3CQ(a_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,,] of T>): KernelConstantArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,,] of T>): KernelConstantArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    
+    {$endregion 3}
+    
+    {$endregion Array}
+    
+    {$region ArraySegment}
+    
+    public static function FromArraySegment<T>(a: ArraySegment<T>; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArraySegment(a, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a: ArraySegment<T>): KernelConstantArg; where T: record; begin Result := FromArraySegment(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<ArraySegment<T>>): KernelConstantArg; where T: record; begin Result := FromArraySegment(a_q.Value); end;
+    
+    public static function FromArraySegmentCQ<T>(a_q: CommandQueue<ArraySegment<T>>; c: Context := nil): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg.FromArraySegmentCQ(a_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a_q:   CommandQueue<ArraySegment<T>>): KernelConstantArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<ArraySegment<T>>): KernelConstantArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    
+    {$endregion ArraySegment}
+    
+    {$endregion Managed}
+    
+    {$region NativeArea}
+    
+    {$region NativeMemoryArea}
+    
+    public static function FromNativeArea(area: NativeMemoryArea; c: Context := nil) :=
+    new KernelConstantArg(KernelGlobalArg.FromNativeArea(area, c, MemoryUsage.ReadOnly));
+    public static function operator implicit(area: NativeMemoryArea): KernelConstantArg := FromNativeArea(area);
+    
+    public static function FromNativeMemoryAreaCQ(area_q: CommandQueue<NativeMemoryArea>; c: Context := nil) :=
+    new KernelConstantArg(KernelGlobalArg.FromNativeMemoryAreaCQ(area_q, c, MemoryUsage.ReadOnly));
+    public static function operator implicit(area_q: CommandQueue<NativeMemoryArea>): KernelConstantArg := FromNativeMemoryAreaCQ(area_q);
+    
+    {$endregion NativeMemoryArea}
+    
+    {$region NativeValueArea}
+    
+    public static function operator implicit<T>(area: NativeValueArea<T>): KernelConstantArg; where T: record; begin FromNativeArea(area); end;
+    public static function operator implicit<T>(area_q: ConstQueue<NativeValueArea<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArea(area_q.Value); end;
+    
+    public static function FromNativeValueAreaCQ<T>(area_q: CommandQueue<NativeValueArea<T>>; c: Context := nil): KernelConstantArg; where T: record;
+    begin Result := new KernelConstantArg(KernelGlobalArg.FromNativeValueAreaCQ(area_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(area_q: CommandQueue<NativeValueArea<T>>): KernelConstantArg; where T: record; begin Result := FromNativeValueAreaCQ(area_q); end;
+    public static function operator implicit<T>(area_q: ParameterQueue<NativeValueArea<T>>): KernelConstantArg; where T: record; begin Result := FromNativeValueAreaCQ(area_q); end;
+    
+    {$endregion NativeValueArea}
+    
+    {$region NativeArrayArea}
+    
+    public static function operator implicit<T>(area: NativeArrayArea<T>): KernelConstantArg; where T: record; begin FromNativeArea(area); end;
+    public static function operator implicit<T>(area_q: ConstQueue<NativeArrayArea<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArea(area_q.Value); end;
+    
+    public static function FromNativeArrayAreaCQ<T>(area_q: CommandQueue<NativeArrayArea<T>>; c: Context := nil): KernelConstantArg; where T: record;
+    begin Result := new KernelConstantArg(KernelGlobalArg.FromNativeArrayAreaCQ(area_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(area_q: CommandQueue<NativeArrayArea<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArrayAreaCQ(area_q); end;
+    public static function operator implicit<T>(area_q: ParameterQueue<NativeArrayArea<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArrayAreaCQ(area_q); end;
+    
+    {$endregion NativeArrayArea}
+    
+    {$endregion NativeArea}
+    
+    {$region Native}
+    
+    {$region NativeMemorySegment}
+    
+    public static function FromNativeMemorySegment(mem: NativeMemorySegment; c: Context := nil) :=
+    new KernelConstantArg(KernelGlobalArg.FromNativeMemorySegment(mem, c, MemoryUsage.ReadOnly));
+    public static function operator implicit(mem: NativeMemorySegment): KernelConstantArg := FromNativeMemorySegment(mem);
+    
+    public static function FromNativeMemorySegmentCQ(mem_q: CommandQueue<NativeMemorySegment>; c: Context := nil) :=
+    new KernelConstantArg(KernelGlobalArg.FromNativeMemorySegmentCQ(mem_q, c, MemoryUsage.ReadOnly));
+    public static function operator implicit(mem_q: CommandQueue<NativeMemorySegment>): KernelConstantArg := FromNativeMemorySegmentCQ(mem_q);
+    
+    {$endregion NativeMemorySegment}
+    
+    {$region NativeValue}
+    
+    public static function FromNativeValue<T>(val: NativeValue<T>; c: Context := nil): KernelConstantArg; where T: record;
+    begin Result := new KernelConstantArg(KernelGlobalArg.FromNativeValue(val, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(val: NativeValue<T>): KernelConstantArg; where T: record; begin Result := FromNativeValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<NativeValue<T>>): KernelConstantArg; where T: record; begin Result := FromNativeValue(val_q.Value); end;
+    
+    public static function FromNativeValueCQ<T>(val_q: CommandQueue<NativeValue<T>>; c: Context := nil): KernelConstantArg; where T: record;
+    begin Result := new KernelConstantArg(KernelGlobalArg.FromNativeValueCQ(val_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(val_q:   CommandQueue<NativeValue<T>>): KernelConstantArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<NativeValue<T>>): KernelConstantArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    
+    {$endregion  NativeValue}
+    
+    {$region NativeArray}
+    
+    public static function FromNativeArray<T>(a: NativeArray<T>; c: Context := nil): KernelConstantArg; where T: record;
+    begin Result := new KernelConstantArg(KernelGlobalArg.FromNativeArray(a, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a: NativeArray<T>): KernelConstantArg; where T: record; begin Result := FromNativeArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<NativeArray<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArray(a_q.Value); end;
+    
+    public static function FromNativeArrayCQ<T>(a_q: CommandQueue<NativeArray<T>>; c: Context := nil): KernelConstantArg; where T: record;
+    begin Result := new KernelConstantArg(KernelGlobalArg.FromNativeArrayCQ(a_q, c, MemoryUsage.ReadOnly)); end;
+    public static function operator implicit<T>(a_q:   CommandQueue<NativeArray<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<NativeArray<T>>): KernelConstantArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    
+    {$endregion NativeArray}
+    
+    {$endregion Native}
+    
+    {$region OpenCL}
+    
+    {$region CLMemorySegment}
+    
+    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem)); end;
+    public static function operator implicit(mem: CLMemorySegment): KernelConstantArg := FromCLMemorySegment(mem);
+    
+    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem_q)); end;
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelConstantArg := FromCLMemorySegmentCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelConstantArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    
+    {$endregion CLMemorySegment}
+    
+    {$region CLValue}
+    
+    public static function FromCLValue<T>(val: CLValue<T>): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg(val)); end;
+    public static function operator implicit<T>(val: CLValue<T>): KernelConstantArg; where T: record; begin Result := FromCLValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<CLValue<T>>): KernelConstantArg; where T: record; begin Result := FromCLValue(val_q.Value); end;
+    
+    public static function FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg(val_q)); end;
+    public static function operator implicit<T>(val_q:   CommandQueue<CLValue<T>>): KernelConstantArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<CLValue<T>>): KernelConstantArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
+    
+    {$endregion CLValue}
+    
+    {$region CLArray}
+    
+    public static function FromCLArray<T>(a: CLArray<T>): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg(a)); end;
+    public static function operator implicit<T>(a: CLArray<T>): KernelConstantArg; where T: record; begin Result := FromCLArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<CLArray<T>>): KernelConstantArg; where T: record; begin Result := FromCLArray(a_q.Value); end;
+    
+    public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelConstantArg; where T: record; begin Result := new KernelConstantArg(KernelGlobalArg(a_q)); end;
+    public static function operator implicit<T>(a_q:   CommandQueue<CLArray<T>>): KernelConstantArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<CLArray<T>>): KernelConstantArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    
+    {$endregion CLArray}
+    
+    {$endregion OpenCL}
+    
+    public function ToString: string; override := arg.ToString;
+    
+  end;
+  
+  {$endregion Constant}
+  
+  {$region Local}
+  
+  KernelLocalArg = sealed class
+    private arg: KernelArg;
+    private constructor(arg: KernelArg) := self.arg := arg;
+    private constructor := raise new OpenCLABCInternalException;
+    public static function operator implicit(a: KernelLocalArg): KernelArg := a.arg;
+    
+    {$region Bytes}
+    
+    public static function FromBytes(bytes: CommandQueue<UIntPtr>): KernelLocalArg;
+    
+    public static function FromBytes(bytes: CommandQueue<UInt32>) :=
+    FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<UInt64>) :=
+    FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    
+    {$endregion Bytes}
+    
+    {$region ItemCount}
+    
+    public static function FromItemCount<T>(count: CommandQueue<integer>): KernelLocalArg;
+    
+    public static function LikeArray<T>(a: array of T): KernelLocalArg; where T: record;
+    public static function LikeArray<T>(a: CommandQueue<array of T>): KernelLocalArg; where T: record;
+    
+    public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): KernelLocalArg; where T: record;
+    public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): KernelLocalArg; where T: record;
+    
+    public static function LikeNativeArray<T>(a: NativeArray<T>): KernelLocalArg; where T: record;
+    public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): KernelLocalArg; where T: record;
+    
+    public static function LikeCLArray<T>(a: CLArray<T>): KernelLocalArg; where T: record;
+    public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): KernelLocalArg; where T: record;
+    
+    {$endregion ItemCount}
+    
+    public function ToString: string; override := arg.ToString;
+    
+  end;
+  
+  {$endregion Local}
+  
+  {$region Private}
+  
+  KernelPrivateArg = sealed class
+    private arg: KernelArg;
+    private constructor(arg: KernelArg) := self.arg := arg;
+    private constructor := raise new OpenCLABCInternalException;
+    public static function operator implicit(a: KernelPrivateArg): KernelArg := a.arg;
+    
+    {$region Managed}
+    
+    {$region Value}
+    
+    public static function FromValue<T>(val: T): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(val: T): KernelPrivateArg; where T: record; begin Result := FromValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<T>): KernelPrivateArg; where T: record; begin Result := FromValue(val_q.Value); end;
+    
+    public static function FromValueCQ<T>(val_q: CommandQueue<T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(val_q:   CommandQueue<T>): KernelPrivateArg; where T: record; begin Result := FromValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<T>): KernelPrivateArg; where T: record; begin Result := FromValueCQ(val_q); end;
+    
+    {$endregion Value}
+    
+    {$region Array}
+    
+    {$region 1}
+    
+    public static function FromArray<T>(a: array of T): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a: array of T): KernelPrivateArg; where T: record; begin Result := FromArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array of T>): KernelPrivateArg; where T: record; begin Result := FromArray(a_q.Value); end;
+    
+    public static function FromArrayCQ<T>(a_q: CommandQueue<array of T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<array of T>): KernelPrivateArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array of T>): KernelPrivateArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    
+    {$endregion 1}
+    
+    {$region 2}
+    
+    public static function FromArray2<T>(a: array[,] of T): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a: array[,] of T): KernelPrivateArg; where T: record; begin Result := FromArray2(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,] of T>): KernelPrivateArg; where T: record; begin Result := FromArray2(a_q.Value); end;
+    
+    public static function FromArray2CQ<T>(a_q: CommandQueue<array[,] of T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,] of T>): KernelPrivateArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,] of T>): KernelPrivateArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    
+    {$endregion 2}
+    
+    {$region 3}
+    
+    public static function FromArray3<T>(a: array[,,] of T): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a: array[,,] of T): KernelPrivateArg; where T: record; begin Result := FromArray3(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,,] of T>): KernelPrivateArg; where T: record; begin Result := FromArray3(a_q.Value); end;
+    
+    public static function FromArray3CQ<T>(a_q: CommandQueue<array[,,] of T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,,] of T>): KernelPrivateArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,,] of T>): KernelPrivateArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    
+    {$endregion 3}
+    
+    {$endregion Array}
+    
+    {$region ArraySegment}
+    
+    public static function FromArraySegment<T>(a: ArraySegment<T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a: ArraySegment<T>): KernelPrivateArg; where T: record; begin Result := FromArraySegment(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<ArraySegment<T>>): KernelPrivateArg; where T: record; begin Result := FromArraySegment(a_q.Value); end;
+    
+    public static function FromArraySegmentCQ<T>(a_q: CommandQueue<ArraySegment<T>>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<ArraySegment<T>>): KernelPrivateArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<ArraySegment<T>>): KernelPrivateArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    
+    {$endregion ArraySegment}
+    
+    {$endregion Managed}
+    
+    {$region Native}
+    
+    {$region NativeMemoryArea}
+    
+    public static function FromNativeArea(area: NativeMemoryArea): KernelPrivateArg;
+    public static function operator implicit(area: NativeMemoryArea): KernelPrivateArg := FromNativeArea(area);
+    
+    public static function FromNativeAreaCQ(area_q: CommandQueue<NativeMemoryArea>): KernelPrivateArg;
+    public static function operator implicit(area_q: CommandQueue<NativeMemoryArea>): KernelPrivateArg := FromNativeAreaCQ(area_q);
+    
+    {$endregion NativeMemoryArea}
+    
+    {$region NativeValue}
+    
+    public static function FromNativeValue<T>(val: NativeValue<T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(val: NativeValue<T>): KernelPrivateArg; where T: record; begin Result := FromNativeValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<NativeValue<T>>): KernelPrivateArg; where T: record; begin Result := FromNativeValue(val_q.Value); end;
+    
+    public static function FromNativeValueCQ<T>(val_q: CommandQueue<NativeValue<T>>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(val_q:   CommandQueue<NativeValue<T>>): KernelPrivateArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<NativeValue<T>>): KernelPrivateArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    
+    {$endregion  NativeValue}
+    
+    {$region NativeArray}
+    
+    public static function FromNativeArray<T>(a: NativeArray<T>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a: NativeArray<T>): KernelPrivateArg; where T: record; begin Result := FromNativeArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<NativeArray<T>>): KernelPrivateArg; where T: record; begin Result := FromNativeArray(a_q.Value); end;
+    
+    public static function FromNativeArrayCQ<T>(a_q: CommandQueue<NativeArray<T>>): KernelPrivateArg; where T: record;
+    public static function operator implicit<T>(a_q:   CommandQueue<NativeArray<T>>): KernelPrivateArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<NativeArray<T>>): KernelPrivateArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    
+    {$endregion NativeArray}
+    
+    {$endregion Native}
+    
+    public function ToString: string; override := arg.ToString;
+    
+  end;
+  
+  {$endregion Private}
+  
+  {$region Generic}
+  
+  KernelArg = abstract partial class
+    
+    {$region Managed}
+    
+    {$region Value}
+    
+    public static function FromValue<T>(val: T): KernelPrivateArg; where T: record;
+    begin Result := val; end;
+    public static function operator implicit<T>(val: T): KernelArg; where T: record; begin Result := FromValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<T>): KernelArg; where T: record; begin Result := FromValue(val_q.Value); end;
+    
+    public static function FromValueCQ<T>(val_q: CommandQueue<T>): KernelPrivateArg; where T: record;
+    begin Result := val_q; end;
+    public static function operator implicit<T>(val_q:   CommandQueue<T>): KernelArg; where T: record; begin Result := FromValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<T>): KernelArg; where T: record; begin Result := FromValueCQ(val_q); end;
+    
+    {$endregion Value}
+    
+    {$region Array}
+    
+    {$region 1}
+    
+    public static function FromArray<T>(a: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a; end;
+    public static function operator implicit<T>(a: array of T): KernelArg; where T: record; begin Result := FromArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array of T>): KernelArg; where T: record; begin Result := FromArray(a_q.Value); end;
+    
+    public static function FromArrayCQ<T>(a_q: CommandQueue<array of T>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a_q; end;
+    public static function operator implicit<T>(a_q:   CommandQueue<array of T>): KernelArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array of T>): KernelArg; where T: record; begin Result := FromArrayCQ(a_q); end;
+    
+    {$endregion 1}
+    
+    {$region 2}
+    
+    public static function FromArray2<T>(a: array[,] of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a; end;
+    public static function operator implicit<T>(a: array[,] of T): KernelArg; where T: record; begin Result := FromArray2(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,] of T>): KernelArg; where T: record; begin Result := FromArray2(a_q.Value); end;
+    
+    public static function FromArray2CQ<T>(a_q: CommandQueue<array[,] of T>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a_q; end;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,] of T>): KernelArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,] of T>): KernelArg; where T: record; begin Result := FromArray2CQ(a_q); end;
+    
+    {$endregion 2}
+    
+    {$region 3}
+    
+    public static function FromArray3<T>(a: array[,,] of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a; end;
+    public static function operator implicit<T>(a: array[,,] of T): KernelArg; where T: record; begin Result := FromArray3(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<array[,,] of T>): KernelArg; where T: record; begin Result := FromArray3(a_q.Value); end;
+    
+    public static function FromArray3CQ<T>(a_q: CommandQueue<array[,,] of T>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a_q; end;
+    public static function operator implicit<T>(a_q:   CommandQueue<array[,,] of T>): KernelArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<array[,,] of T>): KernelArg; where T: record; begin Result := FromArray3CQ(a_q); end;
+    
+    {$endregion 3}
+    
+    {$endregion Array}
+    
+    {$region ArraySegment}
+    
+    public static function FromArraySegment<T>(a: ArraySegment<T>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a; end;
+    public static function operator implicit<T>(a: ArraySegment<T>): KernelArg; where T: record; begin Result := FromArraySegment(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<ArraySegment<T>>): KernelArg; where T: record; begin Result := FromArraySegment(a_q.Value); end;
+    
+    public static function FromArraySegmentCQ<T>(a_q: CommandQueue<ArraySegment<T>>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a_q; end;
+    public static function operator implicit<T>(a_q:   CommandQueue<ArraySegment<T>>): KernelArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<ArraySegment<T>>): KernelArg; where T: record; begin Result := FromArraySegmentCQ(a_q); end;
+    
+    {$endregion ArraySegment}
+    
+    {$endregion Managed}
+    
+    {$region Native}
+    
+    {$region NativeValue}
+    
+    public static function FromNativeValue<T>(val: NativeValue<T>): KernelPrivateArg; where T: record;
+    begin Result := val; end;
+    public static function operator implicit<T>(val: NativeValue<T>): KernelArg; where T: record; begin Result := FromNativeValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<NativeValue<T>>): KernelArg; where T: record; begin Result := FromNativeValue(val_q.Value); end;
+    
+    public static function FromNativeValueCQ<T>(val_q: CommandQueue<NativeValue<T>>): KernelPrivateArg; where T: record;
+    begin Result := val_q; end;
+    public static function operator implicit<T>(val_q:   CommandQueue<NativeValue<T>>): KernelArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    public static function operator implicit<T>(val_q: ParameterQueue<NativeValue<T>>): KernelArg; where T: record; begin Result := FromNativeValueCQ(val_q); end;
+    
+    {$endregion  NativeValue}
+    
+    {$region NativeArray}
+    
+    public static function FromNativeArray<T>(a: NativeArray<T>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a; end;
+    public static function operator implicit<T>(a: NativeArray<T>): KernelArg; where T: record; begin Result := FromNativeArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<NativeArray<T>>): KernelArg; where T: record; begin Result := FromNativeArray(a_q.Value); end;
+    
+    public static function FromNativeArrayCQ<T>(a_q: CommandQueue<NativeArray<T>>; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelGlobalArg; where T: record;
+    begin Result := a_q; end;
+    public static function operator implicit<T>(a_q:   CommandQueue<NativeArray<T>>): KernelArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    public static function operator implicit<T>(a_q: ParameterQueue<NativeArray<T>>): KernelArg; where T: record; begin Result := FromNativeArrayCQ(a_q); end;
+    
+    {$endregion NativeArray}
+    
+    {$endregion Native}
+    
+    {$region OpenCL}
+    
+    {$region CLMemorySegment}
+    
+    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelGlobalArg := mem;
+    public static function operator implicit(mem: CLMemorySegment): KernelArg := FromCLMemorySegment(mem);
+    
+    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg := mem_q;
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    
+    {$endregion CLMemorySegment}
+    
+    {$region CLValue}
+    
+    public static function FromCLValue<T>(val: CLValue<T>): KernelGlobalArg; where T: record;
+    begin Result := val; end;
+    public static function operator implicit<T>(val: CLValue<T>): KernelArg; where T: record; begin Result := FromCLValue(val); end;
+    public static function operator implicit<T>(val_q: ConstQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValue(val_q.Value); end;
+    
+    public static function FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelGlobalArg; where T: record;
+    begin Result := val_q; end;
+    public static function operator implicit<T>(val_q:   CommandQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
     public static function operator implicit<T>(val_q: ParameterQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
     
     {$endregion CLValue}
     
     {$region CLArray}
     
-    public static function FromCLArray<T>(a: CLArray<T>): KernelArg; where T: record;
+    public static function FromCLArray<T>(a: CLArray<T>): KernelGlobalArg; where T: record;
+    begin Result := a; end;
     public static function operator implicit<T>(a: CLArray<T>): KernelArg; where T: record; begin Result := FromCLArray(a); end;
+    public static function operator implicit<T>(a_q: ConstQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArray(a_q.Value); end;
     
-    public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
-    public static function operator implicit<T>(a_q: ConstQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
+    public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelGlobalArg; where T: record;
+    begin Result := a_q; end;
+    public static function operator implicit<T>(a_q:   CommandQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
     public static function operator implicit<T>(a_q: ParameterQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
     
     {$endregion CLArray}
     
     {$endregion OpenCL}
     
+  end;
+  
+  {$endregion Generic}
+  
+  (**)
+  {$endregion Old}
+  
+  {$region ToString}
+  
+  KernelArg = abstract partial class
+    
     {$region ToString}
     
-    private function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     private static procedure ToStringRuntimeValue<T>(sb: StringBuilder; val: T) := CommandQueueBase.ToStringRuntimeValue(sb, val);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
     begin
       if write_tabs then sb.Append(#9, tabs);
-      sb += DisplayName;
+      sb += TypeName(self);
       
       ToStringImpl(sb, tabs+1, index, delayed);
       
@@ -2507,95 +3391,9 @@ type
     
   end;
   
+  {$endregion ToString}
+  
   {$endregion KernelArg}
-  
-  {$region CCQ's}
-  
-  {$region KernelCCQ}
-  
-  KernelCCQ = sealed partial class
-    
-    {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
-    
-    {%ContainerMethods\Kernel\Explicit.Interface!ContainerMethods.pas%}
-    
-  end;
-  
-  Kernel = partial class
-    public function NewQueue := new KernelCCQ({%>self%});
-  end;
-  
-  {$endregion KernelCCQ}
-  
-  {$region MemorySegmentCCQ}
-  
-  CLMemorySegmentCCQ = sealed partial class
-    
-    {%ContainerCommon\CLMemorySegment\Interface!ContainerCommon.pas%}
-    
-    {%ContainerMethods\CLMemorySegment\Explicit.Interface!ContainerMethods.pas%}
-    
-    {%ContainerMethods\CLMemorySegment.Get\Explicit.Interface!ContainerGetMethods.pas%}
-    
-  end;
-  
-  CLMemorySegment = partial class
-    public function NewQueue := new CLMemorySegmentCCQ({%>self%});
-  end;
-  
-  KernelArg = abstract partial class
-    public static function operator implicit(mem_q: CLMemorySegmentCCQ): KernelArg;
-  end;
-  
-  {$endregion MemorySegmentCCQ}
-  
-  {$region CLValueCCQ}
-  
-  CLValueCCQ<T> = sealed partial class
-  where T: record;
-    
-    {%ContainerCommon\CLValue\Interface!ContainerCommon.pas%}
-    
-    {%ContainerMethods\CLValue\Explicit.Interface!ContainerMethods.pas%}
-    
-    {%ContainerMethods\CLValue.Get\Explicit.Interface!ContainerGetMethods.pas%}
-    
-  end;
-  
-  CLValue<T> = partial class
-    public function NewQueue := new CLValueCCQ<T>({%>self%});
-  end;
-  
-  KernelArg = abstract partial class
-    public static function operator implicit<T>(val_q: CLValueCCQ<T>): KernelArg; where T: record;
-  end;
-  
-  {$endregion CLValueCCQ}
-  
-  {$region CLArrayCCQ}
-  
-  CLArrayCCQ<T> = sealed partial class
-  where T: record;
-    
-    {%ContainerCommon\CLArray\Interface!ContainerCommon.pas%}
-    
-    {%ContainerMethods\CLArray\Explicit.Interface!ContainerMethods.pas%}
-    
-    {%ContainerMethods\CLArray.Get\Explicit.Interface!ContainerGetMethods.pas%}
-    
-  end;
-  
-  CLArray<T> = partial class
-    public function NewQueue := new CLArrayCCQ<T>({%>self%});
-  end;
-  
-  KernelArg = abstract partial class
-    public static function operator implicit<T>(a_q: CLArrayCCQ<T>): KernelArg; where T: record;
-  end;
-  
-  {$endregion CLArrayCCQ}
-  
-  {$endregion CCQ's}
   
 {$region Global subprograms}
 
@@ -2765,10 +3563,7 @@ begin
   );
   
   if parent=cl_mem.Zero then
-  begin
-    Result := new CLMemorySegment(ntv);
-    GC.AddMemoryPressure(Result.Size64);
-  end else
+    Result := new CLMemorySegment(ntv) else
     Result := new CLMemorySubSegment(parent, ntv);
   
 end;
@@ -2808,12 +3603,14 @@ type
     private static blittable_cache := new Dictionary<System.Type, System.Type>;
     public static function Blame(t: System.Type): System.Type;
     begin
+      Result := nil;
       if t.IsPointer then exit;
       if t.IsClass then
       begin
         Result := t;
         exit;
       end;
+      if blittable_cache.TryGetValue(t, Result) then exit;
       
       var o := System.Activator.CreateInstance(t);
       try
@@ -2843,24 +3640,21 @@ type
     
   end;
   
-  NativeValue<T> = partial class
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:NativeValue%');
-  end;
-  NativeArray<T> = partial class
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:NativeArray%');
-  end;
-  
   CLValue<T> = partial class
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLValue%');
+    BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLValue%');
   end;
   CLArray<T> = partial class
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLArray%');
+    BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLArray%');
   end;
   
+static constructor NativeValueArea<T>.Create :=
+BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeValue[Area]%');
+
+static constructor NativeArrayArea<T>.Create :=
+BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeArray[Area]%');
+
 {$endregion Blittable}
 
 {$region InterlockedBoolean}
@@ -3399,6 +4193,73 @@ type
   
 {$endregion EventList}
 
+{$region DoubleEventListList}
+
+type
+  DoubleEventListList = sealed class
+    private evs: array of EventList;
+    private c1 := 0;
+    private c2 := 0;
+    {$ifdef DEBUG}
+    private skipped := 0;
+    {$endif DEBUG}
+    
+    public constructor(cap: integer) :=
+    evs := new EventList[cap];
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property Capacity: integer read evs.Length;
+    
+    public procedure AddL1(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        evs[c1] := ev;
+        c1 += 1;
+      end;
+    end;
+    public procedure AddL2(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        c2 += 1;
+        evs[evs.Length-c2] := ev;
+      end;
+    end;
+    
+    private procedure CheckDone;
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2+skipped}/{evs.Length} used');
+      {$endif DEBUG}
+    end;
+    
+    public function MakeLists: ValueTuple<EventList, EventList>;
+    begin
+      CheckDone;
+      Result := ValueTuple.Create(
+        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
+        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
+      );
+    end;
+    public function CombineAll: EventList;
+    begin
+      CheckDone;
+      Result := EventList.Combine(evs);
+    end;
+    
+  end;
+  
+{$endregion DoubleEventListList}
+
 {$region CLTaskGlobalData}
 
 type
@@ -3683,7 +4544,7 @@ type
     public procedure Invoke(c: Context);
     begin
       {$ifdef DEBUG}
-      if was_invoked then raise new System.InvalidProgramException($'{self.GetType}: {System.Environment.StackTrace}');
+      if was_invoked then raise new System.InvalidProgramException($'{TypeName(self)}: {System.Environment.StackTrace}');
       was_invoked := true;
       {$endif DEBUG}
       for var i := 0 to count-1 do
@@ -3770,7 +4631,7 @@ type
     protected procedure Finalize; override;
     begin
       {$ifdef DEBUG}
-      if not complition_delegate.was_invoked then raise new System.InvalidProgramException($'{self.GetType}');
+      if not complition_delegate.was_invoked then raise new System.InvalidProgramException(TypeName(self));
       {$endif DEBUG}
     end;
     
@@ -3879,7 +4740,7 @@ type
     begin
       var res_l := CLTaskLocalData(self.TakeBaseOut);
       
-      if res_l.ShouldInstaCallAction or (res_const and can_insta_call) then
+      if can_insta_call ? self.IsConst : res_l.ShouldInstaCallAction then
         Result := factory.MakeConst(res_l, transform(self.GetResDirect, c)) else
       begin
         Result := factory.MakeDelayed(res_l);
@@ -3897,7 +4758,14 @@ type
     
     public property ResEv: EventList read base.ResEv; override;
     
-    public property IsConst: boolean read res_const;
+    private function GetIsConst: boolean;
+    begin
+      Result := res_const;
+      {$ifdef DEBUG}
+      if Result and not ShouldInstaCallAction then raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
+    end;
+    public property IsConst: boolean read GetIsConst;
     
     public procedure AddResSetter(d: Context->T);
     begin
@@ -3911,7 +4779,7 @@ type
     public procedure SetRes(res: T);
     begin
       {$ifdef DEBUG}
-      if res_const then raise new OpenCLABCInternalException($'');
+      if res_const then raise new OpenCLABCInternalException($'Result set on const qr');
       {$endif DEBUG}
       SetResDirect(res);
     end;
@@ -3963,7 +4831,7 @@ type
   QueueResPtr<T> = sealed class(QueueRes<T>)
     private res: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:QueueResPtr%');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:QueueResPtr%');
     
     public constructor(l: CLTaskLocalData) := InitDelayed(l);
     public constructor(make_l: QueueResPtr<T>->CLTaskLocalData) := InitDelayed(make_l(self));
@@ -4015,7 +4883,7 @@ begin
   {$endif DEBUG}
     ;
   
-  var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}.ThenAttachInvokeActions, after [{self.ResEv.evs?.JoinToString}]'{$endif});
+  var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {TypeName(self)}.ThenAttachInvokeActions, after [{self.ResEv.evs?.JoinToString}]'{$endif});
   Result := uev;
   
   var c := g.c;
@@ -4023,7 +4891,7 @@ begin
   begin
     self.InvokeActions(c);
     uev.SetComplete;
-  end{$ifdef EventDebug}, $'body of {self.GetType}.ThenAttachInvokeActions with res_ev={uev}'{$endif});
+  end{$ifdef EventDebug}, $'body of {TypeName(self)}.ThenAttachInvokeActions with res_ev={uev}'{$endif});
   
 end;
 //TODO #????
@@ -4451,6 +5319,8 @@ type
     begin
       if cq is CastQueueBase<TInp>(var cqb) then
         Result := cqb.SourceBase.Cast&<TRes> else
+      if cq is ConstQueue<TInp>(var c_q) then
+        Result := new ConstQueue<TRes>(TRes(c_q.Value as object)) else
         Result := new CastQueue<TInp, TRes>(cq);
     end;
     
@@ -4543,7 +5413,7 @@ type
       
       Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartBackgroundWork(
         prev_qr.ResEv, make_body(prev_qr, g.curr_err_handler, g.c, qr), g.cl_c
-        {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
       )));
       
     end;
@@ -4660,7 +5530,7 @@ type
       
       Result := new QueueResNil(new CLTaskLocalData(UserEvent.StartBackgroundWork(
         prev_qr.ResEv, MakeNilBody(prev_qr, g.curr_err_handler, g.c), g.cl_c
-        {$ifdef EventDebug}, $'nil body of {self.GetType}'{$endif}
+        {$ifdef EventDebug}, $'nil body of {TypeName(self)}'{$endif}
       )));
       
     end;
@@ -4673,13 +5543,13 @@ type
         qr_factory.MakeConst(
           new CLTaskLocalData(UserEvent.StartBackgroundWork(
             prev_qr.ResEv, MakeNilBody(prev_qr, g.curr_err_handler, g.c), g.cl_c
-            {$ifdef EventDebug}, $'const body of {self.GetType}'{$endif}
+            {$ifdef EventDebug}, $'const body of {TypeName(self)}'{$endif}
           )), prev_qr.GetResDirect
         ) else
         qr_factory.MakeDelayed(
           qr->new CLTaskLocalData(UserEvent.StartBackgroundWork(
             prev_qr.ResEv, MakeResBody(prev_qr, g.curr_err_handler, g.c, qr), g.cl_c
-            {$ifdef EventDebug}, $'delayed body of {self.GetType}'{$endif}
+            {$ifdef EventDebug}, $'delayed body of {TypeName(self)}'{$endif}
           ))
         );
       
@@ -4728,11 +5598,13 @@ type
   where TFunc: Delegate;
     private q: CommandQueue<TInp>;
     private f: TFunc;
+    private can_insta_call: boolean;
     
-    public constructor(q: CommandQueue<TInp>; f: TFunc);
+    public constructor(q: CommandQueue<TInp>; f: TFunc; can_insta_call: boolean);
     begin
       self.q := q;
       self.f := f;
+      self.can_insta_call := can_insta_call;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -4746,7 +5618,7 @@ type
       Result := new QueueResNil(prev_qr.TakeBaseOut);
       
       var d := QueueResActionUtils.HandlerWrapStrip(g.curr_err_handler, ExecFunc);
-      if Result.ShouldInstaCallAction then
+      if can_insta_call ? prev_qr.IsConst : Result.ShouldInstaCallAction then
         d(prev_qr.GetResDirect, g.c) else
         Result.AddAction(c->d(prev_qr.GetResDirect,c));
       
@@ -4756,7 +5628,7 @@ type
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
     begin
       var prev_qr := q.InvokeToAny(g, l);
-      Result := prev_qr.TransformResultErrWrap(qr_factory, g, false, ExecFunc);
+      Result := prev_qr.TransformResultErrWrap(qr_factory, g, can_insta_call, ExecFunc);
     end;
     protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<TRes>; override := Invoke(g, l, qr_val_factory);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
@@ -4787,10 +5659,10 @@ type
   end;
   
 function CommandQueue<T>.ThenQuickConvert<TOtp>(f: T->TOtp) :=
-new CommandQueueThenQuickConvert<T, TOtp>(self, f);
+new CommandQueueThenQuickConvert<T, TOtp>(self, f, false);
 
 function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, Context)->TOtp) :=
-new CommandQueueThenQuickConvertC<T, TOtp>(self, f);
+new CommandQueueThenQuickConvertC<T, TOtp>(self, f, false);
 
 {$endregion ThenQuickConvert}
 
@@ -4870,6 +5742,19 @@ function CommandQueue<T>.ThenQuickUse(p: (T, Context)->()) :=
 new CommandQueueThenQuickUseC<T>(self, p);
 
 {$endregion ThenQuickUse}
+
+{$region ThenConstConvert}
+
+//TODO #????: Need explicit ": CommandQueue<TOtp>"???
+function CommandQueue<T>.ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> :=
+if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value)) else
+new CommandQueueThenQuickConvert<T, TOtp>(self, f, true);
+
+function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp> :=
+if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value, nil)) else
+new CommandQueueThenQuickConvertC<T, TOtp>(self, f, true);
+
+{$endregion ThenConstConvert}
 
 {$region +/*}
 
@@ -5785,7 +6670,7 @@ type
     begin
       Result := new WaitHandlerDirect;
       {$ifdef WaitDebug}
-      WaitDebug.RegisterAction(Result, $'Created for {self.GetType.Name}[{self.GetHashCode}]');
+      WaitDebug.RegisterAction(Result, $'Created for {TypeName(self)}[{self.GetHashCode}]');
       {$endif WaitDebug}
     end);
     
@@ -6835,671 +7720,6 @@ new CommandQueueHandleReplaceRes<T>(self, handler);
 
 {$endregion Queue converter's}
 
-{$region KernelArg}
-
-{$region Base}
-
-type
-  ISetableKernelArg = interface
-    procedure SetArg(k: cl_kernel; ind: UInt32);
-  end;
-  KernelArg = abstract partial class
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; abstract;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
-    
-  end;
-  
-{$endregion Base}
-
-{$region Const}
-
-{$region Base}
-
-type
-  ConstKernelArg = abstract class(KernelArg, ISetableKernelArg)
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    new QueueResVal<ISetableKernelArg>(new CLTaskLocalData, self);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); abstract;
-    
-  end;
-  
-{$endregion Base}
-
-{$region Managed}
-
-{$region Value}
-
-type
-  KernelArgValue<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(val: TRecord) := self.val^ := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(new IntPtr(val));
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.val^);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromValue<TRecord>(val: TRecord) := new KernelArgValue<TRecord>(val);
-
-{$endregion Value}
-
-{$region Array}
-
-type
-  KernelArgArray<TRecord, TArray> = sealed class(ConstKernelArg)
-  where TRecord: record;
-  where TArray: System.Array;
-    private hnd: GCHandle;
-    private ptr: IntPtr;
-    private sz: UIntPtr;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(a: TArray);
-    begin
-      self.hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      self.ptr := hnd.AddrOfPinnedObject;
-      //TODO #2648
-      self.sz := new UIntPtr(Marshal.SizeOf&<TRecord> * (a as System.Array).Length);
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    if hnd.IsAllocated then hnd.Free;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, sz, ptr.ToPointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, hnd.Target as TArray);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromArray<TRecord>(a: array of TRecord) := new KernelArgArray<TRecord, array of TRecord>(a);
-static function KernelArg.FromArray2<TRecord>(a: array[,] of TRecord) := new KernelArgArray<TRecord, array[,] of TRecord>(a);
-static function KernelArg.FromArray3<TRecord>(a: array[,,] of TRecord) := new KernelArgArray<TRecord, array[,,] of TRecord>(a);
-
-{$endregion Array}
-
-{$region ArraySegment}
-
-type
-  KernelArgArraySegment<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private hnd: GCHandle;
-    private ptr: IntPtr;
-    private sz: UIntPtr;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(a: ArraySegment<TRecord>);
-    begin
-      self.hnd := GCHandle.Alloc(a.Array, GCHandleType.Pinned);
-      self.ptr := hnd.AddrOfPinnedObject + a.Offset*Marshal.SizeOf&<TRecord>;
-      self.sz := new UIntPtr(Marshal.SizeOf&<TRecord> * a.Count);
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    if hnd.IsAllocated then hnd.Free;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, sz, ptr.ToPointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, new ArraySegment<TRecord>(
-        hnd.Target as array of TRecord,
-        (ptr.ToInt64-hnd.AddrOfPinnedObject.ToInt64) div Marshal.SizeOf&<TRecord>,
-        sz.ToUInt64 div Marshal.SizeOf&<TRecord>
-      ));
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromArraySegment<TRecord>(a: ArraySegment<TRecord>) := new KernelArgArraySegment<TRecord>(a);
-
-{$endregion ArraySegment}
-
-{$endregion Managed}
-
-{$region Native}
-
-{$region NativeMemoryArea}
-
-type
-  KernelArgData = sealed class(ConstKernelArg)
-    private data: NativeMemoryArea;
-    
-    public constructor(data: NativeMemoryArea) := self.data := data;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, data.sz, data.ptr.ToPointer) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      sb.Append(data);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromData(data: NativeMemoryArea) := new KernelArgData(data);
-
-static function KernelArg.operator implicit<TRecord>(ptr: ^TRecord): KernelArg;
-begin
-  BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-  Result := KernelArg.FromData(new NativeMemoryArea(
-    new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>)
-  ));
-end;
-
-{$endregion NativeMemoryArea}
-
-{$region NativeValue}
-
-type
-  KernelArgNativeValue<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private val: NativeValue<TRecord>;
-    
-    public constructor(val: NativeValue<TRecord>) := self.val := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), self.val.Pointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, val);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeValue<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeValue<TRecord>(val);
-end;
-
-{$endregion NativeValue}
-
-{$region NativeArray}
-
-type
-  KernelArgNativeArray<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private a: NativeArray<TRecord>;
-    
-    public constructor(a: NativeArray<TRecord>) := self.a := a;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, a.area.sz, a.area.ptr.ToPointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, a);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeArray<TRecord>(a: NativeArray<TRecord>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeArray<TRecord>(a);
-end;
-
-{$endregion NativeArray}
-
-{$endregion Native}
-
-{$region OpenCL}
-
-{$region CLMemorySegment}
-
-type
-  KernelArgCLMemorySegment = sealed class(ConstKernelArg)
-    private mem: CLMemorySegment;
-    
-    public constructor(mem: CLMemorySegment) := self.mem := mem;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-   OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), mem.ntv) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.mem);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLMemorySegment(mem: CLMemorySegment) := new KernelArgCLMemorySegment(mem);
-
-{$endregion CLMemorySegment}
-
-{$region CLValue}
-
-type
-  KernelArgCLValue<T> = sealed class(ConstKernelArg)
-  where T: record;
-    private val: CLValue<T>;
-    
-    public constructor(val: CLValue<T>) := self.val := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), val.ntv) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.val);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLValue<T>(val: CLValue<T>): KernelArg; where T: record;
-begin
-  Result := new KernelArgCLValue<T>(val);
-end;
-
-{$endregion CLValue}
-
-{$region CLArray}
-
-type
-  KernelArgCLArray<T> = sealed class(ConstKernelArg)
-  where T: record;
-    private a: CLArray<T>;
-    
-    public constructor(a: CLArray<T>) := self.a := a;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), a.ntv) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.a);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLArray<T>(a: CLArray<T>): KernelArg; where T: record;
-begin
-  Result := new KernelArgCLArray<T>(a);
-end;
-
-{$endregion CLArray}
-
-{$endregion OpenCL}
-
-{$endregion Const}
-
-{$region Invokeable}
-
-{$region Base}
-
-type
-  InvokeableKernelArg = abstract class(KernelArg)
-    protected static kqr_factory := new QueueResValFactory<ISetableKernelArg>;
-  end;
-  
-{$endregion Base}
-
-{$region Managed}
-
-{$region Value}
-
-type
-  KernelArgPtrQr<TRecord> = sealed class(ConstKernelArg)
-    public qr: QueueResPtr<TRecord>;
-    
-    public constructor(qr: QueueResPtr<TRecord>) := self.qr := qr;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), qr.res) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    raise new System.NotSupportedException;
-    
-  end;
-  
-  KernelArgValueCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public val_q: CommandQueue<TRecord>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(val_q: CommandQueue<TRecord>) := self.val_q := val_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override;
-    begin
-      var prev_qr := val_q.InvokeToPtr(g, l);
-      Result := new QueueResVal<ISetableKernelArg>(
-        prev_qr.TakeBaseOut,
-        new KernelArgPtrQr<TRecord>(prev_qr)
-      );
-    end;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    val_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      val_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromValueCQ<TRecord>(val_q: CommandQueue<TRecord>) :=
-new KernelArgValueCQ<TRecord>(val_q);
-
-{$endregion Value}
-
-{$region Array}
-
-type
-  KernelArgArrayCQ<TRecord, TArray> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-  where TArray: System.Array;
-    public a_q: CommandQueue<TArray>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(a_q: CommandQueue<TArray>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgArray<TRecord,TArray>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromArrayCQ<TRecord>(a_q: CommandQueue<array of TRecord>) :=
-new KernelArgArrayCQ<TRecord, array of TRecord>(a_q);
-static function KernelArg.FromArray2CQ<TRecord>(a_q: CommandQueue<array[,] of TRecord>) :=
-new KernelArgArrayCQ<TRecord, array[,] of TRecord>(a_q);
-static function KernelArg.FromArray3CQ<TRecord>(a_q: CommandQueue<array[,,] of TRecord>) :=
-new KernelArgArrayCQ<TRecord, array[,,] of TRecord>(a_q);
-
-{$endregion Array}
-
-{$region ArraySegment}
-
-type
-  KernelArgArraySegmentCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public a_q: CommandQueue<ArraySegment<TRecord>>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:KernelArg%');
-    
-    public constructor(a_q: CommandQueue<ArraySegment<TRecord>>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgArraySegment<TRecord>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromArraySegmentCQ<TRecord>(a_q: CommandQueue<ArraySegment<TRecord>>) :=
-new KernelArgArraySegmentCQ<TRecord>(a_q);
-
-{$endregion ArraySegment}
-
-{$endregion Managed}
-
-{$region Native}
-
-{$region NativeMemoryArea}
-
-type
-  KernelArgDataCQ = sealed class(InvokeableKernelArg)
-    public data_q: CommandQueue<NativeMemoryArea>;
-    
-    public constructor(data_q: CommandQueue<NativeMemoryArea>) := self.data_q := data_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    data_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (data,c)->new KernelArgData(data) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      data_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromDataCQ(data_q: CommandQueue<NativeMemoryArea>) :=
-new KernelArgDataCQ(data_q);
-
-{$endregion NativeMemoryArea}
-
-{$region NativeValue}
-
-type
-  KernelArgNativeValueCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public val_q: CommandQueue<NativeValue<TRecord>>;
-    
-    public constructor(val_q: CommandQueue<NativeValue<TRecord>>) := self.val_q := val_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    val_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (val,c)->new KernelArgNativeValue<TRecord>(val) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    val_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      val_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeValueCQ<TRecord>(val_q: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeValueCQ<TRecord>(val_q);
-end;
-
-{$endregion NativeValue}
-
-{$region NativeArray}
-
-type
-  KernelArgNativeArrayCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public a_q: CommandQueue<NativeArray<TRecord>>;
-    
-    public constructor(a_q: CommandQueue<NativeArray<TRecord>>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgNativeArray<TRecord>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeArrayCQ<TRecord>(a_q: CommandQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeArrayCQ<TRecord>(a_q);
-end;
-
-{$endregion NativeArray}
-
-{$endregion Native}
-
-{$region OpenCL}
-
-{$region CLMemorySegment}
-
-type
-  KernelArgCLMemorySegmentCQ = sealed class(InvokeableKernelArg)
-    public mem_q: CommandQueue<CLMemorySegment>;
-    public constructor(mem_q: CommandQueue<CLMemorySegment>) := self.mem_q := mem_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    mem_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (mem,c)->new KernelArgCLMemorySegment(mem) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    mem_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      mem_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>) :=
-new KernelArgCLMemorySegmentCQ(mem_q);
-
-{$endregion CLMemorySegment}
-
-{$region CLValue}
-
-type
-  KernelArgCLValueCQ<T> = sealed class(InvokeableKernelArg)
-  where T: record;
-    public val_q: CommandQueue<CLValue<T>>;
-    public constructor(val_q: CommandQueue<CLValue<T>>) := self.val_q := val_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    val_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (val,c)->new KernelArgCLValue<T>(val) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    val_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      val_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelArg; where T: record;
-begin
-  Result := new KernelArgCLValueCQ<T>(val_q);
-end;
-
-{$endregion CLValue}
-
-{$region CLArray}
-
-type
-  KernelArgCLArrayCQ<T> = sealed class(InvokeableKernelArg)
-  where T: record;
-    public a_q: CommandQueue<CLArray<T>>;
-    public constructor(a_q: CommandQueue<CLArray<T>>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgCLArray<T>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-begin Result := new KernelArgCLArrayCQ<T>(a_q); end;
-
-{$endregion CLArray}
-
-{$endregion OpenCL}
-
-{$endregion Invokeable}
-
-{$endregion KernelArg}
-
 {$region GPUCommand}
 
 {$region Base}
@@ -7514,7 +7734,6 @@ type
     protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
-    protected function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
@@ -7522,19 +7741,13 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += DisplayName;
+      sb += TypeName(self);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
   end;
   
   BasicGPUCommand<T> = abstract class(GPUCommand<T>)
-    
-    protected function DisplayName: string; override;
-    begin
-      Result := self.GetType.Name;
-      Result := Result.Remove(Result.IndexOf('`'));
-    end;
     
     public static function MakeQueue(q: CommandQueueBase): BasicGPUCommand<T>;
     
@@ -7637,7 +7850,7 @@ type
               on e: Exception do err_handler.AddErr(e);
             end;
           end,
-          g.cl_c{$ifdef EventDebug}, $'const body of {self.GetType}'{$endif}
+          g.cl_c{$ifdef EventDebug}, $'const body of {TypeName(self)}'{$endif}
         )
       ));
     end;
@@ -7658,7 +7871,7 @@ type
               on e: Exception do err_handler.AddErr(e);
             end;
           end,
-          g.cl_c{$ifdef EventDebug}, $'queue body of {self.GetType}'{$endif}
+          g.cl_c{$ifdef EventDebug}, $'queue body of {TypeName(self)}'{$endif}
         )
       ));
     end;
@@ -7766,10 +7979,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      
-      var tn := self.GetType.Name;
-      sb += tn.Remove(tn.IndexOf('`'));
-      
+      sb += TypeName(self);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
@@ -7940,8 +8150,6 @@ type
     
   end;
   
-static function KernelArg.operator implicit(mem_q: CLMemorySegmentCCQ): KernelArg := FromCLMemorySegmentCQ(mem_q);
-
 {%ContainerCommon\CLMemorySegment\Implementation!ContainerCommon.pas%}
 
 {$endregion CLMemorySegment}
@@ -7956,10 +8164,6 @@ type
     
   end;
   
-static function KernelArg.operator implicit<T>(val_q: CLValueCCQ<T>): KernelArg; where T: record;
-//TODO #2550
-begin Result := FromCLValueCQ(val_q as object as GPUCommandContainer<CLValue<T>>); end;
-
 {%ContainerCommon\CLValue\Implementation!ContainerCommon.pas%}
 
 {$endregion CLArray}
@@ -7974,133 +8178,202 @@ type
     
   end;
   
-static function KernelArg.operator implicit<T>(a_q: CLArrayCCQ<T>): KernelArg; where T: record;
-//TODO #2550
-begin Result := FromCLArrayCQ(a_q as object as GPUCommandContainer<CLArray<T>>); end;
-
 {%ContainerCommon\CLArray\Implementation!ContainerCommon.pas%}
 
 {$endregion CLArray}
 
 {$endregion GPUCommandContainer}
 
+{$region KernelArg}
+
+{$region Base}
+
+type
+  KernelArgCacheEntry = record
+    public val_is_set: boolean;
+    public last_set_val: object;
+  end;
+  KernelArgCache = array of KernelArgCacheEntry;
+  
+  KernelArgSetter = abstract class
+    private is_const: boolean;
+    
+    public constructor(is_const: boolean) := self.is_const := is_const;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property IsConst: boolean read is_const;
+    
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); abstract;
+    
+  end;
+  KernelArgSetterTyped<T> = abstract class(KernelArgSetter)
+    protected o := default(T);
+    
+    public constructor(o: T);
+    begin
+      SetObj(o);
+      is_const := true;
+    end;
+    public constructor := is_const := false;
+    
+    public procedure SetObj(o: T);
+    begin
+      {$ifdef DEBUG}
+      if self.o<>default(T) then raise new OpenCLABCInternalException($'Conflicting {TypeName(self)} values');
+      {$endif DEBUG}
+      self.o := o;
+    end;
+    
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); override;
+    begin
+      
+      if cache<>nil then
+      begin
+        var curr_val := self.o;
+        if cache[ind].val_is_set and Object.Equals(cache[ind].last_set_val, curr_val) then exit;
+        cache[ind].val_is_set := true;
+        cache[ind].last_set_val := curr_val;
+      end;
+      
+      {$ifdef DEBUG}
+      if self.o=default(T) then
+        raise new OpenCLABCInternalException($'Unset {TypeName(self)} value') else
+      {$endif DEBUG}
+      
+      ApplyImpl(k, ind);
+    end;
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); abstract;
+    
+  end;
+  
+  KernelArgSetterCL = sealed class(KernelArgSetterTyped<cl_mem>)
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError(
+      cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), self.o)
+    );
+    
+  end;
+  
+  KernelArg = abstract partial class
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; abstract;
+    
+  end;
+  KernelArgCommon<T> = record
+    private q: CommandQueue<T>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(inv: CLTaskBranchInvoker; make_const: T->KernelArgSetterTyped<T>; make_delayed: ()->KernelArgSetterTyped<T>): ValueTuple<KernelArgSetter, EventList>;
+    begin
+      var prev_qr := inv.InvokeBranch(q.InvokeToAny);
+      var arg_setter: KernelArgSetterTyped<T>;
+      if prev_qr.IsConst then
+        arg_setter := make_const(prev_qr.GetResDirect) else
+      begin
+        arg_setter := make_delayed();
+        prev_qr.AddAction(c->arg_setter.SetObj(prev_qr.GetResDirect));
+      end;
+      Result := ValueTuple.Create(arg_setter as KernelArgSetter,
+        prev_qr.AttachInvokeActions(inv.g)
+      );
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+{$endregion Base}
+
+{$region LocalBytes}
+
+type
+  KernelArgSetterLocalBytes = sealed class(KernelArgSetterTyped<UIntPtr>)
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
+    
+  end;
+  
+  KernelArgLocal = abstract partial class(KernelArg) end;
+  KernelArgLocalBytes = sealed class(KernelArgLocal)
+    private data: KernelArgCommon<UIntPtr>;
+    
+    public constructor(bytes: CommandQueue<UIntPtr>) := data.q := bytes;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, bytes->new KernelArgSetterLocalBytes(bytes), ()->new KernelArgSetterLocalBytes);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+{$endregion LocalBytes}
+
+{%KernelArg\implementation!KernelArg.pas%}
+
+{$endregion KernelArg}
+
 {$region Enqueueable's}
 
 {$region Core}
 
 type
-  EnqEvLst = sealed class
-    private evs: array of EventList;
-    private c1 := 0;
-    private c2 := 0;
-    {$ifdef DEBUG}
-    private skipped := 0;
-    {$endif DEBUG}
-    
-    public constructor(cap: integer) :=
-    evs := new EventList[cap];
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public property Capacity: integer read evs.Length;
-    
-    public procedure AddL1(ev: EventList);
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
-      {$endif DEBUG}
-      if ev.count=0 then
-        {$ifdef DEBUG}skipped += 1{$endif} else
-      begin
-        evs[c1] := ev;
-        c1 += 1;
-      end;
-    end;
-    public procedure AddL2(ev: EventList);
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
-      {$endif DEBUG}
-      if ev.count=0 then
-        {$ifdef DEBUG}skipped += 1{$endif} else
-      begin
-        c2 += 1;
-        evs[evs.Length-c2] := ev;
-      end;
-    end;
-    
-    private procedure CheckDone;
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2+skipped}/{evs.Length} used');
-      {$endif DEBUG}
-    end;
-    
-    public function MakeLists: ValueTuple<EventList, EventList>;
-    begin
-      CheckDone;
-      Result := ValueTuple.Create(
-        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
-        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
-      );
-    end;
-    public function CombineAll: EventList;
-    begin
-      CheckDone;
-      Result := EventList.Combine(evs);
-    end;
-    
-  end;
-  
   DirectEnqRes = ValueTuple<cl_event, QueueResAction>;
   EnqRes = ValueTuple<EventList, QueueResAction>;
-  EnqueueableEnqFunc<TInvData> = function(inv_data: TInvData; c: Context; cq: cl_command_queue; ev_l2: EventList): DirectEnqRes;
-  
-  IEnqueueable<TInvData> = interface
-    
-    function EnqEvCapacity: integer;
-    
-    function InvokeParams(g: CLTaskGlobalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<TInvData>;
-    
-  end;
+  EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): DirectEnqRes;
   
   EnqueueableCore = static class
     
-    private static function MakeEvList(exp_size: integer; start_ev: EventList): List<EventList>;
+    private static function ExecuteEnqFunc<T>(prev_res: T; cq: cl_command_queue; ev_l2: EventList; enq_f: EnqFunc<T>; err_handler: CLTaskErrHandler{$ifdef EventDebug}; q: object{$endif}): EnqRes;
     begin
-      var need_start_ev := start_ev.count<>0;
-      Result := new List<EventList>(exp_size + integer(need_start_ev));
-      if need_start_ev then Result += start_ev;
-    end;
-    
-    private static function ExecuteEnqFunc<TInvData>(
-      inv_data: TInvData; c: Context; cq: cl_command_queue; ev_l2: EventList;
-      enq_f: EnqueueableEnqFunc<TInvData>; err_handler: CLTaskErrHandler
-      {$ifdef EventDebug}; q: object{$endif}): EnqRes;
-    begin
-      Result := new EnqRes(ev_l2, nil);
+      var direct_enq_res: DirectEnqRes;
       try
-        var (enq_ev, act) := enq_f(inv_data, c, cq, ev_l2);
-        {$ifdef EventDebug}
-        EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-        {$endif EventDebug}
-        // 1. ev_l2 can be released only after executing dependant command
-        // 2. If event in ev_l2 would receive error, enq_ev would not give descriptive error
-        Result := new EnqRes(ev_l2+enq_ev, act);
+        direct_enq_res := enq_f(prev_res, cq, ev_l2);
       except
-        on e: Exception do err_handler.AddErr(e);
+        on e: Exception do
+        begin
+          err_handler.AddErr(e);
+          Result := new EnqRes(ev_l2, nil);
+          exit;
+        end;
       end;
+      
+      var (enq_ev, act) := direct_enq_res;
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on [{ev_l2.evs?.JoinToString}]');
+      {$endif EventDebug}
+      // 1. ev_l2 can only be released after executing dependant command
+      // 2. If event in ev_l2 would receive error, enq_ev would not give descriptive error
+      Result := new EnqRes(ev_l2+enq_ev, act);
     end;
     
-    public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; start_ev: EventList; start_ev_in_l1: boolean): EnqRes; where TEnq: IEnqueueable<TInvData>;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function Invoke<T>(enq_ev_capacity: integer; g: CLTaskGlobalData; prev_qr: QueueRes<T>; invoke_params: (CLTaskGlobalData, DoubleEventListList)->EnqFunc<T>{$ifdef EventDebug}; q: object{$endif}): EnqRes;
     begin
-      var enq_evs := new EnqEvLst(q.EnqEvCapacity+1);
-      if start_ev_in_l1 then
-        enq_evs.AddL1(start_ev) else
-        enq_evs.AddL2(start_ev);
+      var enq_evs := new DoubleEventListList(enq_ev_capacity+1);
+      begin
+        var start_ev := prev_qr.AttachInvokeActions(g);
+        if not prev_qr.IsConst then
+          enq_evs.AddL1(start_ev) else
+          enq_evs.AddL2(start_ev);
+      end;
       
       var pre_params_handler := g.curr_err_handler;
-      var enq_f := q.InvokeParams(g, enq_evs);
-      // After InvokeParams, because parameters
+      var enq_f := invoke_params(g, enq_evs);
+      // After invoke_params, because parameters
       // should not care about prev events and errors
       if pre_params_handler.HadError then
       begin
@@ -8124,27 +8397,27 @@ type
       // Otherwise, next command can be written before current one
       var cq := g.GetCQ(need_async_inv);
       {$ifdef QueueDebug}
-      QueueDebug.Add(cq, q.GetType.ToString);
+      QueueDebug.Add(cq, TypeName(q));
       {$endif QueueDebug}
       
       if not need_async_inv then
-        Result := ExecuteEnqFunc(inv_data, g.c, cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif}) else
+        Result := ExecuteEnqFunc(prev_qr.GetRes(g.c), cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif}) else
       begin
         var res_ev := new UserEvent(g.cl_c
-          {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+          {$ifdef EventDebug}, $'{TypeName(q)}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
         );
         
         ev_l1.MultiAttachCallback(()->
         begin
-          var (enq_ev, enq_act) := ExecuteEnqFunc(inv_data, g.c, cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif});
+          var (enq_ev, enq_act) := ExecuteEnqFunc(prev_qr.GetRes(g.c), cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif});
           OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           enq_ev.MultiAttachCallback(()->
           begin
             if enq_act<>nil then enq_act(g.c);
             g.ReturnCQ(cq);
             res_ev.SetComplete;
-          end{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
-        end{$ifdef EventDebug}, $'calling async Enq of {q.GetType}'{$endif});
+          end{$ifdef EventDebug}, $'propagating Enq ev of {TypeName(q)} to res_ev: {res_ev.uev}'{$endif});
+        end{$ifdef EventDebug}, $'calling async Enq of {TypeName(q)}'{$endif});
         
         Result := new EnqRes(res_ev, nil);
       end;
@@ -8158,87 +8431,161 @@ type
 {$region GPUCommand}
 
 type
-  EnqueueableGPUCommandInvData<T> = record
-    qr: QueueRes<T>;
-  end;
-  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>, IEnqueueable<EnqueueableGPUCommandInvData<T>>)
+  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>)
     
     public function EnqEvCapacity: integer; abstract;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (T, cl_command_queue, EventList)->DirectEnqRes; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
-    begin
-      var enq_f := InvokeParamsImpl(g, enq_evs);
-      Result := (data, c, lcq, ev)->enq_f(data.qr.GetRes(c), lcq, ev);
-    end;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<T>; abstract;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(g: CLTaskGlobalData; prev_qr: QueueRes<T>; start_ev: EventList; start_ev_in_l1: boolean): QueueResNil;
+    function Invoke(g: CLTaskGlobalData; prev_qr: QueueRes<T>): QueueResNil;
     begin
-      var inv_data: EnqueueableGPUCommandInvData<T>;
-      inv_data.qr  := prev_qr;
-      
-      var (enq_ev, enq_act) := EnqueueableCore.Invoke(self, inv_data, g, start_ev, start_ev_in_l1);
-      var res := new QueueResNil(new CLTaskLocalData(enq_ev));
-      if enq_act<>nil then res.AddAction(enq_act);
-      
-      Result := res;
+      var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+        self.EnqEvCapacity, g, prev_qr,
+        InvokeParams{$ifdef EventDebug},self{$endif}
+      );
+      Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+      if enq_act<>nil then Result.AddAction(enq_act);
     end;
     
     protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
-    Invoke(g, new QueueResVal<T>(new CLTaskLocalData, o), l.prev_ev, false);
+    Invoke(g, new QueueResVal<T>(l, o));
     
     protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
       var prev_qr := o_invoke(g, l);
-      Result := Invoke(g, prev_qr, prev_qr.ResEv, not prev_qr.IsConst);
+      Result := Invoke(g, prev_qr);
     end;
     
   end;
   
 {$endregion GPUCommand}
 
+{$region ExecCommand}
+
+type
+  EnqueueableExecCommand = abstract class(GPUCommand<Kernel>)
+    private args: array of KernelArg;
+    
+    protected constructor(args: array of KernelArg) := self.args := args;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public function EnqEvCapacity: integer; abstract;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; abstract;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of KernelArgSetter;
+    begin
+      Result := new KernelArgSetter[self.args.Length];
+      for var i := 0 to self.args.Length-1 do
+      begin
+        var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
+        Result[i] := arg_setter;
+        if not arg_setter.IsConst then
+          enq_evs.AddL1(arg_ev) else
+          enq_evs.AddL2(arg_ev);
+      end;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure KeepArgsGCAlive := GC.KeepAlive(self.args);
+    
+    private own_k_ntv := cl_kernel.Zero;
+    private own_arg_cache := default(KernelArgCache);
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(g: CLTaskGlobalData; prev_qr: QueueRes<Kernel>): QueueResNil;
+    begin
+      
+      var self_locked := prev_qr.IsConst and Monitor.TryEnter(self);
+      var unlock_self: Action;
+      begin
+        var self_unlocked := integer(not self_locked);
+        unlock_self := ()->
+        begin
+          if Interlocked.Exchange(self_unlocked, 1)<>0 then exit;
+          Monitor.Exit(self);
+        end;
+      end;
+      
+      var arg_cache := default(KernelArgCache);
+      var k_ntv_qr: QueueRes<cl_kernel>;
+      // If CCQ is created from regular object or const/parameter queue
+      // Then try use own_arg_cache, to not set the same values
+      if self_locked then
+      begin
+        
+        var k_ntv := self.own_k_ntv;
+        if k_ntv=cl_kernel.Zero then
+        begin
+          k_ntv := prev_qr.GetResDirect.ntv();
+          arg_cache := new KernelArgCacheEntry[self.args.Length];
+          self.own_k_ntv := k_ntv;
+          self.own_arg_cache := arg_cache;
+        end else
+          arg_cache := self.own_arg_cache;
+        
+        k_ntv_qr := new QueueResVal<cl_kernel>(prev_qr.TakeBaseOut, k_ntv);
+      end else
+        k_ntv_qr := prev_qr.TransformResult(
+          new QueueResValFactory<cl_kernel>,
+          g.c, true, (k,c)->k.ntv()
+        );
+      
+      try
+        var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+          self.args.Length+self.EnqEvCapacity, g, k_ntv_qr,
+          (g, enq_evs)->InvokeParams(g, enq_evs, arg_cache, unlock_self)
+          {$ifdef EventDebug},self{$endif}
+        );
+        
+        Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+        if enq_act<>nil then Result.AddAction(enq_act);
+        
+      finally
+        unlock_self();
+      end;
+    end;
+    
+    protected function InvokeObj(o: Kernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
+    Invoke(g, new QueueResVal<Kernel>(l, o));
+    
+    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<Kernel>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    begin
+      var prev_qr := o_invoke(g, l);
+      Result := Invoke(g, prev_qr);
+    end;
+    
+  end;
+  
+{$endregion ExecCommand}
+
 {$region GetCommand}
 
 type
-  EnqueueableGetCommandInvData<TObj, TRes> = record
-    prev_qr: QueueRes<TObj>;
-    res_qr: QueueRes<TRes>;
-  end;
-  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>, IEnqueueable<EnqueueableGetCommandInvData<TObj, TRes>>)
+  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>)
     protected prev_commands: GPUCommandContainer<TObj>;
     
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
     
     public function EnqEvCapacity: integer; abstract;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (TObj, cl_command_queue, EventList, QueueRes<TRes>)->DirectEnqRes; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
-    begin
-      var enq_f := InvokeParamsImpl(g, enq_evs);
-      Result := (data, c, lcq, ev)->enq_f(data.prev_qr.GetRes(c), lcq, ev, data.res_qr);
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := new QueueResNil(l);
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): EnqFunc<TObj>; abstract;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
     begin
       Result := qr_factory.MakeDelayed(qr->
       begin
-        var prev_qr := prev_commands.InvokeToVal(g, l);
-        
-        var inv_data: EnqueueableGetCommandInvData<TObj, TRes>;
-        inv_data.prev_qr  := prev_qr;
-        inv_data.res_qr   := qr;
-        
-        var (enq_ev, enq_act) := EnqueueableCore.Invoke(self, inv_data, g, prev_qr.ResEv, not prev_qr.IsConst);
+        var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+          self.EnqEvCapacity, g, prev_commands.InvokeToAny(g, l),
+          (g, enq_evs)->InvokeParams(g, enq_evs, qr)
+          {$ifdef EventDebug},self{$endif}
+        );
         Result := new CLTaskLocalData(enq_ev);
         if enq_act<>nil then Result.prev_delegate.AddAction(enq_act);
       end);
     end;
     
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := new QueueResNil(l);
     protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<TRes>; override := Invoke(g, l, qr_val_factory);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
     
@@ -8262,13 +8609,13 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\Kernel\Implicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\Kernel.Exec\Implicit.Implementation!ContainerExecMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\Kernel\Explicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\Kernel.Exec\Explicit.Implementation!ContainerExecMethods.pas%}
 
 {$endregion Explicit}
 
@@ -8278,7 +8625,7 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLMemorySegment\Implicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\CLMemorySegment\Implicit.Implementation!ContainerOtherMethods.pas%}
 
 {%ContainerMethods\CLMemorySegment.Get\Implicit.Implementation!ContainerGetMethods.pas%}
 
@@ -8286,7 +8633,7 @@ type
 
 {$region Explicit}
 
-{%ContainerMethods\CLMemorySegment\Explicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\CLMemorySegment\Explicit.Implementation!ContainerOtherMethods.pas%}
 
 {%ContainerMethods\CLMemorySegment.Get\Explicit.Implementation!ContainerGetMethods.pas%}
 
@@ -8298,7 +8645,7 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLValue\Implicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\CLValue\Implicit.Implementation!ContainerOtherMethods.pas%}
 
 {%ContainerMethods\CLValue.Get\Implicit.Implementation!ContainerGetMethods.pas%}
 
@@ -8306,7 +8653,7 @@ type
 
 {$region Explicit}
 
-{%ContainerMethods\CLValue\Explicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\CLValue\Explicit.Implementation!ContainerOtherMethods.pas%}
 
 {%ContainerMethods\CLValue.Get\Explicit.Implementation!ContainerGetMethods.pas%}
 
@@ -8318,7 +8665,7 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLArray\Implicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\CLArray\Implicit.Implementation!ContainerOtherMethods.pas%}
 
 {%ContainerMethods\CLArray.Get\Implicit.Implementation!ContainerGetMethods.pas%}
 
@@ -8326,7 +8673,7 @@ type
 
 {$region Explicit}
 
-{%ContainerMethods\CLArray\Explicit.Implementation!ContainerMethods.pas%}
+{%ContainerMethods\CLArray\Explicit.Implementation!ContainerOtherMethods.pas%}
 
 {%ContainerMethods\CLArray.Get\Explicit.Implementation!ContainerGetMethods.pas%}
 
@@ -8412,7 +8759,7 @@ type
       Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(
         UserEvent.StartBackgroundWork(l.prev_ev,
           make_body(l.prev_delegate, g.c, g.curr_err_handler, qr),
-          g.cl_c{$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+          g.cl_c{$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
         )
       ));
     end;
@@ -8470,7 +8817,7 @@ type
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
     new QueueResNil(new CLTaskLocalData(UserEvent.StartBackgroundWork(
       l.prev_ev, MakeBody(l.prev_delegate, g.curr_err_handler, g.c),
-      g.cl_c{$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+      g.cl_c{$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
     )));
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := data.ToString(sb);

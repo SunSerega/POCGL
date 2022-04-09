@@ -1,0 +1,395 @@
+﻿
+
+
+{$region Exec}
+
+{$region Exec1}
+
+type
+  KernelCommandExec1 = sealed class(EnqueueableExecCommand)
+    private  sz1: CommandQueue<integer>;
+    private args: array of KernelArg;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
+    begin
+      inherited Create(args);
+      self. sz1 :=  sz1;
+      self.args := args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
+       sz1.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
+    begin
+      var  sz1_qr: QueueRes<integer>;
+      var arg_setters: array of KernelArgSetter;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetResDirect;
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, 1,
+          nil,
+          | new UIntPtr(sz1) |,
+          nil,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        unlock_cache();
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          self.KeepArgsGCAlive;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'sz1:';
+      sb += ' ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
+      
+    end;
+    
+  end;
+  
+function KernelCCQ.ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+begin
+  Result := AddCommand(self, new KernelCommandExec1(sz1, args));
+end;
+
+{$endregion Exec1}
+
+{$region Exec2}
+
+type
+  KernelCommandExec2 = sealed class(EnqueueableExecCommand)
+    private  sz1: CommandQueue<integer>;
+    private  sz2: CommandQueue<integer>;
+    private args: array of KernelArg;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
+    begin
+      inherited Create(args);
+      self. sz1 :=  sz1;
+      self. sz2 :=  sz2;
+      self.args := args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
+       sz1.InitBeforeInvoke(g, prev_hubs);
+       sz2.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
+    begin
+      var  sz1_qr: QueueRes<integer>;
+      var  sz2_qr: QueueRes<integer>;
+      var arg_setters: array of KernelArgSetter;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.InvokeToAny); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.AttachInvokeActions(g));
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetResDirect;
+        var  sz2 :=  sz2_qr.GetResDirect;
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, 2,
+          nil,
+          | new UIntPtr(sz1),new UIntPtr(sz2) |,
+          nil,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        unlock_cache();
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          self.KeepArgsGCAlive;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'sz1:';
+      sb += ' ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'sz2:';
+      sb += ' ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
+      
+    end;
+    
+  end;
+  
+function KernelCCQ.ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+begin
+  Result := AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
+end;
+
+{$endregion Exec2}
+
+{$region Exec3}
+
+type
+  KernelCommandExec3 = sealed class(EnqueueableExecCommand)
+    private  sz1: CommandQueue<integer>;
+    private  sz2: CommandQueue<integer>;
+    private  sz3: CommandQueue<integer>;
+    private args: array of KernelArg;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
+    begin
+      inherited Create(args);
+      self. sz1 :=  sz1;
+      self. sz2 :=  sz2;
+      self. sz3 :=  sz3;
+      self.args := args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
+       sz1.InitBeforeInvoke(g, prev_hubs);
+       sz2.InitBeforeInvoke(g, prev_hubs);
+       sz3.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
+    begin
+      var  sz1_qr: QueueRes<integer>;
+      var  sz2_qr: QueueRes<integer>;
+      var  sz3_qr: QueueRes<integer>;
+      var arg_setters: array of KernelArgSetter;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+         sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
+         sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.InvokeToAny); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.AttachInvokeActions(g));
+         sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz3.InvokeToAny); if sz3_qr.IsConst then enq_evs.AddL2(sz3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz3_qr.AttachInvokeActions(g));
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var  sz1 :=  sz1_qr.GetResDirect;
+        var  sz2 :=  sz2_qr.GetResDirect;
+        var  sz3 :=  sz3_qr.GetResDirect;
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, 3,
+          nil,
+          | new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3) |,
+          nil,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        unlock_cache();
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          self.KeepArgsGCAlive;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'sz1:';
+      sb += ' ';
+      sz1.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'sz2:';
+      sb += ' ';
+      sz2.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'sz3:';
+      sb += ' ';
+      sz3.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
+      
+    end;
+    
+  end;
+  
+function KernelCCQ.ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+begin
+  Result := AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
+end;
+
+{$endregion Exec3}
+
+{$region Exec}
+
+type
+  KernelCommandExec = sealed class(EnqueueableExecCommand)
+    private global_work_offset: CommandQueue<array of UIntPtr>;
+    private   global_work_size: CommandQueue<array of UIntPtr>;
+    private    local_work_size: CommandQueue<array of UIntPtr>;
+    private               args: array of KernelArg;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
+    begin
+      inherited Create(args);
+      self.global_work_offset := global_work_offset;
+      self.  global_work_size :=   global_work_size;
+      self.   local_work_size :=    local_work_size;
+      self.              args :=               args;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
+      global_work_offset.InitBeforeInvoke(g, prev_hubs);
+        global_work_size.InitBeforeInvoke(g, prev_hubs);
+         local_work_size.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
+    begin
+      var global_work_offset_qr: QueueRes<array of UIntPtr>;
+      var   global_work_size_qr: QueueRes<array of UIntPtr>;
+      var    local_work_size_qr: QueueRes<array of UIntPtr>;
+      var arg_setters: array of KernelArgSetter;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.InvokeToAny); if global_work_offset_qr.IsConst then enq_evs.AddL2(global_work_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_offset_qr.AttachInvokeActions(g));
+          global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(  global_work_size.InvokeToAny); if global_work_size_qr.IsConst then enq_evs.AddL2(global_work_size_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_size_qr.AttachInvokeActions(g));
+           local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(   local_work_size.InvokeToAny); if local_work_size_qr.IsConst then enq_evs.AddL2(local_work_size_qr.AttachInvokeActions(g)) else enq_evs.AddL1(local_work_size_qr.AttachInvokeActions(g));
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var global_work_offset := global_work_offset_qr.GetResDirect;
+        var   global_work_size :=   global_work_size_qr.GetResDirect;
+        var    local_work_size :=    local_work_size_qr.GetResDirect;
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, global_work_size.Length,
+          global_work_offset,
+          global_work_size,
+          local_work_size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        unlock_cache();
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          self.KeepArgsGCAlive;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'global_work_offset:';
+      sb += ' ';
+      global_work_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'global_work_size:';
+      sb += ' ';
+      global_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'local_work_size:';
+      sb += ' ';
+      local_work_size.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
+      
+    end;
+    
+  end;
+  
+function KernelCCQ.ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+begin
+  Result := AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
+end;
+
+{$endregion Exec}
+
+{$endregion Exec}
+
+

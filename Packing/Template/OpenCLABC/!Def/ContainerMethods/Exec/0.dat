@@ -1,0 +1,30 @@
+
+
+
+# Exec[%dims:1,2,3%]
+{%dims? sz1 : sz1,sz2 : sz1,sz2,sz3 %}: CommandQueue<integer>
+!Enqueue
+var ec := cl.EnqueueNDRangeKernel(
+  cq, o, {%dims%},
+  nil,
+  | new UIntPtr(!sz1!){%dims?: ,new UIntPtr(!sz2!) : ,new UIntPtr(!sz2!),new UIntPtr(!sz3!) %} |,
+  nil,
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+# Exec
+global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>
+!Enqueue
+var ec := cl.EnqueueNDRangeKernel(
+  cq, o, !global_work_size!.Length,
+  !global_work_offset!,
+  !global_work_size!,
+  !local_work_size!,
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+

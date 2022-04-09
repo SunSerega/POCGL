@@ -208,6 +208,9 @@ type
         wr +=     $'    public static function operator or(f1,f2: {name}) := f1+f2;' + #10;
         wr +=     $'    ' + #10;
         
+        wr +=     $'    public static procedure operator+=(var f1: {name}; f2: {name}) := f1 := f1+f2;' + #10;
+        wr +=     $'    ' + #10;
+        
         foreach var ename in EnumrKeys do
           if enums[ename]<>0 then
             wr += $'    public property HAS_FLAG_{screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else

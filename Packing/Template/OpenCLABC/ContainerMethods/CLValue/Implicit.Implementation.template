@@ -13,34 +13,24 @@ begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
 end;
 
-function CLValue<T>.WriteData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+function CLValue<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data));
 end;
 
-function CLValue<T>.ReadData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+function CLValue<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data));
 end;
 
-function CLValue<T>.WriteData(ptr: pointer): CLValue<T>;
+function CLValue<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
 begin
-  Result := WriteData(IntPtr(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data));
 end;
 
-function CLValue<T>.ReadData(ptr: pointer): CLValue<T>;
+function CLValue<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
 begin
-  Result := ReadData(IntPtr(ptr));
-end;
-
-function CLValue<T>.WriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
-begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(val));
-end;
-
-function CLValue<T>.ReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
-begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data));
 end;
 
 {$endregion 1#Write&Read}

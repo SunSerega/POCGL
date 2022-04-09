@@ -7,17 +7,13 @@
     
     public function WriteValue(val: CommandQueue<&T>): CLValue<T>;
     
-    public function WriteData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+    public function WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
     
-    public function ReadData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+    public function WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
     
-    public function WriteData(ptr: pointer): CLValue<T>;
+    public function ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
     
-    public function ReadData(ptr: pointer): CLValue<T>;
-    
-    public function WriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
-    
-    public function ReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
+    public function ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
     
     {$endregion 1#Write&Read}
     

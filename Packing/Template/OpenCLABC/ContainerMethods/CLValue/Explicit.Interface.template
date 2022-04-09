@@ -7,17 +7,13 @@
     
     public function ThenWriteValue(val: CommandQueue<&T>): CLValueCCQ<T>;
     
-    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLValueCCQ<T>;
+    public function ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValueCCQ<T>;
     
-    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLValueCCQ<T>;
+    public function ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
     
-    public function ThenWriteData(ptr: pointer): CLValueCCQ<T>;
+    public function ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValueCCQ<T>;
     
-    public function ThenReadData(ptr: pointer): CLValueCCQ<T>;
-    
-    public function ThenWriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
-    
-    public function ThenReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
+    public function ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
     
     {$endregion 1#Write&Read}
     

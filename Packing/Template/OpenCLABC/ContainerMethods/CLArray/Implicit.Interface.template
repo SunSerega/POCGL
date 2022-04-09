@@ -55,21 +55,53 @@
     
     public function ReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T>;
     
-    public function WriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
     
-    public function ReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
     
-    public function WriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
     
-    public function ReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
     
-    public function WriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    public function WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
     
-    public function WriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
     
-    public function ReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
     
-    public function ReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
+    
+    public function ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+    
+    public function ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+    
+    public function ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+    
+    public function ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
     
     {$endregion 1#Write&Read}
     
@@ -107,17 +139,53 @@
     
     public function FillData(ptr: pointer; pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
     
-    public function FillData(data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea): CLArray<T>;
     
-    public function FillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArray<T>;
     
-    public function FillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArray<T>;
+    public function FillNativeMemory(native_data: NativeMemory): CLArray<T>;
     
-    public function FillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+    public function FillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArray<T>;
     
-    public function FillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    public function FillNativeValueArea(native_data: NativeValueArea<&T>): CLArray<T>;
     
-    public function FillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArray<T>;
+    public function FillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeValue(native_data: NativeValue<&T>): CLArray<T>;
+    
+    public function FillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArray(native_data: NativeArray<&T>): CLArray<T>;
+    
+    public function FillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+    
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
+    
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+    
+    public function FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+    
+    public function FillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    
+    public function FillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
     
     {$endregion 2#Fill}
     

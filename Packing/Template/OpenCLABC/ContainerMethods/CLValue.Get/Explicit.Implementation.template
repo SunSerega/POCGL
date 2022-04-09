@@ -19,10 +19,10 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList, QueueRes<&T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): EnqFunc<CLValue<T>>; override;
     begin
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var res_ev: cl_event;
         

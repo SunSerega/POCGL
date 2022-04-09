@@ -1,4 +1,4 @@
-﻿
+
 //*****************************************************************************************************\\
 // Copyright (©) Sergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // This code is distributed under the Unlicense
@@ -29,23 +29,51 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Background=>Threaded +в интерфейсе, чтобы их сортировало [Const,Quick,Threaded]
+//TODO CLMemorySegment=>CLMemory
+
+//TODO ConstConvert: Обычно как QuickConvert, но конвертирование может быть вызвано в момент Invoke или даже создания очереди
+// - ThenConstConvert
+// - CombineConstConvert
+// - Кхм, ParameterQueue.ThenConstUse?????
+// - Тогда и CCQ.Create(Par).AddConstProc имеет смысл
+//TODO Тесты и справка:
+// - (HPQ+Par).ThenQuickUse.ThenConstConvert
+//TODO CombineUse? А то CombineConv есть, а Use нету...
+
 //TODO Тесты:
+// - Автоматически генерировать тест KernelArg'ов
+// --- Используя инклюды, потому что там несколько отдельных файлов
 
 //TODO Справка:
 // - KernelArg
+// --- KernelArg, как и всю остальную очередь, желательно создавать заранее, но KernelArgGlobal из массива - блокирует этот массив в памяти
 // - NativeArray
 // - CLValue
 // - !CL!Memory[Sub]Segment
+// - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
+// - MemoryUsage
+//
+// - Native*<T>.FromExistingMemory
+// - implicit ^T -> NativeValue<T>
+//
+// - new CLValue<byte>(new CLMemorySubSegment(cl_a))
+// --- CLArray и CLValue неявно конвертируются в CLMemorySegment
+// --- И их можно создать назад конструктором
 
 //===================================
 // Запланированное:
+
+//TODO Разделить .html справку и гайт по OpenCLABC
+//TODO github.io
 
 //TODO cl.WaitForEvents тратит время процессора??? Почему?
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
 
-//TODO CombineUse? А то CombineConv есть, а Use нету...
+//TODO Аргументы компиляции OpenCL-C кода
+// - #define-ы особо полезны, но там куча всего...
 
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -62,10 +90,12 @@ unit OpenCLABC;
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 //TODO Попробовать получать информацию о параметрах Kernel'а и выдавать адекватные ошибки, если передают что-то не то
-// - Адрес RAM всегда превращается в read-only копию на стороне OpenCL-C?
+// - clGetKernelArgInfo
+// - Для этого нужна опция "-cl-kernel-arg-info" при компиляции
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
+// - В комбинации с .Cycle вообще возможно добиться детерминированности?
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .AddMap((MappedArray,Context)->())
@@ -81,7 +111,12 @@ unit OpenCLABC;
 // - При этом сделать его кросс-платформенным
 
 //TODO Исправить перегрузки Kernel.Exec
-// - Сначала решить как исправлять
+// - Но сначала решить как исправлять
+
+//TODO MEM_ALLOC_HOST_PTR, на сколько я понял он:
+// - Медленнее чем MEM_USE_HOST_PTR для выровеных данных, потому что копирование
+// - Быстрее чем MEM_USE_HOST_PTR в остальных случаях
+// - Протестировать
 
 //===================================
 // Сделать когда-нибуть:
@@ -89,27 +124,29 @@ unit OpenCLABC;
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
 // - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
 // - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
-// - MemFlags кроме MemFlags.MEM_READ_WRITE
 // - Другие типы cl_mem (сейчас используется только буфер)
 // - clEnqueueNativeKernel
 // --- CL_DEVICE_BUILT_IN_KERNELS
 
-//TODO Фичи OpenCL3.0, которого у меня нет
-// - CL_DEVICE_ILS_WITH_VERSION
-// - CL_DEVICE_BUILT_IN_KERNELS_WITH_VERSION
-// - CL_DEVICE_NUMERIC_VERSION
-// - CL_DEVICE_OPENCL_C_ALL_VERSIONS
-// - CL_DEVICE_OPENCL_C_FEATURES
-// - CL_DEVICE_EXTENSIONS_WITH_VERSION
-// - CL_DEVICE_ATOMIC_MEMORY_CAPABILITIES
-// - CL_DEVICE_ATOMIC_FENCE_CAPABILITIES
-// - CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT
-// - CL_DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT
-// - CL_DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT
-// - CL_DEVICE_DEVICE_ENQUEUE_CAPABILITIES
-// - CL_DEVICE_PIPE_SUPPORT
-// - CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
-// - CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
+//TODO Фичи версий OpenCL, которых у меня нет:
+// - OpenCL2.0
+// --- SVM
+// - OpenCL3.0
+// --- CL_DEVICE_ILS_WITH_VERSION
+// --- CL_DEVICE_BUILT_IN_KERNELS_WITH_VERSION
+// --- CL_DEVICE_NUMERIC_VERSION
+// --- CL_DEVICE_OPENCL_C_ALL_VERSIONS
+// --- CL_DEVICE_OPENCL_C_FEATURES
+// --- CL_DEVICE_EXTENSIONS_WITH_VERSION
+// --- CL_DEVICE_ATOMIC_MEMORY_CAPABILITIES
+// --- CL_DEVICE_ATOMIC_FENCE_CAPABILITIES
+// --- CL_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT
+// --- CL_DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT
+// --- CL_DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT
+// --- CL_DEVICE_DEVICE_ENQUEUE_CAPABILITIES
+// --- CL_DEVICE_PIPE_SUPPORT
+// --- CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
+// --- CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
 
 //TODO Слишком новые фичи, которые могут много чего изменить:
 // - cl_khr_command_buffer
@@ -195,11 +232,8 @@ type
 //    inherited Create($'{message} with {ec}');
     private constructor(ec: ErrorCode) :=
     inherited Create(OpenCLException.Create(ec).Message);
-    private constructor;
-    begin
-      inherited Create($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
-      raise self;
-    end;
+    private constructor :=
+    inherited Create($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     private static procedure RaiseIfError(ec: ErrorCode) :=
     if ec.IS_ERROR then raise new OpenCLABCInternalException(ec);
@@ -242,8 +276,9 @@ type
     private static function RefCounterFor(ev: cl_event) := RefCounter.GetOrAdd(ev, ev->new ConcurrentQueue<EventRetainReleaseData>);
     
     public static procedure RegisterEventRetain(ev: cl_event; reason: string) :=
+    if ev=cl_event.Zero then raise new OpenCLABCInternalException($'Zero event retain') else
     RefCounterFor(ev).Enqueue(new EventRetainReleaseData(false, reason));
-    public static procedure RegisterEventRelease(ev: cl_event; reason: string);
+    public static procedure RegisterEventRelease(ev: cl_event; reason: string) :=
     begin
       EventDebug.CheckExists(ev, reason);
       RefCounterFor(ev).Enqueue(new EventRetainReleaseData(true, reason));
@@ -772,11 +807,11 @@ type
   {$endregion WrapperProperties}
   
   {$region Wrappers}
-  // For parameters of OpenCL_command-methods
+  // For parameters of CCQ-involved methods
   ///Представляет очередь команд, в основном выполняемых на GPU
   ///Такая очередь всегда возвращает значение типа T
   CommandQueue<T> = abstract partial class end;
-  ///Представляет аргумент, передаваемый в вызов kernel-а
+  ///Представляет аргумент, передаваемый в вызов kernel'а
   KernelArg = abstract partial class end;
   
   {$region ContextData}
@@ -1072,22 +1107,18 @@ type
   ProgramCode = partial class
     private ntv: cl_program;
     
-    private _c: Context;
-    ///Возвращает контекст, на котором компилировали данный код для GPU
-    public property BaseContext: Context read _c;
-    
     {$region constructor's}
     
-    private procedure Build;
+    private procedure Build(c: Context);
     begin
-      var ec := cl.BuildProgram(self.ntv, _c.dvcs.Count,_c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
+      var ec := cl.BuildProgram(self.ntv, c.dvcs.Count,c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
       if not ec.IS_ERROR then exit;
       
       if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
       begin
         var sb := new StringBuilder($'Ошибка компиляции OpenCL программы:');
         
-        foreach var dvc in _c.AllDevices do
+        foreach var dvc in c.AllDevices do
         begin
           sb += #10#10;
           sb += dvc.ToString;
@@ -1125,33 +1156,17 @@ type
       self.ntv := cl.CreateProgramWithSource(c.ntv, file_texts.Length, file_texts, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      self._c := c;
-      self.Build;
+      self.Build(c);
     end;
     ///Компилирует указанные тексты программ в контексте Context.Default
     ///Внимание! Именно тексты, Не имена файлов
     public constructor(params file_texts: array of string) := Create(Context.Default, file_texts);
     
-    private constructor(ntv: cl_program; c: Context);
+    private constructor(ntv: cl_program);
     begin
       OpenCLABCInternalException.RaiseIfError( cl.RetainProgram(ntv) );
-      self._c := c;
       self.ntv := ntv;
     end;
-    
-    private static function GetProgContext(ntv: cl_program): Context;
-    begin
-      var c: cl_context;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(Marshal.SizeOf&<cl_context>), c, IntPtr.Zero)
-      );
-      Result := new Context(c);
-    end;
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    ///При успешном создании обёртки вызывается cl.Retain
-    ///А во время вызова .Dispose - cl.Release
-    public constructor(ntv: cl_program) :=
-    Create(ntv, GetProgContext(ntv));
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -1168,6 +1183,18 @@ type
     protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
+    
+    private function GetBuildContext: Context;
+    begin
+      
+      var c_ntv: cl_context;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramInfo(self.ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(cl_context.Size), c_ntv, IntPtr.Zero)
+      );
+      
+      Result := new Context(c_ntv);
+    end;
+    public property BuildContext: Context read GetBuildContext;
     
     {$region Serialize}
     
@@ -1236,8 +1263,8 @@ type
       );
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      Result := new ProgramCode(ntv, c);
-      Result.Build;
+      Result := new ProgramCode(ntv);
+      Result.Build(c);
       
     end;
     
@@ -1270,7 +1297,6 @@ type
   
   ///Представляет подпрограмму, выполняемую на GPU
   Kernel = partial class
-    private ntv: cl_kernel;
     
     private code: ProgramCode;
     ///Возвращает контейнер кода, содержащий данную подпрограмму
@@ -1280,27 +1306,22 @@ type
     ///Возвращает имя данной подпрограммы
     public property Name: string read k_name;
     
-    {$region constructor's}
-    
-    ///Создаёт независимый клон неуправляемого объекта
-    ///Внимание: Клон НЕ будет удалён автоматически при сборке мусора. Для него надо вручную вызывать cl.ReleaseKernel
-    protected function MakeNewNtv: cl_kernel;
+    private function ntv: cl_kernel;
     begin
       var ec: ErrorCode;
       Result := cl.CreateKernel(code.ntv, k_name, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
-    private constructor(code: ProgramCode; name: string);
+    
+    {$region constructor's}
+    
+    private constructor(code: ProgramCode; k_name: string);
     begin
       self.code := code;
       self.k_name := name;
-      self.ntv := self.MakeNewNtv;
     end;
     
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    ///При успешном создании обёртки вызывается cl.Retain
-    ///А во время вызова .Dispose - cl.Release
-    public constructor(ntv: cl_kernel; retain: boolean := true);
+    public constructor(ntv: cl_kernel);
     begin
       
       var code_ntv: cl_program;
@@ -1323,74 +1344,12 @@ type
         Marshal.FreeHGlobal(str_ptr);
       end;
       
-      if retain then OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
-      self.ntv := ntv;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    ///Позволяет OpenCL удалить неуправляемый объект
-    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
-    public procedure Dispose;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(new cl_kernel(prev)) );
-    end;
-    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
-    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
-    protected procedure Finalize; override := Dispose;
-    
     {$endregion constructor's}
     
-    {$region UseExclusiveNative}
-    
-    private ntv_in_use := 0;
-    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    ///Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно
-    ///Если неуправляемый объект данного kernel-а используется другим потоком - в процедурную переменную передаётся его независимый клон
-    ///Внимание: Клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
-    procedure UseExclusiveNative(p: cl_kernel->()) :=
-    if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
-    try
-      p(self.ntv);
-    finally
-      ntv_in_use := 0;
-    end else
-    begin
-      var k := MakeNewNtv;
-      try
-        p(k);
-      finally
-        OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(k) );
-      end;
-    end;
-    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    ///Гарантирует что неуправляемый объект будет использоваться только в 1 потоке одновременно
-    ///Если неуправляемый объект данного kernel-а используется другим потоком - в процедурную переменную передаётся его независимый клон
-    ///Внимание: Клон неуправляемого объекта будет удалён сразу после выхода из вашей процедурной переменной, если не вызвать cl.RetainKernel
-    function UseExclusiveNative<T>(f: cl_kernel->T): T;
-    begin
-      
-      if Interlocked.CompareExchange(ntv_in_use, 1, 0)=0 then
-      try
-        Result := f(self.ntv);
-      finally
-        ntv_in_use := 0;
-      end else
-      begin
-        var k := MakeNewNtv;
-        try
-          Result := f(k);
-        finally
-          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(k) );
-        end;
-      end;
-      
-    end;
-    
-    {$endregion UseExclusiveNative}
-    
-    {$region 1#Exec}
+    {$region Exec}
     
     ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel;
@@ -1406,7 +1365,7 @@ type
     ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
     public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel;
     
-    {$endregion 1#Exec}
+    {$endregion Exec}
     
   end;
   
@@ -1427,7 +1386,7 @@ type
       var res := new cl_kernel[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, c, res[0], IntPtr.Zero) );
       
-      Result := res.ConvertAll(k->new Kernel(k, false));
+      Result := res.ConvertAll(k->new Kernel(k));
     end;
     
   end;
@@ -1438,7 +1397,7 @@ type
   
   {$region Memory}
   
-  {$region Native}
+  {$region NativeArea}
   
   {$region NativeMemoryArea}
   
@@ -1447,14 +1406,28 @@ type
     public ptr: IntPtr;
     public sz: UIntPtr;
     
+    {$region constructor's}
+    
     ///Создаёт описание указанной области памяти
     public constructor(ptr: IntPtr; sz: UIntPtr);
     begin
       self.ptr := ptr;
       self.sz := sz;
     end;
-    ///--
-    public constructor := exit;
+    public constructor(sz: UIntPtr);
+    begin
+      self.sz := sz;
+      Alloc;
+    end;
+    public constructor;
+    begin
+      self.ptr := IntPtr.Zero;
+      self.sz := UIntPtr.Zero;
+    end;
+    
+    {$endregion constructor's}
+    
+    {$region Method's}
     
     {$region Fill}
     
@@ -1573,40 +1546,281 @@ type
     
     {$endregion CopyOverlapped}
     
+    {$endregion Method's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      self.ptr := Marshal.AllocHGlobal(IntPtr(self.sz.ToPointer));
+      GC.AddMemoryPressure(self.sz.ToUInt64);
+    end;
+    public procedure Release;
+    begin
+      GC.RemoveMemoryPressure(self.sz.ToUInt64);
+      Marshal.FreeHGlobal(self.ptr);
+      self.ptr := IntPtr.Zero;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := new NativeMemoryArea(
+        Interlocked.Exchange(self.ptr, IntPtr.Zero),
+        self.sz
+      );
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{ptr}[{sz}]';
+    $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
     
   end;
   
   {$endregion NativeMemoryArea}
+  
+  {$region NativeValueArea}
+  
+  NativeValueArea<T> = record
+  where T: record;
+    public ptr: IntPtr;
+    
+    {$region constructor's}
+    
+    static constructor;
+    
+    public constructor(ptr: IntPtr) := self.ptr := ptr;
+    public constructor(alloc: boolean := false) :=
+    if alloc then self.Alloc else
+    self.ptr := IntPtr.Zero;
+    
+    public static function operator implicit(p: ^T): NativeValueArea<T> := new NativeValueArea<T>(new IntPtr(p));
+    public static function operator implicit(area: NativeValueArea<T>): ^T := area.Pointer;
+    public static function operator implicit(area: NativeValueArea<T>): NativeMemoryArea := area.UntypedArea;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public static property ValueSize: integer read Marshal.SizeOf&<T>;
+    public property ByteSize: UIntPtr read new UIntPtr(ValueSize);
+    
+    //TODO #????
+    private function PointerUntyped := pointer(ptr);
+    public property Pointer: ^T read PointerUntyped();
+    public property Value: T read Pointer^ write Pointer^ := value;
+    
+    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.ptr, self.ByteSize);
+    
+    {$endregion property's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      var temp := self.UntypedArea;
+      temp.Alloc;
+      self.ptr := temp.ptr;
+    end;
+    public procedure Release;
+    begin
+      var temp := self.UntypedArea;
+      temp.Release;
+      self.ptr := temp.ptr;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := self.UntypedArea;
+      temp.ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${ptr.ToString(''X'')}';
+    
+  end;
+  
+  {$endregion NativeValueArea}
+  
+  {$region NativeArrayArea}
+  
+  NativeArrayArea<T> = record
+  where T: record;
+    public first_ptr: IntPtr;
+    public item_count: UInt32;
+    
+    {$region constructor's}
+    
+    static constructor;
+    
+    public constructor(first_ptr: IntPtr; item_count: UInt32);
+    begin
+      self.first_ptr  := first_ptr;
+      self.item_count := item_count;
+    end;
+    public constructor(item_count: UInt32);
+    begin
+      self.item_count := item_count;
+      Alloc;
+    end;
+    public constructor;
+    begin
+      self.first_ptr  := IntPtr.Zero;
+      self.item_count := 0;
+    end;
+    
+    public static function operator implicit(area: NativeArrayArea<T>): NativeMemoryArea := area.UntypedArea;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public static property ItemSize: integer read Marshal.SizeOf&<T>;
+    public property ByteSize: UIntPtr read new UIntPtr( item_count*uint64(ItemSize) );
+    
+    public property Length: cardinal read self.item_count;
+    
+    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read new NativeValueArea<T>(self.first_ptr + i*ItemSize);
+    
+    private function GetAndCheckItemArea(i: integer): NativeValueArea<T>;
+    begin
+      if cardinal(i)>=self.item_count then raise new IndexOutOfRangeException;
+      Result := ItemAreaUnchecked[i];
+    end;
+    public property ItemArea[i: integer]: NativeValueArea<T> read GetAndCheckItemArea;
+    public property Item[i: integer]: T read ItemArea[i].Value write ItemArea[i].Value := value; default;
+    
+    public property SliceUnchecked[r: IntRange]: NativeArrayArea<T> read
+    new NativeArrayArea<T>( ItemAreaUnchecked[r.Low].ptr, r.High-r.Low+1 );
+    private function GetSliceAndCheck(r: IntRange): NativeArrayArea<T>;
+    begin
+      if r.Low<0 then raise new IndexOutOfRangeException('r.Low');
+      if cardinal(r.High)>=self.item_count then raise new IndexOutOfRangeException('r.High');
+      Result := SliceUnchecked[r];
+      if integer(Result.item_count)<0 then raise new ArgumentOutOfRangeException('r.Count');
+    end;
+    public property Slice[r: IntRange]: NativeArrayArea<T> read GetSliceAndCheck;
+    
+    private function GetManagedCopy: array of T;
+    begin
+      Result := new T[self.item_count];
+      self.UntypedArea.CopyTo(Result);
+    end;
+    public property ManagedCopy: array of T read GetManagedCopy write
+    begin
+      if value.Length<>self.item_count then raise new ArgumentException($'');
+      self.UntypedArea.CopyFrom(value);
+    end;
+    
+    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.first_ptr, self.ByteSize);
+    
+    {$endregion property's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.first_ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      var temp := self.UntypedArea;
+      temp.Alloc;
+      self.first_ptr := temp.ptr;
+    end;
+    public procedure Release;
+    begin
+      var temp := self.UntypedArea;
+      temp.Release;
+      self.first_ptr := temp.ptr;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := self.UntypedArea;
+      temp.ptr := Interlocked.Exchange(self.first_ptr, IntPtr.Zero);
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.first_ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
+    
+  end;
+  
+  {$endregion NativeArrayArea}
+  
+  {$endregion NativeArea}
+  
+  {$region Native}
+  
+  {$region NativeMemory}
+  
+  NativeMemory = partial class(IDisposable)
+    private _area: NativeMemoryArea;
+    
+    {$region constructor's}
+    
+    public constructor(sz: UIntPtr);
+    begin
+      self._area.sz := sz;
+      self._area.Alloc;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public property Area: NativeMemoryArea read _area;
+    
+    {$endregion property's}
+    
+    {$region IDisposable}
+    
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
+    protected procedure Finalize; override := Dispose;
+    
+    {$endregion IDisposable}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+    
+  end;
+  
+  {$endregion NativeMemory}
   
   {$region NativeValue}
   
   ///Представляет запись, значение которой хранится в неуправляемой области памяти
   NativeValue<T> = partial class(IDisposable)
   where T: record;
-    private ptr: IntPtr;
+    private _area := new NativeValueArea<T>(true);
     
     {$region constructor's}
     
-    private procedure Init;
-    begin
-      self.ptr := Marshal.AllocHGlobal(value_size);
-      GC.AddMemoryPressure(value_size);
-    end;
     ///Выделяет и обнуляет область неуправляемой памяти
-    public constructor;
-    begin
-      Init;
-      self.MemoryArea.FillZero;
-    end;
+    public constructor := self.AreaUntyped.FillZero;
     ///Выделяет область неуправляемой памяти и сохраняет в него указанное значение
-    public constructor(o: T);
-    begin
-      Init;
-      self.Value := o;
-    end;
+    public constructor(o: T) := self.Value := o;
     public static function operator implicit(o: T): NativeValue<T> := new NativeValue<T>(o);
     
     {$endregion constructor's}
@@ -1617,14 +1831,13 @@ type
     ///Возвращает размер значения, в байтах
     public static property ValueSize: integer read value_size;
     
-    ///Возвращает описание области памяти, занимаемой данным значением
-    public property MemoryArea: NativeMemoryArea read new NativeMemoryArea(ptr, new UIntPtr(value_size));
+    public property Area: NativeValueArea<T> read _area;
+    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
     
-    private function PtrUntyped := pointer(ptr);
     ///Возвращает указатель на значение, сохранённое неуправляемой памяти
-    public property Pointer: ^T read PtrUntyped();
+    public property Pointer: ^T read Area.Pointer;
     ///Возвращает или задаёт значение, сохранённое неуправляемой памяти
-    public property Value: T read Pointer^ write Pointer^ := value;
+    public property Value: T read Area.Value write Area.Value := value;
     
     {$endregion property's}
     
@@ -1633,13 +1846,8 @@ type
     ///Освобождает значение, сохранённое неуправляемой памяти
     ///Ничего не делает, если значение уже освобождено
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
-    public procedure Dispose;
-    begin
-      var l_ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
-      if l_ptr=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(value_size);
-      Marshal.FreeHGlobal(l_ptr);
-    end;
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
@@ -1659,31 +1867,25 @@ type
   ///Представляет массив, содержимое которого хранится в неуправляемой области памяти
   NativeArray<T> = partial class
   where T: record;
-    private area: NativeMemoryArea;
+    private _area: NativeArrayArea<T>;
     
     {$region constructor's}
     
-    private procedure AllocArea(length: integer);
-    begin
-      var sz := int64(item_size) * length;
-      self.area := new NativeMemoryArea(
-        Marshal.AllocHGlobal(new IntPtr(sz)),
-        new UIntPtr(sz)
-      );
-      GC.AddMemoryPressure(sz);
-    end;
-    ///Выделяет и обнуляет область неуправляемой памяти достаточного размера для хранения указанного кол-ва элементов
-    public constructor(length: integer);
+    private procedure AllocArea(length: UInt32) :=
+    self._area := new NativeArrayArea<T>(length);
+    public constructor(length: UInt32);
     begin
       AllocArea(length);
-      self.area.FillZero;
+      self.AreaUntyped.FillZero;
     end;
     ///Выделяет неуправляемую память и сохраняет в неё копию указанных данных
     public constructor(a: array of T);
     begin
       AllocArea(a.Length);
-      self.area.CopyFrom(a);
+      self.AreaUntyped.CopyFrom(a);
     end;
+    
+    private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
     
@@ -1694,7 +1896,7 @@ type
     public function IndexOf(item: T): integer?;
     begin
       Result := nil;
-      for var i := 0 to ItemCount-1 do
+      for var i := 0 to Length-1 do
         if self.Item[i]=item then
         begin
           Result := i;
@@ -1706,63 +1908,26 @@ type
     
     {$region property's}
     
-    private static item_size := Marshal.SizeOf&<T>;
     ///Возвращает размер одного элемента массива, в байтах
-    public static property ItemSize: integer read item_size;
+    public static property ItemSize: integer read Marshal.SizeOf&<T>;
     
-    ///Возвращает описание области памяти, занимаемой содержимым данного массива
-    public property MemoryArea: NativeMemoryArea read self.area;
-    ///Возвращает кол-во элементов данного массива
-    public property ItemCount: cardinal read self.area.sz.ToUInt64 div item_size;
+    public property Area: NativeArrayArea<T> read self._area;
+    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
     
-    private function ItemPtrUntyped(i: integer) := pointer(area.ptr + i*item_size);
-    ///Возвращает указатель на элемент с указанным индексом
-    ///Данное свойство не проверяет правильность переданных индексов
-    public property ItemPtrUnchecked[i: integer]: ^T read ItemPtrUntyped(i);
+    public property Length: cardinal read self.Area.item_count;
     
-    private function GetAndCheckItemPtr(i: integer): ^T;
-    begin
-      if cardinal(i)>=ItemCount then raise new IndexOutOfRangeException;
-      Result := ItemPtrUnchecked[i];
-    end;
-    ///Возвращает указатель на элемент с указанным индексом
-    ///Данное свойство проверяет правильность переданных индексов
-    public property ItemPtr[i: integer]: ^T read GetAndCheckItemPtr;
+    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read Area.ItemAreaUnchecked[i];
+    public property ItemArea[i: integer]: NativeValueArea<T> read Area.ItemArea[i];
     ///Возвращает или задаёт элемент массива по указанному индексу
     ///Данное свойство проверяет правильность переданных индексов
-    public property Item[i: integer]: T read ItemPtr[i]^ write ItemPtr[i]^ := value; default;
+    public property Item[i: integer]: T read Area[i] write Area[i] := value; default;
     
     ///Возвращает описание области памяти для указанного среза элементов
     ///Данное свойство не проверяет правильность переданных индексов
-    public property SliceAreaUnchecked[r: IntRange]: NativeMemoryArea read new NativeMemoryArea(
-      self.area.ptr + r.Low*ItemSize,
-      new UIntPtr((r.High-r.Low+1) * int64(ItemSize))
-    );
-    private function GetSliceAreaAndCheck(r: IntRange): NativeMemoryArea;
-    begin
-      if r.Low<0 then raise new IndexOutOfRangeException('Low');
-      if cardinal(r.High)>=ItemCount then raise new IndexOutOfRangeException('High');
-      Result := SliceAreaUnchecked[r];
-    end;
+    public property SliceAreaUnchecked[r: IntRange]: NativeArrayArea<T> read Area.SliceUnchecked[r];
     ///Возвращает описание области памяти для указанного среза элементов
     ///Данное свойство проверяет правильность переданных индексов
-    public property SliceArea[r: IntRange]: NativeMemoryArea read GetSliceAreaAndCheck;
-    
-    private function GetSliceCopy(r: IntRange): array of T;
-    begin
-      var area := SliceArea[r];
-      Result := new T[r.High-r.Low+1];
-      area.CopyTo(Result);
-    end;
-    ///Копирует данные между управляемым массивом и срезом данного массива
-    ///Данное свойство проверяет правильность переданных индексов
-    public property SliceCopy[r: IntRange]: array of T read GetSliceCopy write
-    begin
-      var expected_len := r.High-r.Low+1;
-      if value.Length<>expected_len then raise new ArgumentException($'Массив присваиваемый свойству NativeArray<>.SliceCopy должен иметь размер ({value.Length}), равный размеру среза ({expected_len})');
-      var area := SliceArea[r];
-      area.CopyFrom(value);
-    end;
+    public property SliceArea[r: IntRange]: NativeArrayArea<T> read Area.Slice[r];
     
     {$endregion property's}
     
@@ -1788,7 +1953,7 @@ type
     public function MoveNext: boolean;
     begin
       i += 1;
-      Result := i < a.ItemCount;
+      Result := i < a.Length;
     end;
     ///Сбрасывает перечислитель в его исходное положение
     public procedure Reset := self.i := -1;
@@ -1818,7 +1983,7 @@ type
     
     //TODO #????
     ///--
-    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.ItemCount;
+    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.Length;
     public property System.Collections.Generic.ICollection<T>.IsReadOnly: boolean read boolean(true);
     
     public procedure System.Collections.Generic.ICollection<T>.Add(item: T) := raise new NotSupportedException;
@@ -1836,8 +2001,8 @@ type
     ///Данное свойство проверяет правильность переданных индексов
     public procedure CopyTo(&array: array of T; arrayIndex: integer);
     begin
-      if arrayIndex+self.ItemCount > &array.Length then raise new IndexOutOfRangeException;
-      self.area.CopyTo(&array[arrayIndex]);
+      if arrayIndex+self.Length > &array.Length then raise new IndexOutOfRangeException;
+      self.AreaUntyped.CopyTo(&array[arrayIndex]);
     end;
     
     {$endregion ICollection}
@@ -1855,13 +2020,8 @@ type
     ///Освобождает неуправляемую память из по данного массива
     ///Этот метод потоко-безопасен
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
-    public procedure Dispose;
-    begin
-      var l_ptr := Interlocked.Exchange(self.area.ptr, IntPtr.Zero);
-      if l_ptr=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(area.sz.ToUInt64);
-      Marshal.FreeHGlobal(l_ptr);
-    end;
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
@@ -1874,7 +2034,7 @@ type
       var sb := new StringBuilder;
       sb += TypeName(self);
       sb += '{';
-      if self.ItemCount<>0 then
+      if self.Length<>0 then
       begin
         sb += ' ';
         //TODO #????: as
@@ -1898,6 +2058,77 @@ type
   
   {$region OpenCL}
   
+  {$region MemoryUsage}
+  
+  MemoryUsage = record
+    private data: integer;
+    
+    private const can_read_bit = 1;
+    private const can_write_bit = 2
+    private const none_bits = 0;
+    private const read_write_bits = can_read_bit + can_write_bit;
+    
+    private constructor(data: integer) := self.data := data;
+    public constructor(can_read, can_write: boolean) := Create(
+      integer(can_read ) * can_read_bit +
+      integer(can_write) * can_write_bit
+    );
+    private static function operator implicit(data: integer): MemoryUsage := new MemoryUsage(data);
+    
+    public static property None:      MemoryUsage read new MemoryUsage(false, false);
+    public static property ReadOnly:  MemoryUsage read new MemoryUsage(true,  false);
+    public static property WriteOnly: MemoryUsage read new MemoryUsage(false, true);
+    public static property ReadWrite: MemoryUsage read new MemoryUsage(true,  true);
+    
+    public property CanRead: boolean read data and can_read_bit <> 0;
+    public property CanWrite: boolean read data and can_write_bit <> 0;
+    
+    private static function MakeCLFlags(kernel_use, map_use: MemoryUsage): MemFlags;
+    begin
+      
+      case kernel_use.data of
+        none_bits:
+          raise new ArgumentException($'');
+        can_read_bit:
+          Result := MemFlags.MEM_READ_ONLY;
+        can_write_bit:
+          Result := MemFlags.MEM_WRITE_ONLY;
+        read_write_bits:
+          Result := MemFlags.MEM_READ_WRITE;
+        else
+          raise new ArgumentException($'');
+      end;
+      
+      case map_use.data of
+        none_bits:
+          Result += MemFlags.MEM_HOST_NO_ACCESS;
+        can_read_bit:
+          Result += MemFlags.MEM_HOST_READ_ONLY;
+        can_write_bit:
+          Result += MemFlags.MEM_HOST_WRITE_ONLY;
+        read_write_bits:
+          ;
+        else
+          raise new ArgumentException($'');
+      end;
+      
+    end;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      res += typeof(MemoryUsage).Name;
+      res += '[';
+      if CanRead  then res += 'Read';
+      if CanWrite then res += 'Write';
+      res += ']';
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion MemoryUsage}
+  
   {$region CLMemorySegment}
   
   ///Представляет область памяти устройства OpenCL (обычно GPU)
@@ -1906,34 +2137,25 @@ type
     
     {$region constructor's}
     
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в указанном контексте
-    public constructor(size: UIntPtr; c: Context);
+    public constructor(size: UIntPtr; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, size, IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), size, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(size.ToUInt64);
-      
     end;
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в указанном контексте
-    public constructor(size: integer; c: Context) := Create(new UIntPtr(size), c);
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в указанном контексте
-    public constructor(size: int64; c: Context)   := Create(new UIntPtr(size), c);
+    public constructor(size: integer; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), c, kernel_use, map_use);
+    public constructor(size: int64;   c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), c, kernel_use, map_use);
     
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в контексте Context.Default
-    public constructor(size: UIntPtr) := Create(size, Context.Default);
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в контексте Context.Default
-    public constructor(size: integer) := Create(new UIntPtr(size));
-    ///Выделяет область памяти устройства OpenCL указанного в байтах размера
-    ///Память выделяется в контексте Context.Default
-    public constructor(size: int64)   := Create(new UIntPtr(size));
+    public constructor(size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(size, Context.Default, kernel_use, map_use);
+    public constructor(size: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), kernel_use, map_use);
+    public constructor(size: int64;   kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(new UIntPtr(size), kernel_use, map_use);
     
     private constructor(ntv: cl_mem);
     begin
@@ -1968,17 +2190,14 @@ type
     
     {$region IDisposable}
     
-    private procedure FinishReleasing(prev_ntv: cl_mem); virtual :=
-    GC.RemoveMemoryPressure( GetSize(prev_ntv).ToUInt64 );
-    
     ///Позволяет OpenCL удалить неуправляемый объект
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
     public procedure Dispose;
     begin
       var prev_ntv := new cl_mem( Interlocked.Exchange(self.ntv.val, IntPtr.Zero) );
       if prev_ntv=cl_mem.Zero then exit;
-      FinishReleasing(prev_ntv);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(prev_ntv) );
+      GC.SuppressFinalize(self);
     end;
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
@@ -2182,77 +2401,117 @@ type
     ///len указывает кол-во задействованных в операции байт
     public function ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
     
-    ///Записывает данные указанной области памяти RAM в данную область памяти OpenCL
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function WriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
     
-    ///Читает достаточно данных данной области памяти OpenCL чтобы заполнить всю указанную область памяти RAM
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ReadData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function WriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteNativeMemory(native_data: NativeMemory): CLMemorySegment;
+    
+    public function WriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function WriteNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+    
+    public function ReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadNativeMemory(native_data: NativeMemory): CLMemorySegment;
+    
+    public function ReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ReadNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ReadNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    ///Заполняет весь массив байбами из начала области памяти
+    public function ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+    
+    public function WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+    
+    public function ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    ///Заполняет весь массив байбами из начала области памяти
+    public function ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    
+    public function ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
-    ///Записывает весь массив в начало области памяти
-    public function WriteNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function WriteNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет весь массив байбами из начала области памяти
-    public function ReadNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ReadNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Записывает весь массив в начало области памяти
-    public function WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет весь массив байбами из начала области памяти
-    public function ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
@@ -2374,49 +2633,63 @@ type
     ///fill_byte_len указывает кол-во заливаемых байт
     public function FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
     
-    ///Берёт последовательность байт указанной области памяти RAM и заполняет её копиями всю данную область памяти OpenCL
-    public function FillData(data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
     
-    ///Берёт последовательность байт указанной области памяти RAM и заполняет её копиями часть данной области памяти OpenCL
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillData(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>): CLMemorySegment;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillNativeMemory(native_data: NativeMemory): CLMemorySegment;
+    
+    public function FillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function FillNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function FillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+    
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    
+    public function FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    
+    public function FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function FillNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
     
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
     
     {$endregion 2#Fill}
     
@@ -2476,41 +2749,30 @@ type
   ///Представляет виртуальную область памяти, выделенную внутри CLMemorySegment
   CLMemorySubSegment = partial class(CLMemorySegment)
     private _parent: cl_mem;
-    // Forbid parent from disposing itself
-    private parent_dispose_lock: CLMemorySegment;
     
     {$region constructor's}
     
-    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region): cl_mem;
+    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region; flags: MemFlags): cl_mem;
     begin
       var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(parent, MemFlags.MEM_READ_WRITE, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      Result := cl.CreateSubBuffer(parent, flags, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    ///Создаёт виртуальную область памяти, использующую указанную область из parent
-    ///origin указывает отступ в байтах от начала parent
-    ///size указывает размер новой области памяти
-    public constructor(parent: CLMemorySegment; origin, size: UIntPtr);
+    public constructor(parent: CLMemorySegment; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
-      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size)) );
+      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), MemoryUsage.MakeCLFlags(kernel_use, map_use)) );
       self._parent := parent.ntv;
-      self.parent_dispose_lock := parent;
     end;
-    ///Создаёт виртуальную область памяти, использующую указанную область из parent
-    ///origin указывает отступ в байтах от начала parent
-    ///size указывает размер новой области памяти
-    public constructor(parent: CLMemorySegment; origin, size: UInt32) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
-    ///Создаёт виртуальную область памяти, использующую указанную область из parent
-    ///origin указывает отступ в байтах от начала parent
-    ///size указывает размер новой области памяти
-    public constructor(parent: CLMemorySegment; origin, size: UInt64) := Create(parent, new UIntPtr(origin), new UIntPtr(size));
+    public constructor(parent: CLMemorySegment; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
+    public constructor(parent: CLMemorySegment; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
     // For the CLMemorySegment.FromNative
     private constructor(parent, ntv: cl_mem);
     begin
       inherited Create(ntv);
-      self.parent_dispose_lock := nil;
       self._parent := parent;
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -2523,13 +2785,6 @@ type
     public property Parent: CLMemorySegment read CLMemorySegment.FromNative(_parent);
     
     {$endregion property's}
-    
-    {$region IDisposable}
-    
-    private procedure FinishReleasing(prev_ntv: cl_mem); override :=
-    self.parent_dispose_lock := nil;
-    
-    {$endregion IDisposable}
     
   end;
   
@@ -2544,35 +2799,27 @@ type
     
     {$region constructor's}
     
-    ///Память выделяется в указанном контексте
-    ///Выделяет память OpenCL, заполненную мусорными данными
-    public constructor(c: Context);
+    public constructor(c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, new UIntPtr(ValueSize), IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ValueSize);
     end;
-    ///Память выделяется в указанном контексте
-    ///Выделяет память OpenCL и копирует в неё указанное значение
-    public constructor(c: Context; val: T);
+    public constructor(c: Context; val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ValueSize);
     end;
     
-    ///Память выделяется в контексте Context.Default
-    ///Выделяет память OpenCL, заполненную мусорными данными
-    public constructor := Create(Context.Default);
-    ///Память выделяется в контексте Context.Default
-    ///Выделяет память OpenCL и копирует в неё указанное значение
-    public constructor(val: T) := Create(Context.Default, val);
+    public constructor(kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, kernel_use, map_use);
+    public constructor(val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, val, kernel_use, map_use);
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
@@ -2581,8 +2828,10 @@ type
     begin
       self.ntv := ntv;
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
-      GC.AddMemoryPressure(ValueSize);
     end;
+    
+    public static function operator implicit(mem: CLValue<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
+    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
     
     {$endregion constructor's}
     
@@ -2602,8 +2851,8 @@ type
     begin
       var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
       if prev=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(ValueSize);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(new cl_mem(prev)) );
+      GC.SuppressFinalize(self);
     end;
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
@@ -2619,23 +2868,15 @@ type
     ///Записывает указанное значение в данное
     public function WriteValue(val: CommandQueue<&T>): CLValue<T>;
     
-    ///Записывает данные из RAM по указанному адресу в данное значение
-    public function WriteData(ptr: CommandQueue<IntPtr>): CLValue<T>;
-    
-    ///Читает данное значение в RAM по указанному адресу
-    public function ReadData(ptr: CommandQueue<IntPtr>): CLValue<T>;
-    
-    ///Записывает данные из RAM по указанному адресу в данное значение
-    public function WriteData(ptr: pointer): CLValue<T>;
-    
-    ///Читает данное значение в RAM по указанному адресу
-    public function ReadData(ptr: pointer): CLValue<T>;
+    public function WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
     
     ///Записывает указанное значение в данное
-    public function WriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
+    public function WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
+    
+    public function ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
     
     ///Читает данное значение в указанное
-    public function ReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
+    public function ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
     
     {$endregion 1#Write&Read}
     
@@ -2683,57 +2924,46 @@ type
     
     {$region constructor's}
     
-    private procedure InitByLen(c: Context);
+    private procedure InitByLen(c: Context; kernel_use, map_use: MemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE, new UIntPtr(ByteSize), IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ByteSize);
     end;
-    private procedure InitByVal(c: Context; var els: T);
+    private procedure InitByVal(c: Context; var els: T; kernel_use, map_use: MemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemFlags.MEM_READ_WRITE + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      GC.AddMemoryPressure(ByteSize);
     end;
     
-    ///Выделяет память OpenCL под указанное кол-во элементов, заполненную мусорными данными
-    ///Память выделяется в указанном контексте
-    public constructor(c: Context; len: integer);
+    public constructor(c: Context; len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       self.len := len;
-      InitByLen(c);
+      InitByLen(c, kernel_use, map_use);
     end;
-    ///Выделяет память OpenCL под указанное кол-во элементов, заполненную мусорными данными
-    ///Память выделяется в контексте Context.Default
-    public constructor(len: integer) := Create(Context.Default, len);
+    public constructor(len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, len, kernel_use, map_use);
     
-    ///Выделяет память OpenCL и копирует в неё содержимое указанного массива
-    ///Память выделяется в указанном контексте
-    public constructor(c: Context; els: array of T);
+    public constructor(c: Context; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       self.len := els.Length;
-      InitByVal(c, els[0]);
+      InitByVal(c, els[0], kernel_use, map_use);
     end;
-    ///Выделяет память OpenCL и копирует в неё содержимое указанного массива
-    ///Память выделяется в контексте Context.Default
-    public constructor(els: array of T) := Create(Context.Default, els);
+    public constructor(els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, els, kernel_use, map_use);
     
-    ///Выделяет память OpenCL и копирует в неё содержимое участка указанного массива
-    ///Память выделяется в указанном контексте
-    public constructor(c: Context; els_from, len: integer; params els: array of T);
+    public constructor(c: Context; els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       self.len := len;
-      InitByVal(c, els[els_from]);
+      InitByVal(c, els[els_from], kernel_use, map_use);
     end;
-    ///Выделяет память OpenCL и копирует в неё содержимое участка указанного массива
-    ///Память выделяется в контексте Context.Default
-    public constructor(els_from, len: integer; params els: array of T) := Create(Context.Default, els_from, len, els);
+    public constructor(els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    Create(Context.Default, els_from, len, els, kernel_use, map_use);
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
@@ -2750,8 +2980,11 @@ type
       self.ntv := ntv;
       
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
-      GC.AddMemoryPressure(ByteSize);
     end;
+    
+    public static function operator implicit(mem: CLArray<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
+    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
+    
     private constructor := raise new OpenCLABCInternalException;
     
     {$endregion constructor's}
@@ -2790,8 +3023,8 @@ type
     begin
       var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
       if prev=IntPtr.Zero then exit;
-      GC.RemoveMemoryPressure(ByteSize);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(new cl_mem(prev)) );
+      GC.SuppressFinalize(self);
     end;
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
@@ -2909,33 +3142,57 @@ type
     ///Читает len элементов начиная с индекса ind из данного массива в RAM, по указанному адресу
     public function ReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArray<T>;
     
-    ///Записывает данные из указанной области памяти в данный массив, начиная с элемента с индексом ind
-    public function WriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
     
-    ///Читает данные из данного массива в указанную область памяти, начиная с элемента с индексом ind
-    public function ReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
     
-    ///Записывает указанное значение в элемент данного массива с индексом ind
-    public function WriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
     
-    ///Читает элемент данного массива с индексом ind в указанное значение
-    public function ReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+    
+    public function WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
     
     ///Записывает указанный массив RAM в начало данного массива OpenCL
-    public function WriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    public function WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
     
-    ///Записывает len элементов из указанного массива RAM в данный массив OpenCL
-    ///ind указывает индекс первого элемента данного массива OpenCL
-    ///a_ind(-ы) указывают индекс первого элемента в массиве RAM
-    public function WriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+    
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
+    
+    public function ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+    
+    public function ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+    
+    public function ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
     
     ///Читает начало данного массива OpenCL в указанный массив RAM
-    public function ReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    public function ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
     
-    ///Читает len элементов данного массива OpenCL в указанный массив RAM
-    ///ind указывает индекс первого элемента данного массива OpenCL
-    ///a_ind(-ы) указывают индекс первого элемента в массиве RAM
-    public function ReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    ///Записывает указанное значение в элемент данного массива с индексом ind
+    public function WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    ///Читает элемент данного массива с индексом ind в указанное значение
+    public function ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+    
+    public function ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
     
     {$endregion 1#Write&Read}
     
@@ -3003,25 +3260,56 @@ type
     ///Берёт pattern_len элементов из RAM по указанному адресу и заполняет их копиями len элементов начиная с индекса ind данного массива
     public function FillData(ptr: pointer; pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
     
-    ///Заполняет весь данный массив копиями содержимого указанной области памяти
-    public function FillData(data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea): CLArray<T>;
     
-    ///Заполняет len элементов начиная с индекса ind данного массива копиями содержимого указанной области памяти
-    public function FillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeMemory(native_data: NativeMemory): CLArray<T>;
+    
+    public function FillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeValueArea(native_data: NativeValueArea<&T>): CLArray<T>;
+    
+    public function FillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeValue(native_data: NativeValue<&T>): CLArray<T>;
+    
+    public function FillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArray(native_data: NativeArray<&T>): CLArray<T>;
+    
+    public function FillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+    
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
+    
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+    
+    public function FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
     
     ///Заполняет весь массив копиями указанного значения
-    public function FillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArray<T>;
+    public function FillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
     
     ///Заполняет len элементов начиная с индекса ind копиями указанного значения
-    public function FillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+    public function FillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+    
+    public function FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
     
     ///Заполняет данный массив OpenCL копиями указанного массива RAM
-    public function FillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+    public function FillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
     
-    ///Заполняет fill_len элементов данного массива OpenCL копиями участков из pattern_len элементов указанного массива
-    ///ind указывает индекс первого элемента данного массива OpenCL
-    ///a_ind(-ы) указывают индекс первого элемента в массиве RAM
-    public function FillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArray<T>;
+    public function FillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
     
     {$endregion 2#Fill}
     
@@ -3464,18 +3752,6 @@ type
   ///Представляет очередь команд, в основном выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private static function DisplayNameForType(t: System.Type): string;
-    begin
-      Result := t.Name;
-      
-      if t.IsGenericType then
-      begin
-        var ind := Result.IndexOf('`');
-        Result := Result.Remove(ind) + '<' + t.GenericTypeArguments.Select(TypeToTypeName).JoinToString(', ') + '>';
-      end;
-      
-    end;
-    private function DisplayName: string; virtual := DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private static function GetValueRuntimeType<T>(val: T) :=
@@ -3500,7 +3776,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += DisplayName;
+      sb += TypeName(self);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -3711,7 +3987,7 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     ///Значение, которого возвращает данная константная очередь
-    public property Value: T read res write res;
+    public property Value: T read res;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -3784,7 +4060,7 @@ type
       Result := self.def;
     end;
     ///Значение, которое будет использоваться если при запуске очереди значение параметра небыло установлено
-    public property &Default: T read def write
+    public property &Default: T read GetDefault write
     begin
       self.def := value;
       self.def_is_set := true;
@@ -3937,6 +4213,9 @@ type
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
     public function ThenQuickUse(p: (T, Context)->()): CommandQueue<T>;
+    
+    public function ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
+    public function ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
     
   end;
   
@@ -4100,7 +4379,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += DisplayName;
+      sb += TypeName(self);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -4115,7 +4394,6 @@ type
       sb.Append(ind);
       
     end;
-    private function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -4328,230 +4606,6 @@ type
   
   {$endregion CLTask}
   
-  {$region KernelArg}
-  
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class
-    
-    {$region Managed}
-    
-    {$region Value}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel небольшое значение размерного типа
-    public static function FromValue<TRecord>(val: TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val: TRecord): KernelArg; where TRecord: record; begin Result := FromValue(val); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel небольшое значение размерного типа
-    public static function FromValueCQ<TRecord>(val_q: CommandQueue<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val_q: CommandQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ConstQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ParameterQueue<TRecord>): KernelArg; where TRecord: record; begin Result := FromValueCQ(val_q); end;
-    
-    {$endregion Value}
-    
-    {$region Array}
-    
-    {$region 1}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromArray<TRecord>(a: array of TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: array of TRecord): KernelArg; where TRecord: record; begin Result := FromArray(a); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromArrayCQ<TRecord>(a_q: CommandQueue<array of TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<array of TRecord>): KernelArg; where TRecord: record; begin Result := FromArrayCQ(a_q); end;
-    
-    {$endregion 1}
-    
-    {$region 2}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromArray2<TRecord>(a: array[,] of TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: array[,] of TRecord): KernelArg; where TRecord: record; begin Result := FromArray2(a); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromArray2CQ<TRecord>(a_q: CommandQueue<array[,] of TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<array[,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray2CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<array[,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray2CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<array[,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray2CQ(a_q); end;
-    
-    {$endregion 2}
-    
-    {$region 3}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromArray3<TRecord>(a: array[,,] of TRecord): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: array[,,] of TRecord): KernelArg; where TRecord: record; begin Result := FromArray3(a); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromArray3CQ<TRecord>(a_q: CommandQueue<array[,,] of TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<array[,,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray3CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<array[,,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray3CQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<array[,,] of TRecord>): KernelArg; where TRecord: record; begin Result := FromArray3CQ(a_q); end;
-    
-    {$endregion 3}
-    
-    {$endregion Array}
-    
-    {$region ArraySegment}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel часть массива
-    public static function FromArraySegment<TRecord>(a: ArraySegment<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: ArraySegment<TRecord>): KernelArg; where TRecord: record; begin Result := FromArraySegment(a); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel часть массива
-    public static function FromArraySegmentCQ<TRecord>(a_q: CommandQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record; begin Result := FromArraySegmentCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record; begin Result := FromArraySegmentCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<ArraySegment<TRecord>>): KernelArg; where TRecord: record; begin Result := FromArraySegmentCQ(a_q); end;
-    
-    {$endregion ArraySegment}
-    
-    {$endregion Managed}
-    
-    {$region Native}
-    
-    {$region NativeMemoryArea}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel область неуправляемой памяти
-    public static function FromData(data: NativeMemoryArea): KernelArg;
-    public static function operator implicit(data: NativeMemoryArea): KernelArg := FromData(data);
-    public static function operator implicit<TRecord>(ptr: ^TRecord): KernelArg; where TRecord: record;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel область неуправляемой памяти
-    public static function FromDataCQ(data_q: CommandQueue<NativeMemoryArea>): KernelArg;
-    public static function operator implicit(data_q: CommandQueue<NativeMemoryArea>): KernelArg := FromDataCQ(data_q);
-    
-    {$endregion NativeMemoryArea}
-    
-    {$region NativeValue}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel небольшое значение размерного типа
-    public static function FromNativeValue<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record; begin Result := FromNativeValue(val); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel небольшое значение размерного типа
-    public static function FromNativeValueCQ<TRecord>(val_q: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(val_q: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ConstQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(val_q); end;
-    public static function operator implicit<TRecord>(val_q: ParameterQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeValueCQ(val_q); end;
-    
-    {$endregion NativeValue}
-    
-    {$region NativeArray}
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromNativeArray<TRecord>(a: NativeArray<TRecord>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a: NativeArray<TRecord>): KernelArg; where TRecord: record; begin Result := FromNativeArray(a); end;
-    
-    ///Создаёт аргумент kernel'а, при выполнении копирующий в kernel массив
-    public static function FromNativeArrayCQ<TRecord>(a_q: CommandQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record;
-    public static function operator implicit<TRecord>(a_q: CommandQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ConstQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeArrayCQ(a_q); end;
-    public static function operator implicit<TRecord>(a_q: ParameterQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record; begin Result := FromNativeArrayCQ(a_q); end;
-    
-    {$endregion NativeArray}
-    
-    {$endregion Native}
-    
-    {$region OpenCL}
-    
-    {$region CLMemorySegment}
-    
-    ///Создаёт аргумент kernel'а, ссылающийся на область памяти OpenCL
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelArg;
-    public static function operator implicit(mem: CLMemorySegment): KernelArg := FromCLMemorySegment(mem);
-    public static function operator implicit(mem: CLMemorySubSegment): KernelArg := FromCLMemorySegment(mem);
-    
-    ///Создаёт аргумент kernel'а, ссылающийся на область памяти OpenCL
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelArg;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: ConstQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: ParameterQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    
-    {$endregion CLMemorySegment}
-    
-    {$region CLValue}
-    
-    ///Создаёт аргумент kernel'а, ссылающийся на небольшое значение размерного типа
-    public static function FromCLValue<T>(val: CLValue<T>): KernelArg; where T: record;
-    public static function operator implicit<T>(val: CLValue<T>): KernelArg; where T: record; begin Result := FromCLValue(val); end;
-    
-    ///Создаёт аргумент kernel'а, ссылающийся на небольшое значение размерного типа
-    public static function FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(val_q: CommandQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
-    public static function operator implicit<T>(val_q: ConstQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
-    public static function operator implicit<T>(val_q: ParameterQueue<CLValue<T>>): KernelArg; where T: record; begin Result := FromCLValueCQ(val_q); end;
-    
-    {$endregion CLValue}
-    
-    {$region CLArray}
-    
-    ///Создаёт аргумент kernel'а, ссылающийся на массив
-    public static function FromCLArray<T>(a: CLArray<T>): KernelArg; where T: record;
-    public static function operator implicit<T>(a: CLArray<T>): KernelArg; where T: record; begin Result := FromCLArray(a); end;
-    
-    ///Создаёт аргумент kernel'а, ссылающийся на массив
-    public static function FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
-    public static function operator implicit<T>(a_q: ConstQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
-    public static function operator implicit<T>(a_q: ParameterQueue<CLArray<T>>): KernelArg; where T: record; begin Result := FromCLArrayCQ(a_q); end;
-    
-    {$endregion CLArray}
-    
-    {$endregion OpenCL}
-    
-    {$region ToString}
-    
-    private function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
-    private static procedure ToStringRuntimeValue<T>(sb: StringBuilder; val: T) := CommandQueueBase.ToStringRuntimeValue(sb, val);
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
-    
-    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
-    begin
-      if write_tabs then sb.Append(#9, tabs);
-      sb += DisplayName;
-      
-      ToStringImpl(sb, tabs+1, index, delayed);
-      
-      if tabs=0 then foreach var q in delayed do
-      begin
-        sb += #10;
-        q.ToString(sb, 0, index, new HashSet<CommandQueueBase>);
-      end;
-      
-    end;
-    
-    ///Возвращает строковое представление данного объекта
-    ///Используйте это значение только для отладки, потому что данный метод не оптимизирован
-    public function ToString: string; override;
-    begin
-      var sb := new StringBuilder;
-      ToString(sb, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
-      Result := sb.ToString;
-    end;
-    
-    ///Вызывает Write(ToString) для данного объекта и возвращает его же
-    public function Print: KernelArg;
-    begin
-      Write(self.ToString);
-      Result := self;
-    end;
-    ///Вызывает Writeln(ToString) для данного объекта и возвращает его же
-    public function Println: KernelArg;
-    begin
-      Writeln(self.ToString);
-      Result := self;
-    end;
-    
-    {$endregion ToString}
-    
-  end;
-  
-  {$endregion KernelArg}
-  
   {$region CCQ's}
   
   {$region KernelCCQ}
@@ -4599,7 +4653,7 @@ type
     
     {$endregion Special .Add's}
     
-    {$region 1#Exec}
+    {$region Exec}
     
     ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
     public function ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
@@ -4615,7 +4669,7 @@ type
     ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
     public function ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
     
-    {$endregion 1#Exec}
+    {$endregion Exec}
     
   end;
   
@@ -4868,77 +4922,117 @@ type
     ///len указывает кол-во задействованных в операции байт
     public function ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
     
-    ///Записывает данные указанной области памяти RAM в данную область памяти OpenCL
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
     
-    ///Читает достаточно данных данной области памяти OpenCL чтобы заполнить всю указанную область памяти RAM
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenReadData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function ThenWriteNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ThenReadNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenReadNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    ///Заполняет весь массив байбами из начала области памяти
+    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function ThenWriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    ///Записывает весь массив в начало области памяти
+    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ThenReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    ///Заполняет весь массив байбами из начала области памяти
+    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
-    ///Записывает весь массив в начало области памяти
-    public function ThenWriteNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ThenWriteNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ThenReadNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает весь массив в начало области памяти
-    public function ThenWriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ThenWriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ThenReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
@@ -5060,49 +5154,63 @@ type
     ///fill_byte_len указывает кол-во заливаемых байт
     public function ThenFillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
     
-    ///Берёт последовательность байт указанной области памяти RAM и заполняет её копиями всю данную область памяти OpenCL
-    public function ThenFillData(data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
     
-    ///Берёт последовательность байт указанной области памяти RAM и заполняет её копиями часть данной области памяти OpenCL
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillData(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function ThenFillNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function ThenFillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function ThenFillNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
     
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function ThenFillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
     
     {$endregion 2#Fill}
     
@@ -5161,11 +5269,6 @@ type
     public function NewQueue := new CLMemorySegmentCCQ(self);
   end;
   
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class
-    public static function operator implicit(mem_q: CLMemorySegmentCCQ): KernelArg;
-  end;
-  
   {$endregion MemorySegmentCCQ}
   
   {$region CLValueCCQ}
@@ -5222,23 +5325,15 @@ type
     ///Записывает указанное значение в данное
     public function ThenWriteValue(val: CommandQueue<&T>): CLValueCCQ<T>;
     
-    ///Записывает данные из RAM по указанному адресу в данное значение
-    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLValueCCQ<T>;
-    
-    ///Читает данное значение в RAM по указанному адресу
-    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLValueCCQ<T>;
-    
-    ///Записывает данные из RAM по указанному адресу в данное значение
-    public function ThenWriteData(ptr: pointer): CLValueCCQ<T>;
-    
-    ///Читает данное значение в RAM по указанному адресу
-    public function ThenReadData(ptr: pointer): CLValueCCQ<T>;
+    public function ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValueCCQ<T>;
     
     ///Записывает указанное значение в данное
-    public function ThenWriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
+    public function ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
+    
+    public function ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValueCCQ<T>;
     
     ///Читает данное значение в указанное
-    public function ThenReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
+    public function ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
     
     {$endregion 1#Write&Read}
     
@@ -5279,11 +5374,6 @@ type
   CLValue<T> = partial class
     ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
     public function NewQueue := new CLValueCCQ<T>(self);
-  end;
-  
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class
-    public static function operator implicit<T>(val_q: CLValueCCQ<T>): KernelArg; where T: record;
   end;
   
   {$endregion CLValueCCQ}
@@ -5444,33 +5534,57 @@ type
     ///Читает len элементов начиная с индекса ind из данного массива в RAM, по указанному адресу
     public function ThenReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    ///Записывает данные из указанной области памяти в данный массив, начиная с элемента с индексом ind
-    public function ThenWriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
     
-    ///Читает данные из данного массива в указанную область памяти, начиная с элемента с индексом ind
-    public function ThenReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
     
-    ///Записывает указанное значение в элемент данного массива с индексом ind
-    public function ThenWriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
     
-    ///Читает элемент данного массива с индексом ind в указанное значение
-    public function ThenReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
     
     ///Записывает указанный массив RAM в начало данного массива OpenCL
-    public function ThenWriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    public function ThenWriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
     
-    ///Записывает len элементов из указанного массива RAM в данный массив OpenCL
-    ///ind указывает индекс первого элемента данного массива OpenCL
-    ///a_ind(-ы) указывают индекс первого элемента в массиве RAM
-    public function ThenWriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
     
     ///Читает начало данного массива OpenCL в указанный массив RAM
-    public function ThenReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    public function ThenReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
     
-    ///Читает len элементов данного массива OpenCL в указанный массив RAM
-    ///ind указывает индекс первого элемента данного массива OpenCL
-    ///a_ind(-ы) указывают индекс первого элемента в массиве RAM
-    public function ThenReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    ///Записывает указанное значение в элемент данного массива с индексом ind
+    public function ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    ///Читает элемент данного массива с индексом ind в указанное значение
+    public function ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 1#Write&Read}
     
@@ -5538,25 +5652,56 @@ type
     ///Берёт pattern_len элементов из RAM по указанному адресу и заполняет их копиями len элементов начиная с индекса ind данного массива
     public function ThenFillData(ptr: pointer; pattern_len, ind, fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    ///Заполняет весь данный массив копиями содержимого указанной области памяти
-    public function ThenFillData(data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLArrayCCQ<T>;
     
-    ///Заполняет len элементов начиная с индекса ind данного массива копиями содержимого указанной области памяти
-    public function ThenFillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemory(native_data: NativeMemory): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValueArea(native_data: NativeValueArea<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValue(native_data: NativeValue<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArray(native_data: NativeArray<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Заполняет весь массив копиями указанного значения
-    public function ThenFillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+    public function ThenFillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
     
     ///Заполняет len элементов начиная с индекса ind копиями указанного значения
-    public function ThenFillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Заполняет данный массив OpenCL копиями указанного массива RAM
-    public function ThenFillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    public function ThenFillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
     
-    ///Заполняет fill_len элементов данного массива OpenCL копиями участков из pattern_len элементов указанного массива
-    ///ind указывает индекс первого элемента данного массива OpenCL
-    ///a_ind(-ы) указывают индекс первого элемента в массиве RAM
-    public function ThenFillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 2#Fill}
     
@@ -5637,14 +5782,154 @@ type
     public function NewQueue := new CLArrayCCQ<T>(self);
   end;
   
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class
-    public static function operator implicit<T>(a_q: CLArrayCCQ<T>): KernelArg; where T: record;
-  end;
-  
   {$endregion CLArrayCCQ}
   
   {$endregion CCQ's}
+  
+  {$region KernelArg}
+  
+  {$region Global}
+  
+  KernelArgGlobal = abstract partial class(KernelArg)
+    
+    
+    
+  end;
+  
+  {$endregion Global}
+  
+  {$region Constant}
+  
+  KernelArgConstant = abstract partial class(KernelArg)
+    
+    
+    
+  end;
+  
+  {$endregion Constant}
+  
+  {$region Local}
+  
+  KernelArgLocal = abstract partial class(KernelArg)
+    
+    public static function FromBytes(bytes: CommandQueue<UIntPtr>): KernelArgLocal;
+    public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    
+    public static function FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
+    public static function FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+    
+    public static function LikeArray<T>(a: CommandQueue<array of T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeArray<T>(a: array of T): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeArray2<T>(a: CommandQueue<array[,] of T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeArray2<T>(a: array[,] of T): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeArray3<T>(a: array[,,] of T): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeNativeArray<T>(a: NativeArray<T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeCLArray<T>(a: CLArray<T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+  end;
+  
+  {$endregion Local}
+  
+  {$region Private}
+  
+  KernelArgPrivate = abstract partial class(KernelArg)
+    
+    
+    
+  end;
+  
+  {$endregion Private}
+  
+  {$region Generic}
+  
+  ///Представляет аргумент, передаваемый в вызов kernel'а
+  KernelArg = abstract partial class
+    
+    
+    
+  end;
+  
+  {$endregion Generic}
+  
+  {$region ToString}
+  
+  ///Представляет аргумент, передаваемый в вызов kernel'а
+  KernelArg = abstract partial class
+    
+    {$region ToString}
+    
+    private static procedure ToStringRuntimeValue<T>(sb: StringBuilder; val: T) := CommandQueueBase.ToStringRuntimeValue(sb, val);
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
+    
+    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
+    begin
+      if write_tabs then sb.Append(#9, tabs);
+      sb += TypeName(self);
+      
+      ToStringImpl(sb, tabs+1, index, delayed);
+      
+      if tabs=0 then foreach var q in delayed do
+      begin
+        sb += #10;
+        q.ToString(sb, 0, index, new HashSet<CommandQueueBase>);
+      end;
+      
+    end;
+    
+    ///Возвращает строковое представление данного объекта
+    ///Используйте это значение только для отладки, потому что данный метод не оптимизирован
+    public function ToString: string; override;
+    begin
+      var sb := new StringBuilder;
+      ToString(sb, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
+      Result := sb.ToString;
+    end;
+    
+    ///Вызывает Write(ToString) для данного объекта и возвращает его же
+    public function Print: KernelArg;
+    begin
+      Write(self.ToString);
+      Result := self;
+    end;
+    ///Вызывает Writeln(ToString) для данного объекта и возвращает его же
+    public function Println: KernelArg;
+    begin
+      Writeln(self.ToString);
+      Result := self;
+    end;
+    
+    {$endregion ToString}
+    
+  end;
+  
+  {$endregion ToString}
+  
+  {$endregion KernelArg}
   
 {$region Global subprograms}
 
@@ -6802,10 +7087,7 @@ begin
   );
   
   if parent=cl_mem.Zero then
-  begin
-    Result := new CLMemorySegment(ntv);
-    GC.AddMemoryPressure(Result.Size64);
-  end else
+    Result := new CLMemorySegment(ntv) else
     Result := new CLMemorySubSegment(parent, ntv);
   
 end;
@@ -6845,12 +7127,14 @@ type
     private static blittable_cache := new Dictionary<System.Type, System.Type>;
     public static function Blame(t: System.Type): System.Type;
     begin
+      Result := nil;
       if t.IsPointer then exit;
       if t.IsClass then
       begin
         Result := t;
         exit;
       end;
+      if blittable_cache.TryGetValue(t, Result) then exit;
       
       var o := System.Activator.CreateInstance(t);
       try
@@ -6880,24 +7164,21 @@ type
     
   end;
   
-  NativeValue<T> = partial class
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), 'использовать как тип значения NativeValue<>');
-  end;
-  NativeArray<T> = partial class
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), 'использовать как элементы NativeArray<>');
-  end;
-  
   CLValue<T> = partial class
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), 'использовать как тип значения CLValue<>');
+    BlittableHelper.RaiseIfBad(typeof(T), $'использовать как тип значения CLValue<>');
   end;
   CLArray<T> = partial class
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), 'использовать как элементы CLArray<>');
+    BlittableHelper.RaiseIfBad(typeof(T), $'использовать как элементы CLArray<>');
   end;
   
+static constructor NativeValueArea<T>.Create :=
+BlittableHelper.RaiseIfBad(typeof(T), $'');
+
+static constructor NativeArrayArea<T>.Create :=
+BlittableHelper.RaiseIfBad(typeof(T), $'');
+
 {$endregion Blittable}
 
 {$region InterlockedBoolean}
@@ -7436,6 +7717,73 @@ type
   
 {$endregion EventList}
 
+{$region DoubleEventListList}
+
+type
+  DoubleEventListList = sealed class
+    private evs: array of EventList;
+    private c1 := 0;
+    private c2 := 0;
+    {$ifdef DEBUG}
+    private skipped := 0;
+    {$endif DEBUG}
+    
+    public constructor(cap: integer) :=
+    evs := new EventList[cap];
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property Capacity: integer read evs.Length;
+    
+    public procedure AddL1(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        evs[c1] := ev;
+        c1 += 1;
+      end;
+    end;
+    public procedure AddL2(ev: EventList);
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      {$endif DEBUG}
+      if ev.count=0 then
+        {$ifdef DEBUG}skipped += 1{$endif} else
+      begin
+        c2 += 1;
+        evs[evs.Length-c2] := ev;
+      end;
+    end;
+    
+    private procedure CheckDone;
+    begin
+      {$ifdef DEBUG}
+      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2+skipped}/{evs.Length} used');
+      {$endif DEBUG}
+    end;
+    
+    public function MakeLists: ValueTuple<EventList, EventList>;
+    begin
+      CheckDone;
+      Result := ValueTuple.Create(
+        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
+        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
+      );
+    end;
+    public function CombineAll: EventList;
+    begin
+      CheckDone;
+      Result := EventList.Combine(evs);
+    end;
+    
+  end;
+  
+{$endregion DoubleEventListList}
+
 {$region CLTaskGlobalData}
 
 type
@@ -7720,7 +8068,7 @@ type
     public procedure Invoke(c: Context);
     begin
       {$ifdef DEBUG}
-      if was_invoked then raise new System.InvalidProgramException($'{self.GetType}: {System.Environment.StackTrace}');
+      if was_invoked then raise new System.InvalidProgramException($'{TypeName(self)}: {System.Environment.StackTrace}');
       was_invoked := true;
       {$endif DEBUG}
       for var i := 0 to count-1 do
@@ -7807,7 +8155,7 @@ type
     protected procedure Finalize; override;
     begin
       {$ifdef DEBUG}
-      if not complition_delegate.was_invoked then raise new System.InvalidProgramException($'{self.GetType}');
+      if not complition_delegate.was_invoked then raise new System.InvalidProgramException(TypeName(self));
       {$endif DEBUG}
     end;
     
@@ -7916,7 +8264,7 @@ type
     begin
       var res_l := CLTaskLocalData(self.TakeBaseOut);
       
-      if res_l.ShouldInstaCallAction or (res_const and can_insta_call) then
+      if can_insta_call ? self.IsConst : res_l.ShouldInstaCallAction then
         Result := factory.MakeConst(res_l, transform(self.GetResDirect, c)) else
       begin
         Result := factory.MakeDelayed(res_l);
@@ -7934,7 +8282,14 @@ type
     
     public property ResEv: EventList read base.ResEv; override;
     
-    public property IsConst: boolean read res_const;
+    private function GetIsConst: boolean;
+    begin
+      Result := res_const;
+      {$ifdef DEBUG}
+      if Result and not ShouldInstaCallAction then raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
+    end;
+    public property IsConst: boolean read GetIsConst;
     
     public procedure AddResSetter(d: Context->T);
     begin
@@ -7948,7 +8303,7 @@ type
     public procedure SetRes(res: T);
     begin
       {$ifdef DEBUG}
-      if res_const then raise new OpenCLABCInternalException($'');
+      if res_const then raise new OpenCLABCInternalException($'Result set on const qr');
       {$endif DEBUG}
       SetResDirect(res);
     end;
@@ -8000,7 +8355,7 @@ type
   QueueResPtr<T> = sealed class(QueueRes<T>)
     private res: ^T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<T>));
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), 'использовать в некоторой внутренней ситуации (напишите об этом в issue)');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'использовать в некоторой внутренней ситуации (напишите об этом в issue)');
     
     public constructor(l: CLTaskLocalData) := InitDelayed(l);
     public constructor(make_l: QueueResPtr<T>->CLTaskLocalData) := InitDelayed(make_l(self));
@@ -8052,7 +8407,7 @@ begin
   {$endif DEBUG}
     ;
   
-  var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {self.GetType}.ThenAttachInvokeActions, after [{self.ResEv.evs?.JoinToString}]'{$endif});
+  var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {TypeName(self)}.ThenAttachInvokeActions, after [{self.ResEv.evs?.JoinToString}]'{$endif});
   Result := uev;
   
   var c := g.c;
@@ -8060,7 +8415,7 @@ begin
   begin
     self.InvokeActions(c);
     uev.SetComplete;
-  end{$ifdef EventDebug}, $'body of {self.GetType}.ThenAttachInvokeActions with res_ev={uev}'{$endif});
+  end{$ifdef EventDebug}, $'body of {TypeName(self)}.ThenAttachInvokeActions with res_ev={uev}'{$endif});
   
 end;
 //TODO #????
@@ -8488,6 +8843,8 @@ type
     begin
       if cq is CastQueueBase<TInp>(var cqb) then
         Result := cqb.SourceBase.Cast&<TRes> else
+      if cq is ConstQueue<TInp>(var c_q) then
+        Result := new ConstQueue<TRes>(TRes(c_q.Value as object)) else
         Result := new CastQueue<TInp, TRes>(cq);
     end;
     
@@ -8580,7 +8937,7 @@ type
       
       Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartBackgroundWork(
         prev_qr.ResEv, make_body(prev_qr, g.curr_err_handler, g.c, qr), g.cl_c
-        {$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
       )));
       
     end;
@@ -8697,7 +9054,7 @@ type
       
       Result := new QueueResNil(new CLTaskLocalData(UserEvent.StartBackgroundWork(
         prev_qr.ResEv, MakeNilBody(prev_qr, g.curr_err_handler, g.c), g.cl_c
-        {$ifdef EventDebug}, $'nil body of {self.GetType}'{$endif}
+        {$ifdef EventDebug}, $'nil body of {TypeName(self)}'{$endif}
       )));
       
     end;
@@ -8710,13 +9067,13 @@ type
         qr_factory.MakeConst(
           new CLTaskLocalData(UserEvent.StartBackgroundWork(
             prev_qr.ResEv, MakeNilBody(prev_qr, g.curr_err_handler, g.c), g.cl_c
-            {$ifdef EventDebug}, $'const body of {self.GetType}'{$endif}
+            {$ifdef EventDebug}, $'const body of {TypeName(self)}'{$endif}
           )), prev_qr.GetResDirect
         ) else
         qr_factory.MakeDelayed(
           qr->new CLTaskLocalData(UserEvent.StartBackgroundWork(
             prev_qr.ResEv, MakeResBody(prev_qr, g.curr_err_handler, g.c, qr), g.cl_c
-            {$ifdef EventDebug}, $'delayed body of {self.GetType}'{$endif}
+            {$ifdef EventDebug}, $'delayed body of {TypeName(self)}'{$endif}
           ))
         );
       
@@ -8765,11 +9122,13 @@ type
   where TFunc: Delegate;
     private q: CommandQueue<TInp>;
     private f: TFunc;
+    private can_insta_call: boolean;
     
-    public constructor(q: CommandQueue<TInp>; f: TFunc);
+    public constructor(q: CommandQueue<TInp>; f: TFunc; can_insta_call: boolean);
     begin
       self.q := q;
       self.f := f;
+      self.can_insta_call := can_insta_call;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -8783,7 +9142,7 @@ type
       Result := new QueueResNil(prev_qr.TakeBaseOut);
       
       var d := QueueResActionUtils.HandlerWrapStrip(g.curr_err_handler, ExecFunc);
-      if Result.ShouldInstaCallAction then
+      if can_insta_call ? prev_qr.IsConst : Result.ShouldInstaCallAction then
         d(prev_qr.GetResDirect, g.c) else
         Result.AddAction(c->d(prev_qr.GetResDirect,c));
       
@@ -8793,7 +9152,7 @@ type
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
     begin
       var prev_qr := q.InvokeToAny(g, l);
-      Result := prev_qr.TransformResultErrWrap(qr_factory, g, false, ExecFunc);
+      Result := prev_qr.TransformResultErrWrap(qr_factory, g, can_insta_call, ExecFunc);
     end;
     protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<TRes>; override := Invoke(g, l, qr_val_factory);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
@@ -8824,10 +9183,10 @@ type
   end;
   
 function CommandQueue<T>.ThenQuickConvert<TOtp>(f: T->TOtp) :=
-new CommandQueueThenQuickConvert<T, TOtp>(self, f);
+new CommandQueueThenQuickConvert<T, TOtp>(self, f, false);
 
 function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, Context)->TOtp) :=
-new CommandQueueThenQuickConvertC<T, TOtp>(self, f);
+new CommandQueueThenQuickConvertC<T, TOtp>(self, f, false);
 
 {$endregion ThenQuickConvert}
 
@@ -8907,6 +9266,19 @@ function CommandQueue<T>.ThenQuickUse(p: (T, Context)->()) :=
 new CommandQueueThenQuickUseC<T>(self, p);
 
 {$endregion ThenQuickUse}
+
+{$region ThenConstConvert}
+
+//TODO #????: Need explicit ": CommandQueue<TOtp>"???
+function CommandQueue<T>.ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> :=
+if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value)) else
+new CommandQueueThenQuickConvert<T, TOtp>(self, f, true);
+
+function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp> :=
+if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value, nil)) else
+new CommandQueueThenQuickConvertC<T, TOtp>(self, f, true);
+
+{$endregion ThenConstConvert}
 
 {$region +/*}
 
@@ -11482,7 +11854,7 @@ type
     begin
       Result := new WaitHandlerDirect;
       {$ifdef WaitDebug}
-      WaitDebug.RegisterAction(Result, $'Created for {self.GetType.Name}[{self.GetHashCode}]');
+      WaitDebug.RegisterAction(Result, $'Created for {TypeName(self)}[{self.GetHashCode}]');
       {$endif WaitDebug}
     end);
     
@@ -12532,671 +12904,6 @@ new CommandQueueHandleReplaceRes<T>(self, handler);
 
 {$endregion Queue converter's}
 
-{$region KernelArg}
-
-{$region Base}
-
-type
-  ISetableKernelArg = interface
-    procedure SetArg(k: cl_kernel; ind: UInt32);
-  end;
-  KernelArg = abstract partial class
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; abstract;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
-    
-  end;
-  
-{$endregion Base}
-
-{$region Const}
-
-{$region Base}
-
-type
-  ConstKernelArg = abstract class(KernelArg, ISetableKernelArg)
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    new QueueResVal<ISetableKernelArg>(new CLTaskLocalData, self);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); abstract;
-    
-  end;
-  
-{$endregion Base}
-
-{$region Managed}
-
-{$region Value}
-
-type
-  KernelArgValue<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-    
-    public constructor(val: TRecord) := self.val^ := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    Marshal.FreeHGlobal(new IntPtr(val));
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), pointer(self.val)) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.val^);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromValue<TRecord>(val: TRecord) := new KernelArgValue<TRecord>(val);
-
-{$endregion Value}
-
-{$region Array}
-
-type
-  KernelArgArray<TRecord, TArray> = sealed class(ConstKernelArg)
-  where TRecord: record;
-  where TArray: System.Array;
-    private hnd: GCHandle;
-    private ptr: IntPtr;
-    private sz: UIntPtr;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-    
-    public constructor(a: TArray);
-    begin
-      self.hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      self.ptr := hnd.AddrOfPinnedObject;
-      //TODO #2648
-      self.sz := new UIntPtr(Marshal.SizeOf&<TRecord> * (a as System.Array).Length);
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    if hnd.IsAllocated then hnd.Free;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, sz, ptr.ToPointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, hnd.Target as TArray);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromArray<TRecord>(a: array of TRecord) := new KernelArgArray<TRecord, array of TRecord>(a);
-static function KernelArg.FromArray2<TRecord>(a: array[,] of TRecord) := new KernelArgArray<TRecord, array[,] of TRecord>(a);
-static function KernelArg.FromArray3<TRecord>(a: array[,,] of TRecord) := new KernelArgArray<TRecord, array[,,] of TRecord>(a);
-
-{$endregion Array}
-
-{$region ArraySegment}
-
-type
-  KernelArgArraySegment<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private hnd: GCHandle;
-    private ptr: IntPtr;
-    private sz: UIntPtr;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-    
-    public constructor(a: ArraySegment<TRecord>);
-    begin
-      self.hnd := GCHandle.Alloc(a.Array, GCHandleType.Pinned);
-      self.ptr := hnd.AddrOfPinnedObject + a.Offset*Marshal.SizeOf&<TRecord>;
-      self.sz := new UIntPtr(Marshal.SizeOf&<TRecord> * a.Count);
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override :=
-    if hnd.IsAllocated then hnd.Free;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, sz, ptr.ToPointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, new ArraySegment<TRecord>(
-        hnd.Target as array of TRecord,
-        (ptr.ToInt64-hnd.AddrOfPinnedObject.ToInt64) div Marshal.SizeOf&<TRecord>,
-        sz.ToUInt64 div Marshal.SizeOf&<TRecord>
-      ));
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromArraySegment<TRecord>(a: ArraySegment<TRecord>) := new KernelArgArraySegment<TRecord>(a);
-
-{$endregion ArraySegment}
-
-{$endregion Managed}
-
-{$region Native}
-
-{$region NativeMemoryArea}
-
-type
-  KernelArgData = sealed class(ConstKernelArg)
-    private data: NativeMemoryArea;
-    
-    public constructor(data: NativeMemoryArea) := self.data := data;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, data.sz, data.ptr.ToPointer) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      sb.Append(data);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromData(data: NativeMemoryArea) := new KernelArgData(data);
-
-static function KernelArg.operator implicit<TRecord>(ptr: ^TRecord): KernelArg;
-begin
-  BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-  Result := KernelArg.FromData(new NativeMemoryArea(
-    new IntPtr(ptr), new UIntPtr(Marshal.SizeOf&<TRecord>)
-  ));
-end;
-
-{$endregion NativeMemoryArea}
-
-{$region NativeValue}
-
-type
-  KernelArgNativeValue<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private val: NativeValue<TRecord>;
-    
-    public constructor(val: NativeValue<TRecord>) := self.val := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), self.val.Pointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, val);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeValue<TRecord>(val: NativeValue<TRecord>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeValue<TRecord>(val);
-end;
-
-{$endregion NativeValue}
-
-{$region NativeArray}
-
-type
-  KernelArgNativeArray<TRecord> = sealed class(ConstKernelArg)
-  where TRecord: record;
-    private a: NativeArray<TRecord>;
-    
-    public constructor(a: NativeArray<TRecord>) := self.a := a;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, a.area.sz, a.area.ptr.ToPointer) ); 
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, a);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeArray<TRecord>(a: NativeArray<TRecord>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeArray<TRecord>(a);
-end;
-
-{$endregion NativeArray}
-
-{$endregion Native}
-
-{$region OpenCL}
-
-{$region CLMemorySegment}
-
-type
-  KernelArgCLMemorySegment = sealed class(ConstKernelArg)
-    private mem: CLMemorySegment;
-    
-    public constructor(mem: CLMemorySegment) := self.mem := mem;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-   OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), mem.ntv) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.mem);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLMemorySegment(mem: CLMemorySegment) := new KernelArgCLMemorySegment(mem);
-
-{$endregion CLMemorySegment}
-
-{$region CLValue}
-
-type
-  KernelArgCLValue<T> = sealed class(ConstKernelArg)
-  where T: record;
-    private val: CLValue<T>;
-    
-    public constructor(val: CLValue<T>) := self.val := val;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), val.ntv) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.val);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLValue<T>(val: CLValue<T>): KernelArg; where T: record;
-begin
-  Result := new KernelArgCLValue<T>(val);
-end;
-
-{$endregion CLValue}
-
-{$region CLArray}
-
-type
-  KernelArgCLArray<T> = sealed class(ConstKernelArg)
-  where T: record;
-    private a: CLArray<T>;
-    
-    public constructor(a: CLArray<T>) := self.a := a;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), a.ntv) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      ToStringRuntimeValue(sb, self.a);
-      sb += #10;
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLArray<T>(a: CLArray<T>): KernelArg; where T: record;
-begin
-  Result := new KernelArgCLArray<T>(a);
-end;
-
-{$endregion CLArray}
-
-{$endregion OpenCL}
-
-{$endregion Const}
-
-{$region Invokeable}
-
-{$region Base}
-
-type
-  InvokeableKernelArg = abstract class(KernelArg)
-    protected static kqr_factory := new QueueResValFactory<ISetableKernelArg>;
-  end;
-  
-{$endregion Base}
-
-{$region Managed}
-
-{$region Value}
-
-type
-  KernelArgPtrQr<TRecord> = sealed class(ConstKernelArg)
-    public qr: QueueResPtr<TRecord>;
-    
-    public constructor(qr: QueueResPtr<TRecord>) := self.qr := qr;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure SetArg(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<TRecord>), qr.res) );
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    raise new System.NotSupportedException;
-    
-  end;
-  
-  KernelArgValueCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public val_q: CommandQueue<TRecord>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-    
-    public constructor(val_q: CommandQueue<TRecord>) := self.val_q := val_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override;
-    begin
-      var prev_qr := val_q.InvokeToPtr(g, l);
-      Result := new QueueResVal<ISetableKernelArg>(
-        prev_qr.TakeBaseOut,
-        new KernelArgPtrQr<TRecord>(prev_qr)
-      );
-    end;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    val_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      val_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromValueCQ<TRecord>(val_q: CommandQueue<TRecord>) :=
-new KernelArgValueCQ<TRecord>(val_q);
-
-{$endregion Value}
-
-{$region Array}
-
-type
-  KernelArgArrayCQ<TRecord, TArray> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-  where TArray: System.Array;
-    public a_q: CommandQueue<TArray>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-    
-    public constructor(a_q: CommandQueue<TArray>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgArray<TRecord,TArray>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromArrayCQ<TRecord>(a_q: CommandQueue<array of TRecord>) :=
-new KernelArgArrayCQ<TRecord, array of TRecord>(a_q);
-static function KernelArg.FromArray2CQ<TRecord>(a_q: CommandQueue<array[,] of TRecord>) :=
-new KernelArgArrayCQ<TRecord, array[,] of TRecord>(a_q);
-static function KernelArg.FromArray3CQ<TRecord>(a_q: CommandQueue<array[,,] of TRecord>) :=
-new KernelArgArrayCQ<TRecord, array[,,] of TRecord>(a_q);
-
-{$endregion Array}
-
-{$region ArraySegment}
-
-type
-  KernelArgArraySegmentCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public a_q: CommandQueue<ArraySegment<TRecord>>;
-    
-    static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(TRecord), 'передавать в качестве параметров kernel''а');
-    
-    public constructor(a_q: CommandQueue<ArraySegment<TRecord>>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgArraySegment<TRecord>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromArraySegmentCQ<TRecord>(a_q: CommandQueue<ArraySegment<TRecord>>) :=
-new KernelArgArraySegmentCQ<TRecord>(a_q);
-
-{$endregion ArraySegment}
-
-{$endregion Managed}
-
-{$region Native}
-
-{$region NativeMemoryArea}
-
-type
-  KernelArgDataCQ = sealed class(InvokeableKernelArg)
-    public data_q: CommandQueue<NativeMemoryArea>;
-    
-    public constructor(data_q: CommandQueue<NativeMemoryArea>) := self.data_q := data_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    data_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (data,c)->new KernelArgData(data) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      data_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromDataCQ(data_q: CommandQueue<NativeMemoryArea>) :=
-new KernelArgDataCQ(data_q);
-
-{$endregion NativeMemoryArea}
-
-{$region NativeValue}
-
-type
-  KernelArgNativeValueCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public val_q: CommandQueue<NativeValue<TRecord>>;
-    
-    public constructor(val_q: CommandQueue<NativeValue<TRecord>>) := self.val_q := val_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    val_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (val,c)->new KernelArgNativeValue<TRecord>(val) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    val_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      val_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeValueCQ<TRecord>(val_q: CommandQueue<NativeValue<TRecord>>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeValueCQ<TRecord>(val_q);
-end;
-
-{$endregion NativeValue}
-
-{$region NativeArray}
-
-type
-  KernelArgNativeArrayCQ<TRecord> = sealed class(InvokeableKernelArg)
-  where TRecord: record;
-    public a_q: CommandQueue<NativeArray<TRecord>>;
-    
-    public constructor(a_q: CommandQueue<NativeArray<TRecord>>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgNativeArray<TRecord>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromNativeArrayCQ<TRecord>(a_q: CommandQueue<NativeArray<TRecord>>): KernelArg; where TRecord: record;
-begin
-  Result := new KernelArgNativeArrayCQ<TRecord>(a_q);
-end;
-
-{$endregion NativeArray}
-
-{$endregion Native}
-
-{$region OpenCL}
-
-{$region CLMemorySegment}
-
-type
-  KernelArgCLMemorySegmentCQ = sealed class(InvokeableKernelArg)
-    public mem_q: CommandQueue<CLMemorySegment>;
-    public constructor(mem_q: CommandQueue<CLMemorySegment>) := self.mem_q := mem_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    mem_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (mem,c)->new KernelArgCLMemorySegment(mem) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    mem_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      mem_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>) :=
-new KernelArgCLMemorySegmentCQ(mem_q);
-
-{$endregion CLMemorySegment}
-
-{$region CLValue}
-
-type
-  KernelArgCLValueCQ<T> = sealed class(InvokeableKernelArg)
-  where T: record;
-    public val_q: CommandQueue<CLValue<T>>;
-    public constructor(val_q: CommandQueue<CLValue<T>>) := self.val_q := val_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    val_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (val,c)->new KernelArgCLValue<T>(val) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    val_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      val_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLValueCQ<T>(val_q: CommandQueue<CLValue<T>>): KernelArg; where T: record;
-begin
-  Result := new KernelArgCLValueCQ<T>(val_q);
-end;
-
-{$endregion CLValue}
-
-{$region CLArray}
-
-type
-  KernelArgCLArrayCQ<T> = sealed class(InvokeableKernelArg)
-  where T: record;
-    public a_q: CommandQueue<CLArray<T>>;
-    public constructor(a_q: CommandQueue<CLArray<T>>) := self.a_q := a_q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<ISetableKernelArg>; override :=
-    a_q.InvokeToAny(g, l).TransformResult(kqr_factory, g.c, true, (a,c)->new KernelArgCLArray<T>(a) as ISetableKernelArg);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    a_q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      a_q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-static function KernelArg.FromCLArrayCQ<T>(a_q: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-begin Result := new KernelArgCLArrayCQ<T>(a_q); end;
-
-{$endregion CLArray}
-
-{$endregion OpenCL}
-
-{$endregion Invokeable}
-
-{$endregion KernelArg}
-
 {$region GPUCommand}
 
 {$region Base}
@@ -13211,7 +12918,6 @@ type
     protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
-    protected function DisplayName: string; virtual := CommandQueueBase.DisplayNameForType(self.GetType);
     protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
@@ -13219,19 +12925,13 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += DisplayName;
+      sb += TypeName(self);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
   end;
   
   BasicGPUCommand<T> = abstract class(GPUCommand<T>)
-    
-    protected function DisplayName: string; override;
-    begin
-      Result := self.GetType.Name;
-      Result := Result.Remove(Result.IndexOf('`'));
-    end;
     
     public static function MakeQueue(q: CommandQueueBase): BasicGPUCommand<T>;
     
@@ -13334,7 +13034,7 @@ type
               on e: Exception do err_handler.AddErr(e);
             end;
           end,
-          g.cl_c{$ifdef EventDebug}, $'const body of {self.GetType}'{$endif}
+          g.cl_c{$ifdef EventDebug}, $'const body of {TypeName(self)}'{$endif}
         )
       ));
     end;
@@ -13355,7 +13055,7 @@ type
               on e: Exception do err_handler.AddErr(e);
             end;
           end,
-          g.cl_c{$ifdef EventDebug}, $'queue body of {self.GetType}'{$endif}
+          g.cl_c{$ifdef EventDebug}, $'queue body of {TypeName(self)}'{$endif}
         )
       ));
     end;
@@ -13463,10 +13163,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      
-      var tn := self.GetType.Name;
-      sb += tn.Remove(tn.IndexOf('`'));
-      
+      sb += TypeName(self);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
@@ -13656,8 +13353,6 @@ type
     
   end;
   
-static function KernelArg.operator implicit(mem_q: CLMemorySegmentCCQ): KernelArg := FromCLMemorySegmentCQ(mem_q);
-
 constructor CLMemorySegmentCCQ.Create(o: CLMemorySegment) := inherited;
 constructor CLMemorySegmentCCQ.Create(q: CommandQueue<CLMemorySegment>) := inherited;
 constructor CLMemorySegmentCCQ.Create := inherited;
@@ -13691,10 +13386,6 @@ type
     
   end;
   
-static function KernelArg.operator implicit<T>(val_q: CLValueCCQ<T>): KernelArg; where T: record;
-//TODO #2550
-begin Result := FromCLValueCQ(val_q as object as GPUCommandContainer<CLValue<T>>); end;
-
 constructor CLValueCCQ<T>.Create(o: CLValue<T>) := inherited;
 constructor CLValueCCQ<T>.Create(q: CommandQueue<CLValue<T>>) := inherited;
 constructor CLValueCCQ<T>.Create := inherited;
@@ -13728,10 +13419,6 @@ type
     
   end;
   
-static function KernelArg.operator implicit<T>(a_q: CLArrayCCQ<T>): KernelArg; where T: record;
-//TODO #2550
-begin Result := FromCLArrayCQ(a_q as object as GPUCommandContainer<CLArray<T>>); end;
-
 constructor CLArrayCCQ<T>.Create(o: CLArray<T>) := inherited;
 constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
 constructor CLArrayCCQ<T>.Create := inherited;
@@ -13757,123 +13444,239 @@ function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPU
 
 {$endregion GPUCommandContainer}
 
+{$region KernelArg}
+
+{$region Base}
+
+type
+  KernelArgCacheEntry = record
+    public val_is_set: boolean;
+    public last_set_val: object;
+  end;
+  KernelArgCache = array of KernelArgCacheEntry;
+  
+  KernelArgSetter = abstract class
+    private is_const: boolean;
+    
+    public constructor(is_const: boolean) := self.is_const := is_const;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property IsConst: boolean read is_const;
+    
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); abstract;
+    
+  end;
+  KernelArgSetterTyped<T> = abstract class(KernelArgSetter)
+    protected o := default(T);
+    
+    public constructor(o: T);
+    begin
+      SetObj(o);
+      is_const := true;
+    end;
+    public constructor := is_const := false;
+    
+    public procedure SetObj(o: T);
+    begin
+      {$ifdef DEBUG}
+      if self.o<>default(T) then raise new OpenCLABCInternalException($'Conflicting {TypeName(self)} values');
+      {$endif DEBUG}
+      self.o := o;
+    end;
+    
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); override;
+    begin
+      
+      if cache<>nil then
+      begin
+        var curr_val := self.o;
+        if cache[ind].val_is_set and Object.Equals(cache[ind].last_set_val, curr_val) then exit;
+        cache[ind].val_is_set := true;
+        cache[ind].last_set_val := curr_val;
+      end;
+      
+      {$ifdef DEBUG}
+      if self.o=default(T) then
+        raise new OpenCLABCInternalException($'Unset {TypeName(self)} value') else
+      {$endif DEBUG}
+      
+      ApplyImpl(k, ind);
+    end;
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); abstract;
+    
+  end;
+  
+  KernelArgSetterCL = sealed class(KernelArgSetterTyped<cl_mem>)
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError(
+      cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), self.o)
+    );
+    
+  end;
+  
+  KernelArg = abstract partial class
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; abstract;
+    
+  end;
+  KernelArgCommon<T> = record
+    private q: CommandQueue<T>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(inv: CLTaskBranchInvoker; make_const: T->KernelArgSetterTyped<T>; make_delayed: ()->KernelArgSetterTyped<T>): ValueTuple<KernelArgSetter, EventList>;
+    begin
+      var prev_qr := inv.InvokeBranch(q.InvokeToAny);
+      var arg_setter: KernelArgSetterTyped<T>;
+      if prev_qr.IsConst then
+        arg_setter := make_const(prev_qr.GetResDirect) else
+      begin
+        arg_setter := make_delayed();
+        prev_qr.AddAction(c->arg_setter.SetObj(prev_qr.GetResDirect));
+      end;
+      Result := ValueTuple.Create(arg_setter as KernelArgSetter,
+        prev_qr.AttachInvokeActions(inv.g)
+      );
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+{$endregion Base}
+
+{$region LocalBytes}
+
+type
+  KernelArgSetterLocalBytes = sealed class(KernelArgSetterTyped<UIntPtr>)
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
+    
+  end;
+  
+  KernelArgLocal = abstract partial class(KernelArg) end;
+  KernelArgLocalBytes = sealed class(KernelArgLocal)
+    private data: KernelArgCommon<UIntPtr>;
+    
+    public constructor(bytes: CommandQueue<UIntPtr>) := data.q := bytes;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, bytes->new KernelArgSetterLocalBytes(bytes), ()->new KernelArgSetterLocalBytes);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+{$endregion LocalBytes}
+
+{$region Global}
+
+
+
+{$endregion Global}
+
+{$region Constant}
+
+
+
+{$endregion Constant}
+
+{$region Local}
+
+static function KernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new KernelArgLocalBytes(bytes);
+
+static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
+begin
+  BlittableHelper.RaiseIfBad(typeof(T), '');
+  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+    uint64(Marshal.Sizeof&<T>)*UInt32(item_count)
+  )));
+end;
+static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+begin
+  BlittableHelper.RaiseIfBad(typeof(T), '');
+  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+    uint64(Marshal.Sizeof&<T>)*UInt32(item_count)
+  )));
+end;
+
+{$endregion Local}
+
+{$region Private}
+
+
+
+{$endregion Private}
+
+{$region Generic}
+
+
+
+{$endregion Generic}
+
+{$endregion KernelArg}
+
 {$region Enqueueable's}
 
 {$region Core}
 
 type
-  EnqEvLst = sealed class
-    private evs: array of EventList;
-    private c1 := 0;
-    private c2 := 0;
-    {$ifdef DEBUG}
-    private skipped := 0;
-    {$endif DEBUG}
-    
-    public constructor(cap: integer) :=
-    evs := new EventList[cap];
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public property Capacity: integer read evs.Length;
-    
-    public procedure AddL1(ev: EventList);
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
-      {$endif DEBUG}
-      if ev.count=0 then
-        {$ifdef DEBUG}skipped += 1{$endif} else
-      begin
-        evs[c1] := ev;
-        c1 += 1;
-      end;
-    end;
-    public procedure AddL2(ev: EventList);
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
-      {$endif DEBUG}
-      if ev.count=0 then
-        {$ifdef DEBUG}skipped += 1{$endif} else
-      begin
-        c2 += 1;
-        evs[evs.Length-c2] := ev;
-      end;
-    end;
-    
-    private procedure CheckDone;
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2+skipped}/{evs.Length} used');
-      {$endif DEBUG}
-    end;
-    
-    public function MakeLists: ValueTuple<EventList, EventList>;
-    begin
-      CheckDone;
-      Result := ValueTuple.Create(
-        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
-        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
-      );
-    end;
-    public function CombineAll: EventList;
-    begin
-      CheckDone;
-      Result := EventList.Combine(evs);
-    end;
-    
-  end;
-  
   DirectEnqRes = ValueTuple<cl_event, QueueResAction>;
   EnqRes = ValueTuple<EventList, QueueResAction>;
-  EnqueueableEnqFunc<TInvData> = function(inv_data: TInvData; c: Context; cq: cl_command_queue; ev_l2: EventList): DirectEnqRes;
-  
-  IEnqueueable<TInvData> = interface
-    
-    function EnqEvCapacity: integer;
-    
-    function InvokeParams(g: CLTaskGlobalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<TInvData>;
-    
-  end;
+  EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): DirectEnqRes;
   
   EnqueueableCore = static class
     
-    private static function MakeEvList(exp_size: integer; start_ev: EventList): List<EventList>;
+    private static function ExecuteEnqFunc<T>(prev_res: T; cq: cl_command_queue; ev_l2: EventList; enq_f: EnqFunc<T>; err_handler: CLTaskErrHandler{$ifdef EventDebug}; q: object{$endif}): EnqRes;
     begin
-      var need_start_ev := start_ev.count<>0;
-      Result := new List<EventList>(exp_size + integer(need_start_ev));
-      if need_start_ev then Result += start_ev;
-    end;
-    
-    private static function ExecuteEnqFunc<TInvData>(
-      inv_data: TInvData; c: Context; cq: cl_command_queue; ev_l2: EventList;
-      enq_f: EnqueueableEnqFunc<TInvData>; err_handler: CLTaskErrHandler
-      {$ifdef EventDebug}; q: object{$endif}): EnqRes;
-    begin
-      Result := new EnqRes(ev_l2, nil);
+      var direct_enq_res: DirectEnqRes;
       try
-        var (enq_ev, act) := enq_f(inv_data, c, cq, ev_l2);
-        {$ifdef EventDebug}
-        EventDebug.RegisterEventRetain(enq_ev, $'Enq by {q.GetType}, waiting on [{ev_l2.evs?.JoinToString}]');
-        {$endif EventDebug}
-        // 1. ev_l2 can be released only after executing dependant command
-        // 2. If event in ev_l2 would receive error, enq_ev would not give descriptive error
-        Result := new EnqRes(ev_l2+enq_ev, act);
+        direct_enq_res := enq_f(prev_res, cq, ev_l2);
       except
-        on e: Exception do err_handler.AddErr(e);
+        on e: Exception do
+        begin
+          err_handler.AddErr(e);
+          Result := new EnqRes(ev_l2, nil);
+          exit;
+        end;
       end;
+      
+      var (enq_ev, act) := direct_enq_res;
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on [{ev_l2.evs?.JoinToString}]');
+      {$endif EventDebug}
+      // 1. ev_l2 can only be released after executing dependant command
+      // 2. If event in ev_l2 would receive error, enq_ev would not give descriptive error
+      Result := new EnqRes(ev_l2+enq_ev, act);
     end;
     
-    public static function Invoke<TEnq, TInvData>(q: TEnq; inv_data: TInvData; g: CLTaskGlobalData; start_ev: EventList; start_ev_in_l1: boolean): EnqRes; where TEnq: IEnqueueable<TInvData>;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function Invoke<T>(enq_ev_capacity: integer; g: CLTaskGlobalData; prev_qr: QueueRes<T>; invoke_params: (CLTaskGlobalData, DoubleEventListList)->EnqFunc<T>{$ifdef EventDebug}; q: object{$endif}): EnqRes;
     begin
-      var enq_evs := new EnqEvLst(q.EnqEvCapacity+1);
-      if start_ev_in_l1 then
-        enq_evs.AddL1(start_ev) else
-        enq_evs.AddL2(start_ev);
+      var enq_evs := new DoubleEventListList(enq_ev_capacity+1);
+      begin
+        var start_ev := prev_qr.AttachInvokeActions(g);
+        if not prev_qr.IsConst then
+          enq_evs.AddL1(start_ev) else
+          enq_evs.AddL2(start_ev);
+      end;
       
       var pre_params_handler := g.curr_err_handler;
-      var enq_f := q.InvokeParams(g, enq_evs);
-      // After InvokeParams, because parameters
+      var enq_f := invoke_params(g, enq_evs);
+      // After invoke_params, because parameters
       // should not care about prev events and errors
       if pre_params_handler.HadError then
       begin
@@ -13897,27 +13700,27 @@ type
       // Otherwise, next command can be written before current one
       var cq := g.GetCQ(need_async_inv);
       {$ifdef QueueDebug}
-      QueueDebug.Add(cq, q.GetType.ToString);
+      QueueDebug.Add(cq, TypeName(q));
       {$endif QueueDebug}
       
       if not need_async_inv then
-        Result := ExecuteEnqFunc(inv_data, g.c, cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif}) else
+        Result := ExecuteEnqFunc(prev_qr.GetRes(g.c), cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif}) else
       begin
         var res_ev := new UserEvent(g.cl_c
-          {$ifdef EventDebug}, $'{q.GetType}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+          {$ifdef EventDebug}, $'{TypeName(q)}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
         );
         
         ev_l1.MultiAttachCallback(()->
         begin
-          var (enq_ev, enq_act) := ExecuteEnqFunc(inv_data, g.c, cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif});
+          var (enq_ev, enq_act) := ExecuteEnqFunc(prev_qr.GetRes(g.c), cq, ev_l2, enq_f, post_params_handler{$ifdef EventDebug}, q{$endif});
           OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           enq_ev.MultiAttachCallback(()->
           begin
             if enq_act<>nil then enq_act(g.c);
             g.ReturnCQ(cq);
             res_ev.SetComplete;
-          end{$ifdef EventDebug}, $'propagating Enq ev of {q.GetType} to res_ev: {res_ev.uev}'{$endif});
-        end{$ifdef EventDebug}, $'calling async Enq of {q.GetType}'{$endif});
+          end{$ifdef EventDebug}, $'propagating Enq ev of {TypeName(q)} to res_ev: {res_ev.uev}'{$endif});
+        end{$ifdef EventDebug}, $'calling async Enq of {TypeName(q)}'{$endif});
         
         Result := new EnqRes(res_ev, nil);
       end;
@@ -13931,87 +13734,161 @@ type
 {$region GPUCommand}
 
 type
-  EnqueueableGPUCommandInvData<T> = record
-    qr: QueueRes<T>;
-  end;
-  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>, IEnqueueable<EnqueueableGPUCommandInvData<T>>)
+  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>)
     
     public function EnqEvCapacity: integer; abstract;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (T, cl_command_queue, EventList)->DirectEnqRes; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGPUCommandInvData<T>>;
-    begin
-      var enq_f := InvokeParamsImpl(g, enq_evs);
-      Result := (data, c, lcq, ev)->enq_f(data.qr.GetRes(c), lcq, ev);
-    end;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<T>; abstract;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(g: CLTaskGlobalData; prev_qr: QueueRes<T>; start_ev: EventList; start_ev_in_l1: boolean): QueueResNil;
+    function Invoke(g: CLTaskGlobalData; prev_qr: QueueRes<T>): QueueResNil;
     begin
-      var inv_data: EnqueueableGPUCommandInvData<T>;
-      inv_data.qr  := prev_qr;
-      
-      var (enq_ev, enq_act) := EnqueueableCore.Invoke(self, inv_data, g, start_ev, start_ev_in_l1);
-      var res := new QueueResNil(new CLTaskLocalData(enq_ev));
-      if enq_act<>nil then res.AddAction(enq_act);
-      
-      Result := res;
+      var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+        self.EnqEvCapacity, g, prev_qr,
+        InvokeParams{$ifdef EventDebug},self{$endif}
+      );
+      Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+      if enq_act<>nil then Result.AddAction(enq_act);
     end;
     
     protected function InvokeObj(o: T; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
-    Invoke(g, new QueueResVal<T>(new CLTaskLocalData, o), l.prev_ev, false);
+    Invoke(g, new QueueResVal<T>(l, o));
     
     protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
       var prev_qr := o_invoke(g, l);
-      Result := Invoke(g, prev_qr, prev_qr.ResEv, not prev_qr.IsConst);
+      Result := Invoke(g, prev_qr);
     end;
     
   end;
   
 {$endregion GPUCommand}
 
+{$region ExecCommand}
+
+type
+  EnqueueableExecCommand = abstract class(GPUCommand<Kernel>)
+    private args: array of KernelArg;
+    
+    protected constructor(args: array of KernelArg) := self.args := args;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public function EnqEvCapacity: integer; abstract;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; abstract;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of KernelArgSetter;
+    begin
+      Result := new KernelArgSetter[self.args.Length];
+      for var i := 0 to self.args.Length-1 do
+      begin
+        var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
+        Result[i] := arg_setter;
+        if not arg_setter.IsConst then
+          enq_evs.AddL1(arg_ev) else
+          enq_evs.AddL2(arg_ev);
+      end;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure KeepArgsGCAlive := GC.KeepAlive(self.args);
+    
+    private own_k_ntv := cl_kernel.Zero;
+    private own_arg_cache := default(KernelArgCache);
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(g: CLTaskGlobalData; prev_qr: QueueRes<Kernel>): QueueResNil;
+    begin
+      
+      var self_locked := prev_qr.IsConst and Monitor.TryEnter(self);
+      var unlock_self: Action;
+      begin
+        var self_unlocked := integer(not self_locked);
+        unlock_self := ()->
+        begin
+          if Interlocked.Exchange(self_unlocked, 1)<>0 then exit;
+          Monitor.Exit(self);
+        end;
+      end;
+      
+      var arg_cache := default(KernelArgCache);
+      var k_ntv_qr: QueueRes<cl_kernel>;
+      // If CCQ is created from regular object or const/parameter queue
+      // Then try use own_arg_cache, to not set the same values
+      if self_locked then
+      begin
+        
+        var k_ntv := self.own_k_ntv;
+        if k_ntv=cl_kernel.Zero then
+        begin
+          k_ntv := prev_qr.GetResDirect.ntv();
+          arg_cache := new KernelArgCacheEntry[self.args.Length];
+          self.own_k_ntv := k_ntv;
+          self.own_arg_cache := arg_cache;
+        end else
+          arg_cache := self.own_arg_cache;
+        
+        k_ntv_qr := new QueueResVal<cl_kernel>(prev_qr.TakeBaseOut, k_ntv);
+      end else
+        k_ntv_qr := prev_qr.TransformResult(
+          new QueueResValFactory<cl_kernel>,
+          g.c, true, (k,c)->k.ntv()
+        );
+      
+      try
+        var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+          self.args.Length+self.EnqEvCapacity, g, k_ntv_qr,
+          (g, enq_evs)->InvokeParams(g, enq_evs, arg_cache, unlock_self)
+          {$ifdef EventDebug},self{$endif}
+        );
+        
+        Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+        if enq_act<>nil then Result.AddAction(enq_act);
+        
+      finally
+        unlock_self();
+      end;
+    end;
+    
+    protected function InvokeObj(o: Kernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
+    Invoke(g, new QueueResVal<Kernel>(l, o));
+    
+    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<Kernel>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    begin
+      var prev_qr := o_invoke(g, l);
+      Result := Invoke(g, prev_qr);
+    end;
+    
+  end;
+  
+{$endregion ExecCommand}
+
 {$region GetCommand}
 
 type
-  EnqueueableGetCommandInvData<TObj, TRes> = record
-    prev_qr: QueueRes<TObj>;
-    res_qr: QueueRes<TRes>;
-  end;
-  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>, IEnqueueable<EnqueueableGetCommandInvData<TObj, TRes>>)
+  EnqueueableGetCommand<TObj, TRes> = abstract class(CommandQueue<TRes>)
     protected prev_commands: GPUCommandContainer<TObj>;
     
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
     
     public function EnqEvCapacity: integer; abstract;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (TObj, cl_command_queue, EventList, QueueRes<TRes>)->DirectEnqRes; abstract;
-    public function InvokeParams(g: CLTaskGlobalData; enq_evs: EnqEvLst): EnqueueableEnqFunc<EnqueueableGetCommandInvData<TObj, TRes>>;
-    begin
-      var enq_f := InvokeParamsImpl(g, enq_evs);
-      Result := (data, c, lcq, ev)->enq_f(data.prev_qr.GetRes(c), lcq, ev, data.res_qr);
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := new QueueResNil(l);
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): EnqFunc<TObj>; abstract;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
     begin
       Result := qr_factory.MakeDelayed(qr->
       begin
-        var prev_qr := prev_commands.InvokeToVal(g, l);
-        
-        var inv_data: EnqueueableGetCommandInvData<TObj, TRes>;
-        inv_data.prev_qr  := prev_qr;
-        inv_data.res_qr   := qr;
-        
-        var (enq_ev, enq_act) := EnqueueableCore.Invoke(self, inv_data, g, prev_qr.ResEv, not prev_qr.IsConst);
+        var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+          self.EnqEvCapacity, g, prev_commands.InvokeToAny(g, l),
+          (g, enq_evs)->InvokeParams(g, enq_evs, qr)
+          {$ifdef EventDebug},self{$endif}
+        );
         Result := new CLTaskLocalData(enq_ev);
         if enq_act<>nil then Result.prev_delegate.AddAction(enq_act);
       end);
     end;
     
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := new QueueResNil(l);
     protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<TRes>; override := Invoke(g, l, qr_val_factory);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
     
@@ -14035,7 +13912,7 @@ type
 
 {$region Implicit}
 
-{$region 1#Exec}
+{$region Exec}
 
 function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel;
 begin
@@ -14057,25 +13934,26 @@ begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec(global_work_offset, global_work_size, local_work_size, args));
 end;
 
-{$endregion 1#Exec}
+{$endregion Exec}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{$region 1#Exec}
+{$region Exec}
 
 {$region Exec1}
 
 type
-  KernelCommandExec1 = sealed class(EnqueueableGPUCommand<Kernel>)
+  KernelCommandExec1 = sealed class(EnqueueableExecCommand)
     private  sz1: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function EnqEvCapacity: integer; override := 1 + args.Length;
+    public function EnqEvCapacity: integer; override := 1;
     
     public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
     begin
+      inherited Create(args);
       self. sz1 :=  sz1;
       self.args := args;
     end;
@@ -14083,48 +13961,40 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
-      foreach var temp1 in args do temp1.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
-      var args_qr: array of QueueResVal<ISetableKernelArg>;
+      var arg_setters: array of KernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueResVal<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.AttachInvokeActions(g)) else enq_evs.AddL1(Result.AttachInvokeActions(g)); end);
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
       end);
       
       Result := (o, cq, evs)->
       begin
         var  sz1 :=  sz1_qr.GetResDirect;
-        var args := args_qr.ConvertAll(temp1->temp1.GetResDirect);
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
         var res_ev: cl_event;
         
-        var ntv := o.UseExclusiveNative(ntv->
-        begin
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i);
-          
-          var ec := cl.EnqueueNDRangeKernel(
-            cq, ntv, 1,
-            nil,
-            new UIntPtr[](new UIntPtr(sz1)),
-            nil,
-            evs.count, evs.evs, res_ev
-          );
-          OpenCLABCInternalException.RaiseIfError(ec);
-          
-          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
-          Result := ntv;
-        end);
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, 1,
+          nil,
+          | new UIntPtr(sz1) |,
+          nil,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
+        unlock_cache();
         Result := new DirectEnqRes(res_ev, c->
         begin
-          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          GC.KeepAlive(args);
+          self.KeepArgsGCAlive;
         end);
       end;
       
@@ -14135,17 +14005,14 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'sz1: ';
+      sb += 'sz1:';
+      sb += ' ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
       
     end;
     
@@ -14161,15 +14028,16 @@ end;
 {$region Exec2}
 
 type
-  KernelCommandExec2 = sealed class(EnqueueableGPUCommand<Kernel>)
+  KernelCommandExec2 = sealed class(EnqueueableExecCommand)
     private  sz1: CommandQueue<integer>;
     private  sz2: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function EnqEvCapacity: integer; override := 2 + args.Length;
+    public function EnqEvCapacity: integer; override := 2;
     
     public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
     begin
+      inherited Create(args);
       self. sz1 :=  sz1;
       self. sz2 :=  sz2;
       self.args := args;
@@ -14178,52 +14046,44 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
        sz2.InitBeforeInvoke(g, prev_hubs);
-      foreach var temp1 in args do temp1.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
-      var args_qr: array of QueueResVal<ISetableKernelArg>;
+      var arg_setters: array of KernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
          sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.InvokeToAny); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.AttachInvokeActions(g));
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueResVal<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.AttachInvokeActions(g)) else enq_evs.AddL1(Result.AttachInvokeActions(g)); end);
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
       end);
       
       Result := (o, cq, evs)->
       begin
         var  sz1 :=  sz1_qr.GetResDirect;
         var  sz2 :=  sz2_qr.GetResDirect;
-        var args := args_qr.ConvertAll(temp1->temp1.GetResDirect);
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
         var res_ev: cl_event;
         
-        var ntv := o.UseExclusiveNative(ntv->
-        begin
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i);
-          
-          var ec := cl.EnqueueNDRangeKernel(
-            cq, ntv, 2,
-            nil,
-            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2)),
-            nil,
-            evs.count, evs.evs, res_ev
-          );
-          OpenCLABCInternalException.RaiseIfError(ec);
-          
-          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
-          Result := ntv;
-        end);
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, 2,
+          nil,
+          | new UIntPtr(sz1),new UIntPtr(sz2) |,
+          nil,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
+        unlock_cache();
         Result := new DirectEnqRes(res_ev, c->
         begin
-          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          GC.KeepAlive(args);
+          self.KeepArgsGCAlive;
         end);
       end;
       
@@ -14234,21 +14094,19 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'sz1: ';
+      sb += 'sz1:';
+      sb += ' ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'sz2: ';
+      sb += 'sz2:';
+      sb += ' ';
       sz2.ToString(sb, tabs, index, delayed, false);
       
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
       
     end;
     
@@ -14264,16 +14122,17 @@ end;
 {$region Exec3}
 
 type
-  KernelCommandExec3 = sealed class(EnqueueableGPUCommand<Kernel>)
+  KernelCommandExec3 = sealed class(EnqueueableExecCommand)
     private  sz1: CommandQueue<integer>;
     private  sz2: CommandQueue<integer>;
     private  sz3: CommandQueue<integer>;
     private args: array of KernelArg;
     
-    public function EnqEvCapacity: integer; override := 3 + args.Length;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
     begin
+      inherited Create(args);
       self. sz1 :=  sz1;
       self. sz2 :=  sz2;
       self. sz3 :=  sz3;
@@ -14283,24 +14142,24 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
        sz2.InitBeforeInvoke(g, prev_hubs);
        sz3.InitBeforeInvoke(g, prev_hubs);
-      foreach var temp1 in args do temp1.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
-      var args_qr: array of QueueResVal<ISetableKernelArg>;
+      var arg_setters: array of KernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
          sz2_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz2.InvokeToAny); if sz2_qr.IsConst then enq_evs.AddL2(sz2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz2_qr.AttachInvokeActions(g));
          sz3_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz3.InvokeToAny); if sz3_qr.IsConst then enq_evs.AddL2(sz3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz3_qr.AttachInvokeActions(g));
-        args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueResVal<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.AttachInvokeActions(g)) else enq_evs.AddL1(Result.AttachInvokeActions(g)); end);
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
       end);
       
       Result := (o, cq, evs)->
@@ -14308,31 +14167,23 @@ type
         var  sz1 :=  sz1_qr.GetResDirect;
         var  sz2 :=  sz2_qr.GetResDirect;
         var  sz3 :=  sz3_qr.GetResDirect;
-        var args := args_qr.ConvertAll(temp1->temp1.GetResDirect);
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
         var res_ev: cl_event;
         
-        var ntv := o.UseExclusiveNative(ntv->
-        begin
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i);
-          
-          var ec := cl.EnqueueNDRangeKernel(
-            cq, ntv, 3,
-            nil,
-            new UIntPtr[](new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3)),
-            nil,
-            evs.count, evs.evs, res_ev
-          );
-          OpenCLABCInternalException.RaiseIfError(ec);
-          
-          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
-          Result := ntv;
-        end);
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, 3,
+          nil,
+          | new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3) |,
+          nil,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
+        unlock_cache();
         Result := new DirectEnqRes(res_ev, c->
         begin
-          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          GC.KeepAlive(args);
+          self.KeepArgsGCAlive;
         end);
       end;
       
@@ -14343,25 +14194,24 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'sz1: ';
+      sb += 'sz1:';
+      sb += ' ';
       sz1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'sz2: ';
+      sb += 'sz2:';
+      sb += ' ';
       sz2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'sz3: ';
+      sb += 'sz3:';
+      sb += ' ';
       sz3.ToString(sb, tabs, index, delayed, false);
       
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
       
     end;
     
@@ -14377,16 +14227,17 @@ end;
 {$region Exec}
 
 type
-  KernelCommandExec = sealed class(EnqueueableGPUCommand<Kernel>)
+  KernelCommandExec = sealed class(EnqueueableExecCommand)
     private global_work_offset: CommandQueue<array of UIntPtr>;
     private   global_work_size: CommandQueue<array of UIntPtr>;
     private    local_work_size: CommandQueue<array of UIntPtr>;
     private               args: array of KernelArg;
     
-    public function EnqEvCapacity: integer; override := 3 + args.Length;
+    public function EnqEvCapacity: integer; override := 3;
     
     public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
     begin
+      inherited Create(args);
       self.global_work_offset := global_work_offset;
       self.  global_work_size :=   global_work_size;
       self.   local_work_size :=    local_work_size;
@@ -14396,24 +14247,24 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
+      foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
       global_work_offset.InitBeforeInvoke(g, prev_hubs);
         global_work_size.InitBeforeInvoke(g, prev_hubs);
          local_work_size.InitBeforeInvoke(g, prev_hubs);
-      foreach var temp1 in args do temp1.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (Kernel, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;
     begin
       var global_work_offset_qr: QueueRes<array of UIntPtr>;
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
-      var               args_qr: array of QueueResVal<ISetableKernelArg>;
+      var arg_setters: array of KernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
         global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.InvokeToAny); if global_work_offset_qr.IsConst then enq_evs.AddL2(global_work_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_offset_qr.AttachInvokeActions(g));
           global_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(  global_work_size.InvokeToAny); if global_work_size_qr.IsConst then enq_evs.AddL2(global_work_size_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_size_qr.AttachInvokeActions(g));
            local_work_size_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(   local_work_size.InvokeToAny); if local_work_size_qr.IsConst then enq_evs.AddL2(local_work_size_qr.AttachInvokeActions(g)) else enq_evs.AddL1(local_work_size_qr.AttachInvokeActions(g));
-                      args_qr := args.ConvertAll(temp1->begin Result := invoker.InvokeBranch&<QueueResVal<ISetableKernelArg>>(temp1.Invoke); if Result.IsConst then enq_evs.AddL2(Result.AttachInvokeActions(g)) else enq_evs.AddL1(Result.AttachInvokeActions(g)); end);
+        arg_setters := self.InvokeArgs(invoker, enq_evs);
       end);
       
       Result := (o, cq, evs)->
@@ -14421,31 +14272,23 @@ type
         var global_work_offset := global_work_offset_qr.GetResDirect;
         var   global_work_size :=   global_work_size_qr.GetResDirect;
         var    local_work_size :=    local_work_size_qr.GetResDirect;
-        var               args :=               args_qr.ConvertAll(temp1->temp1.GetResDirect);
+        for var i := 0 to arg_setters.Length-1 do
+          arg_setters[i].Apply(o, i, arg_cache);
         var res_ev: cl_event;
         
-        var ntv := o.UseExclusiveNative(ntv->
-        begin
-          for var i := 0 to args.Length-1 do
-            args[i].SetArg(ntv, i);
-          
-          var ec := cl.EnqueueNDRangeKernel(
-            cq, ntv, global_work_size.Length,
-            global_work_offset,
-            global_work_size,
-            local_work_size,
-            evs.count, evs.evs, res_ev
-          );
-          OpenCLABCInternalException.RaiseIfError(ec);
-          
-          OpenCLABCInternalException.RaiseIfError( cl.RetainKernel(ntv) );
-          Result := ntv;
-        end);
+        var ec := cl.EnqueueNDRangeKernel(
+          cq, o, global_work_size.Length,
+          global_work_offset,
+          global_work_size,
+          local_work_size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
         
+        unlock_cache();
         Result := new DirectEnqRes(res_ev, c->
         begin
-          OpenCLABCInternalException.RaiseIfError( cl.ReleaseKernel(ntv) );
-          GC.KeepAlive(args);
+          self.KeepArgsGCAlive;
         end);
       end;
       
@@ -14456,25 +14299,24 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'global_work_offset: ';
+      sb += 'global_work_offset:';
+      sb += ' ';
       global_work_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'global_work_size: ';
+      sb += 'global_work_size:';
+      sb += ' ';
       global_work_size.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'local_work_size: ';
+      sb += 'local_work_size:';
+      sb += ' ';
       local_work_size.ToString(sb, tabs, index, delayed, false);
       
-      for var i := 0 to args.Length-1 do 
-      begin
-        sb.Append(#9, tabs);
-        sb += 'args[';
-        sb.Append(i);
-        sb += ']: ';
-        args[i].ToString(sb, tabs, index, delayed, false);
-      end;
+      sb.Append(#9, tabs);
+      sb += 'args:';
+      sb += #10;
+      foreach var arg in args do arg.ToString(sb, tabs+1, index, delayed);
       
     end;
     
@@ -14487,7 +14329,7 @@ end;
 
 {$endregion Exec}
 
-{$endregion 1#Exec}
+{$endregion Exec}
 
 {$endregion Explicit}
 
@@ -14689,94 +14531,244 @@ begin
   Result := ReadData(IntPtr(ptr), mem_offset, len);
 end;
 
-function CLMemorySegment.WriteData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemorySegment.WriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(data, mem_offset));
+  Result := WriteNativeMemoryArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemorySegment.WriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(data, mem_offset));
+  Result := WriteNativeMemoryArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeMemory(native_data: NativeMemory): CLMemorySegment;
 begin
-  Result := WriteNativeValue(CQ(val), 0);
+  Result := WriteNativeMemory(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
 begin
-  Result := WriteNativeValue(CQ(val), mem_offset);
+  Result := WriteNativeMemory(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := ReadNativeValue(CQ(val), 0);
+  Result := WriteNativeValueArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := ReadNativeValue(CQ(val), mem_offset);
+  Result := WriteNativeValueArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := WriteNativeValue(val, 0);
+  Result := WriteNativeValue(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := ReadNativeValue(val, 0);
+  Result := WriteNativeValue(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue&<TRecord>(val, mem_offset));
+  Result := WriteNativeArrayArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue&<TRecord>(val, mem_offset));
+  Result := WriteNativeArrayArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := WriteNativeArray(CQ(a));
+  Result := WriteNativeArray(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := WriteNativeArray(CQ(a),a_ind,el_count,mem_offset);
+  Result := WriteNativeArray(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.ReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
 begin
-  Result := ReadNativeArray(CQ(a));
+  Result := ReadNativeMemoryArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.ReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
 begin
-  Result := ReadNativeArray(CQ(a),a_ind,el_count,mem_offset);
+  Result := ReadNativeMemoryArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.ReadNativeMemory(native_data: NativeMemory): CLMemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(a));
+  Result := ReadNativeMemory(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.ReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := ReadNativeMemory(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(a));
+  Result := ReadNativeValueArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := ReadNativeValueArea(CQ(native_data), mem_offset);
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValue(CQ(native_data), 0);
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValue(CQ(native_data), mem_offset);
+end;
+
+function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArrayArea(CQ(native_data), 0);
+end;
+
+function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArrayArea(CQ(native_data), mem_offset);
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArray(CQ(native_data), 0);
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArray(CQ(native_data), mem_offset);
+end;
+
+function CLMemorySegment.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+begin
+  Result := WriteNativeMemoryArea(native_data, 0);
+end;
+
+function CLMemorySegment.WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+begin
+  Result := WriteNativeMemory(native_data, 0);
+end;
+
+function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeValueArea(native_data, 0);
+end;
+
+function CLMemorySegment.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeValue(native_data, 0);
+end;
+
+function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeArrayArea(native_data, 0);
+end;
+
+function CLMemorySegment.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := WriteNativeArray(native_data, 0);
+end;
+
+function CLMemorySegment.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+begin
+  Result := ReadNativeMemoryArea(native_data, 0);
+end;
+
+function CLMemorySegment.ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+begin
+  Result := ReadNativeMemory(native_data, 0);
+end;
+
+function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValueArea(native_data, 0);
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeValue(native_data, 0);
+end;
+
+function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArrayArea(native_data, 0);
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := ReadNativeArray(native_data, 0);
+end;
+
+function CLMemorySegment.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea&<TRecord>(native_data, mem_offset));
+end;
+
+function CLMemorySegment.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -14893,54 +14885,124 @@ begin
   Result := FillData(IntPtr(ptr), pattern_byte_len, mem_offset, fill_byte_len);
 end;
 
-function CLMemorySegment.FillData(data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+function CLMemorySegment.FillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data));
+  Result := FillNativeMemoryArea(CQ(native_data));
 end;
 
-function CLMemorySegment.FillData(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>): CLMemorySegment;
+function CLMemorySegment.FillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data, mem_offset, fill_byte_len));
+  Result := FillNativeMemoryArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeMemory(native_data: NativeMemory): CLMemorySegment;
 begin
-  Result := FillNativeValue(CQ(val));
+  Result := FillNativeMemory(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
 begin
-  Result := FillNativeValue(CQ(val),mem_offset,fill_byte_len);
+  Result := FillNativeMemory(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(val));
+  Result := FillNativeValueArea(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(val, mem_offset, fill_byte_len));
+  Result := FillNativeValueArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := FillNativeArray(CQ(a));
+  Result := FillNativeValue(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := FillNativeArray(CQ(a),a_ind,pattern_byte_len, mem_offset,fill_byte_len);
+  Result := FillNativeValue(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(a));
+  Result := FillNativeArrayArea(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := FillNativeArrayArea(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillNativeArray(CQ(native_data));
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := FillNativeArray(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+function CLMemorySegment.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
+end;
+
+function CLMemorySegment.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
+end;
+
+function CLMemorySegment.FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data));
+end;
+
+function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data));
+end;
+
+function CLMemorySegment.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data));
+end;
+
+function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data, mem_offset, fill_byte_len));
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data));
+end;
+
+function CLMemorySegment.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion 2#Fill}
@@ -15018,14 +15080,14 @@ end;
 
 {$endregion WriteValue}
 
-{$region WriteValueQ}
+{$region WriteValue!Q}
 
 function CLMemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenWriteValue(val, 0);
 end;
 
-{$endregion WriteValueQ}
+{$endregion WriteValue!Q}
 
 {$region WriteValue}
 
@@ -15058,7 +15120,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15089,11 +15151,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15107,7 +15171,7 @@ end;
 
 {$endregion WriteValue}
 
-{$region WriteValueQ}
+{$region WriteValue!Q}
 
 type
   CLMemorySegmentCommandWriteValueQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15134,7 +15198,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var        val_qr: QueueResPtr<TRecord>;
       var mem_offset_qr: QueueRes<integer>;
@@ -15171,11 +15235,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15187,61 +15253,61 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandWriteValueQ<TRecord>(val, mem_offset));
 end;
 
-{$endregion WriteValueQ}
+{$endregion WriteValue!Q}
 
-{$region WriteArray1AutoSize}
+{$region WriteArray1!AutoSize}
 
 function CLMemorySegmentCCQ.ThenWriteArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray1(CQ(a));
 end;
 
-{$endregion WriteArray1AutoSize}
+{$endregion WriteArray1!AutoSize}
 
-{$region WriteArray2AutoSize}
+{$region WriteArray2!AutoSize}
 
 function CLMemorySegmentCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray2(CQ(a));
 end;
 
-{$endregion WriteArray2AutoSize}
+{$endregion WriteArray2!AutoSize}
 
-{$region WriteArray3AutoSize}
+{$region WriteArray3!AutoSize}
 
 function CLMemorySegmentCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray3(CQ(a));
 end;
 
-{$endregion WriteArray3AutoSize}
+{$endregion WriteArray3!AutoSize}
 
-{$region ReadArray1AutoSize}
+{$region ReadArray1!AutoSize}
 
 function CLMemorySegmentCCQ.ThenReadArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenReadArray1(CQ(a));
 end;
 
-{$endregion ReadArray1AutoSize}
+{$endregion ReadArray1!AutoSize}
 
-{$region ReadArray2AutoSize}
+{$region ReadArray2!AutoSize}
 
 function CLMemorySegmentCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenReadArray2(CQ(a));
 end;
 
-{$endregion ReadArray2AutoSize}
+{$endregion ReadArray2!AutoSize}
 
-{$region ReadArray3AutoSize}
+{$region ReadArray3!AutoSize}
 
 function CLMemorySegmentCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenReadArray3(CQ(a));
 end;
 
-{$endregion ReadArray3AutoSize}
+{$endregion ReadArray3!AutoSize}
 
 {$region WriteArray1}
 
@@ -15297,7 +15363,7 @@ end;
 
 {$endregion ReadArray3}
 
-{$region WriteArray1AutoSize}
+{$region WriteArray1!AutoSize}
 
 type
   CLMemorySegmentCommandWriteArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15321,7 +15387,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15358,7 +15424,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15370,9 +15437,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandWriteArray1AutoSize<TRecord>(a));
 end;
 
-{$endregion WriteArray1AutoSize}
+{$endregion WriteArray1!AutoSize}
 
-{$region WriteArray2AutoSize}
+{$region WriteArray2!AutoSize}
 
 type
   CLMemorySegmentCommandWriteArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15396,7 +15463,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15433,7 +15500,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15445,9 +15513,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandWriteArray2AutoSize<TRecord>(a));
 end;
 
-{$endregion WriteArray2AutoSize}
+{$endregion WriteArray2!AutoSize}
 
-{$region WriteArray3AutoSize}
+{$region WriteArray3!AutoSize}
 
 type
   CLMemorySegmentCommandWriteArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15471,7 +15539,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15508,7 +15576,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15520,9 +15589,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandWriteArray3AutoSize<TRecord>(a));
 end;
 
-{$endregion WriteArray3AutoSize}
+{$endregion WriteArray3!AutoSize}
 
-{$region ReadArray1AutoSize}
+{$region ReadArray1!AutoSize}
 
 type
   CLMemorySegmentCommandReadArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15546,7 +15615,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15583,7 +15652,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15595,9 +15665,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandReadArray1AutoSize<TRecord>(a));
 end;
 
-{$endregion ReadArray1AutoSize}
+{$endregion ReadArray1!AutoSize}
 
-{$region ReadArray2AutoSize}
+{$region ReadArray2!AutoSize}
 
 type
   CLMemorySegmentCommandReadArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15621,7 +15691,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15658,7 +15728,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15670,9 +15741,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandReadArray2AutoSize<TRecord>(a));
 end;
 
-{$endregion ReadArray2AutoSize}
+{$endregion ReadArray2!AutoSize}
 
-{$region ReadArray3AutoSize}
+{$region ReadArray3!AutoSize}
 
 type
   CLMemorySegmentCommandReadArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -15696,7 +15767,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -15733,7 +15804,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15745,7 +15817,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandReadArray3AutoSize<TRecord>(a));
 end;
 
-{$endregion ReadArray3AutoSize}
+{$endregion ReadArray3!AutoSize}
 
 {$region WriteArray1}
 
@@ -15780,7 +15852,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var          a_qr: QueueRes<array of TRecord>;
       var      a_ind_qr: QueueRes<integer>;
@@ -15825,19 +15897,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
+      sb += 'a_ind:';
+      sb += ' ';
       a_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'el_count: ';
+      sb += 'el_count:';
+      sb += ' ';
       el_count.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -15887,7 +15963,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var          a_qr: QueueRes<array[,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -15935,23 +16011,28 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'el_count: ';
+      sb += 'el_count:';
+      sb += ' ';
       el_count.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16004,7 +16085,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var          a_qr: QueueRes<array[,,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -16055,27 +16136,33 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind3: ';
+      sb += 'a_ind3:';
+      sb += ' ';
       a_ind3.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'el_count: ';
+      sb += 'el_count:';
+      sb += ' ';
       el_count.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16122,7 +16209,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var          a_qr: QueueRes<array of TRecord>;
       var      a_ind_qr: QueueRes<integer>;
@@ -16167,19 +16254,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
+      sb += 'a_ind:';
+      sb += ' ';
       a_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'el_count: ';
+      sb += 'el_count:';
+      sb += ' ';
       el_count.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16229,7 +16320,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var          a_qr: QueueRes<array[,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -16277,23 +16368,28 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'el_count: ';
+      sb += 'el_count:';
+      sb += ' ';
       el_count.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16346,7 +16442,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var          a_qr: QueueRes<array[,,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -16397,27 +16493,33 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind3: ';
+      sb += 'a_ind3:';
+      sb += ' ';
       a_ind3.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'el_count: ';
+      sb += 'el_count:';
+      sb += ' ';
       el_count.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16449,7 +16551,7 @@ end;
 
 {$endregion ReadArraySegment}
 
-{$region WriteDataAutoSize}
+{$region WriteData!AutoSize}
 
 type
   CLMemorySegmentCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -16468,7 +16570,7 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -16499,7 +16601,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16511,7 +16614,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandWriteDataAutoSize(ptr));
 end;
 
-{$endregion WriteDataAutoSize}
+{$endregion WriteData!AutoSize}
 
 {$region WriteData}
 
@@ -16538,7 +16641,7 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
@@ -16575,15 +16678,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16597,7 +16703,7 @@ end;
 
 {$endregion WriteData}
 
-{$region ReadDataAutoSize}
+{$region ReadData!AutoSize}
 
 type
   CLMemorySegmentCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -16616,7 +16722,7 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -16647,7 +16753,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16659,7 +16766,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandReadDataAutoSize(ptr));
 end;
 
-{$endregion ReadDataAutoSize}
+{$endregion ReadData!AutoSize}
 
 {$region ReadData}
 
@@ -16686,7 +16793,7 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
@@ -16723,15 +16830,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -16745,14 +16855,14 @@ end;
 
 {$endregion ReadData}
 
-{$region WriteDataAutoSize}
+{$region WriteData!AutoSize}
 
 function CLMemorySegmentCCQ.ThenWriteData(ptr: pointer): CLMemorySegmentCCQ;
 begin
   Result := ThenWriteData(IntPtr(ptr));
 end;
 
-{$endregion WriteDataAutoSize}
+{$endregion WriteData!AutoSize}
 
 {$region WriteData}
 
@@ -16763,14 +16873,14 @@ end;
 
 {$endregion WriteData}
 
-{$region ReadDataAutoSize}
+{$region ReadData!AutoSize}
 
 function CLMemorySegmentCCQ.ThenReadData(ptr: pointer): CLMemorySegmentCCQ;
 begin
   Result := ThenReadData(IntPtr(ptr));
 end;
 
-{$endregion ReadDataAutoSize}
+{$endregion ReadData!AutoSize}
 
 {$region ReadData}
 
@@ -16781,48 +16891,372 @@ end;
 
 {$endregion ReadData}
 
-{$region WriteDataArea}
+{$region WriteNativeMemoryArea!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+begin
+  Result := ThenWriteNativeMemoryArea(CQ(native_data), 0);
+end;
+
+{$endregion WriteNativeMemoryArea!AutoOffset}
+
+{$region WriteNativeMemoryArea}
+
+function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := ThenWriteNativeMemoryArea(CQ(native_data), mem_offset);
+end;
+
+{$endregion WriteNativeMemoryArea}
+
+{$region WriteNativeMemory!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+begin
+  Result := ThenWriteNativeMemory(CQ(native_data), 0);
+end;
+
+{$endregion WriteNativeMemory!AutoOffset}
+
+{$region WriteNativeMemory}
+
+function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := ThenWriteNativeMemory(CQ(native_data), mem_offset);
+end;
+
+{$endregion WriteNativeMemory}
+
+{$region WriteNativeValueArea!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeValueArea(CQ(native_data), 0);
+end;
+
+{$endregion WriteNativeValueArea!AutoOffset}
+
+{$region WriteNativeValueArea}
+
+function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeValueArea(CQ(native_data), mem_offset);
+end;
+
+{$endregion WriteNativeValueArea}
+
+{$region WriteNativeValue!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeValue(CQ(native_data), 0);
+end;
+
+{$endregion WriteNativeValue!AutoOffset}
+
+{$region WriteNativeValue}
+
+function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeValue(CQ(native_data), mem_offset);
+end;
+
+{$endregion WriteNativeValue}
+
+{$region WriteNativeArrayArea!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeArrayArea(CQ(native_data), 0);
+end;
+
+{$endregion WriteNativeArrayArea!AutoOffset}
+
+{$region WriteNativeArrayArea}
+
+function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeArrayArea(CQ(native_data), mem_offset);
+end;
+
+{$endregion WriteNativeArrayArea}
+
+{$region WriteNativeArray!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeArray(CQ(native_data), 0);
+end;
+
+{$endregion WriteNativeArray!AutoOffset}
+
+{$region WriteNativeArray}
+
+function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeArray(CQ(native_data), mem_offset);
+end;
+
+{$endregion WriteNativeArray}
+
+{$region ReadNativeMemoryArea!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+begin
+  Result := ThenReadNativeMemoryArea(CQ(native_data), 0);
+end;
+
+{$endregion ReadNativeMemoryArea!AutoOffset}
+
+{$region ReadNativeMemoryArea}
+
+function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := ThenReadNativeMemoryArea(CQ(native_data), mem_offset);
+end;
+
+{$endregion ReadNativeMemoryArea}
+
+{$region ReadNativeMemory!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+begin
+  Result := ThenReadNativeMemory(CQ(native_data), 0);
+end;
+
+{$endregion ReadNativeMemory!AutoOffset}
+
+{$region ReadNativeMemory}
+
+function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := ThenReadNativeMemory(CQ(native_data), mem_offset);
+end;
+
+{$endregion ReadNativeMemory}
+
+{$region ReadNativeValueArea!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeValueArea(CQ(native_data), 0);
+end;
+
+{$endregion ReadNativeValueArea!AutoOffset}
+
+{$region ReadNativeValueArea}
+
+function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeValueArea(CQ(native_data), mem_offset);
+end;
+
+{$endregion ReadNativeValueArea}
+
+{$region ReadNativeValue!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeValue(CQ(native_data), 0);
+end;
+
+{$endregion ReadNativeValue!AutoOffset}
+
+{$region ReadNativeValue}
+
+function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeValue(CQ(native_data), mem_offset);
+end;
+
+{$endregion ReadNativeValue}
+
+{$region ReadNativeArrayArea!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeArrayArea(CQ(native_data), 0);
+end;
+
+{$endregion ReadNativeArrayArea!AutoOffset}
+
+{$region ReadNativeArrayArea}
+
+function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeArrayArea(CQ(native_data), mem_offset);
+end;
+
+{$endregion ReadNativeArrayArea}
+
+{$region ReadNativeArray!AutoOffset}
+
+function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeArray(CQ(native_data), 0);
+end;
+
+{$endregion ReadNativeArray!AutoOffset}
+
+{$region ReadNativeArray}
+
+function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeArray(CQ(native_data), mem_offset);
+end;
+
+{$endregion ReadNativeArray}
+
+{$region WriteNativeMemoryArea}
+
+function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+begin
+  Result := ThenWriteNativeMemoryArea(native_data, 0);
+end;
+
+{$endregion WriteNativeMemoryArea}
+
+{$region WriteNativeMemory}
+
+function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+begin
+  Result := ThenWriteNativeMemory(native_data, 0);
+end;
+
+{$endregion WriteNativeMemory}
+
+{$region WriteNativeValueArea}
+
+function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeValueArea(native_data, 0);
+end;
+
+{$endregion WriteNativeValueArea}
+
+{$region WriteNativeValue}
+
+function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeValue(native_data, 0);
+end;
+
+{$endregion WriteNativeValue}
+
+{$region WriteNativeArrayArea}
+
+function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeArrayArea(native_data, 0);
+end;
+
+{$endregion WriteNativeArrayArea}
+
+{$region WriteNativeArray}
+
+function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenWriteNativeArray(native_data, 0);
+end;
+
+{$endregion WriteNativeArray}
+
+{$region ReadNativeMemoryArea}
+
+function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+begin
+  Result := ThenReadNativeMemoryArea(native_data, 0);
+end;
+
+{$endregion ReadNativeMemoryArea}
+
+{$region ReadNativeMemory}
+
+function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+begin
+  Result := ThenReadNativeMemory(native_data, 0);
+end;
+
+{$endregion ReadNativeMemory}
+
+{$region ReadNativeValueArea}
+
+function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeValueArea(native_data, 0);
+end;
+
+{$endregion ReadNativeValueArea}
+
+{$region ReadNativeValue}
+
+function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeValue(native_data, 0);
+end;
+
+{$endregion ReadNativeValue}
+
+{$region ReadNativeArrayArea}
+
+function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeArrayArea(native_data, 0);
+end;
+
+{$endregion ReadNativeArrayArea}
+
+{$region ReadNativeArray}
+
+function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenReadNativeArray(native_data, 0);
+end;
+
+{$endregion ReadNativeArray}
+
+{$region WriteNativeMemoryArea}
 
 type
-  CLMemorySegmentCommandWriteDataArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private       data: CommandQueue<NativeMemoryArea>;
-    private mem_offset: CommandQueue<integer>;
+  CLMemorySegmentCommandWriteNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private native_data: CommandQueue<NativeMemoryArea>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
     begin
-      self.      data :=       data;
-      self.mem_offset := mem_offset;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-            data.InitBeforeInvoke(g, prev_hubs);
-      mem_offset.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var       data_qr: QueueRes<NativeMemoryArea>;
-      var mem_offset_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-              data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(      data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
-        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var       data :=       data_qr.GetResDirect;
-        var mem_offset := mem_offset_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), data.sz,
-          data.ptr,
+          new UIntPtr(mem_offset), native_data.sz,
+          native_data.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -16837,66 +17271,68 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteDataArea(data, mem_offset));
+  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeMemoryArea(native_data, mem_offset));
 end;
 
-{$endregion WriteDataArea}
+{$endregion WriteNativeMemoryArea}
 
-{$region ReadDataArea}
+{$region WriteNativeMemory}
 
 type
-  CLMemorySegmentCommandReadDataArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private       data: CommandQueue<NativeMemoryArea>;
-    private mem_offset: CommandQueue<integer>;
+  CLMemorySegmentCommandWriteNativeMemory = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private native_data: CommandQueue<NativeMemory>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>);
     begin
-      self.      data :=       data;
-      self.mem_offset := mem_offset;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-            data.InitBeforeInvoke(g, prev_hubs);
-      mem_offset.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var       data_qr: QueueRes<NativeMemoryArea>;
-      var mem_offset_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeMemory>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-              data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(      data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
-        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var       data :=       data_qr.GetResDirect;
-        var mem_offset := mem_offset_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
-        var ec := cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), data.sz,
-          data.ptr,
+          new UIntPtr(mem_offset), native_data.Area.sz,
+          native_data.Area.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -16911,85 +17347,114 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadData(data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadDataArea(data, mem_offset));
+  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeMemory(native_data, mem_offset));
 end;
 
-{$endregion ReadDataArea}
+{$endregion WriteNativeMemory}
 
-{$region WriteNativeValueAutoOffset}
+{$region WriteNativeValueArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+type
+  CLMemorySegmentCommandWriteNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeValueArea<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+    end;
+    public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := ThenWriteNativeValue(CQ(val), 0);
+  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeValueArea<TRecord>(native_data, mem_offset));
 end;
 
-{$endregion WriteNativeValueAutoOffset}
-
-{$region WriteNativeValue}
-
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenWriteNativeValue(CQ(val), mem_offset);
-end;
-
-{$endregion WriteNativeValue}
-
-{$region ReadNativeValueAutoOffset}
-
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenReadNativeValue(CQ(val), 0);
-end;
-
-{$endregion ReadNativeValueAutoOffset}
-
-{$region ReadNativeValue}
-
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenReadNativeValue(CQ(val), mem_offset);
-end;
-
-{$endregion ReadNativeValue}
-
-{$region WriteNativeValue}
-
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenWriteNativeValue(val, 0);
-end;
-
-{$endregion WriteNativeValue}
-
-{$region ReadNativeValue}
-
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenReadNativeValue(val, 0);
-end;
-
-{$endregion ReadNativeValue}
+{$endregion WriteNativeValueArea}
 
 {$region WriteNativeValue}
 
 type
   CLMemorySegmentCommandWriteNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private        val: CommandQueue<NativeValue<TRecord>>;
-    private mem_offset: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeValue<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
@@ -16997,39 +17462,39 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
     end;
-    public constructor(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
-      self.       val :=        val;
-      self.mem_offset := mem_offset;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-             val.InitBeforeInvoke(g, prev_hubs);
-      mem_offset.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var        val_qr: QueueRes<NativeValue<TRecord>>;
-      var mem_offset_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeValue<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(       val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
-        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var        val :=        val_qr.GetResDirect;
-        var mem_offset := mem_offset_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), val.MemoryArea.sz,
-          val.MemoryArea.ptr,
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17044,71 +17509,73 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeValue<TRecord>(val, mem_offset));
+  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeValue<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeValue}
 
-{$region ReadNativeValue}
+{$region WriteNativeArrayArea}
 
 type
-  CLMemorySegmentCommandReadNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemorySegmentCommandWriteNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private        val: CommandQueue<NativeValue<TRecord>>;
-    private mem_offset: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeArrayArea<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
     end;
-    public constructor(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
-      self.       val :=        val;
-      self.mem_offset := mem_offset;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-             val.InitBeforeInvoke(g, prev_hubs);
-      mem_offset.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var        val_qr: QueueRes<NativeValue<TRecord>>;
-      var mem_offset_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(       val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
-        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var        val :=        val_qr.GetResDirect;
-        var mem_offset := mem_offset_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
-        var ec := cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), val.MemoryArea.sz,
-          val.MemoryArea.ptr,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.first_ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17123,190 +17590,73 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeValue<TRecord>(val, mem_offset));
+  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeArrayArea<TRecord>(native_data, mem_offset));
 end;
 
-{$endregion ReadNativeValue}
-
-{$region WriteNativeArrayAutoSize}
-
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenWriteNativeArray(CQ(a));
-end;
-
-{$endregion WriteNativeArrayAutoSize}
-
-{$region WriteNativeArray}
-
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenWriteNativeArray(CQ(a),a_ind,el_count,mem_offset);
-end;
-
-{$endregion WriteNativeArray}
-
-{$region ReadNativeArrayAutoSize}
-
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenReadNativeArray(CQ(a));
-end;
-
-{$endregion ReadNativeArrayAutoSize}
-
-{$region ReadNativeArray}
-
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenReadNativeArray(CQ(a),a_ind,el_count,mem_offset);
-end;
-
-{$endregion ReadNativeArray}
-
-{$region WriteNativeArrayAutoSize}
-
-type
-  CLMemorySegmentCommandWriteNativeArrayAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-  where TRecord: record;
-    private a: CommandQueue<NativeArray<TRecord>>;
-    
-    public function EnqEvCapacity: integer; override := 1;
-    
-    static constructor;
-    begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
-    end;
-    public constructor(a: CommandQueue<NativeArray<TRecord>>);
-    begin
-      self.a := a;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var a_qr: QueueRes<NativeArray<TRecord>>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var a := a_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero,
-          a.MemoryArea.sz,
-          a.MemoryArea.ptr,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeArrayAutoSize<TRecord>(a));
-end;
-
-{$endregion WriteNativeArrayAutoSize}
+{$endregion WriteNativeArrayArea}
 
 {$region WriteNativeArray}
 
 type
   CLMemorySegmentCommandWriteNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private          a: CommandQueue<NativeArray<TRecord>>;
-    private      a_ind: CommandQueue<integer>;
-    private   el_count: CommandQueue<integer>;
-    private mem_offset: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeArray<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    public function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
     end;
-    public constructor(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
-      self.         a :=          a;
-      self.     a_ind :=      a_ind;
-      self.  el_count :=   el_count;
-      self.mem_offset := mem_offset;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-               a.InitBeforeInvoke(g, prev_hubs);
-           a_ind.InitBeforeInvoke(g, prev_hubs);
-        el_count.InitBeforeInvoke(g, prev_hubs);
-      mem_offset.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var          a_qr: QueueRes<NativeArray<TRecord>>;
-      var      a_ind_qr: QueueRes<integer>;
-      var   el_count_qr: QueueRes<integer>;
-      var mem_offset_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeArray<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(         a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-             a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(     a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
-          el_count_qr := invoker.InvokeBranch&<QueueRes<integer>>(  el_count.InvokeToAny); if el_count_qr.IsConst then enq_evs.AddL2(el_count_qr.AttachInvokeActions(g)) else enq_evs.AddL1(el_count_qr.AttachInvokeActions(g));
-        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var          a :=          a_qr.GetResDirect;
-        var      a_ind :=      a_ind_qr.GetResDirect;
-        var   el_count :=   el_count_qr.GetResDirect;
-        var mem_offset := mem_offset_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset),
-          new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
-          new IntPtr( a.ItemPtrUnchecked[a_ind] ),
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17321,74 +17671,68 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
-      a_ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'el_count: ';
-      el_count.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeArray<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeArray<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeArray}
 
-{$region ReadNativeArrayAutoSize}
+{$region ReadNativeMemoryArea}
 
 type
-  CLMemorySegmentCommandReadNativeArrayAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-  where TRecord: record;
-    private a: CommandQueue<NativeArray<TRecord>>;
+  CLMemorySegmentCommandReadNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private native_data: CommandQueue<NativeMemoryArea>;
+    private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 2;
     
-    static constructor;
+    public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
-    end;
-    public constructor(a: CommandQueue<NativeArray<TRecord>>);
-    begin
-      self.a := a;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      a.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var a_qr: QueueRes<NativeArray<TRecord>>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero,
-          a.MemoryArea.sz,
-          a.MemoryArea.ptr,
+          new UIntPtr(mem_offset), native_data.sz,
+          native_data.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17403,80 +17747,392 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeArrayAutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeMemoryArea(native_data, mem_offset));
 end;
 
-{$endregion ReadNativeArrayAutoSize}
+{$endregion ReadNativeMemoryArea}
+
+{$region ReadNativeMemory}
+
+type
+  CLMemorySegmentCommandReadNativeMemory = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private native_data: CommandQueue<NativeMemory>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeMemory>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.Area.sz,
+          native_data.Area.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeMemory(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeMemory}
+
+{$region ReadNativeValueArea}
+
+type
+  CLMemorySegmentCommandReadNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeValueArea<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+    end;
+    public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeValueArea<TRecord>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeValueArea}
+
+{$region ReadNativeValue}
+
+type
+  CLMemorySegmentCommandReadNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeValue<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
+    end;
+    public constructor(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValue<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeValue<TRecord>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeValue}
+
+{$region ReadNativeArrayArea}
+
+type
+  CLMemorySegmentCommandReadNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeArrayArea<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+    end;
+    public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.first_ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeArrayArea<TRecord>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeArrayArea}
 
 {$region ReadNativeArray}
 
 type
   CLMemorySegmentCommandReadNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private          a: CommandQueue<NativeArray<TRecord>>;
-    private      a_ind: CommandQueue<integer>;
-    private   el_count: CommandQueue<integer>;
-    private mem_offset: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeArray<TRecord>>;
+    private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    public function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
     end;
-    public constructor(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
-      self.         a :=          a;
-      self.     a_ind :=      a_ind;
-      self.  el_count :=   el_count;
-      self.mem_offset := mem_offset;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-               a.InitBeforeInvoke(g, prev_hubs);
-           a_ind.InitBeforeInvoke(g, prev_hubs);
-        el_count.InitBeforeInvoke(g, prev_hubs);
-      mem_offset.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var          a_qr: QueueRes<NativeArray<TRecord>>;
-      var      a_ind_qr: QueueRes<integer>;
-      var   el_count_qr: QueueRes<integer>;
-      var mem_offset_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeArray<TRecord>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                 a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(         a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-             a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(     a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
-          el_count_qr := invoker.InvokeBranch&<QueueRes<integer>>(  el_count.InvokeToAny); if el_count_qr.IsConst then enq_evs.AddL2(el_count_qr.AttachInvokeActions(g)) else enq_evs.AddL1(el_count_qr.AttachInvokeActions(g));
-        mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var          a :=          a_qr.GetResDirect;
-        var      a_ind :=      a_ind_qr.GetResDirect;
-        var   el_count :=   el_count_qr.GetResDirect;
-        var mem_offset := mem_offset_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset),
-          new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
-          new IntPtr( a.ItemPtrUnchecked[a_ind] ),
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17491,28 +18147,22 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
-      a_ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'el_count: ';
-      el_count.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,el_count,mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeArray<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeArray<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeArray}
@@ -17521,7 +18171,7 @@ end;
 
 {$region 2#Fill}
 
-{$region FillValueAutoSize}
+{$region FillValue!AutoSize}
 
 type
   CLMemorySegmentCommandFillValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -17549,7 +18199,7 @@ type
     begin
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -17574,7 +18224,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
     end;
@@ -17586,9 +18237,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillValueAutoSize<TRecord>(val));
 end;
 
-{$endregion FillValueAutoSize}
+{$endregion FillValue!AutoSize}
 
-{$region FillValueAutoSizeQ}
+{$region FillValue!AutoSizeQ}
 
 type
   CLMemorySegmentCommandFillValueAutoSizeQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -17612,7 +18263,7 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var val_qr: QueueResPtr<TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -17646,7 +18297,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -17658,7 +18310,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillValueAutoSizeQ<TRecord>(val));
 end;
 
-{$endregion FillValueAutoSizeQ}
+{$endregion FillValue!AutoSizeQ}
 
 {$region FillValue}
 
@@ -17694,7 +18346,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var    mem_offset_qr: QueueRes<integer>;
       var fill_byte_len_qr: QueueRes<integer>;
@@ -17728,15 +18380,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -17750,7 +18405,7 @@ end;
 
 {$endregion FillValue}
 
-{$region FillValueQ}
+{$region FillValue!Q}
 
 type
   CLMemorySegmentCommandFillValueQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -17780,7 +18435,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var           val_qr: QueueResPtr<TRecord>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -17820,15 +18475,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -17840,34 +18498,34 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillValueQ<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
-{$endregion FillValueQ}
+{$endregion FillValue!Q}
 
-{$region FillArray1AutoSize}
+{$region FillArray1!AutoSize}
 
 function CLMemorySegmentCCQ.ThenFillArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenFillArray1(CQ(a));
 end;
 
-{$endregion FillArray1AutoSize}
+{$endregion FillArray1!AutoSize}
 
-{$region FillArray2AutoSize}
+{$region FillArray2!AutoSize}
 
 function CLMemorySegmentCCQ.ThenFillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenFillArray2(CQ(a));
 end;
 
-{$endregion FillArray2AutoSize}
+{$endregion FillArray2!AutoSize}
 
-{$region FillArray3AutoSize}
+{$region FillArray3!AutoSize}
 
 function CLMemorySegmentCCQ.ThenFillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
 begin
   Result := ThenFillArray3(CQ(a));
 end;
 
-{$endregion FillArray3AutoSize}
+{$endregion FillArray3!AutoSize}
 
 {$region FillArray1}
 
@@ -17896,7 +18554,7 @@ end;
 
 {$endregion FillArray3}
 
-{$region FillArray1AutoSize}
+{$region FillArray1!AutoSize}
 
 type
   CLMemorySegmentCommandFillArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -17920,7 +18578,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -17957,7 +18615,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -17969,9 +18628,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillArray1AutoSize<TRecord>(a));
 end;
 
-{$endregion FillArray1AutoSize}
+{$endregion FillArray1!AutoSize}
 
-{$region FillArray2AutoSize}
+{$region FillArray2!AutoSize}
 
 type
   CLMemorySegmentCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -17995,7 +18654,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18032,7 +18691,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18044,9 +18704,9 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillArray2AutoSize<TRecord>(a));
 end;
 
-{$endregion FillArray2AutoSize}
+{$endregion FillArray2!AutoSize}
 
-{$region FillArray3AutoSize}
+{$region FillArray3!AutoSize}
 
 type
   CLMemorySegmentCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -18070,7 +18730,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18107,7 +18767,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18119,7 +18780,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillArray3AutoSize<TRecord>(a));
 end;
 
-{$endregion FillArray3AutoSize}
+{$endregion FillArray3!AutoSize}
 
 {$region FillArray1}
 
@@ -18157,7 +18818,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var                a_qr: QueueRes<array of TRecord>;
       var            a_ind_qr: QueueRes<integer>;
@@ -18205,23 +18866,28 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
+      sb += 'a_ind:';
+      sb += ' ';
       a_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_byte_len: ';
+      sb += 'pattern_byte_len:';
+      sb += ' ';
       pattern_byte_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18274,7 +18940,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var                a_qr: QueueRes<array[,] of TRecord>;
       var           a_ind1_qr: QueueRes<integer>;
@@ -18325,27 +18991,33 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_byte_len: ';
+      sb += 'pattern_byte_len:';
+      sb += ' ';
       pattern_byte_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18401,7 +19073,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var                a_qr: QueueRes<array[,,] of TRecord>;
       var           a_ind1_qr: QueueRes<integer>;
@@ -18455,31 +19127,38 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind3: ';
+      sb += 'a_ind3:';
+      sb += ' ';
       a_ind3.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_byte_len: ';
+      sb += 'pattern_byte_len:';
+      sb += ' ';
       pattern_byte_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18493,7 +19172,7 @@ end;
 
 {$endregion FillArray3}
 
-{$region FillArraySegmentAutoSize}
+{$region FillArraySegment!AutoSize}
 
 type
   CLMemorySegmentCommandFillArraySegmentAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -18516,7 +19195,7 @@ type
     begin
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -18541,7 +19220,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       sb.Append(a);
       
     end;
@@ -18553,7 +19233,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillArraySegmentAutoSize<TRecord>(a));
 end;
 
-{$endregion FillArraySegmentAutoSize}
+{$endregion FillArraySegment!AutoSize}
 
 {$region FillArraySegment}
 
@@ -18584,7 +19264,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var    mem_offset_qr: QueueRes<integer>;
       var fill_byte_len_qr: QueueRes<integer>;
@@ -18618,15 +19298,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       sb.Append(a);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18640,7 +19323,7 @@ end;
 
 {$endregion FillArraySegment}
 
-{$region FillDataAutoSize}
+{$region FillData!AutoSize}
 
 type
   CLMemorySegmentCommandFillDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -18662,7 +19345,7 @@ type
       pattern_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var              ptr_qr: QueueRes<IntPtr>;
       var pattern_byte_len_qr: QueueRes<integer>;
@@ -18696,11 +19379,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_byte_len: ';
+      sb += 'pattern_byte_len:';
+      sb += ' ';
       pattern_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18712,7 +19397,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandFillDataAutoSize(ptr, pattern_byte_len));
 end;
 
-{$endregion FillDataAutoSize}
+{$endregion FillData!AutoSize}
 
 {$region FillData}
 
@@ -18742,7 +19427,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var              ptr_qr: QueueRes<IntPtr>;
       var pattern_byte_len_qr: QueueRes<integer>;
@@ -18782,19 +19467,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_byte_len: ';
+      sb += 'pattern_byte_len:';
+      sb += ' ';
       pattern_byte_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -18808,14 +19497,14 @@ end;
 
 {$endregion FillData}
 
-{$region FillDataAutoSize}
+{$region FillData!AutoSize}
 
 function CLMemorySegmentCCQ.ThenFillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
 begin
   Result := ThenFillData(IntPtr(ptr), pattern_byte_len);
 end;
 
-{$endregion FillDataAutoSize}
+{$endregion FillData!AutoSize}
 
 {$region FillData}
 
@@ -18826,41 +19515,150 @@ end;
 
 {$endregion FillData}
 
-{$region FillDataAreaAutoSize}
+{$region FillNativeMemoryArea!AutoSize}
+
+function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+begin
+  Result := ThenFillNativeMemoryArea(CQ(native_data));
+end;
+
+{$endregion FillNativeMemoryArea!AutoSize}
+
+{$region FillNativeMemoryArea}
+
+function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := ThenFillNativeMemoryArea(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+{$endregion FillNativeMemoryArea}
+
+{$region FillNativeMemory!AutoSize}
+
+function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+begin
+  Result := ThenFillNativeMemory(CQ(native_data));
+end;
+
+{$endregion FillNativeMemory!AutoSize}
+
+{$region FillNativeMemory}
+
+function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := ThenFillNativeMemory(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+{$endregion FillNativeMemory}
+
+{$region FillNativeValueArea!AutoSize}
+
+function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeValueArea(CQ(native_data));
+end;
+
+{$endregion FillNativeValueArea!AutoSize}
+
+{$region FillNativeValueArea}
+
+function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeValueArea(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+{$endregion FillNativeValueArea}
+
+{$region FillNativeValue!AutoSize}
+
+function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeValue(CQ(native_data));
+end;
+
+{$endregion FillNativeValue!AutoSize}
+
+{$region FillNativeValue}
+
+function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeValue(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+{$endregion FillNativeValue}
+
+{$region FillNativeArrayArea!AutoSize}
+
+function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeArrayArea(CQ(native_data));
+end;
+
+{$endregion FillNativeArrayArea!AutoSize}
+
+{$region FillNativeArrayArea}
+
+function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeArrayArea(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+{$endregion FillNativeArrayArea}
+
+{$region FillNativeArray!AutoSize}
+
+function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeArray(CQ(native_data));
+end;
+
+{$endregion FillNativeArray!AutoSize}
+
+{$region FillNativeArray}
+
+function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := ThenFillNativeArray(CQ(native_data),mem_offset,fill_byte_len);
+end;
+
+{$endregion FillNativeArray}
+
+{$region FillNativeMemoryArea!AutoSize}
 
 type
-  CLMemorySegmentCommandFillDataAreaAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private data: CommandQueue<NativeMemoryArea>;
+  CLMemorySegmentCommandFillNativeMemoryAreaAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private native_data: CommandQueue<NativeMemoryArea>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(data: CommandQueue<NativeMemoryArea>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>);
     begin
-      self.data := data;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      data.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var data_qr: QueueRes<NativeMemoryArea>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var data := data_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          data.ptr, data.sz,
+          native_data.ptr,
+          native_data.sz,
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -18876,33 +19674,34 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillData(data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillDataAreaAutoSize(data));
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemoryAreaAutoSize(native_data));
 end;
 
-{$endregion FillDataAreaAutoSize}
+{$endregion FillNativeMemoryArea!AutoSize}
 
-{$region FillDataArea}
+{$region FillNativeMemoryArea}
 
 type
-  CLMemorySegmentCommandFillDataArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private          data: CommandQueue<NativeMemoryArea>;
+  CLMemorySegmentCommandFillNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private   native_data: CommandQueue<NativeMemoryArea>;
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 3;
     
-    public constructor(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
-      self.         data :=          data;
+      self.  native_data :=   native_data;
       self.   mem_offset :=    mem_offset;
       self.fill_byte_len := fill_byte_len;
     end;
@@ -18910,33 +19709,34 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-               data.InitBeforeInvoke(g, prev_hubs);
+        native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var          data_qr: QueueRes<NativeMemoryArea>;
+      var   native_data_qr: QueueRes<NativeMemoryArea>;
       var    mem_offset_qr: QueueRes<integer>;
       var fill_byte_len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                 data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(         data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
+          native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(  native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
            mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
         fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var          data :=          data_qr.GetResDirect;
+        var   native_data :=   native_data_qr.GetResDirect;
         var    mem_offset :=    mem_offset_qr.GetResDirect;
         var fill_byte_len := fill_byte_len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          data.ptr, data.sz,
+          native_data.ptr,
+          native_data.sz,
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -18952,86 +19752,67 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillData(data: CommandQueue<NativeMemoryArea>;mem_offset,fill_byte_len:CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillDataArea(data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
 end;
 
-{$endregion FillDataArea}
+{$endregion FillNativeMemoryArea}
 
-{$region FillNativeValueAutoSize}
-
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(val: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenFillNativeValue(CQ(val));
-end;
-
-{$endregion FillNativeValueAutoSize}
-
-{$region FillNativeValue}
-
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(val: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenFillNativeValue(CQ(val),mem_offset,fill_byte_len);
-end;
-
-{$endregion FillNativeValue}
-
-{$region FillNativeValueAutoSize}
+{$region FillNativeMemory!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-  where TRecord: record;
-    private val: CommandQueue<NativeValue<TRecord>>;
+  CLMemorySegmentCommandFillNativeMemoryAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private native_data: CommandQueue<NativeMemory>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    static constructor;
+    public constructor(native_data: CommandQueue<NativeMemory>);
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
-    end;
-    public constructor(val: CommandQueue<NativeValue<TRecord>>);
-    begin
-      self.val := val;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      val.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var val_qr: QueueRes<NativeValue<TRecord>>;
+      var native_data_qr: QueueRes<NativeMemory>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.MemoryArea.ptr, val.MemoryArea.sz,
+          native_data.Area.ptr,
+          native_data.Area.sz,
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -19047,26 +19828,350 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueAutoSize<TRecord>(val));
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemoryAutoSize(native_data));
 end;
 
-{$endregion FillNativeValueAutoSize}
+{$endregion FillNativeMemory!AutoSize}
+
+{$region FillNativeMemory}
+
+type
+  CLMemorySegmentCommandFillNativeMemory = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+    private   native_data: CommandQueue<NativeMemory>;
+    private    mem_offset: CommandQueue<integer>;
+    private fill_byte_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>);
+    begin
+      self.  native_data :=   native_data;
+      self.   mem_offset :=    mem_offset;
+      self.fill_byte_len := fill_byte_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+        native_data.InitBeforeInvoke(g, prev_hubs);
+         mem_offset.InitBeforeInvoke(g, prev_hubs);
+      fill_byte_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var   native_data_qr: QueueRes<NativeMemory>;
+      var    mem_offset_qr: QueueRes<integer>;
+      var fill_byte_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+          native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(  native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+           mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var   native_data :=   native_data_qr.GetResDirect;
+        var    mem_offset :=    mem_offset_qr.GetResDirect;
+        var fill_byte_len := fill_byte_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.ptr,
+          native_data.Area.sz,
+          new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_byte_len:';
+      sb += ' ';
+      fill_byte_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemory(native_data, mem_offset, fill_byte_len));
+end;
+
+{$endregion FillNativeMemory}
+
+{$region FillNativeValueArea!AutoSize}
+
+type
+  CLMemorySegmentCommandFillNativeValueAreaAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeValueArea<TRecord>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+    end;
+    public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<TRecord>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.ptr,
+          native_data.ByteSize,
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueAreaAutoSize<TRecord>(native_data));
+end;
+
+{$endregion FillNativeValueArea!AutoSize}
+
+{$region FillNativeValueArea}
+
+type
+  CLMemorySegmentCommandFillNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private   native_data: CommandQueue<NativeValueArea<TRecord>>;
+    private    mem_offset: CommandQueue<integer>;
+    private fill_byte_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+    end;
+    public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
+    begin
+      self.  native_data :=   native_data;
+      self.   mem_offset :=    mem_offset;
+      self.fill_byte_len := fill_byte_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+        native_data.InitBeforeInvoke(g, prev_hubs);
+         mem_offset.InitBeforeInvoke(g, prev_hubs);
+      fill_byte_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var   native_data_qr: QueueRes<NativeValueArea<TRecord>>;
+      var    mem_offset_qr: QueueRes<integer>;
+      var fill_byte_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+          native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<TRecord>>>(  native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+           mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var   native_data :=   native_data_qr.GetResDirect;
+        var    mem_offset :=    mem_offset_qr.GetResDirect;
+        var fill_byte_len := fill_byte_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.ptr,
+          native_data.ByteSize,
+          new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_byte_len:';
+      sb += ' ';
+      fill_byte_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueArea<TRecord>(native_data, mem_offset, fill_byte_len));
+end;
+
+{$endregion FillNativeValueArea}
+
+{$region FillNativeValue!AutoSize}
+
+type
+  CLMemorySegmentCommandFillNativeValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeValue<TRecord>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
+    public constructor(native_data: CommandQueue<NativeValue<TRecord>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValue<TRecord>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.ptr,
+          native_data.Area.ByteSize,
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueAutoSize<TRecord>(native_data));
+end;
+
+{$endregion FillNativeValue!AutoSize}
 
 {$region FillNativeValue}
 
 type
   CLMemorySegmentCommandFillNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private           val: CommandQueue<NativeValue<TRecord>>;
+    private   native_data: CommandQueue<NativeValue<TRecord>>;
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
@@ -19076,9 +20181,9 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
     end;
-    public constructor(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
-      self.          val :=           val;
+      self.  native_data :=   native_data;
       self.   mem_offset :=    mem_offset;
       self.fill_byte_len := fill_byte_len;
     end;
@@ -19086,33 +20191,34 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-                val.InitBeforeInvoke(g, prev_hubs);
+        native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var           val_qr: QueueRes<NativeValue<TRecord>>;
+      var   native_data_qr: QueueRes<NativeValue<TRecord>>;
       var    mem_offset_qr: QueueRes<integer>;
       var fill_byte_len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                  val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(          val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
+          native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<TRecord>>>(  native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
            mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
         fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var           val :=           val_qr.GetResDirect;
+        var   native_data :=   native_data_qr.GetResDirect;
         var    mem_offset :=    mem_offset_qr.GetResDirect;
         var fill_byte_len := fill_byte_len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.MemoryArea.ptr, val.MemoryArea.sz,
+          native_data.Area.ptr,
+          native_data.Area.ByteSize,
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -19128,86 +20234,72 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(val: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValue<TRecord>(val, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValue<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeValue}
 
-{$region FillNativeArrayAutoSize}
-
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(a: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenFillNativeArray(CQ(a));
-end;
-
-{$endregion FillNativeArrayAutoSize}
-
-{$region FillNativeArray}
-
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(a: NativeArray<TRecord>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-begin
-  Result := ThenFillNativeArray(CQ(a),a_ind,pattern_byte_len, mem_offset,fill_byte_len);
-end;
-
-{$endregion FillNativeArray}
-
-{$region FillNativeArrayAutoSize}
+{$region FillNativeArrayArea!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeArrayAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemorySegmentCommandFillNativeArrayAreaAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private a: CommandQueue<NativeArray<TRecord>>;
+    private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     
     public function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
     end;
-    public constructor(a: CommandQueue<NativeArray<TRecord>>);
+    public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>);
     begin
-      self.a := a;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      a.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var a_qr: QueueRes<NativeArray<TRecord>>;
+      var native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a.MemoryArea.ptr,a.MemoryArea.sz,
+          native_data.first_ptr,
+          native_data.ByteSize,
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -19223,84 +20315,74 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayAutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayAreaAutoSize<TRecord>(native_data));
 end;
 
-{$endregion FillNativeArrayAutoSize}
+{$endregion FillNativeArrayArea!AutoSize}
 
-{$region FillNativeArray}
+{$region FillNativeArrayArea}
 
 type
-  CLMemorySegmentCommandFillNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemorySegmentCommandFillNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private                a: CommandQueue<NativeArray<TRecord>>;
-    private            a_ind: CommandQueue<integer>;
-    private pattern_byte_len: CommandQueue<integer>;
-    private       mem_offset: CommandQueue<integer>;
-    private    fill_byte_len: CommandQueue<integer>;
+    private   native_data: CommandQueue<NativeArrayArea<TRecord>>;
+    private    mem_offset: CommandQueue<integer>;
+    private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 5;
+    public function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
     end;
-    public constructor(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
-      self.               a :=                a;
-      self.           a_ind :=            a_ind;
-      self.pattern_byte_len := pattern_byte_len;
-      self.      mem_offset :=       mem_offset;
-      self.   fill_byte_len :=    fill_byte_len;
+      self.  native_data :=   native_data;
+      self.   mem_offset :=    mem_offset;
+      self.fill_byte_len := fill_byte_len;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-                     a.InitBeforeInvoke(g, prev_hubs);
-                 a_ind.InitBeforeInvoke(g, prev_hubs);
-      pattern_byte_len.InitBeforeInvoke(g, prev_hubs);
-            mem_offset.InitBeforeInvoke(g, prev_hubs);
-         fill_byte_len.InitBeforeInvoke(g, prev_hubs);
+        native_data.InitBeforeInvoke(g, prev_hubs);
+         mem_offset.InitBeforeInvoke(g, prev_hubs);
+      fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
-      var                a_qr: QueueRes<NativeArray<TRecord>>;
-      var            a_ind_qr: QueueRes<integer>;
-      var pattern_byte_len_qr: QueueRes<integer>;
-      var       mem_offset_qr: QueueRes<integer>;
-      var    fill_byte_len_qr: QueueRes<integer>;
+      var   native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
+      var    mem_offset_qr: QueueRes<integer>;
+      var fill_byte_len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                       a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(               a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-                   a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(           a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
-        pattern_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_byte_len.InvokeToAny); if pattern_byte_len_qr.IsConst then enq_evs.AddL2(pattern_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(pattern_byte_len_qr.AttachInvokeActions(g));
-              mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(      mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
-           fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
+          native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<TRecord>>>(  native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+           mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var                a :=                a_qr.GetResDirect;
-        var            a_ind :=            a_ind_qr.GetResDirect;
-        var pattern_byte_len := pattern_byte_len_qr.GetResDirect;
-        var       mem_offset :=       mem_offset_qr.GetResDirect;
-        var    fill_byte_len :=    fill_byte_len_qr.GetResDirect;
+        var   native_data :=   native_data_qr.GetResDirect;
+        var    mem_offset :=    mem_offset_qr.GetResDirect;
+        var fill_byte_len := fill_byte_len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(a.ItemPtrUnchecked[a_ind]),new UIntPtr(pattern_byte_len),
+          native_data.first_ptr,
+          native_data.ByteSize,
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -19316,32 +20398,191 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
-      a_ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'pattern_byte_len: ';
-      pattern_byte_len.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_byte_len: ';
+      sb += 'fill_byte_len:';
+      sb += ' ';
       fill_byte_len.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(a: CommandQueue<NativeArray<TRecord>>; a_ind,pattern_byte_len, mem_offset,fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArray<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayArea<TRecord>(native_data, mem_offset, fill_byte_len));
+end;
+
+{$endregion FillNativeArrayArea}
+
+{$region FillNativeArray!AutoSize}
+
+type
+  CLMemorySegmentCommandFillNativeArrayAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private native_data: CommandQueue<NativeArray<TRecord>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
+    public constructor(native_data: CommandQueue<NativeArray<TRecord>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArray<TRecord>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.first_ptr,
+          native_data.Area.ByteSize,
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayAutoSize<TRecord>(native_data));
+end;
+
+{$endregion FillNativeArray!AutoSize}
+
+{$region FillNativeArray}
+
+type
+  CLMemorySegmentCommandFillNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  where TRecord: record;
+    private   native_data: CommandQueue<NativeArray<TRecord>>;
+    private    mem_offset: CommandQueue<integer>;
+    private fill_byte_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
+    public constructor(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
+    begin
+      self.  native_data :=   native_data;
+      self.   mem_offset :=    mem_offset;
+      self.fill_byte_len := fill_byte_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+        native_data.InitBeforeInvoke(g, prev_hubs);
+         mem_offset.InitBeforeInvoke(g, prev_hubs);
+      fill_byte_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    begin
+      var   native_data_qr: QueueRes<NativeArray<TRecord>>;
+      var    mem_offset_qr: QueueRes<integer>;
+      var fill_byte_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+          native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<TRecord>>>(  native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+           mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(   mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+        fill_byte_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_byte_len.InvokeToAny); if fill_byte_len_qr.IsConst then enq_evs.AddL2(fill_byte_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_byte_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var   native_data :=   native_data_qr.GetResDirect;
+        var    mem_offset :=    mem_offset_qr.GetResDirect;
+        var fill_byte_len := fill_byte_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.first_ptr,
+          native_data.Area.ByteSize,
+          new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_byte_len:';
+      sb += ' ';
+      fill_byte_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArray<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeArray}
@@ -19350,7 +20591,7 @@ end;
 
 {$region 3#Copy}
 
-{$region CopyToAutoSize}
+{$region CopyTo!AutoSize}
 
 type
   CLMemorySegmentCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -19369,7 +20610,7 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var mem_qr: QueueRes<CLMemorySegment>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -19400,7 +20641,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -19412,7 +20654,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandCopyToAutoSize(mem));
 end;
 
-{$endregion CopyToAutoSize}
+{$endregion CopyTo!AutoSize}
 
 {$region CopyTo}
 
@@ -19442,7 +20684,7 @@ type
               len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var         mem_qr: QueueRes<CLMemorySegment>;
       var from_offset_qr: QueueRes<integer>;
@@ -19482,19 +20724,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'from_offset: ';
+      sb += 'from_offset:';
+      sb += ' ';
       from_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'to_offset: ';
+      sb += 'to_offset:';
+      sb += ' ';
       to_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -19508,7 +20754,7 @@ end;
 
 {$endregion CopyTo}
 
-{$region CopyFromAutoSize}
+{$region CopyFrom!AutoSize}
 
 type
   CLMemorySegmentCommandCopyFromAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
@@ -19527,7 +20773,7 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var mem_qr: QueueRes<CLMemorySegment>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -19558,7 +20804,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -19570,7 +20817,7 @@ begin
   Result := AddCommand(self, new CLMemorySegmentCommandCopyFromAutoSize(mem));
 end;
 
-{$endregion CopyFromAutoSize}
+{$endregion CopyFrom!AutoSize}
 
 {$region CopyFrom}
 
@@ -19600,7 +20847,7 @@ type
               len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
     begin
       var         mem_qr: QueueRes<CLMemorySegment>;
       var from_offset_qr: QueueRes<integer>;
@@ -19640,19 +20887,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'from_offset: ';
+      sb += 'from_offset:';
+      sb += ' ';
       from_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'to_offset: ';
+      sb += 'to_offset:';
+      sb += ' ';
       to_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -19705,7 +20956,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -19713,7 +20964,7 @@ type
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var mem_offset := mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
@@ -19739,7 +20990,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -19753,7 +21005,7 @@ end;
 
 {$endregion GetValue}
 
-{$region GetArrayAutoSize}
+{$region GetArray!AutoSize}
 
 type
   CLMemorySegmentCommandGetArrayAutoSize<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array of TRecord>)
@@ -19773,10 +21025,10 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var res := new TRecord[o.Size64 div Marshal.SizeOf&<TRecord>];;
         own_qr.SetRes(res);
@@ -19809,7 +21061,7 @@ begin
   Result := new CLMemorySegmentCommandGetArrayAutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 end;
 
-{$endregion GetArrayAutoSize}
+{$endregion GetArray!AutoSize}
 
 {$region GetArray}
 
@@ -19837,7 +21089,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -19845,7 +21097,7 @@ type
         len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len := len_qr.GetResDirect;
         var res := new TRecord[len];
@@ -19875,7 +21127,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -19918,7 +21171,7 @@ type
       len2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array[,] of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -19928,7 +21181,7 @@ type
         len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -19959,11 +21212,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len1: ';
+      sb += 'len1:';
+      sb += ' ';
       len1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len2: ';
+      sb += 'len2:';
+      sb += ' ';
       len2.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20009,7 +21264,7 @@ type
       len3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array[,,] of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -20021,7 +21276,7 @@ type
         len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.InvokeToAny); if len3_qr.IsConst then enq_evs.AddL2(len3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len3_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -20053,15 +21308,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len1: ';
+      sb += 'len1:';
+      sb += ' ';
       len1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len2: ';
+      sb += 'len2:';
+      sb += ' ';
       len2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len3: ';
+      sb += 'len3:';
+      sb += ' ';
       len3.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20097,34 +21355,24 @@ begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
 end;
 
-function CLValue<T>.WriteData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+function CLValue<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data));
 end;
 
-function CLValue<T>.ReadData(ptr: CommandQueue<IntPtr>): CLValue<T>;
+function CLValue<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data));
 end;
 
-function CLValue<T>.WriteData(ptr: pointer): CLValue<T>;
+function CLValue<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
 begin
-  Result := WriteData(IntPtr(ptr));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data));
 end;
 
-function CLValue<T>.ReadData(ptr: pointer): CLValue<T>;
+function CLValue<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
 begin
-  Result := ReadData(IntPtr(ptr));
-end;
-
-function CLValue<T>.WriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
-begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(val));
-end;
-
-function CLValue<T>.ReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValue<T>;
-begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(val));
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data));
 end;
 
 {$endregion 1#Write&Read}
@@ -20202,7 +21450,7 @@ type
     begin
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -20227,7 +21475,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
     end;
@@ -20241,7 +21490,7 @@ end;
 
 {$endregion WriteValue}
 
-{$region WriteValueQ}
+{$region WriteValue!Q}
 
 type
   CLValueCommandWriteValueQ<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
@@ -20261,7 +21510,7 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
       var val_qr: QueueResPtr<&T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -20295,7 +21544,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20307,45 +21557,45 @@ begin
   Result := AddCommand(self, new CLValueCommandWriteValueQ<T>(val));
 end;
 
-{$endregion WriteValueQ}
+{$endregion WriteValue!Q}
 
-{$region WriteData}
+{$region WriteNativeValueArea}
 
 type
-  CLValueCommandWriteData<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
+  CLValueCommandWriteNativeValueArea<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private ptr: CommandQueue<IntPtr>;
+    private native_data: CommandQueue<NativeValueArea<&T>>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(ptr: CommandQueue<IntPtr>);
+    public constructor(native_data: CommandQueue<NativeValueArea<&T>>);
     begin
-      self.ptr := ptr;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      ptr.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var ptr_qr: QueueRes<IntPtr>;
+      var native_data_qr: QueueRes<NativeValueArea<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var ptr := ptr_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
-          ptr,
+          UIntPtr.Zero, native_data.ByteSize,
+          native_data.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -20360,140 +21610,58 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
-      ptr.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLValueCCQ<T>.ThenWriteData(ptr: CommandQueue<IntPtr>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValueCCQ<T>;
 begin
-  Result := AddCommand(self, new CLValueCommandWriteData<T>(ptr));
+  Result := AddCommand(self, new CLValueCommandWriteNativeValueArea<T>(native_data));
 end;
 
-{$endregion WriteData}
-
-{$region ReadData}
-
-type
-  CLValueCommandReadData<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
-  where T: record;
-    private ptr: CommandQueue<IntPtr>;
-    
-    public function EnqEvCapacity: integer; override := 1;
-    
-    public constructor(ptr: CommandQueue<IntPtr>);
-    begin
-      self.ptr := ptr;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      ptr.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var ptr_qr: QueueRes<IntPtr>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        ptr_qr := invoker.InvokeBranch&<QueueRes<IntPtr>>(ptr.InvokeToAny); if ptr_qr.IsConst then enq_evs.AddL2(ptr_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ptr_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var ptr := ptr_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
-          ptr,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'ptr: ';
-      ptr.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLValueCCQ<T>.ThenReadData(ptr: CommandQueue<IntPtr>): CLValueCCQ<T>;
-begin
-  Result := AddCommand(self, new CLValueCommandReadData<T>(ptr));
-end;
-
-{$endregion ReadData}
-
-{$region WriteData}
-
-function CLValueCCQ<T>.ThenWriteData(ptr: pointer): CLValueCCQ<T>;
-begin
-  Result := ThenWriteData(IntPtr(ptr));
-end;
-
-{$endregion WriteData}
-
-{$region ReadData}
-
-function CLValueCCQ<T>.ThenReadData(ptr: pointer): CLValueCCQ<T>;
-begin
-  Result := ThenReadData(IntPtr(ptr));
-end;
-
-{$endregion ReadData}
+{$endregion WriteNativeValueArea}
 
 {$region WriteNativeValue}
 
 type
   CLValueCommandWriteNativeValue<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private val: CommandQueue<NativeValue<&T>>;
+    private native_data: CommandQueue<NativeValue<&T>>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(val: CommandQueue<NativeValue<&T>>);
+    public constructor(native_data: CommandQueue<NativeValue<&T>>);
     begin
-      self.val := val;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      val.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var val_qr: QueueRes<NativeValue<&T>>;
+      var native_data_qr: QueueRes<NativeValue<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, val.MemoryArea.sz,
-          val.MemoryArea.ptr,
+          UIntPtr.Zero, native_data.Area.ByteSize,
+          native_data.Area.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -20508,57 +21676,124 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLValueCCQ<T>.ThenWriteNativeValue(val: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
 begin
-  Result := AddCommand(self, new CLValueCommandWriteNativeValue<T>(val));
+  Result := AddCommand(self, new CLValueCommandWriteNativeValue<T>(native_data));
 end;
 
 {$endregion WriteNativeValue}
+
+{$region ReadNativeValueArea}
+
+type
+  CLValueCommandReadNativeValueArea<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValueArea<&T>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(native_data: CommandQueue<NativeValueArea<&T>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<&T>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          UIntPtr.Zero, native_data.ByteSize,
+          native_data.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLValueCCQ<T>.ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValueCCQ<T>;
+begin
+  Result := AddCommand(self, new CLValueCommandReadNativeValueArea<T>(native_data));
+end;
+
+{$endregion ReadNativeValueArea}
 
 {$region ReadNativeValue}
 
 type
   CLValueCommandReadNativeValue<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private val: CommandQueue<NativeValue<&T>>;
+    private native_data: CommandQueue<NativeValue<&T>>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(val: CommandQueue<NativeValue<&T>>);
+    public constructor(native_data: CommandQueue<NativeValue<&T>>);
     begin
-      self.val := val;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      val.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var val_qr: QueueRes<NativeValue<&T>>;
+      var native_data_qr: QueueRes<NativeValue<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, val.MemoryArea.sz,
-          val.MemoryArea.ptr,
+          UIntPtr.Zero, native_data.Area.ByteSize,
+          native_data.Area.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -20573,16 +21808,17 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLValueCCQ<T>.ThenReadNativeValue(val: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValueCCQ<T>;
 begin
-  Result := AddCommand(self, new CLValueCommandReadNativeValue<T>(val));
+  Result := AddCommand(self, new CLValueCommandReadNativeValue<T>(native_data));
 end;
 
 {$endregion ReadNativeValue}
@@ -20591,23 +21827,23 @@ end;
 
 {$region 3#Copy}
 
-{$region CopyToCLMemorySegment}
+{$region CopyTo!CLMemorySegment}
 
 function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
 begin
   Result := ThenCopyTo(mem, 0);
 end;
 
-{$endregion CopyToCLMemorySegment}
+{$endregion CopyTo!CLMemorySegment}
 
-{$region CopyFromCLMemorySegment}
+{$region CopyFrom!CLMemorySegment}
 
 function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
 begin
   Result := ThenCopyFrom(mem, 0);
 end;
 
-{$endregion CopyFromCLMemorySegment}
+{$endregion CopyFrom!CLMemorySegment}
 
 {$region CopyTo}
 
@@ -20632,7 +21868,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
       var        mem_qr: QueueRes<CLMemorySegment>;
       var mem_offset_qr: QueueRes<integer>;
@@ -20666,11 +21902,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20707,7 +21945,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
       var        mem_qr: QueueRes<CLMemorySegment>;
       var mem_offset_qr: QueueRes<integer>;
@@ -20741,11 +21979,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20759,7 +21999,7 @@ end;
 
 {$endregion CopyFrom}
 
-{$region CopyToCLValue}
+{$region CopyTo!CLValue}
 
 type
   CLValueCommandCopyToCLValue<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
@@ -20779,7 +22019,7 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
       var val_qr: QueueRes<CLValue<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -20810,7 +22050,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20822,9 +22063,9 @@ begin
   Result := AddCommand(self, new CLValueCommandCopyToCLValue<T>(val));
 end;
 
-{$endregion CopyToCLValue}
+{$endregion CopyTo!CLValue}
 
-{$region CopyFromCLValue}
+{$region CopyFrom!CLValue}
 
 type
   CLValueCommandCopyFromCLValue<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
@@ -20844,7 +22085,7 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
       var val_qr: QueueRes<CLValue<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -20875,7 +22116,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -20887,7 +22129,7 @@ begin
   Result := AddCommand(self, new CLValueCommandCopyFromCLValue<T>(val));
 end;
 
-{$endregion CopyFromCLValue}
+{$endregion CopyFrom!CLValue}
 
 {$endregion 3#Copy}
 
@@ -20909,10 +22151,10 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLValue<T>, cl_command_queue, EventList, QueueRes<&T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): EnqFunc<CLValue<T>>; override;
     begin
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var res_ev: cl_event;
         
@@ -21085,44 +22327,124 @@ begin
   Result := ReadData(IntPtr(ptr), ind, len);
 end;
 
-function CLArray<T>.WriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(data, ind));
+  Result := WriteNativeMemoryArea(native_data, 0);
 end;
 
-function CLArray<T>.ReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(data, ind));
+  Result := WriteNativeMemory(native_data, 0);
 end;
 
-function CLArray<T>.WriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(val, ind));
+  Result := WriteNativeValueArea(native_data, 0);
 end;
 
-function CLArray<T>.ReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(val, ind));
+  Result := WriteNativeValue(native_data, 0);
 end;
 
-function CLArray<T>.WriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+function CLArray<T>.WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(a));
+  Result := WriteNativeArrayArea(native_data, 0);
 end;
 
-function CLArray<T>.WriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(a, ind, len, a_ind));
+  Result := WriteNativeArray(native_data, 0);
 end;
 
-function CLArray<T>.ReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+function CLArray<T>.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(a));
+  Result := ReadNativeMemoryArea(native_data, 0);
 end;
 
-function CLArray<T>.ReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(a, ind, len, a_ind));
+  Result := ReadNativeMemory(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeValueArea(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeValue(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeArrayArea(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeArray(native_data, 0);
+end;
+
+function CLArray<T>.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(native_data, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -21209,34 +22531,124 @@ begin
   Result := FillData(IntPtr(ptr), pattern_len, ind, fill_len);
 end;
 
-function CLArray<T>.FillData(data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+function CLArray<T>.FillNativeMemoryArea(native_data: NativeMemoryArea): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data));
+  Result := FillNativeMemoryArea(CQ(native_data));
 end;
 
-function CLArray<T>.FillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.FillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data, ind, fill_len));
+  Result := FillNativeMemoryArea(CQ(native_data),ind,fill_len);
 end;
 
-function CLArray<T>.FillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArray<T>;
+function CLArray<T>.FillNativeMemory(native_data: NativeMemory): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(val));
+  Result := FillNativeMemory(CQ(native_data));
 end;
 
-function CLArray<T>.FillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.FillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(val, ind, fill_len));
+  Result := FillNativeMemory(CQ(native_data),ind,fill_len);
 end;
 
-function CLArray<T>.FillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+function CLArray<T>.FillNativeValueArea(native_data: NativeValueArea<&T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(a));
+  Result := FillNativeValueArea(CQ(native_data));
 end;
 
-function CLArray<T>.FillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.FillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(a, a_ind, pattern_len, ind, fill_len));
+  Result := FillNativeValueArea(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeValue(native_data: NativeValue<&T>): CLArray<T>;
+begin
+  Result := FillNativeValue(CQ(native_data));
+end;
+
+function CLArray<T>.FillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := FillNativeValue(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArray<T>;
+begin
+  Result := FillNativeArrayArea(CQ(native_data));
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := FillNativeArrayArea(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeArray(native_data: NativeArray<&T>): CLArray<T>;
+begin
+  Result := FillNativeArray(CQ(native_data));
+end;
+
+function CLArray<T>.FillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := FillNativeArray(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
+end;
+
+function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
+end;
+
+function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data));
+end;
+
+function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data));
+end;
+
+function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data));
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data));
+end;
+
+function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data, ind, fill_len));
 end;
 
 {$endregion 2#Fill}
@@ -21357,7 +22769,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21388,11 +22800,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21406,7 +22820,7 @@ end;
 
 {$endregion WriteValue}
 
-{$region WriteValueQ}
+{$region WriteValue!Q}
 
 type
   CLArrayCommandWriteValueQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21429,7 +22843,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var val_qr: QueueResPtr<&T>;
       var ind_qr: QueueRes<integer>;
@@ -21466,11 +22880,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21482,9 +22898,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandWriteValueQ<T>(val, ind));
 end;
 
-{$endregion WriteValueQ}
+{$endregion WriteValue!Q}
 
-{$region WriteArrayAutoSize}
+{$region WriteArray!AutoSize}
 
 type
   CLArrayCommandWriteArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21504,7 +22920,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21541,7 +22957,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21553,9 +22970,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandWriteArrayAutoSize<T>(a));
 end;
 
-{$endregion WriteArrayAutoSize}
+{$endregion WriteArray!AutoSize}
 
-{$region WriteArray2AutoSize}
+{$region WriteArray2!AutoSize}
 
 type
   CLArrayCommandWriteArray2AutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21575,7 +22992,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,] of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21612,7 +23029,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21624,9 +23042,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandWriteArray2AutoSize<T>(a));
 end;
 
-{$endregion WriteArray2AutoSize}
+{$endregion WriteArray2!AutoSize}
 
-{$region WriteArray3AutoSize}
+{$region WriteArray3!AutoSize}
 
 type
   CLArrayCommandWriteArray3AutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21646,7 +23064,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,,] of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21683,7 +23101,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21695,9 +23114,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandWriteArray3AutoSize<T>(a));
 end;
 
-{$endregion WriteArray3AutoSize}
+{$endregion WriteArray3!AutoSize}
 
-{$region ReadArrayAutoSize}
+{$region ReadArray!AutoSize}
 
 type
   CLArrayCommandReadArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21717,7 +23136,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21754,7 +23173,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21766,9 +23186,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandReadArrayAutoSize<T>(a));
 end;
 
-{$endregion ReadArrayAutoSize}
+{$endregion ReadArray!AutoSize}
 
-{$region ReadArray2AutoSize}
+{$region ReadArray2!AutoSize}
 
 type
   CLArrayCommandReadArray2AutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21788,7 +23208,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,] of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21825,7 +23245,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21837,9 +23258,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandReadArray2AutoSize<T>(a));
 end;
 
-{$endregion ReadArray2AutoSize}
+{$endregion ReadArray2!AutoSize}
 
-{$region ReadArray3AutoSize}
+{$region ReadArray3!AutoSize}
 
 type
   CLArrayCommandReadArray3AutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -21859,7 +23280,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,,] of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21896,7 +23317,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -21908,7 +23330,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandReadArray3AutoSize<T>(a));
 end;
 
-{$endregion ReadArray3AutoSize}
+{$endregion ReadArray3!AutoSize}
 
 {$region WriteArray}
 
@@ -21939,7 +23361,7 @@ type
         ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var a_ind_qr: QueueRes<integer>;
@@ -21984,19 +23406,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
+      sb += 'a_ind:';
+      sb += ' ';
       a_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22042,7 +23468,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -22090,23 +23516,28 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22155,7 +23586,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -22206,27 +23637,33 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind3: ';
+      sb += 'a_ind3:';
+      sb += ' ';
       a_ind3.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22269,7 +23706,7 @@ type
         ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var a_ind_qr: QueueRes<integer>;
@@ -22314,19 +23751,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
+      sb += 'a_ind:';
+      sb += ' ';
       a_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22372,7 +23813,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -22420,23 +23861,28 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22485,7 +23931,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -22536,27 +23982,33 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind3: ';
+      sb += 'a_ind3:';
+      sb += ' ';
       a_ind3.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22611,7 +24063,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var   a_qr: QueueRes<ArraySegment<&T>>;
       var ind_qr: QueueRes<integer>;
@@ -22651,11 +24103,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22692,7 +24146,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var   a_qr: QueueRes<ArraySegment<&T>>;
       var ind_qr: QueueRes<integer>;
@@ -22732,11 +24186,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22750,7 +24206,7 @@ end;
 
 {$endregion ReadArraySegment}
 
-{$region WriteDataAutoSize}
+{$region WriteData!AutoSize}
 
 type
   CLArrayCommandWriteDataAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -22770,7 +24226,7 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -22802,7 +24258,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22814,7 +24271,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandWriteDataAutoSize<T>(ptr));
 end;
 
-{$endregion WriteDataAutoSize}
+{$endregion WriteData!AutoSize}
 
 {$region WriteData}
 
@@ -22842,7 +24299,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
@@ -22880,15 +24337,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22902,7 +24362,7 @@ end;
 
 {$endregion WriteData}
 
-{$region ReadDataAutoSize}
+{$region ReadData!AutoSize}
 
 type
   CLArrayCommandReadDataAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -22922,7 +24382,7 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -22954,7 +24414,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -22966,7 +24427,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandReadDataAutoSize<T>(ptr));
 end;
 
-{$endregion ReadDataAutoSize}
+{$endregion ReadData!AutoSize}
 
 {$region ReadData}
 
@@ -22994,7 +24455,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
@@ -23032,15 +24493,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -23054,14 +24518,14 @@ end;
 
 {$endregion ReadData}
 
-{$region WriteDataAutoSize}
+{$region WriteData!AutoSize}
 
 function CLArrayCCQ<T>.ThenWriteData(ptr: pointer): CLArrayCCQ<T>;
 begin
   Result := ThenWriteData(IntPtr(ptr));
 end;
 
-{$endregion WriteDataAutoSize}
+{$endregion WriteData!AutoSize}
 
 {$region WriteData}
 
@@ -23072,14 +24536,14 @@ end;
 
 {$endregion WriteData}
 
-{$region ReadDataAutoSize}
+{$region ReadData!AutoSize}
 
 function CLArrayCCQ<T>.ThenReadData(ptr: pointer): CLArrayCCQ<T>;
 begin
   Result := ThenReadData(IntPtr(ptr));
 end;
 
-{$endregion ReadDataAutoSize}
+{$endregion ReadData!AutoSize}
 
 {$region ReadData}
 
@@ -23090,49 +24554,157 @@ end;
 
 {$endregion ReadData}
 
-{$region WriteDataArea}
+{$region WriteNativeMemoryArea}
+
+function CLArrayCCQ<T>.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+begin
+  Result := ThenWriteNativeMemoryArea(native_data, 0);
+end;
+
+{$endregion WriteNativeMemoryArea}
+
+{$region WriteNativeMemory}
+
+function CLArrayCCQ<T>.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+begin
+  Result := ThenWriteNativeMemory(native_data, 0);
+end;
+
+{$endregion WriteNativeMemory}
+
+{$region WriteNativeValueArea}
+
+function CLArrayCCQ<T>.ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenWriteNativeValueArea(native_data, 0);
+end;
+
+{$endregion WriteNativeValueArea}
+
+{$region WriteNativeValue}
+
+function CLArrayCCQ<T>.ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenWriteNativeValue(native_data, 0);
+end;
+
+{$endregion WriteNativeValue}
+
+{$region WriteNativeArrayArea}
+
+function CLArrayCCQ<T>.ThenWriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenWriteNativeArrayArea(native_data, 0);
+end;
+
+{$endregion WriteNativeArrayArea}
+
+{$region WriteNativeArray}
+
+function CLArrayCCQ<T>.ThenWriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenWriteNativeArray(native_data, 0);
+end;
+
+{$endregion WriteNativeArray}
+
+{$region ReadNativeMemoryArea}
+
+function CLArrayCCQ<T>.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+begin
+  Result := ThenReadNativeMemoryArea(native_data, 0);
+end;
+
+{$endregion ReadNativeMemoryArea}
+
+{$region ReadNativeMemory}
+
+function CLArrayCCQ<T>.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+begin
+  Result := ThenReadNativeMemory(native_data, 0);
+end;
+
+{$endregion ReadNativeMemory}
+
+{$region ReadNativeValueArea}
+
+function CLArrayCCQ<T>.ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenReadNativeValueArea(native_data, 0);
+end;
+
+{$endregion ReadNativeValueArea}
+
+{$region ReadNativeValue}
+
+function CLArrayCCQ<T>.ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenReadNativeValue(native_data, 0);
+end;
+
+{$endregion ReadNativeValue}
+
+{$region ReadNativeArrayArea}
+
+function CLArrayCCQ<T>.ThenReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenReadNativeArrayArea(native_data, 0);
+end;
+
+{$endregion ReadNativeArrayArea}
+
+{$region ReadNativeArray}
+
+function CLArrayCCQ<T>.ThenReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+begin
+  Result := ThenReadNativeArray(native_data, 0);
+end;
+
+{$endregion ReadNativeArray}
+
+{$region WriteNativeMemoryArea}
 
 type
-  CLArrayCommandWriteDataArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteNativeMemoryArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private data: CommandQueue<NativeMemoryArea>;
-    private  ind: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeMemoryArea>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
     begin
-      self.data := data;
-      self. ind :=  ind;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      data.InitBeforeInvoke(g, prev_hubs);
-       ind.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var data_qr: QueueRes<NativeMemoryArea>;
-      var  ind_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
-         ind_qr := invoker.InvokeBranch&<QueueRes<integer>>( ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var data := data_qr.GetResDirect;
-        var  ind :=  ind_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), data.sz,
-          data.ptr,
+          new UIntPtr(mem_offset), native_data.sz,
+          native_data.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23147,67 +24719,69 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenWriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandWriteDataArea<T>(data, ind));
+  Result := AddCommand(self, new CLArrayCommandWriteNativeMemoryArea<T>(native_data, mem_offset));
 end;
 
-{$endregion WriteDataArea}
+{$endregion WriteNativeMemoryArea}
 
-{$region ReadDataArea}
+{$region WriteNativeMemory}
 
 type
-  CLArrayCommandReadDataArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteNativeMemory<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private data: CommandQueue<NativeMemoryArea>;
-    private  ind: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeMemory>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>);
     begin
-      self.data := data;
-      self. ind :=  ind;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      data.InitBeforeInvoke(g, prev_hubs);
-       ind.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var data_qr: QueueRes<NativeMemoryArea>;
-      var  ind_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeMemory>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
-         ind_qr := invoker.InvokeBranch&<QueueRes<integer>>( ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var data := data_qr.GetResDirect;
-        var  ind :=  ind_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
-        var ec := cl.EnqueueReadBuffer(
+        var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), data.sz,
-          data.ptr,
+          new UIntPtr(mem_offset), native_data.Area.sz,
+          native_data.Area.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23222,67 +24796,146 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandReadDataArea<T>(data, ind));
+  Result := AddCommand(self, new CLArrayCommandWriteNativeMemory<T>(native_data, mem_offset));
 end;
 
-{$endregion ReadDataArea}
+{$endregion WriteNativeMemory}
+
+{$region WriteNativeValueArea}
+
+type
+  CLArrayCommandWriteNativeValueArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValueArea<&T>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueWriteBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandWriteNativeValueArea<T>(native_data, mem_offset));
+end;
+
+{$endregion WriteNativeValueArea}
 
 {$region WriteNativeValue}
 
 type
   CLArrayCommandWriteNativeValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private val: CommandQueue<NativeValue<&T>>;
-    private ind: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeValue<&T>>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>);
     begin
-      self.val := val;
-      self.ind := ind;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      val.InitBeforeInvoke(g, prev_hubs);
-      ind.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var val_qr: QueueRes<NativeValue<&T>>;
-      var ind_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeValue<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResDirect;
-        var ind := ind_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), val.MemoryArea.sz,
-          val.MemoryArea.ptr,
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23297,137 +24950,69 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenWriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandWriteNativeValue<T>(val, ind));
+  Result := AddCommand(self, new CLArrayCommandWriteNativeValue<T>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeValue}
 
-{$region ReadNativeValue}
+{$region WriteNativeArrayArea}
 
 type
-  CLArrayCommandReadNativeValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandWriteNativeArrayArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private val: CommandQueue<NativeValue<&T>>;
-    private ind: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeArrayArea<&T>>;
+    private  mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>);
     begin
-      self.val := val;
-      self.ind := ind;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      val.InitBeforeInvoke(g, prev_hubs);
-      ind.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var val_qr: QueueRes<NativeValue<&T>>;
-      var ind_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeArrayArea<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResDirect;
-        var ind := ind_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), val.MemoryArea.sz,
-          val.MemoryArea.ptr,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLArrayCCQ<T>.ThenReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
-begin
-  Result := AddCommand(self, new CLArrayCommandReadNativeValue<T>(val, ind));
-end;
-
-{$endregion ReadNativeValue}
-
-{$region WriteNativeArrayAutoSize}
-
-type
-  CLArrayCommandWriteNativeArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
-  where T: record;
-    private a: CommandQueue<NativeArray<&T>>;
-    
-    public function EnqEvCapacity: integer; override := 1;
-    
-    public constructor(a: CommandQueue<NativeArray<&T>>);
-    begin
-      self.a := a;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      a.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var a_qr: QueueRes<NativeArray<&T>>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var a := a_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero,
-          a.MemoryArea.sz,
-          a.MemoryArea.ptr,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.first_ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23442,76 +25027,69 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenWriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandWriteNativeArrayAutoSize<T>(a));
+  Result := AddCommand(self, new CLArrayCommandWriteNativeArrayArea<T>(native_data, mem_offset));
 end;
 
-{$endregion WriteNativeArrayAutoSize}
+{$endregion WriteNativeArrayArea}
 
 {$region WriteNativeArray}
 
 type
   CLArrayCommandWriteNativeArray<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private     a: CommandQueue<NativeArray<&T>>;
-    private   ind: CommandQueue<integer>;
-    private   len: CommandQueue<integer>;
-    private a_ind: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeArray<&T>>;
+    private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>);
     begin
-      self.    a :=     a;
-      self.  ind :=   ind;
-      self.  len :=   len;
-      self.a_ind := a_ind;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-          a.InitBeforeInvoke(g, prev_hubs);
-        ind.InitBeforeInvoke(g, prev_hubs);
-        len.InitBeforeInvoke(g, prev_hubs);
-      a_ind.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var     a_qr: QueueRes<NativeArray<&T>>;
-      var   ind_qr: QueueRes<integer>;
-      var   len_qr: QueueRes<integer>;
-      var a_ind_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeArray<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(    a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
-          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
-        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var     a :=     a_qr.GetResDirect;
-        var   ind :=   ind_qr.GetResDirect;
-        var   len :=   len_qr.GetResDirect;
-        var a_ind := a_ind_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>),
-          new UIntPtr(len * Marshal.SizeOf&<T>),
-          new IntPtr( a.ItemPtrUnchecked[a_ind] ),
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23526,70 +25104,69 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'len: ';
-      len.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'a_ind: ';
-      a_ind.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenWriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenWriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandWriteNativeArray<T>(a, ind, len, a_ind));
+  Result := AddCommand(self, new CLArrayCommandWriteNativeArray<T>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeArray}
 
-{$region ReadNativeArrayAutoSize}
+{$region ReadNativeMemoryArea}
 
 type
-  CLArrayCommandReadNativeArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandReadNativeMemoryArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private a: CommandQueue<NativeArray<&T>>;
+    private native_data: CommandQueue<NativeMemoryArea>;
+    private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(a: CommandQueue<NativeArray<&T>>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
     begin
-      self.a := a;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      a.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var a_qr: QueueRes<NativeArray<&T>>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero,
-          a.MemoryArea.sz,
-          a.MemoryArea.ptr,
+          new UIntPtr(mem_offset), native_data.sz,
+          native_data.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23604,76 +25181,377 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandReadNativeArrayAutoSize<T>(a));
+  Result := AddCommand(self, new CLArrayCommandReadNativeMemoryArea<T>(native_data, mem_offset));
 end;
 
-{$endregion ReadNativeArrayAutoSize}
+{$endregion ReadNativeMemoryArea}
+
+{$region ReadNativeMemory}
+
+type
+  CLArrayCommandReadNativeMemory<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeMemory>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeMemory>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.Area.sz,
+          native_data.Area.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadNativeMemory<T>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeMemory}
+
+{$region ReadNativeValueArea}
+
+type
+  CLArrayCommandReadNativeValueArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValueArea<&T>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadNativeValueArea<T>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeValueArea}
+
+{$region ReadNativeValue}
+
+type
+  CLArrayCommandReadNativeValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValue<&T>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValue<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadNativeValue<T>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeValue}
+
+{$region ReadNativeArrayArea}
+
+type
+  CLArrayCommandReadNativeArrayArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeArrayArea<&T>>;
+    private  mem_offset: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 2;
+    
+    public constructor(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArrayArea<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueReadBuffer(
+          cq, o.Native, Bool.NON_BLOCKING,
+          new UIntPtr(mem_offset), native_data.ByteSize,
+          native_data.first_ptr,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandReadNativeArrayArea<T>(native_data, mem_offset));
+end;
+
+{$endregion ReadNativeArrayArea}
 
 {$region ReadNativeArray}
 
 type
   CLArrayCommandReadNativeArray<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private     a: CommandQueue<NativeArray<&T>>;
-    private   ind: CommandQueue<integer>;
-    private   len: CommandQueue<integer>;
-    private a_ind: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeArray<&T>>;
+    private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>);
     begin
-      self.    a :=     a;
-      self.  ind :=   ind;
-      self.  len :=   len;
-      self.a_ind := a_ind;
+      self.native_data := native_data;
+      self. mem_offset :=  mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-          a.InitBeforeInvoke(g, prev_hubs);
-        ind.InitBeforeInvoke(g, prev_hubs);
-        len.InitBeforeInvoke(g, prev_hubs);
-      a_ind.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
+       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var     a_qr: QueueRes<NativeArray<&T>>;
-      var   ind_qr: QueueRes<integer>;
-      var   len_qr: QueueRes<integer>;
-      var a_ind_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeArray<&T>>;
+      var  mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-            a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(    a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-          ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(  ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
-          len_qr := invoker.InvokeBranch&<QueueRes<integer>>(  len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
-        a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>( mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var     a :=     a_qr.GetResDirect;
-        var   ind :=   ind_qr.GetResDirect;
-        var   len :=   len_qr.GetResDirect;
-        var a_ind := a_ind_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
+        var  mem_offset :=  mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>),
-          new UIntPtr(len * Marshal.SizeOf&<T>),
-          new IntPtr( a.ItemPtrUnchecked[a_ind] ),
+          new UIntPtr(mem_offset), native_data.Area.ByteSize,
+          native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -23688,28 +25566,22 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'len: ';
-      len.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'a_ind: ';
-      a_ind.ToString(sb, tabs, index, delayed, false);
+      sb += 'mem_offset:';
+      sb += ' ';
+      mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandReadNativeArray<T>(a, ind, len, a_ind));
+  Result := AddCommand(self, new CLArrayCommandReadNativeArray<T>(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeArray}
@@ -23718,7 +25590,7 @@ end;
 
 {$region 2#Fill}
 
-{$region FillValueAutoSize}
+{$region FillValue!AutoSize}
 
 type
   CLArrayCommandFillValueAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -23742,7 +25614,7 @@ type
     begin
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -23767,7 +25639,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
     end;
@@ -23779,9 +25652,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillValueAutoSize<T>(val));
 end;
 
-{$endregion FillValueAutoSize}
+{$endregion FillValue!AutoSize}
 
-{$region FillValueAutoSizeQ}
+{$region FillValue!AutoSizeQ}
 
 type
   CLArrayCommandFillValueAutoSizeQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -23801,7 +25674,7 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var val_qr: QueueResPtr<&T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -23835,7 +25708,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -23847,7 +25721,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillValueAutoSizeQ<T>(val));
 end;
 
-{$endregion FillValueAutoSizeQ}
+{$endregion FillValue!AutoSizeQ}
 
 {$region FillValue}
 
@@ -23879,7 +25753,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
@@ -23913,15 +25787,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       sb.Append(val^);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -23935,7 +25812,7 @@ end;
 
 {$endregion FillValue}
 
-{$region FillValueQ}
+{$region FillValue!Q}
 
 type
   CLArrayCommandFillValueQ<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -23961,7 +25838,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var val_qr: QueueResPtr<&T>;
       var ind_qr: QueueRes<integer>;
@@ -24001,15 +25878,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24021,9 +25901,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillValueQ<T>(val, ind, len));
 end;
 
-{$endregion FillValueQ}
+{$endregion FillValue!Q}
 
-{$region FillArrayAutoSize}
+{$region FillArray!AutoSize}
 
 type
   CLArrayCommandFillArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -24043,7 +25923,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -24079,7 +25959,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24091,9 +25972,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillArrayAutoSize<T>(a));
 end;
 
-{$endregion FillArrayAutoSize}
+{$endregion FillArray!AutoSize}
 
-{$region FillArray2AutoSize}
+{$region FillArray2!AutoSize}
 
 type
   CLArrayCommandFillArray2AutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -24113,7 +25994,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,] of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -24149,7 +26030,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24161,9 +26043,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillArray2AutoSize<T>(a));
 end;
 
-{$endregion FillArray2AutoSize}
+{$endregion FillArray2!AutoSize}
 
-{$region FillArray3AutoSize}
+{$region FillArray3!AutoSize}
 
 type
   CLArrayCommandFillArray3AutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -24183,7 +26065,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,,] of &T>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -24219,7 +26101,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24231,7 +26114,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillArray3AutoSize<T>(a));
 end;
 
-{$endregion FillArray3AutoSize}
+{$endregion FillArray3!AutoSize}
 
 {$region FillArray}
 
@@ -24265,7 +26148,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var           a_qr: QueueRes<array of &T>;
       var       a_ind_qr: QueueRes<integer>;
@@ -24313,23 +26196,28 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
+      sb += 'a_ind:';
+      sb += ' ';
       a_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_len: ';
+      sb += 'pattern_len:';
+      sb += ' ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_len: ';
+      sb += 'fill_len:';
+      sb += ' ';
       fill_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24378,7 +26266,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var           a_qr: QueueRes<array[,] of &T>;
       var      a_ind1_qr: QueueRes<integer>;
@@ -24429,27 +26317,33 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_len: ';
+      sb += 'pattern_len:';
+      sb += ' ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_len: ';
+      sb += 'fill_len:';
+      sb += ' ';
       fill_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24501,7 +26395,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var           a_qr: QueueRes<array[,,] of &T>;
       var      a_ind1_qr: QueueRes<integer>;
@@ -24555,31 +26449,38 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind1: ';
+      sb += 'a_ind1:';
+      sb += ' ';
       a_ind1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind2: ';
+      sb += 'a_ind2:';
+      sb += ' ';
       a_ind2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind3: ';
+      sb += 'a_ind3:';
+      sb += ' ';
       a_ind3.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_len: ';
+      sb += 'pattern_len:';
+      sb += ' ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_len: ';
+      sb += 'fill_len:';
+      sb += ' ';
       fill_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24593,7 +26494,7 @@ end;
 
 {$endregion FillArray3}
 
-{$region FillArraySegmentAutoSize}
+{$region FillArraySegment!AutoSize}
 
 type
   CLArrayCommandFillArraySegmentAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -24613,7 +26514,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<ArraySegment<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -24649,7 +26550,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24661,7 +26563,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillArraySegmentAutoSize<T>(a));
 end;
 
-{$endregion FillArraySegmentAutoSize}
+{$endregion FillArraySegment!AutoSize}
 
 {$region FillArraySegment}
 
@@ -24689,7 +26591,7 @@ type
       fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var        a_qr: QueueRes<ArraySegment<&T>>;
       var      ind_qr: QueueRes<integer>;
@@ -24731,15 +26633,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_len: ';
+      sb += 'fill_len:';
+      sb += ' ';
       fill_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24753,7 +26658,7 @@ end;
 
 {$endregion FillArraySegment}
 
-{$region FillDataAutoSize}
+{$region FillData!AutoSize}
 
 type
   CLArrayCommandFillDataAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -24776,7 +26681,7 @@ type
       pattern_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
@@ -24810,11 +26715,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_len: ';
+      sb += 'pattern_len:';
+      sb += ' ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24826,7 +26733,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandFillDataAutoSize<T>(ptr, pattern_len));
 end;
 
-{$endregion FillDataAutoSize}
+{$endregion FillData!AutoSize}
 
 {$region FillData}
 
@@ -24857,7 +26764,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
@@ -24897,19 +26804,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ptr: ';
+      sb += 'ptr:';
+      sb += ' ';
       ptr.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'pattern_len: ';
+      sb += 'pattern_len:';
+      sb += ' ';
       pattern_len.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_len: ';
+      sb += 'fill_len:';
+      sb += ' ';
       fill_len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -24923,14 +26834,14 @@ end;
 
 {$endregion FillData}
 
-{$region FillDataAutoSize}
+{$region FillData!AutoSize}
 
 function CLArrayCCQ<T>.ThenFillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
   Result := ThenFillData(IntPtr(ptr), pattern_len);
 end;
 
-{$endregion FillDataAutoSize}
+{$endregion FillData!AutoSize}
 
 {$region FillData}
 
@@ -24941,342 +26852,151 @@ end;
 
 {$endregion FillData}
 
-{$region FillDataAreaAutoSize}
+{$region FillNativeMemoryArea!AutoSize}
 
-type
-  CLArrayCommandFillDataAreaAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
-  where T: record;
-    private data: CommandQueue<NativeMemoryArea>;
-    
-    public function EnqEvCapacity: integer; override := 1;
-    
-    public constructor(data: CommandQueue<NativeMemoryArea>);
-    begin
-      self.data := data;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      data.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var data_qr: QueueRes<NativeMemoryArea>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var data := data_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          data.ptr, data.sz,
-          UIntPtr.Zero, new UIntPtr(o.ByteSize),
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLArrayCCQ<T>.ThenFillData(data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandFillDataAreaAutoSize<T>(data));
+  Result := ThenFillNativeMemoryArea(CQ(native_data));
 end;
 
-{$endregion FillDataAreaAutoSize}
+{$endregion FillNativeMemoryArea!AutoSize}
 
-{$region FillDataArea}
+{$region FillNativeMemoryArea}
 
-type
-  CLArrayCommandFillDataArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
-  where T: record;
-    private     data: CommandQueue<NativeMemoryArea>;
-    private      ind: CommandQueue<integer>;
-    private fill_len: CommandQueue<integer>;
-    
-    public function EnqEvCapacity: integer; override := 3;
-    
-    public constructor(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>);
-    begin
-      self.    data :=     data;
-      self.     ind :=      ind;
-      self.fill_len := fill_len;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-          data.InitBeforeInvoke(g, prev_hubs);
-           ind.InitBeforeInvoke(g, prev_hubs);
-      fill_len.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var     data_qr: QueueRes<NativeMemoryArea>;
-      var      ind_qr: QueueRes<integer>;
-      var fill_len_qr: QueueRes<integer>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-            data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(    data.InvokeToAny); if data_qr.IsConst then enq_evs.AddL2(data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(data_qr.AttachInvokeActions(g));
-             ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(     ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
-        fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var     data :=     data_qr.GetResDirect;
-        var      ind :=      ind_qr.GetResDirect;
-        var fill_len := fill_len_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          data.ptr, data.sz,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'data: ';
-      data.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'fill_len: ';
-      fill_len.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLArrayCCQ<T>.ThenFillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandFillDataArea<T>(data, ind, fill_len));
+  Result := ThenFillNativeMemoryArea(CQ(native_data),ind,fill_len);
 end;
 
-{$endregion FillDataArea}
+{$endregion FillNativeMemoryArea}
 
-{$region FillNativeValueAutoSize}
+{$region FillNativeMemory!AutoSize}
 
-type
-  CLArrayCommandFillNativeValueAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
-  where T: record;
-    private val: CommandQueue<NativeValue<&T>>;
-    
-    public function EnqEvCapacity: integer; override := 1;
-    
-    public constructor(val: CommandQueue<NativeValue<&T>>);
-    begin
-      self.val := val;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-      val.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var val_qr: QueueRes<NativeValue<&T>>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var val := val_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          val.MemoryArea.ptr, val.MemoryArea.sz,
-          UIntPtr.Zero, new UIntPtr(o.ByteSize),
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLArrayCCQ<T>.ThenFillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillNativeMemory(native_data: NativeMemory): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandFillNativeValueAutoSize<T>(val));
+  Result := ThenFillNativeMemory(CQ(native_data));
 end;
 
-{$endregion FillNativeValueAutoSize}
+{$endregion FillNativeMemory!AutoSize}
+
+{$region FillNativeMemory}
+
+function CLArrayCCQ<T>.ThenFillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeMemory(CQ(native_data),ind,fill_len);
+end;
+
+{$endregion FillNativeMemory}
+
+{$region FillNativeValueArea!AutoSize}
+
+function CLArrayCCQ<T>.ThenFillNativeValueArea(native_data: NativeValueArea<&T>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeValueArea(CQ(native_data));
+end;
+
+{$endregion FillNativeValueArea!AutoSize}
+
+{$region FillNativeValueArea}
+
+function CLArrayCCQ<T>.ThenFillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeValueArea(CQ(native_data),ind,fill_len);
+end;
+
+{$endregion FillNativeValueArea}
+
+{$region FillNativeValue!AutoSize}
+
+function CLArrayCCQ<T>.ThenFillNativeValue(native_data: NativeValue<&T>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeValue(CQ(native_data));
+end;
+
+{$endregion FillNativeValue!AutoSize}
 
 {$region FillNativeValue}
 
-type
-  CLArrayCommandFillNativeValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
-  where T: record;
-    private      val: CommandQueue<NativeValue<&T>>;
-    private      ind: CommandQueue<integer>;
-    private fill_len: CommandQueue<integer>;
-    
-    public function EnqEvCapacity: integer; override := 3;
-    
-    public constructor(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>);
-    begin
-      self.     val :=      val;
-      self.     ind :=      ind;
-      self.fill_len := fill_len;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
-    begin
-           val.InitBeforeInvoke(g, prev_hubs);
-           ind.InitBeforeInvoke(g, prev_hubs);
-      fill_len.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
-    begin
-      var      val_qr: QueueRes<NativeValue<&T>>;
-      var      ind_qr: QueueRes<integer>;
-      var fill_len_qr: QueueRes<integer>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-             val_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(     val.InvokeToAny); if val_qr.IsConst then enq_evs.AddL2(val_qr.AttachInvokeActions(g)) else enq_evs.AddL1(val_qr.AttachInvokeActions(g));
-             ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(     ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
-        fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
-      end);
-      
-      Result := (o, cq, evs)->
-      begin
-        var      val :=      val_qr.GetResDirect;
-        var      ind :=      ind_qr.GetResDirect;
-        var fill_len := fill_len_qr.GetResDirect;
-        var res_ev: cl_event;
-        
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          val.MemoryArea.ptr, val.MemoryArea.sz,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, nil);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'val: ';
-      val.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'ind: ';
-      ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'fill_len: ';
-      fill_len.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLArrayCCQ<T>.ThenFillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandFillNativeValue<T>(val, ind, fill_len));
+  Result := ThenFillNativeValue(CQ(native_data),ind,fill_len);
 end;
 
 {$endregion FillNativeValue}
 
-{$region FillNativeArrayAutoSize}
+{$region FillNativeArrayArea!AutoSize}
+
+function CLArrayCCQ<T>.ThenFillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeArrayArea(CQ(native_data));
+end;
+
+{$endregion FillNativeArrayArea!AutoSize}
+
+{$region FillNativeArrayArea}
+
+function CLArrayCCQ<T>.ThenFillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeArrayArea(CQ(native_data),ind,fill_len);
+end;
+
+{$endregion FillNativeArrayArea}
+
+{$region FillNativeArray!AutoSize}
+
+function CLArrayCCQ<T>.ThenFillNativeArray(native_data: NativeArray<&T>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeArray(CQ(native_data));
+end;
+
+{$endregion FillNativeArray!AutoSize}
+
+{$region FillNativeArray}
+
+function CLArrayCCQ<T>.ThenFillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := ThenFillNativeArray(CQ(native_data),ind,fill_len);
+end;
+
+{$endregion FillNativeArray}
+
+{$region FillNativeMemoryArea!AutoSize}
 
 type
-  CLArrayCommandFillNativeArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandFillNativeMemoryAreaAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private a: CommandQueue<NativeArray<&T>>;
+    private native_data: CommandQueue<NativeMemoryArea>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(a: CommandQueue<NativeArray<&T>>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>);
     begin
-      self.a := a;
+      self.native_data := native_data;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-      a.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var a_qr: QueueRes<NativeArray<&T>>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var a := a_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a.MemoryArea.ptr,a.MemoryArea.sz,
+          native_data.ptr,
+          native_data.sz,
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -25292,38 +27012,35 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenFillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandFillNativeArrayAutoSize<T>(a));
+  Result := AddCommand(self, new CLArrayCommandFillNativeMemoryAreaAutoSize<T>(native_data));
 end;
 
-{$endregion FillNativeArrayAutoSize}
+{$endregion FillNativeMemoryArea!AutoSize}
 
-{$region FillNativeArray}
+{$region FillNativeMemoryArea}
 
 type
-  CLArrayCommandFillNativeArray<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandFillNativeMemoryArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private           a: CommandQueue<NativeArray<&T>>;
-    private       a_ind: CommandQueue<integer>;
-    private pattern_len: CommandQueue<integer>;
+    private native_data: CommandQueue<NativeMemoryArea>;
     private         ind: CommandQueue<integer>;
     private    fill_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 5;
+    public function EnqEvCapacity: integer; override := 3;
     
-    public constructor(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>);
+    public constructor(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>);
     begin
-      self.          a :=           a;
-      self.      a_ind :=       a_ind;
-      self.pattern_len := pattern_len;
+      self.native_data := native_data;
       self.        ind :=         ind;
       self.   fill_len :=    fill_len;
     end;
@@ -25331,41 +27048,34 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
     begin
-                a.InitBeforeInvoke(g, prev_hubs);
-            a_ind.InitBeforeInvoke(g, prev_hubs);
-      pattern_len.InitBeforeInvoke(g, prev_hubs);
+      native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var           a_qr: QueueRes<NativeArray<&T>>;
-      var       a_ind_qr: QueueRes<integer>;
-      var pattern_len_qr: QueueRes<integer>;
+      var native_data_qr: QueueRes<NativeMemoryArea>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                  a_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(          a.InvokeToAny); if a_qr.IsConst then enq_evs.AddL2(a_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_qr.AttachInvokeActions(g));
-              a_ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(      a_ind.InvokeToAny); if a_ind_qr.IsConst then enq_evs.AddL2(a_ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(a_ind_qr.AttachInvokeActions(g));
-        pattern_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(pattern_len.InvokeToAny); if pattern_len_qr.IsConst then enq_evs.AddL2(pattern_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(pattern_len_qr.AttachInvokeActions(g));
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemoryArea>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
                 ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
            fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
       begin
-        var           a :=           a_qr.GetResDirect;
-        var       a_ind :=       a_ind_qr.GetResDirect;
-        var pattern_len := pattern_len_qr.GetResDirect;
+        var native_data := native_data_qr.GetResDirect;
         var         ind :=         ind_qr.GetResDirect;
         var    fill_len :=    fill_len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(a.ItemPtrUnchecked[a_ind]),new UIntPtr(pattern_len*Marshal.SizeOf&<T>),
+          native_data.ptr,
+          native_data.sz,
           new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
           evs.count, evs.evs, res_ev
         );
@@ -25381,32 +27091,807 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
-      a.ToString(sb, tabs, index, delayed, false);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'a_ind: ';
-      a_ind.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'pattern_len: ';
-      pattern_len.ToString(sb, tabs, index, delayed, false);
-      
-      sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'fill_len: ';
+      sb += 'fill_len:';
+      sb += ' ';
       fill_len.ToString(sb, tabs, index, delayed, false);
       
     end;
     
   end;
   
-function CLArrayCCQ<T>.ThenFillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandFillNativeArray<T>(a, a_ind, pattern_len, ind, fill_len));
+  Result := AddCommand(self, new CLArrayCommandFillNativeMemoryArea<T>(native_data, ind, fill_len));
+end;
+
+{$endregion FillNativeMemoryArea}
+
+{$region FillNativeMemory!AutoSize}
+
+type
+  CLArrayCommandFillNativeMemoryAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeMemory>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(native_data: CommandQueue<NativeMemory>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeMemory>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.ptr,
+          native_data.Area.sz,
+          UIntPtr.Zero, new UIntPtr(o.ByteSize),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeMemoryAutoSize<T>(native_data));
+end;
+
+{$endregion FillNativeMemory!AutoSize}
+
+{$region FillNativeMemory}
+
+type
+  CLArrayCommandFillNativeMemory<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeMemory>;
+    private         ind: CommandQueue<integer>;
+    private    fill_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self.        ind :=         ind;
+      self.   fill_len :=    fill_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+         fill_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeMemory>;
+      var         ind_qr: QueueRes<integer>;
+      var    fill_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeMemory>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+           fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var    fill_len :=    fill_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.ptr,
+          native_data.Area.sz,
+          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind:';
+      sb += ' ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_len:';
+      sb += ' ';
+      fill_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeMemory<T>(native_data, ind, fill_len));
+end;
+
+{$endregion FillNativeMemory}
+
+{$region FillNativeValueArea!AutoSize}
+
+type
+  CLArrayCommandFillNativeValueAreaAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValueArea<&T>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(native_data: CommandQueue<NativeValueArea<&T>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<&T>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.ptr,
+          native_data.ByteSize,
+          UIntPtr.Zero, new UIntPtr(o.ByteSize),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeValueAreaAutoSize<T>(native_data));
+end;
+
+{$endregion FillNativeValueArea!AutoSize}
+
+{$region FillNativeValueArea}
+
+type
+  CLArrayCommandFillNativeValueArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValueArea<&T>>;
+    private         ind: CommandQueue<integer>;
+    private    fill_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self.        ind :=         ind;
+      self.   fill_len :=    fill_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+         fill_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValueArea<&T>>;
+      var         ind_qr: QueueRes<integer>;
+      var    fill_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValueArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+           fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var    fill_len :=    fill_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.ptr,
+          native_data.ByteSize,
+          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind:';
+      sb += ' ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_len:';
+      sb += ' ';
+      fill_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeValueArea<T>(native_data, ind, fill_len));
+end;
+
+{$endregion FillNativeValueArea}
+
+{$region FillNativeValue!AutoSize}
+
+type
+  CLArrayCommandFillNativeValueAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValue<&T>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(native_data: CommandQueue<NativeValue<&T>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValue<&T>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.ptr,
+          native_data.Area.ByteSize,
+          UIntPtr.Zero, new UIntPtr(o.ByteSize),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeValueAutoSize<T>(native_data));
+end;
+
+{$endregion FillNativeValue!AutoSize}
+
+{$region FillNativeValue}
+
+type
+  CLArrayCommandFillNativeValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeValue<&T>>;
+    private         ind: CommandQueue<integer>;
+    private    fill_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self.        ind :=         ind;
+      self.   fill_len :=    fill_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+         fill_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeValue<&T>>;
+      var         ind_qr: QueueRes<integer>;
+      var    fill_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeValue<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+           fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var    fill_len :=    fill_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.ptr,
+          native_data.Area.ByteSize,
+          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind:';
+      sb += ' ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_len:';
+      sb += ' ';
+      fill_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeValue<T>(native_data, ind, fill_len));
+end;
+
+{$endregion FillNativeValue}
+
+{$region FillNativeArrayArea!AutoSize}
+
+type
+  CLArrayCommandFillNativeArrayAreaAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeArrayArea<&T>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(native_data: CommandQueue<NativeArrayArea<&T>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArrayArea<&T>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.first_ptr,
+          native_data.ByteSize,
+          UIntPtr.Zero, new UIntPtr(o.ByteSize),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeArrayAreaAutoSize<T>(native_data));
+end;
+
+{$endregion FillNativeArrayArea!AutoSize}
+
+{$region FillNativeArrayArea}
+
+type
+  CLArrayCommandFillNativeArrayArea<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeArrayArea<&T>>;
+    private         ind: CommandQueue<integer>;
+    private    fill_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self.        ind :=         ind;
+      self.   fill_len :=    fill_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+         fill_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArrayArea<&T>>;
+      var         ind_qr: QueueRes<integer>;
+      var    fill_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArrayArea<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+           fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var    fill_len :=    fill_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.first_ptr,
+          native_data.ByteSize,
+          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind:';
+      sb += ' ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_len:';
+      sb += ' ';
+      fill_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeArrayArea<T>(native_data, ind, fill_len));
+end;
+
+{$endregion FillNativeArrayArea}
+
+{$region FillNativeArray!AutoSize}
+
+type
+  CLArrayCommandFillNativeArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeArray<&T>>;
+    
+    public function EnqEvCapacity: integer; override := 1;
+    
+    public constructor(native_data: CommandQueue<NativeArray<&T>>);
+    begin
+      self.native_data := native_data;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArray<&T>>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.first_ptr,
+          native_data.Area.ByteSize,
+          UIntPtr.Zero, new UIntPtr(o.ByteSize),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeArrayAutoSize<T>(native_data));
+end;
+
+{$endregion FillNativeArray!AutoSize}
+
+{$region FillNativeArray}
+
+type
+  CLArrayCommandFillNativeArray<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  where T: record;
+    private native_data: CommandQueue<NativeArray<&T>>;
+    private         ind: CommandQueue<integer>;
+    private    fill_len: CommandQueue<integer>;
+    
+    public function EnqEvCapacity: integer; override := 3;
+    
+    public constructor(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>);
+    begin
+      self.native_data := native_data;
+      self.        ind :=         ind;
+      self.   fill_len :=    fill_len;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    begin
+      native_data.InitBeforeInvoke(g, prev_hubs);
+              ind.InitBeforeInvoke(g, prev_hubs);
+         fill_len.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
+    begin
+      var native_data_qr: QueueRes<NativeArray<&T>>;
+      var         ind_qr: QueueRes<integer>;
+      var    fill_len_qr: QueueRes<integer>;
+      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
+      begin
+        native_data_qr := invoker.InvokeBranch&<QueueRes<NativeArray<&T>>>(native_data.InvokeToAny); if native_data_qr.IsConst then enq_evs.AddL2(native_data_qr.AttachInvokeActions(g)) else enq_evs.AddL1(native_data_qr.AttachInvokeActions(g));
+                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(        ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
+           fill_len_qr := invoker.InvokeBranch&<QueueRes<integer>>(   fill_len.InvokeToAny); if fill_len_qr.IsConst then enq_evs.AddL2(fill_len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(fill_len_qr.AttachInvokeActions(g));
+      end);
+      
+      Result := (o, cq, evs)->
+      begin
+        var native_data := native_data_qr.GetResDirect;
+        var         ind :=         ind_qr.GetResDirect;
+        var    fill_len :=    fill_len_qr.GetResDirect;
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          native_data.Area.first_ptr,
+          native_data.Area.ByteSize,
+          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, nil);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'native_data:';
+      sb += ' ';
+      native_data.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'ind:';
+      sb += ' ';
+      ind.ToString(sb, tabs, index, delayed, false);
+      
+      sb.Append(#9, tabs);
+      sb += 'fill_len:';
+      sb += ' ';
+      fill_len.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLArrayCCQ<T>.ThenFillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+begin
+  Result := AddCommand(self, new CLArrayCommandFillNativeArray<T>(native_data, ind, fill_len));
 end;
 
 {$endregion FillNativeArray}
@@ -25415,7 +27900,7 @@ end;
 
 {$region 3#Copy}
 
-{$region CopyToCLMemorySegmentAutoSize}
+{$region CopyTo!CLMemorySegmentAutoSize}
 
 type
   CLArrayCommandCopyToCLMemorySegmentAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25435,7 +27920,7 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var mem_qr: QueueRes<CLMemorySegment>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -25468,7 +27953,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25480,9 +27966,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyToCLMemorySegmentAutoSize<T>(mem));
 end;
 
-{$endregion CopyToCLMemorySegmentAutoSize}
+{$endregion CopyTo!CLMemorySegmentAutoSize}
 
-{$region CopyToCLMemorySegment}
+{$region CopyTo!CLMemorySegment}
 
 type
   CLArrayCommandCopyToCLMemorySegment<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25511,7 +27997,7 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var        mem_qr: QueueRes<CLMemorySegment>;
       var mem_offset_qr: QueueRes<integer>;
@@ -25553,19 +28039,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25577,9 +28067,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyToCLMemorySegment<T>(mem, mem_offset, ind, len));
 end;
 
-{$endregion CopyToCLMemorySegment}
+{$endregion CopyTo!CLMemorySegment}
 
-{$region CopyFromCLMemorySegmentAutoSize}
+{$region CopyFrom!CLMemorySegmentAutoSize}
 
 type
   CLArrayCommandCopyFromCLMemorySegmentAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25599,7 +28089,7 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var mem_qr: QueueRes<CLMemorySegment>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -25632,7 +28122,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25644,9 +28135,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyFromCLMemorySegmentAutoSize<T>(mem));
 end;
 
-{$endregion CopyFromCLMemorySegmentAutoSize}
+{$endregion CopyFrom!CLMemorySegmentAutoSize}
 
-{$region CopyFromCLMemorySegment}
+{$region CopyFrom!CLMemorySegment}
 
 type
   CLArrayCommandCopyFromCLMemorySegment<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25675,7 +28166,7 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var        mem_qr: QueueRes<CLMemorySegment>;
       var mem_offset_qr: QueueRes<integer>;
@@ -25717,19 +28208,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem: ';
+      sb += 'mem:';
+      sb += ' ';
       mem.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25741,9 +28236,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyFromCLMemorySegment<T>(mem, mem_offset, ind, len));
 end;
 
-{$endregion CopyFromCLMemorySegment}
+{$endregion CopyFrom!CLMemorySegment}
 
-{$region CopyToCLValue}
+{$region CopyTo!CLValue}
 
 type
   CLArrayCommandCopyToCLValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25766,7 +28261,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var val_qr: QueueRes<CLValue<&T>>;
       var ind_qr: QueueRes<integer>;
@@ -25800,11 +28295,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25816,9 +28313,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyToCLValue<T>(val, ind));
 end;
 
-{$endregion CopyToCLValue}
+{$endregion CopyTo!CLValue}
 
-{$region CopyFromCLValue}
+{$region CopyFrom!CLValue}
 
 type
   CLArrayCommandCopyFromCLValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25841,7 +28338,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var val_qr: QueueRes<CLValue<&T>>;
       var ind_qr: QueueRes<integer>;
@@ -25875,11 +28372,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'val: ';
+      sb += 'val:';
+      sb += ' ';
       val.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25891,9 +28390,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyFromCLValue<T>(val, ind));
 end;
 
-{$endregion CopyFromCLValue}
+{$endregion CopyFrom!CLValue}
 
-{$region CopyToCLArrayAutoSize}
+{$region CopyTo!CLArrayAutoSize}
 
 type
   CLArrayCommandCopyToCLArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25913,7 +28412,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<CLArray<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -25944,7 +28443,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -25956,9 +28456,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyToCLArrayAutoSize<T>(a));
 end;
 
-{$endregion CopyToCLArrayAutoSize}
+{$endregion CopyTo!CLArrayAutoSize}
 
-{$region CopyToCLArray}
+{$region CopyTo!CLArray}
 
 type
   CLArrayCommandCopyToCLArray<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -25987,7 +28487,7 @@ type
            len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var        a_qr: QueueRes<CLArray<&T>>;
       var from_ind_qr: QueueRes<integer>;
@@ -26027,19 +28527,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'from_ind: ';
+      sb += 'from_ind:';
+      sb += ' ';
       from_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'to_ind: ';
+      sb += 'to_ind:';
+      sb += ' ';
       to_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26051,9 +28555,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyToCLArray<T>(a, from_ind, to_ind, len));
 end;
 
-{$endregion CopyToCLArray}
+{$endregion CopyTo!CLArray}
 
-{$region CopyFromCLArrayAutoSize}
+{$region CopyFrom!CLArrayAutoSize}
 
 type
   CLArrayCommandCopyFromCLArrayAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -26073,7 +28577,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<CLArray<&T>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -26104,7 +28608,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26116,9 +28621,9 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyFromCLArrayAutoSize<T>(a));
 end;
 
-{$endregion CopyFromCLArrayAutoSize}
+{$endregion CopyFrom!CLArrayAutoSize}
 
-{$region CopyFromCLArray}
+{$region CopyFrom!CLArray}
 
 type
   CLArrayCommandCopyFromCLArray<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
@@ -26147,7 +28652,7 @@ type
            len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
       var        a_qr: QueueRes<CLArray<&T>>;
       var from_ind_qr: QueueRes<integer>;
@@ -26187,19 +28692,23 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'a: ';
+      sb += 'a:';
+      sb += ' ';
       a.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'from_ind: ';
+      sb += 'from_ind:';
+      sb += ' ';
       from_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'to_ind: ';
+      sb += 'to_ind:';
+      sb += ' ';
       to_ind.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26211,7 +28720,7 @@ begin
   Result := AddCommand(self, new CLArrayCommandCopyFromCLArray<T>(a, from_ind, to_ind, len));
 end;
 
-{$endregion CopyFromCLArray}
+{$endregion CopyFrom!CLArray}
 
 {$endregion 3#Copy}
 
@@ -26239,7 +28748,7 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<&T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): EnqFunc<CLArray<T>>; override;
     begin
       var ind_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -26247,7 +28756,7 @@ type
         ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
@@ -26273,7 +28782,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'ind: ';
+      sb += 'ind:';
+      sb += ' ';
       ind.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26287,7 +28797,7 @@ end;
 
 {$endregion GetValue}
 
-{$region GetArrayAutoSize}
+{$region GetArray!AutoSize}
 
 type
   CLArrayCommandGetArrayAutoSize<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
@@ -26303,10 +28813,10 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array of &T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): EnqFunc<CLArray<T>>; override;
     begin
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var res := new T[o.Length];
         own_qr.SetRes(res);
@@ -26339,7 +28849,7 @@ begin
   Result := new CLArrayCommandGetArrayAutoSize<T>(self) as CommandQueue<array of &T>;
 end;
 
-{$endregion GetArrayAutoSize}
+{$endregion GetArray!AutoSize}
 
 {$region GetArray}
 
@@ -26363,7 +28873,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array of &T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): EnqFunc<CLArray<T>>; override;
     begin
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -26371,7 +28881,7 @@ type
         len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len := len_qr.GetResDirect;
         var res := new &T[len];
@@ -26401,7 +28911,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26440,7 +28951,7 @@ type
       len2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array[,] of &T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of &T>): EnqFunc<CLArray<T>>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -26450,7 +28961,7 @@ type
         len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -26481,11 +28992,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len1: ';
+      sb += 'len1:';
+      sb += ' ';
       len1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len2: ';
+      sb += 'len2:';
+      sb += ' ';
       len2.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26527,7 +29040,7 @@ type
       len3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLArray<T>, cl_command_queue, EventList, QueueRes<array[,,] of &T>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of &T>): EnqFunc<CLArray<T>>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -26539,7 +29052,7 @@ type
         len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.InvokeToAny); if len3_qr.IsConst then enq_evs.AddL2(len3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len3_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -26571,15 +29084,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len1: ';
+      sb += 'len1:';
+      sb += ' ';
       len1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len2: ';
+      sb += 'len2:';
+      sb += ' ';
       len2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len3: ';
+      sb += 'len3:';
+      sb += ' ';
       len3.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -26677,7 +29193,7 @@ type
       Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(
         UserEvent.StartBackgroundWork(l.prev_ev,
           make_body(l.prev_delegate, g.c, g.curr_err_handler, qr),
-          g.cl_c{$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+          g.cl_c{$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
         )
       ));
     end;
@@ -26735,7 +29251,7 @@ type
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
     new QueueResNil(new CLTaskLocalData(UserEvent.StartBackgroundWork(
       l.prev_ev, MakeBody(l.prev_delegate, g.curr_err_handler, g.c),
-      g.cl_c{$ifdef EventDebug}, $'body of {self.GetType}'{$endif}
+      g.cl_c{$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
     )));
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := data.ToString(sb);

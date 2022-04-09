@@ -1,0 +1,44 @@
+﻿    
+    
+    
+    public static function FromBytes(bytes: CommandQueue<UIntPtr>): KernelArgLocal;
+    public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    
+    public static function FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
+    public static function FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+    
+    public static function LikeArray<T>(a: CommandQueue<array of T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeArray<T>(a: array of T): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeArray2<T>(a: CommandQueue<array[,] of T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeArray2<T>(a: array[,] of T): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeArray3<T>(a: array[,,] of T): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeNativeArray<T>(a: NativeArray<T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    public static function LikeCLArray<T>(a: CLArray<T>): KernelArgLocal; where T: record;
+    begin Result := FromItemCount&<T>(a.Length) end;
+    
+    
+    

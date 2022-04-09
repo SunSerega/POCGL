@@ -38,7 +38,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -46,7 +46,7 @@ type
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var mem_offset := mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
@@ -72,7 +72,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'mem_offset: ';
+      sb += 'mem_offset:';
+      sb += ' ';
       mem_offset.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -86,7 +87,7 @@ end;
 
 {$endregion GetValue}
 
-{$region GetArrayAutoSize}
+{$region GetArray!AutoSize}
 
 type
   CLMemorySegmentCommandGetArrayAutoSize<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array of TRecord>)
@@ -106,10 +107,10 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var res := new TRecord[o.Size64 div Marshal.SizeOf&<TRecord>];;
         own_qr.SetRes(res);
@@ -142,7 +143,7 @@ begin
   Result := new CLMemorySegmentCommandGetArrayAutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 end;
 
-{$endregion GetArrayAutoSize}
+{$endregion GetArray!AutoSize}
 
 {$region GetArray}
 
@@ -170,7 +171,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -178,7 +179,7 @@ type
         len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len := len_qr.GetResDirect;
         var res := new TRecord[len];
@@ -208,7 +209,8 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len: ';
+      sb += 'len:';
+      sb += ' ';
       len.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -251,7 +253,7 @@ type
       len2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array[,] of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -261,7 +263,7 @@ type
         len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -292,11 +294,13 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len1: ';
+      sb += 'len1:';
+      sb += ' ';
       len1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len2: ';
+      sb += 'len2:';
+      sb += ' ';
       len2.ToString(sb, tabs, index, delayed, false);
       
     end;
@@ -342,7 +346,7 @@ type
       len3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (CLMemorySegment, cl_command_queue, EventList, QueueRes<array[,,] of TRecord>)->DirectEnqRes; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of TRecord>): EnqFunc<CLMemorySegment>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -354,7 +358,7 @@ type
         len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.InvokeToAny); if len3_qr.IsConst then enq_evs.AddL2(len3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len3_qr.AttachInvokeActions(g));
       end);
       
-      Result := (o, cq, evs, own_qr)->
+      Result := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -386,15 +390,18 @@ type
       sb += #10;
       
       sb.Append(#9, tabs);
-      sb += 'len1: ';
+      sb += 'len1:';
+      sb += ' ';
       len1.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len2: ';
+      sb += 'len2:';
+      sb += ' ';
       len2.ToString(sb, tabs, index, delayed, false);
       
       sb.Append(#9, tabs);
-      sb += 'len3: ';
+      sb += 'len3:';
+      sb += ' ';
       len3.ToString(sb, tabs, index, delayed, false);
       
     end;

@@ -72,14 +72,6 @@ type
     
   end;
   
-  MethodArgTypeKernelArg = sealed class(MethodArgType)
-    
-    public function Enmr: sequence of MethodArgType; override := new MethodArgType[](self);
-    
-    public constructor(s: string) := org_text := s;
-    
-  end;
-  
   MethodArgTypeGeneric = sealed class(MethodArgType)
     public name: string;
     public next: MethodArgType;
@@ -123,16 +115,12 @@ begin
     Result := new MethodArgTypeCQ(s) else
   if '<' in s then
     Result := new MethodArgTypeGeneric(s) else
-  if s = 'KernelArg' then
-    Result := new MethodArgTypeKernelArg(s) else
     Result := new MethodArgTypeBasic(s);
   
 end;
 
 function IsCQ(self: MethodArgType): boolean; extensionmethod :=
 self.Enmr.OfType&<MethodArgTypeCQ>.Any;
-function IsKA(self: MethodArgType): boolean; extensionmethod :=
-self.Enmr.Last is MethodArgTypeKernelArg;
 
 function ArrLvl(self: MethodArgType): integer; extensionmethod :=
 self.Enmr.TakeWhile(at->at is MethodArgTypeArray).Count;
@@ -237,7 +225,7 @@ type
   MethodSettings = abstract class
     
     public args_str: string := nil;
-    public args: array of MethodArg := nil;
+    public args: List<MethodArg> := nil;
     public arg_usage := new Dictionary<string, string>;
     
     public impl_args: List<string> := nil;
@@ -264,7 +252,7 @@ type
         args_str := setting_lns.Single;
         impl_args_str := args_str;
         
-        args := MethodArg.AllFromString(args_str).ToArray;
+        args := MethodArg.AllFromString(args_str).ToList;
         impl_args := args.ConvertAll(arg->arg.name).ToList;
       end;
       
@@ -412,12 +400,6 @@ type
       
       self.res := res_I * res_E;
       
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    public procedure Open;
-    begin
-      
       loop 3 do
       begin
         res_In += '    ';
@@ -425,6 +407,7 @@ type
       end;
       
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     public procedure Close;
     begin
@@ -439,19 +422,33 @@ type
     {$endregion Global}
     
     protected procedure WriteInvokeHeader(settings: TSettings); abstract;
-    protected procedure WriteInvokeFHeader; abstract;
     protected procedure AddGCHandleArgs(args_keep_alive: List<string>; args_with_pinn: List<(string,string)>; settings: TSettings); virtual := exit;
-    protected procedure WriteResInit(wr: Writer; settings: TSettings); virtual := exit;
+    
+    protected function GetSpecialInvokeResVars(settings: TSettings): sequence of MethodArg; virtual := new MethodArg[0];
+    protected procedure WriteBasicInvokeRes(wr: Writer; arg: MethodArg; settings: TSettings); virtual := raise new System.InvalidOperationException;
+    protected procedure WriteBasicArgInvoke(wr: Writer; arg: MethodArg; settings: TSettings); virtual := raise new System.InvalidOperationException;
+    protected procedure WriteSpecialPreEnq(wr: Writer; settings: TSettings); virtual := exit;
+    protected procedure WriteSpecialPostEnq(wr: Writer; settings: TSettings); virtual := exit;
     
     private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
     begin
       if settings.args=nil then exit;
-      var useful_args := settings.args.Where(arg->settings.arg_usage.ContainsKey(arg.name) and (arg.t.IsCQ or arg.t.IsKA)).ToArray;
+      //TODO #2654
+      var useful_args :=
+        settings.args.Where(arg->(settings as MethodSettings).arg_usage.ContainsKey(arg.name) and arg.t.IsCQ)
+        .Concat(GetSpecialInvokeResVars(settings))
+      .ToArray;
       if useful_args.Length=0 then exit;
       
       foreach var arg in useful_args do
       begin
         res_EIm += '      var ';
+        if arg.t is MethodArgTypeBasic then
+        begin
+          WriteBasicInvokeRes(res_EIm, arg, settings);
+          res_EIm += ';'#10;
+          continue;
+        end;
         res_EIm += arg.name.PadLeft(max_arg_w);
         res_EIm += '_qr: ';
         
@@ -473,14 +470,11 @@ type
             break;
         
         res_EIm += 'QueueRes';
-        if arg.t.IsKA then
-          res_EIm += 'Val' else
-        if settings.arg_usage[arg.name]='ptr' then
+        //TODO #2654
+        if (settings as MethodSettings).arg_usage[arg.name]='ptr' then
           res_EIm += 'Ptr';
         res_EIm += '<';
-        if arg.t.IsKA then
-          res_EIm += 'ISetableKernelArg' else
-          res_EIm += MethodArgTypeCQ(t).next.org_text;
+        res_EIm += MethodArgTypeCQ(t).next.org_text;
         res_EIm += '>;'#10;
         
       end;
@@ -491,79 +485,82 @@ type
       
       foreach var arg in useful_args do
       begin
-        var local_ptr_need := if arg.t.IsKA then nil else settings.arg_usage[arg.name]='ptr';
+        //TODO #2654
+        var local_ptr_need := (settings as MethodSettings).arg_usage[arg.name]='ptr';
         
         res_EIm += '        ';
-        res_EIm += arg.name.PadLeft(max_arg_w);
-        res_EIm += '_qr := ';
         
-        var arg_name := arg.name;
-        for var i := 1 to arg.t.ArrLvl do
+        if arg.t is MethodArgTypeBasic then
+          WriteBasicArgInvoke(res_EIm, arg, settings) else
         begin
-          var n_arg_name := $'temp{i}';
+          res_EIm += arg.name.PadLeft(max_arg_w);
+          res_EIm += '_qr := ';
           
-          res_EIm += arg_name;
-          res_EIm += '.ConvertAll(';
-          res_EIm += n_arg_name;
-          res_EIm += '->';
+          var arg_name := arg.name;
+          for var i := 1 to arg.t.ArrLvl do
+          begin
+            var n_arg_name := $'temp{i}';
+            
+            res_EIm += arg_name;
+            res_EIm += '.ConvertAll(';
+            res_EIm += n_arg_name;
+            res_EIm += '->';
+            
+            arg_name := n_arg_name;
+          end;
           
-          arg_name := n_arg_name;
-        end;
-        
-        if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
-        
-        res_EIm += 'invoker.InvokeBranch';
-        //TODO #2564
-        begin
-          res_EIm += '&<QueueRes';
-          if arg.t.IsKA then
-            res_EIm += 'Val' else
-          if local_ptr_need.Value then
-            res_EIm += 'Ptr';
-          res_EIm += '<';
-          if arg.t.IsKA then
-            res_EIm += 'ISetableKernelArg' else
+          if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
+          
+          res_EIm += 'invoker.InvokeBranch';
+          //TODO #2564
+          begin
+            res_EIm += '&<QueueRes';
+            if local_ptr_need then
+              res_EIm += 'Ptr';
+            res_EIm += '<';
             res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
-          res_EIm += '>>';
-        end;
-        res_EIm += '(';
-        
-        var WriteQRName := procedure->
-        if arg.t is MethodArgTypeArray then
-          res_EIm += 'Result' else
-        begin
-          res_EIm += arg.name;
-          res_EIm += '_qr';
-        end;
-        
-        //TODO вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
-        res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
-        
-        res_EIm += '.Invoke';
-        if local_ptr_need<>nil then
-          res_EIm += if local_ptr_need.Value then 'ToPtr' else 'ToAny';
-        
-        res_EIm += '); ';
-        if settings.arg_usage[arg.name]<>'ptr' then
-        begin
-          res_EIm += 'if ';
-          WriteQRName;
-          res_EIm += '.IsConst then ';
-        end;
-        res_EIm += 'enq_evs.AddL2(';
-        WriteQRName;
-        res_EIm += '.AttachInvokeActions(g))';
-        if settings.arg_usage[arg.name]<>'ptr' then
-        begin
-          res_EIm += ' else enq_evs.AddL1(';
+            res_EIm += '>>';
+          end;
+          res_EIm += '(';
+          
+          var WriteQRName := procedure->
+          if arg.t is MethodArgTypeArray then
+            res_EIm += 'Result' else
+          begin
+            res_EIm += arg.name;
+            res_EIm += '_qr';
+          end;
+          
+          //TODO вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
+          res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
+          
+          res_EIm += '.Invoke';
+          res_EIm += if local_ptr_need then 'ToPtr' else 'ToAny';
+          
+          res_EIm += '); ';
+          //TODO #2654
+          if (settings as MethodSettings).arg_usage[arg.name]<>'ptr' then
+          begin
+            res_EIm += 'if ';
+            WriteQRName;
+            res_EIm += '.IsConst then ';
+          end;
+          res_EIm += 'enq_evs.AddL2(';
           WriteQRName;
           res_EIm += '.AttachInvokeActions(g))';
+          //TODO #2654
+          if (settings as MethodSettings).arg_usage[arg.name]<>'ptr' then
+          begin
+            res_EIm += ' else enq_evs.AddL1(';
+            WriteQRName;
+            res_EIm += '.AttachInvokeActions(g))';
+          end;
+          
+          if arg.t is MethodArgTypeArray then res_EIm += '; end';
+          loop arg.t.ArrLvl do res_EIm += ')';
         end;
         
-        if arg.t is MethodArgTypeArray then res_EIm += '; end';
-        loop arg.t.ArrLvl do res_EIm += ')';
         res_EIm += ';'#10;
-        
       end;
       
       res_EIm += '      end);'#10;
@@ -583,8 +580,7 @@ type
       
       res_EIm += '      '#10;
       
-      res_EIm += '      Result := ';
-      WriteInvokeFHeader;
+      res_EIm += '      Result := (o, cq, evs)->'#10;
       res_EIm += '      begin'#10;
       
       {$region param .GetRes's}
@@ -595,7 +591,7 @@ type
         foreach var arg in settings.args do
           if settings.arg_usage.ContainsKey(arg.name) then
           begin
-            if not arg.t.IsCQ and not arg.t.IsKA then continue;
+            if not arg.t.IsCQ then continue;
             
             res_EIm += '        var ';
             res_EIm += arg.name.PadLeft(max_arg_w);
@@ -646,7 +642,7 @@ type
       
       {$endregion param .GetRes's}
       
-      WriteResInit(res_EIm, settings);
+      WriteSpecialPreEnq(res_EIm, settings);
       
       {$region GCHandle for arrays}
       
@@ -678,6 +674,8 @@ type
         res_EIm += #10;
       end;
       res_EIm += '        '#10;
+      
+      WriteSpecialPostEnq(res_EIm, settings);
       
       res_EIm += '        Result := new DirectEnqRes(res_ev, ';
       
@@ -728,6 +726,18 @@ type
     protected procedure WriteCommandBaseTypeName(t: string; settings: TSettings); abstract;
     protected procedure WriteCommandTypeInhConstructor; virtual := exit;
     protected function GetInitBeforeInvokeExtra: string; virtual := nil;
+    protected procedure WriteBasicValueToString(wr: Writer; tab, vname: string; stored_as_ptr: boolean); virtual;
+    begin
+      res_EIm += tab;
+      res_EIm += 'sb += '' '';'#10;
+      
+      res_EIm += tab;
+      res_EIm += 'sb.Append(';
+      res_EIm += vname;
+      if stored_as_ptr then
+        res_EIm += '^';
+      res_EIm += ');'#10;
+    end;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin
       
@@ -821,7 +831,7 @@ type
           foreach var arg in settings.args do
             if settings.arg_usage.ContainsKey(arg.name) then
             begin
-              if not arg.t.IsCQ and not arg.t.IsKA then continue;
+              if not arg.t.IsCQ then continue;
               param_count += new MethodArgEvCount(arg);
             end;
         MethodArgEvCount.WriteAll(res_EIm, param_count);
@@ -910,7 +920,7 @@ type
         end;
         
         foreach var arg in settings.args.OrderBy(arg->arg.t.ArrLvl) do
-          if arg.t.IsKA or arg.t.IsCQ then
+          if arg.t.IsCQ then
           begin
             res_EIm += '      ';
             
@@ -994,21 +1004,18 @@ type
             res_EIm += tab;
             res_EIm += 'sb += '']';
           end;
-          res_EIm += ': '';'#10;
+          res_EIm += ':'';'#10;
           
-          res_EIm += tab;
-          if arg.t.IsKA or arg.t.IsCQ then
+          if arg.t.IsCQ then
           begin
+            res_EIm += tab;
+            res_EIm += 'sb += '' '';'#10;
+            
+            res_EIm += tab;
             res_EIm += vname;
             res_EIm += '.ToString(sb, tabs, index, delayed, false);'#10;
           end else
-          begin
-            res_EIm += 'sb.Append(';
-            res_EIm += vname;
-            if arg.name in val_ptr_args then
-              res_EIm += '^';
-            res_EIm += ');'#10;
-          end;
+            WriteBasicValueToString(res_EIm, tab, vname, arg.name in val_ptr_args);
           
           if arr_lvl<>0 then
           begin
@@ -1032,10 +1039,16 @@ type
     end;
     
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: TSettings); abstract;
-    protected procedure WriteMethodEImBody(write_new_ct: Action0; settings: TSettings); abstract;
+    protected procedure WriteMethodEImBody(write_new_ct: Action0; settings: TSettings); virtual;
+    begin
+      res_EIm += 'AddCommand(self, ';
+      write_new_ct;
+      res_EIm += ');'#10;
+    end;
     protected function GetIImResT(settings: TSettings): string; virtual := t;
     public procedure WriteMethod(bl: (string, array of string));
     begin
+      var reg_name := bl[0].ToWords('!').JoinToString('!');
       var name_separator_ind := bl[0].IndexOf('!');
       var fn := name_separator_ind=-1 ? bl[0] : bl[0].Remove(name_separator_ind);
       var tn := name_separator_ind=-1 ? bl[0] : bl[0].Remove(name_separator_ind,1);
@@ -1046,7 +1059,7 @@ type
       settings.Seal(t, generics.Select(g->g[0]), tn);
       
       res_EIm += '{$region ';
-      res_EIm += tn;
+      res_EIm += reg_name;
       res_EIm += '}'#10;
       res_EIm += #10;
       
@@ -1136,7 +1149,8 @@ type
           res_EIm += t;
           res_EIm += 'Command';
           res_EIm += tn;
-          if generics.Count+settings.generics.Count <> 0 then
+          //TODO #2654
+          if generics.Count+(settings as MethodSettings).generics.Count <> 0 then
           begin
             res_EIm += '<';
             res_EIm += generics.Select(g->g[0]).Concat(settings.generics).JoinToString(', ');
@@ -1145,7 +1159,8 @@ type
           if settings.impl_args<>nil then
           begin
             res_EIm += '(';
-            res_EIm += settings.impl_args.JoinToString(', ');
+            //TODO #2654
+            res_EIm += (settings as MethodSettings).impl_args.JoinToString(', ');
             res_EIm += ')';
           end;
         end, settings);
@@ -1160,7 +1175,7 @@ type
       res += #10;
       
       res_EIm += '{$endregion ';
-      res_EIm += tn;
+      res_EIm += reg_name;
       res_EIm += '}'#10;
       res_EIm += #10;
       

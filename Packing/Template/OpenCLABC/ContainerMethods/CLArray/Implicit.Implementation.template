@@ -133,44 +133,124 @@ begin
   Result := ReadData(IntPtr(ptr), ind, len);
 end;
 
-function CLArray<T>.WriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(data, ind));
+  Result := WriteNativeMemoryArea(native_data, 0);
 end;
 
-function CLArray<T>.ReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(data, ind));
+  Result := WriteNativeMemory(native_data, 0);
 end;
 
-function CLArray<T>.WriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(val, ind));
+  Result := WriteNativeValueArea(native_data, 0);
 end;
 
-function CLArray<T>.ReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(val, ind));
+  Result := WriteNativeValue(native_data, 0);
 end;
 
-function CLArray<T>.WriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+function CLArray<T>.WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(a));
+  Result := WriteNativeArrayArea(native_data, 0);
 end;
 
-function CLArray<T>.WriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(a, ind, len, a_ind));
+  Result := WriteNativeArray(native_data, 0);
 end;
 
-function CLArray<T>.ReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+function CLArray<T>.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(a));
+  Result := ReadNativeMemoryArea(native_data, 0);
 end;
 
-function CLArray<T>.ReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(a, ind, len, a_ind));
+  Result := ReadNativeMemory(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeValueArea(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeValue(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeArrayArea(native_data, 0);
+end;
+
+function CLArray<T>.ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
+begin
+  Result := ReadNativeArray(native_data, 0);
+end;
+
+function CLArray<T>.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea(native_data, mem_offset));
+end;
+
+function CLArray<T>.ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(native_data, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -257,34 +337,124 @@ begin
   Result := FillData(IntPtr(ptr), pattern_len, ind, fill_len);
 end;
 
-function CLArray<T>.FillData(data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+function CLArray<T>.FillNativeMemoryArea(native_data: NativeMemoryArea): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data));
+  Result := FillNativeMemoryArea(CQ(native_data));
 end;
 
-function CLArray<T>.FillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.FillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(data, ind, fill_len));
+  Result := FillNativeMemoryArea(CQ(native_data),ind,fill_len);
 end;
 
-function CLArray<T>.FillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArray<T>;
+function CLArray<T>.FillNativeMemory(native_data: NativeMemory): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(val));
+  Result := FillNativeMemory(CQ(native_data));
 end;
 
-function CLArray<T>.FillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.FillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(val, ind, fill_len));
+  Result := FillNativeMemory(CQ(native_data),ind,fill_len);
 end;
 
-function CLArray<T>.FillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArray<T>;
+function CLArray<T>.FillNativeValueArea(native_data: NativeValueArea<&T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(a));
+  Result := FillNativeValueArea(CQ(native_data));
 end;
 
-function CLArray<T>.FillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.FillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(a, a_ind, pattern_len, ind, fill_len));
+  Result := FillNativeValueArea(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeValue(native_data: NativeValue<&T>): CLArray<T>;
+begin
+  Result := FillNativeValue(CQ(native_data));
+end;
+
+function CLArray<T>.FillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := FillNativeValue(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArray<T>;
+begin
+  Result := FillNativeArrayArea(CQ(native_data));
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := FillNativeArrayArea(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeArray(native_data: NativeArray<&T>): CLArray<T>;
+begin
+  Result := FillNativeArray(CQ(native_data));
+end;
+
+function CLArray<T>.FillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := FillNativeArray(CQ(native_data),ind,fill_len);
+end;
+
+function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
+end;
+
+function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
+end;
+
+function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data));
+end;
+
+function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data));
+end;
+
+function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data));
+end;
+
+function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data, ind, fill_len));
+end;
+
+function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data));
+end;
+
+function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
+begin
+  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data, ind, fill_len));
 end;
 
 {$endregion 2#Fill}

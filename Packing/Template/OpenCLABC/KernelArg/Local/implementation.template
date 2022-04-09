@@ -1,0 +1,21 @@
+﻿
+
+
+static function KernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new KernelArgLocalBytes(bytes);
+
+static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
+begin
+  BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:KernelArgLocal:ItemCount%');
+  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+    uint64(Marshal.Sizeof&<T>)*UInt32(item_count)
+  )));
+end;
+static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+begin
+  BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:KernelArgLocal:ItemCount%');
+  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+    uint64(Marshal.Sizeof&<T>)*UInt32(item_count)
+  )));
+end;
+
+

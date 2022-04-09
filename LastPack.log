@@ -1,4 +1,4 @@
-﻿Executing selected stages:
+Executing selected stages:
 OpenCLABC + Compile + Test + Release
 Start packing
 ==================================== OpenCLABC ===================================
@@ -9,14 +9,18 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapperProperties.pas
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerMethods.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerExecMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLMemorySegment]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLValue]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [Kernel]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [Kernel]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerOtherMethods.pas"
+Template[OpenCLABC]: Compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
@@ -32,6 +36,10 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\KernelArg.pas"
+Template[OpenCLABC]: Compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\KernelArg.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\KernelArg.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
