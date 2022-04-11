@@ -485,11 +485,16 @@ const fix_links = (page)=>{
 		if (!lnk.path) continue;
 		lnk.removeAttribute("path");
 		
-		start_folder = currently_loading_folder;
+		let start_folder = currently_loading_folder;
 		while (lnk.path.startsWith("../"))
 		{
 			start_folder = start_folder.root;
+			if (!start_folder) break;
 			lnk.path = lnk.path.substr(3);
+		}
+		if (!start_folder) {
+			console.error(`Path "root/${lnk.path}" referenced in "${page.tree_obj.path}" goes under root`);
+			continue;
 		}
 		lnk.path = start_folder.path+lnk.path;
 		
@@ -959,16 +964,16 @@ window.onload = ()=>{
 <hr />
 <h1>Страницы:</h1>
 <ul>
-<li><a path="Platform/">		Platform	</a> - Платформа, объединяющая несколько совместимых устройств;</li>
-<li><a path="Device/">		Device		</a> - Устройство, поддерживающее OpenCL;</li>
-<li><a path="Context/">		Context		</a> - Контекст выполнения;</li>
-<li><a path="Память/">		Память		</a> - Обёртки памяти GPU;</li>
-<li><a path="Kernel/">		Kernel		</a> - Подпрограмма, выполняемая на GPU;</li>
-<li><a path="ProgramCode/">	ProgramCode	</a> - Контейнер kernel'ов.</li>
+<li><a path="Platform">		Platform	</a> - Платформа, объединяющая несколько совместимых устройств;</li>
+<li><a path="Device">			Device		</a> - Устройство, поддерживающее OpenCL;</li>
+<li><a path="Context">		Context		</a> - Контекст выполнения;</li>
+<li><a path="Kernel">			Kernel		</a> - Подпрограмма, выполняемая на GPU;</li>
+<li><a path="ProgramCode">	ProgramCode	</a> - Контейнер kernel'ов;</li>
+<li><a path="Память">			Память		</a> - Обёртки памяти GPU.</li>
 </ul>
 </div>
 <script>on_start_folder("Простые обёртки", document.getElementById("page-3"))</script>
-<div id="page-4" page_name="" hidden=true>
+<div id="page-4" page_name="Platform" hidden=true>
 <p>В списке устройств контекста могут быть только совместимые друг с другом устройства.<br />
 Коллекция совместимых устройств называется платформой и хранится в объектах типа <code>Platform</code>.</p>
 <hr />
@@ -978,9 +983,8 @@ var pls := Platform.All;
 pls.PrintLines;
 </code></pre>
 </div>
-<script>on_start_folder("Platform", document.getElementById("page-4"))</script>
-<script>on_end_folder()</script>
-<div id="page-5" page_name="" hidden=true>
+<script>on_page_added(document.getElementById("page-4"))</script>
+<div id="page-5" page_name="Device" hidden=true>
 <p>Обычно устройства получают статическим методом <code>Device.GetAllFor</code>:</p>
 <pre><code>## uses OpenCLABC;
 
@@ -1027,9 +1031,8 @@ Writeln('='*30);
 
 </code></pre>
 </div>
-<script>on_start_folder("Device", document.getElementById("page-5"))</script>
-<script>on_end_folder()</script>
-<div id="page-6" page_name="" hidden=true>
+<script>on_page_added(document.getElementById("page-5"))</script>
+<div id="page-6" page_name="Context" hidden=true>
 <p>Контекст (объект типа <code>Context</code>) содержит информацию об устройствах,
 на которых надо выделяет области памяти <code>OpenCL</code> и выполнять код для GPU.</p>
 <hr />
@@ -1050,146 +1053,8 @@ Writeln('='*30);
 <p>Если ваша программа достаточно сложная чтобы нуждаться в нескольких контекстах - лучше не использовать
 <code>Context.Default</code>. И присвоить ему <code>nil</code>, чтобы не использовать случайно (к примеру, неявной очередью).</p>
 </div>
-<script>on_start_folder("Context", document.getElementById("page-6"))</script>
-<script>on_end_folder()</script>
-<div id="page-7" page_name="" hidden=true>
-<p>Программам, выпоняемые на GPU, не удобно использовать оперативную память.
-Поэтому обычно лучше выделять память на самом GPU.</p>
-<h1>Виды памяти в OpenCLABC:</h1>
-<ul>
-<li><a path="CLArray">	   	    CLArray		    </a> - Память GPU в форме массива записей.</li>
-<li><a path="MemorySegment">		MemorySegment	</a> - Безформенная область памяти GPU;</li>
-<li><a path="MemorySubSegment">	MemorySubSegment</a> - Виртуальная область памяти внутри MemorySegment;</li>
-<li><a path="NativeValue">		NativeValue		</a> - Неуправляемая память RAM в форме одной записи;</li>
-</ul>
-</div>
-<script>on_start_folder("Память", document.getElementById("page-7"))</script>
-<div id="page-8" page_name="CLArray" hidden=true>
-<p>Всё преимущество GPU над CPU состоит в выполнении одинаковой программы на рое из процессорных ядер.<br />
-Каждое из этих ядер значительно медленнее ядер CPU, но используя весь рой вместе можно выполнять вычисления значительно быстрее.<br />
-Но раз все ядра GPU выполняют одну и ту же программу - им обычно приходится передавать массив из однотипных данных.</p>
-<p>Объект типа <code>CLArray&lt;T&gt;</code> (где <code>T</code> - почти любая запись) является массивом, содержимое которого хранится в памяти GPU, для более быстрого доступа из кода на GPU.</p>
-<hr />
-<p><code>CLArray&lt;T&gt;</code> создаётся конструктором:</p>
-<pre><code>## uses OpenCLABC;
-
-// Массив для 10 элементов типа integer
-var a1 := new CLArray&lt;integer&gt;(Context.Default, 10);
-// Заполняем нулями, потому что при создании CLArray может содержать мусорные данные
-a1.FillValue(0);
-a1.GetArray.Println;
-
-// Массив, в который при создании копируются данные из переданного массива
-var a2 := new CLArray&lt;byte&gt;(Context.Default, new byte[](1,2,3,4,5,6,7));
-a2.GetArray.Println;
-
-// Массив, в который при создании копируется часть данных из переданного массива
-// Точнее, копируется 2 элемента, начиная с элемента с индексом 3
-var cpu_array := |0,1,2,3,4,5,6,7|;
-var a3 := new CLArray&lt;integer&gt;(Context.Default, 3, 2, cpu_array);
-a3.GetArray.Println;
-</code></pre>
-<p>Кроме того, объект контекста можно не передавать, тогда для выделения памяти будет автоматически выбран <code>Context.Default</code>.</p>
-<hr />
-<p>Элементы этого массива, так же как у обычных массивов, можно читать через индексное свойство:</p>
-<pre><code>## uses OpenCLABC;
-var a := new CLArray&lt;integer&gt;(Context.Default, |0,1,4,9,16|);
-a[3].Println;
-a[4] := 5;
-a[4].Println;
-</code></pre>
-<p>Но имейте в виду - каждое обращение к индексному свойству - это новое выполнение неявной очереди, поэтому заполнять или читать такой массив по 1 элементу не эффективно.</p>
-<p>Лучше всего использовать полноценные очереди. Но если вы выполняете какое-то одноразовое заполнение - можно, хотя бы, использовать свойство <code>.Section</code>:</p>
-<pre><code>## uses OpenCLABC;
-var a := new CLArray&lt;integer&gt;(Context.Default, |0,1,4,9,16|);
-// Заполняем элементы с индексами от 2 до 3 массивом |-1,-2|
-a.Section[2..3] := |-1,-2|;
-// Читаем и выводим элементы с 0 по 2 индексы как массив
-a.Section[0..2].Println;
-</code></pre>
-</div>
-<script>on_page_added(document.getElementById("page-8"))</script>
-<div id="page-9" page_name="MemorySegment" hidden=true>
-<p>Некоторые данные, передаваемые в программы на GPU, могут быть общими (для всех ядер) или просто не однотипными.<br />
-Такие данные можно хранить в типе <code>MemorySegment</code>, представляющем область памяти GPU, для которой не определено ничего кроме размера.</p>
-<p>Область памяти <code>MemorySegment</code> создаётся конструктором (<code>new MemorySegment(...)</code>).<br />
-Основные конструкторы принимают размер области памяти и, опционально, контекст. Если контекст не указывается - память выделяется на <code>Context.Default</code>.</p>
-<p>Далее, в неё можно записывать и читать данные практически любого типа записи, в любой точке:</p>
-<pre><code>## uses OpenCLABC;
-
-var s := new MemorySegment(sizeof(int64));
-// $ Это запись числа в 16-ичной СС
-s.WriteValue&amp;&lt;int64&gt;($FEDCBA9876543210);
-// .ToString('X') преобразовывает число в строку в 16-ичной СС
-s.GetValue&amp;&lt;int64&gt;.ToString('X').Println;
-// Можно читать кусок данных одного типа, как данные другого типа
-s.GetValue&amp;&lt;integer&gt;.ToString('X').Println;
-// Читаем начиная с четвёртого байта
-// Я сделал 16-ичный вывод чтобы было видно, изначальное число разрезало пополам
-s.GetValue&amp;&lt;integer&gt;(4).ToString('X').Println;
-// Ну и никто не запретит прочитать как совершенно не совместимый тип данных
-// Но в ответ вы получите мусорные данные
-s.GetValue&amp;&lt;real&gt;.Println;
-</code></pre>
-<p>То есть, вам самим придётся заботится о типе внутренних данных, работая с <code>MemorySegment</code>, но взамен вы полностью контролируете содержимое области памяти.</p>
-<hr />
-<p>Память на GPU можно моментально освободить, вызвав метод <code>MemorySegment.Dispose</code>.<br />
-Но вызывать его не обязательно, потому что этот метод вызывается автоматически во время сборки мусора.</p>
-</div>
-<script>on_page_added(document.getElementById("page-9"))</script>
-<div id="page-10" page_name="MemorySubSegment" hidden=true>
-<p>Но кроме выделения памяти на GPU - OpenCL так же позволяет выделять память внутри другой области памяти.<br />
-Для этого используется тип <code>MemorySubSegment</code>:</p>
-<pre><code>## uses OpenCLABC;
-
-var c := Context.Default;
-
-// Не обязательно MainDevice, можно взять любое устройство из контекста
-var align := c.MainDevice.Properties.MemBaseAddrAlign;
-
-var s := new MemorySegment(align*2, c);
-// size может быть любым, но origin
-// должно быть align*N, где N - целое
-var s1 := new MemorySubSegment(s, 0, Min(123,align));
-var s2 := new MemorySubSegment(s, align, align);
-
-Writeln(s1);
-Writeln(s2);
-</code></pre>
-</div>
-<script>on_page_added(document.getElementById("page-10"))</script>
-<div id="page-11" page_name="NativeValue" hidden=true>
-<p>OpenCL это неуправляемая библиотека. Обычно можно заставить управляеммые типы данных работать с ней.<br />
-Но часто это приводит к дополнительным затратам производительности.<br />
-И обычно не значит всегда - <code>MemorySegment.ReadValue</code>, принимающее запись <code>var</code>-параметром не может быть безопасным из за сборщика мусора
-(и поэтому отсутствует).</p>
-<p>Более прямым будет передача неуправляемых типов - указателей - без преобразований в подпрограммы модуля <code>OpenCL</code>.<br />
-И эта возможность тоже существует, к примеру в виде <code>MemorySegment.WriteData</code>. Но такие указатели ещё более не_безопасны:<br />
-Как минимум они требуют освобождения в <code>try-finally</code> чтобы избежать утечек памяти.
-И защиты от дурака, не возволяющей записать значение типа <code>real</code> туда, где хранится <code>int64</code> - не существует.</p>
-<p>Как что-то среднее между этими двумя вариантами - существует <code>NativeValue&lt;T&gt;</code>:<br />
-Этот класс является обёрткой указателя на область памяти RAM.</p>
-<pre><code>## uses OpenCLABC;
-
-// В конструктор необходимо передавать значение,
-// потому что иначе неуправляемая память будет содержать мусор
-// Но можно передать default, чтобы заполнить выделяемую память нулями
-var nv := new NativeValue&lt;integer&gt;(default(integer));
-
-nv.Value := 5; // Перезаписываем значение,
-nv.Value.Println; // И читаем назад
-
-// Напрямую получать доступ к области памяти,
-// через свойство Pointer, не рекомендуется
-Writeln(nv.Pointer);
-// Кроме как передавать nv.Pointer^ var-параметром
-
-nv.Dispose; // Освобождение памяти - вызывается и само при сборке мусора
-</code></pre>
-</div>
-<script>on_page_added(document.getElementById("page-11"))</script>
-<script>on_end_folder()</script>
-<div id="page-12" page_name="" hidden=true>
+<script>on_page_added(document.getElementById("page-6"))</script>
+<div id="page-7" page_name="Kernel" hidden=true>
 <p>Объект типа <code>Kernel</code> представляет одну подпрограмму в OpenCL-C коде,
 объявленную с ключевым словом <code>__kernel</code>.</p>
 <hr />
@@ -1207,8 +1072,46 @@ var ks := code.GetAllKernels;
 ks.PrintLines;
 </code></pre>
 </div>
-<script>on_start_folder("Kernel", document.getElementById("page-12"))</script>
-<div id="page-13" page_name="KernelArg" hidden=true>
+<script>on_page_added(document.getElementById("page-7"))</script>
+<div id="page-8" page_name="ProgramCode" hidden=true>
+<p>Обычные программы невозможно запустить на GPU. Для этого надо писать особые программы.<br />
+В контексте OpenCL - эти программы обычно пишутся на языке &quot;OpenCL C&quot; (основанном на языке &quot;C&quot;).</p>
+<p>Язык OpenCL-C это часть библиотеки OpenCL, поэтому его справку можно найти <a href="https://www.khronos.org/registry/OpenCL/">там же</a>, где и справку OpenCL.</p>
+<p>В <code>OpenCLABC</code> OpenCL-C код хранится в объектах типа <code>ProgramCode</code>.<br />
+Объекты этого типа используются только как контейнеры.
+Один объект ProgramCode может содержать любое количествово подпрограмм-kernel'ов.</p>
+<hr />
+<p>Самый простой способ создать <code>ProgramCode</code> - конструктором:</p>
+<pre><code>var code := new ProgramCode(
+	ReadAllText('file with code 1.cl'),
+	ReadAllText('file with code 2.cl')
+);
+</code></pre>
+<p><strong>Внимание</strong>! Этот конструктор принимает именно тексты исходников, не имена файлов.<br />
+Если надо передать текст из файла - его надо сначала явно прочитать.</p>
+<hr />
+<p>Так же как исходники паскаля хранят в .pas файлах, исходники OpenCL-C кода хранят в .cl файлах.</p>
+<p>На самом деле это не обязательно, потому что код даже не обязан быть в файле:</p>
+<pre><code>var code_text := '__kernel void k() {}';
+var code := new ProgramCode(code_text);
+</code></pre>
+<p>Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы
+на языке OpenCL-C можно хранить даже в строке в .pas программе.</p>
+<p>Тем не менее, хранить исходники OpenCL-C кода в .cl файлах обычно удобнее всего.</p>
+<hr />
+<p>После создания объекта типа <code>ProgramCode</code> из исходников можно вызвать
+метод <code>ProgramCode.SerializeTo</code>, чтобы сохранить код в бинарном и прекомпилированном виде.</p>
+<p>Затем, объект <code>ProgramCode</code> можно пере-создать статический метод <code>ProgramCode.DeserializeFrom</code>.</p>
+<p>Пример можно найти в папке примеров <code>Прекомпиляция ProgramCode</code> или <a href="https://github.com/SunSerega/POCGL/tree/master/Samples/OpenCLABC/%D0%9F%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%86%D0%B8%D1%8F%20ProgramCode">тут</a>.</p>
+</div>
+<script>on_page_added(document.getElementById("page-8"))</script>
+<div id="page-9" page_name="Память" hidden=true>
+<p>Типы-простые_обёртки памяти OpenCL (<code>cl_mem</code>) рассмотрены в
+<a path="../KernelArg/Память OpenCL (CL-)/">этой папке</a>.</p>
+</div>
+<script>on_page_added(document.getElementById("page-9"))</script>
+<script>on_end_folder()</script>
+<div id="page-10" page_name="" hidden=true>
 <p>Методы, запускающие <code>Kernel</code> принимают специальные аргументы типа <code>KernelArg</code>, которые передаются в OpenCL-C код.<br />
 Экземпляр <code>KernelArg</code> может быть создан из нескольких типов значений, а точнее:</p>
 <pre><code>## uses OpenCLABC;
@@ -1366,46 +1269,137 @@ end.
 часть кода, или различие архитектур компьтеров, таким образом усложняя поиск источника ошибки.</p>
 <p>Поэтому, ещё раз, используйте передачу адреса в качестве <code>KernelArg</code> только как тонкую оптимизацию и только когда понимаете что делаете.</p>
 </div>
-<script>on_page_added(document.getElementById("page-13"))</script>
+<script>on_start_folder("KernelArg", document.getElementById("page-10"))</script>
+<script>on_start_folder("Неуправляемая память (Native-)", null)</script>
+<div id="page-11" page_name="NativeValue" hidden=true>
+<p>OpenCL это неуправляемая библиотека. Обычно можно заставить управляеммые типы данных работать с ней.<br />
+Но часто это приводит к дополнительным затратам производительности.<br />
+И обычно не значит всегда - <code>MemorySegment.ReadValue</code>, принимающее запись <code>var</code>-параметром не может быть безопасным из за сборщика мусора
+(и поэтому отсутствует).</p>
+<p>Более прямым будет передача неуправляемых типов - указателей - без преобразований в подпрограммы модуля <code>OpenCL</code>.<br />
+И эта возможность тоже существует, к примеру в виде <code>MemorySegment.WriteData</code>. Но такие указатели ещё более не_безопасны:<br />
+Как минимум они требуют освобождения в <code>try-finally</code> чтобы избежать утечек памяти.
+И защиты от дурака, не возволяющей записать значение типа <code>real</code> туда, где хранится <code>int64</code> - не существует.</p>
+<p>Как что-то среднее между этими двумя вариантами - существует <code>NativeValue&lt;T&gt;</code>:<br />
+Этот класс является обёрткой указателя на область памяти RAM.</p>
+<pre><code>## uses OpenCLABC;
+
+// В конструктор необходимо передавать значение,
+// потому что иначе неуправляемая память будет содержать мусор
+// Но можно передать default, чтобы заполнить выделяемую память нулями
+var nv := new NativeValue&lt;integer&gt;(default(integer));
+
+nv.Value := 5; // Перезаписываем значение,
+nv.Value.Println; // И читаем назад
+
+// Напрямую получать доступ к области памяти,
+// через свойство Pointer, не рекомендуется
+Writeln(nv.Pointer);
+// Кроме как передавать nv.Pointer^ var-параметром
+
+nv.Dispose; // Освобождение памяти - вызывается и само при сборке мусора
+</code></pre>
+</div>
+<script>on_page_added(document.getElementById("page-11"))</script>
 <script>on_end_folder()</script>
-<div id="page-14" page_name="" hidden=true>
-<p>Обычные программы невозможно запустить на GPU. Для этого надо писать особые программы.<br />
-В контексте OpenCL - эти программы обычно пишутся на языке &quot;OpenCL C&quot; (основанном на языке &quot;C&quot;).</p>
-<p>Язык OpenCL-C это часть библиотеки OpenCL, поэтому его справку можно найти <a href="https://www.khronos.org/registry/OpenCL/">там же</a>, где и справку OpenCL.</p>
-<p>В <code>OpenCLABC</code> код на языке &quot;OpenCL C&quot; хранится в объектах типа <code>ProgramCode</code>.<br />
-Объекты этого типа используются только как контейнеры.
-Один объект ProgramCode может содержать любое количествово подпрограмм-kernel'ов.</p>
+<script>on_start_folder("Память OpenCL (CL-)", null)</script>
+<div id="page-12" page_name="CLArray" hidden=true>
+<p>Всё преимущество GPU над CPU состоит в выполнении одинаковой программы на рое из процессорных ядер.<br />
+Каждое из этих ядер значительно медленнее ядер CPU, но используя весь рой вместе можно выполнять вычисления значительно быстрее.<br />
+Но раз все ядра GPU выполняют одну и ту же программу - им обычно приходится передавать массив из однотипных данных.</p>
+<p>Объект типа <code>CLArray&lt;T&gt;</code> (где <code>T</code> - почти любая запись) является массивом, содержимое которого хранится в памяти GPU, для более быстрого доступа из кода на GPU.</p>
 <hr />
-<h1>Есть 2 способа создать объект типа <code>ProgramCode</code>:</h1>
-<ul>
-<li><p><a path="Создание из исходного кода">		Из исходного кода			</a></p>
-</li>
-<li><p><a path="Создание из бинарного файла">	Из прекомпилированного кода	</a></p>
-</li>
-</ul>
+<p><code>CLArray&lt;T&gt;</code> создаётся конструктором:</p>
+<pre><code>## uses OpenCLABC;
+
+// Массив для 10 элементов типа integer
+var a1 := new CLArray&lt;integer&gt;(Context.Default, 10);
+// Заполняем нулями, потому что при создании CLArray может содержать мусорные данные
+a1.FillValue(0);
+a1.GetArray.Println;
+
+// Массив, в который при создании копируются данные из переданного массива
+var a2 := new CLArray&lt;byte&gt;(Context.Default, new byte[](1,2,3,4,5,6,7));
+a2.GetArray.Println;
+
+// Массив, в который при создании копируется часть данных из переданного массива
+// Точнее, копируется 2 элемента, начиная с элемента с индексом 3
+var cpu_array := |0,1,2,3,4,5,6,7|;
+var a3 := new CLArray&lt;integer&gt;(Context.Default, 3, 2, cpu_array);
+a3.GetArray.Println;
+</code></pre>
+<p>Кроме того, объект контекста можно не передавать, тогда для выделения памяти будет автоматически выбран <code>Context.Default</code>.</p>
+<hr />
+<p>Элементы этого массива, так же как у обычных массивов, можно читать через индексное свойство:</p>
+<pre><code>## uses OpenCLABC;
+var a := new CLArray&lt;integer&gt;(Context.Default, |0,1,4,9,16|);
+a[3].Println;
+a[4] := 5;
+a[4].Println;
+</code></pre>
+<p>Но имейте в виду - каждое обращение к индексному свойству - это новое выполнение неявной очереди, поэтому заполнять или читать такой массив по 1 элементу не эффективно.</p>
+<p>Лучше всего использовать полноценные очереди. Но если вы выполняете какое-то одноразовое заполнение - можно, хотя бы, использовать свойство <code>.Section</code>:</p>
+<pre><code>## uses OpenCLABC;
+var a := new CLArray&lt;integer&gt;(Context.Default, |0,1,4,9,16|);
+// Заполняем элементы с индексами от 2 до 3 массивом |-1,-2|
+a.Section[2..3] := |-1,-2|;
+// Читаем и выводим элементы с 0 по 2 индексы как массив
+a.Section[0..2].Println;
+</code></pre>
 </div>
-<script>on_start_folder("ProgramCode", document.getElementById("page-14"))</script>
-<div id="page-15" page_name="Создание из исходного кода" hidden=true>
-<p>Конструктор <code>ProgramCode</code> (<code>new ProgramCode(...)</code>) принимает тексты исходников программы на языке OpenCL-C.<br />
-<strong>Именно тексты исходников, не имена файлов!</strong></p>
-<p>Так же, как исходники паскаля хранят в .pas файлах, исходники OpenCL-C кода хранят в .cl файлах.
-Но вообще, это не принципиально, потому что код даже не обязательно должен быть в файле.</p>
-<p>Так как конструктор <code>ProgramCode</code> принимает текст - исходники программы на OpenCL-C можно хранить даже в
-строке в .pas программе. Тем не менее, храненить исходники OpenCL-C кода в .cl файлах обычно удобнее всего.</p>
+<script>on_page_added(document.getElementById("page-12"))</script>
+<div id="page-13" page_name="CLMemorySegment" hidden=true>
+<p>Некоторые данные, передаваемые в программы на GPU, могут быть общими (для всех ядер) или просто не однотипными.<br />
+Такие данные можно хранить в типе <code>MemorySegment</code>, представляющем область памяти GPU, для которой не определено ничего кроме размера.</p>
+<p>Область памяти <code>MemorySegment</code> создаётся конструктором (<code>new MemorySegment(...)</code>).<br />
+Основные конструкторы принимают размер области памяти и, опционально, контекст. Если контекст не указывается - память выделяется на <code>Context.Default</code>.</p>
+<p>Далее, в неё можно записывать и читать данные практически любого типа записи, в любой точке:</p>
+<pre><code>## uses OpenCLABC;
+
+var s := new MemorySegment(sizeof(int64));
+// $ Это запись числа в 16-ичной СС
+s.WriteValue&amp;&lt;int64&gt;($FEDCBA9876543210);
+// .ToString('X') преобразовывает число в строку в 16-ичной СС
+s.GetValue&amp;&lt;int64&gt;.ToString('X').Println;
+// Можно читать кусок данных одного типа, как данные другого типа
+s.GetValue&amp;&lt;integer&gt;.ToString('X').Println;
+// Читаем начиная с четвёртого байта
+// Я сделал 16-ичный вывод чтобы было видно, изначальное число разрезало пополам
+s.GetValue&amp;&lt;integer&gt;(4).ToString('X').Println;
+// Ну и никто не запретит прочитать как совершенно не совместимый тип данных
+// Но в ответ вы получите мусорные данные
+s.GetValue&amp;&lt;real&gt;.Println;
+</code></pre>
+<p>То есть, вам самим придётся заботится о типе внутренних данных, работая с <code>MemorySegment</code>, но взамен вы полностью контролируете содержимое области памяти.</p>
+<hr />
+<p>Память на GPU можно моментально освободить, вызвав метод <code>MemorySegment.Dispose</code>.<br />
+Но вызывать его не обязательно, потому что этот метод вызывается автоматически во время сборки мусора.</p>
 </div>
-<script>on_page_added(document.getElementById("page-15"))</script>
-<div id="page-16" page_name="Создание из бинарного файла" hidden=true>
-<p>После создания объекта типа <code>ProgramCode</code> из исходников можно вызвать
-метод <code>ProgramCode.SerializeTo</code>, чтобы сохранить код в бинарном и прекомпилированном виде.
-Обычно это делается отдельной программой (не той же самой, которая будет использовать этот бинарный код).</p>
-<p>После этого основная программа может создать объект <code>ProgramCode</code>,
-используя статический метод <code>ProgramCode.DeserializeFrom</code>.</p>
-<p>Пример можно найти в папке <code>Прекомпиляция ProgramCode</code> или <a href="https://github.com/SunSerega/POCGL/tree/master/Samples/OpenCLABC/%D0%9F%D1%80%D0%B5%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%86%D0%B8%D1%8F%20ProgramCode">тут</a>.</p>
+<script>on_page_added(document.getElementById("page-13"))</script>
+<div id="page-14" page_name="CLMemorySubSegment" hidden=true>
+<p>Но кроме выделения памяти на GPU - OpenCL так же позволяет выделять память внутри другой области памяти.<br />
+Для этого используется тип <code>MemorySubSegment</code>:</p>
+<pre><code>## uses OpenCLABC;
+
+var c := Context.Default;
+
+// Не обязательно MainDevice, можно взять любое устройство из контекста
+var align := c.MainDevice.Properties.MemBaseAddrAlign;
+
+var s := new MemorySegment(align*2, c);
+// size может быть любым, но origin
+// должно быть align*N, где N - целое
+var s1 := new MemorySubSegment(s, 0, Min(123,align));
+var s2 := new MemorySubSegment(s, align, align);
+
+Writeln(s1);
+Writeln(s2);
+</code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-16"))</script>
+<script>on_page_added(document.getElementById("page-14"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
-<div id="page-17" page_name="" hidden=true>
+<div id="page-15" page_name="" hidden=true>
 <p>Передавать команды для GPU по одной не эффективно.
 Гораздо эффективнее передавать несколько команд сразу.</p>
 <p>Для этого существуют очереди (типы, наследующие от <code>CommandQueueBase</code>).
@@ -1424,8 +1418,8 @@ end.
 </li>
 </ul>
 </div>
-<script>on_start_folder("Очередь [команд] (CommandQueue)", document.getElementById("page-17"))</script>
-<div id="page-18" page_name="" hidden=true>
+<script>on_start_folder("Очередь [команд] (CommandQueue)", document.getElementById("page-15"))</script>
+<div id="page-16" page_name="" hidden=true>
 <p>Все типы очередей наследует от <code>CommandQueueBase</code>. Это значит что любую очередь можно сохранить в переменную типа <code>CommandQueueBase</code>.<br />
 Но о значении типа <code>CommandQueueBase</code> известно не на много больше чем о значении типа <code>object</code>.</p>
 <p>Так же, все очереди наследуют от одного из двух типов:</p>
@@ -1598,9 +1592,9 @@ end.
 <p>И <code>.UseTyped</code> и <code>.ConvertTyped</code> гарантируют что обязательно будет вызван ровно один
 из двух методов - либо принимающий <code>CommandQueueNil</code>, либо принимающий <code>CommandQueue&lt;T&gt;</code>.</p>
 </div>
-<script>on_start_folder("Возвращаемое значение очередей", document.getElementById("page-18"))</script>
+<script>on_start_folder("Возвращаемое значение очередей", document.getElementById("page-16"))</script>
 <script>on_end_folder()</script>
-<div id="page-19" page_name="" hidden=true>
+<div id="page-17" page_name="" hidden=true>
 <p>Самый простой способ выполнить очередь - вызвать метод <code>Context.SyncInvoke</code>.</p>
 <p>У него есть три перегрузки, для <code>CommandQueueBase</code>, <code>CommandQueueNil</code> и <code>CommandQueue&lt;T&gt;</code>.
 Только последняя возвращает результат.</p>
@@ -1633,9 +1627,9 @@ end;
 <p>Но для более тонкого контроля лучше использовать
 <a path="../Создание очередей/Обработка исключений"><code>.Handle*</code> методы очередей</a>.</p>
 </div>
-<script>on_start_folder("Выполнение очередей", document.getElementById("page-19"))</script>
+<script>on_start_folder("Выполнение очередей", document.getElementById("page-17"))</script>
 <script>on_end_folder()</script>
-<div id="page-20" page_name="" hidden=true>
+<div id="page-18" page_name="" hidden=true>
 <h1>Есть всего 10 базовых способов создать очередь:</h1>
 <ol>
 <li><p><a path="Из объекта с коммандами">				Из объекта с коммандами					</a></p>
@@ -1660,8 +1654,8 @@ end;
 </li>
 </ol>
 </div>
-<script>on_start_folder("Создание очередей", document.getElementById("page-20"))</script>
-<div id="page-21" page_name="Из объекта с коммандами" hidden=true>
+<script>on_start_folder("Создание очередей", document.getElementById("page-18"))</script>
+<div id="page-19" page_name="Из объекта с коммандами" hidden=true>
 <p>OpenCL используется для передачи комманд в GPU.
 Поэтому в первую очередь стоит поговорить об очередях <code>OpenCLABC</code>, содержащих комманды для GPU.</p>
 <p>Такие очереди создаются из некоторых типов-простых_обёрток методом <code>.NewQueue</code> и имеют тип с припиской <code>CCQ</code>.<br />
@@ -1723,8 +1717,8 @@ var q := new MemorySegmentCCQ(q0);
 <p>Это оптимизация, которую вы можете заметить только в одном случае:
 Если параметры этой команды были неправильные - ошибка не возникнет.</p>
 </div>
-<script>on_page_added(document.getElementById("page-21"))</script>
-<div id="page-22" page_name="Из готового результата" hidden=true>
+<script>on_page_added(document.getElementById("page-19"))</script>
+<div id="page-20" page_name="Из готового результата" hidden=true>
 <p>Константы в любом контексте позволяют проводить особые оптимизации.<br />
 В случае <code>OpenCLABC</code> - константные очереди являются константами только на время выполнения очереди.</p>
 <pre><code>## uses OpenCLABC;
@@ -1848,8 +1842,8 @@ end.
 Кроме того, при запуске очереди проводятся проверки, чтобы очереди-параметры
 не оказывались не_определены или установлены дважды.</p>
 </div>
-<script>on_page_added(document.getElementById("page-22"))</script>
-<div id="page-23" page_name="С кодом для CPU" hidden=true>
+<script>on_page_added(document.getElementById("page-20"))</script>
+<div id="page-21" page_name="С кодом для CPU" hidden=true>
 <p>Иногда между командами для GPU надо вставить выполнение обычного кода на CPU.
 А разрывать для этого очередь на две части - плохо, потому что
 одна целая очередь всегда выполнится быстрее двух её частей.</p>
@@ -1966,8 +1960,8 @@ end.
 <p>Преобразование в <code>t2</code> не выполняется из-за следующего <code>.Cast</code>, поэтому
 проверяется только преобразование <code>defalt(t1)</code> к <code>t2</code> (во время создания очереди) - а оно допустимое.</p>
 </div>
-<script>on_page_added(document.getElementById("page-23"))</script>
-<div id="page-24" page_name="Комбинируя другие очереди" hidden=true>
+<script>on_page_added(document.getElementById("page-21"))</script>
+<div id="page-22" page_name="Комбинируя другие очереди" hidden=true>
 <p>Если сложить две очереди A и B (<code>var C := A+B</code>) — получится очередь C, в которой сначала выполнится A, а затем B.<br />
 Очередь C будет считаться выполненной тогда, когда выполнится очередь B.</p>
 <p>Если умножить две очереди A и B (<code>var C := A*B</code>) — получится очередь C, в которой одновременно начнут выполняться A и B.<br />
@@ -2063,12 +2057,12 @@ Context.Default.SyncInvoke(
 </code></pre>
 <p>У каждой из <code>CombineConv*QueueN*</code> так же есть <code>CombineQuickConv*QueueN*</code> версия.</p>
 </div>
-<script>on_page_added(document.getElementById("page-24"))</script>
-<div id="page-25" page_name="Из повторения очереди" hidden=true>
+<script>on_page_added(document.getElementById("page-22"))</script>
+<div id="page-23" page_name="Из повторения очереди" hidden=true>
 <p><del>В данный момент всё ещё не работает... Но уже совсем скоро, правда-правда!</del></p>
 </div>
-<script>on_page_added(document.getElementById("page-25"))</script>
-<div id="page-26" page_name="Множественное использование очереди" hidden=true>
+<script>on_page_added(document.getElementById("page-23"))</script>
+<div id="page-24" page_name="Множественное использование очереди" hidden=true>
 <p>Одну и ту же очередь можно использовать несколько раз, в том числе одновременно:</p>
 <pre><code>## uses OpenCLABC;
 var Q := HPQQ(()-&gt;lock output do Writeln('Q выполнилась'));
@@ -2190,8 +2184,8 @@ Context.Default.SyncInvoke( Qs().ThenQuickConvert(i-&gt;i*i) ).Println;
 <p>А если контекст разный - надо сохранять результат в переменную и использовать <code>Wait</code> очереди
 (<a path="Из ожидания очередей">подробнее на странице ниже</a>).</p>
 </div>
-<script>on_page_added(document.getElementById("page-26"))</script>
-<div id="page-27" page_name="Общие методы CCQ объектов" hidden=true>
+<script>on_page_added(document.getElementById("page-24"))</script>
+<div id="page-25" page_name="Общие методы CCQ объектов" hidden=true>
 <p>Между командами в <code>CCQ</code> очередях бывает надо вставить выполнение другой очереди или кода для CPU.</p>
 <p>Это можно сделать, используя несколько <code>.NewQueue</code>:</p>
 <pre><code>var s: MemorySegment;
@@ -2224,8 +2218,8 @@ var q := s.NewQueue
 <p>(На самом деле процедура передаваемая в <code>.ThenProc</code>'а принимает исходную простую обёртку параметром, что делает его более похожим на <code>.ThenUse</code>, чем <code>HPQ</code>)</p>
 <p>Эти методы не имеют незаменимых применений, но позволяют сделать код значительно читабельнее.</p>
 </div>
-<script>on_page_added(document.getElementById("page-27"))</script>
-<div id="page-28" page_name="Из ожидания очередей" hidden=true>
+<script>on_page_added(document.getElementById("page-25"))</script>
+<div id="page-26" page_name="Из ожидания очередей" hidden=true>
 <p>Большинство деревьев выполнения очередей можно реализовать используя только сложение и умножение очередей. Но есть несколько проблем:</p>
 <ul>
 <li><p>Большинство но не все. Пример дерева которое нельзя реализовать через сложение и умножение можно найти <a href="https://github.com/SunSerega/POCGL/blob/master/Samples/OpenCLABC/Wait%20%D0%BE%D1%87%D0%B5%D1%80%D0%B5%D0%B4%D0%B8/1.pas">тут</a> или в файле:<br />
@@ -2468,8 +2462,8 @@ t1.Wait;
 t2.Wait;
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-28"))</script>
-<div id="page-29" page_name="Обработка исключений" hidden=true>
+<script>on_page_added(document.getElementById("page-26"))</script>
+<div id="page-27" page_name="Обработка исключений" hidden=true>
 <p>Для начала немного о распространении ошибок в очередях:</p>
 <p>Исключения в очереди Q отменяет выполнение всех очередей, ожидающих Q,
 но никак не влияет на параллельные к Q очереди:</p>
@@ -2663,8 +2657,8 @@ Context.Default.SyncInvoke(
 Эти методы так же как их варианты без <code>Finally</code> - возвращают то что вернула исходная очередь.<br />
 Но в отличии от них - посылают/поглащают сигнал не зависимо от ошибок в очереди, из которой их создали.</p>
 </div>
-<script>on_page_added(document.getElementById("page-29"))</script>
-<div id="page-30" page_name="Не создавая явно" hidden=true>
+<script>on_page_added(document.getElementById("page-27"))</script>
+<div id="page-28" page_name="Не создавая явно" hidden=true>
 <p>Передавать команды по одной, когда их несколько - ужасно не эффективно!<br />
 Но нередко бывает так, что команда всего одна. Или для отладки надо одноразово выполнить несколько команд.</p>
 <p>Для таких случаев можно создавать очередь неявно:<br />
@@ -2700,9 +2694,9 @@ a.Section[1..2] := |5,7|;
 a.Section[0..2].Println;
 </code></pre>
 </div>
-<script>on_page_added(document.getElementById("page-30"))</script>
+<script>on_page_added(document.getElementById("page-28"))</script>
 <script>on_end_folder()</script>
-<div id="page-31" page_name="" hidden=true>
+<div id="page-29" page_name="" hidden=true>
 <p>Все методы создающие одну команду (<code>*CCQ.Add*</code> методы и все методы неявных очередей)
 могут принимать очередь вместо значения в качестве практически любого параметра. Но в таком случае
 возвращаемый тип очереди должен совпадать с типом параметра. К примеру:</p>
@@ -2735,10 +2729,10 @@ a.GetArray.Println;
 k.Exec1(N, a)
 </code></pre>
 </div>
-<script>on_start_folder("Вложенные очереди", document.getElementById("page-31"))</script>
+<script>on_start_folder("Вложенные очереди", document.getElementById("page-29"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
-<div id="page-32" page_name="" hidden=true>
+<div id="page-30" page_name="" hidden=true>
 <p>В данной справке в нескольких местах можно встретить утверждения вроде</p>
 <blockquote>
 <p>Вызовы <code>Context.BeginInvoke</code> стоит, по возможности, объединять.</p>
@@ -2753,8 +2747,8 @@ k.Exec1(N, a)
 <li><a path="Внутренности BeginInvoke">	Что делает вызов <code>BeginInvoke</code>	</a></li>
 </ul>
 </div>
-<script>on_start_folder("Оптимизация", document.getElementById("page-32"))</script>
-<div id="page-33" page_name="Внутренности BeginInvoke" hidden=true>
+<script>on_start_folder("Оптимизация", document.getElementById("page-30"))</script>
+<div id="page-31" page_name="Внутренности BeginInvoke" hidden=true>
 <p>Кроме самого выполнения очередей - им так же необходима инициализация и финализация.</p>
 <hr />
 <h3>Инициализация</h3>
@@ -2795,7 +2789,7 @@ c1.BeginInvoke(A);
 <p>Внутренние оптимизации <code>OpenCLABC</code> делают этот код практически не отличимым по скорости, от <code>BeginInvoke(A+B)</code>.</p>
 <p>Единственное различие - время инициализации. Потому что <code>A</code> не запустится, пока не закончится вызов <code>c2.BeginInvoke</code>.</p>
 </div>
-<script>on_page_added(document.getElementById("page-33"))</script>
+<script>on_page_added(document.getElementById("page-31"))</script>
 <script>on_end_folder()</script>
 <script>on_end_folder()</script>
 </body>

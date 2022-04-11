@@ -1,8 +1,8 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
+#DelegateCount
+5
 
 #ExpOtp
 WaitMarkerAll#0
@@ -65,8 +65,8 @@ SimpleSyncQueueArrayNil#0
 ==================================================
 
 CLMemorySegmentCCQ#0
-	CCCObj: CLMemorySegment[*] of size 1
-	WaitCommand
+	CCCObj<CLMemorySegment>: CLMemorySegment[*] of size 1
+	WaitCommand<CLMemorySegment>
 		WaitMarkerDummy#1
 
 ------------------------------
@@ -75,16 +75,16 @@ SimpleSyncQueueArray<CLMemorySegment>#0
 	WaitMarkerDummyExecutor#1
 		WaitMarkerDummy#2
 	CLMemorySegmentCCQ#3
-		CCCObj: CLMemorySegment[*] of size 1
-		WaitCommand
+		CCCObj<CLMemorySegment>: CLMemorySegment[*] of size 1
+		WaitCommand<CLMemorySegment>
 			WaitMarkerDummy#2
 
 ------------------------------
 
 SimpleSyncQueueArrayNil#0
 	CLMemorySegmentCCQ#1
-		CCCObj: CLMemorySegment[*] of size 1
-		WaitCommand
+		CCCObj<CLMemorySegment>: CLMemorySegment[*] of size 1
+		WaitCommand<CLMemorySegment>
 			WaitMarkerDummy#2
 	WaitMarkerDummyExecutor#3
 		WaitMarkerDummy#2
@@ -95,7 +95,7 @@ SimpleSyncQueueArrayNil#0
 [QueueDebug]: 0 queue's created 
 [WaitDebug]: 0 wait handler's created 
 
-#DelegateCount
-5
+#ReqModules
+OpenCLABC
 
 

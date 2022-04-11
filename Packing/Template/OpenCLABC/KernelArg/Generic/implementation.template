@@ -97,7 +97,7 @@ begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
 static function KernelArg.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
 begin Result := KernelArgGlobal.FromCLMemorySegment(cl_mem) end;
 static function KernelArg.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
-begin Result := FromCLMemorySegment(cl_mem) end;
+begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
 
 {$endregion CLMemorySegment}
 
@@ -106,7 +106,7 @@ begin Result := FromCLMemorySegment(cl_mem) end;
 static function KernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
 begin Result := KernelArgGlobal.FromCLValue(cl_val) end;
 static function KernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArg; where T: record;
-begin Result := FromCLValue(cl_val) end;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
@@ -115,7 +115,7 @@ begin Result := FromCLValue(cl_val) end;
 static function KernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
 begin Result := KernelArgGlobal.FromCLArray(cl_arr) end;
 static function KernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArg; where T: record;
-begin Result := FromCLArray(cl_arr) end;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
 

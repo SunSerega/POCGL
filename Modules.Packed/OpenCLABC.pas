@@ -1162,7 +1162,10 @@ type
     ///Внимание! Именно тексты, Не имена файлов
     public constructor(params file_texts: array of string) := Create(Context.Default, file_texts);
     
-    private constructor(ntv: cl_program);
+    ///Создаёт обёртку для указанного неуправляемого объекта
+    ///При успешном создании обёртки вызывается cl.Retain
+    ///А во время вызова .Dispose - cl.Release
+    public constructor(ntv: cl_program);
     begin
       OpenCLABCInternalException.RaiseIfError( cl.RetainProgram(ntv) );
       self.ntv := ntv;
@@ -1318,7 +1321,7 @@ type
     private constructor(code: ProgramCode; k_name: string);
     begin
       self.code := code;
-      self.k_name := name;
+      self.k_name := k_name;
     end;
     
     public constructor(ntv: cl_kernel);
@@ -3547,9 +3550,9 @@ type
     public property Properties: KernelProperties read GetProperties;
     
     public static function operator=(wr1, wr2: Kernel): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     public static function operator<>(wr1, wr2: Kernel): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -3557,7 +3560,7 @@ type
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{TypeName(self)}[{Name}:{ntv.val}] from {code}';
+    $'{TypeName(self)}[{Name}] from {code}';
     
   end;
   
@@ -9532,7 +9535,7 @@ type
     begin
       Result := res_const;
       {$ifdef DEBUG}
-      if Result and not ShouldInstaCallAction then raise new OpenCLABCInternalException($'');
+      if not Result and ShouldInstaCallAction then raise new OpenCLABCInternalException($'');
       {$endif DEBUG}
     end;
     public property IsConst: boolean read GetIsConst;
@@ -15343,7 +15346,7 @@ type
 static function KernelArgGlobal.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
 begin Result := new KernelArgGlobalCLMemorySegment(cl_mem) end;
 static function KernelArgGlobal.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgGlobal;
-begin Result := FromCLMemorySegment(cl_mem) end;
+begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
 
 {$endregion CLMemorySegment}
 
@@ -15371,7 +15374,7 @@ type
 static function KernelArgGlobal.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgGlobal; where T: record;
 begin Result := new KernelArgGlobalCLValue<T>(cl_val) end;
 static function KernelArgGlobal.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgGlobal; where T: record;
-begin Result := FromCLValue(cl_val) end;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
@@ -15399,7 +15402,7 @@ type
 static function KernelArgGlobal.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgGlobal; where T: record;
 begin Result := new KernelArgGlobalCLArray<T>(cl_arr) end;
 static function KernelArgGlobal.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgGlobal; where T: record;
-begin Result := FromCLArray(cl_arr) end;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
 
@@ -15764,7 +15767,7 @@ type
 static function KernelArgConstant.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
 begin Result := new KernelArgConstantCLMemorySegment(cl_mem) end;
 static function KernelArgConstant.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgConstant;
-begin Result := FromCLMemorySegment(cl_mem) end;
+begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
 
 {$endregion CLMemorySegment}
 
@@ -15792,7 +15795,7 @@ type
 static function KernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgConstant; where T: record;
 begin Result := new KernelArgConstantCLValue<T>(cl_val) end;
 static function KernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgConstant; where T: record;
-begin Result := FromCLValue(cl_val) end;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
@@ -15820,7 +15823,7 @@ type
 static function KernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgConstant; where T: record;
 begin Result := new KernelArgConstantCLArray<T>(cl_arr) end;
 static function KernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgConstant; where T: record;
-begin Result := FromCLArray(cl_arr) end;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
 
@@ -16340,7 +16343,7 @@ begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
 static function KernelArg.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
 begin Result := KernelArgGlobal.FromCLMemorySegment(cl_mem) end;
 static function KernelArg.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
-begin Result := FromCLMemorySegment(cl_mem) end;
+begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
 
 {$endregion CLMemorySegment}
 
@@ -16349,7 +16352,7 @@ begin Result := FromCLMemorySegment(cl_mem) end;
 static function KernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
 begin Result := KernelArgGlobal.FromCLValue(cl_val) end;
 static function KernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArg; where T: record;
-begin Result := FromCLValue(cl_val) end;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
@@ -16358,7 +16361,7 @@ begin Result := FromCLValue(cl_val) end;
 static function KernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
 begin Result := KernelArgGlobal.FromCLArray(cl_arr) end;
 static function KernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArg; where T: record;
-begin Result := FromCLArray(cl_arr) end;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
 

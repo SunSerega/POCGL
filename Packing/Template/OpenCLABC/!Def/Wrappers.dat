@@ -28,8 +28,10 @@ cl_program
 
 # Kernel
 cl_kernel
+!operator=
+(wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer)
 !ToString
-{TypeName(self)}[{Name}:{ntv.val}] from {code}
+{TypeName(self)}[{Name}] from {code}
 
 
 

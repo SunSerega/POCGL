@@ -356,7 +356,7 @@ type
 static function KernelArgConstant.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
 begin Result := new KernelArgConstantCLMemorySegment(cl_mem) end;
 static function KernelArgConstant.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgConstant;
-begin Result := FromCLMemorySegment(cl_mem) end;
+begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
 
 {$endregion CLMemorySegment}
 
@@ -384,7 +384,7 @@ type
 static function KernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgConstant; where T: record;
 begin Result := new KernelArgConstantCLValue<T>(cl_val) end;
 static function KernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgConstant; where T: record;
-begin Result := FromCLValue(cl_val) end;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
@@ -412,7 +412,7 @@ type
 static function KernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgConstant; where T: record;
 begin Result := new KernelArgConstantCLArray<T>(cl_arr) end;
 static function KernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgConstant; where T: record;
-begin Result := FromCLArray(cl_arr) end;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
 

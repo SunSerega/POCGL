@@ -1,11 +1,8 @@
 ﻿
 
 
-#TestMode
-Comp+Exec
-
-#ReqModules
-OpenCLABC
+#DelegateCount
+7
 
 #ExpOtp
 Матрица A: 
@@ -36,7 +33,10 @@ OpenCLABC
 [QueueDebug]: 3 queue's created 
 [WaitDebug]: 0 wait handler's created 
 
-#DelegateCount
-7
+#ReqModules
+OpenCLABC
+
+#TestMode
+Comp+Exec
 
 

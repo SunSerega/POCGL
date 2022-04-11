@@ -9,6 +9,7 @@ type
     private name: string;
     private base := default(string);
     private generics := new List<string>;
+    private operator_equ := default(string);
     private to_string_def := default(string);
     
     public constructor(name: string) := self.name := name;
@@ -41,6 +42,11 @@ begin
           
           'Generic':
           t.generics.AddRange(setting_lines);
+          
+          'operator=':
+          if t.operator_equ<>nil then
+            raise new System.InvalidOperationException else
+            t.operator_equ := setting_lines.Single;
           
           'ToString':
           if t.to_string_def<>nil then
@@ -139,14 +145,18 @@ begin
         res += t.name;
         WriteGenerics;
         res += '): boolean :='#10;
-        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
+        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and ';
+        res += t.operator_equ ?? '(wr1.ntv = wr2.ntv)';
+        res += ';'#10;
         
         res += '    public static function operator<>(wr1, wr2: ';
         res += t.name;
         WriteGenerics;
         //TODO #????: not (wr1=wr2)
         res += '): boolean := false='#10;
-        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
+        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and ';
+        res += t.operator_equ ?? '(wr1.ntv = wr2.ntv)';
+        res += ';'#10;
         
         res += '    '#10;
         

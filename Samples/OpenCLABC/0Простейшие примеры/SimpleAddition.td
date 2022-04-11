@@ -1,11 +1,8 @@
 ﻿
 
 
-#TestMode
-Comp+Exec
-
-#ReqModules
-OpenCLABC
+#DelegateCount
+5
 
 #ExpOtp
 1 2 3 4 5 6 7 8 9 10
@@ -13,7 +10,10 @@ OpenCLABC
 [QueueDebug]: 2 queue's created 
 [WaitDebug]: 0 wait handler's created 
 
-#DelegateCount
-5
+#ReqModules
+OpenCLABC
+
+#TestMode
+Comp+Exec
 
 

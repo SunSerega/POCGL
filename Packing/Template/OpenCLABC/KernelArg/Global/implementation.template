@@ -356,7 +356,7 @@ type
 static function KernelArgGlobal.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
 begin Result := new KernelArgGlobalCLMemorySegment(cl_mem) end;
 static function KernelArgGlobal.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgGlobal;
-begin Result := FromCLMemorySegment(cl_mem) end;
+begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
 
 {$endregion CLMemorySegment}
 
@@ -384,7 +384,7 @@ type
 static function KernelArgGlobal.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgGlobal; where T: record;
 begin Result := new KernelArgGlobalCLValue<T>(cl_val) end;
 static function KernelArgGlobal.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgGlobal; where T: record;
-begin Result := FromCLValue(cl_val) end;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
@@ -412,7 +412,7 @@ type
 static function KernelArgGlobal.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgGlobal; where T: record;
 begin Result := new KernelArgGlobalCLArray<T>(cl_arr) end;
 static function KernelArgGlobal.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgGlobal; where T: record;
-begin Result := FromCLArray(cl_arr) end;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
 

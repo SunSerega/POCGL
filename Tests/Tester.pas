@@ -661,7 +661,7 @@ type
           sw.WriteLine;
           
           var used_settings := t.used_settings.ToHashSet;
-          foreach var key in t.all_settings.Keys do
+          foreach var key in t.all_settings.Keys.Order do
             if not used_settings.Contains(key) then
               Otp(new OtpLine($'WARNING: Setting {key} was deleted from "{t.td_fname}"', true)) else
             begin

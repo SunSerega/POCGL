@@ -1,8 +1,8 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
+#DelegateCount
+3
 
 #ExpExecErr
 System.AggregateException: При выполнении очереди было вызвано 1 исключений. Используйте try чтоб получить больше информации ---> System.Exception: TestOK
@@ -19,7 +19,7 @@ System.AggregateException: При выполнении очереди было �
    в OpenCLABC_implementation______.CommandQueueHostBackgoundProc.ExecProc(Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
    в OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
 
-#DelegateCount
-3
+#ReqModules
+OpenCLABC
 
 

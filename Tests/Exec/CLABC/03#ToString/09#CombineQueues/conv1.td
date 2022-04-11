@@ -1,16 +1,16 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
+#DelegateCount
+3
 
 #ExpOtp
-BackgroundConvSyncQueueArray<Object, string>#0
+BackgroundConvSyncQueueArray<Object,string>#0
 	ConstQueue<Object>#1: { nil }
 	ConstQueue<Object>#1: { nil }
 	function lambda(a: array of Object): string
 
-BackgroundConvAsyncQueueArray<Object, string>#0
+BackgroundConvAsyncQueueArray<Object,string>#0
 	ConstQueue<Object>#1: { nil }
 	ConstQueue<Object>#1: { nil }
 	function lambda(a: array of Object): string
@@ -19,7 +19,7 @@ BackgroundConvAsyncQueueArray<Object, string>#0
 [QueueDebug]: 0 queue's created 
 [WaitDebug]: 0 wait handler's created 
 
-#DelegateCount
-3
+#ReqModules
+OpenCLABC
 
 

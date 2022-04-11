@@ -1,8 +1,8 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
+#DelegateCount
+3
 
 #ExpOtp
 CommandQueueHostBackgoundFunc<integer>#0: function lambda: integer
@@ -17,7 +17,7 @@ CommandQueueHostBackgoundProcC#0: procedure lambda(с: Context)
 [QueueDebug]: 0 queue's created 
 [WaitDebug]: 0 wait handler's created 
 
-#DelegateCount
-3
+#ReqModules
+OpenCLABC
 
 

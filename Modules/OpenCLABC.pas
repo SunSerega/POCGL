@@ -716,7 +716,7 @@ type
     end;
     public constructor(params file_texts: array of string) := Create(Context.Default, file_texts);
     
-    private constructor(ntv: cl_program);
+    public constructor(ntv: cl_program);
     begin
       OpenCLABCInternalException.RaiseIfError( cl.RetainProgram(ntv) );
       self.ntv := ntv;
@@ -859,7 +859,7 @@ type
     private constructor(code: ProgramCode; k_name: string);
     begin
       self.code := code;
-      self.k_name := name;
+      self.k_name := k_name;
     end;
     
     public constructor(ntv: cl_kernel);
@@ -4760,7 +4760,7 @@ type
     begin
       Result := res_const;
       {$ifdef DEBUG}
-      if Result and not ShouldInstaCallAction then raise new OpenCLABCInternalException($'');
+      if not Result and ShouldInstaCallAction then raise new OpenCLABCInternalException($'');
       {$endif DEBUG}
     end;
     public property IsConst: boolean read GetIsConst;

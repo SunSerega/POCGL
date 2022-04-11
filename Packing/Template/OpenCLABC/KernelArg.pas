@@ -471,6 +471,11 @@ type
           m += s.inp_nick;
           m += '(';
           m += s.par_name;
+          //TODO #????
+          begin
+            m += ' as object as ';
+            write_inp_t(m, 'CommandQueue');
+          end;
           m += ') end;'#10;
         end;
         

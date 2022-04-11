@@ -129,15 +129,15 @@
     public property Properties: KernelProperties read GetProperties;
     
     public static function operator=(wr1, wr2: Kernel): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     public static function operator<>(wr1, wr2: Kernel): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     
     public function Equals(obj: object): boolean; override :=
     (obj is Kernel(var wr)) and (self = wr);
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{Name}:{ntv.val}] from {code}';
+    $'{TypeName(self)}[{Name}] from {code}';
     
   end;
   
