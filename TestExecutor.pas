@@ -3,7 +3,6 @@
 procedure OnException(e: Exception; et: string := 'General') :=
 lock Console.Error do
 begin
-  Console.Out.Close;
   Console.Error.WriteLine($'%{et}Exception%');
   Console.Error.WriteLine(e);
   Halt;

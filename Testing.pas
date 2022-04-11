@@ -47,8 +47,10 @@ type
     public function FinishExecution: (string, string);
     begin
       if paused then p.StandardInput.WriteLine;
-      var otp := p.StandardOutput.ReadToEnd.Remove(#13).Trim(#10);
-      var err := p.StandardError.ReadToEnd.Remove(#13).Trim(#10).Split(|#10|,2);
+      var t_otp := p.StandardOutput.ReadToEndAsync;
+      var t_err := p.StandardError.ReadToEndAsync;
+      var otp := t_otp.Result.Remove(#13).Trim(#10);
+      var err := t_err.Result.Remove(#13).Trim(#10).Split(|#10|,2);
       p.WaitForExit;
       DeleteFile(executor);
       case err[0] of
