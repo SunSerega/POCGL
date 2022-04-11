@@ -1942,9 +1942,7 @@ type
         if rt<>nil then sb.Append(TypeToTypeName(rt));
         sb += '{ ';
       end;
-      if rt<>nil then
-        sb.Append(_ObjectToString(val)) else
-        sb += 'nil';
+      sb += _ObjectToString(val);
       if typeof(T) <> rt then
         sb += ' }';
     end;
@@ -8186,6 +8184,8 @@ type
 
 {$region KernelArg}
 
+{$region Common}
+
 {$region Base}
 
 type
@@ -8211,10 +8211,11 @@ type
     
     public constructor(o: T);
     begin
+      inherited Create(true);
       SetObj(o);
-      is_const := true;
     end;
-    public constructor := is_const := false;
+    public constructor :=
+    inherited Create(false);
     
     public procedure SetObj(o: T);
     begin
@@ -8246,15 +8247,6 @@ type
     
   end;
   
-  KernelArgSetterCL = sealed class(KernelArgSetterTyped<cl_mem>)
-    
-    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError(
-      cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), self.o)
-    );
-    
-  end;
-  
   KernelArg = abstract partial class
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
@@ -8262,21 +8254,213 @@ type
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; abstract;
     
   end;
-  KernelArgCommon<T> = record
-    private q: CommandQueue<T>;
+  
+{$endregion Base}
+
+{$region GlobalConv}
+
+type
+  KernelArgSetterGlobalConv = class(KernelArgSetterTyped<cl_mem>)
+    
+    public constructor(mem: cl_mem) := inherited Create(mem);
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError(
+      cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), self.o)
+    );
+    
+    protected procedure Finalize; override :=
+    OpenCLABCInternalException.RaiseIfError(
+      cl.ReleaseMemObject(self.o)
+    );
+    
+  end;
+  KernelArgSetterGlobalConvHnd = sealed class(KernelArgSetterGlobalConv)
+    private gc_hnd: GCHandle;
+    
+    public constructor(mem: cl_mem; gc_hnd: GCHandle);
+    begin
+      inherited Create(mem);
+      self.gc_hnd := gc_hnd;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure Finalize; override;
+    begin
+      inherited;
+      gc_hnd.Free;
+    end;
+    
+  end;
+  
+  KernelArgGlobalConvCommon = record
+    private setter: KernelArgSetterGlobalConv;
+    
+    public constructor(mem: cl_mem) :=
+    self.setter := new KernelArgSetterGlobalConv(mem);
+    public constructor(mem: cl_mem; gc_hnd: GCHandle) :=
+    self.setter := new KernelArgSetterGlobalConvHnd(mem, gc_hnd);
+    public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; make_const: T->KernelArgSetterTyped<T>; make_delayed: ()->KernelArgSetterTyped<T>): ValueTuple<KernelArgSetter, EventList>;
+    function Invoke := ValueTuple.Create(self.setter as KernelArgSetter, EventList.Empty);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb += ': ';
+      CommandQueueBase.ToStringRuntimeValue(sb, setter.o);
+      sb += #10;
+    end;
+    
+  end;
+  KernelArgConstantConvCommon = KernelArgGlobalConvCommon;
+  
+{$endregion GlobalConv}
+
+{$region GlobalWrap}
+
+type
+  KernelArgSetterGlobalWrap<TWrap> = sealed class(KernelArgSetterTyped<cl_mem>)
+  where TWrap: class;
+    private wrap: TWrap := nil;
+    
+    public constructor(wrap: TWrap; mem: cl_mem);
+    begin
+      inherited Create(mem);
+      self.wrap := wrap;
+    end;
+    public constructor := inherited;
+    
+    public procedure SetObj(wrap: TWrap; mem: cl_mem);
+    begin
+      inherited SetObj(mem);
+      self.wrap := wrap;
+    end;
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override;
+    begin
+      OpenCLABCInternalException.RaiseIfError(
+        cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), self.o)
+      );
+      
+      GC.KeepAlive(self.wrap);
+      self.wrap := nil;
+    end;
+    
+  end;
+  
+  KernelArgGlobalWrapCommon<TWrap> = record
+  where TWrap: class;
+    private q: CommandQueue<TWrap>;
+    
+    public constructor(q: CommandQueue<TWrap>) := self.q := q;
+    public constructor := raise new OpenCLABCInternalException;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<KernelArgSetter, EventList>;
+    begin
+      var wrap_qr := inv.InvokeBranch(q.InvokeToAny);
+      var arg_setter: KernelArgSetter;
+      if wrap_qr.IsConst then
+      begin
+        var wrap := wrap_qr.GetResDirect;
+        arg_setter := new KernelArgSetterGlobalWrap<TWrap>(wrap, get_ntv(wrap));
+      end else
+      begin
+        var res := new KernelArgSetterGlobalWrap<TWrap>;
+        wrap_qr.AddAction(c->
+        begin
+          var wrap := wrap_qr.GetResDirect;
+          res.SetObj(wrap, get_ntv(wrap));
+        end);
+        arg_setter := res;
+      end;
+      Result := ValueTuple.Create(arg_setter,
+        wrap_qr.AttachInvokeActions(inv.g)
+      );
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  KernelArgConstantWrapCommon<TWrap> = KernelArgGlobalWrapCommon<TWrap>;
+  
+{$endregion GlobalWrap}
+
+{$region Local}
+
+type
+  KernelArgSetterLocalBytes = sealed class(KernelArgSetterTyped<UIntPtr>)
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
+    
+  end;
+  
+  KernelArgLocal = abstract partial class(KernelArg) end;
+  KernelArgLocalBytes = sealed class(KernelArgLocal)
+    private bytes: CommandQueue<UIntPtr>;
+    
+    public constructor(bytes: CommandQueue<UIntPtr>) := self.bytes := bytes;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    bytes.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override;
+    begin
+      var bytes_qr := inv.InvokeBranch(bytes.InvokeToAny);
+      var arg_setter: KernelArgSetter;
+      if bytes_qr.IsConst then
+        arg_setter := new KernelArgSetterLocalBytes(bytes_qr.GetResDirect) else
+      begin
+        var res := new KernelArgSetterLocalBytes;
+        bytes_qr.AddAction(c->res.SetObj(bytes_qr.GetResDirect));
+        arg_setter := res;
+      end;
+      Result := ValueTuple.Create(arg_setter,
+        bytes_qr.AttachInvokeActions(inv.g)
+      );
+    end;
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      bytes.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+{$endregion Local}
+
+{$region Private}
+
+type
+  KernelArgPrivateCommon<TInp> = record
+    private q: CommandQueue<TInp>;
+    
+    public constructor(q: CommandQueue<TInp>) := self.q := q;
+    public constructor := raise new OpenCLABCInternalException;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->KernelArgSetterTyped<TInp>; make_delayed: ()->KernelArgSetterTyped<TInp>): ValueTuple<KernelArgSetter, EventList>;
     begin
       var prev_qr := inv.InvokeBranch(q.InvokeToAny);
-      var arg_setter: KernelArgSetterTyped<T>;
+      var arg_setter: KernelArgSetter;
       if prev_qr.IsConst then
         arg_setter := make_const(prev_qr.GetResDirect) else
       begin
-        arg_setter := make_delayed();
-        prev_qr.AddAction(c->arg_setter.SetObj(prev_qr.GetResDirect));
+        var res := make_delayed();
+        prev_qr.AddAction(c->res.SetObj(prev_qr.GetResDirect));
+        arg_setter := res;
       end;
-      Result := ValueTuple.Create(arg_setter as KernelArgSetter,
+      Result := ValueTuple.Create(arg_setter,
         prev_qr.AttachInvokeActions(inv.g)
       );
     end;
@@ -8290,37 +8474,9 @@ type
     
   end;
   
-{$endregion Base}
+{$endregion Private}
 
-{$region LocalBytes}
-
-type
-  KernelArgSetterLocalBytes = sealed class(KernelArgSetterTyped<UIntPtr>)
-    
-    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
-    
-  end;
-  
-  KernelArgLocal = abstract partial class(KernelArg) end;
-  KernelArgLocalBytes = sealed class(KernelArgLocal)
-    private data: KernelArgCommon<UIntPtr>;
-    
-    public constructor(bytes: CommandQueue<UIntPtr>) := data.q := bytes;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, bytes->new KernelArgSetterLocalBytes(bytes), ()->new KernelArgSetterLocalBytes);
-    
-    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
-    
-  end;
-  
-{$endregion LocalBytes}
+{$endregion Common}
 
 {%KernelArg\implementation!KernelArg.pas%}
 

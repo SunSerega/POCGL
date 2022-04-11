@@ -1,4 +1,124 @@
 ﻿
 
 
+{$region Managed}
+
+{$region Value}
+
+static function KernelArg.FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
+begin Result := KernelArgPrivate.FromValue(val) end;
+
+{$endregion Value}
+
+{$region Array}
+
+static function KernelArg.FromArray<T>(a: array of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray(a, c, kernel_use) end;
+
+{$endregion Array}
+
+{$region Array2}
+
+static function KernelArg.FromArray2<T>(a: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray2(a, c, kernel_use) end;
+
+{$endregion Array2}
+
+{$region Array3}
+
+static function KernelArg.FromArray3<T>(a: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray3(a, c, kernel_use) end;
+
+{$endregion Array3}
+
+{$region ArraySegment}
+
+static function KernelArg.FromArraySegment<T>(seg: ArraySegment<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArraySegment(seg, c, kernel_use) end;
+
+{$endregion ArraySegment}
+
+{$endregion Managed}
+
+{$region NativeArea}
+
+{$region NativeMemoryArea}
+
+static function KernelArg.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context; kernel_use: MemoryUsage): KernelArg;
+begin Result := KernelArgGlobal.FromNativeMemoryArea(ntv_mem_area, c, kernel_use) end;
+
+{$endregion NativeMemoryArea}
+
+{$region NativeValueArea}
+
+static function KernelArg.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromNativeValueArea(ntv_val_area, c, kernel_use) end;
+
+{$endregion NativeValueArea}
+
+{$region NativeArrayArea}
+
+static function KernelArg.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromNativeArrayArea(ntv_arr_area, c, kernel_use) end;
+
+{$endregion NativeArrayArea}
+
+{$endregion NativeArea}
+
+{$region Native}
+
+{$region NativeMemory}
+
+static function KernelArg.FromNativeMemory(ntv_mem: NativeMemory; c: Context; kernel_use: MemoryUsage): KernelArg;
+begin Result := KernelArgGlobal.FromNativeMemory(ntv_mem, c, kernel_use) end;
+
+{$endregion NativeMemory}
+
+{$region NativeValue}
+
+static function KernelArg.FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromNativeValue(ntv_val, c, kernel_use) end;
+
+{$endregion NativeValue}
+
+{$region NativeArray}
+
+static function KernelArg.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
+
+{$endregion NativeArray}
+
+{$endregion Native}
+
+{$region CL}
+
+{$region CLMemorySegment}
+
+static function KernelArg.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
+begin Result := KernelArgGlobal.FromCLMemorySegment(cl_mem) end;
+static function KernelArg.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
+begin Result := FromCLMemorySegment(cl_mem) end;
+
+{$endregion CLMemorySegment}
+
+{$region CLValue}
+
+static function KernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromCLValue(cl_val) end;
+static function KernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArg; where T: record;
+begin Result := FromCLValue(cl_val) end;
+
+{$endregion CLValue}
+
+{$region CLArray}
+
+static function KernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromCLArray(cl_arr) end;
+static function KernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArg; where T: record;
+begin Result := FromCLArray(cl_arr) end;
+
+{$endregion CLArray}
+
+{$endregion CL}
+
 

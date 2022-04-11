@@ -1,5 +1,140 @@
 ﻿    
     
     
+    {$region Managed}
+    
+    {$region Value}
+    
+    public static function FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(val: T): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: CommandQueue<T>): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ConstQueue<T>): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    
+    {$endregion Value}
+    
+    {$region Array}
+    
+    public static function FromArray<T>(a: array of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion Array}
+    
+    {$region Array2}
+    
+    public static function FromArray2<T>(a: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion Array2}
+    
+    {$region Array3}
+    
+    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion Array3}
+    
+    {$region ArraySegment}
+    
+    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion ArraySegment}
+    
+    {$endregion Managed}
+    
+    {$region NativeArea}
+    
+    {$region NativeMemoryArea}
+    
+    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg;
+    
+    {$endregion NativeMemoryArea}
+    
+    {$region NativeValueArea}
+    
+    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion NativeValueArea}
+    
+    {$region NativeArrayArea}
+    
+    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion NativeArrayArea}
+    
+    {$endregion NativeArea}
+    
+    {$region Native}
+    
+    {$region NativeMemory}
+    
+    public static function FromNativeMemory(ntv_mem: NativeMemory; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg;
+    
+    {$endregion NativeMemory}
+    
+    {$region NativeValue}
+    
+    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion NativeValue}
+    
+    {$region NativeArray}
+    
+    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    
+    {$endregion NativeArray}
+    
+    {$endregion Native}
+    
+    {$region CL}
+    
+    {$region CLMemorySegment}
+    
+    public static function FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
+    public static function operator implicit(cl_mem: CLMemorySegment): KernelArg;
+    begin Result := FromCLMemorySegment(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
+    begin Result := FromCLMemorySegment(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemorySegment>): KernelArg;
+    begin Result := FromCLMemorySegment(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemorySegment>): KernelArg;
+    begin Result := FromCLMemorySegment(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
+    
+    {$endregion CLMemorySegment}
+    
+    {$region CLValue}
+    
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): KernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): KernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): KernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArg; where T: record;
+    
+    {$endregion CLValue}
+    
+    {$region CLArray}
+    
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): KernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): KernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): KernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArg; where T: record;
+    
+    {$endregion CLArray}
+    
+    {$endregion CL}
+    
     
     

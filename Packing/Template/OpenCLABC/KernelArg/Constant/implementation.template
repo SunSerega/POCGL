@@ -1,4 +1,421 @@
 ﻿
 
 
+{$region Managed}
+
+{$region Array}
+
+type
+  KernelArgConstantArray<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:Array%');
+    
+    public constructor(a: array of T; c: Context);
+    begin
+      var ec: ErrorCode;
+      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf&<T>)), a[0], ec);
+      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromArray<T>(a: array of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray<T>(a, c) end;
+
+{$endregion Array}
+
+{$region Array2}
+
+type
+  KernelArgConstantArray2<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:Array2%');
+    
+    public constructor(a: array[,] of T; c: Context);
+    begin
+      var ec: ErrorCode;
+      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf&<T>)), a[0,0], ec);
+      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromArray2<T>(a: array[,] of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray2<T>(a, c) end;
+
+{$endregion Array2}
+
+{$region Array3}
+
+type
+  KernelArgConstantArray3<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:Array3%');
+    
+    public constructor(a: array[,,] of T; c: Context);
+    begin
+      var ec: ErrorCode;
+      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf&<T>)), a[0,0,0], ec);
+      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromArray3<T>(a: array[,,] of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray3<T>(a, c) end;
+
+{$endregion Array3}
+
+{$region ArraySegment}
+
+type
+  KernelArgConstantArraySegment<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:ArraySegment%');
+    
+    public constructor(seg: ArraySegment<T>; c: Context);
+    begin
+      var ec: ErrorCode;
+      var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf&<T>)), seg.Array[seg.Offset], ec);
+      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromArraySegment<T>(seg: ArraySegment<T>; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArraySegment<T>(seg, c) end;
+
+{$endregion ArraySegment}
+
+{$endregion Managed}
+
+{$region NativeArea}
+
+{$region NativeMemoryArea}
+
+type
+  KernelArgConstantNativeMemoryArea = sealed class(KernelArgConstant)
+    private data: KernelArgConstantConvCommon;
+    
+    public constructor(ntv_mem_area: NativeMemoryArea; c: Context);
+    begin
+      var ec: ErrorCode;
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_mem_area.sz, ntv_mem_area.ptr, ec);
+      data := new KernelArgConstantConvCommon(mem);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context): KernelArgConstant;
+begin Result := new KernelArgConstantNativeMemoryArea(ntv_mem_area, c) end;
+
+{$endregion NativeMemoryArea}
+
+{$region NativeValueArea}
+
+type
+  KernelArgConstantNativeValueArea<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:NativeValueArea%');
+    
+    public constructor(ntv_val_area: NativeValueArea<T>; c: Context);
+    begin
+      var ec: ErrorCode;
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
+      data := new KernelArgConstantConvCommon(mem);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantNativeValueArea<T>(ntv_val_area, c) end;
+
+{$endregion NativeValueArea}
+
+{$region NativeArrayArea}
+
+type
+  KernelArgConstantNativeArrayArea<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:NativeArrayArea%');
+    
+    public constructor(ntv_arr_area: NativeArrayArea<T>; c: Context);
+    begin
+      var ec: ErrorCode;
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
+      data := new KernelArgConstantConvCommon(mem);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantNativeArrayArea<T>(ntv_arr_area, c) end;
+
+{$endregion NativeArrayArea}
+
+{$endregion NativeArea}
+
+{$region Native}
+
+{$region NativeMemory}
+
+type
+  KernelArgConstantNativeMemory = sealed class(KernelArgConstant)
+    private data: KernelArgConstantConvCommon;
+    
+    public constructor(ntv_mem: NativeMemory; c: Context);
+    begin
+      var ec: ErrorCode;
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
+      data := new KernelArgConstantConvCommon(mem);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromNativeMemory(ntv_mem: NativeMemory; c: Context): KernelArgConstant;
+begin Result := new KernelArgConstantNativeMemory(ntv_mem, c) end;
+
+{$endregion NativeMemory}
+
+{$region NativeValue}
+
+type
+  KernelArgConstantNativeValue<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:NativeValue%');
+    
+    public constructor(ntv_val: NativeValue<T>; c: Context);
+    begin
+      var ec: ErrorCode;
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
+      data := new KernelArgConstantConvCommon(mem);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantNativeValue<T>(ntv_val, c) end;
+
+{$endregion NativeValue}
+
+{$region NativeArray}
+
+type
+  KernelArgConstantNativeArray<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantConvCommon;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:NativeArray%');
+    
+    public constructor(ntv_arr: NativeArray<T>; c: Context);
+    begin
+      var ec: ErrorCode;
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
+      data := new KernelArgConstantConvCommon(mem);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke();
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantNativeArray<T>(ntv_arr, c) end;
+
+{$endregion NativeArray}
+
+{$endregion Native}
+
+{$region CL}
+
+{$region CLMemorySegment}
+
+type
+  KernelArgConstantCLMemorySegment = sealed class(KernelArgConstant)
+    private data: KernelArgConstantWrapCommon<CLMemorySegment>;
+    
+    public constructor(cl_mem: CommandQueue<CLMemorySegment>) :=
+    data := new KernelArgConstantWrapCommon<CLMemorySegment>(cl_mem);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->o.Native);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
+begin Result := new KernelArgConstantCLMemorySegment(cl_mem) end;
+static function KernelArgConstant.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgConstant;
+begin Result := FromCLMemorySegment(cl_mem) end;
+
+{$endregion CLMemorySegment}
+
+{$region CLValue}
+
+type
+  KernelArgConstantCLValue<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantWrapCommon<CLValue<T>>;
+    
+    public constructor(cl_val: CommandQueue<CLValue<T>>) :=
+    data := new KernelArgConstantWrapCommon<CLValue<T>>(cl_val);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->o.Native);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantCLValue<T>(cl_val) end;
+static function KernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgConstant; where T: record;
+begin Result := FromCLValue(cl_val) end;
+
+{$endregion CLValue}
+
+{$region CLArray}
+
+type
+  KernelArgConstantCLArray<T> = sealed class(KernelArgConstant)
+  where T: record;
+    private data: KernelArgConstantWrapCommon<CLArray<T>>;
+    
+    public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
+    data := new KernelArgConstantWrapCommon<CLArray<T>>(cl_arr);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->o.Native);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantCLArray<T>(cl_arr) end;
+static function KernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgConstant; where T: record;
+begin Result := FromCLArray(cl_arr) end;
+
+{$endregion CLArray}
+
+{$endregion CL}
+
 
