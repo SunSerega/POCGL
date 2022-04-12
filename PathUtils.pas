@@ -48,7 +48,7 @@ begin
     exit;
   end;
   
-  var c := fname_parts.ZipTuple(base_folder_parts).Count(\(part1, part2)->part1=part2);
+  var c := fname_parts.ZipTuple(base_folder_parts).TakeWhile(\(part1, part2)->part1=part2).Count;
   if c=0 then
   begin
     Result := fname;
