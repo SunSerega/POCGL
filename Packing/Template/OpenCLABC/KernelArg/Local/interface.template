@@ -1,14 +1,24 @@
 ﻿    
     
     
+    {$region FromBytes}
+    
     public static function FromBytes(bytes: CommandQueue<UIntPtr>): KernelArgLocal;
     public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     
+    {$endregion FromBytes}
+    
+    {$region FromItemCount}
+    
     public static function FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
     public static function FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+    
+    {$endregion FromItemCount}
+    
+    {$region LikeArray}
     
     public static function LikeArray<T>(a: CommandQueue<array of T>): KernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
@@ -39,6 +49,8 @@
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
     public static function LikeCLArray<T>(a: CLArray<T>): KernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
+    
+    {$endregion LikeArray}
     
     
     

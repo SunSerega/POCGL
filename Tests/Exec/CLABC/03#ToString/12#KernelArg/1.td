@@ -1,112 +1,444 @@
+﻿
 
-
-
-#ReqModules
-OpenCLABC
 
 #DelegateCount
-10
+4
 
 #ExpOtp
-Const
+Global
 |	Managed
-|	|	Value
-|	|	|	KernelArgValue<integer>: 1
-|	|	|	KernelArgValue<integer>: 1
 |	|	Array
-|	|	|	KernelArgArray<real, array of real>: [2]
-|	|	|	KernelArgArray<real, array of real>: [2]
+|	|	|	KernelArgGlobalArray<byte>: cl_mem[*]
+|	|	Array2
+|	|	|	KernelArgGlobalArray2<byte>: cl_mem[*]
 |	|	Array3
-|	|	|	KernelArgArray<int64, array [,,] of int64>: [[[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0]]]
-|	|	|	KernelArgArray<int64, array of int64>: { nil }
+|	|	|	KernelArgGlobalArray3<byte>: cl_mem[*]
 |	|	ArraySegment
-|	|	|	KernelArgArraySegment<integer>: [3]
-|	|	|	TODO#2650: implicit from segment
+|	|	|	KernelArgGlobalArraySegment<byte>: cl_mem[*]
+|	NativeArea
+|	|	NativeMemoryArea
+|	|	|	KernelArgGlobalNativeMemoryArea: cl_mem[*]
+|	|	NativeValueArea
+|	|	|	KernelArgGlobalNativeValueArea<byte>: cl_mem[*]
+|	|	NativeArrayArea
+|	|	|	KernelArgGlobalNativeArrayArea<byte>: cl_mem[*]
 |	Native
-|	|	Area
-|	|	|	KernelArgData: 4[5]
-|	|	|	KernelArgValue<NativeMemoryArea>: 4[5]
-|	|	Pointer
-|	|	|	KernelArgData: 6[8]
+|	|	NativeMemory
+|	|	|	KernelArgGlobalNativeMemory: cl_mem[*]
 |	|	NativeValue
-|	|	|	KernelArgNativeValue<byte>: NativeValue<byte>{ 7 }
-|	|	|	KernelArgNativeValue<byte>: NativeValue<byte>{ 7 }
+|	|	|	KernelArgGlobalNativeValue<byte>: cl_mem[*]
 |	|	NativeArray
-|	|	|	KernelArgNativeArray<integer>: [8,9]
-|	|	|	KernelArgNativeArray<integer>: [8,9]
-|	OpenCL
-|	|	CLMemorySegment
-|	|	|	KernelArgCLMemorySegment: CLMemorySegment[*] of size 11
-|	|	|	KernelArgCLMemorySegment: CLMemorySegment[*] of size 11
-|	|	CLMemorySubSegment
-|	|	|	KernelArgCLMemorySegment: CLMemorySubSegment{ CLMemorySubSegment[*] of size 10 inside CLMemorySegment[*] of size 11 }
-|	|	|	KernelArgCLMemorySegment: CLMemorySubSegment{ CLMemorySubSegment[*] of size 10 inside CLMemorySegment[*] of size 11 }
+|	|	|	KernelArgGlobalNativeArray<byte>: cl_mem[*]
+|	CL
+|	|	CLMemory
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		CLMemoryCCQ#0
+|	|	|			CCCObj<CLMemory>: CLMemory[*] of size 1
 |	|	CLValue
-|	|	|	KernelArgCLValue<word>: CLValue<word>[*]
-|	|	|	KernelArgCLValue<word>: CLValue<word>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		CLValueCCQ<byte>#0
+|	|	|			CCCObj<CLValue<byte>>: CLValue<byte>[*]
 |	|	CLArray
-|	|	|	KernelArgCLArray<single>: CLArray<single>[*] of length 12
-|	|	|	KernelArgCLArray<single>: CLArray<single>[*] of length 12
-Queue
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		CLArrayCCQ<byte>#0
+|	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4
+Constant
 |	Managed
-|	|	Value
-|	|	|	KernelArgValueCQ<integer>
-|	|	|		ConstQueue<integer>#0: 1
-|	|	|	KernelArgValueCQ<integer>
-|	|	|		ConstQueue<integer>#0: 1
 |	|	Array
-|	|	|	KernelArgArrayCQ<real, array of real>
-|	|	|		ConstQueue<array of real>#0: [2]
-|	|	|	KernelArgArrayCQ<real, array of real>
-|	|	|		ConstQueue<array of real>#0: [2]
+|	|	|	KernelArgConstantArray<byte>: cl_mem[*]
+|	|	Array2
+|	|	|	KernelArgConstantArray2<byte>: cl_mem[*]
 |	|	Array3
-|	|	|	KernelArgArrayCQ<int64, array [,,] of int64>
-|	|	|		ConstQueue<array [,,] of int64>#0: [[[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0]]]
-|	|	|	KernelArgArrayCQ<int64, array of int64>
-|	|	|		ConstQueue<array [,,] of int64>#0: [[[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0]]]
+|	|	|	KernelArgConstantArray3<byte>: cl_mem[*]
 |	|	ArraySegment
-|	|	|	KernelArgArraySegmentCQ<integer>
-|	|	|		ConstQueue<ArraySegment<integer>>#0: [3]
-|	|	|	TODO#2650: implicit from segment
+|	|	|	KernelArgConstantArraySegment<byte>: cl_mem[*]
+|	NativeArea
+|	|	NativeMemoryArea
+|	|	|	KernelArgConstantNativeMemoryArea: cl_mem[*]
+|	|	NativeValueArea
+|	|	|	KernelArgConstantNativeValueArea<byte>: cl_mem[*]
+|	|	NativeArrayArea
+|	|	|	KernelArgConstantNativeArrayArea<byte>: cl_mem[*]
 |	Native
-|	|	Area
-|	|	|	KernelArgDataCQ
-|	|	|		ConstQueue<NativeMemoryArea>#0: 4[5]
-|	|	|	KernelArgValueCQ<NativeMemoryArea>
-|	|	|		ConstQueue<NativeMemoryArea>#0: 4[5]
+|	|	NativeMemory
+|	|	|	KernelArgConstantNativeMemory: cl_mem[*]
 |	|	NativeValue
-|	|	|	KernelArgNativeValueCQ<byte>
-|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 7 }
-|	|	|	KernelArgNativeValueCQ<byte>
-|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 7 }
+|	|	|	KernelArgConstantNativeValue<byte>: cl_mem[*]
 |	|	NativeArray
-|	|	|	KernelArgNativeArrayCQ<integer>
-|	|	|		ConstQueue<NativeArray<integer>>#0: [8,9]
-|	|	|	KernelArgNativeArrayCQ<integer>
-|	|	|		ConstQueue<NativeArray<integer>>#0: [8,9]
-|	OpenCL
-|	|	CLMemorySegment
-|	|	|	KernelArgCLMemorySegmentCQ
-|	|	|		ConstQueue<CLMemorySegment>#0: CLMemorySegment[*] of size 11
-|	|	|	KernelArgCLMemorySegmentCQ
-|	|	|		ConstQueue<CLMemorySegment>#0: CLMemorySegment[*] of size 11
-|	|	CLMemorySubSegment
-|	|	|	KernelArgCLMemorySegmentCQ
-|	|	|		ConstQueue<CLMemorySegment>#0: CLMemorySubSegment{ CLMemorySubSegment[*] of size 10 inside CLMemorySegment[*] of size 11 }
-|	|	|	KernelArgCLMemorySegmentCQ
-|	|	|		ConstQueue<CLMemorySegment>#0: CLMemorySubSegment{ CLMemorySubSegment[*] of size 10 inside CLMemorySegment[*] of size 11 }
+|	|	|	KernelArgConstantNativeArray<byte>: cl_mem[*]
+|	CL
+|	|	CLMemory
+|	|	|	KernelArgConstantCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgConstantCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgConstantCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgConstantCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgConstantCLMemory
+|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1
+|	|	|	KernelArgConstantCLMemory
+|	|	|		CLMemoryCCQ#0
+|	|	|			CCCObj<CLMemory>: CLMemory[*] of size 1
 |	|	CLValue
-|	|	|	KernelArgCLValueCQ<word>
-|	|	|		ConstQueue<CLValue<word>>#0: CLValue<word>[*]
-|	|	|	KernelArgCLValueCQ<word>
-|	|	|		ConstQueue<CLValue<word>>#0: CLValue<word>[*]
+|	|	|	KernelArgConstantCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgConstantCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgConstantCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgConstantCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgConstantCLValue<byte>
+|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*]
+|	|	|	KernelArgConstantCLValue<byte>
+|	|	|		CLValueCCQ<byte>#0
+|	|	|			CCCObj<CLValue<byte>>: CLValue<byte>[*]
 |	|	CLArray
-|	|	|	KernelArgCLArrayCQ<single>
-|	|	|		ConstQueue<CLArray<single>>#0: CLArray<single>[*] of length 12
-|	|	|	KernelArgCLArrayCQ<single>
-|	|	|		ConstQueue<CLArray<single>>#0: CLArray<single>[*] of length 12
+|	|	|	KernelArgConstantCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgConstantCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgConstantCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgConstantCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgConstantCLArray<byte>
+|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4
+|	|	|	KernelArgConstantCLArray<byte>
+|	|	|		CLArrayCCQ<byte>#0
+|	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4
+Local
+|	FromBytes
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 123
+|	|	KernelArgLocalBytes
+|	|		CommandQueueHostQuickFunc<>#0: function lambda:
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 123
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<longword,>#0
+|	|			CommandQueueHostQuickFunc<longword>#1: function lambda: longword
+|	|			function lambda(bytes: longword):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 123
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|			CommandQueueHostQuickFunc<integer>#1: function lambda: integer
+|	|			function lambda(bytes: integer):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 123
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<uint64,>#0
+|	|			CommandQueueHostQuickFunc<uint64>#1: function lambda: uint64
+|	|			function lambda(bytes: uint64):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 123
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<int64,>#0
+|	|			CommandQueueHostQuickFunc<int64>#1: function lambda: int64
+|	|			function lambda(bytes: int64):
+|	FromItemCount
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 256
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<longword,>#0
+|	|			CommandQueueHostQuickFunc<longword>#1: function lambda: longword
+|	|			function lambda(item_count: longword):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 256
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|			CommandQueueHostQuickFunc<integer>#1: function lambda: integer
+|	|			function lambda(item_count: integer):
+|	LikeArray
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 4
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|			CommandQueueThenQuickConvert<array of byte,integer>#1
+|	|				CommandQueueHostQuickFunc<array of byte>#2: function lambda: array of byte
+|	|				function lambda(a: array of byte): integer
+|	|			function lambda(item_count: integer):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 6
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|			CommandQueueThenQuickConvert<array [,] of byte,integer>#1
+|	|				CommandQueueHostQuickFunc<array [,] of byte>#2: function lambda: array [,] of byte
+|	|				function lambda(a: array [,] of byte): integer
+|	|			function lambda(item_count: integer):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 24
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|			CommandQueueThenQuickConvert<array [,,] of byte,integer>#1
+|	|				CommandQueueHostQuickFunc<array [,,] of byte>#2: function lambda: array [,,] of byte
+|	|				function lambda(a: array [,,] of byte): integer
+|	|			function lambda(item_count: integer):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 5
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<longword,>#0
+|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>,longword>#1
+|	|				CommandQueueHostQuickFunc<NativeArrayArea<byte>>#2: function lambda: NativeArrayArea<byte>
+|	|				function lambda(a: NativeArrayArea<byte>): longword
+|	|			function lambda(item_count: longword):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 4
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<longword,>#0
+|	|			CommandQueueThenQuickConvert<NativeArray<byte>,longword>#1
+|	|				CommandQueueHostQuickFunc<NativeArray<byte>>#2: function lambda: NativeArray<byte>
+|	|				function lambda(a: NativeArray<byte>): longword
+|	|			function lambda(item_count: longword):
+|	|	KernelArgLocalBytes
+|	|		ConstQueue<>#0: 4
+|	|	KernelArgLocalBytes
+|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|			CommandQueueThenQuickConvert<CLArray<byte>,integer>#1
+|	|				CommandQueueHostQuickFunc<CLArray<byte>>#2: function lambda: CLArray<byte>
+|	|				function lambda(a: CLArray<byte>): integer
+|	|			function lambda(item_count: integer):
+Private
+|	Managed
+|	|	Array
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ParameterQueue<array of byte>#0["a"]: Default=[1,2,3,4]
+|	|	Array2
+|	|	|	KernelArgPrivateArray2<byte>
+|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array of byte>#0: array [,] of byte{ [[1,2,3],[4,5,6]] }
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ParameterQueue<array [,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
+|	|	Array3
+|	|	|	KernelArgPrivateArray3<byte>
+|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array of byte>#0: array [,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|	KernelArgPrivateArray<byte>
+|	|	|		ParameterQueue<array [,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	ArraySegment
+|	|	|	KernelArgPrivateArraySegment<byte>
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
+|	|	|	KernelArgPrivateArraySegment<byte>
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
+|	|	|	KernelArgPrivateArraySegment<byte>
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
+|	|	|	KernelArgPrivateArraySegment<byte>
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
+|	|	|	KernelArgPrivateArraySegment<byte>
+|	|	|		ParameterQueue<ArraySegment<byte>>#0["seg"]: Default=[2,3]
+|	NativeArea
+|	|	NativeMemoryArea
+|	|	|	KernelArgPrivateNativeMemoryArea
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2]
+|	|	|	KernelArgPrivateNativeMemoryArea
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2]
+|	|	|	KernelArgPrivateNativeMemoryArea
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2]
+|	|	|	KernelArgPrivateNativeMemoryArea
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2]
+|	|	|	KernelArgPrivateNativeMemoryArea
+|	|	|		ParameterQueue<NativeMemoryArea>#0["ntv_mem_area"]: Default=NativeMemoryArea:$1[2]
+|	|	NativeValueArea
+|	|	|	KernelArgPrivateNativeValueArea<byte>
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3
+|	|	|	KernelArgPrivateNativeValueArea<byte>
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3
+|	|	|	KernelArgPrivateNativeValueArea<byte>
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3
+|	|	|	KernelArgPrivateNativeValueArea<byte>
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3
+|	|	|	KernelArgPrivateNativeValueArea<byte>
+|	|	|		ParameterQueue<NativeValueArea<byte>>#0["ntv_val_area"]: Default=NativeValueArea<byte>:$3
+|	|	NativeArrayArea
+|	|	|	KernelArgPrivateNativeArrayArea<byte>
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5]
+|	|	|	KernelArgPrivateNativeArrayArea<byte>
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5]
+|	|	|	KernelArgPrivateNativeArrayArea<byte>
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5]
+|	|	|	KernelArgPrivateNativeArrayArea<byte>
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5]
+|	|	|	KernelArgPrivateNativeArrayArea<byte>
+|	|	|		ParameterQueue<NativeArrayArea<byte>>#0["ntv_arr_area"]: Default=NativeArrayArea<byte>:$4[5]
+|	Native
+|	|	NativeMemory
+|	|	|	KernelArgPrivateNativeMemory
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|	KernelArgPrivateNativeMemory
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|	KernelArgPrivateNativeMemory
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|	KernelArgPrivateNativeMemory
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|	KernelArgPrivateNativeMemory
+|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]
+|	|	NativeValue
+|	|	|	KernelArgPrivateNativeValue<byte>
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
+|	|	|	KernelArgPrivateNativeValue<byte>
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
+|	|	|	KernelArgPrivateNativeValue<byte>
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
+|	|	|	KernelArgPrivateNativeValue<byte>
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
+|	|	|	KernelArgPrivateNativeValue<byte>
+|	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 }
+|	|	NativeArray
+|	|	|	KernelArgPrivateNativeArray<byte>
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateNativeArray<byte>
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateNativeArray<byte>
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateNativeArray<byte>
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|	KernelArgPrivateNativeArray<byte>
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=[1,2,3,4]
+|	Value
+|	|	KernelArgPrivateValue<integer>
+|	|		ConstQueue<integer>#0: 1
+|	|	KernelArgPrivateValue<integer>
+|	|		ConstQueue<integer>#0: 1
+|	|	KernelArgPrivateValue<integer>
+|	|		ConstQueue<integer>#0: 1
+|	|	KernelArgPrivateValue<byte>
+|	|		ConstQueue<byte>#0: 1
+|	|	KernelArgPrivateValue<byte>
+|	|		ParameterQueue<byte>#0["val"]: Default=1
+Generic
+|	Managed
+|	|	Array
+|	|	|	KernelArgGlobalArray<byte>: cl_mem[*]
+|	|	Array2
+|	|	|	KernelArgGlobalArray2<byte>: cl_mem[*]
+|	|	Array3
+|	|	|	KernelArgGlobalArray3<byte>: cl_mem[*]
+|	|	ArraySegment
+|	|	|	KernelArgGlobalArraySegment<byte>: cl_mem[*]
+|	NativeArea
+|	|	NativeMemoryArea
+|	|	|	KernelArgGlobalNativeMemoryArea: cl_mem[*]
+|	|	NativeValueArea
+|	|	|	KernelArgGlobalNativeValueArea<byte>: cl_mem[*]
+|	|	NativeArrayArea
+|	|	|	KernelArgGlobalNativeArrayArea<byte>: cl_mem[*]
+|	Native
+|	|	NativeMemory
+|	|	|	KernelArgGlobalNativeMemory: cl_mem[*]
+|	|	NativeValue
+|	|	|	KernelArgGlobalNativeValue<byte>: cl_mem[*]
+|	|	NativeArray
+|	|	|	KernelArgGlobalNativeArray<byte>: cl_mem[*]
+|	CL
+|	|	CLMemory
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1
+|	|	|	KernelArgGlobalCLMemory
+|	|	|		CLMemoryCCQ#0
+|	|	|			CCCObj<CLMemory>: CLMemory[*] of size 1
+|	|	CLValue
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*]
+|	|	|	KernelArgGlobalCLValue<byte>
+|	|	|		CLValueCCQ<byte>#0
+|	|	|			CCCObj<CLValue<byte>>: CLValue<byte>[*]
+|	|	CLArray
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4
+|	|	|	KernelArgGlobalCLArray<byte>
+|	|	|		CLArrayCCQ<byte>#0
+|	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4
+|	Value
+|	|	KernelArgPrivateValue<integer>
+|	|		ConstQueue<integer>#0: 1
+|	|	KernelArgPrivateValue<integer>
+|	|		ConstQueue<integer>#0: 1
+|	|	KernelArgPrivateValue<integer>
+|	|		ConstQueue<integer>#0: 1
+|	|	KernelArgPrivateValue<byte>
+|	|		ConstQueue<byte>#0: 1
+|	|	KernelArgPrivateValue<byte>
+|	|		ParameterQueue<byte>#0["val"]: Default=1
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 
 [WaitDebug]: 0 wait handler's created 
+
+#ReqModules
+OpenCLABC
 
 

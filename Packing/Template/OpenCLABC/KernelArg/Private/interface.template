@@ -3,20 +3,6 @@
     
     {$region Managed}
     
-    {$region Value}
-    
-    public static function FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(val: T): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ConstQueue<T>): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    
-    {$endregion Value}
-    
     {$region Array}
     
     public static function FromArray<T>(a: CommandQueue<array of T>): KernelArgPrivate; where T: record;
@@ -33,29 +19,29 @@
     
     {$region Array2}
     
-    public static function FromArray2<T>(a: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a: array[,] of T): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
-    public static function operator implicit<T>(a: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
-    public static function operator implicit<T>(a: ConstQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
-    public static function operator implicit<T>(a: ParameterQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
+    public static function FromArray2<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a2: array[,] of T): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: ConstQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: ParameterQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a: array[,,] of T): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
-    public static function operator implicit<T>(a: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
-    public static function operator implicit<T>(a: ConstQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
-    public static function operator implicit<T>(a: ParameterQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
+    public static function FromArray3<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a3: array[,,] of T): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: ConstQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: ParameterQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
     
     {$endregion Array3}
     
@@ -166,6 +152,20 @@
     {$endregion NativeArray}
     
     {$endregion Native}
+    
+    {$region Value}
+    
+    public static function FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(val: T): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ConstQueue<T>): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    
+    {$endregion Value}
     
     
     

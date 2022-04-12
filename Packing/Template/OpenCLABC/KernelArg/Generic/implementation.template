@@ -3,13 +3,6 @@
 
 {$region Managed}
 
-{$region Value}
-
-static function KernelArg.FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
-begin Result := KernelArgPrivate.FromValue(val) end;
-
-{$endregion Value}
-
 {$region Array}
 
 static function KernelArg.FromArray<T>(a: array of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
@@ -19,15 +12,15 @@ begin Result := KernelArgGlobal.FromArray(a, c, kernel_use) end;
 
 {$region Array2}
 
-static function KernelArg.FromArray2<T>(a: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray2(a, c, kernel_use) end;
+static function KernelArg.FromArray2<T>(a2: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray2(a2, c, kernel_use) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
-static function KernelArg.FromArray3<T>(a: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray3(a, c, kernel_use) end;
+static function KernelArg.FromArray3<T>(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray3(a3, c, kernel_use) end;
 
 {$endregion Array3}
 
@@ -120,5 +113,12 @@ begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 {$endregion CLArray}
 
 {$endregion CL}
+
+{$region Value}
+
+static function KernelArg.FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
+begin Result := KernelArgPrivate.FromValue(val) end;
+
+{$endregion Value}
 
 

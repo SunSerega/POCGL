@@ -1,0 +1,24 @@
+﻿
+
+
+TestRange('Global', ()->
+begin
+{$include Global}
+end);
+TestRange('Constant', ()->
+begin
+{$include Constant}
+end);
+TestRange('Local', ()->
+begin
+{$include Local}
+end);
+TestRange('Private', ()->
+begin
+{$include Private}
+end);
+TestRange('Generic', ()->
+begin
+{$include Generic}
+end);
+

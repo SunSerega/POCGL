@@ -11,13 +11,13 @@
     
     {$region Array2}
     
-    public static function FromArray2<T>(a: array[,] of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil): KernelArgConstant; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil): KernelArgConstant; where T: record;
     
     {$endregion Array3}
     

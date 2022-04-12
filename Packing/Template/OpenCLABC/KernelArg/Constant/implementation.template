@@ -16,7 +16,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -45,11 +45,11 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:Array2%');
     
-    public constructor(a: array[,] of T; c: Context);
+    public constructor(a2: array[,] of T; c: Context);
     begin
       var ec: ErrorCode;
-      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0], ec);
+      var gc_hnd := GCHandle.Alloc(a2, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -64,8 +64,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray2<T>(a: array[,] of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray2<T>(a, c) end;
+static function KernelArgConstant.FromArray2<T>(a2: array[,] of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray2<T>(a2, c) end;
 
 {$endregion Array2}
 
@@ -78,11 +78,11 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgConstant:Array3%');
     
-    public constructor(a: array[,,] of T; c: Context);
+    public constructor(a3: array[,,] of T; c: Context);
     begin
       var ec: ErrorCode;
-      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0,0], ec);
+      var gc_hnd := GCHandle.Alloc(a3, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -97,8 +97,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray3<T>(a: array[,,] of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray3<T>(a, c) end;
+static function KernelArgConstant.FromArray3<T>(a3: array[,,] of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray3<T>(a3, c) end;
 
 {$endregion Array3}
 
@@ -115,7 +115,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -148,7 +148,7 @@ type
     public constructor(ntv_mem_area: NativeMemoryArea; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_mem_area.sz, ntv_mem_area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -180,7 +180,7 @@ type
     public constructor(ntv_val_area: NativeValueArea<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -212,7 +212,7 @@ type
     public constructor(ntv_arr_area: NativeArrayArea<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -245,7 +245,7 @@ type
     public constructor(ntv_mem: NativeMemory; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -277,7 +277,7 @@ type
     public constructor(ntv_val: NativeValue<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -309,7 +309,7 @@ type
     public constructor(ntv_arr: NativeArray<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;

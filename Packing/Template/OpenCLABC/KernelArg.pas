@@ -68,7 +68,7 @@ type
   end;
   
   KATypeWriter = record
-    public n,m, all: Writer;
+    public n,m, all, t: Writer;
     public class_name := default(string);
     
     {$region Init/Close}
@@ -94,6 +94,7 @@ type
       self.n := new FileWriter(GetFullPath('interface.template', dir));
       self.m := new FileWriter(GetFullPath('implementation.template', dir));
       self.all := n*m;
+      self.t := new FileWriter(GetFullPath(tname??'All', 'Tests\Exec\CLABC\03#ToString\12#KernelArg'));
       
       loop 3 do
       begin
@@ -101,6 +102,7 @@ type
         if tname<>nil then
           n += '  ';
         all += #10;
+        t += #10;
       end;
       
       if tname=nil then exit;
@@ -135,6 +137,10 @@ type
         container.n += '  end;'#10;
         container.n += '  '#10;
         
+        container.t += '{$include ';
+        container.t += tname;
+        container.t += '}'#10;
+        
       end);
       
     end;
@@ -144,6 +150,7 @@ type
       self.n := w1.n*w2.n;
       self.m := w1.m*w2.m;
       self.all := n*m;
+      self.t := w1.t*w2.t;
     end;
     public static function operator*(w1, w2: KATypeWriter) := new KATypeWriter(w1, w2);
     
@@ -157,8 +164,10 @@ type
       wr          .n += '    '#10'    ';
       container   .n +=   '  '#10'  ';
       wr_and_cont .m +=       #10;
+      wr_and_cont .t +=       #10;
       
       wr_and_cont.all.Close;
+      wr_and_cont.t.Close;
     end;
     
     {$endregion Init/Close}
@@ -172,7 +181,14 @@ type
       loop tab do n += '  ';
       all += #10;
       
+      t += 'TestRange(''';
+      t += rname;
+      t += ''', ()->'#10;
+      t += 'begin'#10;
+      
       act();
+      
+      t += 'end);'#10;
       
       loop tab do n += '  ';
       all += '{$endregion ';
@@ -336,7 +352,7 @@ type
           //TODO Нужен ли map_use? Протестировать, может ли из за None отрубиться обновление данных RAM
           m += '      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(';
           m += if s.kernel_use_is_constant then 'MemoryUsage.ReadOnly' else 'kernel_use';
-          m += ', MemoryUsage.ReadWrite), ';
+          m += ', MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ';
           m += s.buff_create_pars.Replace('%', s.par_name);
           m += ', ec);'#10;
           
@@ -408,6 +424,16 @@ type
       if s.gen then all += ' where T: record;';
       all += #10;
       
+      t += 'Test(';
+      t += class_name;
+      t += '.From';
+      t += s.inp_nick;
+      t += '(';
+      if not s.NeedContextPar then t += 'CQ(';
+      t += s.par_name;
+      if not s.NeedContextPar then t += ')';
+      t += '));'#10;
+      
       m += 'begin Result := ';
       if s.redirect_to=nil then
       begin
@@ -429,6 +455,7 @@ type
         
         foreach var wrap in |nil, 'CommandQueue', 'ConstQueue', 'ParameterQueue'| do
         begin
+          
           n += '    public static function operator implicit';
           if s.gen then n += '<T>';
           n += '(';
@@ -446,10 +473,35 @@ type
           n += '(';
           n += s.par_name;
           n += ') end;'#10;
+          
+          t += 'TestT&<';
+          t += class_name;
+          t += '>(';
+          if wrap<>nil then
+          begin
+            if wrap='CommandQueue' then
+              t += 'CQ' else
+            begin
+              t += 'new ';
+              write_inp_t(t, wrap);
+            end;
+            t += '(';
+          end;
+          if wrap='ParameterQueue' then
+          begin
+            t += '''';
+            t += s.par_name;
+            t += ''', ';
+          end;
+          t += s.par_name;
+          if wrap<>nil then t += ')';
+          t += ');'#10;
+          
         end;
       
         if s.need_ccq then
         begin
+          
           n += '    public ';
           all += 'static function ';
           m += class_name;
@@ -477,6 +529,13 @@ type
             write_inp_t(m, 'CommandQueue');
           end;
           m += ') end;'#10;
+          
+          t += 'TestT&<';
+          t += class_name;
+          t += '>(';
+          t += s.par_name;
+          t += '.NewQueue);'#10;
+          
         end;
         
       end;
@@ -511,18 +570,11 @@ begin
     (wr_global*wr_constant*wr_private*wr_generic).WriteReg(2, 'Managed', ()->
     begin
       
-      begin
-        var s := FromMethodSettings.Create('Value', 'val', nil, true, false);
-        
-        wr_private.WriteFrom(s.DefinePrivate('new UIntPtr(Marshal.SizeOf(default(T))), %'));
-        wr_generic.WriteFrom(s.DefineGeneric(wr_private.class_name));
-        
-      end;
-      
       for var dim := 1 to 3 do
       begin
         var s := new FromMethodSettings('Array', 'a', 'array', true, false);
         if dim<>1 then s.inp_nick += dim.ToString;
+        if dim<>1 then s.par_name += dim.ToString;
         if dim<>1 then s.inp_tname += '[' + ','*(dim-1) + ']';
         
         var cl_pars := 'new UIntPtr(UInt32(%.Length)*uint64(Marshal.SizeOf(default(T)))), %['+SeqFill(dim,'0').JoinToString(',') + ']';
@@ -591,56 +643,95 @@ begin
       
     end);
     
+    //TODO #2650: Как исправят - перенести в начало [Managed]
+    begin
+      var s := FromMethodSettings.Create('Value', 'val', nil, true, false);
+      
+      wr_private.WriteFrom(s.DefinePrivate('new UIntPtr(Marshal.SizeOf(default(T))), %'));
+      wr_generic.WriteFrom(s.DefineGeneric(wr_private.class_name));
+      
+    end;
+    
     
     
     {$region Local}
     
-    foreach var t in |nil, 'UInt32', 'Int32', 'UInt64', 'Int64'| do
+    wr_local.WriteReg(2, 'FromBytes', ()->
     begin
-      var n := wr_local.n;
-      var m := if t=nil then wr_local.m else new WriterEmpty;
-      var all := n*m;
       
-      n += '    public ';
-      all += 'static function ';
-      m += wr_local.class_name;
-      m += '.';
-      all += 'FromBytes(bytes: CommandQueue<';
-      all += t ?? 'UIntPtr';
-      all += '>)';
-      
-      if t=nil then
+      foreach var dt in |nil, 'UInt32', 'Int32', 'UInt64', 'Int64'| do
       begin
-        n += ': ';
-        n += wr_local.class_name;
-        n += ';'#10;
+        var n := wr_local.n;
+        var m := if dt=nil then wr_local.m else new WriterEmpty;
+        var all := n*m;
+        var t := wr_local.t;
         
-        m += ' := new ';
+        n += '    public ';
+        all += 'static function ';
         m += wr_local.class_name;
-        m += 'Bytes(bytes);'#10;
-      end else
-        n += ' := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));'#10;
+        m += '.';
+        all += 'FromBytes(bytes: CommandQueue<';
+        all += dt ?? 'UIntPtr';
+        all += '>)';
+        
+        t += 'Test(';
+        t += wr_local.class_name;
+        t += '.FromBytes(';
+        t += dt ?? 'new UIntPtr';
+        t += '(123)));'#10;
+        t += 'Test(';
+        t += wr_local.class_name;
+        t += '.FromBytes(HFQQ(()->';
+        t += dt ?? 'new UIntPtr';
+        t += '(123))));'#10;
+        
+        if dt=nil then
+        begin
+          n += ': ';
+          n += wr_local.class_name;
+          n += ';'#10;
+          
+          m += ' := new ';
+          m += wr_local.class_name;
+          m += 'Bytes(bytes);'#10;
+        end else
+          n += ' := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));'#10;
+        
+      end;
       
-    end;
-    wr_local.n += '    ';
-    wr_local.all += #10;
+      wr_local.n += '    ';
+      wr_local.all += #10;
+    end);
     
+    wr_local.WriteReg(2, 'FromItemCount', ()->
     begin
       var n := wr_local.n;
       var m := wr_local.m;
       var all := n*m;
+      var t := wr_local.t;
       
-      foreach var t in |'UInt32','Int32'| do
+      foreach var dt in |'UInt32','Int32'| do
       begin
         n += '    public ';
         all += 'static function ';
         m += wr_local.class_name;
         m += '.';
         all += 'FromItemCount<T>(item_count: CommandQueue<';
-        all += t;
+        all += dt;
         all += '>): ';
         all += wr_local.class_name;
         all += '; where T: record;'#10;
+        
+        t += 'Test(';
+        t += wr_local.class_name;
+        t += '.FromItemCount&<integer>(';
+        t += dt;
+        t += '(64)));'#10;
+        t += 'Test(';
+        t += wr_local.class_name;
+        t += '.FromItemCount&<integer>(HFQQ&<';
+        t += dt;
+        t += '>(()->64)));'#10;
         
         m += 'begin'#10;
         m += '  BlittableHelper.RaiseIfBad(typeof(T), ''%Err:Blittable:Source:';
@@ -654,7 +745,14 @@ begin
       n += '    ';
       all += #10;
       
-      var WriteLike := procedure(tnick, tname: string)->
+    end);
+    
+    wr_local.WriteReg(2, 'LikeArray', ()->
+    begin
+      var n := wr_local.n;
+      var t := wr_local.t;
+      
+      var WriteLike := procedure(tnick, par_name, tname: string)->
       begin
         
         n += '    public static function Like';
@@ -675,21 +773,39 @@ begin
         n += '; where T: record;'#10;
         n += '    begin Result := FromItemCount&<T>(a.Length) end;'#10;
         
+        t += 'Test(';
+        t += wr_local.class_name;
+        t += '.Like';
+        t += tnick;
+        t += '(';
+        t += par_name;
+        t += '));'#10;
+        
+        t += 'Test(';
+        t += wr_local.class_name;
+        t += '.Like';
+        t += tnick;
+        t += '(HFQQ(()->';
+        t += par_name;
+        t += ')));'#10;
+        
         n += '    '#10;
       end;
-      var WriteLikeS := procedure(name: string)->WriteLike(name, name+'<T>');
+      var WriteLikeS := procedure(name, par_name: string)->WriteLike(name, par_name, name+'<T>');
       
-      WriteLike('Array', 'array of T');
-      WriteLike('Array2', 'array[,] of T');
-      WriteLike('Array3', 'array[,,] of T');
+      WriteLike('Array',  'a',  'array of T');
+      WriteLike('Array2', 'a2', 'array[,] of T');
+      WriteLike('Array3', 'a3', 'array[,,] of T');
       
-      WriteLikeS('NativeArrayArea');
-      WriteLikeS('NativeArray');
-      WriteLikeS('CLArray');
+      WriteLikeS('NativeArrayArea', 'ntv_arr_area');
+      WriteLikeS('NativeArray',     'ntv_arr');
+      WriteLikeS('CLArray',         'cl_arr');
       
-    end;
+    end);
     
     {$endregion Local}
+    
+    
     
     KATypeWriter.CloseAll;
   except

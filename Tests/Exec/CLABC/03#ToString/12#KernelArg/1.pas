@@ -1,15 +1,20 @@
-﻿## uses OpenCLABC;
+﻿uses OpenCLABC;
+uses System;
 
 var test_layer := 0;
-var PrintIdents := procedure->
+procedure PrintIdents :=
 loop test_layer do Write('|'#9);
-var Test := procedure(arg: KernelArg)->
+procedure Test(arg: KernelArg) :=
 foreach var l in arg.ToString.Trim.Split(#10) do
 begin
   PrintIdents;
   Writeln(l);
 end;
-var TestRange := procedure(name: string; tests: ()->())->
+procedure TestT<T>(arg: T); where T: KernelArg;
+begin
+  Test(arg);
+end;
+procedure TestRange(name: string; tests: ()->()) :=
 begin
   PrintIdents;
   Writeln(name);
@@ -18,171 +23,28 @@ begin
   test_layer -= 1;
 end;
 
-
+type T=byte;
 
 var val := 1;
-var a := |2.0|;
-var a3 := new int64[2,3,4];
-var seg := new System.ArraySegment<integer>(|2,3,4|, 1,1);
+var a  := new T[](1,2,3,4);
+var a2 := new T[2,3]((1,2,3),(4,5,6));
+var a3 := new T[2,3,4](((1,2,3,4),(5,6,7,8),(9,0,1,2)),((3,4,5,6),(7,8,9,0),(1,2,3,4)));
+var seg := new ArraySegment<T>(a, 1,2);
 
-var area := new NativeMemoryArea(new System.IntPtr(4), new System.UIntPtr(5));
-var ptr := PReal(pointer(6));
-var n_val := new NativeValue<byte>(7);
-var n_a := new NativeArray<integer>(|8,9|);
+var ntv_mem_area := new NativeMemoryArea(new IntPtr(1), new UIntPtr(2));
+var ntv_val_area := new NativeValueArea<T>(new IntPtr(3));
+var ntv_arr_area := new NativeArrayArea<T>(new IntPtr(4), 5);
 
-var cl_mem := new CLMemory(11);
-var cl_sub_mem := new CLMemorySubSegment(cl_mem, 0,10);
-var cl_val := new CLValue<word>;
-var cl_a := new CLArray<single>(12);
+var ntv_mem := new NativeMemory(new UIntPtr(2));
+var ntv_val := new NativeValue<T>(123);
+var ntv_arr := new NativeArray<T>(a);
 
+var cl_mem := new CLMemory(new UIntPtr(1));
+var cl_val := new CLValue<T>(123);
+var cl_arr := new CLArray<T>(4);
 
-
-TestRange('Const', ()->
 begin
   
-  TestRange('Managed', ()->
-  begin
-    TestRange('Value', ()->
-    begin
-      Test(KernelArg.FromValue(val));
-      Test(val);
-    end);
-    TestRange('Array', ()->
-    begin
-      Test(KernelArg.FromArray(a));
-      Test(a);
-    end);
-    TestRange('Array3', ()->
-    begin
-      Test(KernelArg.FromArray3(a3));
-      Test(a3);
-    end);
-    TestRange('ArraySegment', ()->
-    begin
-      Test(KernelArg.FromArraySegment(seg));
-//      Test(seg); //TODO #2650
-      TestRange('TODO#2650: implicit from segment', ()->exit());
-    end);
-  end);
+  {$include All}
   
-  TestRange('Native', ()->
-  begin
-    TestRange('Area', ()->
-    begin
-      Test(KernelArg.FromData(area));
-      Test(area);
-    end);
-    TestRange('Pointer', ()->
-    begin
-      Test(ptr);
-    end);
-    TestRange('NativeValue', ()->
-    begin
-      Test(KernelArg.FromNativeValue(n_val));
-      Test(n_val);
-    end);
-    TestRange('NativeArray', ()->
-    begin
-      Test(KernelArg.FromNativeArray(n_a));
-      Test(n_a);
-    end);
-  end);
-  
-  TestRange('OpenCL', ()->
-  begin
-    TestRange('CLMemory', ()->
-    begin
-      Test(KernelArg.FromCLMemory(cl_mem));
-      Test(cl_mem);
-    end);
-    TestRange('CLMemorySubSegment', ()->
-    begin
-      Test(KernelArg.FromCLMemory(cl_sub_mem));
-      Test(cl_sub_mem);
-    end);
-    TestRange('CLValue', ()->
-    begin
-      Test(KernelArg.FromCLValue(cl_val));
-      Test(cl_val);
-    end);
-    TestRange('CLArray', ()->
-    begin
-      Test(KernelArg.FromCLArray(cl_a));
-      Test(cl_a);
-    end);
-  end);
-  
-end);
-
-TestRange('Queue', ()->
-begin
-  
-  TestRange('Managed', ()->
-  begin
-    TestRange('Value', ()->
-    begin
-      Test(KernelArg.FromValueCQ(CQ(val)));
-      Test(CQ(val));
-    end);
-    TestRange('Array', ()->
-    begin
-      Test(KernelArg.FromArrayCQ(CQ(a)));
-      Test(CQ(a));
-    end);
-    TestRange('Array3', ()->
-    begin
-      Test(KernelArg.FromArray3CQ(CQ(a3)));
-      Test(CQ(a3));
-    end);
-    TestRange('ArraySegment', ()->
-    begin
-      Test(KernelArg.FromArraySegmentCQ(CQ(seg)));
-//      Test(CQ(seg)); //TODO #2650
-      TestRange('TODO#2650: implicit from segment', ()->exit());
-    end);
-  end);
-  
-  TestRange('Native', ()->
-  begin
-    TestRange('Area', ()->
-    begin
-      Test(KernelArg.FromDataCQ(area));
-      Test(CQ(area));
-    end);
-    TestRange('NativeValue', ()->
-    begin
-      Test(KernelArg.FromNativeValueCQ(CQ(n_val)));
-      Test(CQ(n_val));
-    end);
-    TestRange('NativeArray', ()->
-    begin
-      Test(KernelArg.FromNativeArrayCQ(CQ(n_a)));
-      Test(CQ(n_a));
-    end);
-  end);
-  
-  TestRange('OpenCL', ()->
-  begin
-    TestRange('CLMemory', ()->
-    begin
-      Test(KernelArg.FromCLMemoryCQ(cl_mem));
-      Test(CQ(cl_mem));
-    end);
-    TestRange('CLMemorySubSegment', ()->
-    begin
-      Test(KernelArg.FromCLMemoryCQ(CQ&<CLMemory>(cl_sub_mem)));
-      Test(CQ&<CLMemory>(cl_sub_mem));
-    end);
-    TestRange('CLValue', ()->
-    begin
-      Test(KernelArg.FromCLValueCQ(CQ(cl_val)));
-      Test(CQ(cl_val));
-    end);
-    TestRange('CLArray', ()->
-    begin
-      Test(KernelArg.FromCLArrayCQ(CQ(cl_a)));
-      Test(CQ(cl_a));
-    end);
-  end);
-  
-end);
+end.

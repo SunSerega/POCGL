@@ -3,41 +3,6 @@
 
 {$region Managed}
 
-{$region Value}
-
-type
-  KernelArgPrivateSetterValue<T> = sealed class(KernelArgSetterTyped<T>)
-  where T: record;
-    
-    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
-    
-  end;
-  KernelArgPrivateValue<T> = sealed class(KernelArgPrivate)
-  where T: record;
-    private data: KernelArgPrivateCommon<T>;
-    
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgPrivate:Value%');
-    
-    public constructor(val: CommandQueue<T>) :=
-    data := new KernelArgPrivateCommon<T>(val);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterValue<T>(o), ()->new KernelArgPrivateSetterValue<T>);
-    
-    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
-    
-  end;
-  
-static function KernelArgPrivate.FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateValue<T>(val) end;
-
-{$endregion Value}
-
 {$region Array}
 
 type
@@ -89,8 +54,8 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgPrivate:Array2%');
     
-    public constructor(a: CommandQueue<array[,] of T>) :=
-    data := new KernelArgPrivateCommon<array[,] of T>(a);
+    public constructor(a2: CommandQueue<array[,] of T>) :=
+    data := new KernelArgPrivateCommon<array[,] of T>(a2);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -103,8 +68,8 @@ type
     
   end;
   
-static function KernelArgPrivate.FromArray2<T>(a: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray2<T>(a) end;
+static function KernelArgPrivate.FromArray2<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+begin Result := new KernelArgPrivateArray2<T>(a2) end;
 
 {$endregion Array2}
 
@@ -124,8 +89,8 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgPrivate:Array3%');
     
-    public constructor(a: CommandQueue<array[,,] of T>) :=
-    data := new KernelArgPrivateCommon<array[,,] of T>(a);
+    public constructor(a3: CommandQueue<array[,,] of T>) :=
+    data := new KernelArgPrivateCommon<array[,,] of T>(a3);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -138,8 +103,8 @@ type
     
   end;
   
-static function KernelArgPrivate.FromArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray3<T>(a) end;
+static function KernelArgPrivate.FromArray3<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+begin Result := new KernelArgPrivateArray3<T>(a3) end;
 
 {$endregion Array3}
 
@@ -389,5 +354,40 @@ begin Result := new KernelArgPrivateNativeArray<T>(ntv_arr) end;
 {$endregion NativeArray}
 
 {$endregion Native}
+
+{$region Value}
+
+type
+  KernelArgPrivateSetterValue<T> = sealed class(KernelArgSetterTyped<T>)
+  where T: record;
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
+    
+  end;
+  KernelArgPrivateValue<T> = sealed class(KernelArgPrivate)
+  where T: record;
+    private data: KernelArgPrivateCommon<T>;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:KernelArgPrivate:Value%');
+    
+    public constructor(val: CommandQueue<T>) :=
+    data := new KernelArgPrivateCommon<T>(val);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new KernelArgPrivateSetterValue<T>(o), ()->new KernelArgPrivateSetterValue<T>);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgPrivate.FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+begin Result := new KernelArgPrivateValue<T>(val) end;
+
+{$endregion Value}
 
 

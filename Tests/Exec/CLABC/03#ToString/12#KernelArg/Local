@@ -1,0 +1,39 @@
+﻿
+
+
+TestRange('FromBytes', ()->
+begin
+Test(KernelArgLocal.FromBytes(new UIntPtr(123)));
+Test(KernelArgLocal.FromBytes(HFQQ(()->new UIntPtr(123))));
+Test(KernelArgLocal.FromBytes(UInt32(123)));
+Test(KernelArgLocal.FromBytes(HFQQ(()->UInt32(123))));
+Test(KernelArgLocal.FromBytes(Int32(123)));
+Test(KernelArgLocal.FromBytes(HFQQ(()->Int32(123))));
+Test(KernelArgLocal.FromBytes(UInt64(123)));
+Test(KernelArgLocal.FromBytes(HFQQ(()->UInt64(123))));
+Test(KernelArgLocal.FromBytes(Int64(123)));
+Test(KernelArgLocal.FromBytes(HFQQ(()->Int64(123))));
+end);
+TestRange('FromItemCount', ()->
+begin
+Test(KernelArgLocal.FromItemCount&<integer>(UInt32(64)));
+Test(KernelArgLocal.FromItemCount&<integer>(HFQQ&<UInt32>(()->64)));
+Test(KernelArgLocal.FromItemCount&<integer>(Int32(64)));
+Test(KernelArgLocal.FromItemCount&<integer>(HFQQ&<Int32>(()->64)));
+end);
+TestRange('LikeArray', ()->
+begin
+Test(KernelArgLocal.LikeArray(a));
+Test(KernelArgLocal.LikeArray(HFQQ(()->a)));
+Test(KernelArgLocal.LikeArray2(a2));
+Test(KernelArgLocal.LikeArray2(HFQQ(()->a2)));
+Test(KernelArgLocal.LikeArray3(a3));
+Test(KernelArgLocal.LikeArray3(HFQQ(()->a3)));
+Test(KernelArgLocal.LikeNativeArrayArea(ntv_arr_area));
+Test(KernelArgLocal.LikeNativeArrayArea(HFQQ(()->ntv_arr_area)));
+Test(KernelArgLocal.LikeNativeArray(ntv_arr));
+Test(KernelArgLocal.LikeNativeArray(HFQQ(()->ntv_arr)));
+Test(KernelArgLocal.LikeCLArray(cl_arr));
+Test(KernelArgLocal.LikeCLArray(HFQQ(()->cl_arr)));
+end);
+

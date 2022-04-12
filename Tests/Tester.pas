@@ -501,8 +501,8 @@ type
       
       var anon_names := |
         '<>local_variables_class_', '<>lambda',
-        'cl_command_queue[',
-        'Platform[', 'Device[', 'Context[', 'CLMemory[', 'CLMemorySubSegment[', 'ProgramCode[',
+        'cl_command_queue[', 'cl_mem[',
+        'Platform[', 'Device[', 'Context[', 'ProgramCode[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[',
         ':строка ', ':line '
       |;
       var inds := new integer[anon_names.Length];
@@ -511,7 +511,7 @@ type
       begin
         if in_anon_name then
         begin
-          if ch.IsDigit then continue;
+          if (ch in '0'..'9') or (ch in 'A'..'F') then continue;
           in_anon_name := false;
           res += '*';
         end;

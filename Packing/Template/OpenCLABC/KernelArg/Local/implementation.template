@@ -1,7 +1,13 @@
 ﻿
 
 
+{$region FromBytes}
+
 static function KernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new KernelArgLocalBytes(bytes);
+
+{$endregion FromBytes}
+
+{$region FromItemCount}
 
 static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
 begin
@@ -17,5 +23,11 @@ begin
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
   )));
 end;
+
+{$endregion FromItemCount}
+
+{$region LikeArray}
+
+{$endregion LikeArray}
 
 

@@ -5801,13 +5801,13 @@ type
     
     {$region Array2}
     
-    public static function FromArray2<T>(a: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
     
     {$endregion Array3}
     
@@ -5930,13 +5930,13 @@ type
     
     {$region Array2}
     
-    public static function FromArray2<T>(a: array[,] of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil): KernelArgConstant; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil): KernelArgConstant; where T: record;
     
     {$endregion Array3}
     
@@ -6049,14 +6049,24 @@ type
   
   KernelArgLocal = abstract partial class(KernelArg)
     
+    {$region FromBytes}
+    
     public static function FromBytes(bytes: CommandQueue<UIntPtr>): KernelArgLocal;
     public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     
+    {$endregion FromBytes}
+    
+    {$region FromItemCount}
+    
     public static function FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
     public static function FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+    
+    {$endregion FromItemCount}
+    
+    {$region LikeArray}
     
     public static function LikeArray<T>(a: CommandQueue<array of T>): KernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
@@ -6088,6 +6098,8 @@ type
     public static function LikeCLArray<T>(a: CLArray<T>): KernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
+    {$endregion LikeArray}
+    
   end;
   
   {$endregion Local}
@@ -6097,20 +6109,6 @@ type
   KernelArgPrivate = abstract partial class(KernelArg)
     
     {$region Managed}
-    
-    {$region Value}
-    
-    public static function FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(val: T): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ConstQueue<T>): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArgPrivate; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    
-    {$endregion Value}
     
     {$region Array}
     
@@ -6128,29 +6126,29 @@ type
     
     {$region Array2}
     
-    public static function FromArray2<T>(a: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a: array[,] of T): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
-    public static function operator implicit<T>(a: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
-    public static function operator implicit<T>(a: ConstQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
-    public static function operator implicit<T>(a: ParameterQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray2&<T>(a) end;
+    public static function FromArray2<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a2: array[,] of T): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: ConstQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: ParameterQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a: array[,,] of T): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
-    public static function operator implicit<T>(a: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
-    public static function operator implicit<T>(a: ConstQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
-    public static function operator implicit<T>(a: ParameterQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    begin Result := FromArray3&<T>(a) end;
+    public static function FromArray3<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a3: array[,,] of T): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: ConstQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: ParameterQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
     
     {$endregion Array3}
     
@@ -6262,6 +6260,20 @@ type
     
     {$endregion Native}
     
+    {$region Value}
+    
+    public static function FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(val: T): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ConstQueue<T>): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArgPrivate; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    
+    {$endregion Value}
+    
   end;
   
   {$endregion Private}
@@ -6273,20 +6285,6 @@ type
     
     {$region Managed}
     
-    {$region Value}
-    
-    public static function FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
-    public static function operator implicit<T>(val: T): KernelArg; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: CommandQueue<T>): KernelArg; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ConstQueue<T>): KernelArg; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArg; where T: record;
-    begin Result := FromValue&<T>(val) end;
-    
-    {$endregion Value}
-    
     {$region Array}
     
     public static function FromArray<T>(a: array of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
@@ -6295,13 +6293,13 @@ type
     
     {$region Array2}
     
-    public static function FromArray2<T>(a: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
     
     {$endregion Array3}
     
@@ -6405,6 +6403,20 @@ type
     {$endregion CLArray}
     
     {$endregion CL}
+    
+    {$region Value}
+    
+    public static function FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(val: T): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: CommandQueue<T>): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ConstQueue<T>): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    
+    {$endregion Value}
     
   end;
   
@@ -15129,7 +15141,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
       data := new KernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15158,11 +15170,11 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: array[,] of T; c: Context; kernel_use: MemoryUsage);
+    public constructor(a2: array[,] of T; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0], ec);
+      var gc_hnd := GCHandle.Alloc(a2, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
       data := new KernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15177,8 +15189,8 @@ type
     
   end;
   
-static function KernelArgGlobal.FromArray2<T>(a: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalArray2<T>(a, c, kernel_use) end;
+static function KernelArgGlobal.FromArray2<T>(a2: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
+begin Result := new KernelArgGlobalArray2<T>(a2, c, kernel_use) end;
 
 {$endregion Array2}
 
@@ -15191,11 +15203,11 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: array[,,] of T; c: Context; kernel_use: MemoryUsage);
+    public constructor(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0,0], ec);
+      var gc_hnd := GCHandle.Alloc(a3, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
       data := new KernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15210,8 +15222,8 @@ type
     
   end;
   
-static function KernelArgGlobal.FromArray3<T>(a: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalArray3<T>(a, c, kernel_use) end;
+static function KernelArgGlobal.FromArray3<T>(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
+begin Result := new KernelArgGlobalArray3<T>(a3, c, kernel_use) end;
 
 {$endregion Array3}
 
@@ -15228,7 +15240,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
       data := new KernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15261,7 +15273,7 @@ type
     public constructor(ntv_mem_area: NativeMemoryArea; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), ntv_mem_area.sz, ntv_mem_area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
       data := new KernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15293,7 +15305,7 @@ type
     public constructor(ntv_val_area: NativeValueArea<T>; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
       data := new KernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15325,7 +15337,7 @@ type
     public constructor(ntv_arr_area: NativeArrayArea<T>; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
       data := new KernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15358,7 +15370,7 @@ type
     public constructor(ntv_mem: NativeMemory; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
       data := new KernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15390,7 +15402,7 @@ type
     public constructor(ntv_val: NativeValue<T>; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
       data := new KernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15422,7 +15434,7 @@ type
     public constructor(ntv_arr: NativeArray<T>; c: Context; kernel_use: MemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite), ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
       data := new KernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15550,7 +15562,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15579,11 +15591,11 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: array[,] of T; c: Context);
+    public constructor(a2: array[,] of T; c: Context);
     begin
       var ec: ErrorCode;
-      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0], ec);
+      var gc_hnd := GCHandle.Alloc(a2, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15598,8 +15610,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray2<T>(a: array[,] of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray2<T>(a, c) end;
+static function KernelArgConstant.FromArray2<T>(a2: array[,] of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray2<T>(a2, c) end;
 
 {$endregion Array2}
 
@@ -15612,11 +15624,11 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: array[,,] of T; c: Context);
+    public constructor(a3: array[,,] of T; c: Context);
     begin
       var ec: ErrorCode;
-      var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0,0], ec);
+      var gc_hnd := GCHandle.Alloc(a3, GCHandleType.Pinned);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15631,8 +15643,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray3<T>(a: array[,,] of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray3<T>(a, c) end;
+static function KernelArgConstant.FromArray3<T>(a3: array[,,] of T; c: Context): KernelArgConstant; where T: record;
+begin Result := new KernelArgConstantArray3<T>(a3, c) end;
 
 {$endregion Array3}
 
@@ -15649,7 +15661,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15682,7 +15694,7 @@ type
     public constructor(ntv_mem_area: NativeMemoryArea; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_mem_area.sz, ntv_mem_area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15714,7 +15726,7 @@ type
     public constructor(ntv_val_area: NativeValueArea<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15746,7 +15758,7 @@ type
     public constructor(ntv_arr_area: NativeArrayArea<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15779,7 +15791,7 @@ type
     public constructor(ntv_mem: NativeMemory; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15811,7 +15823,7 @@ type
     public constructor(ntv_val: NativeValue<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15843,7 +15855,7 @@ type
     public constructor(ntv_arr: NativeArray<T>; c: Context);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
       data := new KernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -15956,7 +15968,13 @@ begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$region Local}
 
+{$region FromBytes}
+
 static function KernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new KernelArgLocalBytes(bytes);
+
+{$endregion FromBytes}
+
+{$region FromItemCount}
 
 static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
 begin
@@ -15973,46 +15991,17 @@ begin
   )));
 end;
 
+{$endregion FromItemCount}
+
+{$region LikeArray}
+
+{$endregion LikeArray}
+
 {$endregion Local}
 
 {$region Private}
 
 {$region Managed}
-
-{$region Value}
-
-type
-  KernelArgPrivateSetterValue<T> = sealed class(KernelArgSetterTyped<T>)
-  where T: record;
-    
-    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
-    
-  end;
-  KernelArgPrivateValue<T> = sealed class(KernelArgPrivate)
-  where T: record;
-    private data: KernelArgPrivateCommon<T>;
-    
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
-    
-    public constructor(val: CommandQueue<T>) :=
-    data := new KernelArgPrivateCommon<T>(val);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterValue<T>(o), ()->new KernelArgPrivateSetterValue<T>);
-    
-    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
-    
-  end;
-  
-static function KernelArgPrivate.FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateValue<T>(val) end;
-
-{$endregion Value}
 
 {$region Array}
 
@@ -16065,8 +16054,8 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: CommandQueue<array[,] of T>) :=
-    data := new KernelArgPrivateCommon<array[,] of T>(a);
+    public constructor(a2: CommandQueue<array[,] of T>) :=
+    data := new KernelArgPrivateCommon<array[,] of T>(a2);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -16079,8 +16068,8 @@ type
     
   end;
   
-static function KernelArgPrivate.FromArray2<T>(a: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray2<T>(a) end;
+static function KernelArgPrivate.FromArray2<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+begin Result := new KernelArgPrivateArray2<T>(a2) end;
 
 {$endregion Array2}
 
@@ -16100,8 +16089,8 @@ type
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: CommandQueue<array[,,] of T>) :=
-    data := new KernelArgPrivateCommon<array[,,] of T>(a);
+    public constructor(a3: CommandQueue<array[,,] of T>) :=
+    data := new KernelArgPrivateCommon<array[,,] of T>(a3);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -16114,8 +16103,8 @@ type
     
   end;
   
-static function KernelArgPrivate.FromArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray3<T>(a) end;
+static function KernelArgPrivate.FromArray3<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+begin Result := new KernelArgPrivateArray3<T>(a3) end;
 
 {$endregion Array3}
 
@@ -16366,18 +16355,46 @@ begin Result := new KernelArgPrivateNativeArray<T>(ntv_arr) end;
 
 {$endregion Native}
 
+{$region Value}
+
+type
+  KernelArgPrivateSetterValue<T> = sealed class(KernelArgSetterTyped<T>)
+  where T: record;
+    
+    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
+    
+  end;
+  KernelArgPrivateValue<T> = sealed class(KernelArgPrivate)
+  where T: record;
+    private data: KernelArgPrivateCommon<T>;
+    
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    
+    public constructor(val: CommandQueue<T>) :=
+    data := new KernelArgPrivateCommon<T>(val);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new KernelArgPrivateSetterValue<T>(o), ()->new KernelArgPrivateSetterValue<T>);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function KernelArgPrivate.FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+begin Result := new KernelArgPrivateValue<T>(val) end;
+
+{$endregion Value}
+
 {$endregion Private}
 
 {$region Generic}
 
 {$region Managed}
-
-{$region Value}
-
-static function KernelArg.FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
-begin Result := KernelArgPrivate.FromValue(val) end;
-
-{$endregion Value}
 
 {$region Array}
 
@@ -16388,15 +16405,15 @@ begin Result := KernelArgGlobal.FromArray(a, c, kernel_use) end;
 
 {$region Array2}
 
-static function KernelArg.FromArray2<T>(a: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray2(a, c, kernel_use) end;
+static function KernelArg.FromArray2<T>(a2: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray2(a2, c, kernel_use) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
-static function KernelArg.FromArray3<T>(a: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray3(a, c, kernel_use) end;
+static function KernelArg.FromArray3<T>(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
+begin Result := KernelArgGlobal.FromArray3(a3, c, kernel_use) end;
 
 {$endregion Array3}
 
@@ -16489,6 +16506,13 @@ begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 {$endregion CLArray}
 
 {$endregion CL}
+
+{$region Value}
+
+static function KernelArg.FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
+begin Result := KernelArgPrivate.FromValue(val) end;
+
+{$endregion Value}
 
 {$endregion Generic}
 
