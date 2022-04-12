@@ -12,7 +12,7 @@ ind: CommandQueue<integer>
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(int64(!ind!) * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+  new UIntPtr(int64(!ind!) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
   new IntPtr(!res_ptr!),
   !evs!
 );
@@ -45,7 +45,7 @@ new &T[{%rank? !len! : !len1!,!len2! : !len1!,!len2!,!len3! %}]
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, new UIntPtr(!res!.Length * Marshal.SizeOf&<T>),
+  UIntPtr.Zero, new UIntPtr(!res!.Length * Marshal.SizeOf(default(T))),
   !res![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
 );

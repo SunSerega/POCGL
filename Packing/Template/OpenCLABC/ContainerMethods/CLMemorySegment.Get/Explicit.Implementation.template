@@ -53,8 +53,8 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf&<TRecord>),
-          new IntPtr((own_qr as QueueResPtr<TRecord>).res),
+          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          new IntPtr((own_qr as QueueResPtr<TRecord>).GetResPtrDirect),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -112,7 +112,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var res := new TRecord[o.Size64 div Marshal.SizeOf&<TRecord>];;
+        var res := new TRecord[o.Size64 div Marshal.SizeOf(default(TRecord))];;
         own_qr.SetRes(res);
         var res_hnd := GCHandle.Alloc(res, GCHandleType.Pinned);
         
@@ -120,7 +120,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(0), new UIntPtr(res.Length * Marshal.SizeOf&<TRecord>),
+          new UIntPtr(0), new UIntPtr(res.Length * Marshal.SizeOf(default(TRecord))),
           res_hnd.AddrOfPinnedObject,
           evs.count, evs.evs, res_ev
         );
@@ -190,7 +190,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf&<TRecord>),
+          new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf(default(TRecord))),
           res[0],
           evs.count, evs.evs, res_ev
         );
@@ -275,7 +275,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf&<TRecord>),
+          new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf(default(TRecord))),
           res[0,0],
           evs.count, evs.evs, res_ev
         );
@@ -371,7 +371,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf&<TRecord>),
+          new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf(default(TRecord))),
           res[0,0,0],
           evs.count, evs.evs, res_ev
         );

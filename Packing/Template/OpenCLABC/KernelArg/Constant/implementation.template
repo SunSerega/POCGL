@@ -16,7 +16,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf&<T>)), a[0], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -49,7 +49,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf&<T>)), a[0,0], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -82,7 +82,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf&<T>)), a[0,0,0], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0,0,0], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
@@ -115,7 +115,7 @@ type
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf&<T>)), seg.Array[seg.Offset], ec);
+      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite), new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
       data := new KernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;

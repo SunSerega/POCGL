@@ -6,8 +6,8 @@ val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
 !Enqueue
 var ec := cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
-  new IntPtr(!val:ptr!),
+  new UIntPtr(!ind! * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
+  !val:ptr!,
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -20,7 +20,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>
 //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
 var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length * Marshal.SizeOf&<T>),
+  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length * Marshal.SizeOf(default(T))),
   !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
 );
@@ -31,7 +31,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>; {%rank? a_ind : a_ind1,a_in
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!ind! * Marshal.SizeOf&<T>), new UIntPtr(!len! * Marshal.SizeOf&<T>),
+  new UIntPtr(!ind! * Marshal.SizeOf(default(T))), new UIntPtr(!len! * Marshal.SizeOf(default(T))),
   !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}],
   !evs!
 );
@@ -49,8 +49,8 @@ a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!ind!*Marshal.SizeOf&<T>),
-  new UIntPtr(!a:pinn!.Count * Marshal.SizeOf&<T>),
+  new UIntPtr(!ind!*Marshal.SizeOf(default(T))),
+  new UIntPtr(!a:pinn!.Count * Marshal.SizeOf(default(T))),
   !a:pinn!.Array[!a:pinn!.Offset],
   !evs!
 );
@@ -70,8 +70,8 @@ ptr: CommandQueue<IntPtr>{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr({%AutoSize? 0 : !ind! * Marshal.SizeOf&<T> %}),
-  new UIntPtr({%AutoSize? o.ByteSize : !len!*Marshal.SizeOf&<T> %}),
+  new UIntPtr({%AutoSize? 0 : !ind! * Marshal.SizeOf(default(T)) %}),
+  new UIntPtr({%AutoSize? o.ByteSize : !len!*Marshal.SizeOf(default(T)) %}),
   !ptr!,
   !evs!
 );

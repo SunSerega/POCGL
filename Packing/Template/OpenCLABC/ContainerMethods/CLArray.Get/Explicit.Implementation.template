@@ -40,8 +40,8 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(int64(ind) * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
-          new IntPtr((own_qr as QueueResPtr<&T>).res),
+          new UIntPtr(int64(ind) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
+          new IntPtr((own_qr as QueueResPtr<&T>).GetResPtrDirect),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -169,7 +169,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf(default(T))),
           res[0],
           evs.count, evs.evs, res_ev
         );
@@ -250,7 +250,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf(default(T))),
           res[0,0],
           evs.count, evs.evs, res_ev
         );
@@ -342,7 +342,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf(default(T))),
           res[0,0,0],
           evs.count, evs.evs, res_ev
         );

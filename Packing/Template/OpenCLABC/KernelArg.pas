@@ -514,7 +514,7 @@ begin
       begin
         var s := FromMethodSettings.Create('Value', 'val', nil, true, false);
         
-        wr_private.WriteFrom(s.DefinePrivate('new UIntPtr(Marshal.SizeOf&<T>), %'));
+        wr_private.WriteFrom(s.DefinePrivate('new UIntPtr(Marshal.SizeOf(default(T))), %'));
         wr_generic.WriteFrom(s.DefineGeneric(wr_private.class_name));
         
       end;
@@ -525,7 +525,7 @@ begin
         if dim<>1 then s.inp_nick += dim.ToString;
         if dim<>1 then s.inp_tname += '[' + ','*(dim-1) + ']';
         
-        var cl_pars := 'new UIntPtr(UInt32(%.Length)*uint64(Marshal.SizeOf&<T>)), %['+SeqFill(dim,'0').JoinToString(',') + ']';
+        var cl_pars := 'new UIntPtr(UInt32(%.Length)*uint64(Marshal.SizeOf(default(T)))), %['+SeqFill(dim,'0').JoinToString(',') + ']';
         
         WriteGlobalConstantConvFrom(s, '', cl_pars);
         wr_private.WriteFrom(s.DefinePrivate(cl_pars));
@@ -536,7 +536,7 @@ begin
       begin
         var s := FromMethodSettings.Create('ArraySegment', 'seg', 'ArraySegment', true, false);
         
-        var cl_pars := 'new UIntPtr(UInt32(%.Count)*uint64(Marshal.SizeOf&<T>)), %.Array[%.Offset]';
+        var cl_pars := 'new UIntPtr(UInt32(%.Count)*uint64(Marshal.SizeOf(default(T)))), %.Array[%.Offset]';
         
         WriteGlobalConstantConvFrom(s, '.Array', cl_pars);
         wr_private.WriteFrom(s.DefinePrivate(cl_pars));
@@ -647,7 +647,7 @@ begin
         m += wr_local.class_name;
         m += ':ItemCount%'');'#10;
         m += '  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr('#10;
-        m += '    uint64(Marshal.Sizeof&<T>)*UInt32(item_count)'#10;
+        m += '    uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)'#10;
         m += '  )));'#10;
         m += 'end;'#10;
       end;

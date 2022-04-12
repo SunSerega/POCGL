@@ -22,15 +22,15 @@ type
       self.q2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function CombineQRs(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; l: CLTaskLocalData): QueueResVal<ValueTuple<TInp1, TInp2>>;
+    protected function CombineQRs(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; l: CLTaskLocalData): QueueResValDirect<ValueTuple<TInp1, TInp2>>;
     begin
       if l.ShouldInstaCallAction then
       begin
         var res := ValueTuple.Create(qr1.GetResDirect, qr2.GetResDirect);
-        Result := new QueueResVal<ValueTuple<TInp1, TInp2>>(l, res);
+        Result := inp_qr_factory.MakeConst(l, res);
       end else
       begin
-        Result := new QueueResVal<ValueTuple<TInp1, TInp2>>(l);
+        Result := inp_qr_factory.MakeDelayed(l);
         Result.AddResSetter(c->ValueTuple.Create(qr1.GetResDirect, qr2.GetResDirect));
       end;
     end;
@@ -90,7 +90,7 @@ type
       end;
     end;
     
-    protected function CombineQRsRes<TF,TR>(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): TR; where TF: IQueueResFactory<TRes,TR>, constructor; where TR: QueueRes<TRes>;
+    protected function CombineQRsRes<TR>(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData; make_const: (CLTaskLocalData,TRes)->TR; make_delayed: CLTaskLocalData->TR): TR; where TR: QueueRes<TRes>;
     begin
       if l.ShouldInstaCallAction then
       begin
@@ -101,10 +101,10 @@ type
         except
           on e: Exception do g.curr_err_handler.AddErr(e)
         end;
-        Result := TF.Create.MakeConst(l, res);
+        Result := make_const(l, res);
       end else
       begin
-        Result := TF.Create.MakeDelayed(l);
+        Result := make_delayed(l);
         var err_handler := g.curr_err_handler;
         Result.AddResSetter(c->
         if not err_handler.HadError then
@@ -115,6 +115,14 @@ type
         end);
       end;
     end;
+    
+    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function CombineQRsAny(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData) :=
+    CombineQRsRes(qr1, qr2, g, l, qr_val_factory.MakeConst, qr_val_factory.MakeDelayed);
+    
+    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function CombineQRsPtr(qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData) :=
+    CombineQRsRes(qr1, qr2, g, l, qr_ptr_factory.MakeConst, qr_ptr_factory.MakeDelayed);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -181,16 +189,16 @@ type
   where TFunc: Delegate;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<QueueRes<TInp1>, QueueRes<TInp2>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; CombineQRs: Func<QueueRes<TInp1>, QueueRes<TInp2>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TR: IQueueRes;
     begin
       var qr1 := q1.InvokeToAny(g, l); l := qr1.TakeBaseOut;
       var qr2 := q2.InvokeToAny(g, l); l := qr2.TakeBaseOut;
       Result := CombineQRs(qr1, qr2, g, l);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, CombineQRsNil);
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<TRes>; override := Invoke&<QueueResValFactory<TRes>,QueueResVal<TRes>>(g, l, qr_val_factory, CombineQRsRes&<QueueResValFactory<TRes>,QueueResVal<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke&<QueueResPtrFactory<TRes>,QueueResPtr<TRes>>(g, l, qr_ptr_factory, CombineQRsRes&<QueueResPtrFactory<TRes>,QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, CombineQRsNil);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, CombineQRsAny);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, CombineQRsPtr);
     
   end;
   
@@ -209,7 +217,7 @@ type
   where TFunc: Delegate;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<QueueRes<TInp1>, QueueRes<TInp2>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; CombineQRs: Func<QueueRes<TInp1>, QueueRes<TInp2>, CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TR: IQueueRes;
     begin
       var qr1: QueueRes<TInp1>;
       var qr2: QueueRes<TInp2>;
@@ -222,9 +230,9 @@ type
       Result := CombineQRs(qr1, qr2, g, new CLTaskLocalData(res_ev));
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, CombineQRsNil);
-    protected function InvokeToVal(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResVal<TRes>; override := Invoke&<QueueResValFactory<TRes>,QueueResVal<TRes>>(g, l, qr_val_factory, CombineQRsRes&<QueueResValFactory<TRes>,QueueResVal<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke&<QueueResPtrFactory<TRes>,QueueResPtr<TRes>>(g, l, qr_ptr_factory, CombineQRsRes&<QueueResPtrFactory<TRes>,QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, CombineQRsNil);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, CombineQRsAny);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, CombineQRsPtr);
     
   end;
   

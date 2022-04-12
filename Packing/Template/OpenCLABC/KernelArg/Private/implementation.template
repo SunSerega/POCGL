@@ -10,7 +10,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf&<T>), self.o) );
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
     
   end;
   KernelArgPrivateValue<T> = sealed class(KernelArgPrivate)
@@ -45,7 +45,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf&<T>)), self.o[0]) );
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0]) );
     
   end;
   KernelArgPrivateArray<T> = sealed class(KernelArgPrivate)
@@ -80,7 +80,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf&<T>)), self.o[0,0]) );
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0]) );
     
   end;
   KernelArgPrivateArray2<T> = sealed class(KernelArgPrivate)
@@ -115,7 +115,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf&<T>)), self.o[0,0,0]) );
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0,0]) );
     
   end;
   KernelArgPrivateArray3<T> = sealed class(KernelArgPrivate)
@@ -150,7 +150,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Count)*uint64(Marshal.SizeOf&<T>)), self.o.Array[self.o.Offset]) );
+    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Count)*uint64(Marshal.SizeOf(default(T)))), self.o.Array[self.o.Offset]) );
     
   end;
   KernelArgPrivateArraySegment<T> = sealed class(KernelArgPrivate)

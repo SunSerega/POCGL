@@ -8,18 +8,18 @@
 type
   CLValueCommandWriteValue<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private val: ^&T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<&T>));
+    private val := new NativeValueArea<&T>(true);
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 0;
     
     public constructor(val: &T);
     begin
-      self.val^ := val;
+      self.val.Value := val;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -36,8 +36,8 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
-          new IntPtr(val),
+          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
+          val.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -54,7 +54,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
     end;
     
@@ -97,12 +97,12 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.res;
+        var val := val_qr.GetResPtrDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
           new IntPtr(val),
           evs.count, evs.evs, res_ev
         );
@@ -464,7 +464,7 @@ type
         var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,mem.Native,
           UIntPtr.Zero,new UIntPtr(mem_offset),
-          new UIntPtr(Marshal.SizeOf&<T>),
+          new UIntPtr(Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -541,7 +541,7 @@ type
         var ec := cl.EnqueueCopyBuffer(
           cq, mem.Native,o.Native,
           new UIntPtr(mem_offset),UIntPtr.Zero,
-          new UIntPtr(Marshal.SizeOf&<T>),
+          new UIntPtr(Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -612,7 +612,7 @@ type
         var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,val.Native,
           UIntPtr.Zero, UIntPtr.Zero,
-          new UIntPtr(Marshal.SizeOf&<T>),
+          new UIntPtr(Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -678,7 +678,7 @@ type
         var ec := cl.EnqueueCopyBuffer(
           cq, val.Native,o.Native,
           UIntPtr.Zero, UIntPtr.Zero,
-          new UIntPtr(Marshal.SizeOf&<T>),
+          new UIntPtr(Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);

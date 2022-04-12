@@ -26,12 +26,12 @@ end;
 type
   CLMemorySegmentCommandWriteValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private        val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
+    private        val := new NativeValueArea<TRecord>(true);
     private mem_offset: CommandQueue<integer>;
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 1;
@@ -42,8 +42,8 @@ type
     end;
     public constructor(val: TRecord; mem_offset: CommandQueue<integer>);
     begin
-      self.       val^ :=        val;
-      self.mem_offset  := mem_offset;
+      self.       val.Value :=        val;
+      self.mem_offset       := mem_offset;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -67,8 +67,8 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf&<TRecord>),
-          new IntPtr(val),
+          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -85,7 +85,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
       sb.Append(#9, tabs);
       sb += 'mem_offset:';
@@ -142,13 +142,13 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var        val :=        val_qr.res;
+        var        val :=        val_qr.GetResPtrDirect;
         var mem_offset := mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new IntPtr(val),
           evs.count, evs.evs, res_ev
         );
@@ -337,7 +337,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0],
           evs.count, evs.evs, res_ev
         );
@@ -413,7 +413,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0],
           evs.count, evs.evs, res_ev
         );
@@ -489,7 +489,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
         );
@@ -565,7 +565,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0],
           evs.count, evs.evs, res_ev
         );
@@ -641,7 +641,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0],
           evs.count, evs.evs, res_ev
         );
@@ -717,7 +717,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
         );
@@ -810,7 +810,7 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind],
           evs.count, evs.evs, res_ev
         );
@@ -924,7 +924,7 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
         );
@@ -1049,7 +1049,7 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
         );
@@ -1167,7 +1167,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind],
           evs.count, evs.evs, res_ev
         );
@@ -1281,7 +1281,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
         );
@@ -1406,7 +1406,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf&<TRecord>),
+          new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
         );
@@ -3108,11 +3108,11 @@ end;
 type
   CLMemorySegmentCommandFillValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
+    private val := new NativeValueArea<TRecord>(true);
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 0;
@@ -3123,7 +3123,7 @@ type
     end;
     public constructor(val: TRecord);
     begin
-      self.val^ := val;
+      self.val.Value := val;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -3140,7 +3140,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          val.ptr, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -3158,7 +3158,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
     end;
     
@@ -3205,12 +3205,12 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.res;
+        var val := val_qr.GetResPtrDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -3249,13 +3249,13 @@ end;
 type
   CLMemorySegmentCommandFillValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
   where TRecord: record;
-    private           val: ^TRecord := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<TRecord>));
+    private           val := new NativeValueArea<TRecord>(true);
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 2;
@@ -3266,9 +3266,9 @@ type
     end;
     public constructor(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
-      self.          val^ :=           val;
-      self.   mem_offset  :=    mem_offset;
-      self.fill_byte_len  := fill_byte_len;
+      self.          val.Value :=           val;
+      self.   mem_offset       :=    mem_offset;
+      self.fill_byte_len       := fill_byte_len;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -3296,7 +3296,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          val.ptr, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -3314,7 +3314,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
       sb.Append(#9, tabs);
       sb += 'mem_offset:';
@@ -3381,14 +3381,14 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var           val :=           val_qr.res;
+        var           val :=           val_qr.GetResPtrDirect;
         var    mem_offset :=    mem_offset_qr.GetResDirect;
         var fill_byte_len := fill_byte_len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<TRecord>),
+          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -3528,7 +3528,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[0], new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -3604,7 +3604,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[0,0], new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -3680,7 +3680,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[0,0,0], new UIntPtr(a.Length*Marshal.SizeOf&<TRecord>),
+          a[0,0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -4136,7 +4136,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf&<TRecord>),
+          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero,o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -4214,7 +4214,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf&<TRecord>),
+          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset),new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );

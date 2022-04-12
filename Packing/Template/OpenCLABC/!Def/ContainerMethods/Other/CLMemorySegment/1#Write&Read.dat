@@ -11,8 +11,8 @@ val: {%Q?TRecord:CommandQueue<TRecord>%}; mem_offset: CommandQueue<integer>
 !Enqueue
 var ec := cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
-  new IntPtr(!val:ptr!),
+  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+  !val:ptr!,
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -35,7 +35,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
 var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length*Marshal.SizeOf&<TRecord>),
+  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length*Marshal.SizeOf(default(TRecord))),
   !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
 );
@@ -46,7 +46,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_ind : a_ind1
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!mem_offset!), new UIntPtr(!el_count!*Marshal.SizeOf&<TRecord>),
+  new UIntPtr(!mem_offset!), new UIntPtr(!el_count!*Marshal.SizeOf(default(TRecord))),
   !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}],
   !evs!
 );

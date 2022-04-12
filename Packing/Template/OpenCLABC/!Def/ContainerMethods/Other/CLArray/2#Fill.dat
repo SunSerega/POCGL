@@ -6,8 +6,8 @@ val: {%Q?&T:CommandQueue<&T>%}{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<T>),
-  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!len!*Marshal.SizeOf&<T>) %},
+  !val:ptr!, new UIntPtr(Marshal.SizeOf(default(T))),
+  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf(default(T))), new UIntPtr(!len!*Marshal.SizeOf(default(T))) %},
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -19,7 +19,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}], new UIntPtr(!a:pinn!.Length * Marshal.SizeOf&<T>),
+  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}], new UIntPtr(!a:pinn!.Length * Marshal.SizeOf(default(T))),
   UIntPtr.Zero, new UIntPtr(o.ByteSize),
   !evs!
 );
@@ -30,8 +30,8 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>; {%rank? a_ind : a_ind1,a_in
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}], new UIntPtr(!pattern_len! * Marshal.SizeOf&<T>),
-  new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!fill_len!*Marshal.SizeOf&<T>),
+  !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}], new UIntPtr(!pattern_len! * Marshal.SizeOf(default(T))),
+  new UIntPtr(!ind!*Marshal.SizeOf(default(T))), new UIntPtr(!fill_len!*Marshal.SizeOf(default(T))),
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -43,8 +43,8 @@ a: CommandQueue<ArraySegment<&T>>{%AutoSize?:; ind, fill_len\: CommandQueue<inte
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !a:pinn!.Array[!a:pinn!.Offset], new UIntPtr(!a:pinn!.Count * Marshal.SizeOf&<T>),
-  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!fill_len!*Marshal.SizeOf&<T>) %},
+  !a:pinn!.Array[!a:pinn!.Offset], new UIntPtr(!a:pinn!.Count * Marshal.SizeOf(default(T))),
+  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf(default(T))), new UIntPtr(!fill_len!*Marshal.SizeOf(default(T))) %},
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -63,8 +63,8 @@ ptr: CommandQueue<IntPtr>; pattern_len{%AutoSize?:, ind, fill_len%}: CommandQueu
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !ptr!, new UIntPtr(!pattern_len!*Marshal.SizeOf&<T>),
-  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!fill_len!*Marshal.SizeOf&<T>) %},
+  !ptr!, new UIntPtr(!pattern_len!*Marshal.SizeOf(default(T))),
+  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf(default(T))), new UIntPtr(!fill_len!*Marshal.SizeOf(default(T))) %},
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -88,7 +88,7 @@ var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
   !native_data!{%Area?:.Area%}.{%MemT?ptr:ptr:first_ptr%},
   !native_data!{%Area?:.Area%}.{%MemT?sz:ByteSize:ByteSize%},
-  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf&<T>), new UIntPtr(!fill_len!*Marshal.SizeOf&<T>) %},
+  {%AutoSize? UIntPtr.Zero, new UIntPtr(o.ByteSize) : new UIntPtr(!ind!*Marshal.SizeOf(default(T))), new UIntPtr(!fill_len!*Marshal.SizeOf(default(T))) %},
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

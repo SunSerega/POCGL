@@ -99,18 +99,21 @@ begin
           begin
             
             wr += '    protected function CombineQRs';
-            if is_quick then wr += if not need_res then 'Nil' else 'Res<TF,TR>';
+            if is_quick then wr += if not need_res then 'Nil' else 'Res<TR>';
             wr += '(';
             WriteNumbered('qr%: QueueRes<TInp%>; ');
             if is_quick then wr += 'g: CLTaskGlobalData; ';
-            wr += 'l: CLTaskLocalData): ';
+            wr += 'l: CLTaskLocalData';
+            if is_quick and need_res then
+              wr += '; make_const: (CLTaskLocalData,TRes)->TR; make_delayed: CLTaskLocalData->TR';
+            wr += '): ';
             if not is_quick  then
             begin
-              wr += 'QueueResVal<';
+              wr += 'QueueResValDirect<';
               WriteVTDef;
               wr += '>';
             end else
-              wr += if not need_res then 'QueueResNil' else 'TR; where TF: IQueueResFactory<TRes,TR>, constructor; where TR: QueueRes<TRes>';
+              wr += if not need_res then 'QueueResNil' else 'TR; where TR: QueueRes<TRes>';
             wr += ';'#10;
             
             wr += '    begin'#10;
@@ -124,9 +127,7 @@ begin
               wr += '        var res := ValueTuple.Create(';
               WriteNumbered('qr%.GetResDirect!, ');
               wr += ');'#10;
-              wr += '        Result := new QueueResVal<';
-              WriteVTDef;
-              wr += '>(l, res);'#10;
+              wr += '        Result := inp_qr_factory.MakeConst(l, res);'#10;
             end else
             begin
               if need_res then
@@ -145,23 +146,21 @@ begin
               wr += '          on e: Exception do g.curr_err_handler.AddErr(e)'#10;
               wr += '        end;'#10;
               if need_res then
-                wr += '        Result := TF.Create.MakeConst(l, res);'#10;
+                wr += '        Result := make_const(l, res);'#10;
             end;
             wr += '      end else'#10;
             
             wr += '      begin'#10;
             if not is_quick then
             begin
-              wr += '        Result := new QueueResVal<';
-              WriteVTDef;
-              wr += '>(l);'#10;
+              wr += '        Result := inp_qr_factory.MakeDelayed(l);'#10;
               wr += '        Result.AddResSetter(c->ValueTuple.Create(';
               WriteNumbered('qr%.GetResDirect!, ');
               wr += '));'#10;
             end else
             begin
               if need_res then
-                wr += '        Result := TF.Create.MakeDelayed(l);'#10;
+                wr += '        Result := make_delayed(l);'#10;
               wr += '        var err_handler := g.curr_err_handler;'#10;
               wr += '        Result.';
               wr += if need_res then 'AddResSetter' else 'AddAction';
@@ -183,6 +182,26 @@ begin
             wr += '      end;'#10;
             
             wr += '    end;'#10;
+            wr += '    '#10;
+            
+          end;
+          
+          if is_quick then for var res_ptr := false to true do
+          begin
+            
+            wr += '    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]'#10;
+            wr += '    function CombineQRs';
+            wr += if not res_ptr then 'Any' else 'Ptr';
+            wr += '(';
+            WriteNumbered('qr%: QueueRes<TInp%>; ');
+            wr += 'g: CLTaskGlobalData; l: CLTaskLocalData) :='#10;
+            wr += '    CombineQRsRes(';
+            WriteNumbered('qr%, ');
+            wr += 'g, l, qr_';
+            wr += if not res_ptr then 'val' else 'ptr';
+            wr += '_factory.MakeConst, qr_';
+            wr += if not res_ptr then 'val' else 'ptr';
+            wr += '_factory.MakeDelayed);'#10;
             wr += '    '#10;
             
           end;
@@ -230,45 +249,27 @@ begin
           if is_quick then
           begin
             
-            foreach var res_t in |'Nil', 'Val', 'Ptr'| do
+            foreach var res_t in |'Nil', 'Any', 'Ptr'| do
             begin
               
               wr += '    protected function InvokeTo';
               wr += res_t;
               wr += '(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes';
-              wr += res_t;
-              wr += if res_t<>'Nil' then
-                '<TRes>; ' else
-                ';       ';
+              case res_t of
+                'Nil': wr += 'Nil;       ';
+                'Any': wr += '   <TRes>; ';
+                'Ptr': wr += 'Ptr<TRes>; ';
+                else raise new Exception;
+              end;
               wr += 'override := Invoke';
               
-              //TODO #????
-              if res_t<>'Nil' then
-              begin
-                wr += '&<QueueRes';
-                wr += res_t;
-                wr += 'Factory<TRes>,QueueRes';
-                wr += res_t;
-                wr += '<TRes>>';
-              end;
-              
-              wr += '(g, l, qr_';
-              wr += res_t.ToLower;
-              wr += '_factory, CombineQRs';
-              if res_t='Nil' then
-                wr += res_t else
-              begin
-                wr += 'Res&<QueueRes';
-                wr += res_t;
-                wr += 'Factory<TRes>,QueueRes';
-                wr += res_t;
-                wr += '<TRes>>';
-              end;
+              wr += '(g, l, CombineQRs';
+              wr += res_t;
               wr += ');'#10;
               
             end;
-            
             wr += '    '#10;
+            
           end;
           
           wr += '  end;'#10;
@@ -376,9 +377,9 @@ begin
         WriteDerBaseDef(true, 'Sync', ()->
         begin
           wr += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)]'#10;
-          wr += '    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<';
+          wr += '    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; CombineQRs: Func<';
           WriteNumbered('QueueRes<TInp%>, ');
-          wr += 'CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;'#10;
+          wr += 'CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TR: IQueueRes;'#10;
           wr += '    begin'#10;
           
           WriteNumbered('      var qr% := q%.InvokeToAny(g, l); l := qr%.TakeBaseOut;'#10);
@@ -392,9 +393,9 @@ begin
         WriteDerBaseDef(true, 'Async', ()->
         begin
           wr += '    private [MethodImpl(MethodImplOptions.AggressiveInlining)]'#10;
-          wr += '    function Invoke<TF,TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory_sample: TF; CombineQRs: Func<';
+          wr += '    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; CombineQRs: Func<';
           WriteNumbered('QueueRes<TInp%>, ');
-          wr += 'CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TF: IQueueResBaseFactory<TR>, constructor; where TR: IQueueRes;'#10;
+          wr += 'CLTaskGlobalData, CLTaskLocalData, TR>): TR; where TR: IQueueRes;'#10;
           wr += '    begin'#10;
           
           WriteNumbered('      var qr%: QueueRes<TInp%>;'#10);

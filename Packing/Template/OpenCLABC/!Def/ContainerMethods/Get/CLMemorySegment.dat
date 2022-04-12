@@ -14,7 +14,7 @@ TRecord
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf&<TRecord>),
+  new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf(default(TRecord))),
   new IntPtr(!res_ptr!),
   !evs!
 );
@@ -27,12 +27,12 @@ OpenCLABCInternalException.RaiseIfError(ec);
 !ResultType
 array of TRecord
 !SetRes
-new TRecord[o.Size64 div Marshal.SizeOf&<TRecord>];
+new TRecord[o.Size64 div Marshal.SizeOf(default(TRecord))];
 !PinnRes
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(0), new UIntPtr(!res!.Length * Marshal.SizeOf&<TRecord>),
+  new UIntPtr(0), new UIntPtr(!res!.Length * Marshal.SizeOf(default(TRecord))),
   !res_pinn_adr!,
   !evs!
 );
@@ -48,7 +48,7 @@ new TRecord[{%rank? !len! : !len1!,!len2! : !len1!,!len2!,!len3! %}]
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  new UIntPtr(0), new UIntPtr({%rank? int64(!len!) : int64(!len1!)*!len2! : int64(!len1!)*!len2!*!len3! %} * Marshal.SizeOf&<TRecord>),
+  new UIntPtr(0), new UIntPtr({%rank? int64(!len!) : int64(!len1!)*!len2! : int64(!len1!)*!len2!*!len3! %} * Marshal.SizeOf(default(TRecord))),
   !res![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
 );

@@ -6,7 +6,7 @@ val: {%Q?TRecord:CommandQueue<TRecord>%}{%AutoSize?:; mem_offset, fill_byte_len\
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  new IntPtr(!val:ptr!), new UIntPtr(Marshal.SizeOf&<TRecord>),
+  !val:ptr!, new UIntPtr(Marshal.SizeOf(default(TRecord))),
   {%AutoSize? UIntPtr.Zero, o.Size : new UIntPtr(!mem_offset!), new UIntPtr(!fill_byte_len!) %},
   !evs!
 );
@@ -30,7 +30,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}], new UIntPtr(!a:pinn!.Length*Marshal.SizeOf&<TRecord>),
+  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}], new UIntPtr(!a:pinn!.Length*Marshal.SizeOf(default(TRecord))),
   UIntPtr.Zero, o.Size,
   !evs!
 );
@@ -54,7 +54,7 @@ a: ArraySegment<TRecord>{%AutoSize?: ; mem_offset, fill_byte_len\: CommandQueue<
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !a:pinn!.Array[!a:pinn!.Offset], new UIntPtr(!a:pinn!.Count * Marshal.SizeOf&<TRecord>),
+  !a:pinn!.Array[!a:pinn!.Offset], new UIntPtr(!a:pinn!.Count * Marshal.SizeOf(default(TRecord))),
   {%AutoSize? UIntPtr.Zero,o.Size : new UIntPtr(!mem_offset!),new UIntPtr(!fill_byte_len!) %},
   !evs!
 );

@@ -49,7 +49,7 @@ type
       begin
         sb += '(own_qr as QueueResPtr<';
         sb += result_type.org_text;
-        sb += '>).res';
+        sb += '>).GetResPtrDirect';
       end;
       
       'res_pinn_adr':

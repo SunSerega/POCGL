@@ -8,20 +8,20 @@
 type
   CLArrayCommandWriteValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private val: ^&T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<&T>));
+    private val := new NativeValueArea<&T>(true);
     private ind: CommandQueue<integer>;
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 1;
     
     public constructor(val: &T; ind: CommandQueue<integer>);
     begin
-      self.val^ := val;
-      self.ind  := ind;
+      self.val.Value := val;
+      self.ind       := ind;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -45,8 +45,8 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
-          new IntPtr(val),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
+          val.ptr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -63,7 +63,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
       sb.Append(#9, tabs);
       sb += 'ind:';
@@ -116,13 +116,13 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.res;
+        var val := val_qr.GetResPtrDirect;
         var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
           new IntPtr(val),
           evs.count, evs.evs, res_ev
         );
@@ -199,7 +199,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0],
           evs.count, evs.evs, res_ev
         );
@@ -271,7 +271,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0],
           evs.count, evs.evs, res_ev
         );
@@ -343,7 +343,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
         );
@@ -415,7 +415,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0],
           evs.count, evs.evs, res_ev
         );
@@ -487,7 +487,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0],
           evs.count, evs.evs, res_ev
         );
@@ -559,7 +559,7 @@ type
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
         );
@@ -648,7 +648,7 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len * Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind],
           evs.count, evs.evs, res_ev
         );
@@ -758,7 +758,7 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len * Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
         );
@@ -879,7 +879,7 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len * Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
         );
@@ -993,7 +993,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len * Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind],
           evs.count, evs.evs, res_ev
         );
@@ -1103,7 +1103,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len * Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
         );
@@ -1224,7 +1224,7 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>), new UIntPtr(len * Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
         );
@@ -1344,8 +1344,8 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind*Marshal.SizeOf&<T>),
-          new UIntPtr(a.Count * Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))),
+          new UIntPtr(a.Count * Marshal.SizeOf(default(T))),
           a.Array[a.Offset],
           evs.count, evs.evs, res_ev
         );
@@ -1427,8 +1427,8 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind*Marshal.SizeOf&<T>),
-          new UIntPtr(a.Count * Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))),
+          new UIntPtr(a.Count * Marshal.SizeOf(default(T))),
           a.Array[a.Offset],
           evs.count, evs.evs, res_ev
         );
@@ -1581,8 +1581,8 @@ type
         
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>),
-          new UIntPtr(len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))),
+          new UIntPtr(len*Marshal.SizeOf(default(T))),
           ptr,
           evs.count, evs.evs, res_ev
         );
@@ -1737,8 +1737,8 @@ type
         
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
-          new UIntPtr(ind * Marshal.SizeOf&<T>),
-          new UIntPtr(len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind * Marshal.SizeOf(default(T))),
+          new UIntPtr(len*Marshal.SizeOf(default(T))),
           ptr,
           evs.count, evs.evs, res_ev
         );
@@ -2856,18 +2856,18 @@ end;
 type
   CLArrayCommandFillValueAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private val: ^&T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<&T>));
+    private val := new NativeValueArea<&T>(true);
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 0;
     
     public constructor(val: &T);
     begin
-      self.val^ := val;
+      self.val.Value := val;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -2884,7 +2884,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<T>),
+          val.ptr, new UIntPtr(Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -2902,7 +2902,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
     end;
     
@@ -2945,12 +2945,12 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.res;
+        var val := val_qr.GetResPtrDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<T>),
+          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -2989,22 +2989,22 @@ end;
 type
   CLArrayCommandFillValue<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private val: ^&T := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<&T>));
+    private val := new NativeValueArea<&T>(true);
     private ind: CommandQueue<integer>;
     private len: CommandQueue<integer>;
     
     protected procedure Finalize; override;
     begin
-      Marshal.FreeHGlobal(new IntPtr(val));
+      val.Release;
     end;
     
     public function EnqEvCapacity: integer; override := 2;
     
     public constructor(val: &T; ind, len: CommandQueue<integer>);
     begin
-      self.val^ := val;
-      self.ind  := ind;
-      self.len  := len;
+      self.val.Value := val;
+      self.ind       := ind;
+      self.len       := len;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -3032,8 +3032,8 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(len*Marshal.SizeOf&<T>),
+          val.ptr, new UIntPtr(Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3050,7 +3050,7 @@ type
       sb.Append(#9, tabs);
       sb += 'val:';
       sb += ' ';
-      sb.Append(val^);
+      sb.Append(val.Value);
       
       sb.Append(#9, tabs);
       sb += 'ind:';
@@ -3113,15 +3113,15 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.res;
+        var val := val_qr.GetResPtrDirect;
         var ind := ind_qr.GetResDirect;
         var len := len_qr.GetResDirect;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(len*Marshal.SizeOf&<T>),
+          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3201,7 +3201,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[0], new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          a[0], new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -3272,7 +3272,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[0,0], new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          a[0,0], new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -3343,7 +3343,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[0,0,0], new UIntPtr(a.Length * Marshal.SizeOf&<T>),
+          a[0,0,0], new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -3438,8 +3438,8 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[a_ind], new UIntPtr(pattern_len * Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          a[a_ind], new UIntPtr(pattern_len * Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3559,8 +3559,8 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[a_ind1,a_ind2], new UIntPtr(pattern_len * Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          a[a_ind1,a_ind2], new UIntPtr(pattern_len * Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3691,8 +3691,8 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a[a_ind1,a_ind2,a_ind3], new UIntPtr(pattern_len * Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          a[a_ind1,a_ind2,a_ind3], new UIntPtr(pattern_len * Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3792,7 +3792,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf&<T>),
+          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -3875,8 +3875,8 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          a.Array[a.Offset], new UIntPtr(a.Count * Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3960,7 +3960,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          ptr, new UIntPtr(pattern_len*Marshal.SizeOf&<T>),
+          ptr, new UIntPtr(pattern_len*Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -4049,8 +4049,8 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          ptr, new UIntPtr(pattern_len*Marshal.SizeOf&<T>),
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          ptr, new UIntPtr(pattern_len*Marshal.SizeOf(default(T))),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -4337,7 +4337,7 @@ type
           cq, o.Native,
           native_data.ptr,
           native_data.sz,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -4493,7 +4493,7 @@ type
           cq, o.Native,
           native_data.Area.ptr,
           native_data.Area.sz,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -4649,7 +4649,7 @@ type
           cq, o.Native,
           native_data.ptr,
           native_data.ByteSize,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -4805,7 +4805,7 @@ type
           cq, o.Native,
           native_data.Area.ptr,
           native_data.Area.ByteSize,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -4961,7 +4961,7 @@ type
           cq, o.Native,
           native_data.first_ptr,
           native_data.ByteSize,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5117,7 +5117,7 @@ type
           cq, o.Native,
           native_data.Area.first_ptr,
           native_data.Area.ByteSize,
-          new UIntPtr(ind*Marshal.SizeOf&<T>), new UIntPtr(fill_len*Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(fill_len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5281,11 +5281,11 @@ type
         var res_ev: cl_event;
         
         var uptr_mem_offset := new UIntPtr(mem_offset);
-        var uptr_own_offset := new UIntPtr(ind*Marshal.SizeOf&<T>);
+        var uptr_own_offset := new UIntPtr(ind*Marshal.SizeOf(default(T)));
         var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,mem.Native,
           uptr_own_offset,uptr_mem_offset,
-          new UIntPtr(len*Marshal.SizeOf&<T>),
+          new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5450,11 +5450,11 @@ type
         var res_ev: cl_event;
         
         var uptr_mem_offset := new UIntPtr(mem_offset);
-        var uptr_own_offset := new UIntPtr(ind*Marshal.SizeOf&<T>);
+        var uptr_own_offset := new UIntPtr(ind*Marshal.SizeOf(default(T)));
         var ec := cl.EnqueueCopyBuffer(
           cq, mem.Native,o.Native,
           uptr_mem_offset,uptr_own_offset,
-          new UIntPtr(len*Marshal.SizeOf&<T>),
+          new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5540,8 +5540,8 @@ type
         
         var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,val.Native,
-          new UIntPtr(ind*Marshal.SizeOf&<T>),UIntPtr.Zero,
-          new UIntPtr(Marshal.SizeOf&<T>),
+          new UIntPtr(ind*Marshal.SizeOf(default(T))),UIntPtr.Zero,
+          new UIntPtr(Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5617,8 +5617,8 @@ type
         
         var ec := cl.EnqueueCopyBuffer(
           cq, val.Native,o.Native,
-          UIntPtr.Zero,new UIntPtr(ind*Marshal.SizeOf&<T>),
-          new UIntPtr(Marshal.SizeOf&<T>),
+          UIntPtr.Zero,new UIntPtr(ind*Marshal.SizeOf(default(T))),
+          new UIntPtr(Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5772,8 +5772,8 @@ type
         
         var ec := cl.EnqueueCopyBuffer(
           cq, o.Native,a.Native,
-          new UIntPtr(from_ind*Marshal.SizeOf&<T>), new UIntPtr(to_ind*Marshal.SizeOf&<T>),
-          new UIntPtr(len*Marshal.SizeOf&<T>),
+          new UIntPtr(from_ind*Marshal.SizeOf(default(T))), new UIntPtr(to_ind*Marshal.SizeOf(default(T))),
+          new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -5937,8 +5937,8 @@ type
         
         var ec := cl.EnqueueCopyBuffer(
           cq, a.Native,o.Native,
-          new UIntPtr(from_ind*Marshal.SizeOf&<T>), new UIntPtr(to_ind*Marshal.SizeOf&<T>),
-          new UIntPtr(len*Marshal.SizeOf&<T>),
+          new UIntPtr(from_ind*Marshal.SizeOf(default(T))), new UIntPtr(to_ind*Marshal.SizeOf(default(T))),
+          new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);

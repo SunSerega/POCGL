@@ -12,7 +12,7 @@ mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>
 var ec := cl.EnqueueCopyBuffer(
   cq, {%direction? o.Native,!mem!.Native : !mem!.Native,o.Native %},
   {%direction? UIntPtr.Zero,new UIntPtr(!mem_offset!) : new UIntPtr(!mem_offset!),UIntPtr.Zero %},
-  new UIntPtr(Marshal.SizeOf&<T>),
+  new UIntPtr(Marshal.SizeOf(default(T))),
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
@@ -25,7 +25,7 @@ val: CommandQueue<CLValue<&T>>
 var ec := cl.EnqueueCopyBuffer(
   cq, {%direction? o.Native,!val!.Native : !val!.Native,o.Native %},
   UIntPtr.Zero, UIntPtr.Zero,
-  new UIntPtr(Marshal.SizeOf&<T>),
+  new UIntPtr(Marshal.SizeOf(default(T))),
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

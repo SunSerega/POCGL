@@ -6,7 +6,7 @@ begin
   lock output do Writeln(x);
   Result := o;
 end);
-function HFQQw<T>(x: integer; o: T) := HFQQ(()->
+function HFQQw<T>(x: integer; o: T) := HPQ(()->begin end)+HFQQ(()->
 begin
   lock output do Writeln(x);
   Result := o;

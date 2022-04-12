@@ -391,6 +391,8 @@ type
             var dom := System.AppDomain.CreateDomain($'Getting delegate count of {fwoe}');
             dom.SetData('fname', System.IO.Path.ChangeExtension(t.pas_fname, '.exe'));
             dom.DoCallBack(CheckDelegateCount);
+            if dom.GetData('e') is string(var e) then
+              raise new Exception(e);
             var delegate_count := dom.GetData('c').ToString;
             System.AppDomain.Unload(dom);
             
@@ -414,15 +416,45 @@ type
       .SyncExec;
       
     end;
-    private static procedure CheckDelegateCount;
-    begin
+    private static procedure CheckDelegateCount :=
+    try
       var dom := System.AppDomain.CurrentDomain;
       var fname := string(dom.GetData('fname'));
       
-      var a := System.Reflection.Assembly.LoadFrom(fname);
-      var c := a.GetTypes.Count(t->t.IsSubclassOf(typeof(System.Delegate)));
+      if not FileExists(fname) then
+        raise new System.IO.FileNotFoundException(
+          GetCurrentDir+#10+fname
+        );
+      var dir := System.IO.Path.GetDirectoryName(fname);
       
-      dom.SetData('c', c);
+      var loaded := new Dictionary<string,System.Reflection.Assembly>;
+      var load: (string,string)->System.Reflection.Assembly;
+      load := (full_name, name)->
+      begin
+        if loaded.TryGetValue(name, Result) then exit;
+        if full_name<>nil then
+        try
+          Result := System.Reflection.Assembly.ReflectionOnlyLoad(full_name);
+        except
+        end;
+        if Result=nil then
+          Result := System.Reflection.Assembly.ReflectionOnlyLoadFrom(System.IO.Path.Combine(dir,name));
+        loaded.Add(name, Result);
+        foreach var a in Result.GetReferencedAssemblies do
+          load(a.FullName, a.Name+'.dll');
+      end;
+      
+      var a := load(nil,fname);
+      try
+        var c := a.GetTypes.Count(t->t.IsSubclassOf(typeof(System.Delegate)));
+        dom.SetData('c', c);
+      except
+        on e: System.Reflection.ReflectionTypeLoadException do
+          dom.SetData('e', e.LoaderExceptions.Select(e->#10+e.ToString).JoinToString(''));
+      end;
+      
+    except
+      on e: Exception do System.AppDomain.CurrentDomain.SetData('e', e.ToString);
     end;
     
     {$endregion Comp}
@@ -707,7 +739,7 @@ begin
     (*)
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('G:\0Prog\POCGL\Tests\Exec\CLABC',  HSet('Comp','Exec'));
     (**)
     
     try

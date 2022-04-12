@@ -6,8 +6,8 @@ val: {%Q?&T:CommandQueue<&T>%}
 !Enqueue
 var ec := cl.EnqueueWriteBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
-  UIntPtr.Zero, new UIntPtr(Marshal.SizeOf&<T>),
-  new IntPtr(!val:ptr!),
+  UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
+  !val:ptr!,
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

@@ -296,7 +296,26 @@ type
         
         arg_usage[arg_name] := usage;
         
-        sb += arg_name;
+        match usage with
+          
+          nil: sb += arg_name;
+          
+          'ptr': if arg.t.IsCQ then
+          begin
+            sb += 'new IntPtr(';
+            sb += arg_name;
+            sb += ')';
+          end else
+          begin
+            sb += arg_name;
+            sb += '.ptr';
+          end;
+          
+          'pinn': sb += arg_name; // array indeces defined in .dat file
+          
+          else if usage<>nil then raise new System.InvalidOperationException(usage);
+        end;
+        
       end;
     end;
     protected function ProcessDefLine(l: string; debug_tn: string): string;
@@ -614,7 +633,7 @@ type
               
               'ptr':
               begin
-                res_EIm += '.res';
+                res_EIm += '.GetResPtrDirect';
                 args_keep_alive += arg.name+'_qr';
               end;
               
@@ -735,7 +754,7 @@ type
       res_EIm += 'sb.Append(';
       res_EIm += vname;
       if stored_as_ptr then
-        res_EIm += '^';
+        res_EIm += '.Value';
       res_EIm += ');'#10;
     end;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
@@ -786,17 +805,17 @@ type
             
             res_EIm += '    private ';
             res_EIm += arg.name.PadLeft(max_arg_w);
-            res_EIm += ': ';
             
             if is_val_ptr then
             begin
-              res_EIm += '^';
+              res_EIm += ' := new NativeValueArea<';
               res_EIm += arg.t.org_text;
-              res_EIm += ' := pointer(Marshal.AllocHGlobal(Marshal.SizeOf&<';
-              res_EIm += arg.t.org_text;
-              res_EIm += '>))';
+              res_EIm += '>(true)';
             end else
+            begin
+              res_EIm += ': ';
               res_EIm += arg.t.org_text;
+            end;
             
             res_EIm += ';'#10;
           end;
@@ -815,9 +834,9 @@ type
         var max_val_ptr_arg_w := val_ptr_args.Max(arg->arg.Length);
         foreach var arg_name in val_ptr_args do
         begin
-          res_EIm += '      Marshal.FreeHGlobal(new IntPtr(';
+          res_EIm += '      ';
           res_EIm += arg_name.PadLeft(max_val_ptr_arg_w);
-          res_EIm += '));'#10;
+          res_EIm += '.Release;'#10;
         end;
         
         res_EIm += '    end;'#10;
@@ -882,9 +901,9 @@ type
             res_EIm += arg.name.PadLeft(max_arg_w);
             
             if arg.name in val_ptr_args then
-              res_EIm += '^' else
+              res_EIm += '.Value' else
             if val_ptr_args.Count<>0 then
-              res_EIm += ' ';
+              res_EIm += '      ';
             
             res_EIm += ' := ';
             res_EIm += arg.name.PadLeft(max_arg_w);
