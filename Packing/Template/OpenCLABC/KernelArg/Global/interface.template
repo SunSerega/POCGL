@@ -75,20 +75,20 @@
     
     {$region CL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
-    public static function operator implicit(cl_mem: CLMemorySegment): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemorySegment>): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemorySegment>): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgGlobal;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+    public static function operator implicit(cl_mem: CLMemory): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArgGlobal;
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     

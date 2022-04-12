@@ -122,11 +122,11 @@ a_ind(-ы) указывают индекс первого элемента в м
 # CLArray[%<T>.,CCQ<T>.Then%]WriteArray2(CommandQueue<array[,] of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # CLArray[%<T>.,CCQ<T>.Then%]WriteArray3(CommandQueue<array[,,] of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 %CLArray:WriteArray%
-%CLMemorySegment:ArrMultiIndWarning%
+%CLMemory:ArrMultiIndWarning%
 # CLArray[%<T>.,CCQ<T>.Then%]ReadArray2(CommandQueue<array[,] of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # CLArray[%<T>.,CCQ<T>.Then%]ReadArray3(CommandQueue<array[,,] of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 %CLArray:ReadArray%
-%CLMemorySegment:ArrMultiIndWarning%
+%CLMemory:ArrMultiIndWarning%
 
 
 # CLArray[%<T>.,CCQ<T>.Then%]FillArray(CommandQueue<array of &T>)
@@ -150,7 +150,7 @@ a_ind(-ы) указывают индекс первого элемента в м
 # CLArray[%<T>.,CCQ<T>.Then%]FillArray2(CommandQueue<array[,] of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 # CLArray[%<T>.,CCQ<T>.Then%]FillArray3(CommandQueue<array[,,] of &T>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 %CLArray:FillArray%
-%CLMemorySegment:ArrMultiIndWarning%
+%CLMemory:ArrMultiIndWarning%
 
 
 # CLArray[%<T>.,CCQ<T>.Then%]GetArray
@@ -170,18 +170,18 @@ a_ind(-ы) указывают индекс первого элемента в м
 
 
 
-# CLArray:Copy:CLMemorySegment:To
+# CLArray:Copy:CLMemory:To
 Копирует элементы из данного массива в mem
-# CLArray:Copy:CLMemorySegment:From
+# CLArray:Copy:CLMemory:From
 Копирует элементы из mem в данный массив
 
-# CLArray[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLMemorySegment>)
-%CLArray:Copy:CLMemorySegment:{%dir%}%
+# CLArray[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLMemory>)
+%CLArray:Copy:CLMemory:{%dir%}%
 Копируется максимальное кол-во байт, не выходящее за границы данного массива и mem
 
-# CLArray[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLMemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLArray:Copy:CLMemorySegment:{%dir%}%
-%CLMemorySegment:OffsetDef%
+# CLArray[%<T>.,CCQ<T>.Then%]Copy[%dir:From,To%](CommandQueue<CLMemory>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLArray:Copy:CLMemory:{%dir%}%
+%CLMemory:OffsetDef%
 ind указывает индекс первого элемента данного массива
 len указывает кол-во копируемых элементов
 

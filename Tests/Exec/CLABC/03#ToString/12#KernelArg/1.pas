@@ -30,7 +30,7 @@ var ptr := PReal(pointer(6));
 var n_val := new NativeValue<byte>(7);
 var n_a := new NativeArray<integer>(|8,9|);
 
-var cl_mem := new CLMemorySegment(11);
+var cl_mem := new CLMemory(11);
 var cl_sub_mem := new CLMemorySubSegment(cl_mem, 0,10);
 var cl_val := new CLValue<word>;
 var cl_a := new CLArray<single>(12);
@@ -90,14 +90,14 @@ begin
   
   TestRange('OpenCL', ()->
   begin
-    TestRange('CLMemorySegment', ()->
+    TestRange('CLMemory', ()->
     begin
-      Test(KernelArg.FromCLMemorySegment(cl_mem));
+      Test(KernelArg.FromCLMemory(cl_mem));
       Test(cl_mem);
     end);
     TestRange('CLMemorySubSegment', ()->
     begin
-      Test(KernelArg.FromCLMemorySegment(cl_sub_mem));
+      Test(KernelArg.FromCLMemory(cl_sub_mem));
       Test(cl_sub_mem);
     end);
     TestRange('CLValue', ()->
@@ -163,15 +163,15 @@ begin
   
   TestRange('OpenCL', ()->
   begin
-    TestRange('CLMemorySegment', ()->
+    TestRange('CLMemory', ()->
     begin
-      Test(KernelArg.FromCLMemorySegmentCQ(cl_mem));
+      Test(KernelArg.FromCLMemoryCQ(cl_mem));
       Test(CQ(cl_mem));
     end);
     TestRange('CLMemorySubSegment', ()->
     begin
-      Test(KernelArg.FromCLMemorySegmentCQ(CQ&<CLMemorySegment>(cl_sub_mem)));
-      Test(CQ&<CLMemorySegment>(cl_sub_mem));
+      Test(KernelArg.FromCLMemoryCQ(CQ&<CLMemory>(cl_sub_mem)));
+      Test(CQ&<CLMemory>(cl_sub_mem));
     end);
     TestRange('CLValue', ()->
     begin

@@ -1,13 +1,13 @@
 
 
 
-# Copy[%direction:To,From%]!CLMemorySegment
-mem: CommandQueue<CLMemorySegment>
+# Copy[%direction:To,From%]!CLMemory
+mem: CommandQueue<CLMemory>
 !ShortDef
 Copy{%direction%}(mem, 0);
 
 # Copy[%direction:To,From%]
-mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>
+mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>
 !Enqueue
 var ec := cl.EnqueueCopyBuffer(
   cq, {%direction? o.Native,!mem!.Native : !mem!.Native,o.Native %},

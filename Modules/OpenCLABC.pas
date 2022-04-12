@@ -20,7 +20,6 @@ unit OpenCLABC;
 // Обязательно сделать до следующей стабильной версии:
 
 //TODO Background=>Threaded +в интерфейсе, чтобы их сортировало [Const,Quick,Threaded]
-//TODO CLMemorySegment=>CLMemory
 
 //TODO ConstConvert: Обычно как QuickConvert, но конвертирование может быть вызвано в момент Invoke или даже создания очереди
 // - ThenConstConvert
@@ -48,7 +47,7 @@ unit OpenCLABC;
 // - implicit ^T -> NativeValue<T>
 //
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
-// --- CLArray и CLValue неявно конвертируются в CLMemorySegment
+// --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
 
 //===================================
@@ -1549,9 +1548,9 @@ type
   
   {$endregion MemoryUsage}
   
-  {$region CLMemorySegment}
+  {$region CLMemory}
   
-  CLMemorySegment = partial class(IDisposable)
+  CLMemory = partial class(IDisposable)
     private ntv: cl_mem;
     
     {$region constructor's}
@@ -1581,7 +1580,7 @@ type
       self.ntv := ntv;
       cl.RetainMemObject(ntv);
     end;
-    public static function FromNative(ntv: cl_mem): CLMemorySegment;
+    public static function FromNative(ntv: cl_mem): CLMemory;
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -1614,17 +1613,17 @@ type
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLMemorySegment\Implicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods\CLMemory\Implicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLMemorySegment.Get\Implicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods\CLMemory.Get\Implicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
-  {$endregion CLMemorySegment}
+  {$endregion CLMemory}
   
   {$region CLMemorySubSegment}
   
-  CLMemorySubSegment = partial class(CLMemorySegment)
+  CLMemorySubSegment = partial class(CLMemory)
     private _parent: cl_mem;
     
     {$region constructor's}
@@ -1636,17 +1635,17 @@ type
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    public constructor(parent: CLMemorySegment; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), MemoryUsage.MakeCLFlags(kernel_use, map_use)) );
       self._parent := parent.ntv;
     end;
-    public constructor(parent: CLMemorySegment; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
-    public constructor(parent: CLMemorySegment; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
-    // For the CLMemorySegment.FromNative
+    // For the CLMemory.FromNative
     private constructor(parent, ntv: cl_mem);
     begin
       inherited Create(ntv);
@@ -1658,7 +1657,7 @@ type
     
     {$region property's}
     
-    public property Parent: CLMemorySegment read CLMemorySegment.FromNative(_parent);
+    public property Parent: CLMemory read CLMemory.FromNative(_parent);
     
     {$endregion property's}
     
@@ -1702,8 +1701,8 @@ type
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
     end;
     
-    public static function operator implicit(mem: CLValue<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
-    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
+    public static function operator implicit(mem: CLValue<T>): CLMemory := new CLMemory(mem.ntv);
+    public constructor(mem: CLMemory) := Create(mem.ntv);
     
     {$endregion constructor's}
     
@@ -1798,8 +1797,8 @@ type
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
     end;
     
-    public static function operator implicit(mem: CLArray<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
-    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
+    public static function operator implicit(mem: CLArray<T>): CLMemory := new CLMemory(mem.ntv);
+    public constructor(mem: CLMemory) := Create(mem.ntv);
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -2576,18 +2575,18 @@ type
   
   {$region MemorySegmentCCQ}
   
-  CLMemorySegmentCCQ = sealed partial class
+  CLMemoryCCQ = sealed partial class
     
-    {%ContainerCommon\CLMemorySegment\Interface!ContainerCommon.pas%}
+    {%ContainerCommon\CLMemory\Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\CLMemorySegment\Explicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods\CLMemory\Explicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLMemorySegment.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods\CLMemory.Get\Explicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
-  CLMemorySegment = partial class
-    public function NewQueue := new CLMemorySegmentCCQ({%>self%});
+  CLMemory = partial class
+    public function NewQueue := new CLMemoryCCQ({%>self%});
   end;
   
   {$endregion MemorySegmentCCQ}
@@ -2779,16 +2778,16 @@ type
     
     {$region OpenCL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelGlobalArg;
-    public static function operator implicit(mem: CLMemorySegment): KernelGlobalArg := FromCLMemorySegment(mem);
+    public static function FromCLMemory(mem: CLMemory): KernelGlobalArg;
+    public static function operator implicit(mem: CLMemory): KernelGlobalArg := FromCLMemory(mem);
     
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelGlobalArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    public static function FromCLMemoryCQ(mem_q: CommandQueue<CLMemory>): KernelGlobalArg;
+    public static function operator implicit(mem_q: CommandQueue<CLMemory>): KernelGlobalArg := FromCLMemoryCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelGlobalArg := FromCLMemoryCQ(mem_q.Cast&<CLMemory>);
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -2972,16 +2971,16 @@ type
     
     {$region OpenCL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem)); end;
-    public static function operator implicit(mem: CLMemorySegment): KernelConstantArg := FromCLMemorySegment(mem);
+    public static function FromCLMemory(mem: CLMemory): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem)); end;
+    public static function operator implicit(mem: CLMemory): KernelConstantArg := FromCLMemory(mem);
     
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem_q)); end;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelConstantArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelConstantArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    public static function FromCLMemoryCQ(mem_q: CommandQueue<CLMemory>): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem_q)); end;
+    public static function operator implicit(mem_q: CommandQueue<CLMemory>): KernelConstantArg := FromCLMemoryCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelConstantArg := FromCLMemoryCQ(mem_q.Cast&<CLMemory>);
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -3294,16 +3293,16 @@ type
     
     {$region OpenCL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelGlobalArg := mem;
-    public static function operator implicit(mem: CLMemorySegment): KernelArg := FromCLMemorySegment(mem);
+    public static function FromCLMemory(mem: CLMemory): KernelGlobalArg := mem;
+    public static function operator implicit(mem: CLMemory): KernelArg := FromCLMemory(mem);
     
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg := mem_q;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    public static function FromCLMemoryCQ(mem_q: CommandQueue<CLMemory>): KernelGlobalArg := mem_q;
+    public static function operator implicit(mem_q: CommandQueue<CLMemory>): KernelArg := FromCLMemoryCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelArg := FromCLMemoryCQ(mem_q.Cast&<CLMemory>);
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -3511,9 +3510,9 @@ end;
 
 {$endregion Device}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
-static function CLMemorySegment.FromNative(ntv: cl_mem): CLMemorySegment;
+static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
 begin
   var t: MemObjectType;
   OpenCLABCInternalException.RaiseIfError(
@@ -3521,7 +3520,7 @@ begin
   );
   
   if t<>MemObjectType.MEM_OBJECT_BUFFER then
-    raise new ArgumentException($'%Err:CLMemorySegment:WrongNtvType%');
+    raise new ArgumentException($'%Err:CLMemory:WrongNtvType%');
   
   var parent: cl_mem;
   OpenCLABCInternalException.RaiseIfError(
@@ -3529,12 +3528,12 @@ begin
   );
   
   if parent=cl_mem.Zero then
-    Result := new CLMemorySegment(ntv) else
+    Result := new CLMemory(ntv) else
     Result := new CLMemorySubSegment(parent, ntv);
   
 end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLArray}
 
@@ -8214,19 +8213,19 @@ type
 
 {$endregion Kernel}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  CLMemorySegmentCCQ = sealed partial class(GPUCommandContainer<CLMemorySegment>)
+  CLMemoryCCQ = sealed partial class(GPUCommandContainer<CLMemory>)
     
-    private constructor(ccq: GPUCommandContainer<CLMemorySegment>) := inherited;
-    public function Clone: GPUCommandContainer<CLMemorySegment>; override := new CLMemorySegmentCCQ(self);
+    private constructor(ccq: GPUCommandContainer<CLMemory>) := inherited;
+    public function Clone: GPUCommandContainer<CLMemory>; override := new CLMemoryCCQ(self);
     
   end;
   
-{%ContainerCommon\CLMemorySegment\Implementation!ContainerCommon.pas%}
+{%ContainerCommon\CLMemory\Implementation!ContainerCommon.pas%}
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 
@@ -8852,25 +8851,25 @@ type
 
 {$endregion Kernel}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 {$region Implicit}
 
-{%ContainerMethods\CLMemorySegment\Implicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods\CLMemory\Implicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLMemorySegment.Get\Implicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods\CLMemory.Get\Implicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\CLMemorySegment\Explicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods\CLMemory\Explicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLMemorySegment.Get\Explicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods\CLMemory.Get\Explicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Explicit}
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 

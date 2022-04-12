@@ -12,9 +12,9 @@ SimpleAsyncQueueArray<Object>#0
 	CastQueue<integer,Object>#2
 		CommandQueueHostBackgoundFunc<integer>#3: function lambda: integer
 
-CLMemorySegmentCCQ#0
-	CCCObj<CLMemorySegment>: CLMemorySegment[*] of size 1
-	QueueCommand<CLMemorySegment>
+CLMemoryCCQ#0
+	CCCObj<CLMemory>: CLMemory[*] of size 1
+	QueueCommand<CLMemory>
 		CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
 
 [EventDebug]: 0 event's created 

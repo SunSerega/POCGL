@@ -92,14 +92,14 @@ begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
 
 {$region CL}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
-static function KernelArg.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
-begin Result := KernelArgGlobal.FromCLMemorySegment(cl_mem) end;
-static function KernelArg.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
-begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
+static function KernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArg;
+begin Result := KernelArgGlobal.FromCLMemory(cl_mem) end;
+static function KernelArg.operator implicit(cl_mem: CLMemoryCCQ): KernelArg;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 

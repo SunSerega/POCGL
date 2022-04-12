@@ -1,0 +1,25 @@
+﻿
+
+
+constructor CLMemoryCCQ.Create(o: CLMemory) := inherited;
+constructor CLMemoryCCQ.Create(q: CommandQueue<CLMemory>) := inherited;
+constructor CLMemoryCCQ.Create := inherited;
+
+{$region Special .Add's}
+
+function CLMemoryCCQ.ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
+begin
+  var comm := BasicGPUCommand&<CLMemory>.MakeQueue(q);
+  Result := if comm=nil then self else AddCommand(self, comm);
+end;
+
+function CLMemoryCCQ.ThenProc(p: CLMemory->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeBackgroundProc(p));
+function CLMemoryCCQ.ThenProc(p: (CLMemory, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeBackgroundProc(p));
+function CLMemoryCCQ.ThenQuickProc(p: CLMemory->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeQuickProc(p));
+function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeQuickProc(p));
+
+function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeWait(marker));
+
+{$endregion Special .Add's}
+
+

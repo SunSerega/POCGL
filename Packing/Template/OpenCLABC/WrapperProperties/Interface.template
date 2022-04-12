@@ -301,9 +301,9 @@
   
   {$endregion Kernel}
   
-  {$region CLMemorySegment}
+  {$region CLMemory}
   
-  CLMemorySegmentProperties = partial class
+  CLMemoryProperties = partial class
     
     public constructor(ntv: cl_mem);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -322,11 +322,11 @@
     
   end;
   
-  {$endregion CLMemorySegment}
+  {$endregion CLMemory}
   
   {$region CLMemorySubSegment}
   
-  CLMemorySubSegmentProperties = partial class(CLMemorySegmentProperties)
+  CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
     
     public constructor(ntv: cl_mem);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');

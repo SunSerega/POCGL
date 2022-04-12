@@ -37,22 +37,22 @@ end;
 
 {$region 3#Copy}
 
-function CLValue<T>.CopyTo(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+function CLValue<T>.CopyTo(mem: CommandQueue<CLMemory>): CLValue<T>;
 begin
   Result := CopyTo(mem, 0);
 end;
 
-function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemory>): CLValue<T>;
 begin
   Result := CopyFrom(mem, 0);
 end;
 
-function CLValue<T>.CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+function CLValue<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset));
 end;
 
-function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset));
 end;

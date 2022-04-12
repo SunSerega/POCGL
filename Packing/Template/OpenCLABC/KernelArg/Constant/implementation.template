@@ -333,14 +333,14 @@ begin Result := new KernelArgConstantNativeArray<T>(ntv_arr, c) end;
 
 {$region CL}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  KernelArgConstantCLMemorySegment = sealed class(KernelArgConstant)
-    private data: KernelArgConstantWrapCommon<CLMemorySegment>;
+  KernelArgConstantCLMemory = sealed class(KernelArgConstant)
+    private data: KernelArgConstantWrapCommon<CLMemory>;
     
-    public constructor(cl_mem: CommandQueue<CLMemorySegment>) :=
-    data := new KernelArgConstantWrapCommon<CLMemorySegment>(cl_mem);
+    public constructor(cl_mem: CommandQueue<CLMemory>) :=
+    data := new KernelArgConstantWrapCommon<CLMemory>(cl_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -353,12 +353,12 @@ type
     
   end;
   
-static function KernelArgConstant.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
-begin Result := new KernelArgConstantCLMemorySegment(cl_mem) end;
-static function KernelArgConstant.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgConstant;
-begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
+static function KernelArgConstant.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
+begin Result := new KernelArgConstantCLMemory(cl_mem) end;
+static function KernelArgConstant.operator implicit(cl_mem: CLMemoryCCQ): KernelArgConstant;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 

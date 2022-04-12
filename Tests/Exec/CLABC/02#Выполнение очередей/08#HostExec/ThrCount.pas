@@ -17,4 +17,4 @@ begin
 end;
 
 Test( ati->HPQ(ati) );
-Test( ati->CLMemorySegment.Create(1).NewQueue.ThenWriteValue&<byte>(2) );
+Test( ati->CLMemory.Create(1).NewQueue.ThenWriteValue&<byte>(2) );

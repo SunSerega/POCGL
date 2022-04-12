@@ -19,13 +19,13 @@
     
     {$region 3#Copy}
     
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
     
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
     
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
     
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
     
     public function ThenCopyTo(val: CommandQueue<CLValue<&T>>): CLValueCCQ<T>;
     

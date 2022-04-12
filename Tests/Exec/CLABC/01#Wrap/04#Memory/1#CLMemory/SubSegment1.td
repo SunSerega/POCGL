@@ -6,7 +6,7 @@
 
 #ExpOtp
 2
-OpenCLABC.CLMemorySegmentProperties
+OpenCLABC.CLMemoryProperties
 1
 OpenCLABC.CLMemorySubSegmentProperties
 1

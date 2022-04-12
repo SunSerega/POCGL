@@ -578,11 +578,11 @@ begin
     (wr_global*wr_constant*wr_generic).WriteReg(2, 'CL', ()->
     begin
       
-      foreach var t in |'MemorySegment','Value','Array'| do
+      foreach var t in |'Memory','Value','Array'| do
       begin
         var full_t := 'CL'+t;
         var par_name := 'cl_'+t.Remove(3).ToLower;
-        var s := new FromMethodSettings(full_t, par_name, full_t, t<>'MemorySegment', true);
+        var s := new FromMethodSettings(full_t, par_name, full_t, t<>'Memory', true);
         
         WriteGlobalConstantWrapFrom(s);
         wr_generic  .WriteFrom(s.DefineGeneric(wr_global.class_name));

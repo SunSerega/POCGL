@@ -2,7 +2,7 @@
 
 
 # Copy[%direction:To,From%]![%AutoSize:AutoSize,%]
-mem: CommandQueue<CLMemorySegment>{%AutoSize?:; from_offset, to_offset, len\: CommandQueue<integer>%}
+mem: CommandQueue<CLMemory>{%AutoSize?:; from_offset, to_offset, len\: CommandQueue<integer>%}
 !Enqueue
 var ec := cl.EnqueueCopyBuffer(
   cq, {%direction? o.Native,!mem!.Native : !mem!.Native,o.Native %},

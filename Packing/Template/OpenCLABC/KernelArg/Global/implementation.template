@@ -333,14 +333,14 @@ begin Result := new KernelArgGlobalNativeArray<T>(ntv_arr, c, kernel_use) end;
 
 {$region CL}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  KernelArgGlobalCLMemorySegment = sealed class(KernelArgGlobal)
-    private data: KernelArgGlobalWrapCommon<CLMemorySegment>;
+  KernelArgGlobalCLMemory = sealed class(KernelArgGlobal)
+    private data: KernelArgGlobalWrapCommon<CLMemory>;
     
-    public constructor(cl_mem: CommandQueue<CLMemorySegment>) :=
-    data := new KernelArgGlobalWrapCommon<CLMemorySegment>(cl_mem);
+    public constructor(cl_mem: CommandQueue<CLMemory>) :=
+    data := new KernelArgGlobalWrapCommon<CLMemory>(cl_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -353,12 +353,12 @@ type
     
   end;
   
-static function KernelArgGlobal.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
-begin Result := new KernelArgGlobalCLMemorySegment(cl_mem) end;
-static function KernelArgGlobal.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgGlobal;
-begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
+static function KernelArgGlobal.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+begin Result := new KernelArgGlobalCLMemory(cl_mem) end;
+static function KernelArgGlobal.operator implicit(cl_mem: CLMemoryCCQ): KernelArgGlobal;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 

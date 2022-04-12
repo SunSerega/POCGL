@@ -6,7 +6,7 @@
 	- 02#Device
 	- 03#Context
 	- 04#Memory
-		- 1#CLMemorySegment
+		- 1#CLMemory
 		- 2#CLValue
 		- 3#CLArray
 	- 05#Kernel
@@ -54,7 +54,7 @@
 		- 02#Device
 		- 03#Context
 		- 04#Memory
-			- 1#CLMemorySegment
+			- 1#CLMemory
 			- 2#CLValue
 			- 3#CLArray
 		- 05#Kernel

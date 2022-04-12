@@ -30,7 +30,6 @@ unit OpenCLABC;
 // Обязательно сделать до следующей стабильной версии:
 
 //TODO Background=>Threaded +в интерфейсе, чтобы их сортировало [Const,Quick,Threaded]
-//TODO CLMemorySegment=>CLMemory
 
 //TODO ConstConvert: Обычно как QuickConvert, но конвертирование может быть вызвано в момент Invoke или даже создания очереди
 // - ThenConstConvert
@@ -58,7 +57,7 @@ unit OpenCLABC;
 // - implicit ^T -> NativeValue<T>
 //
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
-// --- CLArray и CLValue неявно конвертируются в CLMemorySegment
+// --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
 
 //===================================
@@ -720,9 +719,9 @@ type
   
   {$endregion Kernel}
   
-  {$region CLMemorySegment}
+  {$region CLMemory}
   
-  CLMemorySegmentProperties = partial class
+  CLMemoryProperties = partial class
     
     public constructor(ntv: cl_mem);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -741,11 +740,11 @@ type
     
   end;
   
-  {$endregion CLMemorySegment}
+  {$endregion CLMemory}
   
   {$region CLMemorySubSegment}
   
-  CLMemorySubSegmentProperties = partial class(CLMemorySegmentProperties)
+  CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
     
     public constructor(ntv: cl_mem);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -2131,10 +2130,10 @@ type
   
   {$endregion MemoryUsage}
   
-  {$region CLMemorySegment}
+  {$region CLMemory}
   
   ///Представляет область памяти устройства OpenCL (обычно GPU)
-  CLMemorySegment = partial class(IDisposable)
+  CLMemory = partial class(IDisposable)
     private ntv: cl_mem;
     
     {$region constructor's}
@@ -2167,7 +2166,7 @@ type
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
     ///А во время вызова .Dispose - cl.Release
-    public static function FromNative(ntv: cl_mem): CLMemorySegment;
+    public static function FromNative(ntv: cl_mem): CLMemory;
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -2210,52 +2209,42 @@ type
     {$region 1#Write&Read}
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function WriteValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+    public function WriteArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+    public function WriteArray2<TRecord>(a: array[,] of TRecord): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+    public function WriteArray3<TRecord>(a: array[,,] of TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+    public function ReadArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+    public function ReadArray2<TRecord>(a: array[,] of TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+    public function ReadArray3<TRecord>(a: array[,,] of TRecord): CLMemory; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
-    public function WriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function WriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -2265,13 +2254,23 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function WriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Записывает указанный участок массива в область памяти
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function WriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
-    public function ReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -2281,7 +2280,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -2291,41 +2290,31 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
-    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -2335,232 +2324,231 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    public function ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Записывает указанный участок массива в область памяти
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    public function WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    public function ReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-    public function WriteData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+    public function WriteData(ptr: CommandQueue<IntPtr>): CLMemory;
     
     ///Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    public function WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemory;
     
     ///Читает всё содержимое области памяти в RAM, по указанному адресу
-    public function ReadData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+    public function ReadData(ptr: CommandQueue<IntPtr>): CLMemory;
     
     ///Читает часть содержимого области памяти в RAM, по указанному адресу
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    public function ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemory;
     
     ///Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-    public function WriteData(ptr: pointer): CLMemorySegment;
+    public function WriteData(ptr: pointer): CLMemory;
     
     ///Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    public function WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemory;
     
     ///Читает всё содержимое области памяти в RAM, по указанному адресу
-    public function ReadData(ptr: pointer): CLMemorySegment;
+    public function ReadData(ptr: pointer): CLMemory;
     
     ///Читает часть содержимого области памяти в RAM, по указанному адресу
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+    public function ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemory;
     
-    public function WriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+    public function WriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemory;
     
-    public function WriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function WriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function WriteNativeMemory(native_data: NativeMemory): CLMemorySegment;
+    public function WriteNativeMemory(native_data: NativeMemory): CLMemory;
     
-    public function WriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function WriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemory; where TRecord: record;
     
-    public function WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemory; where TRecord: record;
     
-    public function WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemory; where TRecord: record;
     
-    public function WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function ReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+    public function ReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemory;
     
-    public function ReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function ReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function ReadNativeMemory(native_data: NativeMemory): CLMemorySegment;
+    public function ReadNativeMemory(native_data: NativeMemory): CLMemory;
     
-    public function ReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function ReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemory; where TRecord: record;
     
-    public function ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemory; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemory; where TRecord: record;
     
-    public function ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemory; where TRecord: record;
     
-    public function ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
     
-    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
     
-    public function WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
     
-    public function WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
     
-    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
     
-    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
     
-    public function ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
     
-    public function ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
     
-    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+    public function ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemory;
     
-    public function ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function FillValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+    public function FillValue<TRecord>(val: TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function FillArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+    public function FillArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function FillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+    public function FillArray2<TRecord>(a: array[,] of TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function FillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+    public function FillArray3<TRecord>(a: array[,,] of TRecord): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function FillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -2571,23 +2559,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function FillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -2598,7 +2570,23 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного участка массива
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///fill_byte_len указывает кол-во заливаемых байт
+    public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -2609,89 +2597,100 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
-    public function FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemorySegment; where TRecord: record;
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///fill_byte_len указывает кол-во заливаемых байт
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного участка массива
+    public function FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями всю область памяти
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemory;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями часть области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями всю область памяти
-    public function FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemory;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями часть области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
     
-    public function FillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea): CLMemory;
     
-    public function FillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
     
-    public function FillNativeMemory(native_data: NativeMemory): CLMemorySegment;
+    public function FillNativeMemory(native_data: NativeMemory): CLMemory;
     
-    public function FillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
     
-    public function FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemory; where TRecord: record;
     
-    public function FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function FillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemory; where TRecord: record;
     
-    public function FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function FillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemory; where TRecord: record;
     
-    public function FillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
     
-    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
     
-    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
     
-    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+    public function FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
     
-    public function FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
     
-    public function FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
-    public function FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
     
-    public function FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
     
-    public function FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+    public function FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
     {$endregion 2#Fill}
     
@@ -2699,23 +2698,23 @@ type
     
     ///Копирует данные из данной области памяти в mem
     ///Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+    public function CopyTo(mem: CommandQueue<CLMemory>): CLMemory;
     
     ///Копирует данные из данной области памяти в mem
     ///from_offset указывает отступ в байтах от начала области памяти, из которой копируют
     ///to_offset указывает отступ в байтах от начала области памяти, в которую копируют
     ///len указывает кол-во копируемых байт
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+    public function CopyTo(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemory;
     
     ///Копирует данные из mem в данную область памяти
     ///Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+    public function CopyFrom(mem: CommandQueue<CLMemory>): CLMemory;
     
     ///Копирует данные из mem в данную область памяти
     ///from_offset указывает отступ в байтах от начала области памяти, из которой копируют
     ///to_offset указывает отступ в байтах от начала области памяти, в которую копируют
     ///len указывает кол-во копируемых байт
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+    public function CopyFrom(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemory;
     
     {$endregion 3#Copy}
     
@@ -2744,12 +2743,12 @@ type
     
   end;
   
-  {$endregion CLMemorySegment}
+  {$endregion CLMemory}
   
   {$region CLMemorySubSegment}
   
-  ///Представляет виртуальную область памяти, выделенную внутри CLMemorySegment
-  CLMemorySubSegment = partial class(CLMemorySegment)
+  ///Представляет виртуальную область памяти, выделенную внутри CLMemory
+  CLMemorySubSegment = partial class(CLMemory)
     private _parent: cl_mem;
     
     {$region constructor's}
@@ -2761,17 +2760,17 @@ type
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    public constructor(parent: CLMemorySegment; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
     begin
       inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), MemoryUsage.MakeCLFlags(kernel_use, map_use)) );
       self._parent := parent.ntv;
     end;
-    public constructor(parent: CLMemorySegment; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
-    public constructor(parent: CLMemorySegment; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
-    // For the CLMemorySegment.FromNative
+    // For the CLMemory.FromNative
     private constructor(parent, ntv: cl_mem);
     begin
       inherited Create(ntv);
@@ -2784,7 +2783,7 @@ type
     {$region property's}
     
     ///Возвращает родительскую область памяти
-    public property Parent: CLMemorySegment read CLMemorySegment.FromNative(_parent);
+    public property Parent: CLMemory read CLMemory.FromNative(_parent);
     
     {$endregion property's}
     
@@ -2832,8 +2831,8 @@ type
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
     end;
     
-    public static function operator implicit(mem: CLValue<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
-    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
+    public static function operator implicit(mem: CLValue<T>): CLMemory := new CLMemory(mem.ntv);
+    public constructor(mem: CLMemory) := Create(mem.ntv);
     
     {$endregion constructor's}
     
@@ -2885,18 +2884,18 @@ type
     {$region 3#Copy}
     
     ///Копирует данные из данного значения в mem
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+    public function CopyTo(mem: CommandQueue<CLMemory>): CLValue<T>;
     
     ///Копирует данные из mem в данное значение
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+    public function CopyFrom(mem: CommandQueue<CLMemory>): CLValue<T>;
     
     ///Копирует данные из данного значения в mem
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+    public function CopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
     
     ///Копирует данные из mem в данное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+    public function CopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
     
     ///Копирует данные из данного значения в val
     public function CopyTo(val: CommandQueue<CLValue<&T>>): CLValue<T>;
@@ -2984,8 +2983,8 @@ type
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
     end;
     
-    public static function operator implicit(mem: CLArray<T>): CLMemorySegment := new CLMemorySegment(mem.ntv);
-    public constructor(mem: CLMemorySegment) := Create(mem.ntv);
+    public static function operator implicit(mem: CLArray<T>): CLMemory := new CLMemory(mem.ntv);
+    public constructor(mem: CLMemory) := Create(mem.ntv);
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -3319,23 +3318,23 @@ type
     
     ///Копирует элементы из данного массива в mem
     ///Копируется максимальное кол-во байт, не выходящее за границы данного массива и mem
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+    public function CopyTo(mem: CommandQueue<CLMemory>): CLArray<T>;
     
     ///Копирует элементы из данного массива в mem
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///ind указывает индекс первого элемента данного массива
     ///len указывает кол-во копируемых элементов
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+    public function CopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
     
     ///Копирует элементы из mem в данный массив
     ///Копируется максимальное кол-во байт, не выходящее за границы данного массива и mem
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+    public function CopyFrom(mem: CommandQueue<CLMemory>): CLArray<T>;
     
     ///Копирует элементы из mem в данный массив
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///ind указывает индекс первого элемента данного массива
     ///len указывает кол-во копируемых элементов
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+    public function CopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
     
     ///Копирует элемент с индексом ind из данного массива в val
     public function CopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
@@ -3564,28 +3563,28 @@ type
   end;
   
   ///Представляет область памяти устройства OpenCL (обычно GPU)
-  CLMemorySegment = partial class
+  CLMemory = partial class
     
     ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_mem read ntv;
     
-    private prop: CLMemorySegmentProperties;
-    private function GetProperties: CLMemorySegmentProperties;
+    private prop: CLMemoryProperties;
+    private function GetProperties: CLMemoryProperties;
     begin
-      if prop=nil then prop := new CLMemorySegmentProperties(ntv);
+      if prop=nil then prop := new CLMemoryProperties(ntv);
       Result := prop;
     end;
     ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: CLMemorySegmentProperties read GetProperties;
+    public property Properties: CLMemoryProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: CLMemorySegment): boolean :=
+    public static function operator=(wr1, wr2: CLMemory): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLMemorySegment): boolean := false=
+    public static function operator<>(wr1, wr2: CLMemory): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is CLMemorySegment(var wr)) and (self = wr);
+    (obj is CLMemory(var wr)) and (self = wr);
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
@@ -3593,8 +3592,8 @@ type
     
   end;
   
-  ///Представляет виртуальную область памяти, выделенную внутри CLMemorySegment
-  CLMemorySubSegment = partial class(CLMemorySegment)
+  ///Представляет виртуальную область памяти, выделенную внутри CLMemory
+  CLMemorySubSegment = partial class(CLMemory)
     
     private prop: CLMemorySubSegmentProperties;
     private function GetProperties: CLMemorySubSegmentProperties;
@@ -4683,98 +4682,88 @@ type
   
   {$region MemorySegmentCCQ}
   
-  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа CLMemorySegment
-  CLMemorySegmentCCQ = sealed partial class
+  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа CLMemory
+  CLMemoryCCQ = sealed partial class
     
     ///Создаёт контейнер команд, который будет применять команды к указанному объекту
-    public constructor(o: CLMemorySegment);
+    public constructor(o: CLMemory);
     ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
     ///За каждое одно выполнение контейнера - q выполнится ровно один раз
-    public constructor(q: CommandQueue<CLMemorySegment>);
+    public constructor(q: CommandQueue<CLMemory>);
     private constructor;
     
     {$region Special .Add's}
     
     ///Добавляет выполнение очереди в список обычных команд для GPU
-    public function ThenQueue(q: CommandQueueBase): CLMemorySegmentCCQ;
+    public function ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
     
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
     ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
-    public function ThenProc(p: CLMemorySegment->()): CLMemorySegmentCCQ;
+    public function ThenProc(p: CLMemory->()): CLMemoryCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
     ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
-    public function ThenProc(p: (CLMemorySegment, Context)->()): CLMemorySegmentCCQ;
+    public function ThenProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: CLMemorySegment->()): CLMemorySegmentCCQ;
+    public function ThenQuickProc(p: CLMemory->()): CLMemoryCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
     ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: (CLMemorySegment, Context)->()): CLMemorySegmentCCQ;
+    public function ThenQuickProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
-    public function ThenWait(marker: WaitMarker): CLMemorySegmentCCQ;
+    public function ThenWait(marker: WaitMarker): CLMemoryCCQ;
     
     {$endregion Special .Add's}
     
     {$region 1#Write&Read}
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function ThenWriteValue<TRecord>(val: TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
-    public function ThenWriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -4784,13 +4773,23 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Записывает указанный участок массива в область памяти
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
-    public function ThenReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -4800,7 +4799,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -4810,41 +4809,31 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
-    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Записывает указанный участок массива в область памяти
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
@@ -4854,232 +4843,231 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Читает данные из области памяти в указанный участок массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанный участок массива в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает данные из области памяти в указанный участок массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Записывает указанный участок массива в область памяти
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    public function ThenWriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Читает данные из области памяти в указанный участок массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    public function ThenReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLMemorySegmentCCQ;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLMemoryCCQ;
     
     ///Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Читает всё содержимое области памяти в RAM, по указанному адресу
-    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLMemorySegmentCCQ;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLMemoryCCQ;
     
     ///Читает часть содержимого области памяти в RAM, по указанному адресу
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-    public function ThenWriteData(ptr: pointer): CLMemorySegmentCCQ;
+    public function ThenWriteData(ptr: pointer): CLMemoryCCQ;
     
     ///Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Читает всё содержимое области памяти в RAM, по указанному адресу
-    public function ThenReadData(ptr: pointer): CLMemorySegmentCCQ;
+    public function ThenReadData(ptr: pointer): CLMemoryCCQ;
     
     ///Читает часть содержимого области памяти в RAM, по указанному адресу
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///len указывает кол-во задействованных в операции байт
-    public function ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
     
-    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenWriteNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
     
-    public function ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
     
-    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenReadNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
     
-    public function ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
     
-    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
     
-    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в начало области памяти
-    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает весь массив в начало области памяти
-    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
     
-    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
     
-    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из начала области памяти в указанное значение
-    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет весь массив байбами из начала области памяти
-    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Записывает указанное значение размерного типа в область памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Читает значение размерного типа из области памяти в указанное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     {$endregion 1#Write&Read}
     
     {$region 2#Fill}
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function ThenFillValue<TRecord>(val: TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    ///==================================================
-    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
-    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
-    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenFillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -5090,23 +5078,7 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenFillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного участка массива
-    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
-    ///el_count указывает кол-во задействованных элементов массива
-    ///mem_offset указывает отступ от начала области памяти, в байтах
-    ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -5117,7 +5089,23 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного участка массива
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///fill_byte_len указывает кол-во заливаемых байт
+    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -5128,89 +5116,100 @@ type
     ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
-    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
-    public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    ///a_ind(-ы) указывают индекс первого задействованного элемента массива
+    ///el_count указывает кол-во задействованных элементов массива
+    ///mem_offset указывает отступ от начала области памяти, в байтах
+    ///fill_byte_len указывает кол-во заливаемых байт
+    ///==================================================
+    ///ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
+    ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
+    ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного участка массива
+    public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями всю область памяти
-    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями часть области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями всю область памяти
-    public function ThenFillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями часть области памяти
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
     
-    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenFillNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
     
-    public function ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
     
-    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
     
-    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
     
-    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет всю область памяти копиями указанного значения размерного типа
-    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет часть области памяти копиями указанного значения размерного типа
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
-    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного массива
-    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
     
-    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
     {$endregion 2#Fill}
     
@@ -5218,23 +5217,23 @@ type
     
     ///Копирует данные из данной области памяти в mem
     ///Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLMemorySegmentCCQ;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLMemoryCCQ;
     
     ///Копирует данные из данной области памяти в mem
     ///from_offset указывает отступ в байтах от начала области памяти, из которой копируют
     ///to_offset указывает отступ в байтах от начала области памяти, в которую копируют
     ///len указывает кол-во копируемых байт
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemoryCCQ;
     
     ///Копирует данные из mem в данную область памяти
     ///Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLMemorySegmentCCQ;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLMemoryCCQ;
     
     ///Копирует данные из mem в данную область памяти
     ///from_offset указывает отступ в байтах от начала области памяти, из которой копируют
     ///to_offset указывает отступ в байтах от начала области памяти, в которую копируют
     ///len указывает кол-во копируемых байт
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemoryCCQ;
     
     {$endregion 3#Copy}
     
@@ -5264,9 +5263,9 @@ type
   end;
   
   ///Представляет область памяти устройства OpenCL (обычно GPU)
-  CLMemorySegment = partial class
+  CLMemory = partial class
     ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
-    public function NewQueue := new CLMemorySegmentCCQ(self);
+    public function NewQueue := new CLMemoryCCQ(self);
   end;
   
   {$endregion MemorySegmentCCQ}
@@ -5340,18 +5339,18 @@ type
     {$region 3#Copy}
     
     ///Копирует данные из данного значения в mem
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
     
     ///Копирует данные из mem в данное значение
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
     
     ///Копирует данные из данного значения в mem
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
     
     ///Копирует данные из mem в данное значение
     ///mem_offset указывает отступ от начала области памяти, в байтах
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
     
     ///Копирует данные из данного значения в val
     public function ThenCopyTo(val: CommandQueue<CLValue<&T>>): CLValueCCQ<T>;
@@ -5709,23 +5708,23 @@ type
     
     ///Копирует элементы из данного массива в mem
     ///Копируется максимальное кол-во байт, не выходящее за границы данного массива и mem
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
     
     ///Копирует элементы из данного массива в mem
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///ind указывает индекс первого элемента данного массива
     ///len указывает кол-во копируемых элементов
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Копирует элементы из mem в данный массив
     ///Копируется максимальное кол-во байт, не выходящее за границы данного массива и mem
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
     
     ///Копирует элементы из mem в данный массив
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///ind указывает индекс первого элемента данного массива
     ///len указывает кол-во копируемых элементов
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     ///Копирует элемент с индексом ind из данного массива в val
     public function ThenCopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
@@ -5866,20 +5865,20 @@ type
     
     {$region CL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
-    public static function operator implicit(cl_mem: CLMemorySegment): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemorySegment>): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemorySegment>): KernelArgGlobal;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgGlobal;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+    public static function operator implicit(cl_mem: CLMemory): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArgGlobal;
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -5995,20 +5994,20 @@ type
     
     {$region CL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
-    public static function operator implicit(cl_mem: CLMemorySegment): KernelArgConstant;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemorySegment>): KernelArgConstant;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemorySegment>): KernelArgConstant;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgConstant;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
+    public static function operator implicit(cl_mem: CLMemory): KernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArgConstant;
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -6360,20 +6359,20 @@ type
     
     {$region CL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
-    public static function operator implicit(cl_mem: CLMemorySegment): KernelArg;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemorySegment>): KernelArg;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemorySegment>): KernelArg;
-    begin Result := FromCLMemorySegment(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArg;
+    public static function operator implicit(cl_mem: CLMemory): KernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArg;
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -6554,16 +6553,16 @@ type
     
     {$region OpenCL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelGlobalArg;
-    public static function operator implicit(mem: CLMemorySegment): KernelGlobalArg := FromCLMemorySegment(mem);
+    public static function FromCLMemory(mem: CLMemory): KernelGlobalArg;
+    public static function operator implicit(mem: CLMemory): KernelGlobalArg := FromCLMemory(mem);
     
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelGlobalArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    public static function FromCLMemoryCQ(mem_q: CommandQueue<CLMemory>): KernelGlobalArg;
+    public static function operator implicit(mem_q: CommandQueue<CLMemory>): KernelGlobalArg := FromCLMemoryCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelGlobalArg := FromCLMemoryCQ(mem_q.Cast&<CLMemory>);
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -6747,16 +6746,16 @@ type
     
     {$region OpenCL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem)); end;
-    public static function operator implicit(mem: CLMemorySegment): KernelConstantArg := FromCLMemorySegment(mem);
+    public static function FromCLMemory(mem: CLMemory): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem)); end;
+    public static function operator implicit(mem: CLMemory): KernelConstantArg := FromCLMemory(mem);
     
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem_q)); end;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelConstantArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelConstantArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    public static function FromCLMemoryCQ(mem_q: CommandQueue<CLMemory>): KernelConstantArg; begin Result := new KernelConstantArg(KernelGlobalArg(mem_q)); end;
+    public static function operator implicit(mem_q: CommandQueue<CLMemory>): KernelConstantArg := FromCLMemoryCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelConstantArg := FromCLMemoryCQ(mem_q.Cast&<CLMemory>);
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -7070,18 +7069,18 @@ type
     
     {$region OpenCL}
     
-    {$region CLMemorySegment}
+    {$region CLMemory}
     
     ///Создаёт аргумент kernel'а, ссылающийся на область памяти OpenCL
-    public static function FromCLMemorySegment(mem: CLMemorySegment): KernelGlobalArg := mem;
-    public static function operator implicit(mem: CLMemorySegment): KernelArg := FromCLMemorySegment(mem);
+    public static function FromCLMemory(mem: CLMemory): KernelGlobalArg := mem;
+    public static function operator implicit(mem: CLMemory): KernelArg := FromCLMemory(mem);
     
     ///Создаёт аргумент kernel'а, ссылающийся на область памяти OpenCL
-    public static function FromCLMemorySegmentCQ(mem_q: CommandQueue<CLMemorySegment>): KernelGlobalArg := mem_q;
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySegment>): KernelArg := FromCLMemorySegmentCQ(mem_q);
-    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelArg := FromCLMemorySegmentCQ(mem_q.Cast&<CLMemorySegment>);
+    public static function FromCLMemoryCQ(mem_q: CommandQueue<CLMemory>): KernelGlobalArg := mem_q;
+    public static function operator implicit(mem_q: CommandQueue<CLMemory>): KernelArg := FromCLMemoryCQ(mem_q);
+    public static function operator implicit(mem_q: CommandQueue<CLMemorySubSegment>): KernelArg := FromCLMemoryCQ(mem_q.Cast&<CLMemory>);
     
-    {$endregion CLMemorySegment}
+    {$endregion CLMemory}
     
     {$region CLValue}
     
@@ -8160,10 +8159,10 @@ function KernelProperties.GetAttributes     := GetString(KernelInfo.KERNEL_ATTRI
 
 {$endregion Kernel}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  CLMemorySegmentProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
+  CLMemoryProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -8177,20 +8176,20 @@ type
     
   end;
   
-constructor CLMemorySegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
+constructor CLMemoryProperties.Create(ntv: cl_mem) := inherited Create(ntv);
 
-function CLMemorySegmentProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
-function CLMemorySegmentProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
-function CLMemorySegmentProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
-function CLMemorySegmentProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
-function CLMemorySegmentProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
+function CLMemoryProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
+function CLMemoryProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
+function CLMemoryProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
+function CLMemoryProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
+function CLMemoryProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLMemorySubSegment}
 
 type
-  CLMemorySubSegmentProperties = partial class(CLMemorySegmentProperties)
+  CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -8286,9 +8285,9 @@ end;
 
 {$endregion Device}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
-static function CLMemorySegment.FromNative(ntv: cl_mem): CLMemorySegment;
+static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
 begin
   var t: MemObjectType;
   OpenCLABCInternalException.RaiseIfError(
@@ -8304,12 +8303,12 @@ begin
   );
   
   if parent=cl_mem.Zero then
-    Result := new CLMemorySegment(ntv) else
+    Result := new CLMemory(ntv) else
     Result := new CLMemorySubSegment(parent, ntv);
   
 end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLArray}
 
@@ -14716,38 +14715,38 @@ function KernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUComm
 
 {$endregion Kernel}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  CLMemorySegmentCCQ = sealed partial class(GPUCommandContainer<CLMemorySegment>)
+  CLMemoryCCQ = sealed partial class(GPUCommandContainer<CLMemory>)
     
-    private constructor(ccq: GPUCommandContainer<CLMemorySegment>) := inherited;
-    public function Clone: GPUCommandContainer<CLMemorySegment>; override := new CLMemorySegmentCCQ(self);
+    private constructor(ccq: GPUCommandContainer<CLMemory>) := inherited;
+    public function Clone: GPUCommandContainer<CLMemory>; override := new CLMemoryCCQ(self);
     
   end;
   
-constructor CLMemorySegmentCCQ.Create(o: CLMemorySegment) := inherited;
-constructor CLMemorySegmentCCQ.Create(q: CommandQueue<CLMemorySegment>) := inherited;
-constructor CLMemorySegmentCCQ.Create := inherited;
+constructor CLMemoryCCQ.Create(o: CLMemory) := inherited;
+constructor CLMemoryCCQ.Create(q: CommandQueue<CLMemory>) := inherited;
+constructor CLMemoryCCQ.Create := inherited;
 
 {$region Special .Add's}
 
-function CLMemorySegmentCCQ.ThenQueue(q: CommandQueueBase): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
 begin
-  var comm := BasicGPUCommand&<CLMemorySegment>.MakeQueue(q);
+  var comm := BasicGPUCommand&<CLMemory>.MakeQueue(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLMemorySegmentCCQ.ThenProc(p: CLMemorySegment->()) := AddCommand(self, BasicGPUCommand&<CLMemorySegment>.MakeBackgroundProc(p));
-function CLMemorySegmentCCQ.ThenProc(p: (CLMemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemorySegment>.MakeBackgroundProc(p));
-function CLMemorySegmentCCQ.ThenQuickProc(p: CLMemorySegment->()) := AddCommand(self, BasicGPUCommand&<CLMemorySegment>.MakeQuickProc(p));
-function CLMemorySegmentCCQ.ThenQuickProc(p: (CLMemorySegment, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemorySegment>.MakeQuickProc(p));
+function CLMemoryCCQ.ThenProc(p: CLMemory->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeBackgroundProc(p));
+function CLMemoryCCQ.ThenProc(p: (CLMemory, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeBackgroundProc(p));
+function CLMemoryCCQ.ThenQuickProc(p: CLMemory->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeQuickProc(p));
+function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeQuickProc(p));
 
-function CLMemorySegmentCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLMemorySegment>.MakeWait(marker));
+function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeWait(marker));
 
 {$endregion Special .Add's}
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 
@@ -15447,14 +15446,14 @@ begin Result := new KernelArgGlobalNativeArray<T>(ntv_arr, c, kernel_use) end;
 
 {$region CL}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  KernelArgGlobalCLMemorySegment = sealed class(KernelArgGlobal)
-    private data: KernelArgGlobalWrapCommon<CLMemorySegment>;
+  KernelArgGlobalCLMemory = sealed class(KernelArgGlobal)
+    private data: KernelArgGlobalWrapCommon<CLMemory>;
     
-    public constructor(cl_mem: CommandQueue<CLMemorySegment>) :=
-    data := new KernelArgGlobalWrapCommon<CLMemorySegment>(cl_mem);
+    public constructor(cl_mem: CommandQueue<CLMemory>) :=
+    data := new KernelArgGlobalWrapCommon<CLMemory>(cl_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -15467,12 +15466,12 @@ type
     
   end;
   
-static function KernelArgGlobal.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgGlobal;
-begin Result := new KernelArgGlobalCLMemorySegment(cl_mem) end;
-static function KernelArgGlobal.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgGlobal;
-begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
+static function KernelArgGlobal.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+begin Result := new KernelArgGlobalCLMemory(cl_mem) end;
+static function KernelArgGlobal.operator implicit(cl_mem: CLMemoryCCQ): KernelArgGlobal;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 
@@ -15868,14 +15867,14 @@ begin Result := new KernelArgConstantNativeArray<T>(ntv_arr, c) end;
 
 {$region CL}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  KernelArgConstantCLMemorySegment = sealed class(KernelArgConstant)
-    private data: KernelArgConstantWrapCommon<CLMemorySegment>;
+  KernelArgConstantCLMemory = sealed class(KernelArgConstant)
+    private data: KernelArgConstantWrapCommon<CLMemory>;
     
-    public constructor(cl_mem: CommandQueue<CLMemorySegment>) :=
-    data := new KernelArgConstantWrapCommon<CLMemorySegment>(cl_mem);
+    public constructor(cl_mem: CommandQueue<CLMemory>) :=
+    data := new KernelArgConstantWrapCommon<CLMemory>(cl_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -15888,12 +15887,12 @@ type
     
   end;
   
-static function KernelArgConstant.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArgConstant;
-begin Result := new KernelArgConstantCLMemorySegment(cl_mem) end;
-static function KernelArgConstant.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArgConstant;
-begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
+static function KernelArgConstant.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
+begin Result := new KernelArgConstantCLMemory(cl_mem) end;
+static function KernelArgConstant.operator implicit(cl_mem: CLMemoryCCQ): KernelArgConstant;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 
@@ -16462,14 +16461,14 @@ begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
 
 {$region CL}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
-static function KernelArg.FromCLMemorySegment(cl_mem: CommandQueue<CLMemorySegment>): KernelArg;
-begin Result := KernelArgGlobal.FromCLMemorySegment(cl_mem) end;
-static function KernelArg.operator implicit(cl_mem: CLMemorySegmentCCQ): KernelArg;
-begin Result := FromCLMemorySegment(cl_mem as object as CommandQueue<CLMemorySegment>) end;
+static function KernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArg;
+begin Result := KernelArgGlobal.FromCLMemory(cl_mem) end;
+static function KernelArg.operator implicit(cl_mem: CLMemoryCCQ): KernelArg;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 
@@ -17200,438 +17199,438 @@ end;
 
 {$endregion Kernel}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 {$region Implicit}
 
 {$region 1#Write&Read}
 
-function CLMemorySegment.WriteValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteValue<TRecord>(val: TRecord): CLMemory; where TRecord: record;
 begin
   Result := WriteValue(val, 0);
 end;
 
-function CLMemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := WriteValue(val, 0);
 end;
 
-function CLMemorySegment.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
-function CLMemorySegment.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
-function CLMemorySegment.WriteArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
 begin
   Result := WriteArray1(CQ(a));
 end;
 
-function CLMemorySegment.WriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray2<TRecord>(a: array[,] of TRecord): CLMemory; where TRecord: record;
 begin
   Result := WriteArray2(CQ(a));
 end;
 
-function CLMemorySegment.WriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray3<TRecord>(a: array[,,] of TRecord): CLMemory; where TRecord: record;
 begin
   Result := WriteArray3(CQ(a));
 end;
 
-function CLMemorySegment.ReadArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
 begin
   Result := ReadArray1(CQ(a));
 end;
 
-function CLMemorySegment.ReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray2<TRecord>(a: array[,] of TRecord): CLMemory; where TRecord: record;
 begin
   Result := ReadArray2(CQ(a));
 end;
 
-function CLMemorySegment.ReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray3<TRecord>(a: array[,,] of TRecord): CLMemory; where TRecord: record;
 begin
   Result := ReadArray3(CQ(a));
 end;
 
-function CLMemorySegment.WriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteArray1(CQ(a), a_ind, el_count, mem_offset);
 end;
 
-function CLMemorySegment.WriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteArray2(CQ(a), a_ind1,a_ind2, el_count, mem_offset);
 end;
 
-function CLMemorySegment.WriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteArray3(CQ(a), a_ind1,a_ind2,a_ind3, el_count, mem_offset);
 end;
 
-function CLMemorySegment.ReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadArray1(CQ(a), a_ind, el_count, mem_offset);
 end;
 
-function CLMemorySegment.ReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadArray2(CQ(a), a_ind1,a_ind2, el_count, mem_offset);
 end;
 
-function CLMemorySegment.ReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadArray3(CQ(a), a_ind1,a_ind2,a_ind3, el_count, mem_offset);
 end;
 
-function CLMemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a));
 end;
 
-function CLMemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a));
 end;
 
-function CLMemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a));
 end;
 
-function CLMemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a));
 end;
 
-function CLMemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a));
 end;
 
-function CLMemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a));
 end;
 
-function CLMemorySegment.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a, a_ind, el_count, mem_offset));
 end;
 
-function CLMemorySegment.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
 end;
 
-function CLMemorySegment.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
 end;
 
-function CLMemorySegment.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a, a_ind, el_count, mem_offset));
 end;
 
-function CLMemorySegment.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
 end;
 
-function CLMemorySegment.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
 end;
 
-function CLMemorySegment.WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteArray1(CQ(a.Array), a.Offset, a.Count, mem_offset);
 end;
 
-function CLMemorySegment.ReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadArray1(CQ(a.Array), a.Offset, a.Count, mem_offset);
 end;
 
-function CLMemorySegment.WriteData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+function CLMemory.WriteData(ptr: CommandQueue<IntPtr>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
 end;
 
-function CLMemorySegment.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, mem_offset, len));
 end;
 
-function CLMemorySegment.ReadData(ptr: CommandQueue<IntPtr>): CLMemorySegment;
+function CLMemory.ReadData(ptr: CommandQueue<IntPtr>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
 end;
 
-function CLMemorySegment.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, mem_offset, len));
 end;
 
-function CLMemorySegment.WriteData(ptr: pointer): CLMemorySegment;
+function CLMemory.WriteData(ptr: pointer): CLMemory;
 begin
   Result := WriteData(IntPtr(ptr));
 end;
 
-function CLMemorySegment.WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.WriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemory;
 begin
   Result := WriteData(IntPtr(ptr), mem_offset, len);
 end;
 
-function CLMemorySegment.ReadData(ptr: pointer): CLMemorySegment;
+function CLMemory.ReadData(ptr: pointer): CLMemory;
 begin
   Result := ReadData(IntPtr(ptr));
 end;
 
-function CLMemorySegment.ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.ReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemory;
 begin
   Result := ReadData(IntPtr(ptr), mem_offset, len);
 end;
 
-function CLMemorySegment.WriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+function CLMemory.WriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemory;
 begin
   Result := WriteNativeMemoryArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.WriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := WriteNativeMemoryArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeMemory(native_data: NativeMemory): CLMemorySegment;
+function CLMemory.WriteNativeMemory(native_data: NativeMemory): CLMemory;
 begin
   Result := WriteNativeMemory(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.WriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := WriteNativeMemory(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeValueArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeValueArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeValue(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeValue(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeArrayArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeArrayArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeArray(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeArray(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+function CLMemory.ReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemory;
 begin
   Result := ReadNativeMemoryArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.ReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := ReadNativeMemoryArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeMemory(native_data: NativeMemory): CLMemorySegment;
+function CLMemory.ReadNativeMemory(native_data: NativeMemory): CLMemory;
 begin
   Result := ReadNativeMemory(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.ReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := ReadNativeMemory(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeValueArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeValueArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeValue(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeValue(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeArrayArea(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeArrayArea(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeArray(CQ(native_data), 0);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeArray(CQ(native_data), mem_offset);
 end;
 
-function CLMemorySegment.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+function CLMemory.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
 begin
   Result := WriteNativeMemoryArea(native_data, 0);
 end;
 
-function CLMemorySegment.WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+function CLMemory.WriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
 begin
   Result := WriteNativeMemory(native_data, 0);
 end;
 
-function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeValueArea(native_data, 0);
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeValue(native_data, 0);
 end;
 
-function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeArrayArea(native_data, 0);
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := WriteNativeArray(native_data, 0);
 end;
 
-function CLMemorySegment.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+function CLMemory.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
 begin
   Result := ReadNativeMemoryArea(native_data, 0);
 end;
 
-function CLMemorySegment.ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+function CLMemory.ReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
 begin
   Result := ReadNativeMemory(native_data, 0);
 end;
 
-function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeValueArea(native_data, 0);
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeValue(native_data, 0);
 end;
 
-function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeArrayArea(native_data, 0);
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := ReadNativeArray(native_data, 0);
 end;
 
-function CLMemorySegment.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
 end;
 
-function CLMemorySegment.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
 end;
 
-function CLMemorySegment.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
 end;
 
-function CLMemorySegment.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
 end;
 
-function CLMemorySegment.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea&<TRecord>(native_data, mem_offset));
 end;
 
-function CLMemorySegment.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(native_data, mem_offset));
 end;
@@ -17640,232 +17639,232 @@ end;
 
 {$region 2#Fill}
 
-function CLMemorySegment.FillValue<TRecord>(val: TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.FillValue<TRecord>(val: TRecord): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
-function CLMemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
-function CLMemorySegment.FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillArray1<TRecord>(a: array of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
 begin
   Result := FillArray1(CQ(a));
 end;
 
-function CLMemorySegment.FillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray2<TRecord>(a: array[,] of TRecord): CLMemory; where TRecord: record;
 begin
   Result := FillArray2(CQ(a));
 end;
 
-function CLMemorySegment.FillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray3<TRecord>(a: array[,,] of TRecord): CLMemory; where TRecord: record;
 begin
   Result := FillArray3(CQ(a));
 end;
 
-function CLMemorySegment.FillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillArray1(CQ(a), a_ind, pattern_byte_len, mem_offset, fill_byte_len);
 end;
 
-function CLMemorySegment.FillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillArray2(CQ(a), a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len);
 end;
 
-function CLMemorySegment.FillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillArray3(CQ(a), a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len);
 end;
 
-function CLMemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a));
 end;
 
-function CLMemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a));
 end;
 
-function CLMemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a));
 end;
 
-function CLMemorySegment.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a));
 end;
 
-function CLMemorySegment.FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len));
 end;
 
-function CLMemorySegment.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := FillData(IntPtr(ptr), pattern_byte_len);
 end;
 
-function CLMemorySegment.FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := FillData(IntPtr(ptr), pattern_byte_len, mem_offset, fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegment;
+function CLMemory.FillNativeMemoryArea(native_data: NativeMemoryArea): CLMemory;
 begin
   Result := FillNativeMemoryArea(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := FillNativeMemoryArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeMemory(native_data: NativeMemory): CLMemorySegment;
+function CLMemory.FillNativeMemory(native_data: NativeMemory): CLMemory;
 begin
   Result := FillNativeMemory(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := FillNativeMemory(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeValueArea(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeValueArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeValue(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeValue(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeArrayArea(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeArrayArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeArray(CQ(native_data));
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := FillNativeArray(CQ(native_data),mem_offset,fill_byte_len);
 end;
 
-function CLMemorySegment.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegment;
+function CLMemory.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
 end;
 
-function CLMemorySegment.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegment;
+function CLMemory.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
 end;
 
-function CLMemorySegment.FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data));
 end;
 
-function CLMemorySegment.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data));
 end;
 
-function CLMemorySegment.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data));
 end;
 
-function CLMemorySegment.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data));
 end;
 
-function CLMemorySegment.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegment; where TRecord: record;
+function CLMemory.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
@@ -17874,22 +17873,22 @@ end;
 
 {$region 3#Copy}
 
-function CLMemorySegment.CopyTo(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+function CLMemory.CopyTo(mem: CommandQueue<CLMemory>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
-function CLMemorySegment.CopyTo(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.CopyTo(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, from_offset, to_offset, len));
 end;
 
-function CLMemorySegment.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLMemorySegment;
+function CLMemory.CopyFrom(mem: CommandQueue<CLMemory>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
-function CLMemorySegment.CopyFrom(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegment;
+function CLMemory.CopyFrom(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemory;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, from_offset, to_offset, len));
 end;
@@ -17898,32 +17897,32 @@ end;
 
 {$region Get}
 
-function CLMemorySegment.GetValue<TRecord>: TRecord; where TRecord: record;
+function CLMemory.GetValue<TRecord>: TRecord; where TRecord: record;
 begin
   Result := GetValue&<TRecord>(0);
 end;
 
-function CLMemorySegment.GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord; where TRecord: record;
+function CLMemory.GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue&<TRecord>(mem_offset));
 end;
 
-function CLMemorySegment.GetArray<TRecord>: array of TRecord; where TRecord: record;
+function CLMemory.GetArray<TRecord>: array of TRecord; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>);
 end;
 
-function CLMemorySegment.GetArray<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
+function CLMemory.GetArray<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>(len));
 end;
 
-function CLMemorySegment.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
+function CLMemory.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray2&<TRecord>(len1, len2));
 end;
 
-function CLMemorySegment.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
+function CLMemory.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray3&<TRecord>(len1, len2, len3));
 end;
@@ -17938,7 +17937,7 @@ end;
 
 {$region WriteValue}
 
-function CLMemorySegmentCCQ.ThenWriteValue<TRecord>(val: TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteValue<TRecord>(val: TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteValue(val, 0);
 end;
@@ -17947,7 +17946,7 @@ end;
 
 {$region WriteValue!Q}
 
-function CLMemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteValue(val, 0);
 end;
@@ -17957,7 +17956,7 @@ end;
 {$region WriteValue}
 
 type
-  CLMemorySegmentCommandWriteValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private        val := new NativeValueArea<TRecord>(true);
     private mem_offset: CommandQueue<integer>;
@@ -17985,7 +17984,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18029,9 +18028,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteValue<TRecord>(val, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteValue<TRecord>(val, mem_offset));
 end;
 
 {$endregion WriteValue}
@@ -18039,7 +18038,7 @@ end;
 {$region WriteValue!Q}
 
 type
-  CLMemorySegmentCommandWriteValueQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteValueQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private        val: CommandQueue<TRecord>;
     private mem_offset: CommandQueue<integer>;
@@ -18063,7 +18062,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var        val_qr: QueueResPtr<TRecord>;
       var mem_offset_qr: QueueRes<integer>;
@@ -18113,16 +18112,16 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteValueQ<TRecord>(val, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteValueQ<TRecord>(val, mem_offset));
 end;
 
 {$endregion WriteValue!Q}
 
 {$region WriteArray1!AutoSize}
 
-function CLMemorySegmentCCQ.ThenWriteArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray1(CQ(a));
 end;
@@ -18131,7 +18130,7 @@ end;
 
 {$region WriteArray2!AutoSize}
 
-function CLMemorySegmentCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray2(CQ(a));
 end;
@@ -18140,7 +18139,7 @@ end;
 
 {$region WriteArray3!AutoSize}
 
-function CLMemorySegmentCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray3(CQ(a));
 end;
@@ -18149,7 +18148,7 @@ end;
 
 {$region ReadArray1!AutoSize}
 
-function CLMemorySegmentCCQ.ThenReadArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray1(CQ(a));
 end;
@@ -18158,7 +18157,7 @@ end;
 
 {$region ReadArray2!AutoSize}
 
-function CLMemorySegmentCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray2(CQ(a));
 end;
@@ -18167,7 +18166,7 @@ end;
 
 {$region ReadArray3!AutoSize}
 
-function CLMemorySegmentCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray3(CQ(a));
 end;
@@ -18176,7 +18175,7 @@ end;
 
 {$region WriteArray1}
 
-function CLMemorySegmentCCQ.ThenWriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray1(CQ(a), a_ind, el_count, mem_offset);
 end;
@@ -18185,7 +18184,7 @@ end;
 
 {$region WriteArray2}
 
-function CLMemorySegmentCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray2(CQ(a), a_ind1,a_ind2, el_count, mem_offset);
 end;
@@ -18194,7 +18193,7 @@ end;
 
 {$region WriteArray3}
 
-function CLMemorySegmentCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray3(CQ(a), a_ind1,a_ind2,a_ind3, el_count, mem_offset);
 end;
@@ -18203,7 +18202,7 @@ end;
 
 {$region ReadArray1}
 
-function CLMemorySegmentCCQ.ThenReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray1(CQ(a), a_ind, el_count, mem_offset);
 end;
@@ -18212,7 +18211,7 @@ end;
 
 {$region ReadArray2}
 
-function CLMemorySegmentCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray2(CQ(a), a_ind1,a_ind2, el_count, mem_offset);
 end;
@@ -18221,7 +18220,7 @@ end;
 
 {$region ReadArray3}
 
-function CLMemorySegmentCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray3(CQ(a), a_ind1,a_ind2,a_ind3, el_count, mem_offset);
 end;
@@ -18231,7 +18230,7 @@ end;
 {$region WriteArray1!AutoSize}
 
 type
-  CLMemorySegmentCommandWriteArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
@@ -18252,7 +18251,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18297,9 +18296,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteArray1AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandWriteArray1AutoSize<TRecord>(a));
 end;
 
 {$endregion WriteArray1!AutoSize}
@@ -18307,7 +18306,7 @@ end;
 {$region WriteArray2!AutoSize}
 
 type
-  CLMemorySegmentCommandWriteArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
@@ -18328,7 +18327,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18373,9 +18372,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteArray2AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandWriteArray2AutoSize<TRecord>(a));
 end;
 
 {$endregion WriteArray2!AutoSize}
@@ -18383,7 +18382,7 @@ end;
 {$region WriteArray3!AutoSize}
 
 type
-  CLMemorySegmentCommandWriteArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
@@ -18404,7 +18403,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18449,9 +18448,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteArray3AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandWriteArray3AutoSize<TRecord>(a));
 end;
 
 {$endregion WriteArray3!AutoSize}
@@ -18459,7 +18458,7 @@ end;
 {$region ReadArray1!AutoSize}
 
 type
-  CLMemorySegmentCommandReadArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
@@ -18480,7 +18479,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18525,9 +18524,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadArray1AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandReadArray1AutoSize<TRecord>(a));
 end;
 
 {$endregion ReadArray1!AutoSize}
@@ -18535,7 +18534,7 @@ end;
 {$region ReadArray2!AutoSize}
 
 type
-  CLMemorySegmentCommandReadArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
@@ -18556,7 +18555,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18601,9 +18600,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadArray2AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandReadArray2AutoSize<TRecord>(a));
 end;
 
 {$endregion ReadArray2!AutoSize}
@@ -18611,7 +18610,7 @@ end;
 {$region ReadArray3!AutoSize}
 
 type
-  CLMemorySegmentCommandReadArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
@@ -18632,7 +18631,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -18677,9 +18676,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadArray3AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandReadArray3AutoSize<TRecord>(a));
 end;
 
 {$endregion ReadArray3!AutoSize}
@@ -18687,7 +18686,7 @@ end;
 {$region WriteArray1}
 
 type
-  CLMemorySegmentCommandWriteArray1<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteArray1<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private          a: CommandQueue<array of TRecord>;
     private      a_ind: CommandQueue<integer>;
@@ -18717,7 +18716,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var          a_qr: QueueRes<array of TRecord>;
       var      a_ind_qr: QueueRes<integer>;
@@ -18785,9 +18784,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteArray1<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteArray1<TRecord>(a, a_ind, el_count, mem_offset));
 end;
 
 {$endregion WriteArray1}
@@ -18795,7 +18794,7 @@ end;
 {$region WriteArray2}
 
 type
-  CLMemorySegmentCommandWriteArray2<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteArray2<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private          a: CommandQueue<array[,] of TRecord>;
     private     a_ind1: CommandQueue<integer>;
@@ -18828,7 +18827,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var          a_qr: QueueRes<array[,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -18904,9 +18903,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteArray2<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteArray2<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
 end;
 
 {$endregion WriteArray2}
@@ -18914,7 +18913,7 @@ end;
 {$region WriteArray3}
 
 type
-  CLMemorySegmentCommandWriteArray3<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteArray3<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private          a: CommandQueue<array[,,] of TRecord>;
     private     a_ind1: CommandQueue<integer>;
@@ -18950,7 +18949,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var          a_qr: QueueRes<array[,,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -19034,9 +19033,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteArray3<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteArray3<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
 end;
 
 {$endregion WriteArray3}
@@ -19044,7 +19043,7 @@ end;
 {$region ReadArray1}
 
 type
-  CLMemorySegmentCommandReadArray1<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadArray1<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private          a: CommandQueue<array of TRecord>;
     private      a_ind: CommandQueue<integer>;
@@ -19074,7 +19073,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var          a_qr: QueueRes<array of TRecord>;
       var      a_ind_qr: QueueRes<integer>;
@@ -19142,9 +19141,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadArray1<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadArray1<TRecord>(a, a_ind, el_count, mem_offset));
 end;
 
 {$endregion ReadArray1}
@@ -19152,7 +19151,7 @@ end;
 {$region ReadArray2}
 
 type
-  CLMemorySegmentCommandReadArray2<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadArray2<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private          a: CommandQueue<array[,] of TRecord>;
     private     a_ind1: CommandQueue<integer>;
@@ -19185,7 +19184,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var          a_qr: QueueRes<array[,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -19261,9 +19260,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadArray2<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadArray2<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
 end;
 
 {$endregion ReadArray2}
@@ -19271,7 +19270,7 @@ end;
 {$region ReadArray3}
 
 type
-  CLMemorySegmentCommandReadArray3<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadArray3<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private          a: CommandQueue<array[,,] of TRecord>;
     private     a_ind1: CommandQueue<integer>;
@@ -19307,7 +19306,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var          a_qr: QueueRes<array[,,] of TRecord>;
       var     a_ind1_qr: QueueRes<integer>;
@@ -19391,16 +19390,16 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadArray3<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadArray3<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
 end;
 
 {$endregion ReadArray3}
 
 {$region WriteArraySegment}
 
-function CLMemorySegmentCCQ.ThenWriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteArray1(CQ(a.Array), a.Offset, a.Count, mem_offset);
 end;
@@ -19409,7 +19408,7 @@ end;
 
 {$region ReadArraySegment}
 
-function CLMemorySegmentCCQ.ThenReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadArray1(CQ(a.Array), a.Offset, a.Count, mem_offset);
 end;
@@ -19419,7 +19418,7 @@ end;
 {$region WriteData!AutoSize}
 
 type
-  CLMemorySegmentCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private ptr: CommandQueue<IntPtr>;
     
     public function EnqEvCapacity: integer; override := 1;
@@ -19435,7 +19434,7 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -19474,9 +19473,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteData(ptr: CommandQueue<IntPtr>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteData(ptr: CommandQueue<IntPtr>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteDataAutoSize(ptr));
+  Result := AddCommand(self, new CLMemoryCommandWriteDataAutoSize(ptr));
 end;
 
 {$endregion WriteData!AutoSize}
@@ -19484,7 +19483,7 @@ end;
 {$region WriteData}
 
 type
-  CLMemorySegmentCommandWriteData = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteData = sealed class(EnqueueableGPUCommand<CLMemory>)
     private        ptr: CommandQueue<IntPtr>;
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
@@ -19506,7 +19505,7 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
@@ -19561,9 +19560,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteData(ptr, mem_offset, len));
+  Result := AddCommand(self, new CLMemoryCommandWriteData(ptr, mem_offset, len));
 end;
 
 {$endregion WriteData}
@@ -19571,7 +19570,7 @@ end;
 {$region ReadData!AutoSize}
 
 type
-  CLMemorySegmentCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private ptr: CommandQueue<IntPtr>;
     
     public function EnqEvCapacity: integer; override := 1;
@@ -19587,7 +19586,7 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -19626,9 +19625,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadData(ptr: CommandQueue<IntPtr>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadData(ptr: CommandQueue<IntPtr>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadDataAutoSize(ptr));
+  Result := AddCommand(self, new CLMemoryCommandReadDataAutoSize(ptr));
 end;
 
 {$endregion ReadData!AutoSize}
@@ -19636,7 +19635,7 @@ end;
 {$region ReadData}
 
 type
-  CLMemorySegmentCommandReadData = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadData = sealed class(EnqueueableGPUCommand<CLMemory>)
     private        ptr: CommandQueue<IntPtr>;
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
@@ -19658,7 +19657,7 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var        ptr_qr: QueueRes<IntPtr>;
       var mem_offset_qr: QueueRes<integer>;
@@ -19713,16 +19712,16 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadData(ptr, mem_offset, len));
+  Result := AddCommand(self, new CLMemoryCommandReadData(ptr, mem_offset, len));
 end;
 
 {$endregion ReadData}
 
 {$region WriteData!AutoSize}
 
-function CLMemorySegmentCCQ.ThenWriteData(ptr: pointer): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteData(ptr: pointer): CLMemoryCCQ;
 begin
   Result := ThenWriteData(IntPtr(ptr));
 end;
@@ -19731,7 +19730,7 @@ end;
 
 {$region WriteData}
 
-function CLMemorySegmentCCQ.ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenWriteData(IntPtr(ptr), mem_offset, len);
 end;
@@ -19740,7 +19739,7 @@ end;
 
 {$region ReadData!AutoSize}
 
-function CLMemorySegmentCCQ.ThenReadData(ptr: pointer): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadData(ptr: pointer): CLMemoryCCQ;
 begin
   Result := ThenReadData(IntPtr(ptr));
 end;
@@ -19749,7 +19748,7 @@ end;
 
 {$region ReadData}
 
-function CLMemorySegmentCCQ.ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenReadData(IntPtr(ptr), mem_offset, len);
 end;
@@ -19758,7 +19757,7 @@ end;
 
 {$region WriteNativeMemoryArea!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
 begin
   Result := ThenWriteNativeMemoryArea(CQ(native_data), 0);
 end;
@@ -19767,7 +19766,7 @@ end;
 
 {$region WriteNativeMemoryArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenWriteNativeMemoryArea(CQ(native_data), mem_offset);
 end;
@@ -19776,7 +19775,7 @@ end;
 
 {$region WriteNativeMemory!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
 begin
   Result := ThenWriteNativeMemory(CQ(native_data), 0);
 end;
@@ -19785,7 +19784,7 @@ end;
 
 {$region WriteNativeMemory}
 
-function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenWriteNativeMemory(CQ(native_data), mem_offset);
 end;
@@ -19794,7 +19793,7 @@ end;
 
 {$region WriteNativeValueArea!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeValueArea(CQ(native_data), 0);
 end;
@@ -19803,7 +19802,7 @@ end;
 
 {$region WriteNativeValueArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeValueArea(CQ(native_data), mem_offset);
 end;
@@ -19812,7 +19811,7 @@ end;
 
 {$region WriteNativeValue!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeValue(CQ(native_data), 0);
 end;
@@ -19821,7 +19820,7 @@ end;
 
 {$region WriteNativeValue}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeValue(CQ(native_data), mem_offset);
 end;
@@ -19830,7 +19829,7 @@ end;
 
 {$region WriteNativeArrayArea!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeArrayArea(CQ(native_data), 0);
 end;
@@ -19839,7 +19838,7 @@ end;
 
 {$region WriteNativeArrayArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeArrayArea(CQ(native_data), mem_offset);
 end;
@@ -19848,7 +19847,7 @@ end;
 
 {$region WriteNativeArray!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeArray(CQ(native_data), 0);
 end;
@@ -19857,7 +19856,7 @@ end;
 
 {$region WriteNativeArray}
 
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeArray(CQ(native_data), mem_offset);
 end;
@@ -19866,7 +19865,7 @@ end;
 
 {$region ReadNativeMemoryArea!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
 begin
   Result := ThenReadNativeMemoryArea(CQ(native_data), 0);
 end;
@@ -19875,7 +19874,7 @@ end;
 
 {$region ReadNativeMemoryArea}
 
-function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenReadNativeMemoryArea(CQ(native_data), mem_offset);
 end;
@@ -19884,7 +19883,7 @@ end;
 
 {$region ReadNativeMemory!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
 begin
   Result := ThenReadNativeMemory(CQ(native_data), 0);
 end;
@@ -19893,7 +19892,7 @@ end;
 
 {$region ReadNativeMemory}
 
-function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenReadNativeMemory(CQ(native_data), mem_offset);
 end;
@@ -19902,7 +19901,7 @@ end;
 
 {$region ReadNativeValueArea!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeValueArea(CQ(native_data), 0);
 end;
@@ -19911,7 +19910,7 @@ end;
 
 {$region ReadNativeValueArea}
 
-function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeValueArea(CQ(native_data), mem_offset);
 end;
@@ -19920,7 +19919,7 @@ end;
 
 {$region ReadNativeValue!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeValue(CQ(native_data), 0);
 end;
@@ -19929,7 +19928,7 @@ end;
 
 {$region ReadNativeValue}
 
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeValue(CQ(native_data), mem_offset);
 end;
@@ -19938,7 +19937,7 @@ end;
 
 {$region ReadNativeArrayArea!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeArrayArea(CQ(native_data), 0);
 end;
@@ -19947,7 +19946,7 @@ end;
 
 {$region ReadNativeArrayArea}
 
-function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeArrayArea(CQ(native_data), mem_offset);
 end;
@@ -19956,7 +19955,7 @@ end;
 
 {$region ReadNativeArray!AutoOffset}
 
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeArray(CQ(native_data), 0);
 end;
@@ -19965,7 +19964,7 @@ end;
 
 {$region ReadNativeArray}
 
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeArray(CQ(native_data), mem_offset);
 end;
@@ -19974,7 +19973,7 @@ end;
 
 {$region WriteNativeMemoryArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
 begin
   Result := ThenWriteNativeMemoryArea(native_data, 0);
 end;
@@ -19983,7 +19982,7 @@ end;
 
 {$region WriteNativeMemory}
 
-function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
 begin
   Result := ThenWriteNativeMemory(native_data, 0);
 end;
@@ -19992,7 +19991,7 @@ end;
 
 {$region WriteNativeValueArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeValueArea(native_data, 0);
 end;
@@ -20001,7 +20000,7 @@ end;
 
 {$region WriteNativeValue}
 
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeValue(native_data, 0);
 end;
@@ -20010,7 +20009,7 @@ end;
 
 {$region WriteNativeArrayArea}
 
-function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeArrayArea(native_data, 0);
 end;
@@ -20019,7 +20018,7 @@ end;
 
 {$region WriteNativeArray}
 
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenWriteNativeArray(native_data, 0);
 end;
@@ -20028,7 +20027,7 @@ end;
 
 {$region ReadNativeMemoryArea}
 
-function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
 begin
   Result := ThenReadNativeMemoryArea(native_data, 0);
 end;
@@ -20037,7 +20036,7 @@ end;
 
 {$region ReadNativeMemory}
 
-function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
 begin
   Result := ThenReadNativeMemory(native_data, 0);
 end;
@@ -20046,7 +20045,7 @@ end;
 
 {$region ReadNativeValueArea}
 
-function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeValueArea(native_data, 0);
 end;
@@ -20055,7 +20054,7 @@ end;
 
 {$region ReadNativeValue}
 
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeValue(native_data, 0);
 end;
@@ -20064,7 +20063,7 @@ end;
 
 {$region ReadNativeArrayArea}
 
-function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeArrayArea(native_data, 0);
 end;
@@ -20073,7 +20072,7 @@ end;
 
 {$region ReadNativeArray}
 
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenReadNativeArray(native_data, 0);
 end;
@@ -20083,7 +20082,7 @@ end;
 {$region WriteNativeMemoryArea}
 
 type
-  CLMemorySegmentCommandWriteNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemoryArea>;
     private  mem_offset: CommandQueue<integer>;
     
@@ -20102,7 +20101,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20149,9 +20148,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeMemoryArea(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteNativeMemoryArea(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeMemoryArea}
@@ -20159,7 +20158,7 @@ end;
 {$region WriteNativeMemory}
 
 type
-  CLMemorySegmentCommandWriteNativeMemory = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteNativeMemory = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemory>;
     private  mem_offset: CommandQueue<integer>;
     
@@ -20178,7 +20177,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20225,9 +20224,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeMemory(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteNativeMemory(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeMemory}
@@ -20235,7 +20234,7 @@ end;
 {$region WriteNativeValueArea}
 
 type
-  CLMemorySegmentCommandWriteNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeValueArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20259,7 +20258,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20306,9 +20305,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeValueArea<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteNativeValueArea<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeValueArea}
@@ -20316,7 +20315,7 @@ end;
 {$region WriteNativeValue}
 
 type
-  CLMemorySegmentCommandWriteNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeValue<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20340,7 +20339,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20387,9 +20386,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeValue<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteNativeValue<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeValue}
@@ -20397,7 +20396,7 @@ end;
 {$region WriteNativeArrayArea}
 
 type
-  CLMemorySegmentCommandWriteNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20421,7 +20420,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20468,9 +20467,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeArrayArea<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteNativeArrayArea<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeArrayArea}
@@ -20478,7 +20477,7 @@ end;
 {$region WriteNativeArray}
 
 type
-  CLMemorySegmentCommandWriteNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandWriteNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeArray<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20502,7 +20501,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20549,9 +20548,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandWriteNativeArray<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandWriteNativeArray<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion WriteNativeArray}
@@ -20559,7 +20558,7 @@ end;
 {$region ReadNativeMemoryArea}
 
 type
-  CLMemorySegmentCommandReadNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemoryArea>;
     private  mem_offset: CommandQueue<integer>;
     
@@ -20578,7 +20577,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20625,9 +20624,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeMemoryArea(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadNativeMemoryArea(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeMemoryArea}
@@ -20635,7 +20634,7 @@ end;
 {$region ReadNativeMemory}
 
 type
-  CLMemorySegmentCommandReadNativeMemory = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadNativeMemory = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemory>;
     private  mem_offset: CommandQueue<integer>;
     
@@ -20654,7 +20653,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20701,9 +20700,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeMemory(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadNativeMemory(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeMemory}
@@ -20711,7 +20710,7 @@ end;
 {$region ReadNativeValueArea}
 
 type
-  CLMemorySegmentCommandReadNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeValueArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20735,7 +20734,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20782,9 +20781,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeValueArea<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadNativeValueArea<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeValueArea}
@@ -20792,7 +20791,7 @@ end;
 {$region ReadNativeValue}
 
 type
-  CLMemorySegmentCommandReadNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeValue<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20816,7 +20815,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20863,9 +20862,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeValue<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadNativeValue<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeValue}
@@ -20873,7 +20872,7 @@ end;
 {$region ReadNativeArrayArea}
 
 type
-  CLMemorySegmentCommandReadNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20897,7 +20896,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -20944,9 +20943,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeArrayArea<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadNativeArrayArea<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeArrayArea}
@@ -20954,7 +20953,7 @@ end;
 {$region ReadNativeArray}
 
 type
-  CLMemorySegmentCommandReadNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandReadNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeArray<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
@@ -20978,7 +20977,7 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<TRecord>>;
       var  mem_offset_qr: QueueRes<integer>;
@@ -21025,9 +21024,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandReadNativeArray<TRecord>(native_data, mem_offset));
+  Result := AddCommand(self, new CLMemoryCommandReadNativeArray<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion ReadNativeArray}
@@ -21039,7 +21038,7 @@ end;
 {$region FillValue!AutoSize}
 
 type
-  CLMemorySegmentCommandFillValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private val := new NativeValueArea<TRecord>(true);
     
@@ -21064,7 +21063,7 @@ type
     begin
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -21097,9 +21096,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillValue<TRecord>(val: TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillValue<TRecord>(val: TRecord): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillValueAutoSize<TRecord>(val));
+  Result := AddCommand(self, new CLMemoryCommandFillValueAutoSize<TRecord>(val));
 end;
 
 {$endregion FillValue!AutoSize}
@@ -21107,7 +21106,7 @@ end;
 {$region FillValue!AutoSizeQ}
 
 type
-  CLMemorySegmentCommandFillValueAutoSizeQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillValueAutoSizeQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private val: CommandQueue<TRecord>;
     
@@ -21128,7 +21127,7 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var val_qr: QueueResPtr<TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21170,9 +21169,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillValue<TRecord>(val: CommandQueue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillValue<TRecord>(val: CommandQueue<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillValueAutoSizeQ<TRecord>(val));
+  Result := AddCommand(self, new CLMemoryCommandFillValueAutoSizeQ<TRecord>(val));
 end;
 
 {$endregion FillValue!AutoSizeQ}
@@ -21180,7 +21179,7 @@ end;
 {$region FillValue}
 
 type
-  CLMemorySegmentCommandFillValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private           val := new NativeValueArea<TRecord>(true);
     private    mem_offset: CommandQueue<integer>;
@@ -21211,7 +21210,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var    mem_offset_qr: QueueRes<integer>;
       var fill_byte_len_qr: QueueRes<integer>;
@@ -21263,9 +21262,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillValue<TRecord>(val, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillValue<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillValue}
@@ -21273,7 +21272,7 @@ end;
 {$region FillValue!Q}
 
 type
-  CLMemorySegmentCommandFillValueQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillValueQ<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private           val: CommandQueue<TRecord>;
     private    mem_offset: CommandQueue<integer>;
@@ -21300,7 +21299,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var           val_qr: QueueResPtr<TRecord>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -21358,16 +21357,16 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillValueQ<TRecord>(val, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillValueQ<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillValue!Q}
 
 {$region FillArray1!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillArray1<TRecord>(a: array of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillArray1(CQ(a));
 end;
@@ -21376,7 +21375,7 @@ end;
 
 {$region FillArray2!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillArray2<TRecord>(a: array[,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillArray2(CQ(a));
 end;
@@ -21385,7 +21384,7 @@ end;
 
 {$region FillArray3!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillArray3<TRecord>(a: array[,,] of TRecord): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillArray3(CQ(a));
 end;
@@ -21394,7 +21393,7 @@ end;
 
 {$region FillArray1}
 
-function CLMemorySegmentCCQ.ThenFillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillArray1(CQ(a), a_ind, pattern_byte_len, mem_offset, fill_byte_len);
 end;
@@ -21403,7 +21402,7 @@ end;
 
 {$region FillArray2}
 
-function CLMemorySegmentCCQ.ThenFillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillArray2(CQ(a), a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len);
 end;
@@ -21412,7 +21411,7 @@ end;
 
 {$region FillArray3}
 
-function CLMemorySegmentCCQ.ThenFillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillArray3(CQ(a), a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len);
 end;
@@ -21422,7 +21421,7 @@ end;
 {$region FillArray1!AutoSize}
 
 type
-  CLMemorySegmentCommandFillArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArray1AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
@@ -21443,7 +21442,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21488,9 +21487,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArray1AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandFillArray1AutoSize<TRecord>(a));
 end;
 
 {$endregion FillArray1!AutoSize}
@@ -21498,7 +21497,7 @@ end;
 {$region FillArray2!AutoSize}
 
 type
-  CLMemorySegmentCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
@@ -21519,7 +21518,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array[,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21564,9 +21563,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArray2AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandFillArray2AutoSize<TRecord>(a));
 end;
 
 {$endregion FillArray2!AutoSize}
@@ -21574,7 +21573,7 @@ end;
 {$region FillArray3!AutoSize}
 
 type
-  CLMemorySegmentCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
@@ -21595,7 +21594,7 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var a_qr: QueueRes<array[,,] of TRecord>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -21640,9 +21639,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArray3AutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandFillArray3AutoSize<TRecord>(a));
 end;
 
 {$endregion FillArray3!AutoSize}
@@ -21650,7 +21649,7 @@ end;
 {$region FillArray1}
 
 type
-  CLMemorySegmentCommandFillArray1<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArray1<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private                a: CommandQueue<array of TRecord>;
     private            a_ind: CommandQueue<integer>;
@@ -21683,7 +21682,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var                a_qr: QueueRes<array of TRecord>;
       var            a_ind_qr: QueueRes<integer>;
@@ -21759,9 +21758,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArray1<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillArray1<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillArray1}
@@ -21769,7 +21768,7 @@ end;
 {$region FillArray2}
 
 type
-  CLMemorySegmentCommandFillArray2<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArray2<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private                a: CommandQueue<array[,] of TRecord>;
     private           a_ind1: CommandQueue<integer>;
@@ -21805,7 +21804,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var                a_qr: QueueRes<array[,] of TRecord>;
       var           a_ind1_qr: QueueRes<integer>;
@@ -21889,9 +21888,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArray2<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillArray2<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillArray2}
@@ -21899,7 +21898,7 @@ end;
 {$region FillArray3}
 
 type
-  CLMemorySegmentCommandFillArray3<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArray3<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private                a: CommandQueue<array[,,] of TRecord>;
     private           a_ind1: CommandQueue<integer>;
@@ -21938,7 +21937,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var                a_qr: QueueRes<array[,,] of TRecord>;
       var           a_ind1_qr: QueueRes<integer>;
@@ -22030,9 +22029,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArray3<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillArray3<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillArray3}
@@ -22040,7 +22039,7 @@ end;
 {$region FillArraySegment!AutoSize}
 
 type
-  CLMemorySegmentCommandFillArraySegmentAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArraySegmentAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private a: ArraySegment<TRecord>;
     
@@ -22060,7 +22059,7 @@ type
     begin
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -22093,9 +22092,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArraySegmentAutoSize<TRecord>(a));
+  Result := AddCommand(self, new CLMemoryCommandFillArraySegmentAutoSize<TRecord>(a));
 end;
 
 {$endregion FillArraySegment!AutoSize}
@@ -22103,7 +22102,7 @@ end;
 {$region FillArraySegment}
 
 type
-  CLMemorySegmentCommandFillArraySegment<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillArraySegment<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private             a: ArraySegment<TRecord>;
     private    mem_offset: CommandQueue<integer>;
@@ -22129,7 +22128,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var    mem_offset_qr: QueueRes<integer>;
       var fill_byte_len_qr: QueueRes<integer>;
@@ -22181,9 +22180,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillArraySegment<TRecord>(a, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillArraySegment<TRecord>(a, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillArraySegment}
@@ -22191,7 +22190,7 @@ end;
 {$region FillData!AutoSize}
 
 type
-  CLMemorySegmentCommandFillDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private              ptr: CommandQueue<IntPtr>;
     private pattern_byte_len: CommandQueue<integer>;
     
@@ -22210,7 +22209,7 @@ type
       pattern_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var              ptr_qr: QueueRes<IntPtr>;
       var pattern_byte_len_qr: QueueRes<integer>;
@@ -22257,9 +22256,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillDataAutoSize(ptr, pattern_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillDataAutoSize(ptr, pattern_byte_len));
 end;
 
 {$endregion FillData!AutoSize}
@@ -22267,7 +22266,7 @@ end;
 {$region FillData}
 
 type
-  CLMemorySegmentCommandFillData = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillData = sealed class(EnqueueableGPUCommand<CLMemory>)
     private              ptr: CommandQueue<IntPtr>;
     private pattern_byte_len: CommandQueue<integer>;
     private       mem_offset: CommandQueue<integer>;
@@ -22292,7 +22291,7 @@ type
          fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var              ptr_qr: QueueRes<IntPtr>;
       var pattern_byte_len_qr: QueueRes<integer>;
@@ -22355,16 +22354,16 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillData(ptr, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillData(ptr, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillData}
 
 {$region FillData!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenFillData(IntPtr(ptr), pattern_byte_len);
 end;
@@ -22373,7 +22372,7 @@ end;
 
 {$region FillData}
 
-function CLMemorySegmentCCQ.ThenFillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenFillData(IntPtr(ptr), pattern_byte_len, mem_offset, fill_byte_len);
 end;
@@ -22382,7 +22381,7 @@ end;
 
 {$region FillNativeMemoryArea!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
 begin
   Result := ThenFillNativeMemoryArea(CQ(native_data));
 end;
@@ -22391,7 +22390,7 @@ end;
 
 {$region FillNativeMemoryArea}
 
-function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenFillNativeMemoryArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
@@ -22400,7 +22399,7 @@ end;
 
 {$region FillNativeMemory!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: NativeMemory): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
 begin
   Result := ThenFillNativeMemory(CQ(native_data));
 end;
@@ -22409,7 +22408,7 @@ end;
 
 {$region FillNativeMemory}
 
-function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
   Result := ThenFillNativeMemory(CQ(native_data),mem_offset,fill_byte_len);
 end;
@@ -22418,7 +22417,7 @@ end;
 
 {$region FillNativeValueArea!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeValueArea(CQ(native_data));
 end;
@@ -22427,7 +22426,7 @@ end;
 
 {$region FillNativeValueArea}
 
-function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeValueArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
@@ -22436,7 +22435,7 @@ end;
 
 {$region FillNativeValue!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeValue(CQ(native_data));
 end;
@@ -22445,7 +22444,7 @@ end;
 
 {$region FillNativeValue}
 
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeValue(CQ(native_data),mem_offset,fill_byte_len);
 end;
@@ -22454,7 +22453,7 @@ end;
 
 {$region FillNativeArrayArea!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeArrayArea(CQ(native_data));
 end;
@@ -22463,7 +22462,7 @@ end;
 
 {$region FillNativeArrayArea}
 
-function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeArrayArea(CQ(native_data),mem_offset,fill_byte_len);
 end;
@@ -22472,7 +22471,7 @@ end;
 
 {$region FillNativeArray!AutoSize}
 
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeArray(CQ(native_data));
 end;
@@ -22481,7 +22480,7 @@ end;
 
 {$region FillNativeArray}
 
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
   Result := ThenFillNativeArray(CQ(native_data),mem_offset,fill_byte_len);
 end;
@@ -22491,7 +22490,7 @@ end;
 {$region FillNativeMemoryArea!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeMemoryAreaAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeMemoryAreaAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemoryArea>;
     
     public function EnqEvCapacity: integer; override := 1;
@@ -22507,7 +22506,7 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -22547,9 +22546,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemoryAreaAutoSize(native_data));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeMemoryAreaAutoSize(native_data));
 end;
 
 {$endregion FillNativeMemoryArea!AutoSize}
@@ -22557,7 +22556,7 @@ end;
 {$region FillNativeMemoryArea}
 
 type
-  CLMemorySegmentCommandFillNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeMemoryArea = sealed class(EnqueueableGPUCommand<CLMemory>)
     private   native_data: CommandQueue<NativeMemoryArea>;
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
@@ -22579,7 +22578,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var   native_data_qr: QueueRes<NativeMemoryArea>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -22635,9 +22634,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeMemoryArea}
@@ -22645,7 +22644,7 @@ end;
 {$region FillNativeMemory!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeMemoryAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeMemoryAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemory>;
     
     public function EnqEvCapacity: integer; override := 1;
@@ -22661,7 +22660,7 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -22701,9 +22700,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemoryAutoSize(native_data));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeMemoryAutoSize(native_data));
 end;
 
 {$endregion FillNativeMemory!AutoSize}
@@ -22711,7 +22710,7 @@ end;
 {$region FillNativeMemory}
 
 type
-  CLMemorySegmentCommandFillNativeMemory = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeMemory = sealed class(EnqueueableGPUCommand<CLMemory>)
     private   native_data: CommandQueue<NativeMemory>;
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
@@ -22733,7 +22732,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var   native_data_qr: QueueRes<NativeMemory>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -22789,9 +22788,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeMemory(native_data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeMemory(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeMemory}
@@ -22799,7 +22798,7 @@ end;
 {$region FillNativeValueArea!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeValueAreaAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeValueAreaAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeValueArea<TRecord>>;
     
@@ -22820,7 +22819,7 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<TRecord>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -22860,9 +22859,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueAreaAutoSize<TRecord>(native_data));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeValueAreaAutoSize<TRecord>(native_data));
 end;
 
 {$endregion FillNativeValueArea!AutoSize}
@@ -22870,7 +22869,7 @@ end;
 {$region FillNativeValueArea}
 
 type
-  CLMemorySegmentCommandFillNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeValueArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private   native_data: CommandQueue<NativeValueArea<TRecord>>;
     private    mem_offset: CommandQueue<integer>;
@@ -22897,7 +22896,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var   native_data_qr: QueueRes<NativeValueArea<TRecord>>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -22953,9 +22952,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueArea<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeValueArea<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeValueArea}
@@ -22963,7 +22962,7 @@ end;
 {$region FillNativeValue!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeValueAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeValue<TRecord>>;
     
@@ -22984,7 +22983,7 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<TRecord>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -23024,9 +23023,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValueAutoSize<TRecord>(native_data));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeValueAutoSize<TRecord>(native_data));
 end;
 
 {$endregion FillNativeValue!AutoSize}
@@ -23034,7 +23033,7 @@ end;
 {$region FillNativeValue}
 
 type
-  CLMemorySegmentCommandFillNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeValue<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private   native_data: CommandQueue<NativeValue<TRecord>>;
     private    mem_offset: CommandQueue<integer>;
@@ -23061,7 +23060,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var   native_data_qr: QueueRes<NativeValue<TRecord>>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -23117,9 +23116,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeValue<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeValue<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeValue}
@@ -23127,7 +23126,7 @@ end;
 {$region FillNativeArrayArea!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeArrayAreaAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeArrayAreaAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     
@@ -23148,7 +23147,7 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -23188,9 +23187,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayAreaAutoSize<TRecord>(native_data));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeArrayAreaAutoSize<TRecord>(native_data));
 end;
 
 {$endregion FillNativeArrayArea!AutoSize}
@@ -23198,7 +23197,7 @@ end;
 {$region FillNativeArrayArea}
 
 type
-  CLMemorySegmentCommandFillNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeArrayArea<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private   native_data: CommandQueue<NativeArrayArea<TRecord>>;
     private    mem_offset: CommandQueue<integer>;
@@ -23225,7 +23224,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var   native_data_qr: QueueRes<NativeArrayArea<TRecord>>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -23281,9 +23280,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayArea<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeArrayArea<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeArrayArea}
@@ -23291,7 +23290,7 @@ end;
 {$region FillNativeArray!AutoSize}
 
 type
-  CLMemorySegmentCommandFillNativeArrayAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeArrayAutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private native_data: CommandQueue<NativeArray<TRecord>>;
     
@@ -23312,7 +23311,7 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<TRecord>>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -23352,9 +23351,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArrayAutoSize<TRecord>(native_data));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeArrayAutoSize<TRecord>(native_data));
 end;
 
 {$endregion FillNativeArray!AutoSize}
@@ -23362,7 +23361,7 @@ end;
 {$region FillNativeArray}
 
 type
-  CLMemorySegmentCommandFillNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
+  CLMemoryCommandFillNativeArray<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
   where TRecord: record;
     private   native_data: CommandQueue<NativeArray<TRecord>>;
     private    mem_offset: CommandQueue<integer>;
@@ -23389,7 +23388,7 @@ type
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
       var   native_data_qr: QueueRes<NativeArray<TRecord>>;
       var    mem_offset_qr: QueueRes<integer>;
@@ -23445,9 +23444,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemorySegmentCCQ; where TRecord: record;
+function CLMemoryCCQ.ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandFillNativeArray<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := AddCommand(self, new CLMemoryCommandFillNativeArray<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion FillNativeArray}
@@ -23459,12 +23458,12 @@ end;
 {$region CopyTo!AutoSize}
 
 type
-  CLMemorySegmentCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private mem: CommandQueue<CLMemorySegment>;
+  CLMemoryCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
+    private mem: CommandQueue<CLMemory>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>);
+    public constructor(mem: CommandQueue<CLMemory>);
     begin
       self.mem := mem;
     end;
@@ -23475,12 +23474,12 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
-      var mem_qr: QueueRes<CLMemorySegment>;
+      var mem_qr: QueueRes<CLMemory>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
@@ -23514,9 +23513,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenCopyTo(mem: CommandQueue<CLMemory>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandCopyToAutoSize(mem));
+  Result := AddCommand(self, new CLMemoryCommandCopyToAutoSize(mem));
 end;
 
 {$endregion CopyTo!AutoSize}
@@ -23524,15 +23523,15 @@ end;
 {$region CopyTo}
 
 type
-  CLMemorySegmentCommandCopyTo = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private         mem: CommandQueue<CLMemorySegment>;
+  CLMemoryCommandCopyTo = sealed class(EnqueueableGPUCommand<CLMemory>)
+    private         mem: CommandQueue<CLMemory>;
     private from_offset: CommandQueue<integer>;
     private   to_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 4;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>);
     begin
       self.        mem :=         mem;
       self.from_offset := from_offset;
@@ -23549,15 +23548,15 @@ type
               len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
-      var         mem_qr: QueueRes<CLMemorySegment>;
+      var         mem_qr: QueueRes<CLMemory>;
       var from_offset_qr: QueueRes<integer>;
       var   to_offset_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(        mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+                mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(        mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         from_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_offset.InvokeToAny); if from_offset_qr.IsConst then enq_evs.AddL2(from_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(from_offset_qr.AttachInvokeActions(g));
           to_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_offset.InvokeToAny); if to_offset_qr.IsConst then enq_evs.AddL2(to_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(to_offset_qr.AttachInvokeActions(g));
                 len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
@@ -23612,9 +23611,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenCopyTo(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenCopyTo(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandCopyTo(mem, from_offset, to_offset, len));
+  Result := AddCommand(self, new CLMemoryCommandCopyTo(mem, from_offset, to_offset, len));
 end;
 
 {$endregion CopyTo}
@@ -23622,12 +23621,12 @@ end;
 {$region CopyFrom!AutoSize}
 
 type
-  CLMemorySegmentCommandCopyFromAutoSize = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private mem: CommandQueue<CLMemorySegment>;
+  CLMemoryCommandCopyFromAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
+    private mem: CommandQueue<CLMemory>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>);
+    public constructor(mem: CommandQueue<CLMemory>);
     begin
       self.mem := mem;
     end;
@@ -23638,12 +23637,12 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
-      var mem_qr: QueueRes<CLMemorySegment>;
+      var mem_qr: QueueRes<CLMemory>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
@@ -23677,9 +23676,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenCopyFrom(mem: CommandQueue<CLMemory>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandCopyFromAutoSize(mem));
+  Result := AddCommand(self, new CLMemoryCommandCopyFromAutoSize(mem));
 end;
 
 {$endregion CopyFrom!AutoSize}
@@ -23687,15 +23686,15 @@ end;
 {$region CopyFrom}
 
 type
-  CLMemorySegmentCommandCopyFrom = sealed class(EnqueueableGPUCommand<CLMemorySegment>)
-    private         mem: CommandQueue<CLMemorySegment>;
+  CLMemoryCommandCopyFrom = sealed class(EnqueueableGPUCommand<CLMemory>)
+    private         mem: CommandQueue<CLMemory>;
     private from_offset: CommandQueue<integer>;
     private   to_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 4;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>);
     begin
       self.        mem :=         mem;
       self.from_offset := from_offset;
@@ -23712,15 +23711,15 @@ type
               len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLMemory>; override;
     begin
-      var         mem_qr: QueueRes<CLMemorySegment>;
+      var         mem_qr: QueueRes<CLMemory>;
       var from_offset_qr: QueueRes<integer>;
       var   to_offset_qr: QueueRes<integer>;
       var         len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-                mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(        mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+                mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(        mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         from_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(from_offset.InvokeToAny); if from_offset_qr.IsConst then enq_evs.AddL2(from_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(from_offset_qr.AttachInvokeActions(g));
           to_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(  to_offset.InvokeToAny); if to_offset_qr.IsConst then enq_evs.AddL2(to_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(to_offset_qr.AttachInvokeActions(g));
                 len_qr := invoker.InvokeBranch&<QueueRes<integer>>(        len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
@@ -23775,9 +23774,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; from_offset, to_offset, len: CommandQueue<integer>): CLMemorySegmentCCQ;
+function CLMemoryCCQ.ThenCopyFrom(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemoryCCQ;
 begin
-  Result := AddCommand(self, new CLMemorySegmentCommandCopyFrom(mem, from_offset, to_offset, len));
+  Result := AddCommand(self, new CLMemoryCommandCopyFrom(mem, from_offset, to_offset, len));
 end;
 
 {$endregion CopyFrom}
@@ -23788,7 +23787,7 @@ end;
 
 {$region GetValue}
 
-function CLMemorySegmentCCQ.ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
 begin
   Result := ThenGetValue&<TRecord>(0);
 end;
@@ -23798,7 +23797,7 @@ end;
 {$region GetValue}
 
 type
-  CLMemorySegmentCommandGetValue<TRecord> = sealed class(EnqueueableGetPtrCommand<CLMemorySegment, TRecord>)
+  CLMemoryCommandGetValue<TRecord> = sealed class(EnqueueableGetPtrCommand<CLMemory, TRecord>)
   where TRecord: record;
     private mem_offset: CommandQueue<integer>;
     
@@ -23808,7 +23807,7 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; mem_offset: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; mem_offset: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.mem_offset := mem_offset;
@@ -23821,7 +23820,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRecord>): EnqFunc<CLMemory>; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -23863,9 +23862,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
+  Result := new CLMemoryCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
 end;
 
 {$endregion GetValue}
@@ -23873,7 +23872,7 @@ end;
 {$region GetArray!AutoSize}
 
 type
-  CLMemorySegmentCommandGetArrayAutoSize<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array of TRecord>)
+  CLMemoryCommandGetArrayAutoSize<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array of TRecord>)
   where TRecord: record;
     
     public function EnqEvCapacity: integer; override := 0;
@@ -23882,7 +23881,7 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ);
+    public constructor(ccq: CLMemoryCCQ);
     begin
       inherited Create(ccq);
     end;
@@ -23890,7 +23889,7 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemory>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -23921,9 +23920,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArrayAutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
+  Result := new CLMemoryCommandGetArrayAutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 end;
 
 {$endregion GetArray!AutoSize}
@@ -23931,7 +23930,7 @@ end;
 {$region GetArray}
 
 type
-  CLMemorySegmentCommandGetArray<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array of TRecord>)
+  CLMemoryCommandGetArray<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array of TRecord>)
   where TRecord: record;
     private len: CommandQueue<integer>;
     
@@ -23941,7 +23940,7 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; len: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len := len;
@@ -23954,7 +23953,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemory>; override;
     begin
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -24000,9 +23999,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArray<TRecord>(self, len) as CommandQueue<array of TRecord>;
+  Result := new CLMemoryCommandGetArray<TRecord>(self, len) as CommandQueue<array of TRecord>;
 end;
 
 {$endregion GetArray}
@@ -24010,7 +24009,7 @@ end;
 {$region GetArray2}
 
 type
-  CLMemorySegmentCommandGetArray2<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array[,] of TRecord>)
+  CLMemoryCommandGetArray2<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array[,] of TRecord>)
   where TRecord: record;
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
@@ -24021,7 +24020,7 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; len1,len2: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; len1,len2: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len1 := len1;
@@ -24036,7 +24035,7 @@ type
       len2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of TRecord>): EnqFunc<CLMemory>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -24090,9 +24089,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
+  Result := new CLMemoryCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
 end;
 
 {$endregion GetArray2}
@@ -24100,7 +24099,7 @@ end;
 {$region GetArray3}
 
 type
-  CLMemorySegmentCommandGetArray3<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array[,,] of TRecord>)
+  CLMemoryCommandGetArray3<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array[,,] of TRecord>)
   where TRecord: record;
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
@@ -24112,7 +24111,7 @@ type
     begin
       BlittableHelper.RaiseIfBad(typeof(TRecord), 'читать из области памяти OpenCL');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; len1,len2,len3: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; len1,len2,len3: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len1 := len1;
@@ -24129,7 +24128,7 @@ type
       len3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of TRecord>): EnqFunc<CLMemory>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -24191,9 +24190,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
+  Result := new CLMemoryCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
 end;
 
 {$endregion GetArray3}
@@ -24202,7 +24201,7 @@ end;
 
 {$endregion Explicit}
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLValue}
 
@@ -24244,22 +24243,22 @@ end;
 
 {$region 3#Copy}
 
-function CLValue<T>.CopyTo(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+function CLValue<T>.CopyTo(mem: CommandQueue<CLMemory>): CLValue<T>;
 begin
   Result := CopyTo(mem, 0);
 end;
 
-function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLValue<T>;
+function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemory>): CLValue<T>;
 begin
   Result := CopyFrom(mem, 0);
 end;
 
-function CLValue<T>.CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+function CLValue<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset));
 end;
 
-function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValue<T>;
+function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset));
 end;
@@ -24692,35 +24691,35 @@ end;
 
 {$region 3#Copy}
 
-{$region CopyTo!CLMemorySegment}
+{$region CopyTo!CLMemory}
 
-function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
 begin
   Result := ThenCopyTo(mem, 0);
 end;
 
-{$endregion CopyTo!CLMemorySegment}
+{$endregion CopyTo!CLMemory}
 
-{$region CopyFrom!CLMemorySegment}
+{$region CopyFrom!CLMemory}
 
-function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
 begin
   Result := ThenCopyFrom(mem, 0);
 end;
 
-{$endregion CopyFrom!CLMemorySegment}
+{$endregion CopyFrom!CLMemory}
 
 {$region CopyTo}
 
 type
   CLValueCommandCopyTo<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private        mem: CommandQueue<CLMemorySegment>;
+    private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>);
     begin
       self.       mem :=        mem;
       self.mem_offset := mem_offset;
@@ -24735,11 +24734,11 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var        mem_qr: QueueRes<CLMemorySegment>;
+      var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
@@ -24780,7 +24779,7 @@ type
     
   end;
   
-function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
 begin
   Result := AddCommand(self, new CLValueCommandCopyTo<T>(mem, mem_offset));
 end;
@@ -24792,12 +24791,12 @@ end;
 type
   CLValueCommandCopyFrom<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private        mem: CommandQueue<CLMemorySegment>;
+    private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>);
     begin
       self.       mem :=        mem;
       self.mem_offset := mem_offset;
@@ -24812,11 +24811,11 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var        mem_qr: QueueRes<CLMemorySegment>;
+      var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
@@ -24857,7 +24856,7 @@ type
     
   end;
   
-function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
 begin
   Result := AddCommand(self, new CLValueCommandCopyFrom<T>(mem, mem_offset));
 end;
@@ -25520,22 +25519,22 @@ end;
 
 {$region 3#Copy}
 
-function CLArray<T>.CopyTo(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
-function CLArray<T>.CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset, ind, len));
 end;
 
-function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
-function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset, ind, len));
 end;
@@ -30765,16 +30764,16 @@ end;
 
 {$region 3#Copy}
 
-{$region CopyTo!CLMemorySegmentAutoSize}
+{$region CopyTo!CLMemoryAutoSize}
 
 type
-  CLArrayCommandCopyToCLMemorySegmentAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandCopyToCLMemoryAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private mem: CommandQueue<CLMemorySegment>;
+    private mem: CommandQueue<CLMemory>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>);
+    public constructor(mem: CommandQueue<CLMemory>);
     begin
       self.mem := mem;
     end;
@@ -30787,10 +30786,10 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var mem_qr: QueueRes<CLMemorySegment>;
+      var mem_qr: QueueRes<CLMemory>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
@@ -30826,26 +30825,26 @@ type
     
   end;
   
-function CLArrayCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandCopyToCLMemorySegmentAutoSize<T>(mem));
+  Result := AddCommand(self, new CLArrayCommandCopyToCLMemoryAutoSize<T>(mem));
 end;
 
-{$endregion CopyTo!CLMemorySegmentAutoSize}
+{$endregion CopyTo!CLMemoryAutoSize}
 
-{$region CopyTo!CLMemorySegment}
+{$region CopyTo!CLMemory}
 
 type
-  CLArrayCommandCopyToCLMemorySegment<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandCopyToCLMemory<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private        mem: CommandQueue<CLMemorySegment>;
+    private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     private        ind: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 4;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>);
     begin
       self.       mem :=        mem;
       self.mem_offset := mem_offset;
@@ -30864,13 +30863,13 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var        mem_qr: QueueRes<CLMemorySegment>;
+      var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       var        ind_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(       ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
@@ -30927,23 +30926,23 @@ type
     
   end;
   
-function CLArrayCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandCopyToCLMemorySegment<T>(mem, mem_offset, ind, len));
+  Result := AddCommand(self, new CLArrayCommandCopyToCLMemory<T>(mem, mem_offset, ind, len));
 end;
 
-{$endregion CopyTo!CLMemorySegment}
+{$endregion CopyTo!CLMemory}
 
-{$region CopyFrom!CLMemorySegmentAutoSize}
+{$region CopyFrom!CLMemoryAutoSize}
 
 type
-  CLArrayCommandCopyFromCLMemorySegmentAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandCopyFromCLMemoryAutoSize<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private mem: CommandQueue<CLMemorySegment>;
+    private mem: CommandQueue<CLMemory>;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>);
+    public constructor(mem: CommandQueue<CLMemory>);
     begin
       self.mem := mem;
     end;
@@ -30956,10 +30955,10 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var mem_qr: QueueRes<CLMemorySegment>;
+      var mem_qr: QueueRes<CLMemory>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+        mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
       end);
       
       Result := (o, cq, evs)->
@@ -30995,26 +30994,26 @@ type
     
   end;
   
-function CLArrayCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandCopyFromCLMemorySegmentAutoSize<T>(mem));
+  Result := AddCommand(self, new CLArrayCommandCopyFromCLMemoryAutoSize<T>(mem));
 end;
 
-{$endregion CopyFrom!CLMemorySegmentAutoSize}
+{$endregion CopyFrom!CLMemoryAutoSize}
 
-{$region CopyFrom!CLMemorySegment}
+{$region CopyFrom!CLMemory}
 
 type
-  CLArrayCommandCopyFromCLMemorySegment<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
+  CLArrayCommandCopyFromCLMemory<T> = sealed class(EnqueueableGPUCommand<CLArray<T>>)
   where T: record;
-    private        mem: CommandQueue<CLMemorySegment>;
+    private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     private        ind: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 4;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>);
     begin
       self.       mem :=        mem;
       self.mem_offset := mem_offset;
@@ -31033,13 +31032,13 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLArray<T>>; override;
     begin
-      var        mem_qr: QueueRes<CLMemorySegment>;
+      var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       var        ind_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
                ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(       ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
                len_qr := invoker.InvokeBranch&<QueueRes<integer>>(       len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
@@ -31096,12 +31095,12 @@ type
     
   end;
   
-function CLArrayCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+function CLArrayCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
 begin
-  Result := AddCommand(self, new CLArrayCommandCopyFromCLMemorySegment<T>(mem, mem_offset, ind, len));
+  Result := AddCommand(self, new CLArrayCommandCopyFromCLMemory<T>(mem, mem_offset, ind, len));
 end;
 
-{$endregion CopyFrom!CLMemorySegment}
+{$endregion CopyFrom!CLMemory}
 
 {$region CopyTo!CLValue}
 

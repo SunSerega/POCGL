@@ -45,8 +45,8 @@
 
 
 
-# KernelArg.FromCLMemorySegment(CLMemorySegment)
-# KernelArg.FromCLMemorySegmentCQ(CommandQueue<CLMemorySegment>)
+# KernelArg.FromCLMemory(CLMemory)
+# KernelArg.FromCLMemoryCQ(CommandQueue<CLMemory>)
 %KernelArg:From:Ref% область памяти OpenCL
 
 # KernelArg.FromCLValue<T>(CLValue<T>)

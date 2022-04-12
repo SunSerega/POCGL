@@ -404,35 +404,35 @@ end;
 
 {$region 3#Copy}
 
-{$region CopyTo!CLMemorySegment}
+{$region CopyTo!CLMemory}
 
-function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
 begin
   Result := ThenCopyTo(mem, 0);
 end;
 
-{$endregion CopyTo!CLMemorySegment}
+{$endregion CopyTo!CLMemory}
 
-{$region CopyFrom!CLMemorySegment}
+{$region CopyFrom!CLMemory}
 
-function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemory>): CLValueCCQ<T>;
 begin
   Result := ThenCopyFrom(mem, 0);
 end;
 
-{$endregion CopyFrom!CLMemorySegment}
+{$endregion CopyFrom!CLMemory}
 
 {$region CopyTo}
 
 type
   CLValueCommandCopyTo<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private        mem: CommandQueue<CLMemorySegment>;
+    private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>);
     begin
       self.       mem :=        mem;
       self.mem_offset := mem_offset;
@@ -447,11 +447,11 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var        mem_qr: QueueRes<CLMemorySegment>;
+      var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
@@ -492,7 +492,7 @@ type
     
   end;
   
-function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
 begin
   Result := AddCommand(self, new CLValueCommandCopyTo<T>(mem, mem_offset));
 end;
@@ -504,12 +504,12 @@ end;
 type
   CLValueCommandCopyFrom<T> = sealed class(EnqueueableGPUCommand<CLValue<T>>)
   where T: record;
-    private        mem: CommandQueue<CLMemorySegment>;
+    private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>);
+    public constructor(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>);
     begin
       self.       mem :=        mem;
       self.mem_offset := mem_offset;
@@ -524,11 +524,11 @@ type
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<CLValue<T>>; override;
     begin
-      var        mem_qr: QueueRes<CLMemorySegment>;
+      var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
-               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemorySegment>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
+               mem_qr := invoker.InvokeBranch&<QueueRes<CLMemory>>(       mem.InvokeToAny); if mem_qr.IsConst then enq_evs.AddL2(mem_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_qr.AttachInvokeActions(g));
         mem_offset_qr := invoker.InvokeBranch&<QueueRes<integer>>(mem_offset.InvokeToAny); if mem_offset_qr.IsConst then enq_evs.AddL2(mem_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(mem_offset_qr.AttachInvokeActions(g));
       end);
       
@@ -569,7 +569,7 @@ type
     
   end;
   
-function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
+function CLValueCCQ<T>.ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValueCCQ<T>;
 begin
   Result := AddCommand(self, new CLValueCommandCopyFrom<T>(mem, mem_offset));
 end;

@@ -191,13 +191,13 @@
     
     {$region 3#Copy}
     
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
     
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
     
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     public function ThenCopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     

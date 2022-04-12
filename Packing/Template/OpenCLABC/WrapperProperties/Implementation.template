@@ -245,10 +245,10 @@ function KernelProperties.GetAttributes     := GetString(KernelInfo.KERNEL_ATTRI
 
 {$endregion Kernel}
 
-{$region CLMemorySegment}
+{$region CLMemory}
 
 type
-  CLMemorySegmentProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
+  CLMemoryProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';
@@ -262,20 +262,20 @@ type
     
   end;
   
-constructor CLMemorySegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
+constructor CLMemoryProperties.Create(ntv: cl_mem) := inherited Create(ntv);
 
-function CLMemorySegmentProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
-function CLMemorySegmentProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
-function CLMemorySegmentProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
-function CLMemorySegmentProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
-function CLMemorySegmentProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
+function CLMemoryProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
+function CLMemoryProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
+function CLMemoryProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
+function CLMemoryProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
+function CLMemoryProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
 
-{$endregion CLMemorySegment}
+{$endregion CLMemory}
 
 {$region CLMemorySubSegment}
 
 type
-  CLMemorySubSegmentProperties = partial class(CLMemorySegmentProperties)
+  CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetMemObjectInfo';

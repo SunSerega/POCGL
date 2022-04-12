@@ -25,7 +25,7 @@ Test( WaitFor(M1)+M1 );
 Writeln('='*50);
 Writeln;
 
-var mem := new CLMemorySegment(1);
+var mem := new CLMemory(1);
 Test( mem.NewQueue.ThenWait(M1) );
 Test( M1+mem.NewQueue.ThenWait(M1) );
 Test( mem.NewQueue.ThenWait(M1)+M1 );

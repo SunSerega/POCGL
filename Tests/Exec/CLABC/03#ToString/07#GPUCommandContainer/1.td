@@ -11,13 +11,13 @@ KernelCCQ#0
 		sz1: ConstQueue<integer>#1: 1
 		sz2: ConstQueue<integer>#2: 1
 		args:
-			KernelArgGlobalCLMemorySegment
-				CLMemorySegmentCCQ#3
-					CCCQueue<CLMemorySegment>
-						CommandQueueHostBackgoundFunc<CLMemorySegment>#4: function lambda: CLMemorySegment
-					QueueCommand<CLMemorySegment>
+			KernelArgGlobalCLMemory
+				CLMemoryCCQ#3
+					CCCQueue<CLMemory>
+						CommandQueueHostBackgoundFunc<CLMemory>#4: function lambda: CLMemory
+					QueueCommand<CLMemory>
 						CommandQueueHostBackgoundFunc<integer>#5: function lambda: integer
-					BackgroundProcCommand<CLMemorySegment>: procedure lambda(ms: CLMemorySegment)
+					BackgroundProcCommand<CLMemory>: procedure lambda(ms: CLMemory)
 			KernelArgPrivateValue<integer>
 				ConstQueue<integer>#6: 5
 

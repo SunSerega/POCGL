@@ -461,22 +461,22 @@ end;
 
 {$region 3#Copy}
 
-function CLArray<T>.CopyTo(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
-function CLArray<T>.CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset, ind, len));
 end;
 
-function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
-function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
   Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset, ind, len));
 end;

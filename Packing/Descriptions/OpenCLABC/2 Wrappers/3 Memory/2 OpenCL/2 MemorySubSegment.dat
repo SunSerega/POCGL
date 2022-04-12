@@ -2,7 +2,7 @@
 
 
 # CLMemorySubSegment
-Представляет виртуальную область памяти, выделенную внутри CLMemorySegment
+Представляет виртуальную область памяти, выделенную внутри CLMemory
 
 
 
@@ -11,9 +11,9 @@
 
 
 
-# CLMemorySubSegment.(CLMemorySegment, UIntPtr, UIntPtr)
-# CLMemorySubSegment.(CLMemorySegment, UInt32, UInt32)
-# CLMemorySubSegment.(CLMemorySegment, UInt64, UInt64)
+# CLMemorySubSegment.(CLMemory, UIntPtr, UIntPtr)
+# CLMemorySubSegment.(CLMemory, UInt32, UInt32)
+# CLMemorySubSegment.(CLMemory, UInt64, UInt64)
 Создаёт виртуальную область памяти, использующую указанную область из parent
 origin указывает отступ в байтах от начала parent
 size указывает размер новой области памяти

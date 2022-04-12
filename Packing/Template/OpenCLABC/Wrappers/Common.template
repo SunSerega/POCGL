@@ -141,32 +141,32 @@
     
   end;
   
-  CLMemorySegment = partial class
+  CLMemory = partial class
     
     public property Native: cl_mem read ntv;
     
-    private prop: CLMemorySegmentProperties;
-    private function GetProperties: CLMemorySegmentProperties;
+    private prop: CLMemoryProperties;
+    private function GetProperties: CLMemoryProperties;
     begin
-      if prop=nil then prop := new CLMemorySegmentProperties(ntv);
+      if prop=nil then prop := new CLMemoryProperties(ntv);
       Result := prop;
     end;
-    public property Properties: CLMemorySegmentProperties read GetProperties;
+    public property Properties: CLMemoryProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: CLMemorySegment): boolean :=
+    public static function operator=(wr1, wr2: CLMemory): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLMemorySegment): boolean := false=
+    public static function operator<>(wr1, wr2: CLMemory): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLMemorySegment(var wr)) and (self = wr);
+    (obj is CLMemory(var wr)) and (self = wr);
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] of size {Size}';
     
   end;
   
-  CLMemorySubSegment = partial class(CLMemorySegment)
+  CLMemorySubSegment = partial class(CLMemory)
     
     private prop: CLMemorySubSegmentProperties;
     private function GetProperties: CLMemorySubSegmentProperties;

@@ -3,7 +3,7 @@
 begin
   var align := Context.Default.MainDevice.Properties.MemBaseAddrAlign;
   
-  var mem := new CLMemorySegment(align*2);
+  var mem := new CLMemory(align*2);
   var mem1 := new CLMemorySubSegment(mem, 0, 1);
   var mem2 := new CLMemorySubSegment(mem, align, align);
   

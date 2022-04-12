@@ -191,13 +191,13 @@
     
     {$region 3#Copy}
     
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+    public function CopyTo(mem: CommandQueue<CLMemory>): CLArray<T>;
     
-    public function CopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+    public function CopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
     
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>): CLArray<T>;
+    public function CopyFrom(mem: CommandQueue<CLMemory>): CLArray<T>;
     
-    public function CopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
+    public function CopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
     
     public function CopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
     

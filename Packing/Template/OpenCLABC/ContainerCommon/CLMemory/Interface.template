@@ -1,0 +1,22 @@
+﻿    
+    
+    
+    public constructor(o: CLMemory);
+    public constructor(q: CommandQueue<CLMemory>);
+    private constructor;
+    
+    {$region Special .Add's}
+    
+    public function ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
+    
+    public function ThenProc(p: CLMemory->()): CLMemoryCCQ;
+    public function ThenProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    public function ThenQuickProc(p: CLMemory->()): CLMemoryCCQ;
+    public function ThenQuickProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    
+    public function ThenWait(marker: WaitMarker): CLMemoryCCQ;
+    
+    {$endregion Special .Add's}
+    
+    
+    

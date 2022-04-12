@@ -35,13 +35,13 @@ cl_kernel
 
 
 
-# CLMemorySegment
+# CLMemory
 cl_mem
 !ToString
 {TypeName(self)}[{ntv.val}] of size {Size}
 
 # CLMemorySubSegment
-CLMemorySegment
+CLMemory
 !ToString
 {inherited ToString} inside {Parent}
 

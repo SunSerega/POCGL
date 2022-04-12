@@ -502,7 +502,7 @@ type
       var anon_names := |
         '<>local_variables_class_', '<>lambda',
         'cl_command_queue[',
-        'Platform[', 'Device[', 'Context[', 'CLMemorySegment[', 'CLMemorySubSegment[', 'ProgramCode[',
+        'Platform[', 'Device[', 'Context[', 'CLMemory[', 'CLMemorySubSegment[', 'ProgramCode[',
         ':строка ', ':line '
       |;
       var inds := new integer[anon_names.Length];

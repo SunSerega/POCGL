@@ -7,7 +7,7 @@ begin
   k.NewQueue
   .ThenExec2(1,1,
     
-    CLMemorySegmentCCQ.Create(HFQ(()->new CLMemorySegment(1)))
+    CLMemoryCCQ.Create(HFQ(()->new CLMemory(1)))
     .ThenQueue(HFQ(()->5))
     .ThenProc(ms->begin exit() end),
     

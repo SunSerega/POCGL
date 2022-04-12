@@ -5,7 +5,7 @@
 
 {$region GetValue}
 
-function CLMemorySegmentCCQ.ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetValue<TRecord>: CommandQueue<TRecord>; where TRecord: record;
 begin
   Result := ThenGetValue&<TRecord>(0);
 end;
@@ -15,7 +15,7 @@ end;
 {$region GetValue}
 
 type
-  CLMemorySegmentCommandGetValue<TRecord> = sealed class(EnqueueableGetPtrCommand<CLMemorySegment, TRecord>)
+  CLMemoryCommandGetValue<TRecord> = sealed class(EnqueueableGetPtrCommand<CLMemory, TRecord>)
   where TRecord: record;
     private mem_offset: CommandQueue<integer>;
     
@@ -23,9 +23,9 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemorySegment:GetValue%');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:GetValue%');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; mem_offset: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; mem_offset: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.mem_offset := mem_offset;
@@ -38,7 +38,7 @@ type
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRecord>): EnqFunc<CLMemory>; override;
     begin
       var mem_offset_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -80,9 +80,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetValue<TRecord>(mem_offset: CommandQueue<integer>): CommandQueue<TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
+  Result := new CLMemoryCommandGetValue<TRecord>(self, mem_offset) as CommandQueue<TRecord>;
 end;
 
 {$endregion GetValue}
@@ -90,16 +90,16 @@ end;
 {$region GetArray!AutoSize}
 
 type
-  CLMemorySegmentCommandGetArrayAutoSize<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array of TRecord>)
+  CLMemoryCommandGetArrayAutoSize<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array of TRecord>)
   where TRecord: record;
     
     public function EnqEvCapacity: integer; override := 0;
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemorySegment:GetArrayAutoSize%');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:GetArrayAutoSize%');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ);
+    public constructor(ccq: CLMemoryCCQ);
     begin
       inherited Create(ccq);
     end;
@@ -107,7 +107,7 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemory>; override;
     begin
       
       Result := (o, cq, evs)->
@@ -138,9 +138,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray<TRecord>: CommandQueue<array of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArrayAutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
+  Result := new CLMemoryCommandGetArrayAutoSize<TRecord>(self) as CommandQueue<array of TRecord>;
 end;
 
 {$endregion GetArray!AutoSize}
@@ -148,7 +148,7 @@ end;
 {$region GetArray}
 
 type
-  CLMemorySegmentCommandGetArray<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array of TRecord>)
+  CLMemoryCommandGetArray<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array of TRecord>)
   where TRecord: record;
     private len: CommandQueue<integer>;
     
@@ -156,9 +156,9 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemorySegment:GetArray%');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:GetArray%');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; len: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; len: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len := len;
@@ -171,7 +171,7 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemory>; override;
     begin
       var len_qr: QueueRes<integer>;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
@@ -217,9 +217,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray<TRecord>(len: CommandQueue<integer>): CommandQueue<array of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArray<TRecord>(self, len) as CommandQueue<array of TRecord>;
+  Result := new CLMemoryCommandGetArray<TRecord>(self, len) as CommandQueue<array of TRecord>;
 end;
 
 {$endregion GetArray}
@@ -227,7 +227,7 @@ end;
 {$region GetArray2}
 
 type
-  CLMemorySegmentCommandGetArray2<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array[,] of TRecord>)
+  CLMemoryCommandGetArray2<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array[,] of TRecord>)
   where TRecord: record;
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
@@ -236,9 +236,9 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemorySegment:GetArray2%');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:GetArray2%');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; len1,len2: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; len1,len2: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len1 := len1;
@@ -253,7 +253,7 @@ type
       len2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of TRecord>): EnqFunc<CLMemory>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -307,9 +307,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray2<TRecord>(len1,len2: CommandQueue<integer>): CommandQueue<array[,] of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
+  Result := new CLMemoryCommandGetArray2<TRecord>(self, len1, len2) as CommandQueue<array[,] of TRecord>;
 end;
 
 {$endregion GetArray2}
@@ -317,7 +317,7 @@ end;
 {$region GetArray3}
 
 type
-  CLMemorySegmentCommandGetArray3<TRecord> = sealed class(EnqueueableGetCommand<CLMemorySegment, array[,,] of TRecord>)
+  CLMemoryCommandGetArray3<TRecord> = sealed class(EnqueueableGetCommand<CLMemory, array[,,] of TRecord>)
   where TRecord: record;
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
@@ -327,9 +327,9 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemorySegment:GetArray3%');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:GetArray3%');
     end;
-    public constructor(ccq: CLMemorySegmentCCQ; len1,len2,len3: CommandQueue<integer>);
+    public constructor(ccq: CLMemoryCCQ; len1,len2,len3: CommandQueue<integer>);
     begin
       inherited Create(ccq);
       self.len1 := len1;
@@ -346,7 +346,7 @@ type
       len3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of TRecord>): EnqFunc<CLMemorySegment>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of TRecord>): EnqFunc<CLMemory>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
@@ -408,9 +408,9 @@ type
     
   end;
   
-function CLMemorySegmentCCQ.ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
+function CLMemoryCCQ.ThenGetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): CommandQueue<array[,,] of TRecord>; where TRecord: record;
 begin
-  Result := new CLMemorySegmentCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
+  Result := new CLMemoryCommandGetArray3<TRecord>(self, len1, len2, len3) as CommandQueue<array[,,] of TRecord>;
 end;
 
 {$endregion GetArray3}
