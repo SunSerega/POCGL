@@ -33,9 +33,9 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\SubSegment1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1.pas"
 Tester: Compiling: OK
@@ -50,8 +50,6 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\ConstSwap.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1.pas"
 Tester: Compiling: OK
@@ -181,9 +179,9 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\SubSegment1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\SubSegment1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1.pas"
 Tester: Compiling: OK
@@ -223,9 +221,9 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\SubSegment1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1]
 Tester: Done executing
@@ -240,8 +238,6 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\ConstSwap]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1]
 Tester: Done executing
@@ -371,9 +367,9 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\SubSegment1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\SubSegment1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1]
 Tester: Done executing
