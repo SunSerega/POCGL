@@ -25,7 +25,7 @@ CommandQueueHostBackgoundFunc<integer>#0: function lambda: integer
 9 
 10 
 ==============================
-CastQueue<Object,integer>#0
+CastQueue<Object, integer>#0
 	CommandQueueHostBackgoundFunc<Object>#1: function lambda: Object
 ----------
 4 

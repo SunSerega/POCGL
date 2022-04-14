@@ -5,12 +5,12 @@
 3
 
 #ExpOtp
-BackgroundConvSyncQueueArray<Object,string>#0
+BackgroundConvSyncQueueArray<Object, string>#0
 	ConstQueue<Object>#1: { nil }
 	ConstQueue<Object>#1: { nil }
 	function lambda(a: array of Object): string
 
-BackgroundConvAsyncQueueArray<Object,string>#0
+BackgroundConvAsyncQueueArray<Object, string>#0
 	ConstQueue<Object>#1: { nil }
 	ConstQueue<Object>#1: { nil }
 	function lambda(a: array of Object): string

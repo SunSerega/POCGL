@@ -9,7 +9,7 @@ ConstQueue<Object>#0: byte{ 5 }
 
 SimpleAsyncQueueArray<Object>#0
 	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
-	CastQueue<integer,Object>#2
+	CastQueue<integer, Object>#2
 		CommandQueueHostBackgoundFunc<integer>#3: function lambda: integer
 
 CLMemoryCCQ#0

@@ -142,95 +142,95 @@ Constant
 Local
 |	FromBytes
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	KernelArgLocalBytes
-|	|		CommandQueueHostQuickFunc<>#0: function lambda:
+|	|		CommandQueueHostQuickFunc<UIntPtr>#0: function lambda: UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,>#0
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr>#0
 |	|			CommandQueueHostQuickFunc<longword>#1: function lambda: longword
-|	|			function lambda(bytes: longword):
+|	|			function lambda(bytes: longword): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr>#0
 |	|			CommandQueueHostQuickFunc<integer>#1: function lambda: integer
-|	|			function lambda(bytes: integer):
+|	|			function lambda(bytes: integer): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<uint64,>#0
+|	|		CommandQueueThenQuickConvert<uint64, UIntPtr>#0
 |	|			CommandQueueHostQuickFunc<uint64>#1: function lambda: uint64
-|	|			function lambda(bytes: uint64):
+|	|			function lambda(bytes: uint64): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<int64,>#0
+|	|		CommandQueueThenQuickConvert<int64, UIntPtr>#0
 |	|			CommandQueueHostQuickFunc<int64>#1: function lambda: int64
-|	|			function lambda(bytes: int64):
+|	|			function lambda(bytes: int64): UIntPtr
 |	FromItemCount
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 256
+|	|		ConstQueue<UIntPtr>#0: 256
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,>#0
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr>#0
 |	|			CommandQueueHostQuickFunc<longword>#1: function lambda: longword
-|	|			function lambda(item_count: longword):
+|	|			function lambda(item_count: longword): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 256
+|	|		ConstQueue<UIntPtr>#0: 256
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,>#0
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr>#0
 |	|			CommandQueueHostQuickFunc<integer>#1: function lambda: integer
-|	|			function lambda(item_count: integer):
+|	|			function lambda(item_count: integer): UIntPtr
 |	LikeArray
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 4
+|	|		ConstQueue<UIntPtr>#0: 4
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,>#0
-|	|			CommandQueueThenQuickConvert<array of byte,integer>#1
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr>#0
+|	|			CommandQueueThenQuickConvert<array of byte, integer>#1
 |	|				CommandQueueHostQuickFunc<array of byte>#2: function lambda: array of byte
 |	|				function lambda(a: array of byte): integer
-|	|			function lambda(item_count: integer):
+|	|			function lambda(item_count: integer): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 6
+|	|		ConstQueue<UIntPtr>#0: 6
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,>#0
-|	|			CommandQueueThenQuickConvert<array [,] of byte,integer>#1
-|	|				CommandQueueHostQuickFunc<array [,] of byte>#2: function lambda: array [,] of byte
-|	|				function lambda(a: array [,] of byte): integer
-|	|			function lambda(item_count: integer):
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr>#0
+|	|			CommandQueueThenQuickConvert<array[,] of byte, integer>#1
+|	|				CommandQueueHostQuickFunc<array[,] of byte>#2: function lambda: array[,] of byte
+|	|				function lambda(a: array[,] of byte): integer
+|	|			function lambda(item_count: integer): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 24
+|	|		ConstQueue<UIntPtr>#0: 24
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,>#0
-|	|			CommandQueueThenQuickConvert<array [,,] of byte,integer>#1
-|	|				CommandQueueHostQuickFunc<array [,,] of byte>#2: function lambda: array [,,] of byte
-|	|				function lambda(a: array [,,] of byte): integer
-|	|			function lambda(item_count: integer):
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr>#0
+|	|			CommandQueueThenQuickConvert<array[,,] of byte, integer>#1
+|	|				CommandQueueHostQuickFunc<array[,,] of byte>#2: function lambda: array[,,] of byte
+|	|				function lambda(a: array[,,] of byte): integer
+|	|			function lambda(item_count: integer): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 5
+|	|		ConstQueue<UIntPtr>#0: 5
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,>#0
-|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>,longword>#1
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr>#0
+|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>, longword>#1
 |	|				CommandQueueHostQuickFunc<NativeArrayArea<byte>>#2: function lambda: NativeArrayArea<byte>
 |	|				function lambda(a: NativeArrayArea<byte>): longword
-|	|			function lambda(item_count: longword):
+|	|			function lambda(item_count: longword): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 4
+|	|		ConstQueue<UIntPtr>#0: 4
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,>#0
-|	|			CommandQueueThenQuickConvert<NativeArray<byte>,longword>#1
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr>#0
+|	|			CommandQueueThenQuickConvert<NativeArray<byte>, longword>#1
 |	|				CommandQueueHostQuickFunc<NativeArray<byte>>#2: function lambda: NativeArray<byte>
 |	|				function lambda(a: NativeArray<byte>): longword
-|	|			function lambda(item_count: longword):
+|	|			function lambda(item_count: longword): UIntPtr
 |	|	KernelArgLocalBytes
-|	|		ConstQueue<>#0: 4
+|	|		ConstQueue<UIntPtr>#0: 4
 |	|	KernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,>#0
-|	|			CommandQueueThenQuickConvert<CLArray<byte>,integer>#1
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr>#0
+|	|			CommandQueueThenQuickConvert<CLArray<byte>, integer>#1
 |	|				CommandQueueHostQuickFunc<CLArray<byte>>#2: function lambda: CLArray<byte>
 |	|				function lambda(a: CLArray<byte>): integer
-|	|			function lambda(item_count: integer):
+|	|			function lambda(item_count: integer): UIntPtr
 Private
 |	Managed
 |	|	Array
@@ -246,26 +246,26 @@ Private
 |	|	|		ParameterQueue<array of byte>#0["a"]: Default=[1,2,3,4]
 |	|	Array2
 |	|	|	KernelArgPrivateArray2<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array of byte>#0: array [,] of byte{ [[1,2,3],[4,5,6]] }
+|	|	|		ConstQueue<array of byte>#0: array[,] of byte{ [[1,2,3],[4,5,6]] }
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ParameterQueue<array [,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
+|	|	|		ParameterQueue<array[,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
 |	|	Array3
 |	|	|	KernelArgPrivateArray3<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array of byte>#0: array [,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
+|	|	|		ConstQueue<array of byte>#0: array[,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	KernelArgPrivateArray<byte>
-|	|	|		ParameterQueue<array [,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ParameterQueue<array[,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	ArraySegment
 |	|	|	KernelArgPrivateArraySegment<byte>
 |	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
@@ -336,15 +336,15 @@ Private
 |	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 }
 |	|	NativeArray
 |	|	|	KernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	KernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	KernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	KernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	KernelArgPrivateNativeArray<byte>
-|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=[1,2,3,4]
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>{ 1, 2, 3, 4 }
 |	Value
 |	|	KernelArgPrivateValue<integer>
 |	|		ConstQueue<integer>#0: 1
