@@ -1041,8 +1041,21 @@ type
     
     {$endregion Alloc/Release}
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += ':$';
+      res += ptr.ToString('X');
+      res += '[';
+      res += sz.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -1112,8 +1125,18 @@ type
     
     {$endregion Alloc/Release}
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${ptr.ToString(''X'')}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += ':$';
+      res += ptr.ToString('X');
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -1222,8 +1245,21 @@ type
     
     {$endregion Alloc/Release}
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += ':$';
+      res += first_ptr.ToString('X');
+      res += '[';
+      res += item_count.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -1263,8 +1299,21 @@ type
     
     {$endregion IDisposable}
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += ':$';
+      res += Area.ptr.ToString('X');
+      res += '[';
+      res += Area.sz.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -1304,8 +1353,19 @@ type
     
     {$endregion IDisposable}
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '{ ';
+      _ObjectToString(self.Value, res);
+      res += ' }';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -1448,25 +1508,30 @@ type
     
     {$endregion IDisposable}
     
-    public function ToString: string; override;
+    public procedure ToString(res: StringBuilder);
+    const val_sep = ', ';
     begin
-      var sb := new StringBuilder;
-      sb += TypeName(self);
-      sb += '{';
+      TypeName(self, res);
+      res += '{';
       if self.Length<>0 then
       begin
-        sb += ' ';
+        res += ' ';
         //TODO #????: as
         foreach var x in self as IList<T> do
         begin
-          sb += _ObjectToString(x);
-          sb += ', ';
+          _ObjectToString(x, res);
+          res += val_sep;
         end;
-        sb.Length -= ', '.Length;
-        sb += ' ';
+        if self.Length<>0 then res.Length -= val_sep.Length;
+        res += ' ';
       end;
-      sb += '}';
-      Result := sb.ToString;
+      res += '}';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
     end;
     
   end;
@@ -1533,14 +1598,18 @@ type
       
     end;
     
-    public function ToString: string; override;
+    public procedure ToString(res: StringBuilder);
     begin
-      var res := new StringBuilder;
-      res += typeof(MemoryUsage).Name;
+      TypeName(self, res);
       res += '[';
       if CanRead  then res += 'Read';
       if CanWrite then res += 'Write';
       res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
       Result := res.ToString;
     end;
     
@@ -1937,17 +2006,17 @@ type
       var rt := GetValueRuntimeType(val);
       if typeof(T) <> rt then
       begin
-        if rt<>nil then sb.Append(TypeToTypeName(rt));
+        if rt<>nil then TypeToTypeName(rt, sb);
         sb += '{ ';
       end;
-      sb += _ObjectToString(val);
+      _ObjectToString(val, sb);
       if typeof(T) <> rt then
         sb += ' }';
     end;
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -1960,55 +2029,6 @@ type
       
       sb += '#';
       sb.Append(ind);
-      
-    end;
-    private static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate);
-    const lambda='lambda';
-    const sugar_begin='<>';
-    const par_separator='; ';
-    begin
-      if d.Target<>nil then
-      begin
-        sb += _ObjectToString(d.Target);
-        sb += ' => ';
-      end;
-      var mi := d.Method;
-      var rt := mi.ReturnType;
-      if rt=typeof(Void) then rt := nil;
-      
-      sb += if rt=nil then 'procedure' else 'function';
-      sb += ' ';
-      begin
-        var name := mi.Name;
-        if name.StartsWith(sugar_begin) then
-          name := if lambda in name then
-            lambda else name.Substring(sugar_begin.Length);
-        sb += name;
-      end;
-      
-      var pars := mi.GetParameters;
-      if pars.Length<>0 then
-      begin
-        sb += '(';
-        foreach var par in pars do
-        begin
-          var name := par.Name;
-          if name.StartsWith(sugar_begin) then
-            name := name.Substring(sugar_begin.Length);
-          sb += name;
-          sb += ': ';
-          sb += TypeToTypeName(par.ParameterType);
-          sb += par_separator;
-        end;
-        sb.Length -= par_separator.Length;
-        sb += ')';
-      end;
-      
-      if rt<>nil then
-      begin
-        sb += ': ';
-        sb += TypeToTypeName(rt);
-      end;
       
     end;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -2027,11 +2047,13 @@ type
       
     end;
     
+    public procedure ToString(res: StringBuilder) :=
+    self.ToString(res, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
     public function ToString: string; override;
     begin
-      var sb := new StringBuilder;
-      ToString(sb, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
-      Result := sb.ToString;
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
     end;
     
     public function Print: CommandQueueBase;
@@ -2392,7 +2414,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -2423,11 +2445,13 @@ type
       
     end;
     
+    public procedure ToString(res: StringBuilder) :=
+    self.ToString(res, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
     public function ToString: string; override;
     begin
-      var sb := new StringBuilder;
-      ToString(sb, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
-      Result := sb.ToString;
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
     end;
     
     public function Print: WaitMarker;
@@ -3353,7 +3377,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
     begin
       if write_tabs then sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       ToStringImpl(sb, tabs+1, index, delayed);
       
@@ -3365,11 +3389,13 @@ type
       
     end;
     
+    public procedure ToString(res: StringBuilder) :=
+    self.ToString(res, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
     public function ToString: string; override;
     begin
-      var sb := new StringBuilder;
-      ToString(sb, 0, new Dictionary<object, integer>, new HashSet<CommandQueueBase>);
-      Result := sb.ToString;
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
     end;
     
     public function Print: KernelArg;
@@ -4391,7 +4417,14 @@ type
 //      ev1.abortable := true;
 //    end;
     
-    public function ToString: string; override := $'UserEvent[{uev.val}]';
+    public function ToString: string; override;
+    begin
+      {$ifdef DEBUG}
+      Result := $'UserEvent[{uev.val}]';
+      {$else DEBUG}
+      raise new InvalidOperationException;
+      {$endif DEBUG}
+    end;
     
     {$endregion operator's}
     
@@ -5532,7 +5565,7 @@ type
       q.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, f);
+      ToStringRuntimeValue(sb, f);
       sb += #10;
       
     end;
@@ -5644,7 +5677,7 @@ type
       q.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, p);
+      ToStringRuntimeValue(sb, p);
       sb += #10;
       
     end;
@@ -5719,7 +5752,7 @@ type
       q.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, f);
+      ToStringRuntimeValue(sb, f);
       sb += #10;
       
     end;
@@ -5796,7 +5829,7 @@ type
       q.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, p);
+      ToStringRuntimeValue(sb, p);
       sb += #10;
       
     end;
@@ -6018,7 +6051,7 @@ type
         q.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, f);
+      ToStringRuntimeValue(sb, f);
       sb += #10;
     end;
     
@@ -6162,7 +6195,7 @@ type
         q.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, f);
+      ToStringRuntimeValue(sb, f);
       sb += #10;
     end;
     
@@ -7621,7 +7654,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      ToStringRuntimeValue(sb, handler);
       sb += #10;
       
     end;
@@ -7695,7 +7728,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      ToStringRuntimeValue(sb, handler);
       sb += #10;
       
     end;
@@ -7771,7 +7804,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      ToStringRuntimeValue(sb, handler);
       sb += #10;
       
     end;
@@ -7806,14 +7839,14 @@ type
     protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
-    protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
+    private static procedure ToStringRuntimeValue<TVal>(sb: StringBuilder; val: TVal) := CommandQueueBase.ToStringRuntimeValue(sb, val);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
@@ -7894,7 +7927,7 @@ type
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += ': ';
-      ToStringWriteDelegate(sb, p);
+      ToStringRuntimeValue(sb, p);
       sb += #10;
     end;
     
@@ -8051,7 +8084,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
@@ -8933,7 +8966,7 @@ type
     public procedure ToString(sb: StringBuilder);
     begin
       sb += ': ';
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringRuntimeValue(sb, d);
       sb += #10;
     end;
     

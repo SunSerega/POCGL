@@ -12,14 +12,28 @@ cl_device_id
 # SubDevice
 Device
 !ToString
-{inherited ToString} of {Parent}
+	inherited;
+	res += ' of ';
+	Parent.ToString(res);
 
 
 
 # Context
 cl_context
 !ToString
-{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}
+	TypeName(self, res);
+	res += '[';
+	res += ntv.val.ToString;
+	res += '] on devices: [';
+	var sep := ', ';
+	foreach var d in AllDevices do
+	begin
+	  d.ToString(res);
+	  res += sep;
+	end;
+	if AllDevices.Count<>0 then res.Length-=sep.Length;
+	res += ']; Main device: ';
+	MainDevice.ToString(res);
 
 
 
@@ -31,19 +45,29 @@ cl_kernel
 !operator=
 (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer)
 !ToString
-{TypeName(self)}[{Name}] from {code}
+	TypeName(self, res);
+	res += '[';
+	res += Name;
+	res += '] from ';
+	code.ToString(res);
 
 
 
 # CLMemory
 cl_mem
 !ToString
-{TypeName(self)}[{ntv.val}] of size {Size}
+	TypeName(self, res);
+	res += '[';
+	res += ntv.val.ToString;
+	res += '] of size ';
+	res += Size.ToString;
 
 # CLMemorySubSegment
 CLMemory
 !ToString
-{inherited ToString} inside {Parent}
+	inherited;
+	res += ' inside ';
+	Parent.ToString(res);
 
 
 
@@ -55,6 +79,10 @@ T
 
 # CLArray
 !ToString
-{TypeName(self)}[{ntv.val}] of length {Length}
+	TypeName(self, res);
+	res += '[';
+	res += ntv.val.ToString;
+	res += '] of length ';
+	res += Length.ToString;
 
 

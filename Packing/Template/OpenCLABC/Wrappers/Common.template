@@ -21,8 +21,19 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Platform(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -46,8 +57,19 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Device(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -61,8 +83,18 @@
     end;
     public property Properties: SubDeviceProperties read GetProperties;
     
-    public function ToString: string; override :=
-    $'{inherited ToString} of {Parent}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      inherited;
+      res += ' of ';
+      Parent.ToString(res);
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -86,8 +118,28 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Context(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += '] on devices: [';
+      var sep := ', ';
+      foreach var d in AllDevices do
+      begin
+        d.ToString(res);
+        res += sep;
+      end;
+      if AllDevices.Count<>0 then res.Length-=sep.Length;
+      res += ']; Main device: ';
+      MainDevice.ToString(res);
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -111,8 +163,19 @@
     public function Equals(obj: object): boolean; override :=
     (obj is ProgramCode(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -136,8 +199,20 @@
     public function Equals(obj: object): boolean; override :=
     (obj is Kernel(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{Name}] from {code}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += Name;
+      res += '] from ';
+      code.ToString(res);
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -161,8 +236,20 @@
     public function Equals(obj: object): boolean; override :=
     (obj is CLMemory(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] of size {Size}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += '] of size ';
+      res += Size.ToString;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -176,8 +263,18 @@
     end;
     public property Properties: CLMemorySubSegmentProperties read GetProperties;
     
-    public function ToString: string; override :=
-    $'{inherited ToString} inside {Parent}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      inherited;
+      res += ' inside ';
+      Parent.ToString(res);
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -201,8 +298,19 @@
     public function Equals(obj: object): boolean; override :=
     (obj is CLValue<T>(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += ']';
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -226,8 +334,20 @@
     public function Equals(obj: object): boolean; override :=
     (obj is CLArray<T>(var wr)) and (self = wr);
     
-    public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] of length {Length}';
+    public procedure ToString(res: StringBuilder);
+    begin
+      TypeName(self, res);
+      res += '[';
+      res += ntv.val.ToString;
+      res += '] of length ';
+      res += Length.ToString;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      self.ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   

@@ -10,7 +10,7 @@ type
     private base := default(string);
     private generics := new List<string>;
     private operator_equ := default(string);
-    private to_string_def := default(string);
+    private to_string_def: array of string := nil;
     
     public constructor(name: string) := self.name := name;
     private constructor := raise new System.InvalidOperationException;
@@ -51,7 +51,7 @@ begin
           'ToString':
           if t.to_string_def<>nil then
             raise new System.InvalidOperationException else
-            t.to_string_def := setting_lines.Single;
+            t.to_string_def := setting_lines.ConvertAll(l->l.TrimStart(#9));
           
           else raise new System.InvalidOperationException($'#{tname}!{setting_name}');
         end;
@@ -174,10 +174,26 @@ begin
       
       {$region ToString}
       
-      res += '    public function ToString: string; override :='#10;
-      res += '    $''';
-      res += t.to_string_def ?? '{TypeName(self)}[{ntv.val}]';
-      res += ''';'#10;
+      res += '    public procedure ToString(res: StringBuilder);'#10;
+      res += '    begin'#10;
+      foreach var l in t.to_string_def ?? |
+        'TypeName(self, res);',
+        'res += ''['';',
+        'res += ntv.val.ToString;',
+        'res += '']'';'
+      | do
+      begin
+        res += '      ';
+        res += l;
+        res += #10;
+      end;
+      res += '    end;'#10;
+      res += '    public function ToString: string; override;'#10;
+      res += '    begin'#10;
+      res += '      var res := new StringBuilder;'#10;
+      res += '      self.ToString(res);'#10;
+      res += '      Result := res.ToString;'#10;
+      res += '    end;'#10;
       
       res += '    '#10;
       
