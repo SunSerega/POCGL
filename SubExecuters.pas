@@ -97,30 +97,41 @@ var GetUsedModules_lock := new object;
 
 {$region Core}
 
-procedure RunFile(fname, nick: string; l_otp: OtpLine->(); params pars: array of string);
+procedure RunFile(fname, nick: string; l_otp: OtpLine->(); l_err: Exception->(); params pars: array of string);
 // Если менять - то в SubExecutables тоже
 const OutputPipeIdStr = 'OutputPipeId';
 begin
-  nick := nick.Replace('error', 'errоr');
+  nick := nick?.Replace('error', 'errоr');
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
   
-  AOtp.Otp($'Runing {nick}');
-  if l_otp=nil then l_otp := l->AOtp.Otp(l.ConvStr(s->$'{nick}: {s}'));
+  if nick<>nil then AOtp.Otp($'Runing {nick}');
+  if l_otp=nil then l_otp := l->
+  begin
+    if nick<>nil then l := l.ConvStr(s->$'{nick}: {s}');
+    AOtp.Otp(l);
+  end;
+  if l_err=nil then l_err := e->
+  AOtp.ErrOtp(new MessageException($'Error in {nick??fname}: {e}'));
   
   var p := new Process;
-  var pek := new SubProcessEmergencyKiller(p);
+  var pek := if nick=nil then nil else new SubProcessEmergencyKiller(p);
   
-  var pipe := new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.In, System.IO.HandleInheritability.Inheritable);
-  pek.halt_str := new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.Out, System.IO.HandleInheritability.Inheritable);
+  var pipe := if nick=nil then nil else new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.In, System.IO.HandleInheritability.Inheritable);
+  if pek<>nil then pek.halt_str := new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.Out, System.IO.HandleInheritability.Inheritable);
   
-  var psi := new ProcessStartInfo(fname, pars.Append($'"{OutputPipeIdStr}={pipe.GetClientHandleAsString} {pek.halt_str.GetClientHandleAsString}"').JoinToString);
+  var all_pars := pars.AsEnumerable;
+  if pek<>nil then all_pars := all_pars+$'"{OutputPipeIdStr}={pipe.GetClientHandleAsString} {pek.halt_str.GetClientHandleAsString}"';
+  
+  var psi := new ProcessStartInfo(fname, all_pars.JoinToString);
   psi.UseShellExecute := false;
   psi.RedirectStandardOutput := true;
   psi.WorkingDirectory := System.IO.Path.GetDirectoryName(fname);
   p.StartInfo := psi;
   
-  var curr_timer: ContainerBaseTimer := Timer.main.exe_exec[nick];
+  var curr_timer :=
+    if nick=nil then nil else
+      Timer.main.exe_exec[nick];
   
   {$region otp capture}
   var start_time_mark: int64;
@@ -131,8 +142,7 @@ begin
   try
     if e.Data=nil then
     begin
-      while pipe_connection_established=nil do Sleep(10);
-      if pipe_connection_established=false then
+      if pipe_connection_established<>true then
         thr_otp.Finish;
     end else
       thr_otp.Enq(e.Data);
@@ -140,12 +150,12 @@ begin
     on exc: Exception do ErrOtp(exc);
   end;
   
-  StartBgThread(()->
+  if nick<>nil then StartBgThread(()->
   try
     var br := new System.IO.BinaryReader(pipe);
     
     try
-      if br.ReadByte <> 0 then raise new System.InvalidOperationException($'Output of {nick} didn''t start from 0');
+      if br.ReadByte <> 0 then raise new System.InvalidOperationException($'Output of {nick??fname} didn''t start from 0');
       
       //TODO разобраться на сколько это надо и куда сувать
       // - update: таки без него не видит завершение вывода при умирании процесса
@@ -186,7 +196,7 @@ begin
       begin
         if pipe_connection_established=true then
           thr_otp.Finish else
-          Otp($'WARNING: Pipe connection with "{nick}" wasn''t established');
+          Otp($'WARNING: Pipe connection with "{nick??fname}" wasn''t established');
         exit;
       end;
     end;
@@ -202,7 +212,7 @@ begin
   {$endregion otp capture}
   
 //  lock sec_procs do sec_procs += p;
-  curr_timer.MeasureTime(()->
+  var exec_proc := procedure->
   begin
     start_time_mark := pack_timer.ElapsedTicks;
     try
@@ -218,25 +228,23 @@ begin
       foreach var l in thr_otp do l_otp(l);
       p.WaitForExit;
       
-      if p.ExitCode<>0 then
-      begin
-        var ex := System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode);
-        ErrOtp(new MessageException($'Error in {nick}: {ex}'));
-      end;
-      
-      AOtp.Otp($'Finished runing {nick}');
+      if p.ExitCode<>0 then l_err(System.Runtime.InteropServices.Marshal.GetExceptionForHR(p.ExitCode));
+      if nick<>nil then AOtp.Otp($'Finished runing {nick}');
     finally
       try
         p.Kill;
       except
       end;
-      lock EmergencyHandler.All do
+      if pek<>nil then lock EmergencyHandler.All do
         EmergencyHandler.All.Remove(pek);
     end;
     
-  end);
+  end;
+  if curr_timer=nil then
+    exec_proc else
+    curr_timer.MeasureTime(exec_proc);
   
-  if pipe_connection_established<>true then pipe.Close;
+  if (pipe<>nil) and (pipe_connection_established<>true) then pipe.Close;
 end;
 
 procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); general_task: boolean; args: string; params search_paths: array of string);
@@ -339,7 +347,7 @@ begin
     else raise new MessageException($'ERROR: Not supported file extention: "{fname}"');
   end;
   
-  RunFile(fname, nick, l_otp, pars);
+  RunFile(fname, nick, l_otp, nil, pars);
 end;
 
 {$endregion Core}
@@ -347,7 +355,7 @@ end;
 {$region Additional overloads}
 
 procedure RunFile(fname, nick: string; params pars: array of string) :=
-RunFile(fname, nick, nil, pars);
+RunFile(fname, nick, nil, nil, pars);
 
 procedure CompilePasFile(fname: string; general_task: boolean; args: string := nil) :=
 CompilePasFile(fname, nil, nil, general_task, args);
