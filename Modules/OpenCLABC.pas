@@ -33,9 +33,7 @@ unit OpenCLABC;
 //TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
 
 //TODO Properties.ToString
-// - С адекватным выводом ошибок
 // - В справку
-// - В тесты
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQNil)

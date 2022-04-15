@@ -168,8 +168,11 @@ type
         res.MarkUsed;
     end;
     
-    private function EnumrKeys := enums.Keys.OrderBy(ename->Abs(enums[ename])).ThenBy(ename->ename);
-    private property ValueStr[ename: string]: string read not bitmask and (enums[ename]<0) ? enums[ename].ToString : '$'+enums[ename].ToString('X4');
+    private function EnumrKeys := enums.Keys.OrderBy(ename->Abs(enums[ename]));//.ThenBy(ename->ename);
+    private property ValueStr[ename: string]: string read
+    if not bitmask and (enums[ename]<0) then
+      enums[ename].ToString else
+      '$'+enums[ename].ToString('X4');
     
     public static procedure WarnAllUnused :=
     foreach var gr in All do
@@ -225,6 +228,7 @@ type
         wr +=     $'      var res := new StringBuilder;'+#10;
       foreach var ename in EnumrKeys do
       begin
+        if bitmask and (enums[ename]=0) then continue;
         wr +=     $'      if self.val ';
         var val_str := ValueStr[ename];
         if bitmask then wr += $'and {t}({val_str}) ';
@@ -241,6 +245,8 @@ type
         wr +=     $'        res.Length -= 1;'+#10;
         wr +=     $'        Result := res.ToString;'+#10;
         wr +=     $'      end else'+#10;
+        wr +=     $'      if self.val=0 then'+#10;
+        wr +=     $'        Result := ''NONE'' else'+#10;
       end;
       wr +=       $'        Result := $''{name}[{{self.val}}]'';'+#10;
       wr +=       $'    end;' + #10;
@@ -2061,7 +2067,10 @@ type
     public function Apply(gr: Group): boolean; override;
     begin
       foreach var t in enums do
+      begin
+        gr.enums.Remove(t[0]);
         gr.enums.Add(t[0],t[1]);
+      end;
       gr.FinishInit;
       self.used := true;
       Result := false;

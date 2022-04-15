@@ -40,22 +40,56 @@ unit OpenCLABC;
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 //TODO CombineUse? А то CombineConv есть, а Use нету...
 
+//TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
+
+//TODO Properties.ToString
+// - В справку
+
+//TODO Использовать cl.EnqueueMapBuffer
+// - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQNil)
+// - Лучше сделать так же как для KernelArgGlobal
+// - В справку
+// --- В том числе то, что Map быстрее Read, который быстрее Get
+// --- (собсна протестить)
+//TODO operator implicit для NativeValue=>KernelArg[Global] не генерируются?
+// - Правда теперь не релевантно, потому что:
+//TODO KernelArgGlobal (и Constant) из адреса RAM не обязан копировать данные с кеша GPU назад в RAM после выполнения kernel'а
+// - Для этого случая (+оптимизации чтения/записи) и используется MapBuffer
+// - В справку
+//TODO При чём это в обе стороны (не-)работает
+//  var v1 := new NativeValue<integer>(1);
+//  var v2 := new CLValue<integer>(-1);
+//  var Q_Copy := k.NewQueue.ThenExec1(1,KernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
+//  
+//  v1.Value := 3;
+//  Context.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
+//  v1.Value := 5;
+//  Context.Default.SyncInvoke(Q_Copy).Println; // тут всё ещё старое значение
+//TODO Нет смысла в Global/Constant KernlArg'е хранящем NativeValue[Area]
+// - CLMemory.FromHostMemory(copy: boolean? := nil)
+// --- Создаёт или CLMemory (если copy), или его наследник, хранящий ещё "host_hnd: GCHandle" или "host_obj_ref: object"
+// --- Если nil то используется Contex.MainDevice.CLPreferHostMemoryCopy := Type=GPU
+// - А в обычном конструкторе добавить параметр prealloc_map_mem и убрать передачу существующей памяти
+// - В справку:
+// --- FromHostMemory(copy=false) полезно для существующих объектов, но использовать вне .MapMemory их всё равно нельзя
+// --- Кроме того, плотно упаковывать элементы плохо
+// --- К примеру принимать float3* нельзя, надо принимать и передавать float4*
+// --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
+// --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
+
 //TODO Тесты:
-// - Автоматически генерировать тест KernelArg'ов
-// --- Используя инклюды, потому что там несколько отдельных файлов
+
+//TODO Разделить .html справку и гайт по OpenCLABC
+//TODO github.io
 
 //TODO Справка:
 // - KernelArg
-// --- KernelArg, как и всю остальную очередь, желательно создавать заранее, но KernelArgGlobal из массива - блокирует этот массив в памяти
+// --- KernelArg, как и всю остальную очередь, желательно создавать заранее
 // - NativeArray
 // - CLValue
 // - !CL!Memory[Sub]Segment
 // - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
 // - MemoryUsage
-//
-// - Native*<T>.FromExistingMemory
-// - implicit ^T -> NativeValue<T>
-//
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
 // --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
@@ -63,8 +97,12 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
-//TODO Разделить .html справку и гайт по OpenCLABC
-//TODO github.io
+//TODO Пользовательские очереди?
+// - Всё же я не всё могу предугадать, поэтому
+// - для окончательной версии модуля такая вещь необходима
+// - В то же время поидее это позволит быстрее тестировать с MT
+// - Но чтобы это сделать... придётся типы-утилиты перенести в отдельный модуль,
+// - чтобы они были доступны, но не на виду
 
 //TODO cl.WaitForEvents тратит время процессора??? Почему?
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
@@ -96,10 +134,6 @@ unit OpenCLABC;
 // - Проверить сочетание с каждой другой фичей
 // - В комбинации с .Cycle вообще возможно добиться детерминированности?
 
-//TODO Использовать cl.EnqueueMapBuffer
-// - В виде .AddMap((MappedArray,Context)->())
-// - Недодел своей ветке
-
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
 
@@ -117,17 +151,7 @@ unit OpenCLABC;
 // - Быстрее чем MEM_USE_HOST_PTR в остальных случаях
 // - Протестировать
 
-//===================================
-// Сделать когда-нибуть:
-
-//TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
-// - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
-// - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
-// - Другие типы cl_mem (сейчас используется только буфер)
-// - clEnqueueNativeKernel
-// --- CL_DEVICE_BUILT_IN_KERNELS
-
-//TODO Фичи версий OpenCL, которых у меня нет:
+//TODO Фичи версий OpenCL:
 // - OpenCL2.0
 // --- SVM
 // - OpenCL3.0
@@ -147,11 +171,18 @@ unit OpenCLABC;
 // --- CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
 // --- CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
 
-//TODO Слишком новые фичи, которые могут много чего изменить:
-// - cl_khr_command_buffer
-// --- Буферы, хранящие список комманд
-// - cl_khr_semaphore
-// --- Как cl_event, но многоразовые
+//===================================
+// Сделать когда-нибуть:
+
+//TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
+// - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
+// - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
+// - Другие типы cl_mem (сейчас используется только буфер)
+// - clEnqueueNativeKernel
+// --- CL_DEVICE_BUILT_IN_KERNELS
+// - Расширения
+// --- cl_khr_command_buffer
+// --- cl_khr_semaphore
 
 //===================================
 
@@ -440,6 +471,63 @@ type
     public property Extensions:          String read GetExtensions;
     public property HostTimerResolution: UInt64 read GetHostTimerResolution;
     
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Profile             = ';
+      try
+        res += _ObjectToString(Profile);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Version             = ';
+      try
+        res += _ObjectToString(Version);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Name                = ';
+      try
+        res += _ObjectToString(Name);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Vendor              = ';
+      try
+        res += _ObjectToString(Vendor);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Extensions          = ';
+      try
+        res += _ObjectToString(Extensions);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'HostTimerResolution = ';
+      try
+        res += _ObjectToString(HostTimerResolution);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
   end;
   
   {$endregion Platform}
@@ -637,6 +725,751 @@ type
     public property MaxNumSubGroups:                    UInt32                           read GetMaxNumSubGroups;
     public property SubGroupIndependentForwardProgress: Bool                             read GetSubGroupIndependentForwardProgress;
     
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Type                               = ';
+      try
+        res += _ObjectToString(&Type);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'VendorId                           = ';
+      try
+        res += _ObjectToString(VendorId);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxComputeUnits                    = ';
+      try
+        res += _ObjectToString(MaxComputeUnits);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxWorkItemDimensions              = ';
+      try
+        res += _ObjectToString(MaxWorkItemDimensions);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxWorkItemSizes                   = ';
+      try
+        res += _ObjectToString(MaxWorkItemSizes);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxWorkGroupSize                   = ';
+      try
+        res += _ObjectToString(MaxWorkGroupSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthChar           = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthChar);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthShort          = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthShort);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthInt            = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthInt);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthLong           = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthLong);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthFloat          = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthFloat);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthDouble         = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthDouble);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredVectorWidthHalf           = ';
+      try
+        res += _ObjectToString(PreferredVectorWidthHalf);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthChar              = ';
+      try
+        res += _ObjectToString(NativeVectorWidthChar);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthShort             = ';
+      try
+        res += _ObjectToString(NativeVectorWidthShort);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthInt               = ';
+      try
+        res += _ObjectToString(NativeVectorWidthInt);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthLong              = ';
+      try
+        res += _ObjectToString(NativeVectorWidthLong);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthFloat             = ';
+      try
+        res += _ObjectToString(NativeVectorWidthFloat);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthDouble            = ';
+      try
+        res += _ObjectToString(NativeVectorWidthDouble);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NativeVectorWidthHalf              = ';
+      try
+        res += _ObjectToString(NativeVectorWidthHalf);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxClockFrequency                  = ';
+      try
+        res += _ObjectToString(MaxClockFrequency);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'AddressBits                        = ';
+      try
+        res += _ObjectToString(AddressBits);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxMemAllocSize                    = ';
+      try
+        res += _ObjectToString(MaxMemAllocSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ImageSupport                       = ';
+      try
+        res += _ObjectToString(ImageSupport);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxReadImageArgs                   = ';
+      try
+        res += _ObjectToString(MaxReadImageArgs);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxWriteImageArgs                  = ';
+      try
+        res += _ObjectToString(MaxWriteImageArgs);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxReadWriteImageArgs              = ';
+      try
+        res += _ObjectToString(MaxReadWriteImageArgs);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'IlVersion                          = ';
+      try
+        res += _ObjectToString(IlVersion);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Image2dMaxWidth                    = ';
+      try
+        res += _ObjectToString(Image2dMaxWidth);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Image2dMaxHeight                   = ';
+      try
+        res += _ObjectToString(Image2dMaxHeight);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Image3dMaxWidth                    = ';
+      try
+        res += _ObjectToString(Image3dMaxWidth);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Image3dMaxHeight                   = ';
+      try
+        res += _ObjectToString(Image3dMaxHeight);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Image3dMaxDepth                    = ';
+      try
+        res += _ObjectToString(Image3dMaxDepth);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ImageMaxBufferSize                 = ';
+      try
+        res += _ObjectToString(ImageMaxBufferSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ImageMaxArraySize                  = ';
+      try
+        res += _ObjectToString(ImageMaxArraySize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxSamplers                        = ';
+      try
+        res += _ObjectToString(MaxSamplers);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ImagePitchAlignment                = ';
+      try
+        res += _ObjectToString(ImagePitchAlignment);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ImageBaseAddressAlignment          = ';
+      try
+        res += _ObjectToString(ImageBaseAddressAlignment);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxPipeArgs                        = ';
+      try
+        res += _ObjectToString(MaxPipeArgs);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PipeMaxActiveReservations          = ';
+      try
+        res += _ObjectToString(PipeMaxActiveReservations);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PipeMaxPacketSize                  = ';
+      try
+        res += _ObjectToString(PipeMaxPacketSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxParameterSize                   = ';
+      try
+        res += _ObjectToString(MaxParameterSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MemBaseAddrAlign                   = ';
+      try
+        res += _ObjectToString(MemBaseAddrAlign);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MinDataTypeAlignSize               = ';
+      try
+        res += _ObjectToString(MinDataTypeAlignSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'SingleFpConfig                     = ';
+      try
+        res += _ObjectToString(SingleFpConfig);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'DoubleFpConfig                     = ';
+      try
+        res += _ObjectToString(DoubleFpConfig);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'GlobalMemCacheType                 = ';
+      try
+        res += _ObjectToString(GlobalMemCacheType);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'GlobalMemCachelineSize             = ';
+      try
+        res += _ObjectToString(GlobalMemCachelineSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'GlobalMemCacheSize                 = ';
+      try
+        res += _ObjectToString(GlobalMemCacheSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'GlobalMemSize                      = ';
+      try
+        res += _ObjectToString(GlobalMemSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxConstantBufferSize              = ';
+      try
+        res += _ObjectToString(MaxConstantBufferSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxConstantArgs                    = ';
+      try
+        res += _ObjectToString(MaxConstantArgs);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxGlobalVariableSize              = ';
+      try
+        res += _ObjectToString(MaxGlobalVariableSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'GlobalVariablePreferredTotalSize   = ';
+      try
+        res += _ObjectToString(GlobalVariablePreferredTotalSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'LocalMemType                       = ';
+      try
+        res += _ObjectToString(LocalMemType);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'LocalMemSize                       = ';
+      try
+        res += _ObjectToString(LocalMemSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ErrorCorrectionSupport             = ';
+      try
+        res += _ObjectToString(ErrorCorrectionSupport);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'HostUnifiedMemory                  = ';
+      try
+        res += _ObjectToString(HostUnifiedMemory);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ProfilingTimerResolution           = ';
+      try
+        res += _ObjectToString(ProfilingTimerResolution);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'EndianLittle                       = ';
+      try
+        res += _ObjectToString(EndianLittle);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Available                          = ';
+      try
+        res += _ObjectToString(Available);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'CompilerAvailable                  = ';
+      try
+        res += _ObjectToString(CompilerAvailable);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'LinkerAvailable                    = ';
+      try
+        res += _ObjectToString(LinkerAvailable);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ExecutionCapabilities              = ';
+      try
+        res += _ObjectToString(ExecutionCapabilities);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'QueueProperties                    = ';
+      try
+        res += _ObjectToString(QueueProperties);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'QueueOnHostProperties              = ';
+      try
+        res += _ObjectToString(QueueOnHostProperties);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'QueueOnDeviceProperties            = ';
+      try
+        res += _ObjectToString(QueueOnDeviceProperties);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'QueueOnDevicePreferredSize         = ';
+      try
+        res += _ObjectToString(QueueOnDevicePreferredSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'QueueOnDeviceMaxSize               = ';
+      try
+        res += _ObjectToString(QueueOnDeviceMaxSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxOnDeviceQueues                  = ';
+      try
+        res += _ObjectToString(MaxOnDeviceQueues);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxOnDeviceEvents                  = ';
+      try
+        res += _ObjectToString(MaxOnDeviceEvents);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'BuiltInKernels                     = ';
+      try
+        res += _ObjectToString(BuiltInKernels);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Name                               = ';
+      try
+        res += _ObjectToString(Name);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Vendor                             = ';
+      try
+        res += _ObjectToString(Vendor);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'DriverVersion                      = ';
+      try
+        res += _ObjectToString(DriverVersion);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Profile                            = ';
+      try
+        res += _ObjectToString(Profile);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Version                            = ';
+      try
+        res += _ObjectToString(Version);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'OpenclCVersion                     = ';
+      try
+        res += _ObjectToString(OpenclCVersion);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Extensions                         = ';
+      try
+        res += _ObjectToString(Extensions);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PrintfBufferSize                   = ';
+      try
+        res += _ObjectToString(PrintfBufferSize);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredInteropUserSync           = ';
+      try
+        res += _ObjectToString(PreferredInteropUserSync);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PartitionMaxSubDevices             = ';
+      try
+        res += _ObjectToString(PartitionMaxSubDevices);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PartitionProperties                = ';
+      try
+        res += _ObjectToString(PartitionProperties);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PartitionAffinityDomain            = ';
+      try
+        res += _ObjectToString(PartitionAffinityDomain);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PartitionType                      = ';
+      try
+        res += _ObjectToString(PartitionType);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ReferenceCount                     = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'SvmCapabilities                    = ';
+      try
+        res += _ObjectToString(SvmCapabilities);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredPlatformAtomicAlignment   = ';
+      try
+        res += _ObjectToString(PreferredPlatformAtomicAlignment);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredGlobalAtomicAlignment     = ';
+      try
+        res += _ObjectToString(PreferredGlobalAtomicAlignment);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'PreferredLocalAtomicAlignment      = ';
+      try
+        res += _ObjectToString(PreferredLocalAtomicAlignment);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MaxNumSubGroups                    = ';
+      try
+        res += _ObjectToString(MaxNumSubGroups);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'SubGroupIndependentForwardProgress = ';
+      try
+        res += _ObjectToString(SubGroupIndependentForwardProgress);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
   end;
   
   {$endregion Device}
@@ -667,6 +1500,39 @@ type
     public property NumDevices:     UInt32                     read GetNumDevices;
     public property Properties:     array of ContextProperties read GetProperties;
     
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'ReferenceCount = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NumDevices     = ';
+      try
+        res += _ObjectToString(NumDevices);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Properties     = ';
+      try
+        res += _ObjectToString(Properties);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
   end;
   
   {$endregion Context}
@@ -694,6 +1560,71 @@ type
     public property ScopeGlobalCtorsPresent: Bool          read GetScopeGlobalCtorsPresent;
     public property ScopeGlobalDtorsPresent: Bool          read GetScopeGlobalDtorsPresent;
     
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'ReferenceCount          = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Source                  = ';
+      try
+        res += _ObjectToString(Source);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Il                      = ';
+      try
+        res += _ObjectToString(Il);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NumKernels              = ';
+      try
+        res += _ObjectToString(NumKernels);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'KernelNames             = ';
+      try
+        res += _ObjectToString(KernelNames);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ScopeGlobalCtorsPresent = ';
+      try
+        res += _ObjectToString(ScopeGlobalCtorsPresent);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ScopeGlobalDtorsPresent = ';
+      try
+        res += _ObjectToString(ScopeGlobalDtorsPresent);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
   end;
   
   {$endregion ProgramCode}
@@ -714,6 +1645,47 @@ type
     public property NumArgs:        UInt32 read GetNumArgs;
     public property ReferenceCount: UInt32 read GetReferenceCount;
     public property Attributes:     String read GetAttributes;
+    
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'FunctionName   = ';
+      try
+        res += _ObjectToString(FunctionName);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'NumArgs        = ';
+      try
+        res += _ObjectToString(NumArgs);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ReferenceCount = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'Attributes     = ';
+      try
+        res += _ObjectToString(Attributes);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -738,6 +1710,55 @@ type
     public property ReferenceCount: UInt32   read GetReferenceCount;
     public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
     
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Flags          = ';
+      try
+        res += _ObjectToString(Flags);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'HostPtr        = ';
+      try
+        res += _ObjectToString(HostPtr);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MapCount       = ';
+      try
+        res += _ObjectToString(MapCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ReferenceCount = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'UsesSvmPointer = ';
+      try
+        res += _ObjectToString(UsesSvmPointer);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
   end;
   
   {$endregion CLMemory}
@@ -752,6 +1773,19 @@ type
     private function GetOffset: UIntPtr;
     
     public property Offset: UIntPtr read GetOffset;
+    
+    public procedure ToString(res: StringBuilder); override;
+    begin
+      inherited;
+      res += #10;
+      res += 'Offset = ';
+      try
+        res += _ObjectToString(Offset);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
     
   end;
   
@@ -776,6 +1810,55 @@ type
     public property ReferenceCount: UInt32   read GetReferenceCount;
     public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
     
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Flags          = ';
+      try
+        res += _ObjectToString(Flags);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'HostPtr        = ';
+      try
+        res += _ObjectToString(HostPtr);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MapCount       = ';
+      try
+        res += _ObjectToString(MapCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ReferenceCount = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'UsesSvmPointer = ';
+      try
+        res += _ObjectToString(UsesSvmPointer);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
   end;
   
   {$endregion CLValue}
@@ -798,6 +1881,55 @@ type
     public property MapCount:       UInt32   read GetMapCount;
     public property ReferenceCount: UInt32   read GetReferenceCount;
     public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
+    
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Flags          = ';
+      try
+        res += _ObjectToString(Flags);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'HostPtr        = ';
+      try
+        res += _ObjectToString(HostPtr);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'MapCount       = ';
+      try
+        res += _ObjectToString(MapCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'ReferenceCount = ';
+      try
+        res += _ObjectToString(ReferenceCount);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+      res += #10;
+      res += 'UsesSvmPointer = ';
+      try
+        res += _ObjectToString(UsesSvmPointer);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
     
   end;
   
@@ -827,26 +1959,30 @@ type
     
     private static all_need_init := true;
     private static _all: IList<Platform>;
+    private static function MakeAll: IList<Platform>;
+    begin
+      Result := nil;
+      
+      var c: UInt32;
+      begin
+        var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
+        if ec=ErrorCode.PLATFORM_NOT_FOUND_KHR then exit;
+        OpenCLABCInternalException.RaiseIfError(ec);
+      end;
+      if c=0 then exit;
+      
+      var all_arr := new cl_platform_id[c];
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
+      );
+      
+      Result := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+    end;
     private static function GetAll: IList<Platform>;
     begin
       if all_need_init then
       begin
-        var c: UInt32;
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetPlatformIDs(0, IntPtr.Zero, c)
-        );
-        
-        if c<>0 then
-        begin
-          var all_arr := new cl_platform_id[c];
-          OpenCLABCInternalException.RaiseIfError(
-            cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
-          );
-          
-          _all := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
-        end else
-          _all := nil;
-        
+        _all := MakeAll;
         all_need_init := false;
       end;
       Result := _all;
@@ -1016,15 +2152,13 @@ type
     begin
       CheckMainDevice(main_dvc, dvcs);
       
-      var ntv_dvcs := new cl_device_id[dvcs.Count];
-      for var i := 0 to ntv_dvcs.Length-1 do
-        ntv_dvcs[i] := dvcs[i].ntv;
+      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs.ToArray);
+      var ntv_dvcs := GetAllNtvDevices;
       
       var ec: ErrorCode;
       self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs.ToArray);
       self.main_dvc := main_dvc;
     end;
     ///Создаёт контекст с указанными AllDevices
@@ -3680,7 +4814,7 @@ type
     private supported_split_modes: array of DevicePartitionProperty := nil;
     private function GetSSM: array of DevicePartitionProperty;
     begin
-      if supported_split_modes=nil then supported_split_modes := Properties.PartitionType;
+      if supported_split_modes=nil then supported_split_modes := Properties.PartitionProperties;
       Result := supported_split_modes;
     end;
     
@@ -7225,9 +8359,9 @@ type
     external 'opencl.dll' name 'clGetPlatformInfo';
     
     protected procedure GetSizeImpl(id: PlatformInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: PlatformInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7253,9 +8387,9 @@ type
     external 'opencl.dll' name 'clGetDeviceInfo';
     
     protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7367,9 +8501,9 @@ type
     external 'opencl.dll' name 'clGetDeviceInfo';
     
     protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7389,9 +8523,9 @@ type
     external 'opencl.dll' name 'clGetContextInfo';
     
     protected procedure GetSizeImpl(id: ContextInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: ContextInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7414,9 +8548,9 @@ type
     external 'opencl.dll' name 'clGetProgramInfo';
     
     protected procedure GetSizeImpl(id: ProgramInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: ProgramInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7443,9 +8577,9 @@ type
     external 'opencl.dll' name 'clGetKernelInfo';
     
     protected procedure GetSizeImpl(id: KernelInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: KernelInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7469,9 +8603,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7496,9 +8630,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7519,9 +8653,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -7546,9 +8680,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   

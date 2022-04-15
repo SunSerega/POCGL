@@ -12,9 +12,9 @@ type
     external 'opencl.dll' name 'clGetPlatformInfo';
     
     protected procedure GetSizeImpl(id: PlatformInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: PlatformInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -40,9 +40,9 @@ type
     external 'opencl.dll' name 'clGetDeviceInfo';
     
     protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -154,9 +154,9 @@ type
     external 'opencl.dll' name 'clGetDeviceInfo';
     
     protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -176,9 +176,9 @@ type
     external 'opencl.dll' name 'clGetContextInfo';
     
     protected procedure GetSizeImpl(id: ContextInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: ContextInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -201,9 +201,9 @@ type
     external 'opencl.dll' name 'clGetProgramInfo';
     
     protected procedure GetSizeImpl(id: ProgramInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: ProgramInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -230,9 +230,9 @@ type
     external 'opencl.dll' name 'clGetKernelInfo';
     
     protected procedure GetSizeImpl(id: KernelInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: KernelInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -256,9 +256,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -283,9 +283,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -306,9 +306,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   
@@ -333,9 +333,9 @@ type
     external 'opencl.dll' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );
+    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
     protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );
+    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
     
   end;
   

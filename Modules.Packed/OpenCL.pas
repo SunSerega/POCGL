@@ -194,15 +194,15 @@ type
     
     public static property FALSE:        Bool read new Bool($0000);
     public static property NON_BLOCKING: Bool read new Bool($0000);
-    public static property BLOCKING:     Bool read new Bool($0001);
     public static property TRUE:         Bool read new Bool($0001);
+    public static property BLOCKING:     Bool read new Bool($0001);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($0000) then Result := 'FALSE' else
       if self.val = UInt32($0000) then Result := 'NON_BLOCKING' else
-      if self.val = UInt32($0001) then Result := 'BLOCKING' else
       if self.val = UInt32($0001) then Result := 'TRUE' else
+      if self.val = UInt32($0001) then Result := 'BLOCKING' else
         Result := $'Bool[{self.val}]';
     end;
     
@@ -471,7 +471,6 @@ type
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
-      if self.val and UInt64($0000) = UInt64($0000) then res += 'NONE+';
       if self.val and UInt64($0001) = UInt64($0001) then res += 'QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE+';
       if self.val and UInt64($0002) = UInt64($0002) then res += 'QUEUE_PROFILING_ENABLE+';
       if self.val and UInt64($0004) = UInt64($0004) then res += 'QUEUE_ON_DEVICE+';
@@ -483,6 +482,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'CommandQueueProperties[{self.val}]';
     end;
     
@@ -806,6 +807,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'DeviceAffinityDomain[{self.val}]';
     end;
     
@@ -836,6 +839,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'DeviceExecCapabilities[{self.val}]';
     end;
     
@@ -884,6 +889,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'DeviceFPConfig[{self.val}]';
     end;
     
@@ -935,8 +942,8 @@ type
     public static property DEVICE_AVAILABLE:                                                     DeviceInfo read new DeviceInfo($1027);
     public static property DEVICE_COMPILER_AVAILABLE:                                            DeviceInfo read new DeviceInfo($1028);
     public static property DEVICE_EXECUTION_CAPABILITIES:                                        DeviceInfo read new DeviceInfo($1029);
-    public static property DEVICE_QUEUE_ON_HOST_PROPERTIES:                                      DeviceInfo read new DeviceInfo($102A);
     public static property DEVICE_QUEUE_PROPERTIES:                                              DeviceInfo read new DeviceInfo($102A);
+    public static property DEVICE_QUEUE_ON_HOST_PROPERTIES:                                      DeviceInfo read new DeviceInfo($102A);
     public static property DEVICE_NAME:                                                          DeviceInfo read new DeviceInfo($102B);
     public static property DEVICE_VENDOR:                                                        DeviceInfo read new DeviceInfo($102C);
     public static property DRIVER_VERSION:                                                       DeviceInfo read new DeviceInfo($102D);
@@ -991,15 +998,15 @@ type
     public static property DEVICE_IL_VERSION_KHR:                                                DeviceInfo read new DeviceInfo($105B);
     public static property DEVICE_MAX_NUM_SUB_GROUPS:                                            DeviceInfo read new DeviceInfo($105C);
     public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS:                        DeviceInfo read new DeviceInfo($105D);
-    public static property DEVICE_NUMERIC_VERSION:                                               DeviceInfo read new DeviceInfo($105E);
     public static property DEVICE_NUMERIC_VERSION_KHR:                                           DeviceInfo read new DeviceInfo($105E);
+    public static property DEVICE_NUMERIC_VERSION:                                               DeviceInfo read new DeviceInfo($105E);
     public static property DEVICE_OPENCL_C_NUMERIC_VERSION_KHR:                                  DeviceInfo read new DeviceInfo($105F);
-    public static property DEVICE_EXTENSIONS_WITH_VERSION:                                       DeviceInfo read new DeviceInfo($1060);
     public static property DEVICE_EXTENSIONS_WITH_VERSION_KHR:                                   DeviceInfo read new DeviceInfo($1060);
-    public static property DEVICE_ILS_WITH_VERSION:                                              DeviceInfo read new DeviceInfo($1061);
+    public static property DEVICE_EXTENSIONS_WITH_VERSION:                                       DeviceInfo read new DeviceInfo($1060);
     public static property DEVICE_ILS_WITH_VERSION_KHR:                                          DeviceInfo read new DeviceInfo($1061);
-    public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION:                                 DeviceInfo read new DeviceInfo($1062);
+    public static property DEVICE_ILS_WITH_VERSION:                                              DeviceInfo read new DeviceInfo($1061);
     public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR:                             DeviceInfo read new DeviceInfo($1062);
+    public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION:                                 DeviceInfo read new DeviceInfo($1062);
     public static property DEVICE_ATOMIC_MEMORY_CAPABILITIES:                                    DeviceInfo read new DeviceInfo($1063);
     public static property DEVICE_ATOMIC_FENCE_CAPABILITIES:                                     DeviceInfo read new DeviceInfo($1064);
     public static property DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT:                                DeviceInfo read new DeviceInfo($1065);
@@ -1140,8 +1147,8 @@ type
       if self.val = UInt32($1027) then Result := 'DEVICE_AVAILABLE' else
       if self.val = UInt32($1028) then Result := 'DEVICE_COMPILER_AVAILABLE' else
       if self.val = UInt32($1029) then Result := 'DEVICE_EXECUTION_CAPABILITIES' else
-      if self.val = UInt32($102A) then Result := 'DEVICE_QUEUE_ON_HOST_PROPERTIES' else
       if self.val = UInt32($102A) then Result := 'DEVICE_QUEUE_PROPERTIES' else
+      if self.val = UInt32($102A) then Result := 'DEVICE_QUEUE_ON_HOST_PROPERTIES' else
       if self.val = UInt32($102B) then Result := 'DEVICE_NAME' else
       if self.val = UInt32($102C) then Result := 'DEVICE_VENDOR' else
       if self.val = UInt32($102D) then Result := 'DRIVER_VERSION' else
@@ -1196,15 +1203,15 @@ type
       if self.val = UInt32($105B) then Result := 'DEVICE_IL_VERSION_KHR' else
       if self.val = UInt32($105C) then Result := 'DEVICE_MAX_NUM_SUB_GROUPS' else
       if self.val = UInt32($105D) then Result := 'DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS' else
-      if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION' else
       if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION_KHR' else
+      if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION' else
       if self.val = UInt32($105F) then Result := 'DEVICE_OPENCL_C_NUMERIC_VERSION_KHR' else
-      if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION_KHR' else
-      if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION' else
+      if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION_KHR' else
-      if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION' else
+      if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION' else
       if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR' else
+      if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION' else
       if self.val = UInt32($1063) then Result := 'DEVICE_ATOMIC_MEMORY_CAPABILITIES' else
       if self.val = UInt32($1064) then Result := 'DEVICE_ATOMIC_FENCE_CAPABILITIES' else
       if self.val = UInt32($1065) then Result := 'DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT' else
@@ -1364,8 +1371,8 @@ type
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property PARTITION_BY_COUNTS_LIST_END_EXT:        DevicePartitionPropertyExt read new DevicePartitionPropertyExt($0000);
     public static property PROPERTIES_LIST_END_EXT:                 DevicePartitionPropertyExt read new DevicePartitionPropertyExt($0000);
+    public static property PARTITION_BY_COUNTS_LIST_END_EXT:        DevicePartitionPropertyExt read new DevicePartitionPropertyExt($0000);
     public static property AFFINITY_DOMAIN_L1_CACHE_EXT:            DevicePartitionPropertyExt read new DevicePartitionPropertyExt($0001);
     public static property PARTITION_BY_NAMES_LIST_END_EXT:         DevicePartitionPropertyExt read new DevicePartitionPropertyExt(-1);
     public static property AFFINITY_DOMAIN_L2_CACHE_EXT:            DevicePartitionPropertyExt read new DevicePartitionPropertyExt($0002);
@@ -1380,8 +1387,8 @@ type
     
     public function ToString: string; override;
     begin
-      if self.val = UInt64($0000) then Result := 'PARTITION_BY_COUNTS_LIST_END_EXT' else
       if self.val = UInt64($0000) then Result := 'PROPERTIES_LIST_END_EXT' else
+      if self.val = UInt64($0000) then Result := 'PARTITION_BY_COUNTS_LIST_END_EXT' else
       if self.val = UInt64($0001) then Result := 'AFFINITY_DOMAIN_L1_CACHE_EXT' else
       if self.val = UInt64(-1) then Result := 'PARTITION_BY_NAMES_LIST_END_EXT' else
       if self.val = UInt64($0002) then Result := 'AFFINITY_DOMAIN_L2_CACHE_EXT' else
@@ -1429,6 +1436,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'DeviceSVMCapabilities[{self.val}]';
     end;
     
@@ -1471,6 +1480,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'DeviceType[{self.val}]';
     end;
     
@@ -2221,6 +2232,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'MapFlags[{self.val}]';
     end;
     
@@ -2329,6 +2342,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'MemFlags[{self.val}]';
     end;
     
@@ -2409,6 +2424,8 @@ type
         res.Length -= 1;
         Result := res.ToString;
       end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'MemMigrationFlags[{self.val}]';
     end;
     
@@ -2536,10 +2553,10 @@ type
     public static property PLATFORM_VENDOR:                                  PlatformInfo read new PlatformInfo($0903);
     public static property PLATFORM_EXTENSIONS:                              PlatformInfo read new PlatformInfo($0904);
     public static property PLATFORM_HOST_TIMER_RESOLUTION:                   PlatformInfo read new PlatformInfo($0905);
-    public static property PLATFORM_NUMERIC_VERSION:                         PlatformInfo read new PlatformInfo($0906);
     public static property PLATFORM_NUMERIC_VERSION_KHR:                     PlatformInfo read new PlatformInfo($0906);
-    public static property PLATFORM_EXTENSIONS_WITH_VERSION:                 PlatformInfo read new PlatformInfo($0907);
+    public static property PLATFORM_NUMERIC_VERSION:                         PlatformInfo read new PlatformInfo($0906);
     public static property PLATFORM_EXTENSIONS_WITH_VERSION_KHR:             PlatformInfo read new PlatformInfo($0907);
+    public static property PLATFORM_EXTENSIONS_WITH_VERSION:                 PlatformInfo read new PlatformInfo($0907);
     public static property PLATFORM_ICD_SUFFIX_KHR:                          PlatformInfo read new PlatformInfo($0920);
     public static property PLATFORM_SEMAPHORE_TYPES_KHR:                     PlatformInfo read new PlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES_KHR:       PlatformInfo read new PlatformInfo($2037);
@@ -2554,10 +2571,10 @@ type
       if self.val = UInt32($0903) then Result := 'PLATFORM_VENDOR' else
       if self.val = UInt32($0904) then Result := 'PLATFORM_EXTENSIONS' else
       if self.val = UInt32($0905) then Result := 'PLATFORM_HOST_TIMER_RESOLUTION' else
-      if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION' else
       if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION_KHR' else
-      if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
+      if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION' else
       if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION_KHR' else
+      if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($0920) then Result := 'PLATFORM_ICD_SUFFIX_KHR' else
       if self.val = UInt32($2036) then Result := 'PLATFORM_SEMAPHORE_TYPES_KHR' else
       if self.val = UInt32($2037) then Result := 'PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES_KHR' else

@@ -118,37 +118,81 @@ begin
       
       
       
-      foreach var p in ps do
+      if ps.Any then
       begin
         
-        res_In += '    private function Get';
-        res_In += p.name;
-        res_In += ': ';
-        res_In += p.t;
-        res_In += ';'#10;
+        foreach var p in ps do
+        begin
+          
+          res_In += '    private function Get';
+          res_In += p.name;
+          res_In += ': ';
+          res_In += p.t;
+          res_In += ';'#10;
+          
+        end;
+        res_In += '    '#10;
+        
+        foreach var p in ps do
+        begin
+          
+          res_In += '    public property ';
+          res_In += p.escaped_name;
+          res_In += ': ';
+          res_In += ' '*(max_esc_name_len-p.escaped_name.Length);
+          res_In += p.t.PadRight(max_type_len);
+          res_In += ' read Get';
+          res_In += p.name;
+          res_In += ';'#10;
+          
+        end;
+        res_In += '    '#10;
+        
+        begin
+          res_In += '    public procedure ToString(res: StringBuilder);';
+          res_In += if base_t<>nil then ' override;' else ' virtual;';
+          res_In += #10;
+          res_In += '    begin'#10;
+          var max_p_w := ps.Max(p->p.name.Length);
+          var any_p := false;
+          if base_t<>nil then
+          begin
+            res_In += '      inherited;'#10;
+            any_p := true;
+          end;
+          foreach var p in ps do
+          begin
+            if any_p then
+              res_In += '      res += #10;'#10 else
+              any_p := true;
+            res_In += '      res += ''';
+            res_In += p.name.PadRight(max_p_w+1);
+            res_In += '= '';'#10;
+            res_In += '      try'#10;
+            //TODO Использовать второй параметр _ObjectToString
+            res_In += '        res += _ObjectToString(';
+            res_In += p.escaped_name;
+            res_In += ');'#10;
+            res_In += '      except'#10;
+            res_In += '        on e: OpenCLException do'#10;
+            res_In += '          res += e.Code.ToString;'#10;
+            res_In += '      end;'#10;
+          end;
+          res_In += '    end;'#10;
+        end;
+        
+        if base_t=nil then
+        begin
+          res_In += '    public function ToString: string; override;'#10;
+          res_In += '    begin'#10;
+          res_In += '      var res := new StringBuilder;'#10;
+          res_In += '      ToString(res);'#10;
+          res_In += '      Result := res.ToString;'#10;
+          res_In += '    end;'#10;
+        end;
+        res_In += '    '#10;
         
       end;
-      if ps.Any then
-        res_In += '    '#10;
-      
-      
-      
-      foreach var p in ps do
-      begin
-        
-        res_In += '    public property ';
-        res_In += p.escaped_name;
-        res_In += ': ';
-        res_In += ' '*(max_esc_name_len-p.escaped_name.Length);
-        res_In += p.t.PadRight(max_type_len);
-        res_In += ' read Get';
-        res_In += p.name;
-        res_In += ';'#10;
-        
-      end;
-      if ps.Any then
-        res_In += '    '#10;
-      
       
       
       res_Im += '    private static function clGetSize(ntv: ';
@@ -179,13 +223,13 @@ begin
       res_Im += info_t;
       res_Im += '; var sz: UIntPtr); override :='#10;
       
-      res_Im += '    OpenCLABCInternalException.RaiseIfError( clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz) );'#10;
+      res_Im += '    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;'#10;
       
       res_Im += '    protected procedure GetValImpl(id: ';
       res_Im += info_t;
       res_Im += '; sz: UIntPtr; var res: byte); override :='#10;
       
-      res_Im += '    OpenCLABCInternalException.RaiseIfError( clGetVal(ntv, id, sz, res, IntPtr.Zero) );'#10;
+      res_Im += '    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;'#10;
       
       res_Im += '    '#10;
       
