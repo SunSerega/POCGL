@@ -30,22 +30,58 @@ unit OpenCLABC;
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 //TODO CombineUse? А то CombineConv есть, а Use нету...
 
+//TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
+
+//TODO Properties.ToString
+// - С адекватным выводом ошибок
+// - В справку
+// - В тесты
+
+//TODO Использовать cl.EnqueueMapBuffer
+// - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQNil)
+// - Лучше сделать так же как для KernelArgGlobal
+// - В справку
+// --- В том числе то, что Map быстрее Read, который быстрее Get
+// --- (собсна протестить)
+//TODO operator implicit для NativeValue=>KernelArg[Global] не генерируются?
+// - Правда теперь не релевантно, потому что:
+//TODO KernelArgGlobal (и Constant) из адреса RAM не обязан копировать данные с кеша GPU назад в RAM после выполнения kernel'а
+// - Для этого случая (+оптимизации чтения/записи) и используется MapBuffer
+// - В справку
+//TODO При чём это в обе стороны (не-)работает
+//  var v1 := new NativeValue<integer>(1);
+//  var v2 := new CLValue<integer>(-1);
+//  var Q_Copy := k.NewQueue.ThenExec1(1,KernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
+//  
+//  v1.Value := 3;
+//  Context.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
+//  v1.Value := 5;
+//  Context.Default.SyncInvoke(Q_Copy).Println; // тут всё ещё старое значение
+//TODO Нет смысла в Global/Constant KernlArg'е хранящем NativeValue[Area]
+// - CLMemory.FromHostMemory(copy: boolean? := nil)
+// --- Создаёт или CLMemory (если copy), или его наследник, хранящий ещё "host_hnd: GCHandle" или "host_obj_ref: object"
+// --- Если nil то используется Contex.MainDevice.CLPreferHostMemoryCopy := Type=GPU
+// - А в обычном конструкторе добавить параметр prealloc_map_mem и убрать передачу существующей памяти
+// - В справку:
+// --- FromHostMemory(copy=false) полезно для существующих объектов, но использовать вне .MapMemory их всё равно нельзя
+// --- Кроме того, плотно упаковывать элементы плохо
+// --- К примеру принимать float3* нельзя, надо принимать и передавать float4*
+// --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
+// --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
+
 //TODO Тесты:
-// - Автоматически генерировать тест KernelArg'ов
-// --- Используя инклюды, потому что там несколько отдельных файлов
+
+//TODO Разделить .html справку и гайт по OpenCLABC
+//TODO github.io
 
 //TODO Справка:
 // - KernelArg
-// --- KernelArg, как и всю остальную очередь, желательно создавать заранее, но KernelArgGlobal из массива - блокирует этот массив в памяти
+// --- KernelArg, как и всю остальную очередь, желательно создавать заранее
 // - NativeArray
 // - CLValue
 // - !CL!Memory[Sub]Segment
 // - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
 // - MemoryUsage
-//
-// - Native*<T>.FromExistingMemory
-// - implicit ^T -> NativeValue<T>
-//
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
 // --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
@@ -53,8 +89,12 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
-//TODO Разделить .html справку и гайт по OpenCLABC
-//TODO github.io
+//TODO Пользовательские очереди?
+// - Всё же я не всё могу предугадать, поэтому
+// - для окончательной версии модуля такая вещь необходима
+// - В то же время поидее это позволит быстрее тестировать с MT
+// - Но чтобы это сделать... придётся типы-утилиты перенести в отдельный модуль,
+// - чтобы они были доступны, но не на виду
 
 //TODO cl.WaitForEvents тратит время процессора??? Почему?
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
@@ -86,10 +126,6 @@ unit OpenCLABC;
 // - Проверить сочетание с каждой другой фичей
 // - В комбинации с .Cycle вообще возможно добиться детерминированности?
 
-//TODO Использовать cl.EnqueueMapBuffer
-// - В виде .AddMap((MappedArray,Context)->())
-// - Недодел своей ветке
-
 //TODO .pcu с неправильной позицией зависимости, или не теми настройками - должен игнорироваться
 // - Иначе сейчас модули в примерах ссылаются на .pcu, который существует только во время работы Tester, ломая компилятор
 
@@ -107,17 +143,7 @@ unit OpenCLABC;
 // - Быстрее чем MEM_USE_HOST_PTR в остальных случаях
 // - Протестировать
 
-//===================================
-// Сделать когда-нибуть:
-
-//TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
-// - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
-// - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
-// - Другие типы cl_mem (сейчас используется только буфер)
-// - clEnqueueNativeKernel
-// --- CL_DEVICE_BUILT_IN_KERNELS
-
-//TODO Фичи версий OpenCL, которых у меня нет:
+//TODO Фичи версий OpenCL:
 // - OpenCL2.0
 // --- SVM
 // - OpenCL3.0
@@ -137,11 +163,18 @@ unit OpenCLABC;
 // --- CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
 // --- CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
 
-//TODO Слишком новые фичи, которые могут много чего изменить:
-// - cl_khr_command_buffer
-// --- Буферы, хранящие список комманд
-// - cl_khr_semaphore
-// --- Как cl_event, но многоразовые
+//===================================
+// Сделать когда-нибуть:
+
+//TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
+// - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
+// - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
+// - Другие типы cl_mem (сейчас используется только буфер)
+// - clEnqueueNativeKernel
+// --- CL_DEVICE_BUILT_IN_KERNELS
+// - Расширения
+// --- cl_khr_command_buffer
+// --- cl_khr_semaphore
 
 //===================================
 
@@ -425,26 +458,30 @@ type
     
     private static all_need_init := true;
     private static _all: IList<Platform>;
+    private static function MakeAll: IList<Platform>;
+    begin
+      Result := nil;
+      
+      var c: UInt32;
+      begin
+        var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
+        if ec=ErrorCode.PLATFORM_NOT_FOUND_KHR then exit;
+        OpenCLABCInternalException.RaiseIfError(ec);
+      end;
+      if c=0 then exit;
+      
+      var all_arr := new cl_platform_id[c];
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
+      );
+      
+      Result := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+    end;
     private static function GetAll: IList<Platform>;
     begin
       if all_need_init then
       begin
-        var c: UInt32;
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetPlatformIDs(0, IntPtr.Zero, c)
-        );
-        
-        if c<>0 then
-        begin
-          var all_arr := new cl_platform_id[c];
-          OpenCLABCInternalException.RaiseIfError(
-            cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
-          );
-          
-          _all := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
-        end else
-          _all := nil;
-        
+        _all := MakeAll;
         all_need_init := false;
       end;
       Result := _all;
@@ -589,15 +626,13 @@ type
     begin
       CheckMainDevice(main_dvc, dvcs);
       
-      var ntv_dvcs := new cl_device_id[dvcs.Count];
-      for var i := 0 to ntv_dvcs.Length-1 do
-        ntv_dvcs[i] := dvcs[i].ntv;
+      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs.ToArray);
+      var ntv_dvcs := GetAllNtvDevices;
       
       var ec: ErrorCode;
       self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs.ToArray);
       self.main_dvc := main_dvc;
     end;
     public constructor(params dvcs: array of Device) := Create(dvcs, dvcs[0]);
@@ -1861,7 +1896,7 @@ type
     private supported_split_modes: array of DevicePartitionProperty := nil;
     private function GetSSM: array of DevicePartitionProperty;
     begin
-      if supported_split_modes=nil then supported_split_modes := {%>Properties.PartitionType!!} nil {%};
+      if supported_split_modes=nil then supported_split_modes := {%>Properties.PartitionProperties!!} nil {%};
       Result := supported_split_modes;
     end;
     
