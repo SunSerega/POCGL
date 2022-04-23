@@ -1,7 +1,7 @@
 ﻿## uses OpenCLABC;
 var i: integer;
 
-var Qs := ArrGen(10, n->HPQ(()->if i=n then raise new Exception('Err#'+n)));
+var Qs := ArrGen(10, n->HTPQ(()->if i=n then raise new Exception('Err#'+n)));
 var Q :=
   Qs[0] +
   (Qs[1] + Qs[2]*Qs[3] + Qs[4])
@@ -13,5 +13,8 @@ try
   Context.Default.SyncInvoke(Q);
 except
   on e: System.AggregateException do
-    Writeln(e.InnerExceptions.Single.Message);
+  begin
+    e.InnerExceptions.PrintLines(e->e.Message);
+    ('-'*30).Println;
+  end;
 end;

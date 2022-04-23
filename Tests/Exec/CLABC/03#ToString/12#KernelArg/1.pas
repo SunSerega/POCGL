@@ -8,7 +8,7 @@ procedure Test(arg: KernelArg) :=
 foreach var l in arg.ToString.Trim.Split(#10) do
 begin
   PrintIdents;
-  Writeln(l);
+  l.Println;
 end;
 procedure TestT<T>(arg: T); where T: KernelArg;
 begin
@@ -17,7 +17,7 @@ end;
 procedure TestRange(name: string; tests: ()->()) :=
 begin
   PrintIdents;
-  Writeln(name);
+  name.Println;
   test_layer += 1;
   tests();
   test_layer -= 1;

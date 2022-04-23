@@ -9,16 +9,18 @@ constructor KernelCCQ.Create := inherited;
 
 function KernelCCQ.ThenQueue(q: CommandQueueBase): KernelCCQ;
 begin
-  var comm := BasicGPUCommand&<Kernel>.MakeQueue(q);
+  var comm := QueueCommandFactory&<Kernel>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function KernelCCQ.ThenProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
-function KernelCCQ.ThenProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeBackgroundProc(p));
-function KernelCCQ.ThenQuickProc(p: Kernel->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
-function KernelCCQ.ThenQuickProc(p: (Kernel, Context)->()) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeQuickProc(p));
+function KernelCCQ.ThenConstProc(p: Kernel->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeConst&<SimpleProcContainer<Kernel>>(p));
+function KernelCCQ.ThenConstProc(p: (Kernel, Context)->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeConst&<SimpleProcContainerC<Kernel>>(p));
+function KernelCCQ.ThenQuickProc(p: Kernel->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeQuick&<SimpleProcContainer<Kernel>>(p));
+function KernelCCQ.ThenQuickProc(p: (Kernel, Context)->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeQuick&<SimpleProcContainerC<Kernel>>(p));
+function KernelCCQ.ThenThreadedProc(p: Kernel->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeThreaded&<SimpleProcContainer<Kernel>>(p));
+function KernelCCQ.ThenThreadedProc(p: (Kernel, Context)->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeThreaded&<SimpleProcContainerC<Kernel>>(p));
 
-function KernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<Kernel>.MakeWait(marker));
+function KernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<Kernel>.Make(marker));
 
 {$endregion Special .Add's}
 

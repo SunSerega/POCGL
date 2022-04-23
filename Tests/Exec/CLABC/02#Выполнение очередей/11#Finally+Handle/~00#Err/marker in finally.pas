@@ -2,26 +2,26 @@
 
 begin
   var M := WaitMarker.Create;
-  var t := Context.Default.BeginInvoke(WaitFor(M)+HPQ(()->Writeln(1)));
+  var t := Context.Default.BeginInvoke(WaitFor(M)+HQPQ(()->Println(1)));
   Context.Default.SyncInvoke(
-    (HPQ(()->raise new Exception('ErrorOK')) >= M)
+    (HQPQ(()->raise new Exception('TestOK')) >= M)
     .HandleWithoutRes(e->
     begin
-      Sleep(50);
-      Writeln(e.Message);
+      Sleep(30);
+      e.Message.Println;
       Result := true;
     end)
   );
   t.Wait;
 end;
-Writeln('-'*10);
+('-'*30).Println;
 begin
-  var QErr := HPQ(()->raise new Exception('ErrorOK')).ThenFinallyMarkerSignal;
-  var t := Context.Default.BeginInvoke(WaitFor(QErr)+HPQ(()->Writeln(2)));
+  var QErr := HQPQ(()->raise new Exception('TestOK')).ThenFinallyMarkerSignal;
+  var t := Context.Default.BeginInvoke(WaitFor(QErr)+HQPQ(()->Println(2)));
   Context.Default.SyncInvoke(QErr.HandleWithoutRes(e->
   begin
-    Sleep(100);
-    Writeln(e.Message);
+    Sleep(30);
+    e.Message.Println;
     Result := true;
   end));
   t.Wait;

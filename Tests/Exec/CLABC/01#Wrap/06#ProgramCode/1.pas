@@ -1,24 +1,21 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
+var code := new ProgramCode(Context.Default, 'kernel void k() {}');
 
-begin
-  var code := new ProgramCode(Context.Default, ReadAllText('1.cl'));
-  Writeln(code.GetType);
-  Writeln(code.Properties.GetType);
-  code.GetAllKernels.PrintLines(k->k.Name);
-  
-  Writeln('='*30);
-  Writeln(code.Properties.Source);
-  Writeln('='*30);
-  
-  var code2 := new ProgramCode(code.Native);
-  (code=code2).Println;
-  Arr(code).Contains(code2).Println;
-  Writeln(code2.GetType);
-  Writeln(code2.Properties.GetType);
-  code2.GetAllKernels.PrintLines(k->k.Name);
-  
-  Writeln('='*30);
-  Writeln(code2.Properties.Source);
-  Writeln('='*30);
-  
-end.
+Println(code.GetType);
+Println(code.Properties.GetType);
+code.GetAllKernels.PrintLines(k->k.Name);
+
+('='*30).Println;
+Println(code.Properties.Source);
+('='*30).Println;
+
+var code2 := new ProgramCode(code.Native);
+(code=code2).Println;
+Arr(code).Contains(code2).Println;
+Println(code2.GetType);
+Println(code2.Properties.GetType);
+code2.GetAllKernels.PrintLines(k->k.Name);
+
+('='*30).Println;
+Println(code2.Properties.Source);
+('='*30).Println;

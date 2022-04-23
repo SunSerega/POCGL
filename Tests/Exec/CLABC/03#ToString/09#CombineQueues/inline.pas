@@ -1,12 +1,8 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
+var Q1 := HTFQ(()->5);
 
-begin
-  var Q1 := HFQ(()->5);
-  
-  Writeln( (Q1+Q1) + (Q1+Q1) );
-  Writeln( (Q1*Q1) * (Q1*Q1) );
-  
-  Writeln( (Q1+Q1) * (Q1+Q1) );
-  Writeln( (Q1*Q1) + (Q1*Q1) );
-  
-end.
+Println( (Q1+Q1) + (Q1+Q1) );
+Println( (Q1*Q1) * (Q1*Q1) );
+
+Println( (Q1+Q1) * (Q1+Q1) );
+Println( (Q1*Q1) + (Q1*Q1) );

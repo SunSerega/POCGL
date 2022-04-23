@@ -1,5 +1,3 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  Writeln(new CLArray<integer>(1));
-end.
+Println(new CLArray<byte>(1));

@@ -1,5 +1,3 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  HFQ(()->5).ThenConvert(i->i*2).Print;
-end.
+HQFQ(()->5).ThenConstConvert(i->i*2).Print;

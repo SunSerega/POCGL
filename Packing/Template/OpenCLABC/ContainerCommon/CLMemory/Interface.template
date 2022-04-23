@@ -9,10 +9,12 @@
     
     public function ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
     
-    public function ThenProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    public function ThenConstProc(p: CLMemory->()): CLMemoryCCQ;
+    public function ThenConstProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
     public function ThenQuickProc(p: CLMemory->()): CLMemoryCCQ;
     public function ThenQuickProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    public function ThenThreadedProc(p: CLMemory->()): CLMemoryCCQ;
+    public function ThenThreadedProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
     
     public function ThenWait(marker: WaitMarker): CLMemoryCCQ;
     

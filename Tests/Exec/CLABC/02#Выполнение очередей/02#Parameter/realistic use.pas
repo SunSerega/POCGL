@@ -10,7 +10,7 @@ type
     public constructor := self.Q :=
     CLMemory.Create(sizeof(integer)).NewQueue
     .ThenWriteValue( self.par1 )
-    .ThenQueue( self.par2.ThenQuickUse(x->Writeln(x)) )
+    .ThenQueue( self.par2.ThenQuickUse(x->Println(x)) )
     .ThenGetValue&<integer>;
     
     public function Invoke(par1: integer; par2: string) :=

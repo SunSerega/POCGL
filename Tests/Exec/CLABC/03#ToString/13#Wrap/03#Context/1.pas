@@ -1,5 +1,3 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  Writeln(Context.Default);
-end.
+Println(Context.Default);

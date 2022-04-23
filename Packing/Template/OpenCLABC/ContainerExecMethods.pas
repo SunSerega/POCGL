@@ -43,7 +43,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: ExecMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; unlock_cache: Action): EnqFunc<cl_kernel>; override;'#10;
+      res_EIm += '    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;'#10;
     end;
     
     protected function GetSpecialInvokeResVars(settings: ExecMethodSettings): sequence of MethodArg; override := |ExecMethodSettings.arg_k_args|;
@@ -58,7 +58,7 @@ type
       wr += '          arg_setters[i].Apply(o, i, arg_cache);'#10;
     end;
     protected procedure WriteSpecialPostEnq(wr: Writer; settings: ExecMethodSettings); override :=
-    wr += '        unlock_cache();'#10;
+    wr += '        cache_lock.TryReleaseLock;'#10;
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: ExecMethodSettings); override :=
     res_EIm += 'EnqueueableExecCommand';

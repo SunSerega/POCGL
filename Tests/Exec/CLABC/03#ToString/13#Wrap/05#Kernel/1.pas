@@ -1,6 +1,5 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  var code := new ProgramCode(Context.Default, ReadAllText('1.cl'));
-  Writeln(code['TEST']);
-end.
+Println(
+  ProgramCode.Create(Context.Default, 'kernel void k() {}')['k']
+);

@@ -14,10 +14,12 @@ KernelCCQ#0
 			KernelArgGlobalCLMemory
 				CLMemoryCCQ#3
 					CCCQueue<CLMemory>
-						CommandQueueHostBackgoundFunc<CLMemory>#4: function lambda: CLMemory
+						CommandQueueHostThreadedFunc<CLMemory,SimpleFunc0Container<CLMemory>>#4: function lambda: CLMemory
 					QueueCommand<CLMemory>
-						CommandQueueHostBackgoundFunc<integer>#5: function lambda: integer
-					BackgroundProcCommand<CLMemory>: procedure lambda(ms: CLMemory)
+						CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#5: function lambda: integer
+					QuickProcCommand<CLMemory,SimpleProcContainer<CLMemory>,TBooleanTrueFlag>: procedure lambda(m: CLMemory)
+					QuickProcCommand<CLMemory,SimpleProcContainer<CLMemory>,TBooleanFalseFlag>: procedure lambda(m: CLMemory)
+					ThreadedProcCommand<CLMemory,SimpleProcContainer<CLMemory>>: procedure lambda(m: CLMemory)
 			KernelArgPrivateValue<integer>
 				ConstQueue<integer>#6: 5
 

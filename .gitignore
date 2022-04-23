@@ -1,8 +1,11 @@
 *.pcu
 *.pdb
 *.exe
+0.pas
+
+*.bkp
 *.backup
+
 *.compile_lock
 /Release
 /LastPack (Timed).log
-0.pas

@@ -3,39 +3,32 @@
 
 {$region Sync}
 
-{$region NonConv}
+{$region Simple}
 
 function CombineSyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
-function CombineSyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
 function CombineSyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
-function CombineSyncQueueNil(qs: sequence of CommandQueueNil): CommandQueueNil;
+function CombineSyncQueueNil(qs: array of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
 
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
-function CombineSyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+function CombineSyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
-function CombineSyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
-
-function CombineSyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
-
-{$endregion NonConv}
+{$endregion Simple}
 
 {$region Conv}
 
 {$region NonContext}
 
-function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
@@ -44,22 +37,29 @@ function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(co
 function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
+function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+
+function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
@@ -68,47 +68,115 @@ function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(co
 function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
+function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+
+function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+
 {$endregion Context}
 
 {$endregion Conv}
+
+{$region Use}
+
+{$region NonContext}
+
+function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineConstUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineQuickUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineThreadedUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+{$endregion NonContext}
+
+{$region Context}
+
+function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineConstUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineQuickUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineThreadedUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+{$endregion Context}
+
+{$endregion Use}
 
 {$endregion Sync}
 
 {$region Async}
 
-{$region NonConv}
+{$region Simple}
 
 function CombineAsyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
-function CombineAsyncQueueBase(qs: sequence of CommandQueueBase): CommandQueueBase;
 
 function CombineAsyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
-function CombineAsyncQueueNil(qs: sequence of CommandQueueNil): CommandQueueNil;
+function CombineAsyncQueueNil(qs: array of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
 
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
-function CombineAsyncQueue<T>(qs: sequence of CommandQueue<T>): CommandQueue<T>;
+function CombineAsyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
 
-function CombineAsyncQueueNil(qs: sequence of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
-
-function CombineAsyncQueue<T>(qs: sequence of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
-
-{$endregion NonConv}
+{$endregion Simple}
 
 {$region Conv}
 
 {$region NonContext}
 
-function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
@@ -117,22 +185,29 @@ function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(c
 function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
+function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+
+function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
 function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; qs: sequence of CommandQueue<TInp>): CommandQueue<TRes>;
 
 function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
@@ -141,9 +216,84 @@ function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(c
 function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
+function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+
+function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+
 {$endregion Context}
 
 {$endregion Conv}
+
+{$region Use}
+
+{$region NonContext}
+
+function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineConstUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineQuickUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineThreadedUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+{$endregion NonContext}
+
+{$region Context}
+
+function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineConstUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineQuickUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+
+function CombineThreadedUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+
+{$endregion Context}
+
+{$endregion Use}
 
 {$endregion Async}
 

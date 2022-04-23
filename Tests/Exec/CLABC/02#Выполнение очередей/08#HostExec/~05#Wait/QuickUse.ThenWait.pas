@@ -3,11 +3,11 @@
 var M := WaitMarker.Create;
 
 Context.Default.SyncInvoke(
-  HPQ(()->
+  HTPQ(()->
   begin
-    Sleep(100);
-    Writeln('M');
+    Sleep(30);
+    lock output do 'M'.Println;
     M.SendSignal;
   end) *
-  HFQ(()->5).ThenQuickUse(x->Writeln($'/\{x}/\')).ThenWaitFor(M)
+  HTFQ(()->5).ThenQuickUse(x->lock output do $'/\{x}/\'.Println).ThenWaitFor(M)
 ).Println;

@@ -1,6 +1,0 @@
-
-
-
-__kernel void TEST() { }
-
-

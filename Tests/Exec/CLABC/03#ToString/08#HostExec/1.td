@@ -5,13 +5,21 @@
 3
 
 #ExpOtp
-CommandQueueHostBackgoundFunc<integer>#0: function lambda: integer
+CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#0: function lambda: integer
 
-CommandQueueHostBackgoundProc#0: procedure lambda
+CommandQueueHostQuickProc<SimpleProc0Container>#0: procedure lambda
 
-CommandQueueHostBackgoundFuncC<integer>#0: function lambda(с: Context): integer
+CommandQueueHostQuickFunc<integer,SimpleFunc0ContainerC<integer>>#0: function lambda(с: Context): integer
 
-CommandQueueHostBackgoundProcC#0: procedure lambda(с: Context)
+CommandQueueHostQuickProc<SimpleProc0ContainerC>#0: procedure lambda(с: Context)
+
+CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#0: function lambda: integer
+
+CommandQueueHostThreadedProc<SimpleProc0Container>#0: procedure lambda
+
+CommandQueueHostThreadedFunc<integer,SimpleFunc0ContainerC<integer>>#0: function lambda(с: Context): integer
+
+CommandQueueHostThreadedProc<SimpleProc0ContainerC>#0: procedure lambda(с: Context)
 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 

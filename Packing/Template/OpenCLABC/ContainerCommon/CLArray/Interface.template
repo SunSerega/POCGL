@@ -9,10 +9,12 @@
     
     public function ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
     
-    public function ThenProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenConstProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    public function ThenConstProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     public function ThenQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
     public function ThenQuickProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenThreadedProc(p: CLArray<T>->()): CLArrayCCQ<T>;
+    public function ThenThreadedProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
     
     public function ThenWait(marker: WaitMarker): CLArrayCCQ<T>;
     

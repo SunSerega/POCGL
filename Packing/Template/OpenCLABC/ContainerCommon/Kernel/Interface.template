@@ -9,10 +9,12 @@
     
     public function ThenQueue(q: CommandQueueBase): KernelCCQ;
     
-    public function ThenProc(p: Kernel->()): KernelCCQ;
-    public function ThenProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function ThenConstProc(p: Kernel->()): KernelCCQ;
+    public function ThenConstProc(p: (Kernel, Context)->()): KernelCCQ;
     public function ThenQuickProc(p: Kernel->()): KernelCCQ;
     public function ThenQuickProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function ThenThreadedProc(p: Kernel->()): KernelCCQ;
+    public function ThenThreadedProc(p: (Kernel, Context)->()): KernelCCQ;
     
     public function ThenWait(marker: WaitMarker): KernelCCQ;
     

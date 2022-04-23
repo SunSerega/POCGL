@@ -9,16 +9,18 @@ constructor CLValueCCQ<T>.Create := inherited;
 
 function CLValueCCQ<T>.ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
 begin
-  var comm := BasicGPUCommand&<CLValue<T>>.MakeQueue(q);
+  var comm := QueueCommandFactory&<CLValue<T>>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLValueCCQ<T>.ThenProc(p: CLValue<T>->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeBackgroundProc(p));
-function CLValueCCQ<T>.ThenProc(p: (CLValue<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeBackgroundProc(p));
-function CLValueCCQ<T>.ThenQuickProc(p: CLValue<T>->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeQuickProc(p));
-function CLValueCCQ<T>.ThenQuickProc(p: (CLValue<T>, Context)->()) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeQuickProc(p));
+function CLValueCCQ<T>.ThenConstProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainer<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenConstProc(p: (CLValue<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainerC<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenQuickProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainer<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenQuickProc(p: (CLValue<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainerC<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenThreadedProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainer<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenThreadedProc(p: (CLValue<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainerC<CLValue<T>>>(p));
 
-function CLValueCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLValue<T>>.MakeWait(marker));
+function CLValueCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLValue<T>>.Make(marker));
 
 {$endregion Special .Add's}
 

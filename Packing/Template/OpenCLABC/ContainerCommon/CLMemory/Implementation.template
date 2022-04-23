@@ -9,16 +9,18 @@ constructor CLMemoryCCQ.Create := inherited;
 
 function CLMemoryCCQ.ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
 begin
-  var comm := BasicGPUCommand&<CLMemory>.MakeQueue(q);
+  var comm := QueueCommandFactory&<CLMemory>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLMemoryCCQ.ThenProc(p: CLMemory->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeBackgroundProc(p));
-function CLMemoryCCQ.ThenProc(p: (CLMemory, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeBackgroundProc(p));
-function CLMemoryCCQ.ThenQuickProc(p: CLMemory->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeQuickProc(p));
-function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, Context)->()) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeQuickProc(p));
+function CLMemoryCCQ.ThenConstProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainer<CLMemory>>(p));
+function CLMemoryCCQ.ThenConstProc(p: (CLMemory, Context)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainerC<CLMemory>>(p));
+function CLMemoryCCQ.ThenQuickProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainer<CLMemory>>(p));
+function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, Context)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainerC<CLMemory>>(p));
+function CLMemoryCCQ.ThenThreadedProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainer<CLMemory>>(p));
+function CLMemoryCCQ.ThenThreadedProc(p: (CLMemory, Context)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainerC<CLMemory>>(p));
 
-function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, BasicGPUCommand&<CLMemory>.MakeWait(marker));
+function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLMemory>.Make(marker));
 
 {$endregion Special .Add's}
 

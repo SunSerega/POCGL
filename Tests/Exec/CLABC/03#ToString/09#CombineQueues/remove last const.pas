@@ -1,6 +1,8 @@
 ﻿## uses OpenCLABC;
 
-Writeln(
-  (HPQ(()->begin end) + new ConstQueue<byte>(5) as CommandQueue<byte>)
-  + HPQ(()->begin end)
+(HTPQ(()->begin end) + new ConstQueueNil).Println;
+
+Println(
+  (HTFQ(()->0) + new ConstQueueNil).Println
+  + HTPQ(()->begin end)
 );

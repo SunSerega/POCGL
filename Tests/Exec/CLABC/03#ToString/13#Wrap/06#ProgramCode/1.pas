@@ -1,5 +1,5 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  Writeln(new ProgramCode(Context.Default, ReadAllText('1.cl')));
-end.
+Println(new ProgramCode(
+  Context.Default, 'kernel void p() {}'
+));

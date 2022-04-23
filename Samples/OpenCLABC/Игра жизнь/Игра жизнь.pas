@@ -42,11 +42,11 @@ try
     code['CalcStep']
     .NewQueue
     .ThenExec2(W,W,
-      HFQQ(()->B),
-      HFQQ(()->B_temp),
+      HQFQ(()->B),
+      HQFQ(()->B_temp),
       W
     ) +
-    HPQQ(()->Swap(B,B_temp))
+    HQPQ(()->Swap(B,B_temp))
  ;
  var Q_Otp :=
     B.NewQueue

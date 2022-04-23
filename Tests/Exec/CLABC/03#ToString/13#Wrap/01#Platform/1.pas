@@ -1,3 +1,3 @@
 ﻿## uses OpenCLABC;
 
-Writeln(Platform.All[0]);
+Println(Platform.All[0]);

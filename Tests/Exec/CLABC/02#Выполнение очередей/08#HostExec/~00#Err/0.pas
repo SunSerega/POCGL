@@ -1,9 +1,7 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
+var q := HQPQ(()->
 begin
-  var q := HPQ(()->
-  begin
-    raise new Exception('TestOK');
-  end);
-  Context.Default.SyncInvoke(q);
-end.
+  raise new Exception('TestOK');
+end);
+Context.Default.SyncInvoke(q);

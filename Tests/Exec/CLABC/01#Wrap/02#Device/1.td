@@ -2,15 +2,15 @@
 
 
 #DelegateCount
-3
+2
 
 #ExpOtp
-OpenCLABC.Device
-OpenCLABC.DeviceProperties
+OpenCLABC.Device 
+OpenCLABC.DeviceProperties 
 True 
 True 
-OpenCLABC.Device
-OpenCLABC.DeviceProperties
+OpenCLABC.Device 
+OpenCLABC.DeviceProperties 
 [EventDebug]: 0 event's created 
 [QueueDebug]: 0 queue's created 
 [WaitDebug]: 0 wait handler's created 

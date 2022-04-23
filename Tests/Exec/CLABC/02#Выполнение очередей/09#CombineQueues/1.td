@@ -5,6 +5,9 @@
 3
 
 #ExpOtp
+SimpleSyncQueueArray<integer>#0
+	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
+	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
 5 
 [EventDebug]: 2 event's created 
 [QueueDebug]: 0 queue's created 

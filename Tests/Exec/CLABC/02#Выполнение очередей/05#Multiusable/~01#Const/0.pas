@@ -9,14 +9,14 @@ var t := Context.Default.BeginInvoke(
   WaitFor(M1) +
   (
     WaitFor(M1) +
-    HPQ(()->Writeln(2))
+    HTPQ(()->Println(2))
   ) *
   (
     WaitFor(M2) +
-    HPQ(()->
+    HTPQ(()->
     begin
       Sleep(10);
-      Writeln(1);
+      Println(1);
     end)
   )
 );

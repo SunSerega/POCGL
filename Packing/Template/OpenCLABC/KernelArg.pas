@@ -681,7 +681,7 @@ begin
         t += '(123)));'#10;
         t += 'Test(';
         t += wr_local.class_name;
-        t += '.FromBytes(HFQQ(()->';
+        t += '.FromBytes(HQFQ(()->';
         t += dt ?? 'new UIntPtr';
         t += '(123))));'#10;
         
@@ -729,7 +729,7 @@ begin
         t += '(64)));'#10;
         t += 'Test(';
         t += wr_local.class_name;
-        t += '.FromItemCount&<integer>(HFQQ&<';
+        t += '.FromItemCount&<integer>(HQFQ&<';
         t += dt;
         t += '>(()->64)));'#10;
         
@@ -785,7 +785,7 @@ begin
         t += wr_local.class_name;
         t += '.Like';
         t += tnick;
-        t += '(HFQQ(()->';
+        t += '(HQFQ(()->';
         t += par_name;
         t += ')));'#10;
         

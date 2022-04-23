@@ -1,7 +1,7 @@
 ﻿## uses OpenCLABC;
 
 var i := 0;
-var QErr := HPQ(()->
+var QErr := HQPQ(()->
 begin
   i += 1;
   raise new Exception('TestOK'+i);
