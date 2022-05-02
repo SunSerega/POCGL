@@ -32,11 +32,6 @@ unit OpenCLABC;
 //TODO Тесты и справка:
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 
-//TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
-
-//TODO Properties.ToString
-// - В справку
-
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQNil)
 // - Лучше сделать так же как для KernelArgGlobal
@@ -69,11 +64,6 @@ unit OpenCLABC;
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
 // --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
 
-//TODO Примеры в под-папку StandardUnits
-
-//TODO Тесты:
-// - Выписывать кол-во созданных экземпляров QueueRes<T>
-
 //TODO Разделить .html справку и гайт по OpenCLABC
 //TODO github.io
 
@@ -91,9 +81,13 @@ unit OpenCLABC;
 // - Описать и в процессе перепродумать логику, почему CommandQueue<CommandQueue<>> не только не эффективно, но и не может понадобится
 //
 // - CQ<byte>.Cast<byte?>
+//
+// - Properties.ToString
 
 //===================================
 // Запланированное:
+
+//TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
 
 //TODO Переделать кодогенераторы под что то типа .cshtml
 
@@ -347,6 +341,7 @@ type
     
     public static procedure FinallyReport;
     begin
+      if RefCounter.Count=0 then exit;
       foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
       begin
         ReportRefCounterInfo(Console.Error);
@@ -388,7 +383,8 @@ type
       otp.Flush;
     end;
     
-    public static procedure FinallyReport;
+    public static procedure FinallyReport :=
+    if QueueUses.Count<>0 then
     begin
       var total_q_count := QueueUses.Keys.Sum(q->
       begin
@@ -437,10 +433,8 @@ type
       otp.Flush;
     end;
     
-    public static procedure FinallyReport;
-    begin
-      $'[WaitDebug]: {WaitActions.Count} wait handler''s created'.Println;
-    end;
+    public static procedure FinallyReport := if WaitActions.Count<>0 then
+    $'[WaitDebug]: {WaitActions.Count} wait handler''s created'.Println;
     
   end;
   
@@ -1494,11 +1488,11 @@ type
     
     private function GetReferenceCount: UInt32;
     private function GetNumDevices: UInt32;
-    private function GetProperties: array of ContextProperties;
+    private function GetProperties: array of OpenCL.ContextProperties;
     
-    public property ReferenceCount: UInt32                     read GetReferenceCount;
-    public property NumDevices:     UInt32                     read GetNumDevices;
-    public property Properties:     array of ContextProperties read GetProperties;
+    public property ReferenceCount: UInt32                            read GetReferenceCount;
+    public property NumDevices:     UInt32                            read GetNumDevices;
+    public property Properties:     array of OpenCL.ContextProperties read GetProperties;
     
     public procedure ToString(res: StringBuilder); virtual;
     begin
@@ -8221,9 +8215,11 @@ type
     protected procedure FillVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
     GetValImpl(id, sz, PByte(pointer(@res))^);
     
-    protected function GetVal<T>(id: TInfo): T;
-    begin FillVal(id, new UIntPtr(Marshal.SizeOf(default(T))), Result); end;
-    protected function GetValArr<T>(id: TInfo): array of T;
+    protected function GetVal<T>(id: TInfo): T; where T: record;
+    begin
+      FillVal(id, new UIntPtr(Marshal.SizeOf(default(T))), Result);
+    end;
+    protected function GetValArr<T>(id: TInfo): array of T; where T: record;
     begin
       var sz := GetSize(id);
       Result := new T[uint64(sz) div Marshal.SizeOf(default(T))];
@@ -8436,7 +8432,7 @@ constructor ContextProperties.Create(ntv: cl_context) := inherited Create(ntv);
 
 function ContextProperties.GetReferenceCount := GetVal&<UInt32>(ContextInfo.CONTEXT_REFERENCE_COUNT);
 function ContextProperties.GetNumDevices     := GetVal&<UInt32>(ContextInfo.CONTEXT_NUM_DEVICES);
-function ContextProperties.GetProperties     := GetValArr&<ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
+function ContextProperties.GetProperties     := GetValArr&<OpenCL.ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
 
 {$endregion Context}
 
@@ -9564,8 +9560,15 @@ type
   QueueResNil = record(IQueueRes)
     private base := new QueueResData;
     
+    {$ifdef DEBUG}
+    public static created_count := 0;
+    {$endif DEBUG}
+    
     public constructor(l: CLTaskLocalData);
     begin
+      {$ifdef DEBUG}
+      Interlocked.Increment(created_count);
+      {$endif DEBUG}
       base.ev := l.prev_ev;
       base.complition_delegate := l.prev_delegate;
     end;
@@ -9614,9 +9617,17 @@ type
 {$region Base}
 
 type
-  QueueResT = abstract partial class(IQueueRes)
+  QueueResT = abstract class(IQueueRes)
     private base := new QueueResData;
     private res_const: boolean; // Whether res can be read before event completes
+    
+    {$ifdef DEBUG}
+    public static created_count := new ConcurrentDictionary<string, integer>;
+    public constructor;
+    begin
+      created_count.AddOrUpdate(TypeName(self), t->1, (t,c)->c+1);
+    end;
+    {$endif DEBUG}
     
     public property ResEv: EventList read base.ResEv;
     
@@ -34111,6 +34122,7 @@ end;
 
 {$endregion Global subprograms}
 
+{$ifdef ForceMaxDebug}
 initialization
 finalization
   
@@ -34129,4 +34141,14 @@ finalization
   WaitDebug.FinallyReport;
   {$endif WaitDebug}
   
+  if QueueResNil.created_count<>0 then
+    $'[QueueResNil]: {QueueResNil.created_count}'.Println;
+  if QueueResT.created_count.Count<>0 then
+  begin
+    $'[QueueRes<T>]: {QueueResT.created_count.Values.Sum}'.Println;
+    foreach var t in QueueResT.created_count.Keys.Order do
+      $'{#9}{t}: {QueueResT.created_count[t]}'.Println;
+  end;
+  
+{$endif ForceMaxDebug}
 end.

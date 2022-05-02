@@ -6,9 +6,8 @@
 
 #ExpOtp
 0.t1 
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueRes<T>]: 1 
+	QueueResValDirect<t1>: 1 
 
 #ReqModules
 OpenCLABC

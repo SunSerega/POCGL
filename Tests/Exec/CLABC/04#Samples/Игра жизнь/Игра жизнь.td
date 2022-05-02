@@ -107,7 +107,12 @@
                         ██ ██      █        █        █   █          ██        █ █                   
 [EventDebug]: 102 event's created 
 [QueueDebug]: 1 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueResNil]: 200 
+[QueueRes<T>]: 305 
+	QueueResValDirect<array [,] of byte>: 1 
+	QueueResValDirect<CLArray<byte>>: 151 
+	QueueResValDirect<integer>: 152 
+	QueueResValWrap<array [,] of byte>: 1 
 
 #ReqModules
 OpenCLABC

@@ -6,9 +6,10 @@
 
 #ExpOtp
 5 25
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueResNil]: 1 
+[QueueRes<T>]: 4 
+	QueueResValDirect<array of integer>: 1 
+	QueueResValDirect<integer>: 3 
 
 #ReqModules
 OpenCLABC

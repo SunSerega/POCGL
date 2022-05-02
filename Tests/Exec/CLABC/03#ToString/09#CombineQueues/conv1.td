@@ -15,10 +15,6 @@ CommandQueueQuickArray<Object,array of Object,QueueArrayAsyncInvoker,SimpleFuncC
 	ConstQueue<Object>#1: { nil }
 	function lambda(a: array of Object): array of Object
 
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
-
 #ReqModules
 OpenCLABC
 

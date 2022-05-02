@@ -9,8 +9,12 @@ nil
 5 
 5 
 [EventDebug]: 7 event's created 
-[QueueDebug]: 0 queue's created 
 [WaitDebug]: 6 wait handler's created 
+[QueueResNil]: 11 
+[QueueRes<T>]: 7 
+	QueueResValDirect<integer>: 2 
+	QueueResValDirect<Object>: 3 
+	QueueResValWrap<integer>: 2 
 
 #ReqModules
 OpenCLABC

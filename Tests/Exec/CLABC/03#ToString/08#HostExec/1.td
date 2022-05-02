@@ -21,10 +21,6 @@ CommandQueueHostThreadedFunc<integer,SimpleFunc0ContainerC<integer>>#0: function
 
 CommandQueueHostThreadedProc<SimpleProc0ContainerC>#0: procedure lambda(с: Context)
 
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
-
 #ReqModules
 OpenCLABC
 

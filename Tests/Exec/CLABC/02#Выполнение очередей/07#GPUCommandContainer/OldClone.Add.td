@@ -17,9 +17,9 @@
 ------------------------------ 
 1 
 ------------------------------ 
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueResNil]: 8 
+[QueueRes<T>]: 4 
+	QueueResValDirect<CLMemory>: 4 
 
 #ReqModules
 OpenCLABC

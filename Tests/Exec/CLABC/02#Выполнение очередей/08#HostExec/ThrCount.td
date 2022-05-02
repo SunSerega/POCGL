@@ -9,7 +9,9 @@
 4 
 [EventDebug]: 34 event's created 
 [QueueDebug]: 1 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueResNil]: 39 
+[QueueRes<T>]: 1 
+	QueueResValDirect<integer>: 1 
 
 #ReqModules
 OpenCLABC

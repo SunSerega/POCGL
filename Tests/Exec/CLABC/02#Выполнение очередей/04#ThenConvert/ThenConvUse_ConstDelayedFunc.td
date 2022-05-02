@@ -37,8 +37,10 @@ CastQueue<Object,integer>#0
 17 
 ============================== 
 [EventDebug]: 13 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueRes<T>]: 20 
+	QueueResValDirect<integer>: 12 
+	QueueResValDirect<Object>: 2 
+	QueueResValWrap<integer>: 6 
 
 #ReqModules
 OpenCLABC

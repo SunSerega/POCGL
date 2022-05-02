@@ -481,9 +481,4 @@ Packing sample file "Samples\OpenGLABC\Точки на поле\Спирали.f
 Packing sample file "Samples\OpenGLABC\Точки на поле\Сумма расстояний.frag"
 Packing sample file "Samples\OpenGLABC\Точки на поле\Точки.pas"
 Packed 27 sample files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing reference [Гайд по использованию OpenGL и OpenCL.html]
-Packing reference [Справка OpenCLABC.html]
-Packing reference [Справка OpenGLABC.html]
-Packed 3 reference files
 Done packing

@@ -186,7 +186,7 @@ constructor ContextProperties.Create(ntv: cl_context) := inherited Create(ntv);
 
 function ContextProperties.GetReferenceCount := GetVal&<UInt32>(ContextInfo.CONTEXT_REFERENCE_COUNT);
 function ContextProperties.GetNumDevices     := GetVal&<UInt32>(ContextInfo.CONTEXT_NUM_DEVICES);
-function ContextProperties.GetProperties     := GetValArr&<ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
+function ContextProperties.GetProperties     := GetValArr&<OpenCL.ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
 
 {$endregion Context}
 

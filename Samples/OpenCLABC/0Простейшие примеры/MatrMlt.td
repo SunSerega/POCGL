@@ -31,7 +31,12 @@
 
 [EventDebug]: 13 event's created 
 [QueueDebug]: 3 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueResNil]: 11 
+[QueueRes<T>]: 20 
+	QueueResValDirect<array [,] of real>: 3 
+	QueueResValDirect<array of real>: 2 
+	QueueResValDirect<CLArray<real>>: 8 
+	QueueResValDirect<integer>: 7 
 
 #ReqModules
 OpenCLABC

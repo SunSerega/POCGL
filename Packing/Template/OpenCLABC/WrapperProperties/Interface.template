@@ -1045,11 +1045,11 @@
     
     private function GetReferenceCount: UInt32;
     private function GetNumDevices: UInt32;
-    private function GetProperties: array of ContextProperties;
+    private function GetProperties: array of OpenCL.ContextProperties;
     
-    public property ReferenceCount: UInt32                     read GetReferenceCount;
-    public property NumDevices:     UInt32                     read GetNumDevices;
-    public property Properties:     array of ContextProperties read GetProperties;
+    public property ReferenceCount: UInt32                            read GetReferenceCount;
+    public property NumDevices:     UInt32                            read GetNumDevices;
+    public property Properties:     array of OpenCL.ContextProperties read GetProperties;
     
     public procedure ToString(res: StringBuilder); virtual;
     begin

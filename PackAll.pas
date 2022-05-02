@@ -394,7 +394,7 @@ var AllStages := HSet(
             if ext not in AllowedExtensions then
               Otp('WARNING: Sample file with unknown extension:');
             Otp($'Packing sample file "{fname}"');
-            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\OpenGL и OpenCL');
+            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\StandardUnits');
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_fname));
             System.IO.File.Copy(fname, res_fname);
             c += 1;
@@ -406,36 +406,12 @@ var AllStages := HSet(
       
       {$endregion CopySamples}
       
-      {$region CopyReference}
-      
-      var T_CopyReferences :=
-        TitleTask('Copying references', '~') +
-        ProcTask(()->
-        begin
-          var c := 0;
-          
-          foreach var fname in System.IO.Directory.EnumerateFiles('Packing\Reference', '*.html') do
-          begin
-            var reference_name := System.IO.Path.GetFileName(fname);
-            Otp($'Packing reference [{reference_name}]');
-            System.IO.Directory.CreateDirectory('Release\InstallerSamples\OpenGL и OpenCL');
-            System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenGL и OpenCL\{reference_name}' );
-            c += 1;
-          end;
-          
-          Otp($'Packed {c} reference files');
-        end)
-      ;
-      
-      {$endregion CopyReference}
-      
       Result :=
         T_Clear
         +
         
         T_CopyModules *
-        T_CopySamples *
-        T_CopyReferences
+        T_CopySamples
         
         +
         EmptyTask
