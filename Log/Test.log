@@ -27,6 +27,8 @@ Tester: Compiling "Samples\OpenGLABC\!Крутящийся треугольни�
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenGLABC\Точки на поле\Точки.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CL\ToString.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
@@ -40,9 +42,23 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1.pas"
-Tester: Compiling: OK
+Tester: Compiling: Compile errоrs:
+Tester: Compiling: System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+Tester: Compiling:    at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+Tester: Compiling:    at System.Collections.Generic.Dictionary`2.KeyCollection.Enumerator.MoveNext()
+Tester: Compiling:    at PascalABCCompiler.PCU.PCUReader.RestoreWaitedMethodCodes()
+Tester: Compiling:    at PascalABCCompiler.Compiler.ClosePCUReadersAndWriters()
+Tester: Compiling:    at PascalABCCompiler.Compiler.Compile()
+Tester: Compiling: 
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1.pas"
-Tester: Compiling: OK
+Tester: Compiling: Compile errоrs:
+Tester: Compiling: System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+Tester: Compiling:    at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+Tester: Compiling:    at System.Collections.Generic.Dictionary`2.KeyCollection.Enumerator.MoveNext()
+Tester: Compiling:    at PascalABCCompiler.PCU.PCUReader.RestoreWaitedMethodCodes()
+Tester: Compiling:    at PascalABCCompiler.Compiler.ClosePCUReadersAndWriters()
+Tester: Compiling:    at PascalABCCompiler.Compiler.Compile()
+Tester: Compiling: 
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
@@ -107,7 +123,9 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1T.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait.pas"
 Tester: Compiling: OK
@@ -186,7 +204,14 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1.pas"
-Tester: Compiling: OK
+Tester: Compiling: Compile errоrs:
+Tester: Compiling: System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+Tester: Compiling:    at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+Tester: Compiling:    at System.Collections.Generic.Dictionary`2.KeyCollection.Enumerator.MoveNext()
+Tester: Compiling:    at PascalABCCompiler.PCU.PCUReader.RestoreWaitedMethodCodes()
+Tester: Compiling:    at PascalABCCompiler.Compiler.ClosePCUReadersAndWriters()
+Tester: Compiling:    at PascalABCCompiler.Compiler.Compile()
+Tester: Compiling: 
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1.pas"
@@ -215,6 +240,8 @@ Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
 Tester: Done executing
+Tester: Executing Test[Tests\Exec\CL\ToString]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
@@ -227,10 +254,8 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1]
-Tester: Done executing
+Tester: WARNING: Test[G:\0Prog\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1] wasn't executed because of prior errоrs
+Tester: WARNING: Test[G:\0Prog\POCGL\Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1] wasn't executed because of prior errоrs
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
@@ -295,7 +320,9 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1T]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait]
 Tester: Done executing
@@ -373,8 +400,7 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1]
-Tester: Done executing
+Tester: WARNING: Test[G:\0Prog\POCGL\Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1] wasn't executed because of prior errоrs
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1]

@@ -2056,13 +2056,31 @@ type
     public static property KERNEL_ARG_TYPE_VOLATILE: KernelArgTypeQualifier read new KernelArgTypeQualifier($0004);
     public static property KERNEL_ARG_TYPE_PIPE:     KernelArgTypeQualifier read new KernelArgTypeQualifier($0008);
     
+    public static function operator+(f1,f2: KernelArgTypeQualifier) := new KernelArgTypeQualifier(f1.val or f2.val);
+    public static function operator or(f1,f2: KernelArgTypeQualifier) := f1+f2;
+    
+    public static procedure operator+=(var f1: KernelArgTypeQualifier; f2: KernelArgTypeQualifier) := f1 := f1+f2;
+    
+    public property ANY_FLAGS: boolean read self.val<>0;
+    public property HAS_FLAG_KERNEL_ARG_TYPE_CONST:    boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_KERNEL_ARG_TYPE_RESTRICT: boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_KERNEL_ARG_TYPE_VOLATILE: boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_KERNEL_ARG_TYPE_PIPE:     boolean read self.val and $0008 <> 0;
+    
     public function ToString: string; override;
     begin
-      if self.val = UInt64($0000) then Result := 'KERNEL_ARG_TYPE_NONE' else
-      if self.val = UInt64($0001) then Result := 'KERNEL_ARG_TYPE_CONST' else
-      if self.val = UInt64($0002) then Result := 'KERNEL_ARG_TYPE_RESTRICT' else
-      if self.val = UInt64($0004) then Result := 'KERNEL_ARG_TYPE_VOLATILE' else
-      if self.val = UInt64($0008) then Result := 'KERNEL_ARG_TYPE_PIPE' else
+      var res := new StringBuilder;
+      if self.val and UInt64($0001) = UInt64($0001) then res += 'KERNEL_ARG_TYPE_CONST+';
+      if self.val and UInt64($0002) = UInt64($0002) then res += 'KERNEL_ARG_TYPE_RESTRICT+';
+      if self.val and UInt64($0004) = UInt64($0004) then res += 'KERNEL_ARG_TYPE_VOLATILE+';
+      if self.val and UInt64($0008) = UInt64($0008) then res += 'KERNEL_ARG_TYPE_PIPE+';
+      if res.Length<>0 then
+      begin
+        res.Length -= 1;
+        Result := res.ToString;
+      end else
+      if self.val=0 then
+        Result := 'NONE' else
         Result := $'KernelArgTypeQualifier[{self.val}]';
     end;
     
@@ -14639,6 +14657,199 @@ type
     external 'opencl' name 'clGetCommandBufferInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: CommandBufferInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandBufferInfoKHR_ovr_2(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  clProgramScopeHostPipeINTEL = static class
+    public const _ExtStr = 'intel_program_scope_host_pipe';
+    
+    private static function z_EnqueueReadHostPipeINTEL_ovr_0(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl' name 'clEnqueueReadHostPipeINTEL';
+    private static function z_EnqueueReadHostPipeINTEL_ovr_0_anh0000000010(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl' name 'clEnqueueReadHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+          Result := z_EnqueueReadHostPipeINTEL_ovr_0(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+          Result := z_EnqueueReadHostPipeINTEL_ovr_0_anh0000000010(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    private static function z_EnqueueReadHostPipeINTEL_ovr_1(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl' name 'clEnqueueReadHostPipeINTEL';
+    private static function z_EnqueueReadHostPipeINTEL_ovr_1_anh0000000010(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl' name 'clEnqueueReadHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+          Result := z_EnqueueReadHostPipeINTEL_ovr_1(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+          Result := z_EnqueueReadHostPipeINTEL_ovr_1_anh0000000010(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueReadHostPipeINTEL_ovr_0(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueReadHostPipeINTEL_ovr_1(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    private static function z_EnqueueReadHostPipeINTEL_ovr_4(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl' name 'clEnqueueReadHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueReadHostPipeINTEL_ovr_4(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    private static function z_EnqueueReadHostPipeINTEL_ovr_5(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl' name 'clEnqueueReadHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueReadHostPipeINTEL_ovr_5(command_queue, &program, par_3_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueReadHostPipeINTEL_ovr_0(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueReadHostPipeINTEL_ovr_0_anh0000000010(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueReadHostPipeINTEL_ovr_1(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueReadHostPipeINTEL_ovr_1_anh0000000010(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueReadHostPipeINTEL_ovr_0(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueReadHostPipeINTEL_ovr_1(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueReadHostPipeINTEL_ovr_4(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueReadHostPipeINTEL_ovr_5(command_queue, &program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    
+    private static function z_EnqueueWriteHostPipeINTEL_ovr_0(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    external 'opencl' name 'clEnqueueWriteHostPipeINTEL';
+    private static function z_EnqueueWriteHostPipeINTEL_ovr_0_anh0000000010(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl' name 'clEnqueueWriteHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+          Result := z_EnqueueWriteHostPipeINTEL_ovr_0(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+          Result := z_EnqueueWriteHostPipeINTEL_ovr_0_anh0000000010(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    private static function z_EnqueueWriteHostPipeINTEL_ovr_1(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    external 'opencl' name 'clEnqueueWriteHostPipeINTEL';
+    private static function z_EnqueueWriteHostPipeINTEL_ovr_1_anh0000000010(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl' name 'clEnqueueWriteHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+          Result := z_EnqueueWriteHostPipeINTEL_ovr_1(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+          Result := z_EnqueueWriteHostPipeINTEL_ovr_1_anh0000000010(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueWriteHostPipeINTEL_ovr_0(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueWriteHostPipeINTEL_ovr_1(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    private static function z_EnqueueWriteHostPipeINTEL_ovr_4(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    external 'opencl' name 'clEnqueueWriteHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueWriteHostPipeINTEL_ovr_4(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    private static function z_EnqueueWriteHostPipeINTEL_ovr_5(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    external 'opencl' name 'clEnqueueWriteHostPipeINTEL';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: string; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    begin
+      var par_3_str_ptr: IntPtr;
+      try
+        par_3_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
+        Result := z_EnqueueWriteHostPipeINTEL_ovr_5(command_queue, &program, par_3_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+      finally
+        Marshal.FreeHGlobal(par_3_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueWriteHostPipeINTEL_ovr_0(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueWriteHostPipeINTEL_ovr_0_anh0000000010(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode :=
+    if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+      z_EnqueueWriteHostPipeINTEL_ovr_1(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list[0], &event) else
+      z_EnqueueWriteHostPipeINTEL_ovr_1_anh0000000010(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, IntPtr.Zero, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    z_EnqueueWriteHostPipeINTEL_ovr_0(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    z_EnqueueWriteHostPipeINTEL_ovr_1(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    z_EnqueueWriteHostPipeINTEL_ovr_4(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    z_EnqueueWriteHostPipeINTEL_ovr_5(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
     
   end;
   

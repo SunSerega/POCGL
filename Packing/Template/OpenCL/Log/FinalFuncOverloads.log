@@ -2198,4 +2198,32 @@
  ErrorCode	| cl_command_buffer	| CommandBufferInfoKhr	| UIntPtr	| IntPtr	| var UIntPtr	|
  ErrorCode	| cl_command_buffer	| CommandBufferInfoKhr	| UIntPtr	| IntPtr	| IntPtr	|
 
+# clEnqueueReadHostPipeINTEL
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+
+# clEnqueueWriteHostPipeINTEL
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| string	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| array of cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| var cl_event	| IntPtr	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| var cl_event	|
+ ErrorCode	| cl_command_queue	| cl_program	| IntPtr	| Bool	| IntPtr	| UIntPtr	| UInt32	| IntPtr	| IntPtr	|
+
 
