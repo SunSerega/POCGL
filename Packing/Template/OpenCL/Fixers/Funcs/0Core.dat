@@ -177,9 +177,9 @@ var Int32 = var ErrorCode
  *	| *	| *	| *					| *	| *	| *					| -IntPtr +var IntPtr +pointer	| *	| *	|
 !limit_ovrs
  *	| *	| *	| var cl_device_id	| *	| *	| *					| *								| *	| *	|
+ *	| *	| *	| IntPtr			| *	| *	| *					| *								| *	| *	|
 !limit_ovrs
  *	| *	| *	| *					| *	| *	| var cl_program	| array of string				| *	| *	|
- *	| *	| *	| *					| *	| *	| var cl_program	| array of IntPtr				| *	| *	|
  *	| *	| *	| *					| *	| *	| var cl_program	| var IntPtr					| *	| *	|
  *	| *	| *	| *					| *	| *	| IntPtr			| pointer						| *	| *	|
 

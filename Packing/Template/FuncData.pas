@@ -933,19 +933,45 @@ type
       
       if LogCache.loged_ffo.Add(self.name) then
       begin
+        log_func_ovrs.Otp($'# {name}[{all_overloads.Count}]:');
         
         if not is_proc or (org_par.Length>1) then
         begin
-          log_func_ovrs.Otp($'# {name}');
-          foreach var ovr in all_overloads do
-            log_func_ovrs.Otp(
-              (is_proc ? ovr.pars.Skip(1) : ovr.pars)
-              .Select(par->$' {par.ToString(true,true)}{#9}|')
-              .JoinToString('')
-            );
-          log_func_ovrs.Otp('');
+          var i_off := integer(is_proc);
+          
+          var max_w := new integer[org_par.Length-i_off];
+          var tt := new string[all_overloads.Count, max_w.Length];
+          foreach var ovr in all_overloads index ovr_i do
+            for var i := i_off to org_par.Length-1 do
+            begin
+              var tt_i := i-i_off;
+              var s := ovr.pars[i].ToString(true, true);
+              max_w[tt_i] := Max(max_w[tt_i], s.Length);
+              tt[ovr_i, tt_i] := s;
+            end;
+          
+          var l_cap := max_w.Sum + max_w.Length*3;
+          foreach var ovr_i in all_overloads.Indices do
+          begin
+            var l := new StringBuilder(l_cap);
+            
+            foreach var w in max_w index tt_i do
+            begin
+              var s := tt[ovr_i, tt_i];
+              l += s;
+              //TODO #2664
+              for var todo2664 := 1 to w-s.Length do l += ' ';
+              l += ' | ';
+            end;
+            
+//            if l.Length<>l_cap then raise new System.InvalidOperationException((l,l.Length,l_cap,_ObjectToString(max_w),_ObjectToString(tt)).ToString);
+            l.Length -= 1;
+            log_func_ovrs.Otp(l.ToString);
+          end;
+          
         end;
         
+        log_func_ovrs.Otp('');
       end;
       
       if all_overloads.Count=0 then
