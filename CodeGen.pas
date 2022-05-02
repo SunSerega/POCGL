@@ -12,6 +12,18 @@ type
     public static procedure operator+=(wr: Writer; c: integer) := wr += c.ToString;
     public static function operator*(wr1, wr2: Writer): Writer;
     
+    public procedure WriteNumbered(c: integer; a: string);
+    begin
+      var ind := a.IndexOf('!');
+      var a_long := if ind=-1 then a else a.Remove(ind,1);
+      var a_short := if ind=-1 then a else a.Remove(ind);
+      
+      var wr := self;
+      for var i := 1 to c-1 do wr += a_long.Replace('%', i.ToString);
+      wr += a_short.Replace('%', c.ToString);
+      
+    end;
+    
     public procedure Close; abstract;
     
   end;
