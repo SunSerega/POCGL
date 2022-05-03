@@ -1,0 +1,12 @@
+
+
+
+# glPointAlongPathNV
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| *	| var single	| var single	|
+ *	| *	| *	| *	| *	| *	| *	| IntPtr		| IntPtr		|
+!limit_ovrs
+ *	| *	| *	| *	| *	| var single	| var single	| *	| *	|
+ *	| *	| *	| *	| *	| IntPtr		| IntPtr		| *	| *	|
+
+

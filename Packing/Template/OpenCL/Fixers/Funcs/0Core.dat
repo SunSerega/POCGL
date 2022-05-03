@@ -1,43 +1,28 @@
 
 
 
-# clGetPlatformIDs
-!possible_par_types
- *	| *	| -array of cl_platform_id	| -array of UInt32	|
-
 # clGetPlatformInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +IntPtr +var UInt64 +pointer	| -array of UIntPtr	|
-
-# clGetDeviceIDs
-!possible_par_types
- *	| *	| *	| *	| -array of cl_device_id	| -array of UInt32	|
+ *	| *	| *	| *	| -IntPtr +IntPtr +var UInt64 +pointer	| *	|
 
 # clGetDeviceInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var DeviceType +var UInt32 +var UIntPtr +var UInt64 +var Bool +IntPtr +var DeviceFPConfig +var DeviceMemCacheType +var DeviceLocalMemType +var DeviceExecCapabilities +var CommandQueueProperties +var cl_platform_id +var cl_device_id +var DevicePartitionProperty +var DeviceAffinityDomain +var DeviceSVMCapabilities +pointer	| -array of UIntPtr	|
-
-# clGetDeviceAndHostTimer
-!possible_par_types
- *	| *	| -array of UInt64	| -array of UInt64	|
-
-# clGetHostTimer
-!possible_par_types
- *	| *	| -array of UInt64	|
+ *	| *	| *	| *	| -IntPtr +var DeviceType +var UInt32 +var UIntPtr +var UInt64 +var Bool +IntPtr +var DeviceFPConfig +var DeviceMemCacheType +var DeviceLocalMemType +var DeviceExecCapabilities +var CommandQueueProperties +var cl_platform_id +var cl_device_id +var DevicePartitionProperty +var DeviceAffinityDomain +var DeviceSVMCapabilities +pointer	| *	|
 
 # clCreateSubDevices
+# clCreateSubDevicesEXT
 !possible_par_types
- *	| *	| *	| *	| -array of cl_device_id	| -array of UInt32	|
+ *	| *	| *	| *	| -array of cl_device_id	| *	|
 
 # clGetContextInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_device_id +var ContextProperties +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_device_id +var ContextProperties +pointer	| *	|
 
 
 
 # clGetCommandQueueInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var cl_context +var cl_device_id +var UInt32 +var CommandQueueProperties +var cl_command_queue +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var cl_context +var cl_device_id +var UInt32 +var CommandQueueProperties +var cl_command_queue +pointer	| *	|
 
 # clCreateBuffer
 !possible_par_types
@@ -72,9 +57,19 @@
 
 # clCreateImage
 !possible_par_types
- *	| *	| *	| *						| *					| -IntPtr +array of T +var T +IntPtr	| *	|
-!limit_ovrs
- *	| *	| *	| var cl_image_format	| var cl_image_desc	| *										| *	|
+ *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| -IntPtr +array of T +var T +IntPtr	| *	|
+
+# clCreateImageWithProperties
+!possible_par_types
+ *	| *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| -IntPtr +array of T +var T +IntPtr	| *	|
+
+# clCreateImage2D
+!possible_par_types
+ *	| *	| *	| -array of cl_image_format -IntPtr	| *	| *	| *	| *	| *	|
+
+# clCreateImage3D
+!possible_par_types
+ *	| *	| *	| -array of cl_image_format -IntPtr	| *	| *	| *	| *	| *	| *	| *	|
 
 # clEnqueue[%Read,Write%]Image
 !possible_par_types
@@ -105,16 +100,15 @@
 
 # clEnqueueMapImage
 !possible_par_types
- *	| *	| *	| *	| *	| *					| *					| *				| *				| *	| *	| -array of cl_event	| *	|
+ *	| *	| *	| *	| *	| *					| *					| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| -array of cl_event	| *	|
 !limit_ovrs
- *	| *	| *	| *	| *	| *					| *					| var UIntPtr	| var UIntPtr	| *	| *	| *						| *	|
-!limit_ovrs
- *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *				| *				| *	| *	| *						| *	|
- *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *				| *				| *	| *	| *						| *	|
+ *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *							| *							| *	| *	| *						| *	|
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *							| *							| *	| *	| *						| *	|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *							| *							| *	| *	| *						| *	|
 
 # clGetImageInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var cl_image_format +var UIntPtr +var UInt32 +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var cl_image_format +var UIntPtr +var UInt32 +pointer	| *	|
 
 # clCreatePipe
 !possible_par_types
@@ -122,13 +116,14 @@
 
 # clGetPipeInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt32 +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var UInt32 +pointer	| *	|
 
 # clGetMemObjectInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var MemObjectType +var MemFlags +var UIntPtr +var IntPtr +var UInt32 +var cl_context +var cl_mem +var Bool +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var MemObjectType +var MemFlags +var UIntPtr +var IntPtr +var UInt32 +var cl_context +var cl_mem +var Bool +pointer	| *	|
 
 # clEnqueueSVMMemFill
+# clEnqueueSVMMemFillARM
 !possible_par_types
  *	| *	| *	| -IntPtr +array of T +var T +IntPtr	| *	| *	| *	| *	| *	|
 
@@ -140,95 +135,96 @@
 
 # clGetSamplerInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var Bool +var AddressingMode +var FilterMode +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var Bool +var AddressingMode +var FilterMode +pointer	| *	|
 
 # clCreateProgramWithSource
-!possible_par_types
- *	| *	| *	| -IntPtr +var IntPtr +pointer	| *					| *	|
-!limit_ovrs
- *	| *	| *	| array of string				| array of UIntPtr	| *	|
- *	| *	| *	| array of IntPtr				| array of UIntPtr	| *	|
- *	| *	| *	| var IntPtr					| var UIntPtr		| *	|
- *	| *	| *	| pointer						| IntPtr			| *	|
 
+# clCreateProgramWithIL
 # clCreateProgramWithILKHR
 !possible_par_types
  *	| *	| -IntPtr +array of byte +var byte +IntPtr	| *	| *	|
 
 # clCreateProgramWithBinary
 !repl_par_t
-var Int32 = var ErrorCode
+     var Int32 =      var ErrorCode
+array of Int32 = array of ErrorCode
 !possible_par_types
- *	| *	| *	| *					| *				| *	| *				| +IntPtr		|
+ *	| *	| *	| *						| *					| *							| *						| +IntPtr		|
 !limit_ovrs
- *	| *	| *	| *					| *				| *	| var ErrorCode	| var ErrorCode	|
- *	| *	| *	| *					| *				| *	| var ErrorCode	| IntPtr		|
- *	| *	| *	| *					| *				| *	| IntPtr		| var ErrorCode	|
+ *	| *	| *	| *						| *					| *							| array of ErrorCode	| var ErrorCode	|
+ *	| *	| *	| *						| *					| *							| array of ErrorCode	| IntPtr		|
+ *	| *	| *	| *						| *					| *							| var ErrorCode			| var ErrorCode	|
+ *	| *	| *	| *						| *					| *							| var ErrorCode			| IntPtr		|
+ *	| *	| *	| *						| *					| *							| IntPtr				| var ErrorCode	|
 # clCreateProgramWithBinary
 !limit_ovrs
- *	| *	| *	| var cl_device_id	| var UIntPtr	| *	| *				| *				|
+ *	| *	| *	| array of cl_device_id	| array of UIntPtr	| array of array of Byte	| *						| *				|
+ *	| *	| *	| var cl_device_id		| var UIntPtr		| var IntPtr				| *						| *				|
+ *	| *	| *	| IntPtr				| IntPtr			| pointer					| *						| *				|
 
 # clSetProgramSpecializationConstant
 !possible_par_types
  *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	|
 
 # clCompileProgram
-!possible_par_types
- *	| *	| *	| *					| *	| *	| *					| -IntPtr +var IntPtr +pointer	| *	| *	|
 !limit_ovrs
- *	| *	| *	| var cl_device_id	| *	| *	| *					| *								| *	| *	|
- *	| *	| *	| IntPtr			| *	| *	| *					| *								| *	| *	|
-!limit_ovrs
- *	| *	| *	| *					| *	| *	| var cl_program	| array of string				| *	| *	|
- *	| *	| *	| *					| *	| *	| var cl_program	| var IntPtr					| *	| *	|
- *	| *	| *	| *					| *	| *	| IntPtr			| pointer						| *	| *	|
+ *	| *	| *	| *	| string	| *	| *	| array of string	| *	| *	|
+ *	| *	| *	| *	| IntPtr	| *	| *	| var IntPtr		| *	| *	|
+ *	| *	| *	| *	| IntPtr	| *	| *	| pointer			| *	| *	|
 
 # clGetProgramInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var cl_device_id +var IntPtr +var UIntPtr +var Byte +var Bool +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var UInt32 +var cl_context +var cl_device_id +var IntPtr +var UIntPtr +var Byte +var Bool +pointer	| *	|
 
 # clGetProgramBuildInfo
 !possible_par_types
- *	| *	| *	| *	| *	| -IntPtr +var BuildStatus +IntPtr +var ProgramBinaryType +var UIntPtr +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| *	| -IntPtr +var BuildStatus +IntPtr +var ProgramBinaryType +var UIntPtr +pointer	| *	|
 
 
 
 # clCreateKernelsInProgram
 !possible_par_types
- *	| *	| *	| -array of cl_kernel	| -array of UInt32	|
+ *	| *	| *	| -array of cl_kernel	| *	|
 
 # clSetKernelArg
 !possible_par_types
  *	| *	| *	| *	| -IntPtr +var T +pointer	|
 
 # clSetKernelExecInfo
+# clSetKernelExecInfoARM
 !possible_par_types
  *	| *	| *	| *	| -IntPtr +var IntPtr +var Bool +pointer	|
 
 # clGetKernelInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +IntPtr +var UInt32 +var cl_context +var cl_program +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +IntPtr +var UInt32 +var cl_context +var cl_program +pointer	| *	|
 
 # clGetKernelWorkGroupInfo
 !possible_par_types
- *	| *	| *	| *	| *	| -IntPtr +var UIntPtr +var UInt64 +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| *	| -IntPtr +var UIntPtr +var UInt64 +pointer	| *	|
 
 # clGetKernelSubGroupInfo
+# clGetKernelSubGroupInfoKHR
 !possible_par_types
- *	| *	| *	| *	| *	| -IntPtr +var UIntPtr +pointer	| *	| -IntPtr +var UIntPtr +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| *	| -IntPtr +var UIntPtr +pointer	| *	| -IntPtr +var UIntPtr +pointer	| *	|
 !limit_ovrs
- *	| *	| *	| *	| *	| var UIntPtr					| *	| var UIntPtr					| *					|
- *	| *	| *	| *	| *	| pointer						| *	| var UIntPtr					| *					|
- *	| *	| *	| *	| *	| pointer						| *	| pointer						| *					|
+ *	| *	| *	| *	| *	| var UIntPtr					| *	| var UIntPtr					| *	|
+ *	| *	| *	| *	| *	| pointer						| *	| var UIntPtr					| *	|
+ *	| *	| *	| *	| *	| pointer						| *	| pointer						| *	|
 
 # clGetKernelArgInfo
 !possible_par_types
- *	| *	| *	| *	| *	| -IntPtr +var KernelArgAddressQualifier +var KernelArgAccessQualifier +IntPtr +var KernelArgTypeQualifier +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| *	| -IntPtr +var KernelArgAddressQualifier +var KernelArgAccessQualifier +IntPtr +var KernelArgTypeQualifier +pointer	| *	|
 
 # clEnqueueNDRangeKernel
 !limit_ovrs
- *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	|
- *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *	|
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *					| *	| *	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *					| *	| *	| *	|
+ *	| *	| *	| *	| IntPtr			| var UIntPtr		| *					| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| *					| array of UIntPtr	| array of UIntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| *					| var UIntPtr		| var UIntPtr		| *	| *	| *	|
+ *	| *	| *	| *	| *					| var UIntPtr		| IntPtr			| *	| *	| *	|
 
 # clEnqueueNativeKernel
 !possible_par_types
@@ -242,7 +238,7 @@ Int32 = CommandExecutionStatus
 
 # clGetEventInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var cl_command_queue +var cl_context +var CommandType +var CommandExecutionStatus +var UInt32 +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var cl_command_queue +var cl_context +var CommandType +var CommandExecutionStatus +var UInt32 +pointer	| *	|
 
 # clSetEventCallback
 !repl_par_t
@@ -254,6 +250,6 @@ Int32 = CommandExecutionStatus
 
 # clGetEventProfilingInfo
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +var UInt64 +pointer	| -array of UIntPtr	|
+ *	| *	| *	| *	| -IntPtr +var UInt64 +pointer	| *	|
 
 

@@ -17,3 +17,8 @@ cl_command_buffer			= IntPtr
 cl_mutable_command			= IntPtr
 
 
+
+// cl_loader_layers 
+cl_layer_api_version		= UInt32
+
+

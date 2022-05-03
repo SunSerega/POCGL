@@ -1,11 +1,8 @@
 ﻿
 
 
-#TestMode
-Comp+Exec
-
-#ReqModules
-OpenCL
+#DelegateCount
+5
 
 #ExpOtp
 Матрица A:
@@ -32,7 +29,10 @@ OpenCL
 Вектор V2 = C*V1:
 43.549829529219 38.1055105291197 44.5335618220427 23.6192068006406
 
-#DelegateCount
-5
+#ReqModules
+OpenCL
+
+#TestMode
+Comp+Exec
 
 

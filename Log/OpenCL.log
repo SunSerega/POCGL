@@ -11,16 +11,8 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateImageWithProperties]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (34) overloads of func [clGetDeviceInfo]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetDeviceIDsFromDX9MediaAdapterKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCreateSubDevicesEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueGenerateMipmapIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clGetKernelSuggestedLocalWorkSizeKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueWaitSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (54) overloads of func [clEnqueueSignalSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandBarrierWithWaitListKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandCopyBufferKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: Too many (27) overloads of func [clCommandFillBufferKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueGenerateMipmapIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueWaitSemaphoresKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueSignalSemaphoresKHR]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]

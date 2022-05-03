@@ -5,20 +5,19 @@ uses FuncData     in '..\FuncData';
 
 begin
   try
-    InitAll;
+    LoadMiscInput;
     api_name := 'cl';
     
     Otp($'Reading .bin');
     LoadBin('DataScraping\XML\CL\funcs.bin');
     
     Otp($'Fixing all');
+    LoadFixers;
     Group.FixCL_Names;
-    Feature.FixCL;
-    Extension.FixCL;
+    Func.FixAllGet;
+    Func.FixCL;
     ApplyFixers;
     MarkUsed;
-    
-    var res := new StringBuilder;
     
     begin
       Otp($'Constructing structs code');

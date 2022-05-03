@@ -1,0 +1,12 @@
+
+
+
+# clGetLayerInfo
+!possible_par_types
+ *	| *	| *	| -IntPtr +var cl_layer_api_version +IntPtr	| *	|
+
+# clInitLayer
+!possible_par_types
+ *	| *	| *	| *	| -array of IntPtr	|
+
+

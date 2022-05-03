@@ -95,6 +95,7 @@ var AllStages := HSet(
     begin
       if (id<>nil) and not CurrentStages.Contains(id) then exit;
       Result := MakeCoreTask;
+      if Result=nil then exit;
       
       if self.log_name<>nil then
       begin
@@ -176,6 +177,28 @@ var AllStages := HSet(
   end;
   
   {$endregion Reference}
+  
+  {$region FVT}
+  
+  FVTStage = sealed class(PackingStage)
+    
+    constructor;
+    begin
+      inherited Create(nil);
+      self.description := 'FuncVirtualTest';
+      self.log_name := 'FVT';
+    end;
+    
+    function MakeCoreTask: AsyncTask; override;
+    begin
+      Result := nil;
+      if not AllLLModules.All(CurrentStages.Contains) then exit;
+      Result := ExecTask('Packing\Template\FuncVirtualTest.pas', 'FVT');
+    end;
+    
+  end;
+  
+  {$endregion FVT}
   
   {$region Modules}
   
@@ -480,6 +503,7 @@ begin
     
     var T_FirstPack := FirstPackStage .Create               .MakeTask;
     var T_Reference := ReferenceStage .Create               .MakeTask;
+    var T_FVT       := FVTStage       .Create               .MakeTask;
     var T_OpenCL    := LLModuleStage  .Create(OpenCLStr)    .MakeTask;
     var T_OpenCLABC := HLModuleStage  .Create(OpenCLABCStr) .MakeTask;
     var T_OpenGL    := LLModuleStage  .Create(OpenGLStr)    .MakeTask;
@@ -494,6 +518,7 @@ begin
       T_FirstPack +
       
       T_Reference *
+      T_FVT *
       T_OpenCL * T_OpenCLABC *
       T_OpenGL * T_OpenGLABC
       

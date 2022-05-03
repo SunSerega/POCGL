@@ -1,0 +1,8 @@
+﻿
+
+
+type vDyn = sealed partial class(api_with_loader) end;
+constructor vDyn.Create(loader: PlatformLoader) := inherited Create(loader);
+function vDyn.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+

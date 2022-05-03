@@ -27,6 +27,10 @@ Invalid ext name [DCARB], replaced with [ARB]
 Invalid ext name [DCEXT], replaced with [EXT]
 Invalid ext name [DCNV], replaced with [NV]
 Invalid ext name [IDEXT], replaced with [EXT]
+Func [glBindBufferRange] was added in versions [3.0] and [3.1]
+Func [glBindBufferBase] was added in versions [3.0] and [3.1]
+Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
+Func [glProgramParameteri] was added in versions [4.1] and [4.1]
 Group [ContextFlagMask] was skipped
 Group [ContextProfileMask] was skipped
 Group [OcclusionQueryEventMaskAMD] was skipped

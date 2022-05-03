@@ -41,8 +41,8 @@ unsigned long			=UInt64
 
 GLintptr				=IntPtr
 GLintptrARB				=IntPtr
-GLsizeiptr				=IntPtr
-GLsizeiptrARB			=IntPtr
+GLsizeiptr				=UIntPtr
+GLsizeiptrARB			=UIntPtr
 
 GLfloat					=single
 GLclampf				=single

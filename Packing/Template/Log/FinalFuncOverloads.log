@@ -1,0 +1,128 @@
+﻿
+
+
+# v1NoParam[1]:
+
+# v2InpString[1]:
+	IntPtr |
+
+# v2InpStringReadOnly[2]:
+	string |
+	IntPtr |
+
+# v3ResString[1]:
+	string |
+
+# v3ResStringReadOnly[1]:
+	string |
+
+# v4Arrrrrray[6]:
+	array of array of array of array of array of T |
+	array of array of array of array of IntPtr     |
+	array of array of array of IntPtr              |
+	array of array of IntPtr                       |
+	var IntPtr                                     |
+	pointer                                        |
+
+# v5Generic[3]:
+	array of T |
+	var T      |
+	IntPtr     |
+
+# v6Generic[2]:
+	array of T |
+	IntPtr     |
+
+# v7Mix[18]:
+	string | IntPtr | string | array of T1 | array of array of array of array of T2 |
+	string | IntPtr | IntPtr | array of T1 | array of array of array of array of T2 |
+	string | IntPtr | string | var T1      | array of array of array of IntPtr      |
+	string | IntPtr | string | var T1      | array of array of IntPtr               |
+	string | IntPtr | string | var T1      | var IntPtr                             |
+	string | IntPtr | string | var T1      | pointer                                |
+	string | IntPtr | string | IntPtr      | array of array of array of IntPtr      |
+	string | IntPtr | string | IntPtr      | array of array of IntPtr               |
+	string | IntPtr | string | IntPtr      | var IntPtr                             |
+	string | IntPtr | string | IntPtr      | pointer                                |
+	string | IntPtr | IntPtr | var T1      | array of array of array of IntPtr      |
+	string | IntPtr | IntPtr | var T1      | array of array of IntPtr               |
+	string | IntPtr | IntPtr | var T1      | var IntPtr                             |
+	string | IntPtr | IntPtr | var T1      | pointer                                |
+	string | IntPtr | IntPtr | IntPtr      | array of array of array of IntPtr      |
+	string | IntPtr | IntPtr | IntPtr      | array of array of IntPtr               |
+	string | IntPtr | IntPtr | IntPtr      | var IntPtr                             |
+	string | IntPtr | IntPtr | IntPtr      | pointer                                |
+
+# v8BoolPtr[2]:
+	var boolean |
+	IntPtr      |
+
+# v9StringArray[4]:
+	array of array of string |
+	array of array of IntPtr |
+	var IntPtr               |
+	pointer                  |
+
+# vDyn1NoParam[1]:
+
+# vDyn2InpString[1]:
+	IntPtr |
+
+# vDyn2InpStringReadOnly[2]:
+	string |
+	IntPtr |
+
+# vDyn3ResString[1]:
+	string |
+
+# vDyn3ResStringReadOnly[1]:
+	string |
+
+# vDyn4Arrrrrray[6]:
+	array of array of array of array of array of T |
+	array of array of array of array of IntPtr     |
+	array of array of array of IntPtr              |
+	array of array of IntPtr                       |
+	var IntPtr                                     |
+	pointer                                        |
+
+# vDyn5Generic[3]:
+	array of T |
+	var T      |
+	IntPtr     |
+
+# vDyn6Generic[2]:
+	array of T |
+	IntPtr     |
+
+# vDyn7Mix[18]:
+	string | IntPtr | string | array of T1 | array of array of array of array of T2 |
+	string | IntPtr | IntPtr | array of T1 | array of array of array of array of T2 |
+	string | IntPtr | string | var T1      | array of array of array of IntPtr      |
+	string | IntPtr | string | var T1      | array of array of IntPtr               |
+	string | IntPtr | string | var T1      | var IntPtr                             |
+	string | IntPtr | string | var T1      | pointer                                |
+	string | IntPtr | string | IntPtr      | array of array of array of IntPtr      |
+	string | IntPtr | string | IntPtr      | array of array of IntPtr               |
+	string | IntPtr | string | IntPtr      | var IntPtr                             |
+	string | IntPtr | string | IntPtr      | pointer                                |
+	string | IntPtr | IntPtr | var T1      | array of array of array of IntPtr      |
+	string | IntPtr | IntPtr | var T1      | array of array of IntPtr               |
+	string | IntPtr | IntPtr | var T1      | var IntPtr                             |
+	string | IntPtr | IntPtr | var T1      | pointer                                |
+	string | IntPtr | IntPtr | IntPtr      | array of array of array of IntPtr      |
+	string | IntPtr | IntPtr | IntPtr      | array of array of IntPtr               |
+	string | IntPtr | IntPtr | IntPtr      | var IntPtr                             |
+	string | IntPtr | IntPtr | IntPtr      | pointer                                |
+
+# vDyn8BoolPtr[2]:
+	var boolean |
+	IntPtr      |
+
+# vDyn9StringArray[4]:
+	array of array of string |
+	array of array of IntPtr |
+	var IntPtr               |
+	pointer                  |
+
+
