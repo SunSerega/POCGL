@@ -58,14 +58,14 @@ begin
   Writeln('Матрица A:');
   var A := MatrRandomReal(MatrW,MatrW,0,1).Println;
   Writeln;
-  var A_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),IntPtr.Zero, ec);
+  var A_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
   ec.RaiseIfError;
   cl.EnqueueWriteBuffer(command_queue, A_buf, Bool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(MatrByteSize), A[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
   Writeln('Матрица B:');
   var B := MatrRandomReal(MatrW,MatrW,0,1).Println;
   Writeln;
-  var B_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),IntPtr.Zero, ec);
+  var B_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
   ec.RaiseIfError;
   cl.EnqueueWriteBuffer(command_queue, B_buf, Bool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(MatrByteSize), B[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
@@ -73,14 +73,14 @@ begin
   var V1 := ArrRandomReal(MatrW);
   V1.Println;
   Writeln;
-  var V1_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),IntPtr.Zero, ec);
+  var V1_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),nil, ec);
   ec.RaiseIfError;
   cl.EnqueueWriteBuffer(command_queue, V1_buf, Bool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(VecByteSize), V1[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
-  var C_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),IntPtr.Zero, ec);
+  var C_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
   ec.RaiseIfError;
   
-  var V2_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),IntPtr.Zero, ec);
+  var V2_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),nil, ec);
   ec.RaiseIfError;
   
   var MatrWParam := MatrW;

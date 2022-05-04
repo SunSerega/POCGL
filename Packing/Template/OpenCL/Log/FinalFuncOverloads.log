@@ -26,7 +26,7 @@
 # clCreateBuffer[3]:
 	cl_mem | cl_context | MemFlags | UIntPtr | array of T | var ErrorCode |
 	cl_mem | cl_context | MemFlags | UIntPtr | var T      | var ErrorCode |
-	cl_mem | cl_context | MemFlags | UIntPtr | IntPtr     | var ErrorCode |
+	cl_mem | cl_context | MemFlags | UIntPtr | pointer    | var ErrorCode |
 
 # clCreateBufferWithProperties[3]:
 	cl_mem | cl_context | array of MemProperties | MemFlags | UIntPtr | IntPtr | var ErrorCode |
@@ -56,7 +56,7 @@
 # clCreateImage[3]:
 	cl_mem | cl_context | MemFlags | var cl_image_format | var cl_image_desc | array of T | var ErrorCode |
 	cl_mem | cl_context | MemFlags | var cl_image_format | var cl_image_desc | var T      | var ErrorCode |
-	cl_mem | cl_context | MemFlags | var cl_image_format | var cl_image_desc | IntPtr     | var ErrorCode |
+	cl_mem | cl_context | MemFlags | var cl_image_format | var cl_image_desc | pointer    | var ErrorCode |
 
 # clCreateImage2D[1]:
 	cl_mem | cl_context | MemFlags | var cl_image_format | UIntPtr | UIntPtr | UIntPtr | IntPtr | var ErrorCode |
@@ -67,9 +67,9 @@
 # clCreateImageWithProperties[5]:
 	cl_mem | cl_context | array of MemProperties | MemFlags | var cl_image_format | var cl_image_desc | array of T | var ErrorCode |
 	cl_mem | cl_context | var MemProperties      | MemFlags | var cl_image_format | var cl_image_desc | var T      | var ErrorCode |
-	cl_mem | cl_context | var MemProperties      | MemFlags | var cl_image_format | var cl_image_desc | IntPtr     | var ErrorCode |
+	cl_mem | cl_context | var MemProperties      | MemFlags | var cl_image_format | var cl_image_desc | pointer    | var ErrorCode |
 	cl_mem | cl_context | IntPtr                 | MemFlags | var cl_image_format | var cl_image_desc | var T      | var ErrorCode |
-	cl_mem | cl_context | IntPtr                 | MemFlags | var cl_image_format | var cl_image_desc | IntPtr     | var ErrorCode |
+	cl_mem | cl_context | IntPtr                 | MemFlags | var cl_image_format | var cl_image_desc | pointer    | var ErrorCode |
 
 # clCreateKernel[2]:
 	cl_kernel | cl_program | string | var ErrorCode |
@@ -201,20 +201,20 @@
 	ErrorCode | cl_command_queue | cl_mem | var T      | UIntPtr | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
 	ErrorCode | cl_command_queue | cl_mem | var T      | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | cl_mem | var T      | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr     | UIntPtr | UIntPtr | UIntPtr | UInt32 | var cl_event      | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr     | UIntPtr | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr     | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr     | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer    | UIntPtr | UIntPtr | UIntPtr | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer    | UIntPtr | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer    | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer    | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueFillImage[8]:
-	ErrorCode | cl_command_queue | cl_mem | var T  | var UIntPtr | var UIntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | var T  | var UIntPtr | var UIntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | var T  | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | var T  | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr | var UIntPtr | var UIntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr | var UIntPtr | var UIntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | IntPtr | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | IntPtr       |
 
 # clEnqueueMapBuffer[6]:
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | UIntPtr | UIntPtr | UInt32 | array of cl_event | var cl_event | var ErrorCode |
@@ -303,30 +303,30 @@
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | var T      | UInt32 | var cl_event      | IntPtr       |
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | var T      | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | var T      | UInt32 | IntPtr            | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | var cl_event      | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | var cl_event      | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | IntPtr            | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueReadBufferRect[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
 
 # clEnqueueReadImage[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
 
 # clEnqueueSVMFree[10]:
 	ErrorCode | cl_command_queue | UInt32 | array of IntPtr | EnqueueSVMFreeCallback | IntPtr | UInt32 | array of cl_event | var cl_event |
@@ -363,10 +363,10 @@
 	ErrorCode | cl_command_queue | IntPtr | var T      | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
 	ErrorCode | cl_command_queue | IntPtr | var T      | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | IntPtr | var T      | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | var cl_event      | var cl_event |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueSVMMigrateMem[10]:
 	ErrorCode | cl_command_queue | UInt32 | array of IntPtr | array of UIntPtr | MemMigrationFlags | UInt32 | array of cl_event | var cl_event |
@@ -416,30 +416,30 @@
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | var T      | UInt32 | var cl_event      | IntPtr       |
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | var T      | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | var T      | UInt32 | IntPtr            | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | var cl_event      | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | var cl_event      | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | IntPtr            | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | IntPtr     | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueWriteBufferRect[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
 
 # clEnqueueWriteImage[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T  | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | IntPtr | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
 
 # clFinish[1]:
 	ErrorCode | cl_command_queue |
@@ -448,28 +448,28 @@
 	ErrorCode | cl_command_queue |
 
 # clGetCommandQueueInfo[12]:
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_command_queue       | var UIntPtr |
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_command_queue       | IntPtr      |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_context             | var UIntPtr |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_context             | IntPtr      |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_device_id           | var UIntPtr |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_device_id           | IntPtr      |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var UInt32                 | var UIntPtr |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var UInt32                 | IntPtr      |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var CommandQueueProperties | var UIntPtr |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var CommandQueueProperties | IntPtr      |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_command_queue       | var UIntPtr |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var cl_command_queue       | IntPtr      |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | pointer                    | var UIntPtr |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | pointer                    | IntPtr      |
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var UInt32                 | var UIntPtr |
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | var UInt32                 | IntPtr      |
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | IntPtr                     | var UIntPtr |
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr | IntPtr                     | IntPtr      |
 
 # clGetContextInfo[8]:
-	ErrorCode | cl_context | ContextInfo | UIntPtr | var UInt32            | var UIntPtr |
-	ErrorCode | cl_context | ContextInfo | UIntPtr | var UInt32            | IntPtr      |
 	ErrorCode | cl_context | ContextInfo | UIntPtr | var cl_device_id      | var UIntPtr |
 	ErrorCode | cl_context | ContextInfo | UIntPtr | var cl_device_id      | IntPtr      |
 	ErrorCode | cl_context | ContextInfo | UIntPtr | var ContextProperties | var UIntPtr |
 	ErrorCode | cl_context | ContextInfo | UIntPtr | var ContextProperties | IntPtr      |
-	ErrorCode | cl_context | ContextInfo | UIntPtr | pointer               | var UIntPtr |
-	ErrorCode | cl_context | ContextInfo | UIntPtr | pointer               | IntPtr      |
+	ErrorCode | cl_context | ContextInfo | UIntPtr | var UInt32            | var UIntPtr |
+	ErrorCode | cl_context | ContextInfo | UIntPtr | var UInt32            | IntPtr      |
+	ErrorCode | cl_context | ContextInfo | UIntPtr | IntPtr                | var UIntPtr |
+	ErrorCode | cl_context | ContextInfo | UIntPtr | IntPtr                | IntPtr      |
 
 # clGetDeviceAndHostTimer[4]:
 	ErrorCode | cl_device_id | var UInt64 | var UInt64 |
@@ -483,61 +483,59 @@
 	ErrorCode | cl_platform_id | DeviceType | UInt32 | IntPtr           | var UInt32 |
 	ErrorCode | cl_platform_id | DeviceType | UInt32 | IntPtr           | IntPtr     |
 
-# clGetDeviceInfo[34]:
+# clGetDeviceInfo[32]:
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var Bool                    | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var Bool                    | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_device_id            | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_device_id            | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_platform_id          | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_platform_id          | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var CommandQueueProperties  | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var CommandQueueProperties  | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceAffinityDomain    | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceAffinityDomain    | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceExecCapabilities  | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceExecCapabilities  | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceFPConfig          | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceFPConfig          | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceLocalMemType      | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceLocalMemType      | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceMemCacheType      | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceMemCacheType      | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DevicePartitionProperty | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DevicePartitionProperty | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceSVMCapabilities   | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceSVMCapabilities   | IntPtr      |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceType              | var UIntPtr |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceType              | IntPtr      |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UInt32                  | var UIntPtr |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UInt32                  | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UIntPtr                 | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UIntPtr                 | IntPtr      |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UInt64                  | var UIntPtr |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UInt64                  | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var Bool                    | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var Bool                    | IntPtr      |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UIntPtr                 | var UIntPtr |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var UIntPtr                 | IntPtr      |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | IntPtr                      | var UIntPtr |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | IntPtr                      | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceFPConfig          | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceFPConfig          | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceMemCacheType      | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceMemCacheType      | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceLocalMemType      | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceLocalMemType      | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceExecCapabilities  | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceExecCapabilities  | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var CommandQueueProperties  | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var CommandQueueProperties  | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_platform_id          | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_platform_id          | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_device_id            | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var cl_device_id            | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DevicePartitionProperty | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DevicePartitionProperty | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceAffinityDomain    | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceAffinityDomain    | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceSVMCapabilities   | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | var DeviceSVMCapabilities   | IntPtr      |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | pointer                     | var UIntPtr |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr | pointer                     | IntPtr      |
 
 # clGetEventInfo[12]:
 	ErrorCode | cl_event | EventInfo | UIntPtr | var cl_command_queue       | var UIntPtr |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var cl_command_queue       | IntPtr      |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var cl_context             | var UIntPtr |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var cl_context             | IntPtr      |
-	ErrorCode | cl_event | EventInfo | UIntPtr | var CommandType            | var UIntPtr |
-	ErrorCode | cl_event | EventInfo | UIntPtr | var CommandType            | IntPtr      |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var CommandExecutionStatus | var UIntPtr |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var CommandExecutionStatus | IntPtr      |
+	ErrorCode | cl_event | EventInfo | UIntPtr | var CommandType            | var UIntPtr |
+	ErrorCode | cl_event | EventInfo | UIntPtr | var CommandType            | IntPtr      |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var UInt32                 | var UIntPtr |
 	ErrorCode | cl_event | EventInfo | UIntPtr | var UInt32                 | IntPtr      |
-	ErrorCode | cl_event | EventInfo | UIntPtr | pointer                    | var UIntPtr |
-	ErrorCode | cl_event | EventInfo | UIntPtr | pointer                    | IntPtr      |
+	ErrorCode | cl_event | EventInfo | UIntPtr | IntPtr                     | var UIntPtr |
+	ErrorCode | cl_event | EventInfo | UIntPtr | IntPtr                     | IntPtr      |
 
 # clGetEventProfilingInfo[4]:
 	ErrorCode | cl_event | ProfilingInfo | UIntPtr | var UInt64 | var UIntPtr |
 	ErrorCode | cl_event | ProfilingInfo | UIntPtr | var UInt64 | IntPtr      |
-	ErrorCode | cl_event | ProfilingInfo | UIntPtr | pointer    | var UIntPtr |
-	ErrorCode | cl_event | ProfilingInfo | UIntPtr | pointer    | IntPtr      |
+	ErrorCode | cl_event | ProfilingInfo | UIntPtr | IntPtr     | var UIntPtr |
+	ErrorCode | cl_event | ProfilingInfo | UIntPtr | IntPtr     | IntPtr      |
 
 # clGetExtensionFunctionAddress[2]:
 	IntPtr | string |
@@ -554,78 +552,74 @@
 # clGetImageInfo[8]:
 	ErrorCode | cl_mem | ImageInfo | UIntPtr | var cl_image_format | var UIntPtr |
 	ErrorCode | cl_mem | ImageInfo | UIntPtr | var cl_image_format | IntPtr      |
-	ErrorCode | cl_mem | ImageInfo | UIntPtr | var UIntPtr         | var UIntPtr |
-	ErrorCode | cl_mem | ImageInfo | UIntPtr | var UIntPtr         | IntPtr      |
 	ErrorCode | cl_mem | ImageInfo | UIntPtr | var UInt32          | var UIntPtr |
 	ErrorCode | cl_mem | ImageInfo | UIntPtr | var UInt32          | IntPtr      |
-	ErrorCode | cl_mem | ImageInfo | UIntPtr | pointer             | var UIntPtr |
-	ErrorCode | cl_mem | ImageInfo | UIntPtr | pointer             | IntPtr      |
+	ErrorCode | cl_mem | ImageInfo | UIntPtr | var UIntPtr         | var UIntPtr |
+	ErrorCode | cl_mem | ImageInfo | UIntPtr | var UIntPtr         | IntPtr      |
+	ErrorCode | cl_mem | ImageInfo | UIntPtr | IntPtr              | var UIntPtr |
+	ErrorCode | cl_mem | ImageInfo | UIntPtr | IntPtr              | IntPtr      |
 
-# clGetKernelArgInfo[10]:
-	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgAddressQualifier | var UIntPtr |
-	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgAddressQualifier | IntPtr      |
+# clGetKernelArgInfo[8]:
 	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgAccessQualifier  | var UIntPtr |
 	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgAccessQualifier  | IntPtr      |
-	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | IntPtr                        | var UIntPtr |
-	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | IntPtr                        | IntPtr      |
+	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgAddressQualifier | var UIntPtr |
+	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgAddressQualifier | IntPtr      |
 	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgTypeQualifier    | var UIntPtr |
 	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | var KernelArgTypeQualifier    | IntPtr      |
-	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | pointer                       | var UIntPtr |
-	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | pointer                       | IntPtr      |
+	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | IntPtr                        | var UIntPtr |
+	ErrorCode | cl_kernel | UInt32 | KernelArgInfo | UIntPtr | IntPtr                        | IntPtr      |
 
-# clGetKernelInfo[10]:
-	ErrorCode | cl_kernel | KernelInfo | UIntPtr | IntPtr         | var UIntPtr |
-	ErrorCode | cl_kernel | KernelInfo | UIntPtr | IntPtr         | IntPtr      |
-	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var UInt32     | var UIntPtr |
-	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var UInt32     | IntPtr      |
+# clGetKernelInfo[8]:
 	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var cl_context | var UIntPtr |
 	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var cl_context | IntPtr      |
 	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var cl_program | var UIntPtr |
 	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var cl_program | IntPtr      |
-	ErrorCode | cl_kernel | KernelInfo | UIntPtr | pointer        | var UIntPtr |
-	ErrorCode | cl_kernel | KernelInfo | UIntPtr | pointer        | IntPtr      |
+	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var UInt32     | var UIntPtr |
+	ErrorCode | cl_kernel | KernelInfo | UIntPtr | var UInt32     | IntPtr      |
+	ErrorCode | cl_kernel | KernelInfo | UIntPtr | IntPtr         | var UIntPtr |
+	ErrorCode | cl_kernel | KernelInfo | UIntPtr | IntPtr         | IntPtr      |
 
 # clGetKernelSubGroupInfo[6]:
 	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | var UIntPtr | UIntPtr | var UIntPtr | var UIntPtr |
 	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | var UIntPtr | UIntPtr | var UIntPtr | IntPtr      |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | var UIntPtr | var UIntPtr |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | var UIntPtr | IntPtr      |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | pointer     | var UIntPtr |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | pointer     | IntPtr      |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | var UIntPtr | var UIntPtr |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | var UIntPtr | IntPtr      |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | IntPtr      | var UIntPtr |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | IntPtr      | IntPtr      |
 
 # clGetKernelWorkGroupInfo[6]:
-	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | var UIntPtr | var UIntPtr |
-	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | var UIntPtr | IntPtr      |
 	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | var UInt64  | var UIntPtr |
 	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | var UInt64  | IntPtr      |
-	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | pointer     | var UIntPtr |
-	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | pointer     | IntPtr      |
+	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | var UIntPtr | var UIntPtr |
+	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | var UIntPtr | IntPtr      |
+	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | IntPtr      | var UIntPtr |
+	ErrorCode | cl_kernel | cl_device_id | KernelWorkGroupInfo | UIntPtr | IntPtr      | IntPtr      |
 
 # clGetMemObjectInfo[18]:
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemObjectType | var UIntPtr |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemObjectType | IntPtr      |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemFlags      | var UIntPtr |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemFlags      | IntPtr      |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var UIntPtr       | var UIntPtr |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var UIntPtr       | IntPtr      |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var IntPtr        | var UIntPtr |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var IntPtr        | IntPtr      |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var UInt32        | var UIntPtr |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var UInt32        | IntPtr      |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var Bool          | var UIntPtr |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var Bool          | IntPtr      |
 	ErrorCode | cl_mem | MemInfo | UIntPtr | var cl_context    | var UIntPtr |
 	ErrorCode | cl_mem | MemInfo | UIntPtr | var cl_context    | IntPtr      |
 	ErrorCode | cl_mem | MemInfo | UIntPtr | var cl_mem        | var UIntPtr |
 	ErrorCode | cl_mem | MemInfo | UIntPtr | var cl_mem        | IntPtr      |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var Bool          | var UIntPtr |
-	ErrorCode | cl_mem | MemInfo | UIntPtr | var Bool          | IntPtr      |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var IntPtr        | var UIntPtr |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var IntPtr        | IntPtr      |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemFlags      | var UIntPtr |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemFlags      | IntPtr      |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemObjectType | var UIntPtr |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var MemObjectType | IntPtr      |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var UInt32        | var UIntPtr |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var UInt32        | IntPtr      |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var UIntPtr       | var UIntPtr |
+	ErrorCode | cl_mem | MemInfo | UIntPtr | var UIntPtr       | IntPtr      |
 	ErrorCode | cl_mem | MemInfo | UIntPtr | pointer           | var UIntPtr |
 	ErrorCode | cl_mem | MemInfo | UIntPtr | pointer           | IntPtr      |
 
 # clGetPipeInfo[4]:
 	ErrorCode | cl_mem | PipeInfo | UIntPtr | var UInt32 | var UIntPtr |
 	ErrorCode | cl_mem | PipeInfo | UIntPtr | var UInt32 | IntPtr      |
-	ErrorCode | cl_mem | PipeInfo | UIntPtr | pointer    | var UIntPtr |
-	ErrorCode | cl_mem | PipeInfo | UIntPtr | pointer    | IntPtr      |
+	ErrorCode | cl_mem | PipeInfo | UIntPtr | IntPtr     | var UIntPtr |
+	ErrorCode | cl_mem | PipeInfo | UIntPtr | IntPtr     | IntPtr      |
 
 # clGetPlatformIDs[4]:
 	ErrorCode | UInt32 | var cl_platform_id | var UInt32 |
@@ -633,57 +627,53 @@
 	ErrorCode | UInt32 | IntPtr             | var UInt32 |
 	ErrorCode | UInt32 | IntPtr             | IntPtr     |
 
-# clGetPlatformInfo[6]:
-	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | IntPtr     | var UIntPtr |
-	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | IntPtr     | IntPtr      |
+# clGetPlatformInfo[4]:
 	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | var UInt64 | var UIntPtr |
 	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | var UInt64 | IntPtr      |
-	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | pointer    | var UIntPtr |
-	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | pointer    | IntPtr      |
+	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | IntPtr     | var UIntPtr |
+	ErrorCode | cl_platform_id | PlatformInfo | UIntPtr | IntPtr     | IntPtr      |
 
-# clGetProgramBuildInfo[10]:
+# clGetProgramBuildInfo[8]:
 	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | var BuildStatus       | var UIntPtr |
 	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | var BuildStatus       | IntPtr      |
-	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | IntPtr                | var UIntPtr |
-	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | IntPtr                | IntPtr      |
 	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | var ProgramBinaryType | var UIntPtr |
 	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | var ProgramBinaryType | IntPtr      |
 	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | var UIntPtr           | var UIntPtr |
 	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | var UIntPtr           | IntPtr      |
-	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | pointer               | var UIntPtr |
-	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | pointer               | IntPtr      |
+	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | IntPtr                | var UIntPtr |
+	ErrorCode | cl_program | cl_device_id | ProgramBuildInfo | UIntPtr | IntPtr                | IntPtr      |
 
 # clGetProgramInfo[16]:
-	ErrorCode | cl_program | ProgramInfo | UIntPtr | var UInt32       | var UIntPtr |
-	ErrorCode | cl_program | ProgramInfo | UIntPtr | var UInt32       | IntPtr      |
+	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Bool         | var UIntPtr |
+	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Bool         | IntPtr      |
+	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Byte         | var UIntPtr |
+	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Byte         | IntPtr      |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var cl_context   | var UIntPtr |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var cl_context   | IntPtr      |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var cl_device_id | var UIntPtr |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var cl_device_id | IntPtr      |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var IntPtr       | var UIntPtr |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var IntPtr       | IntPtr      |
+	ErrorCode | cl_program | ProgramInfo | UIntPtr | var UInt32       | var UIntPtr |
+	ErrorCode | cl_program | ProgramInfo | UIntPtr | var UInt32       | IntPtr      |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var UIntPtr      | var UIntPtr |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | var UIntPtr      | IntPtr      |
-	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Byte         | var UIntPtr |
-	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Byte         | IntPtr      |
-	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Bool         | var UIntPtr |
-	ErrorCode | cl_program | ProgramInfo | UIntPtr | var Bool         | IntPtr      |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | pointer          | var UIntPtr |
 	ErrorCode | cl_program | ProgramInfo | UIntPtr | pointer          | IntPtr      |
 
 # clGetSamplerInfo[12]:
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var UInt32         | var UIntPtr |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var UInt32         | IntPtr      |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var cl_context     | var UIntPtr |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var cl_context     | IntPtr      |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var Bool           | var UIntPtr |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var Bool           | IntPtr      |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var AddressingMode | var UIntPtr |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var AddressingMode | IntPtr      |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var Bool           | var UIntPtr |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var Bool           | IntPtr      |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var cl_context     | var UIntPtr |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var cl_context     | IntPtr      |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var FilterMode     | var UIntPtr |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var FilterMode     | IntPtr      |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | pointer            | var UIntPtr |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | pointer            | IntPtr      |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var UInt32         | var UIntPtr |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | var UInt32         | IntPtr      |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | IntPtr             | var UIntPtr |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr | IntPtr             | IntPtr      |
 
 # clGetSupportedImageFormats[4]:
 	ErrorCode | cl_context | MemFlags | MemObjectType | UInt32 | var cl_image_format | var UInt32 |
@@ -773,8 +763,8 @@
 	ErrorCode | cl_kernel | UInt32 | IntPtr |
 
 # clSetKernelExecInfo[3]:
-	ErrorCode | cl_kernel | KernelExecInfo | UIntPtr | var IntPtr |
 	ErrorCode | cl_kernel | KernelExecInfo | UIntPtr | var Bool   |
+	ErrorCode | cl_kernel | KernelExecInfo | UIntPtr | var IntPtr |
 	ErrorCode | cl_kernel | KernelExecInfo | UIntPtr | pointer    |
 
 # clSetMemObjectDestructorCallback[1]:
@@ -786,7 +776,7 @@
 # clSetProgramSpecializationConstant[3]:
 	ErrorCode | cl_program | UInt32 | UIntPtr | array of T |
 	ErrorCode | cl_program | UInt32 | UIntPtr | var T      |
-	ErrorCode | cl_program | UInt32 | UIntPtr | IntPtr     |
+	ErrorCode | cl_program | UInt32 | UIntPtr | pointer    |
 
 # clSetUserEventStatus[1]:
 	ErrorCode | cl_event | CommandExecutionStatus |
@@ -1078,10 +1068,10 @@
 # clGetKernelSubGroupInfoKHR[6]:
 	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | var UIntPtr | UIntPtr | var UIntPtr | var UIntPtr |
 	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | var UIntPtr | UIntPtr | var UIntPtr | IntPtr      |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | var UIntPtr | var UIntPtr |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | var UIntPtr | IntPtr      |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | pointer     | var UIntPtr |
-	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | pointer     | UIntPtr | pointer     | IntPtr      |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | var UIntPtr | var UIntPtr |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | var UIntPtr | IntPtr      |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | IntPtr      | var UIntPtr |
+	ErrorCode | cl_kernel | cl_device_id | KernelSubGroupInfo | UIntPtr | IntPtr      | UIntPtr | IntPtr      | IntPtr      |
 
 # clImportMemoryARM[3]:
 	cl_mem | cl_context | MemFlags | array of ImportPropertiesArm | IntPtr | UIntPtr | var ErrorCode |
@@ -1121,10 +1111,10 @@
 	ErrorCode | cl_command_queue | IntPtr | var T      | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
 	ErrorCode | cl_command_queue | IntPtr | var T      | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | IntPtr | var T      | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | var cl_event      | var cl_event |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
-	ErrorCode | cl_command_queue | IntPtr | IntPtr     | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | IntPtr | pointer    | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueSVMMapARM[6]:
 	ErrorCode | cl_command_queue | Bool | MapFlags | IntPtr | UIntPtr | UInt32 | array of cl_event | var cl_event |
@@ -1146,8 +1136,8 @@
 	ErrorCode | cl_kernel | UInt32 | IntPtr |
 
 # clSetKernelExecInfoARM[3]:
-	ErrorCode | cl_kernel | KernelExecInfoArm | UIntPtr | var IntPtr |
 	ErrorCode | cl_kernel | KernelExecInfoArm | UIntPtr | var Bool   |
+	ErrorCode | cl_kernel | KernelExecInfoArm | UIntPtr | var IntPtr |
 	ErrorCode | cl_kernel | KernelExecInfoArm | UIntPtr | pointer    |
 
 # clCreateAcceleratorINTEL[1]:
@@ -1607,11 +1597,15 @@
 	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | IntPtr | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr          | IntPtr          | var cl_mutable_command      |
 	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | IntPtr | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr          | IntPtr          | IntPtr                      |
 
-# clCommandFillImageKHR[4]:
-	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | var cl_mutable_command |
-	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | IntPtr                 |
-	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T | var UIntPtr | var UIntPtr | UInt32 | IntPtr     | var UInt32 | var cl_mutable_command |
-	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T | var UIntPtr | var UIntPtr | UInt32 | IntPtr     | var UInt32 | IntPtr                 |
+# clCommandFillImageKHR[8]:
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | IntPtr                 |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr     | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr     | var UInt32 | IntPtr                 |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | IntPtr                 |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr     | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr     | var UInt32 | IntPtr                 |
 
 # clCommandNDRangeKernelKHR[8]:
 	ErrorCode | cl_command_buffer | cl_command_queue | var UInt64 | cl_kernel | UInt32 | var UIntPtr | var UIntPtr | var UIntPtr | UInt32 | var UInt32 | var UInt32 | var cl_mutable_command |

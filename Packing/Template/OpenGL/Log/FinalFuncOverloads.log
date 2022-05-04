@@ -151,17 +151,17 @@
 # glBufferData[3]:
 	BufferTarget | UIntPtr | array of T | BufferUsageARB |
 	BufferTarget | UIntPtr | var T      | BufferUsageARB |
-	BufferTarget | UIntPtr | IntPtr     | BufferUsageARB |
+	BufferTarget | UIntPtr | pointer    | BufferUsageARB |
 
 # glBufferStorage[3]:
 	BufferStorageTarget | UIntPtr | array of T | BufferStorageMask |
 	BufferStorageTarget | UIntPtr | var T      | BufferStorageMask |
-	BufferStorageTarget | UIntPtr | IntPtr     | BufferStorageMask |
+	BufferStorageTarget | UIntPtr | pointer    | BufferStorageMask |
 
 # glBufferSubData[3]:
 	BufferTarget | IntPtr | UIntPtr | array of T |
 	BufferTarget | IntPtr | UIntPtr | var T      |
-	BufferTarget | IntPtr | UIntPtr | IntPtr     |
+	BufferTarget | IntPtr | UIntPtr | pointer    |
 
 # glCheckFramebufferStatus[1]:
 	FramebufferStatus | FramebufferTarget |
@@ -178,7 +178,7 @@
 # glClearBufferData[3]:
 	BufferStorageTarget | SizedInternalFormat | PixelFormat | PixelType | array of T |
 	BufferStorageTarget | SizedInternalFormat | PixelFormat | PixelType | var T      |
-	BufferStorageTarget | SizedInternalFormat | PixelFormat | PixelType | IntPtr     |
+	BufferStorageTarget | SizedInternalFormat | PixelFormat | PixelType | pointer    |
 
 # glClearBufferfi[1]:
 	Buffer | Int32 | single | Int32 |
@@ -196,7 +196,7 @@
 # glClearBufferSubData[3]:
 	BufferTarget | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | array of T |
 	BufferTarget | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | var T      |
-	BufferTarget | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | IntPtr     |
+	BufferTarget | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | pointer    |
 
 # glClearBufferuiv[3]:
 	Buffer | Int32 | array of UInt32 |
@@ -215,12 +215,12 @@
 # glClearNamedBufferData[3]:
 	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | array of T |
 	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | var T      |
-	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | IntPtr     |
+	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | pointer    |
 
 # glClearNamedBufferSubData[3]:
 	gl_buffer | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | array of T |
 	gl_buffer | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | var T      |
-	gl_buffer | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | IntPtr     |
+	gl_buffer | SizedInternalFormat | IntPtr | UIntPtr | PixelFormat | PixelType | pointer    |
 
 # glClearNamedFramebufferfi[1]:
 	gl_framebuffer | Buffer | Int32 | single | Int32 |
@@ -759,8 +759,8 @@
 	BufferTarget | BufferPointerNameARB | pointer    |
 
 # glGetBufferSubData[2]:
-	BufferTarget | IntPtr | UIntPtr | var T  |
-	BufferTarget | IntPtr | UIntPtr | IntPtr |
+	BufferTarget | IntPtr | UIntPtr | var T   |
+	BufferTarget | IntPtr | UIntPtr | pointer |
 
 # glGetCompressedTexImage[1]:
 	TextureTarget | Int32 | IntPtr |
@@ -854,8 +854,8 @@
 	gl_buffer | BufferPointerNameARB | pointer    |
 
 # glGetNamedBufferSubData[2]:
-	gl_buffer | IntPtr | UIntPtr | var T  |
-	gl_buffer | IntPtr | UIntPtr | IntPtr |
+	gl_buffer | IntPtr | UIntPtr | var T   |
+	gl_buffer | IntPtr | UIntPtr | pointer |
 
 # glGetNamedFramebufferAttachmentParameteriv[2]:
 	gl_framebuffer | FramebufferAttachment | FramebufferAttachmentParameterName | var Int32 |
@@ -1434,17 +1434,17 @@
 # glNamedBufferData[3]:
 	gl_buffer | UIntPtr | array of T | VertexBufferObjectUsage |
 	gl_buffer | UIntPtr | var T      | VertexBufferObjectUsage |
-	gl_buffer | UIntPtr | IntPtr     | VertexBufferObjectUsage |
+	gl_buffer | UIntPtr | pointer    | VertexBufferObjectUsage |
 
 # glNamedBufferStorage[3]:
 	gl_buffer | UIntPtr | array of T | BufferStorageMask |
 	gl_buffer | UIntPtr | var T      | BufferStorageMask |
-	gl_buffer | UIntPtr | IntPtr     | BufferStorageMask |
+	gl_buffer | UIntPtr | pointer    | BufferStorageMask |
 
 # glNamedBufferSubData[3]:
 	gl_buffer | IntPtr | UIntPtr | array of T |
 	gl_buffer | IntPtr | UIntPtr | var T      |
-	gl_buffer | IntPtr | UIntPtr | IntPtr     |
+	gl_buffer | IntPtr | UIntPtr | pointer    |
 
 # glNamedFramebufferDrawBuffer[1]:
 	gl_framebuffer | ColorBuffer |
@@ -2074,8 +2074,8 @@
 
 # glUniform1dv[4]:
 	Int32 | Int32 | array of real |
-	Int32 | Int32 | var real      |
 	Int32 | Int32 | var Vec1d     |
+	Int32 | Int32 | var real      |
 	Int32 | Int32 | IntPtr        |
 
 # glUniform1f[1]:
@@ -2083,8 +2083,8 @@
 
 # glUniform1fv[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec1f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform1i[1]:
@@ -2092,8 +2092,8 @@
 
 # glUniform1iv[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec1i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform1ui[1]:
@@ -2101,8 +2101,8 @@
 
 # glUniform1uiv[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec1ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform2d[1]:
@@ -2110,8 +2110,8 @@
 
 # glUniform2dv[4]:
 	Int32 | Int32 | array of real |
-	Int32 | Int32 | var real      |
 	Int32 | Int32 | var Vec2d     |
+	Int32 | Int32 | var real      |
 	Int32 | Int32 | IntPtr        |
 
 # glUniform2f[1]:
@@ -2119,8 +2119,8 @@
 
 # glUniform2fv[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec2f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform2i[1]:
@@ -2128,8 +2128,8 @@
 
 # glUniform2iv[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec2i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform2ui[1]:
@@ -2137,8 +2137,8 @@
 
 # glUniform2uiv[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec2ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform3d[1]:
@@ -2146,8 +2146,8 @@
 
 # glUniform3dv[4]:
 	Int32 | Int32 | array of real |
-	Int32 | Int32 | var real      |
 	Int32 | Int32 | var Vec3d     |
+	Int32 | Int32 | var real      |
 	Int32 | Int32 | IntPtr        |
 
 # glUniform3f[1]:
@@ -2155,8 +2155,8 @@
 
 # glUniform3fv[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec3f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform3i[1]:
@@ -2164,8 +2164,8 @@
 
 # glUniform3iv[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec3i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform3ui[1]:
@@ -2173,8 +2173,8 @@
 
 # glUniform3uiv[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec3ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform4d[1]:
@@ -2182,8 +2182,8 @@
 
 # glUniform4dv[4]:
 	Int32 | Int32 | array of real |
-	Int32 | Int32 | var real      |
 	Int32 | Int32 | var Vec4d     |
+	Int32 | Int32 | var real      |
 	Int32 | Int32 | IntPtr        |
 
 # glUniform4f[1]:
@@ -2191,8 +2191,8 @@
 
 # glUniform4fv[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec4f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform4i[1]:
@@ -2200,8 +2200,8 @@
 
 # glUniform4iv[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec4i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform4ui[1]:
@@ -2209,8 +2209,8 @@
 
 # glUniform4uiv[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec4ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniformBlockBinding[1]:
@@ -5571,50 +5571,50 @@
 
 # glUniform1fvARB[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec1f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform2fvARB[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec2f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform3fvARB[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec3f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform4fvARB[4]:
 	Int32 | Int32 | array of single |
-	Int32 | Int32 | var single      |
 	Int32 | Int32 | var Vec4f       |
+	Int32 | Int32 | var single      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform1ivARB[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec1i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform2ivARB[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec2i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform3ivARB[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec3i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniform4ivARB[4]:
 	Int32 | Int32 | array of Int32 |
-	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | var Vec4i      |
+	Int32 | Int32 | var Int32      |
 	Int32 | Int32 | IntPtr         |
 
 # glUniformMatrix2fvARB[3]:
@@ -5830,16 +5830,16 @@
 # glBufferDataARB[3]:
 	BufferTarget | UIntPtr | array of T | BufferUsageARB |
 	BufferTarget | UIntPtr | var T      | BufferUsageARB |
-	BufferTarget | UIntPtr | IntPtr     | BufferUsageARB |
+	BufferTarget | UIntPtr | pointer    | BufferUsageARB |
 
 # glBufferSubDataARB[3]:
 	BufferTarget | IntPtr | UIntPtr | array of T |
 	BufferTarget | IntPtr | UIntPtr | var T      |
-	BufferTarget | IntPtr | UIntPtr | IntPtr     |
+	BufferTarget | IntPtr | UIntPtr | pointer    |
 
 # glGetBufferSubDataARB[2]:
-	BufferTarget | IntPtr | UIntPtr | var T  |
-	BufferTarget | IntPtr | UIntPtr | IntPtr |
+	BufferTarget | IntPtr | UIntPtr | var T   |
+	BufferTarget | IntPtr | UIntPtr | pointer |
 
 # glMapBufferARB[1]:
 	IntPtr | BufferTarget | BufferAccessARB |
@@ -7026,12 +7026,12 @@
 # glNamedBufferDataEXT[3]:
 	gl_buffer | UIntPtr | array of T | VertexBufferObjectUsage |
 	gl_buffer | UIntPtr | var T      | VertexBufferObjectUsage |
-	gl_buffer | UIntPtr | IntPtr     | VertexBufferObjectUsage |
+	gl_buffer | UIntPtr | pointer    | VertexBufferObjectUsage |
 
 # glNamedBufferSubDataEXT[3]:
 	gl_buffer | IntPtr | UIntPtr | array of T |
 	gl_buffer | IntPtr | UIntPtr | var T      |
-	gl_buffer | IntPtr | UIntPtr | IntPtr     |
+	gl_buffer | IntPtr | UIntPtr | pointer    |
 
 # glMapNamedBufferEXT[1]:
 	IntPtr | gl_buffer | BufferAccessARB |
@@ -7048,8 +7048,8 @@
 	gl_buffer | BufferPointerNameARB | pointer    |
 
 # glGetNamedBufferSubDataEXT[2]:
-	gl_buffer | IntPtr | UIntPtr | var T  |
-	gl_buffer | IntPtr | UIntPtr | IntPtr |
+	gl_buffer | IntPtr | UIntPtr | var T   |
+	gl_buffer | IntPtr | UIntPtr | pointer |
 
 # glProgramUniform1fEXT[1]:
 	gl_program | Int32 | single |
@@ -7466,17 +7466,17 @@
 # glNamedBufferStorageEXT[3]:
 	gl_buffer | UIntPtr | array of T | BufferStorageMask |
 	gl_buffer | UIntPtr | var T      | BufferStorageMask |
-	gl_buffer | UIntPtr | IntPtr     | BufferStorageMask |
+	gl_buffer | UIntPtr | pointer    | BufferStorageMask |
 
 # glClearNamedBufferDataEXT[3]:
 	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | array of T |
 	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | var T      |
-	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | IntPtr     |
+	gl_buffer | SizedInternalFormat | PixelFormat | PixelType | pointer    |
 
 # glClearNamedBufferSubDataEXT[3]:
 	gl_buffer | SizedInternalFormat | UIntPtr | UIntPtr | PixelFormat | PixelType | array of T |
 	gl_buffer | SizedInternalFormat | UIntPtr | UIntPtr | PixelFormat | PixelType | var T      |
-	gl_buffer | SizedInternalFormat | UIntPtr | UIntPtr | PixelFormat | PixelType | IntPtr     |
+	gl_buffer | SizedInternalFormat | UIntPtr | UIntPtr | PixelFormat | PixelType | pointer    |
 
 # glNamedFramebufferParameteriEXT[1]:
 	gl_framebuffer | FramebufferParameterName | Int32 |
@@ -7750,26 +7750,26 @@
 
 # glUniform1uivEXT[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec1ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform2uivEXT[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec2ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform3uivEXT[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec3ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glUniform4uivEXT[4]:
 	Int32 | Int32 | array of UInt32 |
-	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | var Vec4ui      |
+	Int32 | Int32 | var UInt32      |
 	Int32 | Int32 | IntPtr          |
 
 # glVertexAttribI1iEXT[1]:
@@ -8741,8 +8741,8 @@
 	IntPtr                     |
 
 # glGetNextPerfQueryIdINTEL[2]:
-	gl_perf_query_id_INTEL | gl_perf_query_id_INTEL |
-	gl_perf_query_id_INTEL | IntPtr                 |
+	gl_perf_query_id_INTEL | var gl_perf_query_id_INTEL |
+	gl_perf_query_id_INTEL | IntPtr                     |
 
 # glGetPerfCounterInfoINTEL[2]:
 	gl_perf_query_id_INTEL | UInt32 | UInt32 | IntPtr | UInt32 | IntPtr | var UInt32 | var UInt32 | var UInt32 | var UInt32 | var UInt64 |
@@ -11668,8 +11668,8 @@
 	Byte | Byte | Byte | Byte | single | single |
 
 # glColor4ubVertex2fvSUN[4]:
-	var Vec4ub    | var Vec2f       |
 	array of Byte | array of single |
+	var Vec4ub    | var Vec2f       |
 	var Byte      | var single      |
 	IntPtr        | IntPtr          |
 
@@ -11677,8 +11677,8 @@
 	Byte | Byte | Byte | Byte | single | single | single |
 
 # glColor4ubVertex3fvSUN[4]:
-	var Vec4ub    | var Vec3f       |
 	array of Byte | array of single |
+	var Vec4ub    | var Vec3f       |
 	var Byte      | var single      |
 	IntPtr        | IntPtr          |
 
@@ -11686,8 +11686,8 @@
 	single | single | single | single | single | single |
 
 # glColor3fVertex3fvSUN[4]:
-	var Vec3f       | var Vec3f       |
 	array of single | array of single |
+	var Vec3f       | var Vec3f       |
 	var single      | var single      |
 	IntPtr          | IntPtr          |
 
@@ -11695,8 +11695,8 @@
 	single | single | single | single | single | single |
 
 # glNormal3fVertex3fvSUN[4]:
-	var Vec3f       | var Vec3f       |
 	array of single | array of single |
+	var Vec3f       | var Vec3f       |
 	var single      | var single      |
 	IntPtr          | IntPtr          |
 
@@ -11704,8 +11704,8 @@
 	single | single | single | single | single | single | single | single | single | single |
 
 # glColor4fNormal3fVertex3fvSUN[4]:
-	var Vec4f       | var Vec3f       | var Vec3f       |
 	array of single | array of single | array of single |
+	var Vec4f       | var Vec3f       | var Vec3f       |
 	var single      | var single      | var single      |
 	IntPtr          | IntPtr          | IntPtr          |
 
@@ -11713,8 +11713,8 @@
 	single | single | single | single | single |
 
 # glTexCoord2fVertex3fvSUN[4]:
-	var Vec2f       | var Vec3f       |
 	array of single | array of single |
+	var Vec2f       | var Vec3f       |
 	var single      | var single      |
 	IntPtr          | IntPtr          |
 
@@ -11722,8 +11722,8 @@
 	single | single | single | single | single | single | single | single |
 
 # glTexCoord4fVertex4fvSUN[4]:
-	var Vec4f       | var Vec4f       |
 	array of single | array of single |
+	var Vec4f       | var Vec4f       |
 	var single      | var single      |
 	IntPtr          | IntPtr          |
 
@@ -11731,8 +11731,8 @@
 	single | single | Byte | Byte | Byte | Byte | single | single | single |
 
 # glTexCoord2fColor4ubVertex3fvSUN[4]:
-	var Vec2f       | var Vec4ub    | var Vec3f       |
 	array of single | array of Byte | array of single |
+	var Vec2f       | var Vec4ub    | var Vec3f       |
 	var single      | var Byte      | var single      |
 	IntPtr          | IntPtr        | IntPtr          |
 
@@ -11740,8 +11740,8 @@
 	single | single | single | single | single | single | single | single |
 
 # glTexCoord2fColor3fVertex3fvSUN[4]:
-	var Vec2f       | var Vec3f       | var Vec3f       |
 	array of single | array of single | array of single |
+	var Vec2f       | var Vec3f       | var Vec3f       |
 	var single      | var single      | var single      |
 	IntPtr          | IntPtr          | IntPtr          |
 
@@ -11749,8 +11749,8 @@
 	single | single | single | single | single | single | single | single |
 
 # glTexCoord2fNormal3fVertex3fvSUN[4]:
-	var Vec2f       | var Vec3f       | var Vec3f       |
 	array of single | array of single | array of single |
+	var Vec2f       | var Vec3f       | var Vec3f       |
 	var single      | var single      | var single      |
 	IntPtr          | IntPtr          | IntPtr          |
 
@@ -11758,8 +11758,8 @@
 	single | single | single | single | single | single | single | single | single | single | single | single |
 
 # glTexCoord2fColor4fNormal3fVertex3fvSUN[4]:
-	var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
 	array of single | array of single | array of single | array of single |
+	var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
 	var single      | var single      | var single      | var single      |
 	IntPtr          | IntPtr          | IntPtr          | IntPtr          |
 
@@ -11767,8 +11767,8 @@
 	single | single | single | single | single | single | single | single | single | single | single | single | single | single | single |
 
 # glTexCoord4fColor4fNormal3fVertex4fvSUN[4]:
-	var Vec4f       | var Vec4f       | var Vec3f       | var Vec4f       |
 	array of single | array of single | array of single | array of single |
+	var Vec4f       | var Vec4f       | var Vec3f       | var Vec4f       |
 	var single      | var single      | var single      | var single      |
 	IntPtr          | IntPtr          | IntPtr          | IntPtr          |
 
@@ -11776,8 +11776,8 @@
 	UInt32 | single | single | single |
 
 # glReplacementCodeuiVertex3fvSUN[4]:
-	var UInt32 | var Vec3f       |
 	var UInt32 | array of single |
+	var UInt32 | var Vec3f       |
 	var UInt32 | var single      |
 	IntPtr     | IntPtr          |
 
@@ -11785,8 +11785,8 @@
 	UInt32 | Byte | Byte | Byte | Byte | single | single | single |
 
 # glReplacementCodeuiColor4ubVertex3fvSUN[4]:
-	var UInt32 | var Vec4ub    | var Vec3f       |
 	var UInt32 | array of Byte | array of single |
+	var UInt32 | var Vec4ub    | var Vec3f       |
 	var UInt32 | var Byte      | var single      |
 	IntPtr     | IntPtr        | IntPtr          |
 
@@ -11794,8 +11794,8 @@
 	UInt32 | single | single | single | single | single | single |
 
 # glReplacementCodeuiColor3fVertex3fvSUN[4]:
-	var UInt32 | var Vec3f       | var Vec3f       |
 	var UInt32 | array of single | array of single |
+	var UInt32 | var Vec3f       | var Vec3f       |
 	var UInt32 | var single      | var single      |
 	IntPtr     | IntPtr          | IntPtr          |
 
@@ -11803,8 +11803,8 @@
 	UInt32 | single | single | single | single | single | single |
 
 # glReplacementCodeuiNormal3fVertex3fvSUN[4]:
-	var UInt32 | var Vec3f       | var Vec3f       |
 	var UInt32 | array of single | array of single |
+	var UInt32 | var Vec3f       | var Vec3f       |
 	var UInt32 | var single      | var single      |
 	IntPtr     | IntPtr          | IntPtr          |
 
@@ -11812,8 +11812,8 @@
 	UInt32 | single | single | single | single | single | single | single | single | single | single |
 
 # glReplacementCodeuiColor4fNormal3fVertex3fvSUN[4]:
-	var UInt32 | var Vec4f       | var Vec3f       | var Vec3f       |
 	var UInt32 | array of single | array of single | array of single |
+	var UInt32 | var Vec4f       | var Vec3f       | var Vec3f       |
 	var UInt32 | var single      | var single      | var single      |
 	IntPtr     | IntPtr          | IntPtr          | IntPtr          |
 
@@ -11821,8 +11821,8 @@
 	UInt32 | single | single | single | single | single |
 
 # glReplacementCodeuiTexCoord2fVertex3fvSUN[4]:
-	var UInt32 | var Vec2f       | var Vec3f       |
 	var UInt32 | array of single | array of single |
+	var UInt32 | var Vec2f       | var Vec3f       |
 	var UInt32 | var single      | var single      |
 	IntPtr     | IntPtr          | IntPtr          |
 
@@ -11830,8 +11830,8 @@
 	UInt32 | single | single | single | single | single | single | single | single |
 
 # glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN[4]:
-	var UInt32 | var Vec2f       | var Vec3f       | var Vec3f       |
 	var UInt32 | array of single | array of single | array of single |
+	var UInt32 | var Vec2f       | var Vec3f       | var Vec3f       |
 	var UInt32 | var single      | var single      | var single      |
 	IntPtr     | IntPtr          | IntPtr          | IntPtr          |
 
@@ -11839,8 +11839,8 @@
 	UInt32 | single | single | single | single | single | single | single | single | single | single | single | single |
 
 # glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN[4]:
-	var UInt32 | var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
 	var UInt32 | array of single | array of single | array of single | array of single |
+	var UInt32 | var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
 	var UInt32 | var single      | var single      | var single      | var single      |
 	IntPtr     | IntPtr          | IntPtr          | IntPtr          | IntPtr          |
 

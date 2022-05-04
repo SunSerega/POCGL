@@ -1029,9 +1029,46 @@ type
       for var par_i := org_par.Length-1 downto 0 do
       begin
         if is_proc and (par_i=0) then continue;
+        
         par_ind_div[par_i] := cap;
         cap *= possible_par_types[par_i].Count;
         par_ind_mod[par_i] := cap;
+        
+        possible_par_types[par_i].Sort((p1,p2)->
+        begin
+          Result := 0;
+          
+          // 1. arr_lvl (descending)
+          Result -= p1.arr_lvl;
+          Result += p2.arr_lvl;
+          if Result<>0 then exit;
+          
+          // 2. var- vs plain
+          Result -= Ord(p1.var_arg);
+          Result += Ord(p2.var_arg);
+          if Result<>0 then exit;
+          
+          // 3. string vs IntPtr
+          Result -= Ord(p1.tname='string');
+          Result += Ord(p2.tname='string');
+          if Result<>0 then exit;
+          
+          // 4. special vs generic
+          Result += Ord(p1.IsGeneric);
+          Result -= Ord(p2.IsGeneric);
+          
+          // 5. OpenGL.Vec** vs plain
+          Result -= Ord(p1.tname.StartsWith('Vec') and p1.tname.Skip('Vec'.Length).FirstOrDefault.InRange('1','4'));
+          Result += Ord(p2.tname.StartsWith('Vec') and p2.tname.Skip('Vec'.Length).FirstOrDefault.InRange('1','4'));
+          if Result<>0 then exit;
+          
+          if p1.var_arg then
+            Result := string.Compare(p1.tname, p2.tname) else
+          if p1<>p2 then
+            Otp($'ERROR: Func [{self.name}] par#{par_i}: Failed to sort [{p1.ToString(true,true)}] vs [{p2.ToString(true,true)}]');
+          
+        end);
+        
       end;
       
       all_overloads := new List<FuncOverload>(cap);
@@ -1097,7 +1134,7 @@ type
     begin
       InitOverloads;
       
-      {$region MiscInit}
+      {$region Log and Warn}
       
       if LogCache.loged_ffo.Add(self.name) then
       begin
@@ -1155,7 +1192,19 @@ type
           Otp(#9+_ObjectToString(par.Select(p->p.ToString(true,true))));
         end;
         exit;
+      end else
+      for var par_i := 0 to org_par.Length-1 do
+      begin
+        if is_proc and (par_i=0) then continue;
+        
+        foreach var t in possible_par_types[par_i] do
+        begin
+          if all_overloads.Any(ovr->ovr.pars[par_i]=t) then continue;
+          Otp($'WARNING: Func [{self.name}] par#{par_i} ppt [{t.ToString(true,true)}] did not appear in final overloads. Use !ppt fixer to remove it, if this is intentional');
+        end;
+        
       end;
+      
       if self.name not in fixed_names then
       begin
         if all_overloads.Count>12 then
@@ -1177,6 +1226,10 @@ type
             Otp($'WARNING: Func [{fixed_ext}] was fixed, but [{name}] was not');
         end;
       end;
+      
+      {$endregion Log and Warn}
+      
+      {$region MiscInit}
       
       for var par_i := 1 to org_par.Length-1 do
         if all_overloads.Any(ovr->ovr.pars.Skip(1).Any(ovr_par->ovr_par.tname.ToLower=org_par[par_i].name.ToLower)) then
@@ -2818,8 +2871,8 @@ type
     
     private function FixerInfo(f: Func) := $'[{TypeName(self)}] of func [{f.name}]';
     
-    private function ErrorInfo(f: Func; act: string; i: integer; t: FuncParamT; ppt: List<FuncParamT>) :=
-    $'ERROR: {FixerInfo(f)} failed to {act} type [{t.ToString(true,true)}] of param#{i} {f.org_par[i].name}: {_ObjectToString(ppt.Select(par->par.ToString(true,true)))}';
+    private function ErrorInfo(f: Func; act: string; i: integer; t: FuncParamT; ppt: List<FuncParamT>): string :=
+    $'ERROR: {FixerInfo(f)} failed to {act} type [{t.ToString(true,true)}] of param#{i} [{f.org_par[i]?.name}]: {_ObjectToString(ppt.Select(par->par.ToString(true,true)))}';
     
     protected function ApplyOrder: integer; override := 2;
     public function Apply(f: Func): boolean; override;
@@ -2939,7 +2992,6 @@ type
             limited_pars[i] := true;
             if tovr.pars[i]=nil then continue;
             Result := false;
-            break;
           end;
           if Result then unused_t_ovrs.Remove(tovr);
         end)

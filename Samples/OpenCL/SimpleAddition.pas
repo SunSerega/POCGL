@@ -49,7 +49,7 @@ begin
   
   // Подготовка и запуск программы на GPU
   
-  var buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(buf_byte_size), IntPtr.Zero, ec);
+  var buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(buf_byte_size),nil, ec);
   ec.RaiseIfError;
   
   begin

@@ -3161,7 +3161,7 @@ type
     z_CompileProgram_1(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
     
     // added in cl1.0
-    private static function z_CreateBuffer_1(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateBuffer_1(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateBuffer';
     private static function z_CreateBuffer_2(context: cl_context; flags: MemFlags; size: UIntPtr; var host_ptr: Byte; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateBuffer';
@@ -3176,7 +3176,7 @@ type
     begin
       Result := z_CreateBuffer_2(context, flags, size, PByte(pointer(@host_ptr))^, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBuffer(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateBuffer(context: cl_context; flags: MemFlags; size: UIntPtr; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateBuffer_1(context, flags, size, host_ptr, errcode_ret);
     
     // added in cl3.0
@@ -3267,7 +3267,7 @@ type
     z_CreateContextFromType_1(properties, device_type, pfn_notify, user_data, errcode_ret);
     
     // added in cl1.2
-    private static function z_CreateImage_1(context: cl_context; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImage_1(context: cl_context; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateImage';
     private static function z_CreateImage_2(context: cl_context; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; var host_ptr: Byte; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateImage';
@@ -3282,7 +3282,7 @@ type
     begin
       Result := z_CreateImage_2(context, flags, image_format, image_desc, PByte(pointer(@host_ptr))^, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage(context: cl_context; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImage(context: cl_context; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImage_1(context, flags, image_format, image_desc, host_ptr, errcode_ret);
     
     // added in cl1.0
@@ -3298,11 +3298,11 @@ type
     z_CreateImage3D_1(context, flags, image_format, image_width, image_height, image_depth, image_row_pitch, image_slice_pitch, host_ptr, errcode_ret);
     
     // added in cl3.0
-    private static function z_CreateImageWithProperties_1(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_1(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_2(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; var host_ptr: Byte; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateImageWithProperties';
-    private static function z_CreateImageWithProperties_3(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
+    private static function z_CreateImageWithProperties_3(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateImageWithProperties';
     private static function z_CreateImageWithProperties_4(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; var host_ptr: Byte; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateImageWithProperties';
@@ -3322,13 +3322,13 @@ type
     begin
       Result := z_CreateImageWithProperties_4(context, properties, flags, image_format, image_desc, PByte(pointer(@host_ptr))^, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImageWithProperties_3(context, properties, flags, image_format, image_desc, host_ptr, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties<T>(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; var host_ptr: T; var errcode_ret: ErrorCode): cl_mem; where T: record;
     begin
       Result := z_CreateImageWithProperties_2(context, properties, flags, image_format, image_desc, PByte(pointer(@host_ptr))^, errcode_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CreateImageWithProperties(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; host_ptr: pointer; var errcode_ret: ErrorCode): cl_mem :=
     z_CreateImageWithProperties_1(context, properties, flags, image_format, image_desc, host_ptr, errcode_ret);
     
     // added in cl1.0
@@ -4089,13 +4089,13 @@ type
     z_EnqueueCopyImageToBuffer_1(command_queue, src_image, dst_buffer, src_origin, region, dst_offset, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.2
-    private static function z_EnqueueFillBuffer_1(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueFillBuffer_1(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueFillBuffer';
-    private static function z_EnqueueFillBuffer_2(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueFillBuffer_2(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueFillBuffer';
-    private static function z_EnqueueFillBuffer_3(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueFillBuffer_3(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueFillBuffer';
-    private static function z_EnqueueFillBuffer_4(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueFillBuffer_4(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueFillBuffer';
     private static function z_EnqueueFillBuffer_5(command_queue: cl_command_queue; buffer: cl_mem; var pattern: Byte; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueFillBuffer';
@@ -4145,23 +4145,23 @@ type
     begin
       Result := z_EnqueueFillBuffer_5(command_queue, buffer, PByte(pointer(@pattern))^, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueFillBuffer_4(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueFillBuffer_3(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueFillBuffer_2(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillBuffer(command_queue: cl_command_queue; buffer: cl_mem; pattern: pointer; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueFillBuffer_1(command_queue, buffer, pattern, pattern_size, offset, size, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.2
-    private static function z_EnqueueFillImage_1(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueFillImage_1(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueFillImage';
-    private static function z_EnqueueFillImage_2(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueFillImage_2(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueFillImage';
-    private static function z_EnqueueFillImage_3(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueFillImage_3(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueFillImage';
-    private static function z_EnqueueFillImage_4(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueFillImage_4(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueFillImage';
     private static function z_EnqueueFillImage_5(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueFillImage';
@@ -4187,13 +4187,13 @@ type
     begin
       Result := z_EnqueueFillImage_5(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueFillImage_4(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueFillImage_3(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueFillImage_2(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: IntPtr; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueFillImage_1(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.0
@@ -4599,13 +4599,13 @@ type
     z_EnqueueNDRangeKernel_1(command_queue, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.0
-    private static function z_EnqueueReadBuffer_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueReadBuffer_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadBuffer';
-    private static function z_EnqueueReadBuffer_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueReadBuffer_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadBuffer';
-    private static function z_EnqueueReadBuffer_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueReadBuffer_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadBuffer';
-    private static function z_EnqueueReadBuffer_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueReadBuffer_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadBuffer';
     private static function z_EnqueueReadBuffer_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadBuffer';
@@ -4655,23 +4655,23 @@ type
     begin
       Result := z_EnqueueReadBuffer_5(command_queue, buffer, blocking_read, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueReadBuffer_4(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReadBuffer_3(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueReadBuffer_2(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueReadBuffer_1(command_queue, buffer, blocking_read, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.1
-    private static function z_EnqueueReadBufferRect_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueReadBufferRect_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadBufferRect';
-    private static function z_EnqueueReadBufferRect_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueReadBufferRect_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadBufferRect';
-    private static function z_EnqueueReadBufferRect_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueReadBufferRect_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadBufferRect';
-    private static function z_EnqueueReadBufferRect_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueReadBufferRect_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadBufferRect';
     private static function z_EnqueueReadBufferRect_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadBufferRect';
@@ -4697,23 +4697,23 @@ type
     begin
       Result := z_EnqueueReadBufferRect_5(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueReadBufferRect_4(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReadBufferRect_3(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueReadBufferRect_2(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueReadBufferRect_1(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.0
-    private static function z_EnqueueReadImage_1(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueReadImage_1(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadImage';
-    private static function z_EnqueueReadImage_2(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueReadImage_2(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadImage';
-    private static function z_EnqueueReadImage_3(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueReadImage_3(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadImage';
-    private static function z_EnqueueReadImage_4(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueReadImage_4(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadImage';
     private static function z_EnqueueReadImage_5(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadImage';
@@ -4739,13 +4739,13 @@ type
     begin
       Result := z_EnqueueReadImage_5(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueReadImage_4(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueReadImage_3(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueReadImage_2(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueReadImage_1(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl2.0
@@ -4871,13 +4871,13 @@ type
     z_EnqueueSVMMemcpy_1(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl2.0
-    private static function z_EnqueueSVMMemFill_1(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueSVMMemFill_1(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFill';
-    private static function z_EnqueueSVMMemFill_2(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueSVMMemFill_2(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFill';
-    private static function z_EnqueueSVMMemFill_3(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueSVMMemFill_3(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFill';
-    private static function z_EnqueueSVMMemFill_4(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueSVMMemFill_4(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFill';
     private static function z_EnqueueSVMMemFill_5(command_queue: cl_command_queue; svm_ptr: IntPtr; var pattern: Byte; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFill';
@@ -4927,13 +4927,13 @@ type
     begin
       Result := z_EnqueueSVMMemFill_5(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueSVMMemFill_4(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMMemFill_3(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueSVMMemFill_2(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFill(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMMemFill_1(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl2.1
@@ -5126,13 +5126,13 @@ type
     z_EnqueueWaitForEvents_1(command_queue, num_events, event_list);
     
     // added in cl1.0
-    private static function z_EnqueueWriteBuffer_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueWriteBuffer_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBuffer';
-    private static function z_EnqueueWriteBuffer_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueWriteBuffer_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBuffer';
-    private static function z_EnqueueWriteBuffer_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueWriteBuffer_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBuffer';
-    private static function z_EnqueueWriteBuffer_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueWriteBuffer_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBuffer';
     private static function z_EnqueueWriteBuffer_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBuffer';
@@ -5182,23 +5182,23 @@ type
     begin
       Result := z_EnqueueWriteBuffer_5(command_queue, buffer, blocking_write, offset, size, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteBuffer_4(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteBuffer_3(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteBuffer_2(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBuffer(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; offset: UIntPtr; size: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteBuffer_1(command_queue, buffer, blocking_write, offset, size, ptr, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.1
-    private static function z_EnqueueWriteBufferRect_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueWriteBufferRect_1(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBufferRect';
-    private static function z_EnqueueWriteBufferRect_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueWriteBufferRect_2(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBufferRect';
-    private static function z_EnqueueWriteBufferRect_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueWriteBufferRect_3(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBufferRect';
-    private static function z_EnqueueWriteBufferRect_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueWriteBufferRect_4(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBufferRect';
     private static function z_EnqueueWriteBufferRect_5(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBufferRect';
@@ -5224,23 +5224,23 @@ type
     begin
       Result := z_EnqueueWriteBufferRect_5(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteBufferRect_4(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteBufferRect_3(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteBufferRect_2(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteBufferRect_1(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.0
-    private static function z_EnqueueWriteImage_1(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueWriteImage_1(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteImage';
-    private static function z_EnqueueWriteImage_2(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueWriteImage_2(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteImage';
-    private static function z_EnqueueWriteImage_3(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueWriteImage_3(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteImage';
-    private static function z_EnqueueWriteImage_4(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueWriteImage_4(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteImage';
     private static function z_EnqueueWriteImage_5(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueWriteImage';
@@ -5266,13 +5266,13 @@ type
     begin
       Result := z_EnqueueWriteImage_5(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteImage_4(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteImage_3(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteImage_2(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteImage_1(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
     
     // added in cl1.0
@@ -5288,87 +5288,87 @@ type
     z_Flush_1(command_queue);
     
     // added in cl1.0
-    private static function z_GetCommandQueueInfo_1(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_1(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_2(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_2(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_3(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_3(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_4(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_4(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
     private static function z_GetCommandQueueInfo_5(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
     private static function z_GetCommandQueueInfo_6(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_7(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_7(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_8(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_8(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_9(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_9(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_10(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_10(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_11(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_11(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    private static function z_GetCommandQueueInfo_12(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetCommandQueueInfo_12(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetCommandQueueInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_12(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_11(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_10(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_9(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_8(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_7(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_6(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_5(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_4(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: cl_command_queue; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_3(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetCommandQueueInfo_2(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandQueueInfo(command_queue: cl_command_queue; param_name: CommandQueueInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetCommandQueueInfo_1(command_queue, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetContextInfo_1(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetContextInfo_1(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_2(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetContextInfo_2(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_3(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: ContextProperties; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetContextInfo_3(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_4(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: ContextProperties; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetContextInfo_4(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_5(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetContextInfo_5(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: ContextProperties; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_6(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetContextInfo_6(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: ContextProperties; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_7(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetContextInfo_7(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    private static function z_GetContextInfo_8(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetContextInfo_8(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetContextInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetContextInfo_8(context, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetContextInfo_7(context, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetContextInfo_6(context, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetContextInfo_8(context, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetContextInfo_5(context, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetContextInfo_7(context, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: ContextProperties; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetContextInfo_4(context, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetContextInfo_6(context, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: ContextProperties; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetContextInfo_5(context, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetContextInfo_4(context, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetContextInfo_3(context, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetContextInfo_2(context, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo(context: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetContextInfo_1(context, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl2.1
@@ -5408,159 +5408,151 @@ type
     z_GetDeviceIDs_1(platform, device_type, num_entries, devices, num_devices);
     
     // added in cl1.0
-    private static function z_GetDeviceInfo_1(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_1(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_2(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_2(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_3(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceSVMCapabilities; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_3(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_4(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceSVMCapabilities; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_4(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_5(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_5(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_6(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_6(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_7(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DevicePartitionProperty; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_7(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_8(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DevicePartitionProperty; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_8(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_9(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_9(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_10(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_10(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_11(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_11(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceSVMCapabilities; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_12(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_12(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceSVMCapabilities; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_13(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_13(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DevicePartitionProperty; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_14(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_14(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DevicePartitionProperty; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_15(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_15(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_16(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_16(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
     private static function z_GetDeviceInfo_17(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceLocalMemType; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
     private static function z_GetDeviceInfo_18(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceLocalMemType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_19(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_19(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_20(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_20(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_21(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_21(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_22(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_22(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_23(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_23(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_24(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_24(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_25(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_25(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_26(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_26(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_27(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_27(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_28(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_28(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_29(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_29(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_30(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_30(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_31(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_31(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_32(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetDeviceInfo_32(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_33(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl' name 'clGetDeviceInfo';
-    private static function z_GetDeviceInfo_34(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl' name 'clGetDeviceInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_34(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_33(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_32(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_31(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_30(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_29(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_28(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_27(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_26(device, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetDeviceInfo_32(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_31(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_30(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_29(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_28(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_27(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_26(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_25(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceInfo_24(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_23(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceInfo_22(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_21(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceInfo_20(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceFPConfig; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_19(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceLocalMemType; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceInfo_18(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceLocalMemType; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_17(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceInfo_16(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceExecCapabilities; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceMemCacheType; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_15(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_14(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: CommandQueueProperties; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_13(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_12(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_platform_id; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_11(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_10(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_9(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DevicePartitionProperty; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_8(device, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetDeviceInfo_14(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DevicePartitionProperty; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_7(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_6(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceAffinityDomain; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetDeviceInfo_5(device, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetDeviceInfo_13(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceSVMCapabilities; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetDeviceInfo_4(device, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetDeviceInfo_12(device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceSVMCapabilities; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_11(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_10(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: DeviceType; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_9(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_8(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_7(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_6(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetDeviceInfo_5(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetDeviceInfo_4(device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_3(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetDeviceInfo_2(device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo(device: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetDeviceInfo_1(device, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetEventInfo_1(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetEventInfo_1(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
-    private static function z_GetEventInfo_2(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetEventInfo_2(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
     private static function z_GetEventInfo_3(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
     private static function z_GetEventInfo_4(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
-    private static function z_GetEventInfo_5(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandExecutionStatus; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetEventInfo_5(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
-    private static function z_GetEventInfo_6(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandExecutionStatus; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetEventInfo_6(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
-    private static function z_GetEventInfo_7(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetEventInfo_7(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandExecutionStatus; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
-    private static function z_GetEventInfo_8(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetEventInfo_8(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandExecutionStatus; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
     private static function z_GetEventInfo_9(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventInfo';
@@ -5578,27 +5570,27 @@ type
     z_GetEventInfo_10(&event, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetEventInfo_9(&event, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetEventInfo_8(&event, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetEventInfo_7(&event, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandExecutionStatus; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetEventInfo_6(&event, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetEventInfo_8(&event, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandExecutionStatus; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetEventInfo_7(&event, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetEventInfo_6(&event, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: CommandType; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetEventInfo_5(&event, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetEventInfo_4(&event, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetEventInfo_3(&event, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetEventInfo_2(&event, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventInfo(&event: cl_event; param_name: EventInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetEventInfo_1(&event, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetEventProfilingInfo_1(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetEventProfilingInfo_1(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventProfilingInfo';
-    private static function z_GetEventProfilingInfo_2(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetEventProfilingInfo_2(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetEventProfilingInfo';
     private static function z_GetEventProfilingInfo_3(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetEventProfilingInfo';
@@ -5608,9 +5600,9 @@ type
     z_GetEventProfilingInfo_4(&event, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventProfilingInfo(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetEventProfilingInfo_3(&event, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventProfilingInfo(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventProfilingInfo(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetEventProfilingInfo_2(&event, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventProfilingInfo(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEventProfilingInfo(&event: cl_event; param_name: ProfilingInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetEventProfilingInfo_1(&event, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
@@ -5656,17 +5648,17 @@ type
     z_GetHostTimer_1(device, host_timestamp);
     
     // added in cl1.0
-    private static function z_GetImageInfo_1(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetImageInfo_1(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
-    private static function z_GetImageInfo_2(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetImageInfo_2(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
-    private static function z_GetImageInfo_3(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetImageInfo_3(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
-    private static function z_GetImageInfo_4(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetImageInfo_4(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
-    private static function z_GetImageInfo_5(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetImageInfo_5(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
-    private static function z_GetImageInfo_6(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetImageInfo_6(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
     private static function z_GetImageInfo_7(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: cl_image_format; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetImageInfo';
@@ -5676,111 +5668,95 @@ type
     z_GetImageInfo_8(image, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: cl_image_format; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetImageInfo_7(image, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetImageInfo_6(image, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetImageInfo_5(image, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetImageInfo_4(image, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetImageInfo_6(image, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageInfo_5(image, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageInfo_4(image, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetImageInfo_3(image, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetImageInfo_2(image, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo(image: cl_mem; param_name: ImageInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetImageInfo_1(image, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.2
-    private static function z_GetKernelArgInfo_1(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelArgInfo_1(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
-    private static function z_GetKernelArgInfo_2(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelArgInfo_2(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
     private static function z_GetKernelArgInfo_3(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
     private static function z_GetKernelArgInfo_4(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
-    private static function z_GetKernelArgInfo_5(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelArgInfo_5(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
-    private static function z_GetKernelArgInfo_6(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelArgInfo_6(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
     private static function z_GetKernelArgInfo_7(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
     private static function z_GetKernelArgInfo_8(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelArgInfo';
-    private static function z_GetKernelArgInfo_9(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl' name 'clGetKernelArgInfo';
-    private static function z_GetKernelArgInfo_10(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl' name 'clGetKernelArgInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelArgInfo_10(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelArgInfo_9(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelArgInfo_8(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAccessQualifier; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelArgInfo_7(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelArgInfo_6(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgAddressQualifier; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelArgInfo_5(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelArgInfo_4(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; var param_value: KernelArgTypeQualifier; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelArgInfo_3(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelArgInfo_2(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelArgInfo(kernel: cl_kernel; arg_index: UInt32; param_name: KernelArgInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelArgInfo_1(kernel, arg_index, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetKernelInfo_1(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelInfo_1(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_2(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelInfo_2(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_3(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_program; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelInfo_3(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_4(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_program; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelInfo_4(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_5(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelInfo_5(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_program; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_6(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelInfo_6(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_program; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_7(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelInfo_7(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_8(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelInfo_8(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_9(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl' name 'clGetKernelInfo';
-    private static function z_GetKernelInfo_10(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl' name 'clGetKernelInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelInfo_10(kernel, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelInfo_9(kernel, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelInfo_8(kernel, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelInfo_7(kernel, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelInfo_6(kernel, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetKernelInfo_8(kernel, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelInfo_5(kernel, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetKernelInfo_7(kernel, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_program; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelInfo_4(kernel, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetKernelInfo_6(kernel, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: cl_program; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelInfo_5(kernel, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelInfo_4(kernel, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelInfo_3(kernel, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelInfo_2(kernel, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelInfo(kernel: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelInfo_1(kernel, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl2.1
-    private static function z_GetKernelSubGroupInfo_1(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfo_1(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfo';
-    private static function z_GetKernelSubGroupInfo_2(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfo_2(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfo';
-    private static function z_GetKernelSubGroupInfo_3(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfo_3(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfo';
-    private static function z_GetKernelSubGroupInfo_4(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfo_4(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfo';
     private static function z_GetKernelSubGroupInfo_5(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; var input_value: UIntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfo';
@@ -5790,39 +5766,39 @@ type
     z_GetKernelSubGroupInfo_6(kernel, device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; var input_value: UIntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelSubGroupInfo_5(kernel, device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelSubGroupInfo_4(kernel, device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelSubGroupInfo_3(kernel, device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelSubGroupInfo_2(kernel, device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelSubGroupInfo_1(kernel, device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetKernelWorkGroupInfo_1(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelWorkGroupInfo_1(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelWorkGroupInfo';
-    private static function z_GetKernelWorkGroupInfo_2(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelWorkGroupInfo_2(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelWorkGroupInfo';
-    private static function z_GetKernelWorkGroupInfo_3(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelWorkGroupInfo_3(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelWorkGroupInfo';
-    private static function z_GetKernelWorkGroupInfo_4(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelWorkGroupInfo_4(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelWorkGroupInfo';
-    private static function z_GetKernelWorkGroupInfo_5(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelWorkGroupInfo_5(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelWorkGroupInfo';
-    private static function z_GetKernelWorkGroupInfo_6(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelWorkGroupInfo_6(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelWorkGroupInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelWorkGroupInfo_6(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetKernelWorkGroupInfo_5(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetKernelWorkGroupInfo_4(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetKernelWorkGroupInfo_6(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetKernelWorkGroupInfo_5(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetKernelWorkGroupInfo_4(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelWorkGroupInfo_3(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelWorkGroupInfo_2(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelWorkGroupInfo(kernel: cl_kernel; device: cl_device_id; param_name: KernelWorkGroupInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelWorkGroupInfo_1(kernel, device, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
@@ -5830,69 +5806,69 @@ type
     external 'opencl' name 'clGetMemObjectInfo';
     private static function z_GetMemObjectInfo_2(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_3(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_3(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_4(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_4(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_5(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_5(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_6(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_6(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_7(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_7(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_8(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_8(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_9(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_9(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_10(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_10(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
     private static function z_GetMemObjectInfo_11(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
     private static function z_GetMemObjectInfo_12(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_13(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_13(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_14(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_14(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_15(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_15(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_16(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_16(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_17(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_17(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    private static function z_GetMemObjectInfo_18(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetMemObjectInfo_18(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetMemObjectInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_18(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_17(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_16(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_15(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_14(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_13(memobj, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_12(memobj, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_11(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_10(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemFlags; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_9(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_8(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: MemObjectType; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_7(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_6(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: cl_mem; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_5(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_4(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetMemObjectInfo_3(memobj, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo(memobj: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetMemObjectInfo_2(memobj, param_name, param_value_size, param_value, param_value_size_ret);
@@ -5900,9 +5876,9 @@ type
     z_GetMemObjectInfo_1(memobj, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl2.0
-    private static function z_GetPipeInfo_1(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetPipeInfo_1(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetPipeInfo';
-    private static function z_GetPipeInfo_2(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetPipeInfo_2(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetPipeInfo';
     private static function z_GetPipeInfo_3(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetPipeInfo';
@@ -5912,9 +5888,9 @@ type
     z_GetPipeInfo_4(pipe, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPipeInfo(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetPipeInfo_3(pipe, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPipeInfo(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPipeInfo(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetPipeInfo_2(pipe, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPipeInfo(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPipeInfo(pipe: cl_mem; param_name: PipeInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetPipeInfo_1(pipe, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
@@ -5936,35 +5912,27 @@ type
     z_GetPlatformIDs_1(num_entries, platforms, num_platforms);
     
     // added in cl1.0
-    private static function z_GetPlatformInfo_1(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetPlatformInfo_1(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetPlatformInfo';
-    private static function z_GetPlatformInfo_2(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetPlatformInfo_2(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetPlatformInfo';
     private static function z_GetPlatformInfo_3(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetPlatformInfo';
     private static function z_GetPlatformInfo_4(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetPlatformInfo';
-    private static function z_GetPlatformInfo_5(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl' name 'clGetPlatformInfo';
-    private static function z_GetPlatformInfo_6(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl' name 'clGetPlatformInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetPlatformInfo_6(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetPlatformInfo_5(platform, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetPlatformInfo_4(platform, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: UInt64; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetPlatformInfo_3(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetPlatformInfo_2(platform, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo(platform: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetPlatformInfo_1(platform, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetProgramBuildInfo_1(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_1(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramBuildInfo';
-    private static function z_GetProgramBuildInfo_2(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_2(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramBuildInfo';
     private static function z_GetProgramBuildInfo_3(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramBuildInfo';
@@ -5974,21 +5942,13 @@ type
     external 'opencl' name 'clGetProgramBuildInfo';
     private static function z_GetProgramBuildInfo_6(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: ProgramBinaryType; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramBuildInfo';
-    private static function z_GetProgramBuildInfo_7(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_7(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramBuildInfo';
-    private static function z_GetProgramBuildInfo_8(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl' name 'clGetProgramBuildInfo';
-    private static function z_GetProgramBuildInfo_9(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl' name 'clGetProgramBuildInfo';
-    private static function z_GetProgramBuildInfo_10(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramBuildInfo_8(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramBuildInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramBuildInfo_10(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramBuildInfo_9(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramBuildInfo_8(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: BuildStatus; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramBuildInfo_7(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: ProgramBinaryType; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramBuildInfo_6(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
@@ -5998,9 +5958,9 @@ type
     z_GetProgramBuildInfo_4(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramBuildInfo_3(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramBuildInfo_2(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramBuildInfo(&program: cl_program; device: cl_device_id; param_name: ProgramBuildInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramBuildInfo_1(&program, device, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
@@ -6008,61 +5968,61 @@ type
     external 'opencl' name 'clGetProgramInfo';
     private static function z_GetProgramInfo_2(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_3(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_3(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_4(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_4(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_5(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_5(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_6(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_6(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_7(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_7(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_8(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_8(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_9(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_9(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_10(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_10(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_11(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_11(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_12(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_12(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_13(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_13(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_14(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_14(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_15(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetProgramInfo_15(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    private static function z_GetProgramInfo_16(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetProgramInfo_16(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetProgramInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_16(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramInfo_15(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_14(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramInfo_13(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_12(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramInfo_11(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_10(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramInfo_9(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_8(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramInfo_7(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_6(&program, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetProgramInfo_5(&program, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetProgramInfo_4(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetProgramInfo_16(&program, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetProgramInfo_15(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetProgramInfo_14(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetProgramInfo_13(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetProgramInfo_12(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetProgramInfo_11(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetProgramInfo_10(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: cl_device_id; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetProgramInfo_9(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetProgramInfo_8(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetProgramInfo_7(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetProgramInfo_6(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetProgramInfo_5(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetProgramInfo_4(&program, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetProgramInfo_3(&program, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetProgramInfo(&program: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetProgramInfo_2(&program, param_name, param_value_size, param_value, param_value_size_ret);
@@ -6070,53 +6030,53 @@ type
     z_GetProgramInfo_1(&program, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
-    private static function z_GetSamplerInfo_1(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_1(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_2(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_2(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_3(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: FilterMode; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_3(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_4(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: FilterMode; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_4(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_5(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: AddressingMode; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_5(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: FilterMode; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_6(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: AddressingMode; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_6(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: FilterMode; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_7(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_7(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_8(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_8(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_9(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_9(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_10(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_10(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_11(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_11(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: AddressingMode; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    private static function z_GetSamplerInfo_12(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetSamplerInfo_12(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: AddressingMode; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetSamplerInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetSamplerInfo_12(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetSamplerInfo_11(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetSamplerInfo_10(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetSamplerInfo_9(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetSamplerInfo_8(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetSamplerInfo_7(sampler, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: AddressingMode; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetSamplerInfo_6(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetSamplerInfo_12(sampler, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: AddressingMode; param_value_size_ret: IntPtr): ErrorCode :=
-    z_GetSamplerInfo_5(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetSamplerInfo_11(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetSamplerInfo_10(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: Bool; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetSamplerInfo_9(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetSamplerInfo_8(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: cl_context; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetSamplerInfo_7(sampler, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: FilterMode; var param_value_size_ret: UIntPtr): ErrorCode :=
-    z_GetSamplerInfo_4(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    z_GetSamplerInfo_6(sampler, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: FilterMode; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetSamplerInfo_5(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetSamplerInfo_4(sampler, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; var param_value: UInt32; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetSamplerInfo_3(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetSamplerInfo_2(sampler, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSamplerInfo(sampler: cl_sampler; param_name: SamplerInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetSamplerInfo_1(sampler, param_name, param_value_size, param_value, param_value_size_ret);
     
     // added in cl1.0
@@ -6377,13 +6337,13 @@ type
     // added in cl2.0
     private static function z_SetKernelExecInfo_1(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; param_value: pointer): ErrorCode;
     external 'opencl' name 'clSetKernelExecInfo';
-    private static function z_SetKernelExecInfo_2(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: Bool): ErrorCode;
+    private static function z_SetKernelExecInfo_2(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode;
     external 'opencl' name 'clSetKernelExecInfo';
-    private static function z_SetKernelExecInfo_3(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode;
+    private static function z_SetKernelExecInfo_3(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: Bool): ErrorCode;
     external 'opencl' name 'clSetKernelExecInfo';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode :=
-    z_SetKernelExecInfo_3(kernel, param_name, param_value_size, param_value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: Bool): ErrorCode :=
+    z_SetKernelExecInfo_3(kernel, param_name, param_value_size, param_value);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode :=
     z_SetKernelExecInfo_2(kernel, param_name, param_value_size, param_value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: KernelExecInfo; param_value_size: UIntPtr; param_value: pointer): ErrorCode :=
     z_SetKernelExecInfo_1(kernel, param_name, param_value_size, param_value);
@@ -6401,7 +6361,7 @@ type
     z_SetProgramReleaseCallback_1(&program, pfn_notify, user_data);
     
     // added in cl2.2
-    private static function z_SetProgramSpecializationConstant_1(&program: cl_program; spec_id: UInt32; spec_size: UIntPtr; spec_value: IntPtr): ErrorCode;
+    private static function z_SetProgramSpecializationConstant_1(&program: cl_program; spec_id: UInt32; spec_size: UIntPtr; spec_value: pointer): ErrorCode;
     external 'opencl' name 'clSetProgramSpecializationConstant';
     private static function z_SetProgramSpecializationConstant_2(&program: cl_program; spec_id: UInt32; spec_size: UIntPtr; var spec_value: Byte): ErrorCode;
     external 'opencl' name 'clSetProgramSpecializationConstant';
@@ -6416,7 +6376,7 @@ type
     begin
       Result := z_SetProgramSpecializationConstant_2(&program, spec_id, spec_size, PByte(pointer(@spec_value))^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetProgramSpecializationConstant(&program: cl_program; spec_id: UInt32; spec_size: UIntPtr; spec_value: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetProgramSpecializationConstant(&program: cl_program; spec_id: UInt32; spec_size: UIntPtr; spec_value: pointer): ErrorCode :=
     z_SetProgramSpecializationConstant_1(&program, spec_id, spec_size, spec_value);
     
     // added in cl1.1
@@ -7639,13 +7599,13 @@ type
   clSubgroupsKHR = static class
     public const _ExtStr = 'khr_subgroups';
     
-    private static function z_GetKernelSubGroupInfoKHR_1(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfoKHR_1(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfoKHR';
-    private static function z_GetKernelSubGroupInfoKHR_2(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfoKHR_2(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfoKHR';
-    private static function z_GetKernelSubGroupInfoKHR_3(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfoKHR_3(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfoKHR';
-    private static function z_GetKernelSubGroupInfoKHR_4(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    private static function z_GetKernelSubGroupInfoKHR_4(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfoKHR';
     private static function z_GetKernelSubGroupInfoKHR_5(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; var input_value: UIntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfoKHR';
@@ -7655,13 +7615,13 @@ type
     z_GetKernelSubGroupInfoKHR_6(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; var input_value: UIntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelSubGroupInfoKHR_5(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelSubGroupInfoKHR_4(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; var param_value: UIntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelSubGroupInfoKHR_3(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
     z_GetKernelSubGroupInfoKHR_2(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetKernelSubGroupInfoKHR_1(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
     
   end;
@@ -7792,13 +7752,13 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemcpyARM(command_queue: cl_command_queue; blocking_copy: Bool; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMMemcpyARM_1(command_queue, blocking_copy, dst_ptr, src_ptr, size, num_events_in_wait_list, event_wait_list, &event);
     
-    private static function z_EnqueueSVMMemFillARM_1(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueSVMMemFillARM_1(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFillARM';
-    private static function z_EnqueueSVMMemFillARM_2(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueSVMMemFillARM_2(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFillARM';
-    private static function z_EnqueueSVMMemFillARM_3(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueSVMMemFillARM_3(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFillARM';
-    private static function z_EnqueueSVMMemFillARM_4(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueSVMMemFillARM_4(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFillARM';
     private static function z_EnqueueSVMMemFillARM_5(command_queue: cl_command_queue; svm_ptr: IntPtr; var pattern: Byte; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueSVMMemFillARM';
@@ -7848,13 +7808,13 @@ type
     begin
       Result := z_EnqueueSVMMemFillARM_5(command_queue, svm_ptr, PByte(pointer(@pattern))^, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueSVMMemFillARM_4(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMMemFillARM_3(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueSVMMemFillARM_2(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueSVMMemFillARM_1(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list, &event);
     
     private static function z_EnqueueSVMMapARM_1(command_queue: cl_command_queue; blocking_map: Bool; flags: MapFlags; svm_ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
@@ -7926,13 +7886,13 @@ type
     
     private static function z_SetKernelExecInfoARM_1(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; param_value: pointer): ErrorCode;
     external 'opencl' name 'clSetKernelExecInfoARM';
-    private static function z_SetKernelExecInfoARM_2(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: Bool): ErrorCode;
+    private static function z_SetKernelExecInfoARM_2(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode;
     external 'opencl' name 'clSetKernelExecInfoARM';
-    private static function z_SetKernelExecInfoARM_3(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode;
+    private static function z_SetKernelExecInfoARM_3(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: Bool): ErrorCode;
     external 'opencl' name 'clSetKernelExecInfoARM';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode :=
-    z_SetKernelExecInfoARM_3(kernel, param_name, param_value_size, param_value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: Bool): ErrorCode :=
+    z_SetKernelExecInfoARM_3(kernel, param_name, param_value_size, param_value);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; var param_value: IntPtr): ErrorCode :=
     z_SetKernelExecInfoARM_2(kernel, param_name, param_value_size, param_value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: KernelExecInfoArm; param_value_size: UIntPtr; param_value: pointer): ErrorCode :=
     z_SetKernelExecInfoARM_1(kernel, param_name, param_value_size, param_value);
@@ -9814,30 +9774,46 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillBufferKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; buffer: cl_mem; pattern: IntPtr; pattern_size: UIntPtr; offset: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): ErrorCode :=
     z_CommandFillBufferKHR_1(command_buffer, command_queue, buffer, pattern, pattern_size, offset, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     
-    private static function z_CommandFillImageKHR_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    private static function z_CommandFillImageKHR_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandFillImageKHR';
-    private static function z_CommandFillImageKHR_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    private static function z_CommandFillImageKHR_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandFillImageKHR';
-    private static function z_CommandFillImageKHR_3(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    private static function z_CommandFillImageKHR_3(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandFillImageKHR';
-    private static function z_CommandFillImageKHR_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    private static function z_CommandFillImageKHR_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl' name 'clCommandFillImageKHR';
+    private static function z_CommandFillImageKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl' name 'clCommandFillImageKHR';
+    private static function z_CommandFillImageKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    external 'opencl' name 'clCommandFillImageKHR';
+    private static function z_CommandFillImageKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    external 'opencl' name 'clCommandFillImageKHR';
+    private static function z_CommandFillImageKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandFillImageKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode; where T: record;
     begin
-      Result := z_CommandFillImageKHR_4(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+      Result := z_CommandFillImageKHR_8(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode; where T: record;
     begin
-      Result := z_CommandFillImageKHR_3(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+      Result := z_CommandFillImageKHR_7(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode; where T: record;
     begin
-      Result := z_CommandFillImageKHR_2(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+      Result := z_CommandFillImageKHR_6(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR<T>(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode; where T: record;
     begin
-      Result := z_CommandFillImageKHR_1(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+      Result := z_CommandFillImageKHR_5(command_buffer, command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandFillImageKHR_4(command_buffer, command_queue, image, fill_color, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandFillImageKHR_3(command_buffer, command_queue, image, fill_color, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    z_CommandFillImageKHR_2(command_buffer, command_queue, image, fill_color, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandFillImageKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    z_CommandFillImageKHR_1(command_buffer, command_queue, image, fill_color, origin, region, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     
     private static function z_CommandNDRangeKernelKHR_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';

@@ -5,28 +5,28 @@
 # glNamedBuffer[%Data,Storage%]EXT
 # glBufferDataARB
 !possible_par_types
- *	| *	| -IntPtr +array of T +var T +IntPtr	| *	|
+ *	| *	| +array of T +var T -IntPtr +pointer	| *	|
 
 # gl[%,Get%][%,Named%]BufferSubData
 # gl[%,Get%]NamedBufferSubDataEXT
 # gl[%,Get%]BufferSubDataARB
 !possible_par_types
- *	| *	| *	| -IntPtr +array of T +var T +IntPtr	|
+ *	| *	| *	| +array of T +var T -IntPtr +pointer	|
 
 # glClear[%,Named%]BufferData
 # glClearNamedBufferDataEXT
 !possible_par_types
- *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	|
+ *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	|
 
 # glClear[%,Named%]BufferSubData
 # glClearNamedBufferSubDataEXT
 !possible_par_types
- *	| *	| *	| *	| *	| *	| -IntPtr +array of T +var T +IntPtr	|
+ *	| *	| *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	|
 
 # glXGetProcAddress
 # glXGetProcAddressARB
 !possible_par_types
- *	| -array of Byte -var Byte -IntPtr +string +IntPtr	|
+ *	| -array of Byte -var Byte +string	|
 
 
 
@@ -34,7 +34,7 @@
 # glUniform[%c:1,2,3,4%][%t:      ui%]vEXT
 # glUniform[%c:1,2,3,4%][%t:f,  i   %]vARB
 !possible_par_types
- *	| *	| -IntPtr +var Vec{%c%}{%t%} +IntPtr	|
+ *	| *	| +var Vec{%c%}{%t%}	|
 
 
 

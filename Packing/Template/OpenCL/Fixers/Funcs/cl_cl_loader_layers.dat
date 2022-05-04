@@ -3,7 +3,7 @@
 
 # clGetLayerInfo
 !possible_par_types
- *	| *	| *	| -IntPtr +var cl_layer_api_version +IntPtr	| *	|
+ *	| *	| *	| +var cl_layer_api_version	| *	|
 
 # clInitLayer
 !possible_par_types
