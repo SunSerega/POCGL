@@ -42269,33 +42269,33 @@
     
     private z_QueryHyperpipeBestAttribSGIX_adr := GetProcAddress('glXQueryHyperpipeBestAttribSGIX');
     private z_QueryHyperpipeBestAttribSGIX_1 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; attribList: IntPtr; returnAttribList: IntPtr): Int32>(z_QueryHyperpipeBestAttribSGIX_adr);
-    private z_QueryHyperpipeBestAttribSGIX_2 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_limits_SGIX; var returnAttribList: glx_pipe_rect_limits_SGIX): Int32>(z_QueryHyperpipeBestAttribSGIX_adr);
-    private z_QueryHyperpipeBestAttribSGIX_3 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_SGIX; var returnAttribList: glx_pipe_rect_SGIX): Int32>(z_QueryHyperpipeBestAttribSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; attribList: array of glx_pipe_rect_SGIX; returnAttribList: array of glx_pipe_rect_SGIX): Int32;
-    type Pglx_pipe_rect_SGIX=^glx_pipe_rect_SGIX;
-    begin
-      Result := if (returnAttribList<>nil) and (returnAttribList.Length<>0) then
-        if (attribList<>nil) and (attribList.Length<>0) then
-          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, attribList[0], returnAttribList[0]) else
-          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, Pglx_pipe_rect_SGIX(nil)^, returnAttribList[0]) else
-        if (attribList<>nil) and (attribList.Length<>0) then
-          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, attribList[0], Pglx_pipe_rect_SGIX(nil)^) else
-          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, Pglx_pipe_rect_SGIX(nil)^, Pglx_pipe_rect_SGIX(nil)^);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_SGIX; var returnAttribList: glx_pipe_rect_SGIX): Int32 :=
-    z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, attribList, returnAttribList);
+    private z_QueryHyperpipeBestAttribSGIX_2 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_SGIX; var returnAttribList: glx_pipe_rect_SGIX): Int32>(z_QueryHyperpipeBestAttribSGIX_adr);
+    private z_QueryHyperpipeBestAttribSGIX_3 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_limits_SGIX; var returnAttribList: glx_pipe_rect_limits_SGIX): Int32>(z_QueryHyperpipeBestAttribSGIX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; attribList: array of glx_pipe_rect_limits_SGIX; returnAttribList: array of glx_pipe_rect_limits_SGIX): Int32;
     type Pglx_pipe_rect_limits_SGIX=^glx_pipe_rect_limits_SGIX;
     begin
       Result := if (returnAttribList<>nil) and (returnAttribList.Length<>0) then
         if (attribList<>nil) and (attribList.Length<>0) then
-          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, attribList[0], returnAttribList[0]) else
-          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, Pglx_pipe_rect_limits_SGIX(nil)^, returnAttribList[0]) else
+          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, attribList[0], returnAttribList[0]) else
+          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, Pglx_pipe_rect_limits_SGIX(nil)^, returnAttribList[0]) else
         if (attribList<>nil) and (attribList.Length<>0) then
-          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, attribList[0], Pglx_pipe_rect_limits_SGIX(nil)^) else
-          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, Pglx_pipe_rect_limits_SGIX(nil)^, Pglx_pipe_rect_limits_SGIX(nil)^);
+          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, attribList[0], Pglx_pipe_rect_limits_SGIX(nil)^) else
+          z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, Pglx_pipe_rect_limits_SGIX(nil)^, Pglx_pipe_rect_limits_SGIX(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; attribList: array of glx_pipe_rect_SGIX; returnAttribList: array of glx_pipe_rect_SGIX): Int32;
+    type Pglx_pipe_rect_SGIX=^glx_pipe_rect_SGIX;
+    begin
+      Result := if (returnAttribList<>nil) and (returnAttribList.Length<>0) then
+        if (attribList<>nil) and (attribList.Length<>0) then
+          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, attribList[0], returnAttribList[0]) else
+          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, Pglx_pipe_rect_SGIX(nil)^, returnAttribList[0]) else
+        if (attribList<>nil) and (attribList.Length<>0) then
+          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, attribList[0], Pglx_pipe_rect_SGIX(nil)^) else
+          z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, Pglx_pipe_rect_SGIX(nil)^, Pglx_pipe_rect_SGIX(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_limits_SGIX; var returnAttribList: glx_pipe_rect_limits_SGIX): Int32 :=
+    z_QueryHyperpipeBestAttribSGIX_3(dpy, timeSlice, attrib, size, attribList, returnAttribList);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var attribList: glx_pipe_rect_SGIX; var returnAttribList: glx_pipe_rect_SGIX): Int32 :=
     z_QueryHyperpipeBestAttribSGIX_2(dpy, timeSlice, attrib, size, attribList, returnAttribList);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeBestAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; attribList: IntPtr; returnAttribList: IntPtr): Int32 :=
     z_QueryHyperpipeBestAttribSGIX_1(dpy, timeSlice, attrib, size, attribList, returnAttribList);
@@ -42320,18 +42320,8 @@
     
     private z_QueryHyperpipeAttribSGIX_adr := GetProcAddress('glXQueryHyperpipeAttribSGIX');
     private z_QueryHyperpipeAttribSGIX_1 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; returnAttribList: IntPtr): Int32>(z_QueryHyperpipeAttribSGIX_adr);
-    private z_QueryHyperpipeAttribSGIX_2 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: Int32): Int32>(z_QueryHyperpipeAttribSGIX_adr);
+    private z_QueryHyperpipeAttribSGIX_2 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: glx_pipe_rect_SGIX): Int32>(z_QueryHyperpipeAttribSGIX_adr);
     private z_QueryHyperpipeAttribSGIX_3 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: glx_pipe_rect_limits_SGIX): Int32>(z_QueryHyperpipeAttribSGIX_adr);
-    private z_QueryHyperpipeAttribSGIX_4 := GetProcOrNil&<function(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: glx_pipe_rect_SGIX): Int32>(z_QueryHyperpipeAttribSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; returnAttribList: array of glx_pipe_rect_SGIX): Int32;
-    type Pglx_pipe_rect_SGIX=^glx_pipe_rect_SGIX;
-    begin
-      Result := if (returnAttribList<>nil) and (returnAttribList.Length<>0) then
-        z_QueryHyperpipeAttribSGIX_4(dpy, timeSlice, attrib, size, returnAttribList[0]) else
-        z_QueryHyperpipeAttribSGIX_4(dpy, timeSlice, attrib, size, Pglx_pipe_rect_SGIX(nil)^);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: glx_pipe_rect_SGIX): Int32 :=
-    z_QueryHyperpipeAttribSGIX_4(dpy, timeSlice, attrib, size, returnAttribList);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; returnAttribList: array of glx_pipe_rect_limits_SGIX): Int32;
     type Pglx_pipe_rect_limits_SGIX=^glx_pipe_rect_limits_SGIX;
     begin
@@ -42339,9 +42329,16 @@
         z_QueryHyperpipeAttribSGIX_3(dpy, timeSlice, attrib, size, returnAttribList[0]) else
         z_QueryHyperpipeAttribSGIX_3(dpy, timeSlice, attrib, size, Pglx_pipe_rect_limits_SGIX(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; returnAttribList: array of glx_pipe_rect_SGIX): Int32;
+    type Pglx_pipe_rect_SGIX=^glx_pipe_rect_SGIX;
+    begin
+      Result := if (returnAttribList<>nil) and (returnAttribList.Length<>0) then
+        z_QueryHyperpipeAttribSGIX_2(dpy, timeSlice, attrib, size, returnAttribList[0]) else
+        z_QueryHyperpipeAttribSGIX_2(dpy, timeSlice, attrib, size, Pglx_pipe_rect_SGIX(nil)^);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: glx_pipe_rect_limits_SGIX): Int32 :=
     z_QueryHyperpipeAttribSGIX_3(dpy, timeSlice, attrib, size, returnAttribList);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: Int32): Int32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; var returnAttribList: glx_pipe_rect_SGIX): Int32 :=
     z_QueryHyperpipeAttribSGIX_2(dpy, timeSlice, attrib, size, returnAttribList);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function QueryHyperpipeAttribSGIX(dpy: x_p_display; timeSlice: Int32; attrib: Int32; size: Int32; returnAttribList: IntPtr): Int32 :=
     z_QueryHyperpipeAttribSGIX_1(dpy, timeSlice, attrib, size, returnAttribList);

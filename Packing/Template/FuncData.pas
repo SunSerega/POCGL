@@ -1062,7 +1062,7 @@ type
           Result += Ord(p2.tname.StartsWith('Vec') and p2.tname.Skip('Vec'.Length).FirstOrDefault.InRange('1','4'));
           if Result<>0 then exit;
           
-          if p1.var_arg then
+          if p1.var_arg or (p1.arr_lvl<>0) then
             Result := string.Compare(p1.tname, p2.tname) else
           if p1<>p2 then
             Otp($'ERROR: Func [{self.name}] par#{par_i}: Failed to sort [{p1.ToString(true,true)}] vs [{p2.ToString(true,true)}]');
@@ -2824,49 +2824,59 @@ type
   end;
   
   FuncPPTFixer = sealed class(FuncFixer)
-    public add_ts: array of List<FuncParamT>;
-    public rem_ts: array of List<FuncParamT>;
+    public changes: array of record
+      add := new List<FuncParamT>;
+      rem := new List<FuncParamT>;
+    end;
     
     public constructor(name: string; data: sequence of string);
     begin
       inherited Create(name);
-      var s := data.Single(l->not string.IsNullOrWhiteSpace(l)).Split('|');
-      var par_c := s.Length-1;
-      if not string.IsNullOrWhiteSpace(s[par_c]) then raise new System.FormatException(s.JoinToString('|'));
-      
-      SetLength(add_ts, par_c);
-      SetLength(rem_ts, par_c);
-      
-      var res := new StringBuilder;
-      for var i := 0 to par_c-1 do
+      foreach var l in data do
       begin
-        add_ts[i] := new List<FuncParamT>;
-        rem_ts[i] := new List<FuncParamT>;
+        if string.IsNullOrWhiteSpace(l) then continue;
+        var s := l.Split('|');
+        var par_c := s.Length-1;
+        if not string.IsNullOrWhiteSpace(s[par_c]) then raise new System.FormatException(s.JoinToString('|'));
         
-        var curr_lst: List<FuncParamT> := nil;
-        var seal_t := procedure->
+        if changes=nil then
+          SetLength(changes, par_c) else
+        if changes.Length<>par_c then
+          raise new MessageException($'ERROR: [{name}]: {changes.Length} <> {par_c}');
+        
+        var res := new StringBuilder;
+        for var i := 0 to par_c-1 do
         begin
-          var t := res.ToString.Trim;
-          res.Clear;
-          if t='' then exit;
-          if t='*' then exit;
-          if curr_lst=nil then
-            raise new MessageException($'Syntax ERROR of [{TypeName(self)}] for func [{name}] in [{s[i]}]') else
-            curr_lst += new FuncParamT(t);
+          
+          var curr_lst: List<FuncParamT> := nil;
+          //TODO #????: inherited ctor + foreach
+          var _name := name;
+          var _self := self;
+          var _s := s;
+          var seal_t := procedure->
+          begin
+            var t := res.ToString.Trim;
+            res.Clear;
+            if t='' then exit;
+            if t='*' then exit;
+            if curr_lst=nil then
+              raise new MessageException($'Syntax ERROR of [{TypeName(_self)}] for func [{_name}] in [{_s[i]}]') else
+              curr_lst += new FuncParamT(t);
+          end;
+          
+          res.EnsureCapacity(s.Length);
+          foreach var ch in s[i] do
+            if ch in '-+' then
+            begin
+              seal_t();
+              curr_lst := ch='+' ? changes[i].add : changes[i].rem;
+            end else
+              res += ch;
+          
+          seal_t();
         end;
         
-        res.EnsureCapacity(s.Length);
-        foreach var ch in s[i] do
-          if ch in '-+' then
-          begin
-            seal_t();
-            curr_lst := ch='+' ? add_ts[i] : rem_ts[i];
-          end else
-            res += ch;
-        
-        seal_t();
       end;
-      
     end;
     
     private function FixerInfo(f: Func) := $'[{TypeName(self)}] of func [{f.name}]';
@@ -2880,16 +2890,16 @@ type
       f.InitPossibleParTypes;
       
       var ind_nudge := integer(f.is_proc);
-      if add_ts.Length<>f.org_par.Length-ind_nudge then
+      if changes.Length<>f.org_par.Length-ind_nudge then
         raise new MessageException($'ERROR: {FixerInfo(f)} had wrong param count');
       
-      for var i := 0 to add_ts.Length-1 do
+      for var i := 0 to changes.Length-1 do
       begin
-        foreach var t in rem_ts[i] do
+        foreach var t in changes[i].rem do
           if f.possible_par_types[i+ind_nudge].Remove(t) then
             self.used := true else
             Otp(ErrorInfo(f, 'remove', i, t, f.possible_par_types[i+ind_nudge]));
-        foreach var t in add_ts[i] do
+        foreach var t in changes[i].add do
           if f.possible_par_types[i+ind_nudge].Contains(t) then
             Otp(ErrorInfo(f, 'add',    i, t, f.possible_par_types[i+ind_nudge])) else
           begin
@@ -2903,7 +2913,7 @@ type
     
   end;
   
-  FuncOvrsFixerBase = abstract class(FuncFixer)
+  FuncLimitOvrsFixer = sealed class(FuncFixer)
     public ovrs := new List<FuncOverload>;
     
     public constructor(name: string; data: sequence of string);
@@ -2937,38 +2947,9 @@ type
 //      Writeln('-'*50);
     end;
     
+    private function FixerInfo(f: Func) := $'[{TypeName(self)}] of func [{f.name}]';
+    
     protected function ApplyOrder: integer; override := 3;
-    
-  end;
-  FuncReplOvrsFixer = sealed class(FuncOvrsFixerBase)
-    
-    private function FixerInfo(f: Func) := $'[{TypeName(self)}] of func [{f.name}]';
-    
-    public function Apply(f: Func): boolean; override;
-    begin
-      f.InitOverloads;
-      f.all_overloads.Clear;
-      
-      foreach var ovr in ovrs.Select(ovr->f.is_proc ? |default(FuncParamT)|+ovr.pars : ovr) do
-      begin
-        if f.org_par.Length<>ovr.pars.Length then
-          raise new MessageException($'ERROR: {FixerInfo(f)} had wrong param count: {f.org_par.Length} org vs {ovr.pars.Length} custom');
-        
-        if f.all_overloads.Contains(ovr) then
-          Otp($'ERROR: {FixerInfo(f)} failed to add {_ObjectToString(ovr.pars.Select(par->par.ToString(true,true)))}') else
-          f.all_overloads += ovr;
-        
-      end;
-        
-      self.used := true;
-      Result := false;
-    end;
-    
-  end;
-  FuncLimitOvrsFixer = sealed class(FuncOvrsFixerBase)
-    
-    private function FixerInfo(f: Func) := $'[{TypeName(self)}] of func [{f.name}]';
-    
     public function Apply(f: Func): boolean; override;
     begin
       f.InitOverloads;
@@ -3032,7 +3013,6 @@ begin
       
       'possible_par_types': FuncPPTFixer      .Create(gr_name, bl_body);
       
-      'repl_ovrs':          FuncReplOvrsFixer .Create(gr_name, bl_body);
       'limit_ovrs':         FuncLimitOvrsFixer.Create(gr_name, bl_body);
       
       else raise new MessageException($'Invalid func fixer type [!{bl_name}] for func [{gr_name}]');
