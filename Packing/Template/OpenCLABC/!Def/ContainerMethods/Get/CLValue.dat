@@ -12,7 +12,7 @@ T: record
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
-  new IntPtr(!res_ptr!),
+  !res_ptr!,
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

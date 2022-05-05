@@ -41,7 +41,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          new IntPtr((own_qr as QueueResPtr<&T>).GetResPtr),
+          (own_qr as QueueResPtr<&T>).GetResPtr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -104,7 +104,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
-          res_hnd.AddrOfPinnedObject,
+          res_hnd.AddrOfPinnedObject.ToPointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);

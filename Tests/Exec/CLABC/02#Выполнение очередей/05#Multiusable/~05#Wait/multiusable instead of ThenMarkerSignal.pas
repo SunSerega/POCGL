@@ -1,4 +1,4 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 var Qs := HQFQ(()->5).Multiusable;
 var M := WaitMarker.Create;

@@ -1,5 +1,5 @@
 ﻿## uses OpenCLABC;
 
 Println(
-  ProgramCode.Create(Context.Default, 'kernel void k() {}')['k']
+  ProgramCode.Create('kernel void k(int x) {}')['k']
 );

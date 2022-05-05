@@ -882,9 +882,11 @@ type
     
     // ": array of possible_par_type_collection"
     public possible_par_types: array of List<FuncParamT>;
+    public unopt_arr: array of boolean;
     public procedure InitPossibleParTypes;
     begin
       if possible_par_types<>nil then exit;
+      unopt_arr := ArrFill(org_par.Length, false);
       possible_par_types := org_par.ConvertAll((par,par_i)->
       begin
         if is_proc and (par_i=0) then exit;
@@ -999,7 +1001,7 @@ type
       begin
         InitPossibleParTypes;
         possible_par_types[^1].RemoveAt(0);
-//        possible_par_types[^2].RemoveAt(0);
+        unopt_arr[^2] := true;
       end;
       
     end;
@@ -1020,6 +1022,7 @@ type
       foreach var types in possible_par_types index par_i do
       begin
         if is_proc and (par_i=0) then continue;
+        if unopt_arr[par_i] then continue;
         opt_arr[par_i] := types.Any(par->par.arr_lvl=0) and types.Any(par->par.arr_lvl<>0);
       end;
       

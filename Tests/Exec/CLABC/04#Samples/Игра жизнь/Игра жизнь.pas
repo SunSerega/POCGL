@@ -53,7 +53,7 @@ try
     .ThenUse(field->
     begin
       // Если уже слишком далеко вперёд насчитали - можно немного отдохнуть
-      while field_states_q.Count=16 do Sleep(1000 div fps);
+//      while field_states_q.Count=16 do Sleep(1000 div fps);
       field_states_q.Enqueue(field);
     end)
   ;
@@ -67,7 +67,7 @@ try
 //  end;
   
   Context.Default.SyncInvoke(CombineSyncQueueBase(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
-  field_states_q.Last.ConvertAll(b->b<>0?#9608:' ').Println(0);
+  field_states_q.Single.ConvertAll(b->b<>0?#9608:' ').Println(0);
   
 except
   on ae: System.AggregateException do

@@ -5,10 +5,10 @@
 4
 
 #ExpOtp
-1 
-2 
-3 
-4 
+Fast#1 
+Fast#2 
+Slow#1 
+Slow#2 
 [EventDebug]: 8 event's created 
 [QueueDebug]: 2 queue's created 
 [QueueResNil]: 7 

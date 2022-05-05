@@ -1,5 +1,5 @@
 ﻿## uses OpenCLABC;
-var code := new ProgramCode(Context.Default, 'kernel void k() {}');
+var code := new ProgramCode('kernel void k(int x) {}');
 
 Println(code.GetType);
 Println(code.Properties.GetType);

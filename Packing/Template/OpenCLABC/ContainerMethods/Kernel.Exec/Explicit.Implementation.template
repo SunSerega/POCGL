@@ -45,9 +45,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, 1,
-          nil,
-          | new UIntPtr(sz1) |,
-          nil,
+          IntPtr.Zero,
+          | new UIntPtr(sz1) |[0],
+          IntPtr.Zero,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -134,9 +134,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, 2,
-          nil,
-          | new UIntPtr(sz1),new UIntPtr(sz2) |,
-          nil,
+          IntPtr.Zero,
+          | new UIntPtr(sz1),new UIntPtr(sz2) |[0],
+          IntPtr.Zero,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -234,9 +234,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, 3,
-          nil,
-          | new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3) |,
-          nil,
+          IntPtr.Zero,
+          | new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3) |[0],
+          IntPtr.Zero,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -339,9 +339,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, global_work_size.Length,
-          global_work_offset,
-          global_work_size,
-          local_work_size,
+          global_work_offset[0],
+          global_work_size[0],
+          local_work_size[0],
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);

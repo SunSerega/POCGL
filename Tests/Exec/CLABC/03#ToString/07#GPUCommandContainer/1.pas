@@ -1,7 +1,7 @@
 ﻿## uses OpenCLABC;
 
-var code := new ProgramCode(Context.Default, '__kernel void p1() { }');
-var k := code['p1'];
+var code := new ProgramCode('kernel void k(int x) { }');
+var k := code['k'];
 
 k.NewQueue
 .ThenExec2(1,1,

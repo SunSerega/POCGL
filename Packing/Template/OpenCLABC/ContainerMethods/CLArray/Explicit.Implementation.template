@@ -46,7 +46,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          val.ptr,
+          val.Pointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -123,7 +123,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          new IntPtr(val),
+          val,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -2884,7 +2884,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(T))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -2950,7 +2950,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(T))),
+          val, new UIntPtr(Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -3032,7 +3032,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(T))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(T))),
           new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
@@ -3120,7 +3120,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(T))),
+          val, new UIntPtr(Marshal.SizeOf(default(T))),
           new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );

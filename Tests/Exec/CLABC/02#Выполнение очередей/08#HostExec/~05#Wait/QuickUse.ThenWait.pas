@@ -2,12 +2,17 @@
 
 var M := WaitMarker.Create;
 
+var mre := new System.Threading.ManualResetEventSlim(false);
 Context.Default.SyncInvoke(
   HTPQ(()->
   begin
-    Sleep(30);
-    lock output do 'M'.Println;
+    mre.Wait;
+    'M'.Println;
     M.SendSignal;
   end) *
-  HTFQ(()->5).ThenQuickUse(x->lock output do $'/\{x}/\'.Println).ThenWaitFor(M)
+  HTFQ(()->5).ThenQuickUse(x->
+  begin
+    $'/\{x}/\'.Println;
+    mre.Set;
+  end).ThenWaitFor(M)
 ).Println;

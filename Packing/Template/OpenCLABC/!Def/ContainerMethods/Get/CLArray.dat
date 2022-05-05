@@ -13,7 +13,7 @@ ind: CommandQueue<integer>
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(int64(!ind!) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-  new IntPtr(!res_ptr!),
+  !res_ptr!,
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

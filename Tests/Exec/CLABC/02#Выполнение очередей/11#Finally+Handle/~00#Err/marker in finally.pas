@@ -1,28 +1,36 @@
 ﻿## uses OpenCLABC;
 
+procedure Test(M: WaitMarker; QErr: CommandQueueBase);
 begin
-  var M := WaitMarker.Create;
-  var t := Context.Default.BeginInvoke(WaitFor(M)+HQPQ(()->Println(1)));
-  Context.Default.SyncInvoke(
-    (HQPQ(()->raise new Exception('TestOK')) >= M)
+  var mre := new System.Threading.ManualResetEventSlim(false);
+  
+  var t := Context.Default.BeginInvoke(
+    WaitFor(M) +
+    HQPQ(()->
+    begin
+      Println('Waited');
+      mre.Set;
+    end)
+  );
+  
+  Context.Default.SyncInvoke(QErr
     .HandleWithoutRes(e->
     begin
-      Sleep(30);
+      mre.Wait;
       e.Message.Println;
       Result := true;
     end)
   );
+  
   t.Wait;
 end;
-('-'*30).Println;
+
+var QErr := HQPQ(()->raise new Exception('TestOK'));
 begin
-  var QErr := HQPQ(()->raise new Exception('TestOK')).ThenFinallyMarkerSignal;
-  var t := Context.Default.BeginInvoke(WaitFor(QErr)+HQPQ(()->Println(2)));
-  Context.Default.SyncInvoke(QErr.HandleWithoutRes(e->
-  begin
-    Sleep(30);
-    e.Message.Println;
-    Result := true;
-  end));
-  t.Wait;
+  var M := WaitMarker.Create;
+  Test(M, QErr>=M);
+end;
+begin
+  var Q := QErr.ThenFinallyMarkerSignal;
+  Test(Q, Q);
 end;

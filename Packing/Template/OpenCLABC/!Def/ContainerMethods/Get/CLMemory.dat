@@ -15,7 +15,7 @@ TRecord
 var ec := cl.EnqueueReadBuffer(
   cq, o.Native, Bool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-  new IntPtr(!res_ptr!),
+  !res_ptr!,
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

@@ -6,7 +6,7 @@
 
 #ExpOtp
 KernelCCQ#0
-	CCCObj<Kernel>: Kernel[p1] from ProgramCode[*]
+	CCCObj<Kernel>: Kernel[k] from ProgramCode[*]
 	KernelCommandExec2
 		sz1: ConstQueue<integer>#1: 1
 		sz2: ConstQueue<integer>#2: 1

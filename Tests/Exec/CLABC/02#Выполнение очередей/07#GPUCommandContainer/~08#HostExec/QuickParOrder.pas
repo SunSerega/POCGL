@@ -1,19 +1,27 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-function HFQ1<T>(x: integer; o: T) := HTFQ(()->
+var mre := new System.Threading.ManualResetEventSlim(false);
+
+var fast_id := 0;
+var Q_fast := HTFQ(()->
 begin
-  lock output do x.Println;
-  Result := o;
+  var fast_id := System.Threading.Interlocked.Increment(fast_id);
+  lock output do $'Fast#{fast_id}'.Println;
+  if fast_id=2 then mre.Set;
+  Result := 0;
 end);
-function HFQ2<T>(x: integer; o: T) := HTFQ(()->
+
+var slow_id := 0;
+var Q_slow := HTFQ(()->
 begin
-  Sleep(50);
-  lock output do x.Println;
-  Result := o;
+  mre.Wait;
+  var slow := System.Threading.Interlocked.Increment(slow_id);
+  lock output do $'Slow#{slow}'.Println;
+  Result := 0;
 end);
 
 var a := new CLArray<integer>(1);
 Context.Default.SyncInvoke(
-  a.NewQueue.ThenWriteValue(HFQ2(3,0), HFQ1(1,0)) +
-  CLArrayCCQ&<integer>.Create(HFQ2(4,a)).ThenWriteValue(HFQ1(2,0), 0)
+  a.NewQueue.ThenWriteValue(Q_slow, Q_fast) +
+  CLArrayCCQ&<integer>.Create(Q_slow+CQ(a)).ThenWriteValue(Q_fast, 0)
 );

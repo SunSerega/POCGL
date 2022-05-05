@@ -68,7 +68,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-          val.ptr,
+          val.Pointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -149,7 +149,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-          new IntPtr(val),
+          val,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -3140,7 +3140,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -3210,7 +3210,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -3296,7 +3296,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -3388,7 +3388,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );

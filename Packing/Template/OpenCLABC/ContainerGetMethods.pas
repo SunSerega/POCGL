@@ -55,7 +55,7 @@ type
       'res_pinn_adr':
       begin
         if not need_pinn then raise new System.InvalidOperationException;
-        sb += 'res_hnd.AddrOfPinnedObject';
+        sb += 'res_hnd.AddrOfPinnedObject.ToPointer';
       end;
       
       else inherited;

@@ -302,13 +302,11 @@ type
           
           'ptr': if arg.t.IsCQ then
           begin
-            sb += 'new IntPtr(';
             sb += arg_name;
-            sb += ')';
           end else
           begin
             sb += arg_name;
-            sb += '.ptr';
+            sb += '.Pointer';
           end;
           
           'pinn': sb += arg_name; // array indeces defined in .dat file

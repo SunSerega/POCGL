@@ -29,6 +29,23 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO "-array of cl_event" куча где для пред-последнего параметра
+//TODO "cl_" не попадают в строки расширений в OpenCL
+
+//TODO Аргументы компиляции OpenCL-C кода
+// - #define-ы особо полезны, но там куча всего...
+// - https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#compiler-options
+
+//TODO Подключать OpenCL из Modules.Packed
+// - Чтобы перенести огрызок OpenCL в Modules
+
+//TODO Деприкация в OpenCL?
+// - К примеру clCreateImage2D не должна использоваться после 1.2
+
+//TODO [In] и [Out] в кодогенераторах
+// - [Out] строки без [In] заменять на StringBuilder
+// - Полезно, к примеру, в cl.GetProgramBuildInfo
+
 //TODO Тесты и справка:
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 
@@ -71,7 +88,7 @@ unit OpenCLABC;
 // - KernelArg
 // - NativeArray
 // - CLValue
-// - !CL!Memory[Sub]Segment
+// - !CL!Memory[SubSegment]
 // - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
 // - MemoryUsage
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
@@ -102,9 +119,6 @@ unit OpenCLABC;
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
-
-//TODO Аргументы компиляции OpenCL-C кода
-// - #define-ы особо полезны, но там куча всего...
 
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -164,6 +178,10 @@ unit OpenCLABC;
 // --- CL_DEVICE_PIPE_SUPPORT
 // --- CL_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
 // --- CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED
+//
+// - ???
+// --- clEnqueueMigrateMemObjects
+// --- clCreateProgramWithIL
 
 //===================================
 // Сделать когда-нибуть:
@@ -2165,7 +2183,7 @@ type
       
       var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, UIntPtr.Zero, nil, sz)
+        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, UIntPtr.Zero, IntPtr.Zero, sz)
       );
       
       var res := new cl_device_id[uint64(sz) div cl_device_id.Size];
@@ -2228,6 +2246,48 @@ type
   
   {$region KernelData}
   
+  {$region ProgramOptions}
+  
+  ProgramDefines = Dictionary<string, string>;
+  ProgramOptions = record
+    
+    public constructor(c: Context) := self.c := c;
+    public constructor := Create(Context.Default);
+    
+    public static function operator implicit(c: Context): ProgramOptions := new ProgramOptions(c);
+    
+    public auto property c: Context;
+    
+    public auto property Defines: ProgramDefines := new ProgramDefines;
+    
+    public auto property KernelArgInfo: boolean := true;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      
+      foreach var kvp in Defines do
+      begin
+        res += '-D ';
+        res += kvp.Key;
+        if kvp.Value<>nil then
+        begin
+          res += '=';
+          res += kvp.Value;
+        end;
+        res += ' ';
+      end;
+      
+      if KernelArgInfo then
+        res += '-cl-kernel-arg-info ';
+      
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion ProgramOptions}
+  
   {$region ProgramCode}
   
   ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
@@ -2236,16 +2296,17 @@ type
     
     {$region constructor's}
     
-    private procedure Build(c: Context);
+    private procedure Build(opt: ProgramOptions);
     begin
-      var ec := cl.BuildProgram(self.ntv, c.dvcs.Count,c.GetAllNtvDevices, nil, nil,IntPtr.Zero);
+      
+      var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
       if not ec.IS_ERROR then exit;
       
       if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
       begin
         var sb := new StringBuilder($'Ошибка компиляции OpenCL программы:');
         
-        foreach var dvc in c.AllDevices do
+        foreach var dvc in opt.c.AllDevices do
         begin
           sb += #10#10;
           sb += dvc.ToString;
@@ -2274,20 +2335,18 @@ type
       
     end;
     
-    ///Компилирует указанные тексты программ в указанном контексте
-    ///Внимание! Именно тексты, Не имена файлов
-    public constructor(c: Context; params file_texts: array of string);
+    public constructor(opt: ProgramOptions; params file_texts: array of string);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateProgramWithSource(c.ntv, file_texts.Length, file_texts, nil, ec);
+      self.ntv := cl.CreateProgramWithSource(opt.c.ntv, file_texts.Length, file_texts, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      self.Build(c);
+      self.Build(opt);
     end;
     ///Компилирует указанные тексты программ в контексте Context.Default
     ///Внимание! Именно тексты, Не имена файлов
-    public constructor(params file_texts: array of string) := Create(Context.Default, file_texts);
+    public constructor(params file_texts: array of string) := Create(new ProgramOptions, file_texts);
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
@@ -2378,28 +2437,28 @@ type
     
     {$region Deserialize}
     
-    ///Загружает прекомпилированную программу из набора байт
-    public static function Deserialize(c: Context; bin: array of array of byte): ProgramCode;
+    public static function Deserialize(opt: ProgramOptions; bin: array of array of byte): ProgramCode;
     begin
       var ntv: cl_program;
       
-      var dvcs := c.GetAllNtvDevices;
+      var dvcs := opt.c.GetAllNtvDevices;
       
       var ec: ErrorCode;
+      //TODO А нади ли девайсы передавать?
+      //TODO Отдельные эррор коды?
       ntv := cl.CreateProgramWithBinary(
-        c.ntv, dvcs.Length, dvcs[0],
-        bin.ConvertAll(a->new UIntPtr(a.Length))[0], bin,
-        IntPtr.Zero, ec
+        opt.c.ntv, dvcs.Length, dvcs,
+        bin.ConvertAll(a->new UIntPtr(a.Length)), bin,
+        nil,ec
       );
       OpenCLABCInternalException.RaiseIfError(ec);
       
       Result := new ProgramCode(ntv);
-      Result.Build(c);
+      Result.Build(opt);
       
     end;
     
-    ///Загружает прекомпилированную программу из потока
-    public static function DeserializeFrom(c: Context; br: System.IO.BinaryReader): ProgramCode;
+    public static function DeserializeFrom(opt: ProgramOptions; br: System.IO.BinaryReader): ProgramCode;
     begin
       var bin: array of array of byte;
       
@@ -2411,11 +2470,10 @@ type
         if bin[i].Length<>len then raise new System.IO.EndOfStreamException;
       end;
       
-      Result := Deserialize(c, bin);
+      Result := Deserialize(opt, bin);
     end;
-    ///Загружает прекомпилированную программу из потока
-    public static function DeserializeFrom(c: Context; str: System.IO.Stream) :=
-    DeserializeFrom(c, new System.IO.BinaryReader(str));
+    public static function DeserializeFrom(opt: ProgramOptions; str: System.IO.Stream) :=
+    DeserializeFrom(opt, new System.IO.BinaryReader(str));
     
     {$endregion Deserialize}
     
@@ -2462,7 +2520,7 @@ type
       
       var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, nil, sz)
+        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, IntPtr.Zero, sz)
       );
       var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
       try
@@ -3270,7 +3328,7 @@ type
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), size, IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -3932,7 +3990,7 @@ type
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -4057,7 +4115,7 @@ type
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), IntPtr.Zero, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -17632,9 +17690,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, 1,
-          nil,
-          | new UIntPtr(sz1) |,
-          nil,
+          IntPtr.Zero,
+          | new UIntPtr(sz1) |[0],
+          IntPtr.Zero,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17721,9 +17779,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, 2,
-          nil,
-          | new UIntPtr(sz1),new UIntPtr(sz2) |,
-          nil,
+          IntPtr.Zero,
+          | new UIntPtr(sz1),new UIntPtr(sz2) |[0],
+          IntPtr.Zero,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17821,9 +17879,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, 3,
-          nil,
-          | new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3) |,
-          nil,
+          IntPtr.Zero,
+          | new UIntPtr(sz1),new UIntPtr(sz2),new UIntPtr(sz3) |[0],
+          IntPtr.Zero,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -17926,9 +17984,9 @@ type
         
         var ec := cl.EnqueueNDRangeKernel(
           cq, o, global_work_size.Length,
-          global_work_offset,
-          global_work_size,
-          local_work_size,
+          global_work_offset[0],
+          global_work_size[0],
+          local_work_size[0],
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -18784,7 +18842,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-          val.ptr,
+          val.Pointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -18865,7 +18923,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-          new IntPtr(val),
+          val,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -21856,7 +21914,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -21926,7 +21984,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           UIntPtr.Zero, o.Size,
           evs.count, evs.evs, res_ev
         );
@@ -22012,7 +22070,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -22104,7 +22162,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(TRecord))),
+          val, new UIntPtr(Marshal.SizeOf(default(TRecord))),
           new UIntPtr(mem_offset), new UIntPtr(fill_byte_len),
           evs.count, evs.evs, res_ev
         );
@@ -24620,7 +24678,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-          new IntPtr((own_qr as QueueResPtr<TRecord>).GetResPtr),
+          (own_qr as QueueResPtr<TRecord>).GetResPtr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -24687,7 +24745,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(res.Length * Marshal.SizeOf(default(TRecord))),
-          res_hnd.AddrOfPinnedObject,
+          res_hnd.AddrOfPinnedObject.ToPointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -25108,7 +25166,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
-          val.ptr,
+          val.Pointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -25174,7 +25232,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
-          new IntPtr(val),
+          val,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -25809,7 +25867,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
-          new IntPtr((own_qr as QueueResPtr<&T>).GetResPtr),
+          (own_qr as QueueResPtr<&T>).GetResPtr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -26433,7 +26491,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          val.ptr,
+          val.Pointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -26510,7 +26568,7 @@ type
         var ec := cl.EnqueueWriteBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          new IntPtr(val),
+          val,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -29271,7 +29329,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(T))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -29337,7 +29395,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(T))),
+          val, new UIntPtr(Marshal.SizeOf(default(T))),
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           evs.count, evs.evs, res_ev
         );
@@ -29419,7 +29477,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          val.ptr, new UIntPtr(Marshal.SizeOf(default(T))),
+          val.Pointer, new UIntPtr(Marshal.SizeOf(default(T))),
           new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
@@ -29507,7 +29565,7 @@ type
         
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
-          new IntPtr(val), new UIntPtr(Marshal.SizeOf(default(T))),
+          val, new UIntPtr(Marshal.SizeOf(default(T))),
           new UIntPtr(ind*Marshal.SizeOf(default(T))), new UIntPtr(len*Marshal.SizeOf(default(T))),
           evs.count, evs.evs, res_ev
         );
@@ -32412,7 +32470,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          new IntPtr((own_qr as QueueResPtr<&T>).GetResPtr),
+          (own_qr as QueueResPtr<&T>).GetResPtr,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -32475,7 +32533,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
-          res_hnd.AddrOfPinnedObject,
+          res_hnd.AddrOfPinnedObject.ToPointer,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
