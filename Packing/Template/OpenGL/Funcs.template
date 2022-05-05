@@ -11711,7 +11711,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = '3DFX_tbuffer';
+    public const _ExtStr = 'GL_3DFX_tbuffer';
     
     private z_TbufferMask3DFX_adr := GetProcAddress('glTbufferMask3DFX');
     private z_TbufferMask3DFX_1 := GetProcOrNil&<procedure(mask: UInt32)>(z_TbufferMask3DFX_adr);
@@ -11729,7 +11729,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_debug_output';
+    public const _ExtStr = 'GL_AMD_debug_output';
     
     private z_DebugMessageEnableAMD_adr := GetProcAddress('glDebugMessageEnableAMD');
     private z_DebugMessageEnableAMD_1 := GetProcOrNil&<procedure(category: DummyEnum; severity: DebugSeverity; count: Int32; ids: IntPtr; enabled: boolean)>(z_DebugMessageEnableAMD_adr);
@@ -11785,7 +11785,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_draw_buffers_blend';
+    public const _ExtStr = 'GL_AMD_draw_buffers_blend';
     
     private z_BlendFuncIndexedAMD_adr := GetProcAddress('glBlendFuncIndexedAMD');
     private z_BlendFuncIndexedAMD_1 := GetProcOrNil&<procedure(buf: UInt32; src: DummyEnum; dst: DummyEnum)>(z_BlendFuncIndexedAMD_adr);
@@ -11818,7 +11818,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_framebuffer_multisample_advanced';
+    public const _ExtStr = 'GL_AMD_framebuffer_multisample_advanced';
     
     private z_RenderbufferStorageMultisampleAdvancedAMD_adr := GetProcAddress('glRenderbufferStorageMultisampleAdvancedAMD');
     private z_RenderbufferStorageMultisampleAdvancedAMD_1 := GetProcOrNil&<procedure(target: RenderbufferTarget; samples: Int32; storageSamples: Int32; _internalformat: InternalFormat; width: Int32; height: Int32)>(z_RenderbufferStorageMultisampleAdvancedAMD_adr);
@@ -11841,7 +11841,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_framebuffer_sample_positions';
+    public const _ExtStr = 'GL_AMD_framebuffer_sample_positions';
     
     private z_FramebufferSamplePositionsfvAMD_adr := GetProcAddress('glFramebufferSamplePositionsfvAMD');
     private z_FramebufferSamplePositionsfvAMD_1 := GetProcOrNil&<procedure(target: FramebufferTarget; numsamples: UInt32; pixelindex: UInt32; values: IntPtr)>(z_FramebufferSamplePositionsfvAMD_adr);
@@ -11900,7 +11900,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_gpu_shader_int64';
+    public const _ExtStr = 'GL_AMD_gpu_shader_int64';
     
     private z_Uniform1i64NV_adr := GetProcAddress('glUniform1i64NV');
     private z_Uniform1i64NV_1 := GetProcOrNil&<procedure(location: Int32; x: Int64)>(z_Uniform1i64NV_adr);
@@ -12249,7 +12249,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_interleaved_elements';
+    public const _ExtStr = 'GL_AMD_interleaved_elements';
     
     private z_VertexAttribParameteriAMD_adr := GetProcAddress('glVertexAttribParameteriAMD');
     private z_VertexAttribParameteriAMD_1 := GetProcOrNil&<procedure(index: UInt32; pname: DummyEnum; param: Int32)>(z_VertexAttribParameteriAMD_adr);
@@ -12267,7 +12267,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_multi_draw_indirect';
+    public const _ExtStr = 'GL_AMD_multi_draw_indirect';
     
     private z_MultiDrawArraysIndirectAMD_adr := GetProcAddress('glMultiDrawArraysIndirectAMD');
     private z_MultiDrawArraysIndirectAMD_1 := GetProcOrNil&<procedure(mode: PrimitiveType; indirect: IntPtr; primcount: Int32; stride: Int32)>(z_MultiDrawArraysIndirectAMD_adr);
@@ -12290,7 +12290,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_name_gen_delete';
+    public const _ExtStr = 'GL_AMD_name_gen_delete';
     
     private z_GenNamesAMD_adr := GetProcAddress('glGenNamesAMD');
     private z_GenNamesAMD_1 := GetProcOrNil&<procedure(identifier: DummyEnum; num: UInt32; names: IntPtr)>(z_GenNamesAMD_adr);
@@ -12338,7 +12338,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_occlusion_query_event';
+    public const _ExtStr = 'GL_AMD_occlusion_query_event';
     
     private z_QueryObjectParameteruiAMD_adr := GetProcAddress('glQueryObjectParameteruiAMD');
     private z_QueryObjectParameteruiAMD_1 := GetProcOrNil&<procedure(target: QueryTarget; id: gl_query; pname: DummyEnum; param: UInt32)>(z_QueryObjectParameteruiAMD_adr);
@@ -12356,7 +12356,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_performance_monitor';
+    public const _ExtStr = 'GL_AMD_performance_monitor';
     
     private z_GetPerfMonitorGroupsAMD_adr := GetProcAddress('glGetPerfMonitorGroupsAMD');
     private z_GetPerfMonitorGroupsAMD_1 := GetProcOrNil&<procedure(numGroups: IntPtr; groupsSize: Int32; groups: IntPtr)>(z_GetPerfMonitorGroupsAMD_adr);
@@ -12499,7 +12499,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_sample_positions';
+    public const _ExtStr = 'GL_AMD_sample_positions';
     
     private z_SetMultisamplefvAMD_adr := GetProcAddress('glSetMultisamplefvAMD');
     private z_SetMultisamplefvAMD_1 := GetProcOrNil&<procedure(pname: DummyEnum; index: UInt32; val: IntPtr)>(z_SetMultisamplefvAMD_adr);
@@ -12527,7 +12527,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_sparse_texture';
+    public const _ExtStr = 'GL_AMD_sparse_texture';
     
     private z_TexStorageSparseAMD_adr := GetProcAddress('glTexStorageSparseAMD');
     private z_TexStorageSparseAMD_1 := GetProcOrNil&<procedure(target: TextureTarget; internalFormat: SizedInternalFormat; width: Int32; height: Int32; depth: Int32; layers: Int32; flags: TextureStorageMaskAMD)>(z_TexStorageSparseAMD_adr);
@@ -12550,7 +12550,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_stencil_operation_extended';
+    public const _ExtStr = 'GL_AMD_stencil_operation_extended';
     
     private z_StencilOpValueAMD_adr := GetProcAddress('glStencilOpValueAMD');
     private z_StencilOpValueAMD_1 := GetProcOrNil&<procedure(face: StencilFaceDirection; value: UInt32)>(z_StencilOpValueAMD_adr);
@@ -12568,7 +12568,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_vertex_shader_tessellator';
+    public const _ExtStr = 'GL_AMD_vertex_shader_tessellator';
     
     private z_TessellationFactorAMD_adr := GetProcAddress('glTessellationFactorAMD');
     private z_TessellationFactorAMD_1 := GetProcOrNil&<procedure(factor: single)>(z_TessellationFactorAMD_adr);
@@ -12591,7 +12591,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_element_array';
+    public const _ExtStr = 'GL_APPLE_element_array';
     
     private z_ElementPointerAPPLE_adr := GetProcAddress('glElementPointerAPPLE');
     private z_ElementPointerAPPLE_1 := GetProcOrNil&<procedure(&type: ElementPointerTypeATI; pointer: IntPtr)>(z_ElementPointerAPPLE_adr);
@@ -12669,7 +12669,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_fence';
+    public const _ExtStr = 'GL_APPLE_fence';
     
     private z_GenFencesAPPLE_adr := GetProcAddress('glGenFencesAPPLE');
     private z_GenFencesAPPLE_1 := GetProcOrNil&<procedure(n: Int32; fences: IntPtr)>(z_GenFencesAPPLE_adr);
@@ -12742,7 +12742,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_flush_buffer_range';
+    public const _ExtStr = 'GL_APPLE_flush_buffer_range';
     
     private z_BufferParameteriAPPLE_adr := GetProcAddress('glBufferParameteriAPPLE');
     private z_BufferParameteriAPPLE_1 := GetProcOrNil&<procedure(target: DummyEnum; pname: DummyEnum; param: Int32)>(z_BufferParameteriAPPLE_adr);
@@ -12765,7 +12765,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_object_purgeable';
+    public const _ExtStr = 'GL_APPLE_object_purgeable';
     
     private z_ObjectPurgeableAPPLE_adr := GetProcAddress('glObjectPurgeableAPPLE');
     private z_ObjectPurgeableAPPLE_1 := GetProcOrNil&<function(objectType: DummyEnum; name: UInt32; option: DummyEnum): DummyEnum>(z_ObjectPurgeableAPPLE_adr);
@@ -12796,7 +12796,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_texture_range';
+    public const _ExtStr = 'GL_APPLE_texture_range';
     
     private z_TextureRangeAPPLE_adr := GetProcAddress('glTextureRangeAPPLE');
     private z_TextureRangeAPPLE_1 := GetProcOrNil&<procedure(target: DummyEnum; length: Int32; pointer: IntPtr)>(z_TextureRangeAPPLE_adr);
@@ -12822,7 +12822,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_vertex_array_object';
+    public const _ExtStr = 'GL_APPLE_vertex_array_object';
     
     private z_BindVertexArrayAPPLE_adr := GetProcAddress('glBindVertexArrayAPPLE');
     private z_BindVertexArrayAPPLE_1 := GetProcOrNil&<procedure(&array: gl_vertex_array)>(z_BindVertexArrayAPPLE_adr);
@@ -12875,7 +12875,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_vertex_array_range';
+    public const _ExtStr = 'GL_APPLE_vertex_array_range';
     
     private z_VertexArrayRangeAPPLE_adr := GetProcAddress('glVertexArrayRangeAPPLE');
     private z_VertexArrayRangeAPPLE_1 := GetProcOrNil&<procedure(length: Int32; pointer: IntPtr)>(z_VertexArrayRangeAPPLE_adr);
@@ -12903,7 +12903,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'APPLE_vertex_program_evaluators';
+    public const _ExtStr = 'GL_APPLE_vertex_program_evaluators';
     
     private z_EnableVertexAttribAPPLE_adr := GetProcAddress('glEnableVertexAttribAPPLE');
     private z_EnableVertexAttribAPPLE_1 := GetProcOrNil&<procedure(index: UInt32; pname: DummyEnum)>(z_EnableVertexAttribAPPLE_adr);
@@ -12991,7 +12991,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_ES2_compatibility';
+    public const _ExtStr = 'GL_ARB_ES2_compatibility';
     
     private z_ReleaseShaderCompiler_adr := GetProcAddress('glReleaseShaderCompiler');
     private z_ReleaseShaderCompiler_1 := GetProcOrNil&<procedure>(z_ReleaseShaderCompiler_adr);
@@ -13048,7 +13048,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_ES3_1_compatibility';
+    public const _ExtStr = 'GL_ARB_ES3_1_compatibility';
     
     private z_MemoryBarrierByRegion_adr := GetProcAddress('glMemoryBarrierByRegion');
     private z_MemoryBarrierByRegion_1 := GetProcOrNil&<procedure(barriers: MemoryBarrierMask)>(z_MemoryBarrierByRegion_adr);
@@ -13066,7 +13066,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_ES3_2_compatibility';
+    public const _ExtStr = 'GL_ARB_ES3_2_compatibility';
     
     private z_PrimitiveBoundingBoxARB_adr := GetProcAddress('glPrimitiveBoundingBoxARB');
     private z_PrimitiveBoundingBoxARB_1 := GetProcOrNil&<procedure(minX: single; minY: single; minZ: single; minW: single; maxX: single; maxY: single; maxZ: single; maxW: single)>(z_PrimitiveBoundingBoxARB_adr);
@@ -13084,7 +13084,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_base_instance';
+    public const _ExtStr = 'GL_ARB_base_instance';
     
     private z_DrawArraysInstancedBaseInstance_adr := GetProcAddress('glDrawArraysInstancedBaseInstance');
     private z_DrawArraysInstancedBaseInstance_1 := GetProcOrNil&<procedure(mode: PrimitiveType; first: Int32; count: Int32; instancecount: Int32; baseinstance: UInt32)>(z_DrawArraysInstancedBaseInstance_adr);
@@ -13112,7 +13112,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_bindless_texture';
+    public const _ExtStr = 'GL_ARB_bindless_texture';
     
     private z_GetTextureHandleARB_adr := GetProcAddress('glGetTextureHandleARB');
     private z_GetTextureHandleARB_1 := GetProcOrNil&<function(texture: gl_texture): UInt64>(z_GetTextureHandleARB_adr);
@@ -13238,7 +13238,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_blend_func_extended';
+    public const _ExtStr = 'GL_ARB_blend_func_extended';
     
     private z_BindFragDataLocationIndexed_adr := GetProcAddress('glBindFragDataLocationIndexed');
     private z_BindFragDataLocationIndexed_1 := GetProcOrNil&<procedure(&program: gl_program; colorNumber: UInt32; index: UInt32; name: IntPtr)>(z_BindFragDataLocationIndexed_adr);
@@ -13281,7 +13281,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_buffer_storage';
+    public const _ExtStr = 'GL_ARB_buffer_storage';
     
     private z_BufferStorage_adr := GetProcAddress('glBufferStorage');
     private z_BufferStorage_1 := GetProcOrNil&<procedure(target: BufferStorageTarget; size: UIntPtr; data: pointer; flags: BufferStorageMask)>(z_BufferStorage_adr);
@@ -13311,7 +13311,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_cl_event';
+    public const _ExtStr = 'GL_ARB_cl_event';
     
     private z_CreateSyncFromCLeventARB_adr := GetProcAddress('glCreateSyncFromCLeventARB');
     private z_CreateSyncFromCLeventARB_1 := GetProcOrNil&<function(context: IntPtr; &event: IntPtr; flags: DummyFlags): gl_sync>(z_CreateSyncFromCLeventARB_adr);
@@ -13350,7 +13350,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_clear_buffer_object';
+    public const _ExtStr = 'GL_ARB_clear_buffer_object';
     
     private z_ClearBufferData_adr := GetProcAddress('glClearBufferData');
     private z_ClearBufferData_1 := GetProcOrNil&<procedure(target: BufferStorageTarget; internalformat: SizedInternalFormat; format: PixelFormat; &type: PixelType; data: pointer)>(z_ClearBufferData_adr);
@@ -13397,7 +13397,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_clear_texture';
+    public const _ExtStr = 'GL_ARB_clear_texture';
     
     private z_ClearTexImage_adr := GetProcAddress('glClearTexImage');
     private z_ClearTexImage_1 := GetProcOrNil&<procedure(texture: gl_texture; level: Int32; format: PixelFormat; &type: PixelType; data: IntPtr)>(z_ClearTexImage_adr);
@@ -13420,7 +13420,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_clip_control';
+    public const _ExtStr = 'GL_ARB_clip_control';
     
     private z_ClipControl_adr := GetProcAddress('glClipControl');
     private z_ClipControl_1 := GetProcOrNil&<procedure(origin: ClipControlOrigin; depth: ClipControlDepth)>(z_ClipControl_adr);
@@ -13438,7 +13438,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_color_buffer_float';
+    public const _ExtStr = 'GL_ARB_color_buffer_float';
     
     private z_ClampColorARB_adr := GetProcAddress('glClampColorARB');
     private z_ClampColorARB_1 := GetProcOrNil&<procedure(target: ClampColorTargetARB; clamp: ClampColorModeARB)>(z_ClampColorARB_adr);
@@ -13456,7 +13456,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_compute_shader';
+    public const _ExtStr = 'GL_ARB_compute_shader';
     
     private z_DispatchCompute_adr := GetProcAddress('glDispatchCompute');
     private z_DispatchCompute_1 := GetProcOrNil&<procedure(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32)>(z_DispatchCompute_adr);
@@ -13479,7 +13479,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_compute_variable_group_size';
+    public const _ExtStr = 'GL_ARB_compute_variable_group_size';
     
     private z_DispatchComputeGroupSizeARB_adr := GetProcAddress('glDispatchComputeGroupSizeARB');
     private z_DispatchComputeGroupSizeARB_1 := GetProcOrNil&<procedure(num_groups_x: UInt32; num_groups_y: UInt32; num_groups_z: UInt32; group_size_x: UInt32; group_size_y: UInt32; group_size_z: UInt32)>(z_DispatchComputeGroupSizeARB_adr);
@@ -13497,7 +13497,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_copy_buffer';
+    public const _ExtStr = 'GL_ARB_copy_buffer';
     
     private z_CopyBufferSubData_adr := GetProcAddress('glCopyBufferSubData');
     private z_CopyBufferSubData_1 := GetProcOrNil&<procedure(readTarget: CopyBufferSubDataTarget; writeTarget: CopyBufferSubDataTarget; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr)>(z_CopyBufferSubData_adr);
@@ -13515,7 +13515,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_copy_image';
+    public const _ExtStr = 'GL_ARB_copy_image';
     
     private z_CopyImageSubData_adr := GetProcAddress('glCopyImageSubData');
     private z_CopyImageSubData_1 := GetProcOrNil&<procedure(srcName: UInt32; srcTarget: CopyImageSubDataTarget; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: CopyImageSubDataTarget; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; srcWidth: Int32; srcHeight: Int32; srcDepth: Int32)>(z_CopyImageSubData_adr);
@@ -13533,7 +13533,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_debug_output';
+    public const _ExtStr = 'GL_ARB_debug_output';
     
     private z_DebugMessageControlARB_adr := GetProcAddress('glDebugMessageControlARB');
     private z_DebugMessageControlARB_1 := GetProcOrNil&<procedure(source: DebugSource; &type: DebugType; severity: DebugSeverity; count: Int32; ids: IntPtr; enabled: boolean)>(z_DebugMessageControlARB_adr);
@@ -13589,7 +13589,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_direct_state_access';
+    public const _ExtStr = 'GL_ARB_direct_state_access';
     
     private z_CreateTransformFeedbacks_adr := GetProcAddress('glCreateTransformFeedbacks');
     private z_CreateTransformFeedbacks_1 := GetProcOrNil&<procedure(n: Int32; ids: IntPtr)>(z_CreateTransformFeedbacks_adr);
@@ -14438,7 +14438,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_draw_buffers';
+    public const _ExtStr = 'GL_ARB_draw_buffers';
     
     private z_DrawBuffersARB_adr := GetProcAddress('glDrawBuffersARB');
     private z_DrawBuffersARB_1 := GetProcOrNil&<procedure(n: Int32; bufs: IntPtr)>(z_DrawBuffersARB_adr);
@@ -14466,7 +14466,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_draw_buffers_blend';
+    public const _ExtStr = 'GL_ARB_draw_buffers_blend';
     
     private z_BlendEquationiARB_adr := GetProcAddress('glBlendEquationiARB');
     private z_BlendEquationiARB_1 := GetProcOrNil&<procedure(buf: UInt32; mode: BlendEquationModeEXT)>(z_BlendEquationiARB_adr);
@@ -14499,7 +14499,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_draw_elements_base_vertex';
+    public const _ExtStr = 'GL_ARB_draw_elements_base_vertex';
     
     private z_DrawElementsBaseVertex_adr := GetProcAddress('glDrawElementsBaseVertex');
     private z_DrawElementsBaseVertex_1 := GetProcOrNil&<procedure(mode: PrimitiveType; count: Int32; &type: DrawElementsType; indices: IntPtr; basevertex: Int32)>(z_DrawElementsBaseVertex_adr);
@@ -14573,7 +14573,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_draw_indirect';
+    public const _ExtStr = 'GL_ARB_draw_indirect';
     
     private z_DrawArraysIndirect_adr := GetProcAddress('glDrawArraysIndirect');
     private z_DrawArraysIndirect_1 := GetProcOrNil&<procedure(mode: PrimitiveType; indirect: IntPtr)>(z_DrawArraysIndirect_adr);
@@ -14596,7 +14596,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_draw_instanced';
+    public const _ExtStr = 'GL_ARB_draw_instanced';
     
     private z_DrawArraysInstancedARB_adr := GetProcAddress('glDrawArraysInstancedARB');
     private z_DrawArraysInstancedARB_1 := GetProcOrNil&<procedure(mode: PrimitiveType; first: Int32; count: Int32; primcount: Int32)>(z_DrawArraysInstancedARB_adr);
@@ -14619,7 +14619,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_fragment_program';
+    public const _ExtStr = 'GL_ARB_fragment_program';
     
     private z_ProgramStringARB_adr := GetProcAddress('glProgramStringARB');
     private z_ProgramStringARB_1 := GetProcOrNil&<procedure(target: ProgramTarget; format: ProgramFormat; len: Int32; string: IntPtr)>(z_ProgramStringARB_adr);
@@ -14802,7 +14802,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_framebuffer_no_attachments';
+    public const _ExtStr = 'GL_ARB_framebuffer_no_attachments';
     
     private z_FramebufferParameteri_adr := GetProcAddress('glFramebufferParameteri');
     private z_FramebufferParameteri_1 := GetProcOrNil&<procedure(target: FramebufferTarget; pname: FramebufferParameterName; param: Int32)>(z_FramebufferParameteri_adr);
@@ -14828,7 +14828,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_framebuffer_object';
+    public const _ExtStr = 'GL_ARB_framebuffer_object';
     
     private z_IsRenderbuffer_adr := GetProcAddress('glIsRenderbuffer');
     private z_IsRenderbuffer_1 := GetProcOrNil&<function(renderbuffer: gl_renderbuffer): boolean>(z_IsRenderbuffer_adr);
@@ -14987,7 +14987,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_geometry_shader4';
+    public const _ExtStr = 'GL_ARB_geometry_shader4';
     
     private z_ProgramParameteriARB_adr := GetProcAddress('glProgramParameteriARB');
     private z_ProgramParameteriARB_1 := GetProcOrNil&<procedure(&program: gl_program; pname: ProgramParameterPName; value: Int32)>(z_ProgramParameteriARB_adr);
@@ -15020,7 +15020,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_get_program_binary';
+    public const _ExtStr = 'GL_ARB_get_program_binary';
     
     private z_GetProgramBinary_adr := GetProcAddress('glGetProgramBinary');
     private z_GetProgramBinary_1 := GetProcOrNil&<procedure(&program: gl_program; bufSize: Int32; length: IntPtr; binaryFormat: IntPtr; binary: IntPtr)>(z_GetProgramBinary_adr);
@@ -15057,7 +15057,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_get_texture_sub_image';
+    public const _ExtStr = 'GL_ARB_get_texture_sub_image';
     
     private z_GetTextureSubImage_adr := GetProcAddress('glGetTextureSubImage');
     private z_GetTextureSubImage_1 := GetProcOrNil&<procedure(texture: gl_texture; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: PixelFormat; &type: PixelType; bufSize: Int32; pixels: IntPtr)>(z_GetTextureSubImage_adr);
@@ -15080,7 +15080,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_gl_spirv';
+    public const _ExtStr = 'GL_ARB_gl_spirv';
     
     private z_SpecializeShaderARB_adr := GetProcAddress('glSpecializeShaderARB');
     private z_SpecializeShaderARB_1 := GetProcOrNil&<procedure(shader: gl_shader; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: IntPtr; pConstantValue: IntPtr)>(z_SpecializeShaderARB_adr);
@@ -15175,7 +15175,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_gpu_shader_fp64';
+    public const _ExtStr = 'GL_ARB_gpu_shader_fp64';
     
     private z_Uniform1d_adr := GetProcAddress('glUniform1d');
     private z_Uniform1d_1 := GetProcOrNil&<procedure(location: Int32; x: real)>(z_Uniform1d_adr);
@@ -15423,7 +15423,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_gpu_shader_int64';
+    public const _ExtStr = 'GL_ARB_gpu_shader_int64';
     
     private z_Uniform1i64ARB_adr := GetProcAddress('glUniform1i64ARB');
     private z_Uniform1i64ARB_1 := GetProcOrNil&<procedure(location: Int32; x: Int64)>(z_Uniform1i64ARB_adr);
@@ -15788,7 +15788,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_imaging';
+    public const _ExtStr = 'GL_ARB_imaging';
     
     private z_BlendColor_adr := GetProcAddress('glBlendColor');
     private z_BlendColor_1 := GetProcOrNil&<procedure(red: single; green: single; blue: single; alpha: single)>(z_BlendColor_adr);
@@ -16035,7 +16035,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_indirect_parameters';
+    public const _ExtStr = 'GL_ARB_indirect_parameters';
     
     private z_MultiDrawArraysIndirectCountARB_adr := GetProcAddress('glMultiDrawArraysIndirectCountARB');
     private z_MultiDrawArraysIndirectCountARB_1 := GetProcOrNil&<procedure(mode: PrimitiveType; indirect: IntPtr; drawcount: IntPtr; maxdrawcount: Int32; stride: Int32)>(z_MultiDrawArraysIndirectCountARB_adr);
@@ -16058,7 +16058,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_instanced_arrays';
+    public const _ExtStr = 'GL_ARB_instanced_arrays';
     
     private z_VertexAttribDivisorARB_adr := GetProcAddress('glVertexAttribDivisorARB');
     private z_VertexAttribDivisorARB_1 := GetProcOrNil&<procedure(index: UInt32; divisor: UInt32)>(z_VertexAttribDivisorARB_adr);
@@ -16076,7 +16076,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_internalformat_query';
+    public const _ExtStr = 'GL_ARB_internalformat_query';
     
     private z_GetInternalformativ_adr := GetProcAddress('glGetInternalformativ');
     private z_GetInternalformativ_1 := GetProcOrNil&<procedure(target: TextureTarget; _internalformat: InternalFormat; pname: InternalFormatPName; count: Int32; &params: IntPtr)>(z_GetInternalformativ_adr);
@@ -16097,7 +16097,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_internalformat_query2';
+    public const _ExtStr = 'GL_ARB_internalformat_query2';
     
     private z_GetInternalformati64v_adr := GetProcAddress('glGetInternalformati64v');
     private z_GetInternalformati64v_1 := GetProcOrNil&<procedure(target: TextureTarget; _internalformat: InternalFormat; pname: InternalFormatPName; count: Int32; &params: IntPtr)>(z_GetInternalformati64v_adr);
@@ -16118,7 +16118,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_invalidate_subdata';
+    public const _ExtStr = 'GL_ARB_invalidate_subdata';
     
     private z_InvalidateTexSubImage_adr := GetProcAddress('glInvalidateTexSubImage');
     private z_InvalidateTexSubImage_1 := GetProcOrNil&<procedure(texture: gl_texture; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32)>(z_InvalidateTexSubImage_adr);
@@ -16181,7 +16181,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_map_buffer_range';
+    public const _ExtStr = 'GL_ARB_map_buffer_range';
     
     private z_MapBufferRange_adr := GetProcAddress('glMapBufferRange');
     private z_MapBufferRange_1 := GetProcOrNil&<function(target: BufferTarget; offset: IntPtr; length: UIntPtr; access: MapBufferAccessMask): IntPtr>(z_MapBufferRange_adr);
@@ -16204,7 +16204,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_matrix_palette';
+    public const _ExtStr = 'GL_ARB_matrix_palette';
     
     private z_CurrentPaletteMatrixARB_adr := GetProcAddress('glCurrentPaletteMatrixARB');
     private z_CurrentPaletteMatrixARB_1 := GetProcOrNil&<procedure(index: Int32)>(z_CurrentPaletteMatrixARB_adr);
@@ -16272,7 +16272,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_multi_bind';
+    public const _ExtStr = 'GL_ARB_multi_bind';
     
     private z_BindBuffersBase_adr := GetProcAddress('glBindBuffersBase');
     private z_BindBuffersBase_1 := GetProcOrNil&<procedure(target: BufferTarget; first: UInt32; count: Int32; buffers: IntPtr)>(z_BindBuffersBase_adr);
@@ -16439,7 +16439,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_multi_draw_indirect';
+    public const _ExtStr = 'GL_ARB_multi_draw_indirect';
     
     private z_MultiDrawArraysIndirect_adr := GetProcAddress('glMultiDrawArraysIndirect');
     private z_MultiDrawArraysIndirect_1 := GetProcOrNil&<procedure(mode: PrimitiveType; indirect: IntPtr; drawcount: Int32; stride: Int32)>(z_MultiDrawArraysIndirect_adr);
@@ -16462,7 +16462,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_multisample';
+    public const _ExtStr = 'GL_ARB_multisample';
     
     private z_SampleCoverageARB_adr := GetProcAddress('glSampleCoverageARB');
     private z_SampleCoverageARB_1 := GetProcOrNil&<procedure(value: single; invert: boolean)>(z_SampleCoverageARB_adr);
@@ -16480,7 +16480,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_multitexture';
+    public const _ExtStr = 'GL_ARB_multitexture';
     
     private z_ActiveTextureARB_adr := GetProcAddress('glActiveTextureARB');
     private z_ActiveTextureARB_1 := GetProcOrNil&<procedure(texture: TextureUnit)>(z_ActiveTextureARB_adr);
@@ -16823,7 +16823,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_occlusion_query';
+    public const _ExtStr = 'GL_ARB_occlusion_query';
     
     private z_GenQueriesARB_adr := GetProcAddress('glGenQueriesARB');
     private z_GenQueriesARB_1 := GetProcOrNil&<procedure(n: Int32; ids: IntPtr)>(z_GenQueriesARB_adr);
@@ -16905,7 +16905,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_parallel_shader_compile';
+    public const _ExtStr = 'GL_ARB_parallel_shader_compile';
     
     private z_MaxShaderCompilerThreadsARB_adr := GetProcAddress('glMaxShaderCompilerThreadsARB');
     private z_MaxShaderCompilerThreadsARB_1 := GetProcOrNil&<procedure(count: UInt32)>(z_MaxShaderCompilerThreadsARB_adr);
@@ -16923,7 +16923,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_point_parameters';
+    public const _ExtStr = 'GL_ARB_point_parameters';
     
     private z_PointParameterfARB_adr := GetProcAddress('glPointParameterfARB');
     private z_PointParameterfARB_1 := GetProcOrNil&<procedure(pname: PointParameterNameARB; param: single)>(z_PointParameterfARB_adr);
@@ -16956,7 +16956,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_polygon_offset_clamp';
+    public const _ExtStr = 'GL_ARB_polygon_offset_clamp';
     
     private z_PolygonOffsetClamp_adr := GetProcAddress('glPolygonOffsetClamp');
     private z_PolygonOffsetClamp_1 := GetProcOrNil&<procedure(factor: single; units: single; clamp: single)>(z_PolygonOffsetClamp_adr);
@@ -16974,7 +16974,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_program_interface_query';
+    public const _ExtStr = 'GL_ARB_program_interface_query';
     
     private z_GetProgramInterfaceiv_adr := GetProcAddress('glGetProgramInterfaceiv');
     private z_GetProgramInterfaceiv_1 := GetProcOrNil&<procedure(&program: gl_program; _programInterface: ProgramInterface; pname: ProgramInterfacePName; &params: IntPtr)>(z_GetProgramInterfaceiv_adr);
@@ -17102,7 +17102,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_provoking_vertex';
+    public const _ExtStr = 'GL_ARB_provoking_vertex';
     
     private z_ProvokingVertex_adr := GetProcAddress('glProvokingVertex');
     private z_ProvokingVertex_1 := GetProcOrNil&<procedure(mode: VertexProvokingMode)>(z_ProvokingVertex_adr);
@@ -17120,7 +17120,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_robustness';
+    public const _ExtStr = 'GL_ARB_robustness';
     
     private z_GetGraphicsResetStatusARB_adr := GetProcAddress('glGetGraphicsResetStatusARB');
     private z_GetGraphicsResetStatusARB_1 := GetProcOrNil&<function: GraphicsResetStatus>(z_GetGraphicsResetStatusARB_adr);
@@ -17266,7 +17266,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_sample_locations';
+    public const _ExtStr = 'GL_ARB_sample_locations';
     
     private z_FramebufferSampleLocationsfvARB_adr := GetProcAddress('glFramebufferSampleLocationsfvARB');
     private z_FramebufferSampleLocationsfvARB_1 := GetProcOrNil&<procedure(target: FramebufferTarget; start: UInt32; count: Int32; v: IntPtr)>(z_FramebufferSampleLocationsfvARB_adr);
@@ -17314,7 +17314,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_sample_shading';
+    public const _ExtStr = 'GL_ARB_sample_shading';
     
     private z_MinSampleShadingARB_adr := GetProcAddress('glMinSampleShadingARB');
     private z_MinSampleShadingARB_1 := GetProcOrNil&<procedure(value: single)>(z_MinSampleShadingARB_adr);
@@ -17332,7 +17332,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_sampler_objects';
+    public const _ExtStr = 'GL_ARB_sampler_objects';
     
     private z_GenSamplers_adr := GetProcAddress('glGenSamplers');
     private z_GenSamplers_1 := GetProcOrNil&<procedure(count: Int32; samplers: IntPtr)>(z_GenSamplers_adr);
@@ -17487,7 +17487,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_separate_shader_objects';
+    public const _ExtStr = 'GL_ARB_separate_shader_objects';
     
     private z_UseProgramStages_adr := GetProcAddress('glUseProgramStages');
     private z_UseProgramStages_1 := GetProcOrNil&<procedure(pipeline: gl_program_pipeline; stages: UseProgramStageMask; &program: gl_program)>(z_UseProgramStages_adr);
@@ -18194,7 +18194,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_shader_atomic_counters';
+    public const _ExtStr = 'GL_ARB_shader_atomic_counters';
     
     private z_GetActiveAtomicCounterBufferiv_adr := GetProcAddress('glGetActiveAtomicCounterBufferiv');
     private z_GetActiveAtomicCounterBufferiv_1 := GetProcOrNil&<procedure(&program: gl_program; bufferIndex: UInt32; pname: AtomicCounterBufferPName; &params: IntPtr)>(z_GetActiveAtomicCounterBufferiv_adr);
@@ -18215,7 +18215,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_shader_image_load_store';
+    public const _ExtStr = 'GL_ARB_shader_image_load_store';
     
     private z_BindImageTexture_adr := GetProcAddress('glBindImageTexture');
     private z_BindImageTexture_1 := GetProcOrNil&<procedure(&unit: UInt32; texture: gl_texture; level: Int32; layered: boolean; layer: Int32; access: BufferAccessARB; format: InternalFormat)>(z_BindImageTexture_adr);
@@ -18238,7 +18238,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_shader_objects';
+    public const _ExtStr = 'GL_ARB_shader_objects';
     
     private z_DeleteObjectARB_adr := GetProcAddress('glDeleteObjectARB');
     private z_DeleteObjectARB_1 := GetProcOrNil&<procedure(obj: gl_handle_ARB)>(z_DeleteObjectARB_adr);
@@ -18672,7 +18672,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_shader_storage_buffer_object';
+    public const _ExtStr = 'GL_ARB_shader_storage_buffer_object';
     
     private z_ShaderStorageBlockBinding_adr := GetProcAddress('glShaderStorageBlockBinding');
     private z_ShaderStorageBlockBinding_1 := GetProcOrNil&<procedure(&program: gl_program; storageBlockIndex: UInt32; storageBlockBinding: UInt32)>(z_ShaderStorageBlockBinding_adr);
@@ -18690,7 +18690,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_shader_subroutine';
+    public const _ExtStr = 'GL_ARB_shader_subroutine';
     
     private z_GetSubroutineUniformLocation_adr := GetProcAddress('glGetSubroutineUniformLocation');
     private z_GetSubroutineUniformLocation_1 := GetProcOrNil&<function(&program: gl_program; _shadertype: ShaderType; name: IntPtr): Int32>(z_GetSubroutineUniformLocation_adr);
@@ -18788,7 +18788,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_shading_language_include';
+    public const _ExtStr = 'GL_ARB_shading_language_include';
     
     private z_NamedStringARB_adr := GetProcAddress('glNamedStringARB');
     private z_NamedStringARB_1 := GetProcOrNil&<procedure(&type: DummyEnum; namelen: Int32; name: IntPtr; stringlen: Int32; _string: IntPtr)>(z_NamedStringARB_adr);
@@ -18963,7 +18963,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_sparse_buffer';
+    public const _ExtStr = 'GL_ARB_sparse_buffer';
     
     private z_BufferPageCommitmentARB_adr := GetProcAddress('glBufferPageCommitmentARB');
     private z_BufferPageCommitmentARB_1 := GetProcOrNil&<procedure(target: DummyEnum; offset: IntPtr; size: UIntPtr; commit: boolean)>(z_BufferPageCommitmentARB_adr);
@@ -18991,7 +18991,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_sparse_texture';
+    public const _ExtStr = 'GL_ARB_sparse_texture';
     
     private z_TexPageCommitmentARB_adr := GetProcAddress('glTexPageCommitmentARB');
     private z_TexPageCommitmentARB_1 := GetProcOrNil&<procedure(target: DummyEnum; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; commit: boolean)>(z_TexPageCommitmentARB_adr);
@@ -19009,7 +19009,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_sync';
+    public const _ExtStr = 'GL_ARB_sync';
     
     private z_FenceSync_adr := GetProcAddress('glFenceSync');
     private z_FenceSync_1 := GetProcOrNil&<function(condition: SyncCondition; flags: DummyFlags): gl_sync>(z_FenceSync_adr);
@@ -19069,7 +19069,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_tessellation_shader';
+    public const _ExtStr = 'GL_ARB_tessellation_shader';
     
     private z_PatchParameteri_adr := GetProcAddress('glPatchParameteri');
     private z_PatchParameteri_1 := GetProcOrNil&<procedure(pname: PatchParameterName; value: Int32)>(z_PatchParameteri_adr);
@@ -19102,7 +19102,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_barrier';
+    public const _ExtStr = 'GL_ARB_texture_barrier';
     
     private z_TextureBarrier_adr := GetProcAddress('glTextureBarrier');
     private z_TextureBarrier_1 := GetProcOrNil&<procedure>(z_TextureBarrier_adr);
@@ -19120,7 +19120,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_buffer_object';
+    public const _ExtStr = 'GL_ARB_texture_buffer_object';
     
     private z_TexBufferARB_adr := GetProcAddress('glTexBufferARB');
     private z_TexBufferARB_1 := GetProcOrNil&<procedure(target: TextureTarget; internalformat: SizedInternalFormat; buffer: gl_buffer)>(z_TexBufferARB_adr);
@@ -19138,7 +19138,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_buffer_range';
+    public const _ExtStr = 'GL_ARB_texture_buffer_range';
     
     private z_TexBufferRange_adr := GetProcAddress('glTexBufferRange');
     private z_TexBufferRange_1 := GetProcOrNil&<procedure(target: TextureTarget; internalformat: SizedInternalFormat; buffer: gl_buffer; offset: IntPtr; size: UIntPtr)>(z_TexBufferRange_adr);
@@ -19156,7 +19156,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_compression';
+    public const _ExtStr = 'GL_ARB_texture_compression';
     
     private z_CompressedTexImage3DARB_adr := GetProcAddress('glCompressedTexImage3DARB');
     private z_CompressedTexImage3DARB_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; imageSize: Int32; data: IntPtr)>(z_CompressedTexImage3DARB_adr);
@@ -19204,7 +19204,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_multisample';
+    public const _ExtStr = 'GL_ARB_texture_multisample';
     
     private z_TexImage2DMultisample_adr := GetProcAddress('glTexImage2DMultisample');
     private z_TexImage2DMultisample_1 := GetProcOrNil&<procedure(target: TextureTarget; samples: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; fixedsamplelocations: boolean)>(z_TexImage2DMultisample_adr);
@@ -19240,7 +19240,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_storage';
+    public const _ExtStr = 'GL_ARB_texture_storage';
     
     private z_TexStorage1D_adr := GetProcAddress('glTexStorage1D');
     private z_TexStorage1D_1 := GetProcOrNil&<procedure(target: TextureTarget; levels: Int32; internalformat: SizedInternalFormat; width: Int32)>(z_TexStorage1D_adr);
@@ -19268,7 +19268,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_storage_multisample';
+    public const _ExtStr = 'GL_ARB_texture_storage_multisample';
     
     private z_TexStorage2DMultisample_adr := GetProcAddress('glTexStorage2DMultisample');
     private z_TexStorage2DMultisample_1 := GetProcOrNil&<procedure(target: TextureTarget; samples: Int32; internalformat: SizedInternalFormat; width: Int32; height: Int32; fixedsamplelocations: boolean)>(z_TexStorage2DMultisample_adr);
@@ -19291,7 +19291,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_texture_view';
+    public const _ExtStr = 'GL_ARB_texture_view';
     
     private z_TextureView_adr := GetProcAddress('glTextureView');
     private z_TextureView_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; origtexture: gl_texture; internalformat: SizedInternalFormat; minlevel: UInt32; numlevels: UInt32; minlayer: UInt32; numlayers: UInt32)>(z_TextureView_adr);
@@ -19309,7 +19309,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_timer_query';
+    public const _ExtStr = 'GL_ARB_timer_query';
     
     private z_QueryCounter_adr := GetProcAddress('glQueryCounter');
     private z_QueryCounter_1 := GetProcOrNil&<procedure(id: gl_query; target: QueryCounterTarget)>(z_QueryCounter_adr);
@@ -19343,7 +19343,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_transform_feedback2';
+    public const _ExtStr = 'GL_ARB_transform_feedback2';
     
     private z_BindTransformFeedback_adr := GetProcAddress('glBindTransformFeedback');
     private z_BindTransformFeedback_1 := GetProcOrNil&<procedure(target: BindTransformFeedbackTarget; id: gl_transform_feedback)>(z_BindTransformFeedback_adr);
@@ -19411,7 +19411,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_transform_feedback3';
+    public const _ExtStr = 'GL_ARB_transform_feedback3';
     
     private z_DrawTransformFeedbackStream_adr := GetProcAddress('glDrawTransformFeedbackStream');
     private z_DrawTransformFeedbackStream_1 := GetProcOrNil&<procedure(mode: PrimitiveType; id: gl_transform_feedback; stream: UInt32)>(z_DrawTransformFeedbackStream_adr);
@@ -19447,7 +19447,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_transform_feedback_instanced';
+    public const _ExtStr = 'GL_ARB_transform_feedback_instanced';
     
     private z_DrawTransformFeedbackInstanced_adr := GetProcAddress('glDrawTransformFeedbackInstanced');
     private z_DrawTransformFeedbackInstanced_1 := GetProcOrNil&<procedure(mode: PrimitiveType; id: gl_transform_feedback; instancecount: Int32)>(z_DrawTransformFeedbackInstanced_adr);
@@ -19470,7 +19470,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_transpose_matrix';
+    public const _ExtStr = 'GL_ARB_transpose_matrix';
     
     private z_LoadTransposeMatrixfARB_adr := GetProcAddress('glLoadTransposeMatrixfARB');
     private z_LoadTransposeMatrixfARB_1 := GetProcOrNil&<procedure(m: IntPtr)>(z_LoadTransposeMatrixfARB_adr);
@@ -19543,7 +19543,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_uniform_buffer_object';
+    public const _ExtStr = 'GL_ARB_uniform_buffer_object';
     
     private z_GetUniformIndices_adr := GetProcAddress('glGetUniformIndices');
     private z_GetUniformIndices_1 := GetProcOrNil&<procedure(&program: gl_program; uniformCount: Int32; uniformNames: pointer; uniformIndices: IntPtr)>(z_GetUniformIndices_adr);
@@ -19692,7 +19692,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_array_object';
+    public const _ExtStr = 'GL_ARB_vertex_array_object';
     
     private z_BindVertexArray_adr := GetProcAddress('glBindVertexArray');
     private z_BindVertexArray_1 := GetProcOrNil&<procedure(&array: gl_vertex_array)>(z_BindVertexArray_adr);
@@ -19745,7 +19745,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_attrib_64bit';
+    public const _ExtStr = 'GL_ARB_vertex_attrib_64bit';
     
     private z_VertexAttribL1d_adr := GetProcAddress('glVertexAttribL1d');
     private z_VertexAttribL1d_1 := GetProcOrNil&<procedure(index: UInt32; x: real)>(z_VertexAttribL1d_adr);
@@ -19851,7 +19851,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_attrib_binding';
+    public const _ExtStr = 'GL_ARB_vertex_attrib_binding';
     
     private z_BindVertexBuffer_adr := GetProcAddress('glBindVertexBuffer');
     private z_BindVertexBuffer_1 := GetProcOrNil&<procedure(bindingindex: UInt32; buffer: gl_buffer; offset: IntPtr; stride: Int32)>(z_BindVertexBuffer_adr);
@@ -19894,7 +19894,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_blend';
+    public const _ExtStr = 'GL_ARB_vertex_blend';
     
     private z_WeightbvARB_adr := GetProcAddress('glWeightbvARB');
     private z_WeightbvARB_1 := GetProcOrNil&<procedure(size: Int32; weights: IntPtr)>(z_WeightbvARB_adr);
@@ -20037,7 +20037,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_buffer_object';
+    public const _ExtStr = 'GL_ARB_vertex_buffer_object';
     
     private z_BindBufferARB_adr := GetProcAddress('glBindBufferARB');
     private z_BindBufferARB_1 := GetProcOrNil&<procedure(target: BufferTarget; buffer: gl_buffer)>(z_BindBufferARB_adr);
@@ -20160,7 +20160,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_program';
+    public const _ExtStr = 'GL_ARB_vertex_program';
     
     private z_VertexAttrib1dARB_adr := GetProcAddress('glVertexAttrib1dARB');
     private z_VertexAttrib1dARB_1 := GetProcOrNil&<procedure(index: UInt32; x: real)>(z_VertexAttrib1dARB_adr);
@@ -20800,7 +20800,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_shader';
+    public const _ExtStr = 'GL_ARB_vertex_shader';
     
     private z_VertexAttrib1fARB_adr := GetProcAddress('glVertexAttrib1fARB');
     private z_VertexAttrib1fARB_1 := GetProcOrNil&<procedure(index: UInt32; x: single)>(z_VertexAttrib1fARB_adr);
@@ -21326,7 +21326,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_vertex_type_2_10_10_10_rev';
+    public const _ExtStr = 'GL_ARB_vertex_type_2_10_10_10_rev';
     
     private z_VertexAttribP1ui_adr := GetProcAddress('glVertexAttribP1ui');
     private z_VertexAttribP1ui_1 := GetProcOrNil&<procedure(index: UInt32; &type: VertexAttribPointerType; normalized: boolean; value: UInt32)>(z_VertexAttribP1ui_adr);
@@ -21719,7 +21719,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_viewport_array';
+    public const _ExtStr = 'GL_ARB_viewport_array';
     
     private z_ViewportArrayv_adr := GetProcAddress('glViewportArrayv');
     private z_ViewportArrayv_1 := GetProcOrNil&<procedure(first: UInt32; count: Int32; v: IntPtr)>(z_ViewportArrayv_adr);
@@ -21858,7 +21858,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_window_pos';
+    public const _ExtStr = 'GL_ARB_window_pos';
     
     private z_WindowPos2dARB_adr := GetProcAddress('glWindowPos2dARB');
     private z_WindowPos2dARB_1 := GetProcOrNil&<procedure(x: real; y: real)>(z_WindowPos2dARB_adr);
@@ -22031,7 +22031,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_draw_buffers';
+    public const _ExtStr = 'GL_ATI_draw_buffers';
     
     private z_DrawBuffersATI_adr := GetProcAddress('glDrawBuffersATI');
     private z_DrawBuffersATI_1 := GetProcOrNil&<procedure(n: Int32; bufs: IntPtr)>(z_DrawBuffersATI_adr);
@@ -22059,7 +22059,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_element_array';
+    public const _ExtStr = 'GL_ATI_element_array';
     
     private z_ElementPointerATI_adr := GetProcAddress('glElementPointerATI');
     private z_ElementPointerATI_1 := GetProcOrNil&<procedure(&type: ElementPointerTypeATI; pointer: IntPtr)>(z_ElementPointerATI_adr);
@@ -22087,7 +22087,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_envmap_bumpmap';
+    public const _ExtStr = 'GL_ATI_envmap_bumpmap';
     
     private z_TexBumpParameterivATI_adr := GetProcAddress('glTexBumpParameterivATI');
     private z_TexBumpParameterivATI_1 := GetProcOrNil&<procedure(pname: TexBumpParameterATI; param: IntPtr)>(z_TexBumpParameterivATI_adr);
@@ -22146,7 +22146,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_fragment_shader';
+    public const _ExtStr = 'GL_ATI_fragment_shader';
     
     private z_GenFragmentShadersATI_adr := GetProcAddress('glGenFragmentShadersATI');
     private z_GenFragmentShadersATI_1 := GetProcOrNil&<function(range: UInt32): UInt32>(z_GenFragmentShadersATI_adr);
@@ -22239,7 +22239,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_map_object_buffer';
+    public const _ExtStr = 'GL_ATI_map_object_buffer';
     
     private z_MapObjectBufferATI_adr := GetProcAddress('glMapObjectBufferATI');
     private z_MapObjectBufferATI_1 := GetProcOrNil&<function(buffer: gl_buffer): IntPtr>(z_MapObjectBufferATI_adr);
@@ -22262,7 +22262,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_pn_triangles';
+    public const _ExtStr = 'GL_ATI_pn_triangles';
     
     private z_PNTrianglesiATI_adr := GetProcAddress('glPNTrianglesiATI');
     private z_PNTrianglesiATI_1 := GetProcOrNil&<procedure(pname: PNTrianglesPNameATI; param: Int32)>(z_PNTrianglesiATI_adr);
@@ -22285,7 +22285,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_separate_stencil';
+    public const _ExtStr = 'GL_ATI_separate_stencil';
     
     private z_StencilOpSeparateATI_adr := GetProcAddress('glStencilOpSeparateATI');
     private z_StencilOpSeparateATI_1 := GetProcOrNil&<procedure(face: StencilFaceDirection; sfail: StencilOp; dpfail: StencilOp; dppass: StencilOp)>(z_StencilOpSeparateATI_adr);
@@ -22308,7 +22308,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_vertex_array_object';
+    public const _ExtStr = 'GL_ATI_vertex_array_object';
     
     private z_NewObjectBufferATI_adr := GetProcAddress('glNewObjectBufferATI');
     private z_NewObjectBufferATI_1 := GetProcOrNil&<function(size: Int32; pointer: IntPtr; usage: ArrayObjectUsageATI): UInt32>(z_NewObjectBufferATI_adr);
@@ -22399,7 +22399,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_vertex_attrib_array_object';
+    public const _ExtStr = 'GL_ATI_vertex_attrib_array_object';
     
     private z_VertexAttribArrayObjectATI_adr := GetProcAddress('glVertexAttribArrayObjectATI');
     private z_VertexAttribArrayObjectATI_1 := GetProcOrNil&<procedure(index: UInt32; size: Int32; &type: VertexAttribPointerType; normalized: boolean; stride: Int32; buffer: gl_buffer; offset: UInt32)>(z_VertexAttribArrayObjectATI_adr);
@@ -22433,7 +22433,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ATI_vertex_streams';
+    public const _ExtStr = 'GL_ATI_vertex_streams';
     
     private z_VertexStream1sATI_adr := GetProcAddress('glVertexStream1sATI');
     private z_VertexStream1sATI_1 := GetProcOrNil&<procedure(stream: VertexStreamATI; x: Int16)>(z_VertexStream1sATI_adr);
@@ -22881,7 +22881,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_EGL_image_storage';
+    public const _ExtStr = 'GL_EXT_EGL_image_storage';
     
     private z_EGLImageTargetTexStorageEXT_adr := GetProcAddress('glEGLImageTargetTexStorageEXT');
     private z_EGLImageTargetTexStorageEXT_1 := GetProcOrNil&<procedure(target: DummyEnum; image: egl_image_OES; attrib_list: IntPtr)>(z_EGLImageTargetTexStorageEXT_adr);
@@ -22924,7 +22924,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_bindable_uniform';
+    public const _ExtStr = 'GL_EXT_bindable_uniform';
     
     private z_UniformBufferEXT_adr := GetProcAddress('glUniformBufferEXT');
     private z_UniformBufferEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; buffer: gl_buffer)>(z_UniformBufferEXT_adr);
@@ -22952,7 +22952,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_blend_color';
+    public const _ExtStr = 'GL_EXT_blend_color';
     
     private z_BlendColorEXT_adr := GetProcAddress('glBlendColorEXT');
     private z_BlendColorEXT_1 := GetProcOrNil&<procedure(red: single; green: single; blue: single; alpha: single)>(z_BlendColorEXT_adr);
@@ -22970,7 +22970,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_blend_equation_separate';
+    public const _ExtStr = 'GL_EXT_blend_equation_separate';
     
     private z_BlendEquationSeparateEXT_adr := GetProcAddress('glBlendEquationSeparateEXT');
     private z_BlendEquationSeparateEXT_1 := GetProcOrNil&<procedure(modeRGB: BlendEquationModeEXT; modeAlpha: BlendEquationModeEXT)>(z_BlendEquationSeparateEXT_adr);
@@ -22988,7 +22988,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_blend_func_separate';
+    public const _ExtStr = 'GL_EXT_blend_func_separate';
     
     private z_BlendFuncSeparateEXT_adr := GetProcAddress('glBlendFuncSeparateEXT');
     private z_BlendFuncSeparateEXT_1 := GetProcOrNil&<procedure(sfactorRGB: BlendingFactor; dfactorRGB: BlendingFactor; sfactorAlpha: BlendingFactor; dfactorAlpha: BlendingFactor)>(z_BlendFuncSeparateEXT_adr);
@@ -23006,7 +23006,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_blend_minmax';
+    public const _ExtStr = 'GL_EXT_blend_minmax';
     
     private z_BlendEquationEXT_adr := GetProcAddress('glBlendEquationEXT');
     private z_BlendEquationEXT_1 := GetProcOrNil&<procedure(mode: BlendEquationModeEXT)>(z_BlendEquationEXT_adr);
@@ -23024,7 +23024,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_color_subtable';
+    public const _ExtStr = 'GL_EXT_color_subtable';
     
     private z_ColorSubTableEXT_adr := GetProcAddress('glColorSubTableEXT');
     private z_ColorSubTableEXT_1 := GetProcOrNil&<procedure(target: ColorTableTarget; start: Int32; count: Int32; format: PixelFormat; &type: PixelType; data: IntPtr)>(z_ColorSubTableEXT_adr);
@@ -23047,7 +23047,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_compiled_vertex_array';
+    public const _ExtStr = 'GL_EXT_compiled_vertex_array';
     
     private z_LockArraysEXT_adr := GetProcAddress('glLockArraysEXT');
     private z_LockArraysEXT_1 := GetProcOrNil&<procedure(first: Int32; count: Int32)>(z_LockArraysEXT_adr);
@@ -23070,7 +23070,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_convolution';
+    public const _ExtStr = 'GL_EXT_convolution';
     
     private z_ConvolutionFilter1DEXT_adr := GetProcAddress('glConvolutionFilter1DEXT');
     private z_ConvolutionFilter1DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_ConvolutionFilter1DEXT_adr);
@@ -23174,7 +23174,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_coordinate_frame';
+    public const _ExtStr = 'GL_EXT_coordinate_frame';
     
     private z_Tangent3bEXT_adr := GetProcAddress('glTangent3bEXT');
     private z_Tangent3bEXT_1 := GetProcOrNil&<procedure(tx: SByte; ty: SByte; tz: SByte)>(z_Tangent3bEXT_adr);
@@ -23397,7 +23397,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_copy_texture';
+    public const _ExtStr = 'GL_EXT_copy_texture';
     
     private z_CopyTexImage1DEXT_adr := GetProcAddress('glCopyTexImage1DEXT');
     private z_CopyTexImage1DEXT_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32; border: Int32)>(z_CopyTexImage1DEXT_adr);
@@ -23435,7 +23435,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_cull_vertex';
+    public const _ExtStr = 'GL_EXT_cull_vertex';
     
     private z_CullParameterdvEXT_adr := GetProcAddress('glCullParameterdvEXT');
     private z_CullParameterdvEXT_1 := GetProcOrNil&<procedure(pname: CullParameterEXT; &params: IntPtr)>(z_CullParameterdvEXT_adr);
@@ -23478,7 +23478,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_debug_label';
+    public const _ExtStr = 'GL_EXT_debug_label';
     
     private z_LabelObjectEXT_adr := GetProcAddress('glLabelObjectEXT');
     private z_LabelObjectEXT_1 := GetProcOrNil&<procedure(&type: DummyEnum; object: UInt32; length: Int32; &label: IntPtr)>(z_LabelObjectEXT_adr);
@@ -23514,7 +23514,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_debug_marker';
+    public const _ExtStr = 'GL_EXT_debug_marker';
     
     private z_InsertEventMarkerEXT_adr := GetProcAddress('glInsertEventMarkerEXT');
     private z_InsertEventMarkerEXT_1 := GetProcOrNil&<procedure(length: Int32; marker: IntPtr)>(z_InsertEventMarkerEXT_adr);
@@ -23562,7 +23562,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_depth_bounds_test';
+    public const _ExtStr = 'GL_EXT_depth_bounds_test';
     
     private z_DepthBoundsEXT_adr := GetProcAddress('glDepthBoundsEXT');
     private z_DepthBoundsEXT_1 := GetProcOrNil&<procedure(zmin: real; zmax: real)>(z_DepthBoundsEXT_adr);
@@ -23580,7 +23580,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_direct_state_access';
+    public const _ExtStr = 'GL_EXT_direct_state_access';
     
     private z_MatrixLoadfEXT_adr := GetProcAddress('glMatrixLoadfEXT');
     private z_MatrixLoadfEXT_1 := GetProcOrNil&<procedure(mode: MatrixMode; m: IntPtr)>(z_MatrixLoadfEXT_adr);
@@ -25683,7 +25683,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_draw_buffers2';
+    public const _ExtStr = 'GL_EXT_draw_buffers2';
     
     private z_ColorMaskIndexedEXT_adr := GetProcAddress('glColorMaskIndexedEXT');
     private z_ColorMaskIndexedEXT_1 := GetProcOrNil&<procedure(index: UInt32; r: boolean; g: boolean; b: boolean; a: boolean)>(z_ColorMaskIndexedEXT_adr);
@@ -25732,7 +25732,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_draw_instanced';
+    public const _ExtStr = 'GL_EXT_draw_instanced';
     
     private z_DrawArraysInstancedEXT_adr := GetProcAddress('glDrawArraysInstancedEXT');
     private z_DrawArraysInstancedEXT_1 := GetProcOrNil&<procedure(mode: PrimitiveType; start: Int32; count: Int32; primcount: Int32)>(z_DrawArraysInstancedEXT_adr);
@@ -25755,7 +25755,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_draw_range_elements';
+    public const _ExtStr = 'GL_EXT_draw_range_elements';
     
     private z_DrawRangeElementsEXT_adr := GetProcAddress('glDrawRangeElementsEXT');
     private z_DrawRangeElementsEXT_1 := GetProcOrNil&<procedure(mode: PrimitiveType; start: UInt32; &end: UInt32; count: Int32; &type: DrawElementsType; indices: IntPtr)>(z_DrawRangeElementsEXT_adr);
@@ -25773,7 +25773,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_external_buffer';
+    public const _ExtStr = 'GL_EXT_external_buffer';
     
     private z_BufferStorageExternalEXT_adr := GetProcAddress('glBufferStorageExternalEXT');
     private z_BufferStorageExternalEXT_1 := GetProcOrNil&<procedure(target: DummyEnum; offset: IntPtr; size: UIntPtr; clientBuffer: egl_chient_buffer_EXT; flags: BufferStorageMask)>(z_BufferStorageExternalEXT_adr);
@@ -25796,7 +25796,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_fog_coord';
+    public const _ExtStr = 'GL_EXT_fog_coord';
     
     private z_FogCoordfEXT_adr := GetProcAddress('glFogCoordfEXT');
     private z_FogCoordfEXT_1 := GetProcOrNil&<procedure(coord: single)>(z_FogCoordfEXT_adr);
@@ -25854,7 +25854,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_framebuffer_blit';
+    public const _ExtStr = 'GL_EXT_framebuffer_blit';
     
     private z_BlitFramebufferEXT_adr := GetProcAddress('glBlitFramebufferEXT');
     private z_BlitFramebufferEXT_1 := GetProcOrNil&<procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: ClearBufferMask; filter: BlitFramebufferFilter)>(z_BlitFramebufferEXT_adr);
@@ -25872,7 +25872,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_framebuffer_multisample';
+    public const _ExtStr = 'GL_EXT_framebuffer_multisample';
     
     private z_RenderbufferStorageMultisampleEXT_adr := GetProcAddress('glRenderbufferStorageMultisampleEXT');
     private z_RenderbufferStorageMultisampleEXT_1 := GetProcOrNil&<procedure(target: RenderbufferTarget; samples: Int32; _internalformat: InternalFormat; width: Int32; height: Int32)>(z_RenderbufferStorageMultisampleEXT_adr);
@@ -25890,7 +25890,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_framebuffer_object';
+    public const _ExtStr = 'GL_EXT_framebuffer_object';
     
     private z_IsRenderbufferEXT_adr := GetProcAddress('glIsRenderbufferEXT');
     private z_IsRenderbufferEXT_1 := GetProcOrNil&<function(renderbuffer: gl_renderbuffer): boolean>(z_IsRenderbufferEXT_adr);
@@ -26034,7 +26034,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_geometry_shader4';
+    public const _ExtStr = 'GL_EXT_geometry_shader4';
     
     private z_ProgramParameteriEXT_adr := GetProcAddress('glProgramParameteriEXT');
     private z_ProgramParameteriEXT_1 := GetProcOrNil&<procedure(&program: gl_program; pname: ProgramParameterPName; value: Int32)>(z_ProgramParameteriEXT_adr);
@@ -26052,7 +26052,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_gpu_program_parameters';
+    public const _ExtStr = 'GL_EXT_gpu_program_parameters';
     
     private z_ProgramEnvParameters4fvEXT_adr := GetProcAddress('glProgramEnvParameters4fvEXT');
     private z_ProgramEnvParameters4fvEXT_1 := GetProcOrNil&<procedure(target: ProgramTarget; index: UInt32; count: Int32; &params: IntPtr)>(z_ProgramEnvParameters4fvEXT_adr);
@@ -26095,7 +26095,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_gpu_shader4';
+    public const _ExtStr = 'GL_EXT_gpu_shader4';
     
     private z_GetUniformuivEXT_adr := GetProcAddress('glGetUniformuivEXT');
     private z_GetUniformuivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; &params: IntPtr)>(z_GetUniformuivEXT_adr);
@@ -26479,7 +26479,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_histogram';
+    public const _ExtStr = 'GL_EXT_histogram';
     
     private z_GetHistogramEXT_adr := GetProcAddress('glGetHistogramEXT');
     private z_GetHistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetHistogramEXT_adr);
@@ -26554,7 +26554,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_index_func';
+    public const _ExtStr = 'GL_EXT_index_func';
     
     private z_IndexFuncEXT_adr := GetProcAddress('glIndexFuncEXT');
     private z_IndexFuncEXT_1 := GetProcOrNil&<procedure(func: IndexFunctionEXT; ref: single)>(z_IndexFuncEXT_adr);
@@ -26572,7 +26572,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_index_material';
+    public const _ExtStr = 'GL_EXT_index_material';
     
     private z_IndexMaterialEXT_adr := GetProcAddress('glIndexMaterialEXT');
     private z_IndexMaterialEXT_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: IndexMaterialParameterEXT)>(z_IndexMaterialEXT_adr);
@@ -26590,7 +26590,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_light_texture';
+    public const _ExtStr = 'GL_EXT_light_texture';
     
     private z_ApplyTextureEXT_adr := GetProcAddress('glApplyTextureEXT');
     private z_ApplyTextureEXT_1 := GetProcOrNil&<procedure(mode: LightTextureModeEXT)>(z_ApplyTextureEXT_adr);
@@ -26618,7 +26618,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_memory_object';
+    public const _ExtStr = 'GL_EXT_memory_object';
     
     private z_GetUnsignedBytevEXT_adr := GetProcAddress('glGetUnsignedBytevEXT');
     private z_GetUnsignedBytevEXT_1 := GetProcOrNil&<procedure(pname: GetPName; data: IntPtr)>(z_GetUnsignedBytevEXT_adr);
@@ -26765,7 +26765,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_memory_object_fd';
+    public const _ExtStr = 'GL_EXT_memory_object_fd';
     
     private z_ImportMemoryFdEXT_adr := GetProcAddress('glImportMemoryFdEXT');
     private z_ImportMemoryFdEXT_1 := GetProcOrNil&<procedure(memory: UInt32; size: UInt64; handleType: ExternalHandleType; fd: Int32)>(z_ImportMemoryFdEXT_adr);
@@ -26783,7 +26783,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_memory_object_win32';
+    public const _ExtStr = 'GL_EXT_memory_object_win32';
     
     private z_ImportMemoryWin32HandleEXT_adr := GetProcAddress('glImportMemoryWin32HandleEXT');
     private z_ImportMemoryWin32HandleEXT_1 := GetProcOrNil&<procedure(memory: UInt32; size: UInt64; handleType: ExternalHandleType; handle: IntPtr)>(z_ImportMemoryWin32HandleEXT_adr);
@@ -26806,7 +26806,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_multi_draw_arrays';
+    public const _ExtStr = 'GL_EXT_multi_draw_arrays';
     
     private z_MultiDrawArraysEXT_adr := GetProcAddress('glMultiDrawArraysEXT');
     private z_MultiDrawArraysEXT_1 := GetProcOrNil&<procedure(mode: PrimitiveType; first: IntPtr; count: IntPtr; primcount: Int32)>(z_MultiDrawArraysEXT_adr);
@@ -26870,7 +26870,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_multisample';
+    public const _ExtStr = 'GL_EXT_multisample';
     
     private z_SampleMaskEXT_adr := GetProcAddress('glSampleMaskEXT');
     private z_SampleMaskEXT_1 := GetProcOrNil&<procedure(value: single; invert: boolean)>(z_SampleMaskEXT_adr);
@@ -26893,7 +26893,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_paletted_texture';
+    public const _ExtStr = 'GL_EXT_paletted_texture';
     
     private z_ColorTableEXT_adr := GetProcAddress('glColorTableEXT');
     private z_ColorTableEXT_1 := GetProcOrNil&<procedure(target: ColorTableTarget; _internalFormat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; table: IntPtr)>(z_ColorTableEXT_adr);
@@ -26932,7 +26932,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_pixel_transform';
+    public const _ExtStr = 'GL_EXT_pixel_transform';
     
     private z_PixelTransformParameteriEXT_adr := GetProcAddress('glPixelTransformParameteriEXT');
     private z_PixelTransformParameteriEXT_1 := GetProcOrNil&<procedure(target: PixelTransformTargetEXT; pname: PixelTransformPNameEXT; param: Int32)>(z_PixelTransformParameteriEXT_adr);
@@ -27001,7 +27001,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_point_parameters';
+    public const _ExtStr = 'GL_EXT_point_parameters';
     
     private z_PointParameterfEXT_adr := GetProcAddress('glPointParameterfEXT');
     private z_PointParameterfEXT_1 := GetProcOrNil&<procedure(pname: PointParameterNameARB; param: single)>(z_PointParameterfEXT_adr);
@@ -27034,7 +27034,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_polygon_offset';
+    public const _ExtStr = 'GL_EXT_polygon_offset';
     
     private z_PolygonOffsetEXT_adr := GetProcAddress('glPolygonOffsetEXT');
     private z_PolygonOffsetEXT_1 := GetProcOrNil&<procedure(factor: single; bias: single)>(z_PolygonOffsetEXT_adr);
@@ -27052,7 +27052,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_polygon_offset_clamp';
+    public const _ExtStr = 'GL_EXT_polygon_offset_clamp';
     
     private z_PolygonOffsetClampEXT_adr := GetProcAddress('glPolygonOffsetClampEXT');
     private z_PolygonOffsetClampEXT_1 := GetProcOrNil&<procedure(factor: single; units: single; clamp: single)>(z_PolygonOffsetClampEXT_adr);
@@ -27070,7 +27070,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_provoking_vertex';
+    public const _ExtStr = 'GL_EXT_provoking_vertex';
     
     private z_ProvokingVertexEXT_adr := GetProcAddress('glProvokingVertexEXT');
     private z_ProvokingVertexEXT_1 := GetProcOrNil&<procedure(mode: VertexProvokingMode)>(z_ProvokingVertexEXT_adr);
@@ -27088,7 +27088,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_raster_multisample';
+    public const _ExtStr = 'GL_EXT_raster_multisample';
     
     private z_RasterSamplesEXT_adr := GetProcAddress('glRasterSamplesEXT');
     private z_RasterSamplesEXT_1 := GetProcOrNil&<procedure(samples: UInt32; fixedsamplelocations: boolean)>(z_RasterSamplesEXT_adr);
@@ -27106,7 +27106,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_semaphore';
+    public const _ExtStr = 'GL_EXT_semaphore';
     
     private z_GetUnsignedBytevEXT_adr := GetProcAddress('glGetUnsignedBytevEXT');
     private z_GetUnsignedBytevEXT_1 := GetProcOrNil&<procedure(pname: GetPName; data: IntPtr)>(z_GetUnsignedBytevEXT_adr);
@@ -27287,7 +27287,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_semaphore_fd';
+    public const _ExtStr = 'GL_EXT_semaphore_fd';
     
     private z_ImportSemaphoreFdEXT_adr := GetProcAddress('glImportSemaphoreFdEXT');
     private z_ImportSemaphoreFdEXT_1 := GetProcOrNil&<procedure(semaphore: UInt32; handleType: ExternalHandleType; fd: Int32)>(z_ImportSemaphoreFdEXT_adr);
@@ -27305,7 +27305,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_semaphore_win32';
+    public const _ExtStr = 'GL_EXT_semaphore_win32';
     
     private z_ImportSemaphoreWin32HandleEXT_adr := GetProcAddress('glImportSemaphoreWin32HandleEXT');
     private z_ImportSemaphoreWin32HandleEXT_1 := GetProcOrNil&<procedure(semaphore: UInt32; handleType: ExternalHandleType; handle: IntPtr)>(z_ImportSemaphoreWin32HandleEXT_adr);
@@ -27328,7 +27328,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_secondary_color';
+    public const _ExtStr = 'GL_EXT_secondary_color';
     
     private z_SecondaryColor3bEXT_adr := GetProcAddress('glSecondaryColor3bEXT');
     private z_SecondaryColor3bEXT_1 := GetProcOrNil&<procedure(red: SByte; green: SByte; blue: SByte)>(z_SecondaryColor3bEXT_adr);
@@ -27506,7 +27506,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_separate_shader_objects';
+    public const _ExtStr = 'GL_EXT_separate_shader_objects';
     
     private z_UseShaderProgramEXT_adr := GetProcAddress('glUseShaderProgramEXT');
     private z_UseShaderProgramEXT_1 := GetProcOrNil&<procedure(&type: DummyEnum; &program: gl_program)>(z_UseShaderProgramEXT_adr);
@@ -27544,7 +27544,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_shader_framebuffer_fetch_non_coherent';
+    public const _ExtStr = 'GL_EXT_shader_framebuffer_fetch_non_coherent';
     
     private z_FramebufferFetchBarrierEXT_adr := GetProcAddress('glFramebufferFetchBarrierEXT');
     private z_FramebufferFetchBarrierEXT_1 := GetProcOrNil&<procedure>(z_FramebufferFetchBarrierEXT_adr);
@@ -27562,7 +27562,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_shader_image_load_store';
+    public const _ExtStr = 'GL_EXT_shader_image_load_store';
     
     private z_BindImageTextureEXT_adr := GetProcAddress('glBindImageTextureEXT');
     private z_BindImageTextureEXT_1 := GetProcOrNil&<procedure(index: UInt32; texture: gl_texture; level: Int32; layered: boolean; layer: Int32; access: BufferAccessARB; format: Int32)>(z_BindImageTextureEXT_adr);
@@ -27585,7 +27585,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_stencil_clear_tag';
+    public const _ExtStr = 'GL_EXT_stencil_clear_tag';
     
     private z_StencilClearTagEXT_adr := GetProcAddress('glStencilClearTagEXT');
     private z_StencilClearTagEXT_1 := GetProcOrNil&<procedure(stencilTagBits: Int32; stencilClearTag: UInt32)>(z_StencilClearTagEXT_adr);
@@ -27603,7 +27603,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_stencil_two_side';
+    public const _ExtStr = 'GL_EXT_stencil_two_side';
     
     private z_ActiveStencilFaceEXT_adr := GetProcAddress('glActiveStencilFaceEXT');
     private z_ActiveStencilFaceEXT_1 := GetProcOrNil&<procedure(face: StencilFaceDirection)>(z_ActiveStencilFaceEXT_adr);
@@ -27621,7 +27621,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_subtexture';
+    public const _ExtStr = 'GL_EXT_subtexture';
     
     private z_TexSubImage1DEXT_adr := GetProcAddress('glTexSubImage1DEXT');
     private z_TexSubImage1DEXT_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; xoffset: Int32; width: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexSubImage1DEXT_adr);
@@ -27644,7 +27644,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture3D';
+    public const _ExtStr = 'GL_EXT_texture3D';
     
     private z_TexImage3DEXT_adr := GetProcAddress('glTexImage3DEXT');
     private z_TexImage3DEXT_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage3DEXT_adr);
@@ -27667,7 +27667,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_array';
+    public const _ExtStr = 'GL_EXT_texture_array';
     
     private z_FramebufferTextureLayerEXT_adr := GetProcAddress('glFramebufferTextureLayerEXT');
     private z_FramebufferTextureLayerEXT_1 := GetProcOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; texture: gl_texture; level: Int32; layer: Int32)>(z_FramebufferTextureLayerEXT_adr);
@@ -27685,7 +27685,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_buffer_object';
+    public const _ExtStr = 'GL_EXT_texture_buffer_object';
     
     private z_TexBufferEXT_adr := GetProcAddress('glTexBufferEXT');
     private z_TexBufferEXT_1 := GetProcOrNil&<procedure(target: TextureTarget; internalformat: SizedInternalFormat; buffer: gl_buffer)>(z_TexBufferEXT_adr);
@@ -27703,7 +27703,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_integer';
+    public const _ExtStr = 'GL_EXT_texture_integer';
     
     private z_TexParameterIivEXT_adr := GetProcAddress('glTexParameterIivEXT');
     private z_TexParameterIivEXT_1 := GetProcOrNil&<procedure(target: TextureTarget; pname: TextureParameterName; &params: IntPtr)>(z_TexParameterIivEXT_adr);
@@ -27772,7 +27772,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_object';
+    public const _ExtStr = 'GL_EXT_texture_object';
     
     private z_AreTexturesResidentEXT_adr := GetProcAddress('glAreTexturesResidentEXT');
     private z_AreTexturesResidentEXT_1 := GetProcOrNil&<function(n: Int32; textures: IntPtr; residences: IntPtr): boolean>(z_AreTexturesResidentEXT_adr);
@@ -27879,7 +27879,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_perturb_normal';
+    public const _ExtStr = 'GL_EXT_texture_perturb_normal';
     
     private z_TextureNormalEXT_adr := GetProcAddress('glTextureNormalEXT');
     private z_TextureNormalEXT_1 := GetProcOrNil&<procedure(mode: TextureNormalModeEXT)>(z_TextureNormalEXT_adr);
@@ -27897,7 +27897,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_storage';
+    public const _ExtStr = 'GL_EXT_texture_storage';
     
     private z_TexStorage1DEXT_adr := GetProcAddress('glTexStorage1DEXT');
     private z_TexStorage1DEXT_1 := GetProcOrNil&<procedure(target: TextureTarget; levels: Int32; internalformat: SizedInternalFormat; width: Int32)>(z_TexStorage1DEXT_adr);
@@ -27940,7 +27940,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_timeline_semaphore';
+    public const _ExtStr = 'GL_NV_timeline_semaphore';
     
     private z_CreateSemaphoresNV_adr := GetProcAddress('glCreateSemaphoresNV');
     private z_CreateSemaphoresNV_1 := GetProcOrNil&<procedure(n: Int32; semaphores: IntPtr)>(z_CreateSemaphoresNV_adr);
@@ -27991,7 +27991,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_timer_query';
+    public const _ExtStr = 'GL_EXT_timer_query';
     
     private z_GetQueryObjecti64vEXT_adr := GetProcAddress('glGetQueryObjecti64vEXT');
     private z_GetQueryObjecti64vEXT_1 := GetProcOrNil&<procedure(id: gl_query; pname: QueryObjectParameterName; &params: IntPtr)>(z_GetQueryObjecti64vEXT_adr);
@@ -28020,7 +28020,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_transform_feedback';
+    public const _ExtStr = 'GL_EXT_transform_feedback';
     
     private z_BeginTransformFeedbackEXT_adr := GetProcAddress('glBeginTransformFeedbackEXT');
     private z_BeginTransformFeedbackEXT_1 := GetProcOrNil&<procedure(primitiveMode: PrimitiveType)>(z_BeginTransformFeedbackEXT_adr);
@@ -28112,7 +28112,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_vertex_array';
+    public const _ExtStr = 'GL_EXT_vertex_array';
     
     private z_ArrayElementEXT_adr := GetProcAddress('glArrayElementEXT');
     private z_ArrayElementEXT_1 := GetProcOrNil&<procedure(i: Int32)>(z_ArrayElementEXT_adr);
@@ -28176,7 +28176,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_vertex_attrib_64bit';
+    public const _ExtStr = 'GL_EXT_vertex_attrib_64bit';
     
     private z_VertexAttribL1dEXT_adr := GetProcAddress('glVertexAttribL1dEXT');
     private z_VertexAttribL1dEXT_1 := GetProcOrNil&<procedure(index: UInt32; x: real)>(z_VertexAttribL1dEXT_adr);
@@ -28282,7 +28282,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_vertex_shader';
+    public const _ExtStr = 'GL_EXT_vertex_shader';
     
     private z_BeginVertexShaderEXT_adr := GetProcAddress('glBeginVertexShaderEXT');
     private z_BeginVertexShaderEXT_1 := GetProcOrNil&<procedure>(z_BeginVertexShaderEXT_adr);
@@ -28615,7 +28615,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_vertex_weighting';
+    public const _ExtStr = 'GL_EXT_vertex_weighting';
     
     private z_VertexWeightfEXT_adr := GetProcAddress('glVertexWeightfEXT');
     private z_VertexWeightfEXT_1 := GetProcOrNil&<procedure(weight: single)>(z_VertexWeightfEXT_adr);
@@ -28653,7 +28653,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_win32_keyed_mutex';
+    public const _ExtStr = 'GL_EXT_win32_keyed_mutex';
     
     private z_AcquireKeyedMutexWin32EXT_adr := GetProcAddress('glAcquireKeyedMutexWin32EXT');
     private z_AcquireKeyedMutexWin32EXT_1 := GetProcOrNil&<function(memory: UInt32; key: UInt64; timeout: UInt32): boolean>(z_AcquireKeyedMutexWin32EXT_adr);
@@ -28676,7 +28676,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_window_rectangles';
+    public const _ExtStr = 'GL_EXT_window_rectangles';
     
     private z_WindowRectanglesEXT_adr := GetProcAddress('glWindowRectanglesEXT');
     private z_WindowRectanglesEXT_1 := GetProcOrNil&<procedure(mode: DummyEnum; count: Int32; box: IntPtr)>(z_WindowRectanglesEXT_adr);
@@ -28704,7 +28704,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_x11_sync_object';
+    public const _ExtStr = 'GL_EXT_x11_sync_object';
     
     private z_ImportSyncEXT_adr := GetProcAddress('glImportSyncEXT');
     private z_ImportSyncEXT_1 := GetProcOrNil&<function(external_sync_type: DummyEnum; external_sync: IntPtr; flags: DummyFlags): gl_sync>(z_ImportSyncEXT_adr);
@@ -28722,7 +28722,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'GREMEDY_frame_terminator';
+    public const _ExtStr = 'GL_GREMEDY_frame_terminator';
     
     private z_FrameTerminatorGREMEDY_adr := GetProcAddress('glFrameTerminatorGREMEDY');
     private z_FrameTerminatorGREMEDY_1 := GetProcOrNil&<procedure>(z_FrameTerminatorGREMEDY_adr);
@@ -28740,7 +28740,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'GREMEDY_string_marker';
+    public const _ExtStr = 'GL_GREMEDY_string_marker';
     
     private z_StringMarkerGREMEDY_adr := GetProcAddress('glStringMarkerGREMEDY');
     private z_StringMarkerGREMEDY_1 := GetProcOrNil&<procedure(len: Int32; string: IntPtr)>(z_StringMarkerGREMEDY_adr);
@@ -28758,7 +28758,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'HP_image_transform';
+    public const _ExtStr = 'GL_HP_image_transform';
     
     private z_ImageTransformParameteriHP_adr := GetProcAddress('glImageTransformParameteriHP');
     private z_ImageTransformParameteriHP_1 := GetProcOrNil&<procedure(target: ImageTransformTargetHP; pname: ImageTransformPNameHP; param: Int32)>(z_ImageTransformParameteriHP_adr);
@@ -28827,7 +28827,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'IBM_multimode_draw_arrays';
+    public const _ExtStr = 'GL_IBM_multimode_draw_arrays';
     
     private z_MultiModeDrawArraysIBM_adr := GetProcAddress('glMultiModeDrawArraysIBM');
     private z_MultiModeDrawArraysIBM_1 := GetProcOrNil&<procedure(mode: IntPtr; first: IntPtr; count: IntPtr; primcount: Int32; modestride: Int32)>(z_MultiModeDrawArraysIBM_adr);
@@ -28933,7 +28933,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'IBM_static_data';
+    public const _ExtStr = 'GL_IBM_static_data';
     
     private z_FlushStaticDataIBM_adr := GetProcAddress('glFlushStaticDataIBM');
     private z_FlushStaticDataIBM_1 := GetProcOrNil&<procedure(target: DummyEnum)>(z_FlushStaticDataIBM_adr);
@@ -28951,7 +28951,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'IBM_vertex_array_lists';
+    public const _ExtStr = 'GL_IBM_vertex_array_lists';
     
     private z_ColorPointerListIBM_adr := GetProcAddress('glColorPointerListIBM');
     private z_ColorPointerListIBM_1 := GetProcOrNil&<procedure(size: Int32; &type: ColorPointerType; stride: Int32; _pointer: pointer; ptrstride: Int32)>(z_ColorPointerListIBM_adr);
@@ -29077,7 +29077,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'INGR_blend_func_separate';
+    public const _ExtStr = 'GL_INGR_blend_func_separate';
     
     private z_BlendFuncSeparateINGR_adr := GetProcAddress('glBlendFuncSeparateINGR');
     private z_BlendFuncSeparateINGR_1 := GetProcOrNil&<procedure(sfactorRGB: BlendingFactor; dfactorRGB: BlendingFactor; sfactorAlpha: BlendingFactor; dfactorAlpha: BlendingFactor)>(z_BlendFuncSeparateINGR_adr);
@@ -29095,7 +29095,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'INTEL_framebuffer_CMAA';
+    public const _ExtStr = 'GL_INTEL_framebuffer_CMAA';
     
     private z_ApplyFramebufferAttachmentCMAAINTEL_adr := GetProcAddress('glApplyFramebufferAttachmentCMAAINTEL');
     private z_ApplyFramebufferAttachmentCMAAINTEL_1 := GetProcOrNil&<procedure>(z_ApplyFramebufferAttachmentCMAAINTEL_adr);
@@ -29113,7 +29113,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'INTEL_map_texture';
+    public const _ExtStr = 'GL_INTEL_map_texture';
     
     private z_SyncTextureINTEL_adr := GetProcAddress('glSyncTextureINTEL');
     private z_SyncTextureINTEL_1 := GetProcOrNil&<procedure(texture: gl_texture)>(z_SyncTextureINTEL_adr);
@@ -29162,7 +29162,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'INTEL_parallel_arrays';
+    public const _ExtStr = 'GL_INTEL_parallel_arrays';
     
     private z_VertexPointervINTEL_adr := GetProcAddress('glVertexPointervINTEL');
     private z_VertexPointervINTEL_1 := GetProcOrNil&<procedure(size: Int32; &type: VertexPointerType; _pointer: pointer)>(z_VertexPointervINTEL_adr);
@@ -29235,7 +29235,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'INTEL_performance_query';
+    public const _ExtStr = 'GL_INTEL_performance_query';
     
     private z_BeginPerfQueryINTEL_adr := GetProcAddress('glBeginPerfQueryINTEL');
     private z_BeginPerfQueryINTEL_1 := GetProcOrNil&<procedure(queryHandle: gl_perf_query_handle_INTEL)>(z_BeginPerfQueryINTEL_adr);
@@ -29339,7 +29339,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'KHR_blend_equation_advanced';
+    public const _ExtStr = 'GL_KHR_blend_equation_advanced';
     
     private z_BlendBarrierKHR_adr := GetProcAddress('glBlendBarrierKHR');
     private z_BlendBarrierKHR_1 := GetProcOrNil&<procedure>(z_BlendBarrierKHR_adr);
@@ -29357,7 +29357,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'KHR_debug';
+    public const _ExtStr = 'GL_KHR_debug';
     
     private z_DebugMessageControl_adr := GetProcAddress('glDebugMessageControl');
     private z_DebugMessageControl_1 := GetProcOrNil&<procedure(source: DebugSource; &type: DebugType; severity: DebugSeverity; count: Int32; ids: IntPtr; enabled: boolean)>(z_DebugMessageControl_adr);
@@ -29487,7 +29487,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'KHR_robustness';
+    public const _ExtStr = 'GL_KHR_robustness';
     
     private z_GetGraphicsResetStatus_adr := GetProcAddress('glGetGraphicsResetStatus');
     private z_GetGraphicsResetStatus_1 := GetProcOrNil&<function: GraphicsResetStatus>(z_GetGraphicsResetStatus_adr);
@@ -29534,7 +29534,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'KHR_parallel_shader_compile';
+    public const _ExtStr = 'GL_KHR_parallel_shader_compile';
     
     private z_MaxShaderCompilerThreadsKHR_adr := GetProcAddress('glMaxShaderCompilerThreadsKHR');
     private z_MaxShaderCompilerThreadsKHR_1 := GetProcOrNil&<procedure(count: UInt32)>(z_MaxShaderCompilerThreadsKHR_adr);
@@ -29552,7 +29552,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_framebuffer_flip_y';
+    public const _ExtStr = 'GL_MESA_framebuffer_flip_y';
     
     private z_FramebufferParameteriMESA_adr := GetProcAddress('glFramebufferParameteriMESA');
     private z_FramebufferParameteriMESA_1 := GetProcOrNil&<procedure(target: FramebufferTarget; pname: FramebufferParameterName; param: Int32)>(z_FramebufferParameteriMESA_adr);
@@ -29578,7 +29578,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_resize_buffers';
+    public const _ExtStr = 'GL_MESA_resize_buffers';
     
     private z_ResizeBuffersMESA_adr := GetProcAddress('glResizeBuffersMESA');
     private z_ResizeBuffersMESA_1 := GetProcOrNil&<procedure>(z_ResizeBuffersMESA_adr);
@@ -29596,7 +29596,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_window_pos';
+    public const _ExtStr = 'GL_MESA_window_pos';
     
     private z_WindowPos2dMESA_adr := GetProcAddress('glWindowPos2dMESA');
     private z_WindowPos2dMESA_1 := GetProcOrNil&<procedure(x: real; y: real)>(z_WindowPos2dMESA_adr);
@@ -29849,7 +29849,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NVX_conditional_render';
+    public const _ExtStr = 'GL_NVX_conditional_render';
     
     private z_BeginConditionalRenderNVX_adr := GetProcAddress('glBeginConditionalRenderNVX');
     private z_BeginConditionalRenderNVX_1 := GetProcOrNil&<procedure(id: UInt32)>(z_BeginConditionalRenderNVX_adr);
@@ -29872,7 +29872,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NVX_linked_gpu_multicast';
+    public const _ExtStr = 'GL_NVX_linked_gpu_multicast';
     
     private z_LGPUNamedBufferSubDataNVX_adr := GetProcAddress('glLGPUNamedBufferSubDataNVX');
     private z_LGPUNamedBufferSubDataNVX_1 := GetProcOrNil&<procedure(gpuMask: DummyFlags; buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: IntPtr)>(z_LGPUNamedBufferSubDataNVX_adr);
@@ -29900,7 +29900,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_alpha_to_coverage_dither_control';
+    public const _ExtStr = 'GL_NV_alpha_to_coverage_dither_control';
     
     private z_AlphaToCoverageDitherControlNV_adr := GetProcAddress('glAlphaToCoverageDitherControlNV');
     private z_AlphaToCoverageDitherControlNV_1 := GetProcOrNil&<procedure(mode: DummyEnum)>(z_AlphaToCoverageDitherControlNV_adr);
@@ -29918,7 +29918,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_bindless_multi_draw_indirect';
+    public const _ExtStr = 'GL_NV_bindless_multi_draw_indirect';
     
     private z_MultiDrawArraysIndirectBindlessNV_adr := GetProcAddress('glMultiDrawArraysIndirectBindlessNV');
     private z_MultiDrawArraysIndirectBindlessNV_1 := GetProcOrNil&<procedure(mode: PrimitiveType; indirect: IntPtr; drawCount: Int32; stride: Int32; vertexBufferCount: Int32)>(z_MultiDrawArraysIndirectBindlessNV_adr);
@@ -29941,7 +29941,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_bindless_multi_draw_indirect_count';
+    public const _ExtStr = 'GL_NV_bindless_multi_draw_indirect_count';
     
     private z_MultiDrawArraysIndirectBindlessCountNV_adr := GetProcAddress('glMultiDrawArraysIndirectBindlessCountNV');
     private z_MultiDrawArraysIndirectBindlessCountNV_1 := GetProcOrNil&<procedure(mode: PrimitiveType; indirect: IntPtr; drawCount: Int32; maxDrawCount: Int32; stride: Int32; vertexBufferCount: Int32)>(z_MultiDrawArraysIndirectBindlessCountNV_adr);
@@ -29964,7 +29964,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_bindless_texture';
+    public const _ExtStr = 'GL_NV_bindless_texture';
     
     private z_GetTextureHandleNV_adr := GetProcAddress('glGetTextureHandleNV');
     private z_GetTextureHandleNV_1 := GetProcOrNil&<function(texture: gl_texture): UInt64>(z_GetTextureHandleNV_adr);
@@ -30062,7 +30062,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_blend_equation_advanced';
+    public const _ExtStr = 'GL_NV_blend_equation_advanced';
     
     private z_BlendParameteriNV_adr := GetProcAddress('glBlendParameteriNV');
     private z_BlendParameteriNV_1 := GetProcOrNil&<procedure(pname: DummyEnum; value: Int32)>(z_BlendParameteriNV_adr);
@@ -30085,7 +30085,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_clip_space_w_scaling';
+    public const _ExtStr = 'GL_NV_clip_space_w_scaling';
     
     private z_ViewportPositionWScaleNV_adr := GetProcAddress('glViewportPositionWScaleNV');
     private z_ViewportPositionWScaleNV_1 := GetProcOrNil&<procedure(index: UInt32; xcoeff: single; ycoeff: single)>(z_ViewportPositionWScaleNV_adr);
@@ -30103,7 +30103,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_command_list';
+    public const _ExtStr = 'GL_NV_command_list';
     
     private z_CreateStatesNV_adr := GetProcAddress('glCreateStatesNV');
     private z_CreateStatesNV_1 := GetProcOrNil&<procedure(n: Int32; states: IntPtr)>(z_CreateStatesNV_adr);
@@ -30529,7 +30529,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_conditional_render';
+    public const _ExtStr = 'GL_NV_conditional_render';
     
     private z_BeginConditionalRenderNV_adr := GetProcAddress('glBeginConditionalRenderNV');
     private z_BeginConditionalRenderNV_1 := GetProcOrNil&<procedure(id: UInt32; mode: ConditionalRenderMode)>(z_BeginConditionalRenderNV_adr);
@@ -30552,7 +30552,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_conservative_raster';
+    public const _ExtStr = 'GL_NV_conservative_raster';
     
     private z_SubpixelPrecisionBiasNV_adr := GetProcAddress('glSubpixelPrecisionBiasNV');
     private z_SubpixelPrecisionBiasNV_1 := GetProcOrNil&<procedure(xbits: UInt32; ybits: UInt32)>(z_SubpixelPrecisionBiasNV_adr);
@@ -30570,7 +30570,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_conservative_raster_dilate';
+    public const _ExtStr = 'GL_NV_conservative_raster_dilate';
     
     private z_ConservativeRasterParameterfNV_adr := GetProcAddress('glConservativeRasterParameterfNV');
     private z_ConservativeRasterParameterfNV_1 := GetProcOrNil&<procedure(pname: DummyEnum; value: single)>(z_ConservativeRasterParameterfNV_adr);
@@ -30588,7 +30588,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_conservative_raster_pre_snap_triangles';
+    public const _ExtStr = 'GL_NV_conservative_raster_pre_snap_triangles';
     
     private z_ConservativeRasterParameteriNV_adr := GetProcAddress('glConservativeRasterParameteriNV');
     private z_ConservativeRasterParameteriNV_1 := GetProcOrNil&<procedure(pname: DummyEnum; param: Int32)>(z_ConservativeRasterParameteriNV_adr);
@@ -30606,7 +30606,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_copy_image';
+    public const _ExtStr = 'GL_NV_copy_image';
     
     private z_CopyImageSubDataNV_adr := GetProcAddress('glCopyImageSubDataNV');
     private z_CopyImageSubDataNV_1 := GetProcOrNil&<procedure(srcName: UInt32; srcTarget: CopyBufferSubDataTarget; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstName: UInt32; dstTarget: CopyBufferSubDataTarget; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32)>(z_CopyImageSubDataNV_adr);
@@ -30624,7 +30624,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_depth_buffer_float';
+    public const _ExtStr = 'GL_NV_depth_buffer_float';
     
     private z_DepthRangedNV_adr := GetProcAddress('glDepthRangedNV');
     private z_DepthRangedNV_1 := GetProcOrNil&<procedure(zNear: real; zFar: real)>(z_DepthRangedNV_adr);
@@ -30652,7 +30652,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_draw_texture';
+    public const _ExtStr = 'GL_NV_draw_texture';
     
     private z_DrawTextureNV_adr := GetProcAddress('glDrawTextureNV');
     private z_DrawTextureNV_1 := GetProcOrNil&<procedure(texture: gl_texture; sampler: gl_sampler; x0: single; y0: single; x1: single; y1: single; z: single; s0: single; t0: single; s1: single; t1: single)>(z_DrawTextureNV_adr);
@@ -30670,7 +30670,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_draw_vulkan_image';
+    public const _ExtStr = 'GL_NV_draw_vulkan_image';
     
     private z_DrawVkImageNV_adr := GetProcAddress('glDrawVkImageNV');
     private z_DrawVkImageNV_1 := GetProcOrNil&<procedure(vkImage: UInt64; sampler: gl_sampler; x0: single; y0: single; x1: single; y1: single; z: single; s0: single; t0: single; s1: single; t1: single)>(z_DrawVkImageNV_adr);
@@ -30718,7 +30718,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_evaluators';
+    public const _ExtStr = 'GL_NV_evaluators';
     
     private z_MapControlPointsNV_adr := GetProcAddress('glMapControlPointsNV');
     private z_MapControlPointsNV_1 := GetProcOrNil&<procedure(target: EvalTargetNV; index: UInt32; &type: MapTypeNV; ustride: Int32; vstride: Int32; uorder: Int32; vorder: Int32; &packed: boolean; points: IntPtr)>(z_MapControlPointsNV_adr);
@@ -30808,7 +30808,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_explicit_multisample';
+    public const _ExtStr = 'GL_NV_explicit_multisample';
     
     private z_GetMultisamplefvNV_adr := GetProcAddress('glGetMultisamplefvNV');
     private z_GetMultisamplefvNV_1 := GetProcOrNil&<procedure(pname: GetMultisamplePNameNV; index: UInt32; val: IntPtr)>(z_GetMultisamplefvNV_adr);
@@ -30839,7 +30839,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_fence';
+    public const _ExtStr = 'GL_NV_fence';
     
     private z_DeleteFencesNV_adr := GetProcAddress('glDeleteFencesNV');
     private z_DeleteFencesNV_1 := GetProcOrNil&<procedure(n: Int32; fences: IntPtr)>(z_DeleteFencesNV_adr);
@@ -30910,7 +30910,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_fragment_coverage_to_color';
+    public const _ExtStr = 'GL_NV_fragment_coverage_to_color';
     
     private z_FragmentCoverageColorNV_adr := GetProcAddress('glFragmentCoverageColorNV');
     private z_FragmentCoverageColorNV_1 := GetProcOrNil&<procedure(color: UInt32)>(z_FragmentCoverageColorNV_adr);
@@ -30928,7 +30928,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_fragment_program';
+    public const _ExtStr = 'GL_NV_fragment_program';
     
     private z_ProgramNamedParameter4fNV_adr := GetProcAddress('glProgramNamedParameter4fNV');
     private z_ProgramNamedParameter4fNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; x: single; y: single; z: single; w: single)>(z_ProgramNamedParameter4fNV_adr);
@@ -31079,7 +31079,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_framebuffer_mixed_samples';
+    public const _ExtStr = 'GL_NV_framebuffer_mixed_samples';
     
     private z_RasterSamplesEXT_adr := GetProcAddress('glRasterSamplesEXT');
     private z_RasterSamplesEXT_1 := GetProcOrNil&<procedure(samples: UInt32; fixedsamplelocations: boolean)>(z_RasterSamplesEXT_adr);
@@ -31125,7 +31125,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_framebuffer_multisample_coverage';
+    public const _ExtStr = 'GL_NV_framebuffer_multisample_coverage';
     
     private z_RenderbufferStorageMultisampleCoverageNV_adr := GetProcAddress('glRenderbufferStorageMultisampleCoverageNV');
     private z_RenderbufferStorageMultisampleCoverageNV_1 := GetProcOrNil&<procedure(target: RenderbufferTarget; coverageSamples: Int32; colorSamples: Int32; _internalformat: InternalFormat; width: Int32; height: Int32)>(z_RenderbufferStorageMultisampleCoverageNV_adr);
@@ -31143,7 +31143,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_geometry_program4';
+    public const _ExtStr = 'GL_NV_geometry_program4';
     
     private z_ProgramVertexLimitNV_adr := GetProcAddress('glProgramVertexLimitNV');
     private z_ProgramVertexLimitNV_1 := GetProcOrNil&<procedure(target: ProgramTarget; limit: Int32)>(z_ProgramVertexLimitNV_adr);
@@ -31176,7 +31176,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_gpu_program4';
+    public const _ExtStr = 'GL_NV_gpu_program4';
     
     private z_ProgramLocalParameterI4iNV_adr := GetProcAddress('glProgramLocalParameterI4iNV');
     private z_ProgramLocalParameterI4iNV_1 := GetProcOrNil&<procedure(target: ProgramTarget; index: UInt32; x: Int32; y: Int32; z: Int32; w: Int32)>(z_ProgramLocalParameterI4iNV_adr);
@@ -31361,7 +31361,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_gpu_program5';
+    public const _ExtStr = 'GL_NV_gpu_program5';
     
     private z_ProgramSubroutineParametersuivNV_adr := GetProcAddress('glProgramSubroutineParametersuivNV');
     private z_ProgramSubroutineParametersuivNV_1 := GetProcOrNil&<procedure(target: DummyEnum; count: Int32; &params: IntPtr)>(z_ProgramSubroutineParametersuivNV_adr);
@@ -31397,7 +31397,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_gpu_shader5';
+    public const _ExtStr = 'GL_NV_gpu_shader5';
     
     private z_Uniform1i64NV_adr := GetProcAddress('glUniform1i64NV');
     private z_Uniform1i64NV_1 := GetProcOrNil&<procedure(location: Int32; x: Int64)>(z_Uniform1i64NV_adr);
@@ -31738,7 +31738,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_half_float';
+    public const _ExtStr = 'GL_NV_half_float';
     
     private z_Vertex2hNV_adr := GetProcAddress('glVertex2hNV');
     private z_Vertex2hNV_1 := GetProcOrNil&<procedure(x: Half; y: Half)>(z_Vertex2hNV_adr);
@@ -32231,7 +32231,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_internalformat_sample_query';
+    public const _ExtStr = 'GL_NV_internalformat_sample_query';
     
     private z_GetInternalformatSampleivNV_adr := GetProcAddress('glGetInternalformatSampleivNV');
     private z_GetInternalformatSampleivNV_1 := GetProcOrNil&<procedure(target: TextureTarget; _internalformat: InternalFormat; samples: Int32; pname: InternalFormatPName; count: Int32; &params: IntPtr)>(z_GetInternalformatSampleivNV_adr);
@@ -32252,7 +32252,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_gpu_multicast';
+    public const _ExtStr = 'GL_NV_gpu_multicast';
     
     private z_RenderGpuMaskNV_adr := GetProcAddress('glRenderGpuMaskNV');
     private z_RenderGpuMaskNV_1 := GetProcOrNil&<procedure(mask: DummyFlags)>(z_RenderGpuMaskNV_adr);
@@ -32347,7 +32347,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NVX_gpu_multicast2';
+    public const _ExtStr = 'GL_NVX_gpu_multicast2';
     
     private z_UploadGpuMaskNVX_adr := GetProcAddress('glUploadGpuMaskNVX');
     private z_UploadGpuMaskNVX_1 := GetProcOrNil&<procedure(mask: DummyFlags)>(z_UploadGpuMaskNVX_adr);
@@ -32572,7 +32572,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NVX_progress_fence';
+    public const _ExtStr = 'GL_NVX_progress_fence';
     
     private z_CreateProgressFenceNVX_adr := GetProcAddress('glCreateProgressFenceNVX');
     private z_CreateProgressFenceNVX_1 := GetProcOrNil&<function: UInt32>(z_CreateProgressFenceNVX_adr);
@@ -32668,7 +32668,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_memory_attachment';
+    public const _ExtStr = 'GL_NV_memory_attachment';
     
     private z_GetMemoryObjectDetachedResourcesuivNV_adr := GetProcAddress('glGetMemoryObjectDetachedResourcesuivNV');
     private z_GetMemoryObjectDetachedResourcesuivNV_1 := GetProcOrNil&<procedure(memory: UInt32; pname: DummyEnum; first: Int32; count: Int32; &params: IntPtr)>(z_GetMemoryObjectDetachedResourcesuivNV_adr);
@@ -32714,7 +32714,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_memory_object_sparse';
+    public const _ExtStr = 'GL_NV_memory_object_sparse';
     
     private z_BufferPageCommitmentMemNV_adr := GetProcAddress('glBufferPageCommitmentMemNV');
     private z_BufferPageCommitmentMemNV_1 := GetProcOrNil&<procedure(target: BufferStorageTarget; offset: IntPtr; size: UIntPtr; memory: UInt32; memOffset: UInt64; commit: boolean)>(z_BufferPageCommitmentMemNV_adr);
@@ -32747,7 +32747,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_mesh_shader';
+    public const _ExtStr = 'GL_NV_mesh_shader';
     
     private z_DrawMeshTasksNV_adr := GetProcAddress('glDrawMeshTasksNV');
     private z_DrawMeshTasksNV_1 := GetProcOrNil&<procedure(first: UInt32; count: UInt32)>(z_DrawMeshTasksNV_adr);
@@ -32780,7 +32780,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_occlusion_query';
+    public const _ExtStr = 'GL_NV_occlusion_query';
     
     private z_GenOcclusionQueriesNV_adr := GetProcAddress('glGenOcclusionQueriesNV');
     private z_GenOcclusionQueriesNV_1 := GetProcOrNil&<procedure(n: Int32; ids: IntPtr)>(z_GenOcclusionQueriesNV_adr);
@@ -32854,7 +32854,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_parameter_buffer_object';
+    public const _ExtStr = 'GL_NV_parameter_buffer_object';
     
     private z_ProgramBufferParametersfvNV_adr := GetProcAddress('glProgramBufferParametersfvNV');
     private z_ProgramBufferParametersfvNV_1 := GetProcOrNil&<procedure(target: ProgramTarget; bindingIndex: UInt32; wordIndex: UInt32; count: Int32; &params: IntPtr)>(z_ProgramBufferParametersfvNV_adr);
@@ -32912,7 +32912,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_path_rendering';
+    public const _ExtStr = 'GL_NV_path_rendering';
     
     private z_GenPathsNV_adr := GetProcAddress('glGenPathsNV');
     private z_GenPathsNV_1 := GetProcOrNil&<function(range: Int32): UInt32>(z_GenPathsNV_adr);
@@ -33755,7 +33755,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_pixel_data_range';
+    public const _ExtStr = 'GL_NV_pixel_data_range';
     
     private z_PixelDataRangeNV_adr := GetProcAddress('glPixelDataRangeNV');
     private z_PixelDataRangeNV_1 := GetProcOrNil&<procedure(target: PixelDataRangeTargetNV; length: Int32; pointer: IntPtr)>(z_PixelDataRangeNV_adr);
@@ -33778,7 +33778,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_point_sprite';
+    public const _ExtStr = 'GL_NV_point_sprite';
     
     private z_PointParameteriNV_adr := GetProcAddress('glPointParameteriNV');
     private z_PointParameteriNV_1 := GetProcOrNil&<procedure(pname: PointParameterNameARB; param: Int32)>(z_PointParameteriNV_adr);
@@ -33811,7 +33811,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_present_video';
+    public const _ExtStr = 'GL_NV_present_video';
     
     private z_PresentFrameKeyedNV_adr := GetProcAddress('glPresentFrameKeyedNV');
     private z_PresentFrameKeyedNV_1 := GetProcOrNil&<procedure(video_slot: UInt32; minPresentTime: UInt64; beginPresentTimeId: UInt32; presentDurationId: UInt32; &type: DummyEnum; target0: DummyEnum; fill0: UInt32; key0: UInt32; target1: DummyEnum; fill1: UInt32; key1: UInt32)>(z_PresentFrameKeyedNV_adr);
@@ -33866,7 +33866,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_primitive_restart';
+    public const _ExtStr = 'GL_NV_primitive_restart';
     
     private z_PrimitiveRestartNV_adr := GetProcAddress('glPrimitiveRestartNV');
     private z_PrimitiveRestartNV_1 := GetProcOrNil&<procedure>(z_PrimitiveRestartNV_adr);
@@ -33889,7 +33889,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_query_resource';
+    public const _ExtStr = 'GL_NV_query_resource';
     
     private z_QueryResourceNV_adr := GetProcAddress('glQueryResourceNV');
     private z_QueryResourceNV_1 := GetProcOrNil&<function(queryType: DummyEnum; tagId: Int32; count: UInt32; buffer: IntPtr): Int32>(z_QueryResourceNV_adr);
@@ -33917,7 +33917,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_query_resource_tag';
+    public const _ExtStr = 'GL_NV_query_resource_tag';
     
     private z_GenQueryResourceTagNV_adr := GetProcAddress('glGenQueryResourceTagNV');
     private z_GenQueryResourceTagNV_1 := GetProcOrNil&<procedure(n: Int32; tagIds: IntPtr)>(z_GenQueryResourceTagNV_adr);
@@ -33975,7 +33975,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_register_combiners';
+    public const _ExtStr = 'GL_NV_register_combiners';
     
     private z_CombinerParameterfvNV_adr := GetProcAddress('glCombinerParameterfvNV');
     private z_CombinerParameterfvNV_1 := GetProcOrNil&<procedure(pname: CombinerParameterNV; &params: IntPtr)>(z_CombinerParameterfvNV_adr);
@@ -34091,7 +34091,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_register_combiners2';
+    public const _ExtStr = 'GL_NV_register_combiners2';
     
     private z_CombinerStageParameterfvNV_adr := GetProcAddress('glCombinerStageParameterfvNV');
     private z_CombinerStageParameterfvNV_1 := GetProcOrNil&<procedure(stage: CombinerStageNV; pname: CombinerParameterNV; &params: IntPtr)>(z_CombinerStageParameterfvNV_adr);
@@ -34127,7 +34127,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_sample_locations';
+    public const _ExtStr = 'GL_NV_sample_locations';
     
     private z_FramebufferSampleLocationsfvNV_adr := GetProcAddress('glFramebufferSampleLocationsfvNV');
     private z_FramebufferSampleLocationsfvNV_1 := GetProcOrNil&<procedure(target: FramebufferTarget; start: UInt32; count: Int32; v: IntPtr)>(z_FramebufferSampleLocationsfvNV_adr);
@@ -34175,7 +34175,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_scissor_exclusive';
+    public const _ExtStr = 'GL_NV_scissor_exclusive';
     
     private z_ScissorExclusiveNV_adr := GetProcAddress('glScissorExclusiveNV');
     private z_ScissorExclusiveNV_1 := GetProcOrNil&<procedure(x: Int32; y: Int32; width: Int32; height: Int32)>(z_ScissorExclusiveNV_adr);
@@ -34208,7 +34208,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_shader_buffer_load';
+    public const _ExtStr = 'GL_NV_shader_buffer_load';
     
     private z_MakeBufferResidentNV_adr := GetProcAddress('glMakeBufferResidentNV');
     private z_MakeBufferResidentNV_1 := GetProcOrNil&<procedure(target: DummyEnum; access: DummyEnum)>(z_MakeBufferResidentNV_adr);
@@ -34323,7 +34323,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_shading_rate_image';
+    public const _ExtStr = 'GL_NV_shading_rate_image';
     
     private z_BindShadingRateImageNV_adr := GetProcAddress('glBindShadingRateImageNV');
     private z_BindShadingRateImageNV_1 := GetProcOrNil&<procedure(texture: gl_texture)>(z_BindShadingRateImageNV_adr);
@@ -34397,7 +34397,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_texture_barrier';
+    public const _ExtStr = 'GL_NV_texture_barrier';
     
     private z_TextureBarrierNV_adr := GetProcAddress('glTextureBarrierNV');
     private z_TextureBarrierNV_1 := GetProcOrNil&<procedure>(z_TextureBarrierNV_adr);
@@ -34415,7 +34415,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_texture_multisample';
+    public const _ExtStr = 'GL_NV_texture_multisample';
     
     private z_TexImage2DMultisampleCoverageNV_adr := GetProcAddress('glTexImage2DMultisampleCoverageNV');
     private z_TexImage2DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TexImage2DMultisampleCoverageNV_adr);
@@ -34458,7 +34458,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_transform_feedback';
+    public const _ExtStr = 'GL_NV_transform_feedback';
     
     private z_BeginTransformFeedbackNV_adr := GetProcAddress('glBeginTransformFeedbackNV');
     private z_BeginTransformFeedbackNV_1 := GetProcOrNil&<procedure(primitiveMode: PrimitiveType)>(z_BeginTransformFeedbackNV_adr);
@@ -34615,7 +34615,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_transform_feedback2';
+    public const _ExtStr = 'GL_NV_transform_feedback2';
     
     private z_BindTransformFeedbackNV_adr := GetProcAddress('glBindTransformFeedbackNV');
     private z_BindTransformFeedbackNV_1 := GetProcOrNil&<procedure(target: BufferTarget; id: gl_transform_feedback)>(z_BindTransformFeedbackNV_adr);
@@ -34683,7 +34683,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vdpau_interop';
+    public const _ExtStr = 'GL_NV_vdpau_interop';
     
     private z_VDPAUInitNV_adr := GetProcAddress('glVDPAUInitNV');
     private z_VDPAUInitNV_1 := GetProcOrNil&<procedure(vdpDevice: IntPtr; getProcAddress: IntPtr)>(z_VDPAUInitNV_adr);
@@ -34795,7 +34795,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vdpau_interop2';
+    public const _ExtStr = 'GL_NV_vdpau_interop2';
     
     private z_VDPAURegisterVideoSurfaceWithPictureStructureNV_adr := GetProcAddress('glVDPAURegisterVideoSurfaceWithPictureStructureNV');
     private z_VDPAURegisterVideoSurfaceWithPictureStructureNV_1 := GetProcOrNil&<function(vdpSurface: IntPtr; target: DummyEnum; numTextureNames: Int32; textureNames: IntPtr; isFrameStructure: boolean): gl_vdpau_surface_NV>(z_VDPAURegisterVideoSurfaceWithPictureStructureNV_adr);
@@ -34823,7 +34823,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vertex_array_range';
+    public const _ExtStr = 'GL_NV_vertex_array_range';
     
     private z_FlushVertexArrayRangeNV_adr := GetProcAddress('glFlushVertexArrayRangeNV');
     private z_FlushVertexArrayRangeNV_1 := GetProcOrNil&<procedure>(z_FlushVertexArrayRangeNV_adr);
@@ -34846,7 +34846,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vertex_attrib_integer_64bit';
+    public const _ExtStr = 'GL_NV_vertex_attrib_integer_64bit';
     
     private z_VertexAttribL1i64NV_adr := GetProcAddress('glVertexAttribL1i64NV');
     private z_VertexAttribL1i64NV_1 := GetProcOrNil&<procedure(index: UInt32; x: Int64)>(z_VertexAttribL1i64NV_adr);
@@ -35040,7 +35040,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vertex_buffer_unified_memory';
+    public const _ExtStr = 'GL_NV_vertex_buffer_unified_memory';
     
     private z_BufferAddressRangeNV_adr := GetProcAddress('glBufferAddressRangeNV');
     private z_BufferAddressRangeNV_1 := GetProcOrNil&<procedure(pname: DummyEnum; index: UInt32; address: UInt64; length: UIntPtr)>(z_BufferAddressRangeNV_adr);
@@ -35116,7 +35116,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vertex_program';
+    public const _ExtStr = 'GL_NV_vertex_program';
     
     private z_AreProgramsResidentNV_adr := GetProcAddress('glAreProgramsResidentNV');
     private z_AreProgramsResidentNV_1 := GetProcOrNil&<function(n: Int32; programs: IntPtr; residences: IntPtr): boolean>(z_AreProgramsResidentNV_adr);
@@ -35849,7 +35849,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vertex_program4';
+    public const _ExtStr = 'GL_NV_vertex_program4';
     
     private z_VertexAttribI1iEXT_adr := GetProcAddress('glVertexAttribI1iEXT');
     private z_VertexAttribI1iEXT_1 := GetProcOrNil&<procedure(index: UInt32; x: Int32)>(z_VertexAttribI1iEXT_adr);
@@ -36103,7 +36103,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_video_capture';
+    public const _ExtStr = 'GL_NV_video_capture';
     
     private z_BeginVideoCaptureNV_adr := GetProcAddress('glBeginVideoCaptureNV');
     private z_BeginVideoCaptureNV_1 := GetProcOrNil&<procedure(video_capture_slot: UInt32)>(z_BeginVideoCaptureNV_adr);
@@ -36239,7 +36239,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_viewport_swizzle';
+    public const _ExtStr = 'GL_NV_viewport_swizzle';
     
     private z_ViewportSwizzleNV_adr := GetProcAddress('glViewportSwizzleNV');
     private z_ViewportSwizzleNV_1 := GetProcOrNil&<procedure(index: UInt32; swizzlex: DummyEnum; swizzley: DummyEnum; swizzlez: DummyEnum; swizzlew: DummyEnum)>(z_ViewportSwizzleNV_adr);
@@ -36257,7 +36257,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OES_byte_coordinates';
+    public const _ExtStr = 'GL_OES_byte_coordinates';
     
     private z_MultiTexCoord1bOES_adr := GetProcAddress('glMultiTexCoord1bOES');
     private z_MultiTexCoord1bOES_1 := GetProcOrNil&<procedure(texture: TextureUnit; s: SByte)>(z_MultiTexCoord1bOES_adr);
@@ -36490,7 +36490,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OES_fixed_point';
+    public const _ExtStr = 'GL_OES_fixed_point';
     
     private z_AlphaFuncxOES_adr := GetProcAddress('glAlphaFuncxOES');
     private z_AlphaFuncxOES_1 := GetProcOrNil&<procedure(func: AlphaFunction; ref: Fixed)>(z_AlphaFuncxOES_adr);
@@ -37462,7 +37462,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OES_query_matrix';
+    public const _ExtStr = 'GL_OES_query_matrix';
     
     private z_QueryMatrixxOES_adr := GetProcAddress('glQueryMatrixxOES');
     private z_QueryMatrixxOES_1 := GetProcOrNil&<function(mantissa: IntPtr; exponent: IntPtr): DummyFlags>(z_QueryMatrixxOES_adr);
@@ -37501,7 +37501,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OES_single_precision';
+    public const _ExtStr = 'GL_OES_single_precision';
     
     private z_ClearDepthfOES_adr := GetProcAddress('glClearDepthfOES');
     private z_ClearDepthfOES_1 := GetProcOrNil&<procedure(depth: single)>(z_ClearDepthfOES_adr);
@@ -37557,7 +37557,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OVR_multiview';
+    public const _ExtStr = 'GL_OVR_multiview';
     
     private z_FramebufferTextureMultiviewOVR_adr := GetProcAddress('glFramebufferTextureMultiviewOVR');
     private z_FramebufferTextureMultiviewOVR_1 := GetProcOrNil&<procedure(target: FramebufferTarget; attachment: FramebufferAttachment; texture: gl_texture; level: Int32; baseViewIndex: Int32; numViews: Int32)>(z_FramebufferTextureMultiviewOVR_adr);
@@ -37575,7 +37575,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'PGI_misc_hints';
+    public const _ExtStr = 'GL_PGI_misc_hints';
     
     private z_HintPGI_adr := GetProcAddress('glHintPGI');
     private z_HintPGI_1 := GetProcOrNil&<procedure(target: HintTargetPGI; mode: Int32)>(z_HintPGI_adr);
@@ -37593,7 +37593,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_detail_texture';
+    public const _ExtStr = 'GL_SGIS_detail_texture';
     
     private z_DetailTexFuncSGIS_adr := GetProcAddress('glDetailTexFuncSGIS');
     private z_DetailTexFuncSGIS_1 := GetProcOrNil&<procedure(target: TextureTarget; n: Int32; points: IntPtr)>(z_DetailTexFuncSGIS_adr);
@@ -37629,7 +37629,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_fog_function';
+    public const _ExtStr = 'GL_SGIS_fog_function';
     
     private z_FogFuncSGIS_adr := GetProcAddress('glFogFuncSGIS');
     private z_FogFuncSGIS_1 := GetProcOrNil&<procedure(n: Int32; points: IntPtr)>(z_FogFuncSGIS_adr);
@@ -37665,7 +37665,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_multisample';
+    public const _ExtStr = 'GL_SGIS_multisample';
     
     private z_SampleMaskSGIS_adr := GetProcAddress('glSampleMaskSGIS');
     private z_SampleMaskSGIS_1 := GetProcOrNil&<procedure(value: single; invert: boolean)>(z_SampleMaskSGIS_adr);
@@ -37688,7 +37688,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_pixel_texture';
+    public const _ExtStr = 'GL_SGIS_pixel_texture';
     
     private z_PixelTexGenParameteriSGIS_adr := GetProcAddress('glPixelTexGenParameteriSGIS');
     private z_PixelTexGenParameteriSGIS_1 := GetProcOrNil&<procedure(pname: PixelTexGenParameterNameSGIS; param: Int32)>(z_PixelTexGenParameteriSGIS_adr);
@@ -37757,7 +37757,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_point_parameters';
+    public const _ExtStr = 'GL_SGIS_point_parameters';
     
     private z_PointParameterfSGIS_adr := GetProcAddress('glPointParameterfSGIS');
     private z_PointParameterfSGIS_1 := GetProcOrNil&<procedure(pname: PointParameterNameARB; param: single)>(z_PointParameterfSGIS_adr);
@@ -37790,7 +37790,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_sharpen_texture';
+    public const _ExtStr = 'GL_SGIS_sharpen_texture';
     
     private z_SharpenTexFuncSGIS_adr := GetProcAddress('glSharpenTexFuncSGIS');
     private z_SharpenTexFuncSGIS_1 := GetProcOrNil&<procedure(target: TextureTarget; n: Int32; points: IntPtr)>(z_SharpenTexFuncSGIS_adr);
@@ -37826,7 +37826,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_texture4D';
+    public const _ExtStr = 'GL_SGIS_texture4D';
     
     private z_TexImage4DSGIS_adr := GetProcAddress('glTexImage4DSGIS');
     private z_TexImage4DSGIS_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; size4d: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage4DSGIS_adr);
@@ -37849,7 +37849,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_texture_color_mask';
+    public const _ExtStr = 'GL_SGIS_texture_color_mask';
     
     private z_TextureColorMaskSGIS_adr := GetProcAddress('glTextureColorMaskSGIS');
     private z_TextureColorMaskSGIS_1 := GetProcOrNil&<procedure(red: boolean; green: boolean; blue: boolean; alpha: boolean)>(z_TextureColorMaskSGIS_adr);
@@ -37867,7 +37867,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIS_texture_filter4';
+    public const _ExtStr = 'GL_SGIS_texture_filter4';
     
     private z_GetTexFilterFuncSGIS_adr := GetProcAddress('glGetTexFilterFuncSGIS');
     private z_GetTexFilterFuncSGIS_1 := GetProcOrNil&<procedure(target: TextureTarget; filter: TextureFilterSGIS; weights: IntPtr)>(z_GetTexFilterFuncSGIS_adr);
@@ -37903,7 +37903,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_async';
+    public const _ExtStr = 'GL_SGIX_async';
     
     private z_AsyncMarkerSGIX_adr := GetProcAddress('glAsyncMarkerSGIX');
     private z_AsyncMarkerSGIX_1 := GetProcOrNil&<procedure(marker: UInt32)>(z_AsyncMarkerSGIX_adr);
@@ -37966,7 +37966,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_flush_raster';
+    public const _ExtStr = 'GL_SGIX_flush_raster';
     
     private z_FlushRasterSGIX_adr := GetProcAddress('glFlushRasterSGIX');
     private z_FlushRasterSGIX_1 := GetProcOrNil&<procedure>(z_FlushRasterSGIX_adr);
@@ -37984,7 +37984,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_fragment_lighting';
+    public const _ExtStr = 'GL_SGIX_fragment_lighting';
     
     private z_FragmentColorMaterialSGIX_adr := GetProcAddress('glFragmentColorMaterialSGIX');
     private z_FragmentColorMaterialSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: MaterialParameter)>(z_FragmentColorMaterialSGIX_adr);
@@ -38159,7 +38159,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_framezoom';
+    public const _ExtStr = 'GL_SGIX_framezoom';
     
     private z_FrameZoomSGIX_adr := GetProcAddress('glFrameZoomSGIX');
     private z_FrameZoomSGIX_1 := GetProcOrNil&<procedure(factor: Int32)>(z_FrameZoomSGIX_adr);
@@ -38177,7 +38177,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_igloo_interface';
+    public const _ExtStr = 'GL_SGIX_igloo_interface';
     
     private z_IglooInterfaceSGIX_adr := GetProcAddress('glIglooInterfaceSGIX');
     private z_IglooInterfaceSGIX_1 := GetProcOrNil&<procedure(pname: DummyEnum; &params: IntPtr)>(z_IglooInterfaceSGIX_adr);
@@ -38195,7 +38195,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_instruments';
+    public const _ExtStr = 'GL_SGIX_instruments';
     
     private z_GetInstrumentsSGIX_adr := GetProcAddress('glGetInstrumentsSGIX');
     private z_GetInstrumentsSGIX_1 := GetProcOrNil&<function: Int32>(z_GetInstrumentsSGIX_adr);
@@ -38258,7 +38258,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_list_priority';
+    public const _ExtStr = 'GL_SGIX_list_priority';
     
     private z_GetListParameterfvSGIX_adr := GetProcAddress('glGetListParameterfvSGIX');
     private z_GetListParameterfvSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; &params: IntPtr)>(z_GetListParameterfvSGIX_adr);
@@ -38327,7 +38327,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_pixel_texture';
+    public const _ExtStr = 'GL_SGIX_pixel_texture';
     
     private z_PixelTexGenSGIX_adr := GetProcAddress('glPixelTexGenSGIX');
     private z_PixelTexGenSGIX_1 := GetProcOrNil&<procedure(mode: PixelTexGenModeSGIX)>(z_PixelTexGenSGIX_adr);
@@ -38345,7 +38345,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_polynomial_ffd';
+    public const _ExtStr = 'GL_SGIX_polynomial_ffd';
     
     private z_DeformationMap3dSGIX_adr := GetProcAddress('glDeformationMap3dSGIX');
     private z_DeformationMap3dSGIX_1 := GetProcOrNil&<procedure(target: FfdTargetSGIX; u1: real; u2: real; ustride: Int32; uorder: Int32; v1: real; v2: real; vstride: Int32; vorder: Int32; w1: real; w2: real; wstride: Int32; worder: Int32; points: IntPtr)>(z_DeformationMap3dSGIX_adr);
@@ -38398,7 +38398,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_reference_plane';
+    public const _ExtStr = 'GL_SGIX_reference_plane';
     
     private z_ReferencePlaneSGIX_adr := GetProcAddress('glReferencePlaneSGIX');
     private z_ReferencePlaneSGIX_1 := GetProcOrNil&<procedure(equation: IntPtr)>(z_ReferencePlaneSGIX_adr);
@@ -38426,7 +38426,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_sprite';
+    public const _ExtStr = 'GL_SGIX_sprite';
     
     private z_SpriteParameterfSGIX_adr := GetProcAddress('glSpriteParameterfSGIX');
     private z_SpriteParameterfSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterNameSGIX; param: single)>(z_SpriteParameterfSGIX_adr);
@@ -38479,7 +38479,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_tag_sample_buffer';
+    public const _ExtStr = 'GL_SGIX_tag_sample_buffer';
     
     private z_TagSampleBufferSGIX_adr := GetProcAddress('glTagSampleBufferSGIX');
     private z_TagSampleBufferSGIX_1 := GetProcOrNil&<procedure>(z_TagSampleBufferSGIX_adr);
@@ -38497,7 +38497,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGI_color_table';
+    public const _ExtStr = 'GL_SGI_color_table';
     
     private z_ColorTableSGI_adr := GetProcAddress('glColorTableSGI');
     private z_ColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; table: IntPtr)>(z_ColorTableSGI_adr);
@@ -38571,7 +38571,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SUNX_constant_data';
+    public const _ExtStr = 'GL_SUNX_constant_data';
     
     private z_FinishTextureSUNX_adr := GetProcAddress('glFinishTextureSUNX');
     private z_FinishTextureSUNX_1 := GetProcOrNil&<procedure>(z_FinishTextureSUNX_adr);
@@ -38589,7 +38589,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SUN_global_alpha';
+    public const _ExtStr = 'GL_SUN_global_alpha';
     
     private z_GlobalAlphaFactorbSUN_adr := GetProcAddress('glGlobalAlphaFactorbSUN');
     private z_GlobalAlphaFactorbSUN_1 := GetProcOrNil&<procedure(factor: SByte)>(z_GlobalAlphaFactorbSUN_adr);
@@ -38642,7 +38642,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SUN_mesh_array';
+    public const _ExtStr = 'GL_SUN_mesh_array';
     
     private z_DrawMeshArraysSUN_adr := GetProcAddress('glDrawMeshArraysSUN');
     private z_DrawMeshArraysSUN_1 := GetProcOrNil&<procedure(mode: PrimitiveType; first: Int32; count: Int32; width: Int32)>(z_DrawMeshArraysSUN_adr);
@@ -38660,7 +38660,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SUN_triangle_list';
+    public const _ExtStr = 'GL_SUN_triangle_list';
     
     private z_ReplacementCodeuiSUN_adr := GetProcAddress('glReplacementCodeuiSUN');
     private z_ReplacementCodeuiSUN_1 := GetProcOrNil&<procedure(code: UInt32)>(z_ReplacementCodeuiSUN_adr);
@@ -38748,7 +38748,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SUN_vertex';
+    public const _ExtStr = 'GL_SUN_vertex';
     
     private z_Color4ubVertex2fSUN_adr := GetProcAddress('glColor4ubVertex2fSUN');
     private z_Color4ubVertex2fSUN_1 := GetProcOrNil&<procedure(r: Byte; g: Byte; b: Byte; a: Byte; x: single; y: single)>(z_Color4ubVertex2fSUN_adr);
@@ -39419,7 +39419,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = '3DL_stereo_control';
+    public const _ExtStr = 'WGL_3DL_stereo_control';
     
     private z_SetStereoEmitterState3DL_adr := GetProcAddress('wglSetStereoEmitterState3DL');
     private z_SetStereoEmitterState3DL_1 := GetProcOrNil&<function(hDC: gdi_device_context; uState: UInt32): Bool>(z_SetStereoEmitterState3DL_adr);
@@ -39435,7 +39435,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_gpu_association';
+    public const _ExtStr = 'WGL_AMD_gpu_association';
     
     private z_GetGPUIDsAMD_adr := GetProcAddress('wglGetGPUIDsAMD');
     private z_GetGPUIDsAMD_1 := GetProcOrNil&<function(maxCount: UInt32; ids: IntPtr): UInt32>(z_GetGPUIDsAMD_adr);
@@ -39504,7 +39504,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_buffer_region';
+    public const _ExtStr = 'WGL_ARB_buffer_region';
     
     private z_CreateBufferRegionARB_adr := GetProcAddress('wglCreateBufferRegionARB');
     private z_CreateBufferRegionARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; iLayerPlane: Int32; uType: UInt32): IntPtr>(z_CreateBufferRegionARB_adr);
@@ -39535,7 +39535,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_create_context';
+    public const _ExtStr = 'WGL_ARB_create_context';
     
     private z_CreateContextAttribsARB_adr := GetProcAddress('wglCreateContextAttribsARB');
     private z_CreateContextAttribsARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; hShareContext: wgl_context; attribList: IntPtr): wgl_context>(z_CreateContextAttribsARB_adr);
@@ -39561,7 +39561,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_extensions_string';
+    public const _ExtStr = 'WGL_ARB_extensions_string';
     
     private z_GetExtensionsStringARB_adr := GetProcAddress('wglGetExtensionsStringARB');
     private z_GetExtensionsStringARB_1 := GetProcOrNil&<function(hdc: gdi_device_context): IntPtr>(z_GetExtensionsStringARB_adr);
@@ -39581,7 +39581,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_make_current_read';
+    public const _ExtStr = 'WGL_ARB_make_current_read';
     
     private z_MakeContextCurrentARB_adr := GetProcAddress('wglMakeContextCurrentARB');
     private z_MakeContextCurrentARB_1 := GetProcOrNil&<function(hDrawDC: gdi_device_context; hReadDC: gdi_device_context; hglrc: wgl_context): Bool>(z_MakeContextCurrentARB_adr);
@@ -39602,7 +39602,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_pbuffer';
+    public const _ExtStr = 'WGL_ARB_pbuffer';
     
     private z_CreatePbufferARB_adr := GetProcAddress('wglCreatePbufferARB');
     private z_CreatePbufferARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; iPixelFormat: Int32; iWidth: Int32; iHeight: Int32; piAttribList: IntPtr): wgl_pbuffer_ARB>(z_CreatePbufferARB_adr);
@@ -39658,7 +39658,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_pixel_format';
+    public const _ExtStr = 'WGL_ARB_pixel_format';
     
     private z_GetPixelFormatAttribivARB_adr := GetProcAddress('wglGetPixelFormatAttribivARB');
     private z_GetPixelFormatAttribivARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; piValues: IntPtr): Bool>(z_GetPixelFormatAttribivARB_adr);
@@ -39812,7 +39812,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_render_texture';
+    public const _ExtStr = 'WGL_ARB_render_texture';
     
     private z_BindTexImageARB_adr := GetProcAddress('wglBindTexImageARB');
     private z_BindTexImageARB_1 := GetProcOrNil&<function(hPbuffer: wgl_pbuffer_ARB; iBuffer: Int32): Bool>(z_BindTexImageARB_adr);
@@ -39848,7 +39848,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_display_color_table';
+    public const _ExtStr = 'WGL_EXT_display_color_table';
     
     private z_CreateDisplayColorTableEXT_adr := GetProcAddress('wglCreateDisplayColorTableEXT');
     private z_CreateDisplayColorTableEXT_1 := GetProcOrNil&<function(id: UInt16): boolean>(z_CreateDisplayColorTableEXT_adr);
@@ -39889,7 +39889,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_extensions_string';
+    public const _ExtStr = 'WGL_EXT_extensions_string';
     
     private z_GetExtensionsStringEXT_adr := GetProcAddress('wglGetExtensionsStringEXT');
     private z_GetExtensionsStringEXT_1 := GetProcOrNil&<function: IntPtr>(z_GetExtensionsStringEXT_adr);
@@ -39909,7 +39909,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_make_current_read';
+    public const _ExtStr = 'WGL_EXT_make_current_read';
     
     private z_MakeContextCurrentEXT_adr := GetProcAddress('wglMakeContextCurrentEXT');
     private z_MakeContextCurrentEXT_1 := GetProcOrNil&<function(hDrawDC: gdi_device_context; hReadDC: gdi_device_context; hglrc: wgl_context): Bool>(z_MakeContextCurrentEXT_adr);
@@ -39930,7 +39930,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_pbuffer';
+    public const _ExtStr = 'WGL_EXT_pbuffer';
     
     private z_CreatePbufferEXT_adr := GetProcAddress('wglCreatePbufferEXT');
     private z_CreatePbufferEXT_1 := GetProcOrNil&<function(hDC: gdi_device_context; iPixelFormat: Int32; iWidth: Int32; iHeight: Int32; piAttribList: IntPtr): wgl_pbuffer_EXT>(z_CreatePbufferEXT_adr);
@@ -39986,7 +39986,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_pixel_format';
+    public const _ExtStr = 'WGL_EXT_pixel_format';
     
     private z_GetPixelFormatAttribivEXT_adr := GetProcAddress('wglGetPixelFormatAttribivEXT');
     private z_GetPixelFormatAttribivEXT_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; piValues: IntPtr): Bool>(z_GetPixelFormatAttribivEXT_adr);
@@ -40112,7 +40112,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_swap_control';
+    public const _ExtStr = 'WGL_EXT_swap_control';
     
     private z_SwapIntervalEXT_adr := GetProcAddress('wglSwapIntervalEXT');
     private z_SwapIntervalEXT_1 := GetProcOrNil&<function(interval: Int32): Bool>(z_SwapIntervalEXT_adr);
@@ -40133,7 +40133,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'I3D_digital_video_control';
+    public const _ExtStr = 'WGL_I3D_digital_video_control';
     
     private z_GetDigitalVideoParametersI3D_adr := GetProcAddress('wglGetDigitalVideoParametersI3D');
     private z_GetDigitalVideoParametersI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; iAttribute: Int32; piValue: IntPtr): Bool>(z_GetDigitalVideoParametersI3D_adr);
@@ -40167,7 +40167,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'I3D_gamma';
+    public const _ExtStr = 'WGL_I3D_gamma';
     
     private z_GetGammaTableParametersI3D_adr := GetProcAddress('wglGetGammaTableParametersI3D');
     private z_GetGammaTableParametersI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; iAttribute: Int32; piValue: IntPtr): Bool>(z_GetGammaTableParametersI3D_adr);
@@ -40272,7 +40272,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'I3D_genlock';
+    public const _ExtStr = 'WGL_I3D_genlock';
     
     private z_EnableGenlockI3D_adr := GetProcAddress('wglEnableGenlockI3D');
     private z_EnableGenlockI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context): Bool>(z_EnableGenlockI3D_adr);
@@ -40385,7 +40385,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'I3D_image_buffer';
+    public const _ExtStr = 'WGL_I3D_image_buffer';
     
     private z_CreateImageBufferI3D_adr := GetProcAddress('wglCreateImageBufferI3D');
     private z_CreateImageBufferI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; dwSize: UInt32; uFlags: UInt32): IntPtr>(z_CreateImageBufferI3D_adr);
@@ -40467,7 +40467,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'I3D_swap_frame_lock';
+    public const _ExtStr = 'WGL_I3D_swap_frame_lock';
     
     private z_EnableFrameLockI3D_adr := GetProcAddress('wglEnableFrameLockI3D');
     private z_EnableFrameLockI3D_1 := GetProcOrNil&<function: Bool>(z_EnableFrameLockI3D_adr);
@@ -40518,7 +40518,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'I3D_swap_frame_usage';
+    public const _ExtStr = 'WGL_I3D_swap_frame_usage';
     
     private z_GetFrameUsageI3D_adr := GetProcAddress('wglGetFrameUsageI3D');
     private z_GetFrameUsageI3D_1 := GetProcOrNil&<function(pUsage: IntPtr): Bool>(z_GetFrameUsageI3D_adr);
@@ -40593,7 +40593,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_copy_image';
+    public const _ExtStr = 'WGL_NV_copy_image';
     
     private z_CopyImageSubDataNV_adr := GetProcAddress('wglCopyImageSubDataNV');
     private z_CopyImageSubDataNV_1 := GetProcOrNil&<function(hSrcRC: wgl_context; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: wgl_context; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): Bool>(z_CopyImageSubDataNV_adr);
@@ -40609,7 +40609,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_delay_before_swap';
+    public const _ExtStr = 'WGL_NV_delay_before_swap';
     
     private z_DelayBeforeSwapNV_adr := GetProcAddress('wglDelayBeforeSwapNV');
     private z_DelayBeforeSwapNV_1 := GetProcOrNil&<function(hDC: gdi_device_context; seconds: single): Bool>(z_DelayBeforeSwapNV_adr);
@@ -40625,7 +40625,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_DX_interop';
+    public const _ExtStr = 'WGL_NV_DX_interop';
     
     private z_DXSetResourceShareHandleNV_adr := GetProcAddress('wglDXSetResourceShareHandleNV');
     private z_DXSetResourceShareHandleNV_1 := GetProcOrNil&<function(dxObject: IntPtr; shareHandle: IntPtr): Bool>(z_DXSetResourceShareHandleNV_adr);
@@ -40696,7 +40696,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_gpu_affinity';
+    public const _ExtStr = 'WGL_NV_gpu_affinity';
     
     private z_EnumGpusNV_adr := GetProcAddress('wglEnumGpusNV');
     private z_EnumGpusNV_1 := GetProcOrNil&<function(iGpuIndex: UInt32; phGpu: IntPtr): Bool>(z_EnumGpusNV_adr);
@@ -40772,7 +40772,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_present_video';
+    public const _ExtStr = 'WGL_NV_present_video';
     
     private z_EnumerateVideoDevicesNV_adr := GetProcAddress('wglEnumerateVideoDevicesNV');
     private z_EnumerateVideoDevicesNV_1 := GetProcOrNil&<function(hDc: gdi_device_context; phDeviceList: IntPtr): Int32>(z_EnumerateVideoDevicesNV_adr);
@@ -40828,7 +40828,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_swap_group';
+    public const _ExtStr = 'WGL_NV_swap_group';
     
     private z_JoinSwapGroupNV_adr := GetProcAddress('wglJoinSwapGroupNV');
     private z_JoinSwapGroupNV_1 := GetProcOrNil&<function(hDC: gdi_device_context; group: UInt32): Bool>(z_JoinSwapGroupNV_adr);
@@ -40919,7 +40919,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_video_capture';
+    public const _ExtStr = 'WGL_NV_video_capture';
     
     private z_BindVideoCaptureDeviceNV_adr := GetProcAddress('wglBindVideoCaptureDeviceNV');
     private z_BindVideoCaptureDeviceNV_1 := GetProcOrNil&<function(uVideoSlot: UInt32; hDevice: wgl_h_video_input_device_NV): Bool>(z_BindVideoCaptureDeviceNV_adr);
@@ -40975,7 +40975,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_video_output';
+    public const _ExtStr = 'WGL_NV_video_output';
     
     private z_GetVideoDeviceNV_adr := GetProcAddress('wglGetVideoDeviceNV');
     private z_GetVideoDeviceNV_1 := GetProcOrNil&<function(hDC: gdi_device_context; numDevices: Int32; hVideoDevice: IntPtr): Bool>(z_GetVideoDeviceNV_adr);
@@ -41038,7 +41038,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_vertex_array_range';
+    public const _ExtStr = 'WGL_NV_vertex_array_range';
     
     private z_AllocateMemoryNV_adr := GetProcAddress('wglAllocateMemoryNV');
     private z_AllocateMemoryNV_1 := GetProcOrNil&<function(size: Int32; readfreq: single; writefreq: single; priority: single): IntPtr>(z_AllocateMemoryNV_adr);
@@ -41059,7 +41059,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OML_sync_control';
+    public const _ExtStr = 'WGL_OML_sync_control';
     
     private z_GetSyncValuesOML_adr := GetProcAddress('wglGetSyncValuesOML');
     private z_GetSyncValuesOML_1 := GetProcOrNil&<function(hdc: gdi_device_context; ust: IntPtr; msc: IntPtr; sbc: IntPtr): Bool>(z_GetSyncValuesOML_adr);
@@ -41210,7 +41210,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'AMD_gpu_association';
+    public const _ExtStr = 'GLX_AMD_gpu_association';
     
     private z_GetGPUIDsAMD_adr := GetProcAddress('glXGetGPUIDsAMD');
     private z_GetGPUIDsAMD_1 := GetProcOrNil&<function(maxCount: UInt32; ids: IntPtr): UInt32>(z_GetGPUIDsAMD_adr);
@@ -41279,7 +41279,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_create_context';
+    public const _ExtStr = 'GLX_ARB_create_context';
     
     private z_CreateContextAttribsARB_adr := GetProcAddress('glXCreateContextAttribsARB');
     private z_CreateContextAttribsARB_1 := GetProcOrNil&<function(dpy: x_p_display; config: glx_fb_config; share_context: glx_context; direct: Bool; attrib_list: IntPtr): glx_context>(z_CreateContextAttribsARB_adr);
@@ -41305,7 +41305,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'ARB_get_proc_address';
+    public const _ExtStr = 'GLX_ARB_get_proc_address';
     
     private z_GetProcAddressARB_adr := GetProcAddress('glXGetProcAddressARB');
     private z_GetProcAddressARB_1 := GetProcOrNil&<function(procName: IntPtr): IntPtr>(z_GetProcAddressARB_adr);
@@ -41331,7 +41331,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_import_context';
+    public const _ExtStr = 'GLX_EXT_import_context';
     
     private z_GetCurrentDisplayEXT_adr := GetProcAddress('glXGetCurrentDisplayEXT');
     private z_GetCurrentDisplayEXT_1 := GetProcOrNil&<function: x_p_display>(z_GetCurrentDisplayEXT_adr);
@@ -41377,7 +41377,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_swap_control';
+    public const _ExtStr = 'GLX_EXT_swap_control';
     
     private z_SwapIntervalEXT_adr := GetProcAddress('glXSwapIntervalEXT');
     private z_SwapIntervalEXT_1 := GetProcOrNil&<procedure(dpy: x_p_display; drawable: glx_drawable; interval: Int32)>(z_SwapIntervalEXT_adr);
@@ -41393,7 +41393,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'EXT_texture_from_pixmap';
+    public const _ExtStr = 'GLX_EXT_texture_from_pixmap';
     
     private z_BindTexImageEXT_adr := GetProcAddress('glXBindTexImageEXT');
     private z_BindTexImageEXT_1 := GetProcOrNil&<procedure(dpy: x_p_display; drawable: glx_drawable; buffer: Int32; attrib_list: IntPtr)>(z_BindTexImageEXT_adr);
@@ -41424,7 +41424,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_agp_offset';
+    public const _ExtStr = 'GLX_MESA_agp_offset';
     
     private z_GetAGPOffsetMESA_adr := GetProcAddress('glXGetAGPOffsetMESA');
     private z_GetAGPOffsetMESA_1 := GetProcOrNil&<function(pointer: IntPtr): UInt32>(z_GetAGPOffsetMESA_adr);
@@ -41440,7 +41440,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_copy_sub_buffer';
+    public const _ExtStr = 'GLX_MESA_copy_sub_buffer';
     
     private z_CopySubBufferMESA_adr := GetProcAddress('glXCopySubBufferMESA');
     private z_CopySubBufferMESA_1 := GetProcOrNil&<procedure(dpy: x_p_display; drawable: glx_drawable; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopySubBufferMESA_adr);
@@ -41456,7 +41456,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_pixmap_colormap';
+    public const _ExtStr = 'GLX_MESA_pixmap_colormap';
     
     private z_CreateGLXPixmapMESA_adr := GetProcAddress('glXCreateGLXPixmapMESA');
     private z_CreateGLXPixmapMESA_1 := GetProcOrNil&<function(dpy: x_p_display; visual: x_p_visual_info; pixmap: x_pixmap; cmap: x_colormap): glx_pixmap>(z_CreateGLXPixmapMESA_adr);
@@ -41472,7 +41472,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_query_renderer';
+    public const _ExtStr = 'GLX_MESA_query_renderer';
     
     private z_QueryCurrentRendererIntegerMESA_adr := GetProcAddress('glXQueryCurrentRendererIntegerMESA');
     private z_QueryCurrentRendererIntegerMESA_1 := GetProcOrNil&<function(attribute: Int32; value: IntPtr): Bool>(z_QueryCurrentRendererIntegerMESA_adr);
@@ -41531,7 +41531,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_release_buffers';
+    public const _ExtStr = 'GLX_MESA_release_buffers';
     
     private z_ReleaseBuffersMESA_adr := GetProcAddress('glXReleaseBuffersMESA');
     private z_ReleaseBuffersMESA_1 := GetProcOrNil&<function(dpy: x_p_display; drawable: glx_drawable): Bool>(z_ReleaseBuffersMESA_adr);
@@ -41547,7 +41547,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_set_3dfx_mode';
+    public const _ExtStr = 'GLX_MESA_set_3dfx_mode';
     
     private z_Set3DfxModeMESA_adr := GetProcAddress('glXSet3DfxModeMESA');
     private z_Set3DfxModeMESA_1 := GetProcOrNil&<function(mode: Int32): boolean>(z_Set3DfxModeMESA_adr);
@@ -41563,7 +41563,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'MESA_swap_control';
+    public const _ExtStr = 'GLX_MESA_swap_control';
     
     private z_GetSwapIntervalMESA_adr := GetProcAddress('glXGetSwapIntervalMESA');
     private z_GetSwapIntervalMESA_1 := GetProcOrNil&<function: Int32>(z_GetSwapIntervalMESA_adr);
@@ -41584,7 +41584,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_copy_buffer';
+    public const _ExtStr = 'GLX_NV_copy_buffer';
     
     private z_CopyBufferSubDataNV_adr := GetProcAddress('glXCopyBufferSubDataNV');
     private z_CopyBufferSubDataNV_1 := GetProcOrNil&<procedure(dpy: x_p_display; readCtx: glx_context; writeCtx: glx_context; readTarget: DummyEnum; writeTarget: DummyEnum; readOffset: IntPtr; writeOffset: IntPtr; size: UIntPtr)>(z_CopyBufferSubDataNV_adr);
@@ -41605,7 +41605,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_copy_image';
+    public const _ExtStr = 'GLX_NV_copy_image';
     
     private z_CopyImageSubDataNV_adr := GetProcAddress('glXCopyImageSubDataNV');
     private z_CopyImageSubDataNV_1 := GetProcOrNil&<procedure(dpy: x_p_display; srcCtx: glx_context; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; dstCtx: glx_context; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32)>(z_CopyImageSubDataNV_adr);
@@ -41621,7 +41621,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_delay_before_swap';
+    public const _ExtStr = 'GLX_NV_delay_before_swap';
     
     private z_DelayBeforeSwapNV_adr := GetProcAddress('glXDelayBeforeSwapNV');
     private z_DelayBeforeSwapNV_1 := GetProcOrNil&<function(dpy: x_p_display; drawable: glx_drawable; seconds: single): Bool>(z_DelayBeforeSwapNV_adr);
@@ -41637,7 +41637,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_present_video';
+    public const _ExtStr = 'GLX_NV_present_video';
     
     private z_EnumerateVideoDevicesNV_adr := GetProcAddress('glXEnumerateVideoDevicesNV');
     private z_EnumerateVideoDevicesNV_1 := GetProcOrNil&<function(dpy: x_p_display; screen: Int32; nelements: IntPtr): ^UInt32>(z_EnumerateVideoDevicesNV_adr);
@@ -41678,7 +41678,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_swap_group';
+    public const _ExtStr = 'GLX_NV_swap_group';
     
     private z_JoinSwapGroupNV_adr := GetProcAddress('glXJoinSwapGroupNV');
     private z_JoinSwapGroupNV_1 := GetProcOrNil&<function(dpy: x_p_display; drawable: glx_drawable; group: UInt32): Bool>(z_JoinSwapGroupNV_adr);
@@ -41769,7 +41769,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_video_capture';
+    public const _ExtStr = 'GLX_NV_video_capture';
     
     private z_BindVideoCaptureDeviceNV_adr := GetProcAddress('glXBindVideoCaptureDeviceNV');
     private z_BindVideoCaptureDeviceNV_1 := GetProcOrNil&<function(dpy: x_p_display; video_capture_slot: UInt32; device: glx_video_capture_device_NV): Int32>(z_BindVideoCaptureDeviceNV_adr);
@@ -41825,7 +41825,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'NV_video_out';
+    public const _ExtStr = 'GLX_NV_video_out';
     
     private z_GetVideoDeviceNV_adr := GetProcAddress('glXGetVideoDeviceNV');
     private z_GetVideoDeviceNV_1 := GetProcOrNil&<function(dpy: x_p_display; screen: Int32; numVideoDevices: Int32; pVideoDevice: IntPtr): Int32>(z_GetVideoDeviceNV_adr);
@@ -41888,7 +41888,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'OML_sync_control';
+    public const _ExtStr = 'GLX_OML_sync_control';
     
     private z_GetSyncValuesOML_adr := GetProcAddress('glXGetSyncValuesOML');
     private z_GetSyncValuesOML_1 := GetProcOrNil&<function(dpy: x_p_display; drawable: glx_drawable; ust: IntPtr; msc: IntPtr; sbc: IntPtr): Bool>(z_GetSyncValuesOML_adr);
@@ -42034,7 +42034,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGI_cushion';
+    public const _ExtStr = 'GLX_SGI_cushion';
     
     private z_CushionSGI_adr := GetProcAddress('glXCushionSGI');
     private z_CushionSGI_1 := GetProcOrNil&<procedure(dpy: x_p_display; window: x_window; cushion: single)>(z_CushionSGI_adr);
@@ -42050,7 +42050,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGI_make_current_read';
+    public const _ExtStr = 'GLX_SGI_make_current_read';
     
     private z_MakeCurrentReadSGI_adr := GetProcAddress('glXMakeCurrentReadSGI');
     private z_MakeCurrentReadSGI_1 := GetProcOrNil&<function(dpy: x_p_display; draw: glx_drawable; read: glx_drawable; ctx: glx_context): Bool>(z_MakeCurrentReadSGI_adr);
@@ -42071,7 +42071,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGI_swap_control';
+    public const _ExtStr = 'GLX_SGI_swap_control';
     
     private z_SwapIntervalSGI_adr := GetProcAddress('glXSwapIntervalSGI');
     private z_SwapIntervalSGI_1 := GetProcOrNil&<function(interval: Int32): Int32>(z_SwapIntervalSGI_adr);
@@ -42087,7 +42087,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGI_video_sync';
+    public const _ExtStr = 'GLX_SGI_video_sync';
     
     private z_GetVideoSyncSGI_adr := GetProcAddress('glXGetVideoSyncSGI');
     private z_GetVideoSyncSGI_1 := GetProcOrNil&<function(count: IntPtr): Int32>(z_GetVideoSyncSGI_adr);
@@ -42121,7 +42121,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_dmbuffer';
+    public const _ExtStr = 'GLX_SGIX_dmbuffer';
     
     private z_AssociateDMPbufferSGIX_adr := GetProcAddress('glXAssociateDMPbufferSGIX');
     private z_AssociateDMPbufferSGIX_1 := GetProcOrNil&<function(dpy: x_p_display; pbuffer: glx_pbuffer; &params: IntPtr; dmbuffer: x_dm_buffer): Bool>(z_AssociateDMPbufferSGIX_adr);
@@ -42147,7 +42147,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_fbconfig';
+    public const _ExtStr = 'GLX_SGIX_fbconfig';
     
     private z_GetFBConfigAttribSGIX_adr := GetProcAddress('glXGetFBConfigAttribSGIX');
     private z_GetFBConfigAttribSGIX_1 := GetProcOrNil&<function(dpy: x_p_display; config: glx_fb_config; attribute: Int32; value: IntPtr): Int32>(z_GetFBConfigAttribSGIX_adr);
@@ -42211,7 +42211,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_hyperpipe';
+    public const _ExtStr = 'GLX_SGIX_hyperpipe';
     
     private z_QueryHyperpipeNetworkSGIX_adr := GetProcAddress('glXQueryHyperpipeNetworkSGIX');
     private z_QueryHyperpipeNetworkSGIX_1 := GetProcOrNil&<function(dpy: x_p_display; npipes: IntPtr): ^glx_hyperpipe_network_SGIX>(z_QueryHyperpipeNetworkSGIX_adr);
@@ -42352,7 +42352,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_pbuffer';
+    public const _ExtStr = 'GLX_SGIX_pbuffer';
     
     private z_CreateGLXPbufferSGIX_adr := GetProcAddress('glXCreateGLXPbufferSGIX');
     private z_CreateGLXPbufferSGIX_1 := GetProcOrNil&<function(dpy: x_p_display; config: glx_fb_config; width: UInt32; height: UInt32; attrib_list: IntPtr): glx_pbuffer>(z_CreateGLXPbufferSGIX_adr);
@@ -42411,7 +42411,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_swap_barrier';
+    public const _ExtStr = 'GLX_SGIX_swap_barrier';
     
     private z_BindSwapBarrierSGIX_adr := GetProcAddress('glXBindSwapBarrierSGIX');
     private z_BindSwapBarrierSGIX_1 := GetProcOrNil&<procedure(dpy: x_p_display; drawable: glx_drawable; barrier: Int32)>(z_BindSwapBarrierSGIX_adr);
@@ -42442,7 +42442,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_swap_group';
+    public const _ExtStr = 'GLX_SGIX_swap_group';
     
     private z_JoinSwapGroupSGIX_adr := GetProcAddress('glXJoinSwapGroupSGIX');
     private z_JoinSwapGroupSGIX_1 := GetProcOrNil&<procedure(dpy: x_p_display; drawable: glx_drawable; member: glx_drawable)>(z_JoinSwapGroupSGIX_adr);
@@ -42458,7 +42458,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_video_resize';
+    public const _ExtStr = 'GLX_SGIX_video_resize';
     
     private z_BindChannelToWindowSGIX_adr := GetProcAddress('glXBindChannelToWindowSGIX');
     private z_BindChannelToWindowSGIX_1 := GetProcOrNil&<function(display: x_p_display; screen: Int32; channel: Int32; window: x_window): Int32>(z_BindChannelToWindowSGIX_adr);
@@ -42654,7 +42654,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SGIX_video_source';
+    public const _ExtStr = 'GLX_SGIX_video_source';
     
     private z_CreateGLXVideoSourceSGIX_adr := GetProcAddress('glXCreateGLXVideoSourceSGIX');
     private z_CreateGLXVideoSourceSGIX_1 := GetProcOrNil&<function(display: x_p_display; screen: Int32; server: x_vl_server; path: x_vl_path; nodeClass: Int32; drainNode: x_vl_node): glx_video_source_SGIX>(z_CreateGLXVideoSourceSGIX_adr);
@@ -42675,7 +42675,7 @@
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
     fadr=IntPtr.Zero ? default(T) :
     Marshal.GetDelegateForFunctionPointer&<T>(fadr);
-    public const _ExtStr = 'SUN_get_transparent_index';
+    public const _ExtStr = 'GLX_SUN_get_transparent_index';
     
     private z_GetTransparentIndexSUN_adr := GetProcAddress('glXGetTransparentIndexSUN');
     private z_GetTransparentIndexSUN_1 := GetProcOrNil&<function(dpy: x_p_display; overlay: x_window; underlay: x_window; pTransparentIndex: IntPtr): Bool>(z_GetTransparentIndexSUN_adr);

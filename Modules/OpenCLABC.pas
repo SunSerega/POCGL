@@ -19,8 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO "cl_" не попадают в строки расширений в OpenCL
-
 //TODO Аргументы компиляции OpenCL-C кода
 // - #define-ы особо полезны, но там куча всего...
 // - https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#compiler-options

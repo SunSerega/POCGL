@@ -7531,7 +7531,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clD3d10SharingKHR = static class
-    public const _ExtStr = 'khr_d3d10_sharing';
+    public const _ExtStr = 'cl_khr_d3d10_sharing';
     
     private static function z_GetDeviceIDsFromD3D10KHR_1(platform: cl_platform_id; d3d_device_source: D3d10DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d10DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceIDsFromD3D10KHR';
@@ -7829,7 +7829,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clD3d11SharingKHR = static class
-    public const _ExtStr = 'khr_d3d11_sharing';
+    public const _ExtStr = 'cl_khr_d3d11_sharing';
     
     private static function z_GetDeviceIDsFromD3D11KHR_1(platform: cl_platform_id; d3d_device_source: D3d11DeviceSourceKhr; d3d_object: IntPtr; d3d_device_set: D3d11DeviceSetKhr; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceIDsFromD3D11KHR';
@@ -8127,7 +8127,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clDx9MediaSharingKHR = static class
-    public const _ExtStr = 'khr_dx9_media_sharing';
+    public const _ExtStr = 'cl_khr_dx9_media_sharing';
     
     private static function z_GetDeviceIDsFromDX9MediaAdapterKHR_1(platform: cl_platform_id; num_media_adapters: UInt32; media_adapter_type: IntPtr; media_adapters: IntPtr; media_adapter_set: UInt32; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceIDsFromDX9MediaAdapterKHR';
@@ -8398,7 +8398,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clEglImageKHR = static class
-    public const _ExtStr = 'khr_egl_image';
+    public const _ExtStr = 'cl_khr_egl_image';
     
     private static function z_CreateFromEGLImageKHR_1(context: cl_context; egldisplay: IntPtr; eglimage: IntPtr; flags: MemFlags; properties: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateFromEGLImageKHR';
@@ -8647,7 +8647,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clEglEventKHR = static class
-    public const _ExtStr = 'khr_egl_event';
+    public const _ExtStr = 'cl_khr_egl_event';
     
     private static function z_CreateEventFromEGLSyncKHR_1(context: cl_context; sync: IntPtr; display: IntPtr; var errcode_ret: ErrorCode): cl_event;
     external 'opencl' name 'clCreateEventFromEGLSyncKHR';
@@ -8659,7 +8659,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSetMemObjectDestructorAPPLE = static class
-    public const _ExtStr = 'APPLE_SetMemObjectDestructor';
+    public const _ExtStr = 'cl_APPLE_SetMemObjectDestructor';
     
     private static function z_SetMemObjectDestructorAPPLE_1(memobj: cl_mem; pfn_notify: MemObjectDestructorCallback; user_data: IntPtr): ErrorCode;
     external 'opencl' name 'clSetMemObjectDestructorAPPLE';
@@ -8671,7 +8671,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clContextLoggingFunctionsAPPLE = static class
-    public const _ExtStr = 'APPLE_ContextLoggingFunctions';
+    public const _ExtStr = 'cl_APPLE_ContextLoggingFunctions';
     
     private static procedure z_LogMessagesToSystemLogAPPLE_1(errstr: IntPtr; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
     external 'opencl' name 'clLogMessagesToSystemLogAPPLE';
@@ -8723,7 +8723,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clIcdKHR = static class
-    public const _ExtStr = 'khr_icd';
+    public const _ExtStr = 'cl_khr_icd';
     
     private static function z_IcdGetPlatformIDsKHR_1(num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): ErrorCode;
     external 'opencl' name 'clIcdGetPlatformIDsKHR';
@@ -8747,7 +8747,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clLoaderLayers = static class
-    public const _ExtStr = 'loader_layers';
+    public const _ExtStr = 'cl_loader_layers';
     
     private static function z_GetLayerInfo_1(param_name: LayerInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetLayerInfo';
@@ -8788,7 +8788,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clIlProgramKHR = static class
-    public const _ExtStr = 'khr_il_program';
+    public const _ExtStr = 'cl_khr_il_program';
     
     private static function z_CreateProgramWithILKHR_1(context: cl_context; il: IntPtr; length: UIntPtr; var errcode_ret: ErrorCode): cl_program;
     external 'opencl' name 'clCreateProgramWithILKHR';
@@ -8811,7 +8811,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clTerminateContextKHR = static class
-    public const _ExtStr = 'khr_terminate_context';
+    public const _ExtStr = 'cl_khr_terminate_context';
     
     private static function z_TerminateContextKHR_1(context: cl_context): ErrorCode;
     external 'opencl' name 'clTerminateContextKHR';
@@ -8823,7 +8823,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clCreateCommandQueueKHR = static class
-    public const _ExtStr = 'khr_create_command_queue';
+    public const _ExtStr = 'cl_khr_create_command_queue';
     
     private static function z_CreateCommandQueueWithPropertiesKHR_1(context: cl_context; device: cl_device_id; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_queue;
     external 'opencl' name 'clCreateCommandQueueWithPropertiesKHR';
@@ -8846,7 +8846,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clDeviceFissionEXT = static class
-    public const _ExtStr = 'ext_device_fission';
+    public const _ExtStr = 'cl_ext_device_fission';
     
     private static function z_ReleaseDeviceEXT_1(device: cl_device_id): ErrorCode;
     external 'opencl' name 'clReleaseDeviceEXT';
@@ -8920,7 +8920,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clMigrateMemobjectEXT = static class
-    public const _ExtStr = 'ext_migrate_memobject';
+    public const _ExtStr = 'cl_ext_migrate_memobject';
     
     private static function z_EnqueueMigrateMemObjectEXT_1(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: MemMigrationFlagsExt; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueMigrateMemObjectEXT';
@@ -9040,7 +9040,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clExtHostPtrQCOM = static class
-    public const _ExtStr = 'qcom_ext_host_ptr';
+    public const _ExtStr = 'cl_qcom_ext_host_ptr';
     
     private static function z_GetDeviceImageInfoQCOM_1(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: ImagePitchInfoQcom; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceImageInfoQCOM';
@@ -9078,7 +9078,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clUseGrallocPtrIMG = static class
-    public const _ExtStr = 'img_use_gralloc_ptr';
+    public const _ExtStr = 'cl_img_use_gralloc_ptr';
     
     private static function z_EnqueueAcquireGrallocObjectsIMG_1(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueAcquireGrallocObjectsIMG';
@@ -9311,7 +9311,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSubgroupsKHR = static class
-    public const _ExtStr = 'khr_subgroups';
+    public const _ExtStr = 'cl_khr_subgroups';
     
     private static function z_GetKernelSubGroupInfoKHR_1(in_kernel: cl_kernel; in_device: cl_device_id; param_name: KernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSubGroupInfoKHR';
@@ -9343,7 +9343,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clImportMemoryARM = static class
-    public const _ExtStr = 'arm_import_memory';
+    public const _ExtStr = 'cl_arm_import_memory';
     
     private static function z_ImportMemoryARM_1(context: cl_context; flags: MemFlags; properties: IntPtr; memory: IntPtr; size: UIntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clImportMemoryARM';
@@ -9366,7 +9366,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharedVirtualMemoryARM = static class
-    public const _ExtStr = 'arm_shared_virtual_memory';
+    public const _ExtStr = 'cl_arm_shared_virtual_memory';
     
     private static function z_SVMAllocARM_1(context: cl_context; flags: SvmMemFlagsArm; size: UIntPtr; alignment: UInt32): IntPtr;
     external 'opencl' name 'clSVMAllocARM';
@@ -9718,7 +9718,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clAcceleratorINTEL = static class
-    public const _ExtStr = 'intel_accelerator';
+    public const _ExtStr = 'cl_intel_accelerator';
     
     private static function z_CreateAcceleratorINTEL_1(context: cl_context; accelerator_type: AcceleratorTypeIntel; descriptor_size: UIntPtr; descriptor: IntPtr; var errcode_ret: ErrorCode): cl_accelerator_intel;
     external 'opencl' name 'clCreateAcceleratorINTEL';
@@ -9749,7 +9749,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clGlEventKHR = static class
-    public const _ExtStr = 'khr_gl_event';
+    public const _ExtStr = 'cl_khr_gl_event';
     
     private static function z_CreateEventFromGLsyncKHR_1(context: cl_context; sync: IntPtr; var errcode_ret: ErrorCode): cl_event;
     external 'opencl' name 'clCreateEventFromGLsyncKHR';
@@ -9761,7 +9761,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clVaApiMediaSharingINTEL = static class
-    public const _ExtStr = 'intel_va_api_media_sharing';
+    public const _ExtStr = 'cl_intel_va_api_media_sharing';
     
     private static function z_GetDeviceIDsFromVA_APIMediaAdapterINTEL_1(platform: cl_platform_id; media_adapter_type: VaApiDeviceSourceIntel; media_adapter: IntPtr; media_adapter_set: VaApiDeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceIDsFromVA_APIMediaAdapterINTEL';
@@ -10027,7 +10027,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clDx9MediaSharingINTEL = static class
-    public const _ExtStr = 'intel_dx9_media_sharing';
+    public const _ExtStr = 'cl_intel_dx9_media_sharing';
     
     private static function z_GetDeviceIDsFromDX9INTEL_1(platform: cl_platform_id; dx9_device_source: Dx9DeviceSourceIntel; dx9_object: IntPtr; dx9_device_set: Dx9DeviceSetIntel; num_entries: UInt32; devices: IntPtr; num_devices: IntPtr): ErrorCode;
     external 'opencl' name 'clGetDeviceIDsFromDX9INTEL';
@@ -10293,7 +10293,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clGlSharingKHR = static class
-    public const _ExtStr = 'khr_gl_sharing';
+    public const _ExtStr = 'cl_khr_gl_sharing';
     
     private static function z_GetGLContextInfoKHR_1(properties: IntPtr; param_name: GlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetGLContextInfoKHR';
@@ -10608,7 +10608,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clUnifiedSharedMemoryINTEL = static class
-    public const _ExtStr = 'intel_unified_shared_memory';
+    public const _ExtStr = 'cl_intel_unified_shared_memory';
     
     private static function z_HostMemAllocINTEL_1(context: cl_context; properties: IntPtr; size: UIntPtr; alignment: UInt32; var errcode_ret: ErrorCode): IntPtr;
     external 'opencl' name 'clHostMemAllocINTEL';
@@ -10842,7 +10842,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clCreateBufferWithPropertiesINTEL = static class
-    public const _ExtStr = 'intel_create_buffer_with_properties';
+    public const _ExtStr = 'cl_intel_create_buffer_with_properties';
     
     private static function z_CreateBufferWithPropertiesINTEL_1(context: cl_context; properties: IntPtr; flags: MemFlags; size: UIntPtr; host_ptr: IntPtr; var errcode_ret: ErrorCode): cl_mem;
     external 'opencl' name 'clCreateBufferWithPropertiesINTEL';
@@ -10865,7 +10865,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clGenerateMipmapIMG = static class
-    public const _ExtStr = 'img_generate_mipmap';
+    public const _ExtStr = 'cl_img_generate_mipmap';
     
     private static function z_EnqueueGenerateMipmapIMG_1(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; mipmap_filter_mode: MipmapFilterModeImg; array_region: IntPtr; mip_region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueGenerateMipmapIMG';
@@ -11077,7 +11077,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSuggestedLocalWorkSizeKHR = static class
-    public const _ExtStr = 'khr_suggested_local_work_size';
+    public const _ExtStr = 'cl_khr_suggested_local_work_size';
     
     private static function z_GetKernelSuggestedLocalWorkSizeKHR_1(command_queue: cl_command_queue; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; suggested_local_work_size: IntPtr): ErrorCode;
     external 'opencl' name 'clGetKernelSuggestedLocalWorkSizeKHR';
@@ -11139,7 +11139,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSemaphoreKHR = static class
-    public const _ExtStr = 'khr_semaphore';
+    public const _ExtStr = 'cl_khr_semaphore';
     
     private static function z_CreateSemaphoreWithPropertiesKHR_1(context: cl_context; sema_props: IntPtr; var errcode_ret: ErrorCode): cl_semaphore;
     external 'opencl' name 'clCreateSemaphoreWithPropertiesKHR';
@@ -11603,7 +11603,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clExternalSemaphoreKHR = static class
-    public const _ExtStr = 'khr_external_semaphore';
+    public const _ExtStr = 'cl_khr_external_semaphore';
     
     private static function z_GetSemaphoreHandleForTypeKHR_1(sema_object: cl_semaphore; device: cl_device_id; handle_type: ExternalSemaphoreHandleTypeKhr; handle_size: UIntPtr; handle_ptr: IntPtr; handle_size_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSemaphoreHandleForTypeKHR';
@@ -11619,7 +11619,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clExternalMemoryKHR = static class
-    public const _ExtStr = 'khr_external_memory';
+    public const _ExtStr = 'cl_khr_external_memory';
     
     private static function z_EnqueueAcquireExternalMemObjectsKHR_1(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueAcquireExternalMemObjectsKHR';
@@ -11852,7 +11852,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharingFormatQueryGlINTEL = static class
-    public const _ExtStr = 'intel_sharing_format_query_gl';
+    public const _ExtStr = 'cl_intel_sharing_format_query_gl';
     
     private static function z_GetSupportedGLTextureFormatsINTEL_1(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; gl_formats: IntPtr; num_texture_formats: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSupportedGLTextureFormatsINTEL';
@@ -11876,7 +11876,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharingFormatQueryDx9INTEL = static class
-    public const _ExtStr = 'intel_sharing_format_query_dx9';
+    public const _ExtStr = 'cl_intel_sharing_format_query_dx9';
     
     private static function z_GetSupportedDX9MediaSurfaceFormatsINTEL_1(context: cl_context; flags: MemFlags; image_type: MemObjectType; plane: UInt32; num_entries: UInt32; dx9_formats: IntPtr; num_surface_formats: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSupportedDX9MediaSurfaceFormatsINTEL';
@@ -11892,7 +11892,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharingFormatQueryD3d10INTEL = static class
-    public const _ExtStr = 'intel_sharing_format_query_d3d10';
+    public const _ExtStr = 'cl_intel_sharing_format_query_d3d10';
     
     private static function z_GetSupportedD3D10TextureFormatsINTEL_1(context: cl_context; flags: MemFlags; image_type: MemObjectType; num_entries: UInt32; d3d10_formats: IntPtr; num_texture_formats: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSupportedD3D10TextureFormatsINTEL';
@@ -11908,7 +11908,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharingFormatQueryD3d11INTEL = static class
-    public const _ExtStr = 'intel_sharing_format_query_d3d11';
+    public const _ExtStr = 'cl_intel_sharing_format_query_d3d11';
     
     private static function z_GetSupportedD3D11TextureFormatsINTEL_1(context: cl_context; flags: MemFlags; image_type: MemObjectType; plane: UInt32; num_entries: UInt32; d3d11_formats: IntPtr; num_texture_formats: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSupportedD3D11TextureFormatsINTEL';
@@ -11924,7 +11924,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharingFormatQueryVaApiINTEL = static class
-    public const _ExtStr = 'intel_sharing_format_query_va_api';
+    public const _ExtStr = 'cl_intel_sharing_format_query_va_api';
     
     private static function z_GetSupportedVA_APIMediaSurfaceFormatsINTEL_1(context: cl_context; flags: MemFlags; image_type: MemObjectType; plane: UInt32; num_entries: UInt32; va_api_formats: IntPtr; num_surface_formats: IntPtr): ErrorCode;
     external 'opencl' name 'clGetSupportedVA_APIMediaSurfaceFormatsINTEL';
@@ -11940,7 +11940,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clContentSizePOCL = static class
-    public const _ExtStr = 'pocl_content_size';
+    public const _ExtStr = 'cl_pocl_content_size';
     
     private static function z_SetContentSizeBufferPoCL_1(buffer: cl_mem; content_size_buffer: cl_mem): ErrorCode;
     external 'opencl' name 'clSetContentSizeBufferPoCL';
@@ -11952,7 +11952,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clCommandBufferKHR = static class
-    public const _ExtStr = 'khr_command_buffer';
+    public const _ExtStr = 'cl_khr_command_buffer';
     
     private static function z_CreateCommandBufferKHR_1(num_queues: UInt32; queues: IntPtr; properties: IntPtr; var errcode_ret: ErrorCode): cl_command_buffer;
     external 'opencl' name 'clCreateCommandBufferKHR';
@@ -12490,7 +12490,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clProgramScopeHostPipeINTEL = static class
-    public const _ExtStr = 'intel_program_scope_host_pipe';
+    public const _ExtStr = 'cl_intel_program_scope_host_pipe';
     
     private static function z_EnqueueReadHostPipeINTEL_1(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_read: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueReadHostPipeINTEL';

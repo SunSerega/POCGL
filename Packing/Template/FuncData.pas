@@ -2282,8 +2282,21 @@ type
         wr += '    Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
       end;
       
-      wr += $'    public const _ExtStr = ''{name}'';'+#10;
-      wr += $'    '+#10;
+      wr += '    public const _ExtStr = ''';
+      case api of
+        
+        'gl':   wr += 'GL';
+        'wgl':  wr += 'WGL';
+        'glx':  wr += 'GLX';
+        
+        'cl':   wr += 'cl';
+        
+        else raise new System.NotSupportedException((api,name).ToString);
+      end;
+      wr += '_';
+      wr += name;
+      wr += ''';'+#10;
+      wr += '    '+#10;
       
       foreach var f in add do
         f.Write(wr, api,nil, not is_dynamic);
