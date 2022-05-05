@@ -2943,7 +2943,11 @@ type
             Otp(ErrorInfo(f, 'add',    i, t, f.possible_par_types[i+ind_nudge])) else
           begin
             self.used := true;
-            f.possible_par_types[i+ind_nudge] += t;
+            var ppt := f.possible_par_types[i+ind_nudge];
+            ppt += t;
+            if t.var_arg and ((t.tname='IntPtr') or t.IsGeneric) then
+              if ppt.Remove(new FuncParamT('IntPtr')) then
+                ppt.Add(new FuncParamT('pointer'));
           end;
       end;
       

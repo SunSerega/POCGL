@@ -26,7 +26,7 @@
 
 # clCreateBuffer
 !possible_par_types
- *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	| *	|
+ *	| *	| *	| *	| +array of T +var T	| *	|
 
 # clCreateSubBuffer
 !possible_par_types
@@ -34,11 +34,11 @@
 
 # clEnqueue[%Read,Write%]Buffer
 !possible_par_types
- *	| *	| *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	| *	| *	| *	|
+ *	| *	| *	| *	| *	| *	| +array of T +var T	| *	| *	| *	|
 
 # clEnqueue[%Read,Write%]BufferRect
 !possible_par_types
- *	| *	| *	| *	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| *	| *	| +var T -IntPtr +pointer	| *	| *	| *	|
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| *	| *	| +var T	| *	| *	| *	|
 
 # clEnqueueCopyBufferRect
 !possible_par_types
@@ -49,17 +49,17 @@
 
 # clEnqueueFillBuffer
 !possible_par_types
- *	| *	| *	| +array of T +var T -IntPtr +pointer	| *	| *	| *	| *	| *	| *	|
+ *	| *	| *	| +array of T +var T	| *	| *	| *	| *	| *	| *	|
 
 # clEnqueueMapBuffer
 
 # clCreateImage
 !possible_par_types
- *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| +array of T +var T -IntPtr +pointer	| *	|
+ *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| +array of T +var T	| *	|
 
 # clCreateImageWithProperties
 !possible_par_types
- *	| *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| +array of T +var T -IntPtr +pointer	| *	|
+ *	| *	| *	| *	| -array of cl_image_format -IntPtr	| -array of cl_image_desc -IntPtr	| +array of T +var T	| *	|
 
 # clCreateImage2D
 !possible_par_types
@@ -71,11 +71,11 @@
 
 # clEnqueue[%Read,Write%]Image
 !possible_par_types
- *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| +var T -IntPtr +pointer	| *	| *	| *	|
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| +var T	| *	| *	| *	|
 
 # clEnqueueFillImage
 !possible_par_types
- *	| *	| *	| +var T -IntPtr +pointer	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| *	| *	| *	|
+ *	| *	| *	| +var T	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| *	| *	| *	|
 
 # clEnqueueCopyImage
 !possible_par_types
@@ -120,12 +120,12 @@
 
 # clGetMemObjectInfo
 !possible_par_types
- *	| *	| *	| *	| +var MemObjectType +var MemFlags +var UIntPtr +var IntPtr +var UInt32 +var cl_context +var cl_mem +var Bool -IntPtr +pointer	| *	|
+ *	| *	| *	| *	| +var MemObjectType +var MemFlags +var UIntPtr +var IntPtr +var UInt32 +var cl_context +var cl_mem +var Bool	| *	|
 
 # clEnqueueSVMMemFill
 # clEnqueueSVMMemFillARM
 !possible_par_types
- *	| *	| *	| +array of T +var T -IntPtr +pointer	| *	| *	| *	| *	| *	|
+ *	| *	| *	| +array of T +var T	| *	| *	| *	| *	| *	|
 
 # clEnqueueSVMMigrateMem
 !limit_ovrs
@@ -164,7 +164,7 @@ array of Int32 = array of ErrorCode
 
 # clSetProgramSpecializationConstant
 !possible_par_types
- *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	|
+ *	| *	| *	| *	| +array of T +var T	|
 
 # clCompileProgram
 !limit_ovrs
@@ -174,7 +174,7 @@ array of Int32 = array of ErrorCode
 
 # clGetProgramInfo
 !possible_par_types
- *	| *	| *	| *	| +var UInt32 +var cl_context +var cl_device_id +var IntPtr +var UIntPtr +var Byte +var Bool -IntPtr +pointer	| *	|
+ *	| *	| *	| *	| +var UInt32 +var cl_context +var cl_device_id +var IntPtr +var UIntPtr +var Byte +var Bool	| *	|
 
 # clGetProgramBuildInfo
 !possible_par_types
@@ -188,12 +188,12 @@ array of Int32 = array of ErrorCode
 
 # clSetKernelArg
 !possible_par_types
- *	| *	| *	| *	| +var T -IntPtr +pointer	|
+ *	| *	| *	| *	| +var T	|
 
 # clSetKernelExecInfo
 # clSetKernelExecInfoARM
 !possible_par_types
- *	| *	| *	| *	|  +var IntPtr +var Bool -IntPtr +pointer	|
+ *	| *	| *	| *	|  +var IntPtr +var Bool	|
 
 # clGetKernelInfo
 !possible_par_types

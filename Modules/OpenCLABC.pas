@@ -19,7 +19,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Фиксе добавляющий "var T" или "var IntPtr" должен автоматически менять "IntPtr" на "pointer"
 //TODO "cl_" не попадают в строки расширений в OpenCL
 
 //TODO Аргументы компиляции OpenCL-C кода
@@ -37,7 +36,7 @@ unit OpenCLABC;
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 
 //TODO Использовать cl.EnqueueMapBuffer
-// - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQNil)
+// - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQBase)
 // - Лучше сделать так же как для KernelArgGlobal
 // - В справку
 // --- В том числе то, что Map быстрее Read, который быстрее Get

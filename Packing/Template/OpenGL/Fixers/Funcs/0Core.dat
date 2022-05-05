@@ -5,23 +5,23 @@
 # glNamedBuffer[%Data,Storage%]EXT
 # glBufferDataARB
 !possible_par_types
- *	| *	| +array of T +var T -IntPtr +pointer	| *	|
+ *	| *	| +array of T +var T	| *	|
 
 # gl[%,Get%][%,Named%]BufferSubData
 # gl[%,Get%]NamedBufferSubDataEXT
 # gl[%,Get%]BufferSubDataARB
 !possible_par_types
- *	| *	| *	| +array of T +var T -IntPtr +pointer	|
+ *	| *	| *	| +array of T +var T	|
 
 # glClear[%,Named%]BufferData
 # glClearNamedBufferDataEXT
 !possible_par_types
- *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	|
+ *	| *	| *	| *	| +array of T +var T	|
 
 # glClear[%,Named%]BufferSubData
 # glClearNamedBufferSubDataEXT
 !possible_par_types
- *	| *	| *	| *	| *	| *	| +array of T +var T -IntPtr +pointer	|
+ *	| *	| *	| *	| *	| *	| +array of T +var T	|
 
 # glXGetProcAddress
 # glXGetProcAddressARB
