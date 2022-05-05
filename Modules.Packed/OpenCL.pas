@@ -4513,6 +4513,20 @@ type
     external 'opencl' name 'clEnqueueFillImage';
     private static function z_EnqueueFillImage_8(command_queue: cl_command_queue; image: cl_mem; var fill_color: Byte; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueFillImage';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueFillImage_8(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueFillImage_8(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueFillImage_7(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueFillImage_7(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
       Result := z_EnqueueFillImage_8(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
@@ -4528,6 +4542,20 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage<T>(command_queue: cl_command_queue; image: cl_mem; var fill_color: T; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
       Result := z_EnqueueFillImage_5(command_queue, image, PByte(pointer(@fill_color))^, origin, region, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueFillImage_4(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueFillImage_4(command_queue, image, fill_color, origin, region, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueFillImage_3(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueFillImage_3(command_queue, image, fill_color, origin, region, num_events_in_wait_list, Pcl_event(nil)^, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueFillImage(command_queue: cl_command_queue; image: cl_mem; fill_color: pointer; var origin: UIntPtr; var region: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueFillImage_4(command_queue, image, fill_color, origin, region, num_events_in_wait_list, event_wait_list, &event);
@@ -4627,6 +4655,64 @@ type
             z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, origin[0], PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, Pcl_event(nil)^, &event, errcode_ret) else
             z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, Pcl_event(nil)^, &event, errcode_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    type PUIntPtr=^UIntPtr;
+    begin
+      Result := if (region<>nil) and (region.Length<>0) then
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, origin[0], PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    type PUIntPtr=^UIntPtr;
+    begin
+      Result := if (region<>nil) and (region.Length<>0) then
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, origin[0], PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    type PUIntPtr=^UIntPtr;
+    begin
+      Result := if (region<>nil) and (region.Length<>0) then
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_6(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_6(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_6(command_queue, image, blocking_map, map_flags, origin[0], PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_6(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: array of UIntPtr; region: array of UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    type PUIntPtr=^UIntPtr;
+    begin
+      Result := if (region<>nil) and (region.Length<>0) then
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_5(command_queue, image, blocking_map, map_flags, origin[0], region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_5(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, region[0], image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+        if (origin<>nil) and (origin.Length<>0) then
+          z_EnqueueMapImage_5(command_queue, image, blocking_map, map_flags, origin[0], PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret) else
+          z_EnqueueMapImage_5(command_queue, image, blocking_map, map_flags, PUIntPtr(nil)^, PUIntPtr(nil)^, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
+        z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, Pcl_event(nil)^, &event, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
+        z_EnqueueMapImage_7(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, Pcl_event(nil)^, &event, errcode_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
     z_EnqueueMapImage_8(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
@@ -4635,6 +4721,20 @@ type
     z_EnqueueMapImage_6(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; var origin: UIntPtr; var region: UIntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
     z_EnqueueMapImage_5(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueMapImage_4(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
+        z_EnqueueMapImage_4(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, Pcl_event(nil)^, &event, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueMapImage_3(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list[0], &event, errcode_ret) else
+        z_EnqueueMapImage_3(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, Pcl_event(nil)^, &event, errcode_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event; var errcode_ret: ErrorCode): IntPtr :=
     z_EnqueueMapImage_4(command_queue, image, blocking_map, map_flags, origin, region, image_row_pitch, image_slice_pitch, num_events_in_wait_list, event_wait_list, &event, errcode_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMapImage(command_queue: cl_command_queue; image: cl_mem; blocking_map: Bool; map_flags: MapFlags; origin: IntPtr; region: IntPtr; var image_row_pitch: UIntPtr; var image_slice_pitch: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr; var errcode_ret: ErrorCode): IntPtr :=
@@ -4801,54 +4901,140 @@ type
     external 'opencl' name 'clEnqueueNativeKernel';
     private static function z_EnqueueNativeKernel_4(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_5(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueNativeKernel_5(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_6(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueNativeKernel_6(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_7(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    private static function z_EnqueueNativeKernel_7(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
     external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_8(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    private static function z_EnqueueNativeKernel_8(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_9(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_10(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_11(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_12(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_13(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_14(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_15(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
-    private static function z_EnqueueNativeKernel_16(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
-    external 'opencl' name 'clEnqueueNativeKernel';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: array of cl_mem; args_mem_loc: array of IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_mem=^cl_mem;
+    type PIntPtr=^IntPtr;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, event_wait_list[0], &event) else
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, event_wait_list[0], &event) else
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
+        if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, Pcl_event(nil)^, &event) else
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, Pcl_event(nil)^, &event) else
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, Pcl_event(nil)^, &event) else
+            z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: array of cl_mem; args_mem_loc: array of IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_mem=^cl_mem;
+    type PIntPtr=^IntPtr;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, event_wait_list[0], &event) else
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, event_wait_list[0], &event) else
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, event_wait_list[0], &event) else
+        if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, Pcl_event(nil)^, &event) else
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, Pcl_event(nil)^, &event) else
+          if (mem_list<>nil) and (mem_list.Length<>0) then
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, Pcl_event(nil)^, &event) else
+            z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: array of cl_mem; args_mem_loc: array of IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_mem=^cl_mem;
+    type PIntPtr=^IntPtr;
+    begin
+      Result := if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: array of cl_mem; args_mem_loc: array of IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_mem=^cl_mem;
+    type PIntPtr=^IntPtr;
+    begin
+      Result := if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: array of cl_mem; args_mem_loc: array of IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode;
+    type Pcl_mem=^cl_mem;
+    type PIntPtr=^IntPtr;
+    begin
+      Result := if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_6(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_6(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_6(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_6(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: array of cl_mem; args_mem_loc: array of IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode;
+    type Pcl_mem=^cl_mem;
+    type PIntPtr=^IntPtr;
+    begin
+      Result := if (args_mem_loc<>nil) and (args_mem_loc.Length<>0) then
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_5(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_5(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, args_mem_loc[0], num_events_in_wait_list, event_wait_list, &event) else
+        if (mem_list<>nil) and (mem_list.Length<>0) then
+          z_EnqueueNativeKernel_5(command_queue, user_func, args, cb_args, num_mem_objects, mem_list[0], PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event) else
+          z_EnqueueNativeKernel_5(command_queue, user_func, args, cb_args, num_mem_objects, Pcl_mem(nil)^, PIntPtr(nil)^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    z_EnqueueNativeKernel_16(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    z_EnqueueNativeKernel_15(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    z_EnqueueNativeKernel_14(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    z_EnqueueNativeKernel_13(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
-    z_EnqueueNativeKernel_12(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
-    z_EnqueueNativeKernel_11(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
-    z_EnqueueNativeKernel_10(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; args_mem_loc: pointer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
-    z_EnqueueNativeKernel_9(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueNativeKernel_8(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
     z_EnqueueNativeKernel_7(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; var &event: cl_event): ErrorCode :=
     z_EnqueueNativeKernel_6(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; var mem_list: cl_mem; var args_mem_loc: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueNativeKernel_5(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; args_mem_loc: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueNativeKernel_4(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueNativeKernel_4(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; args_mem_loc: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueNativeKernel_3(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueNativeKernel_3(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueNativeKernel_4(command_queue, user_func, args, cb_args, num_mem_objects, mem_list, args_mem_loc, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueNativeKernel(command_queue: cl_command_queue; user_func: EnqueueNativeKernelCallback; args: IntPtr; cb_args: UIntPtr; num_mem_objects: UInt32; mem_list: IntPtr; args_mem_loc: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; &event: IntPtr): ErrorCode :=
@@ -5257,6 +5443,20 @@ type
     external 'opencl' name 'clEnqueueReadBufferRect';
     private static function z_EnqueueReadBufferRect_8(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadBufferRect';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadBufferRect_8(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadBufferRect_8(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadBufferRect_7(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadBufferRect_7(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
       Result := z_EnqueueReadBufferRect_8(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
@@ -5272,6 +5472,20 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
       Result := z_EnqueueReadBufferRect_5(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadBufferRect_4(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadBufferRect_4(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadBufferRect_3(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadBufferRect_3(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_read: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueReadBufferRect_4(command_queue, buffer, blocking_read, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
@@ -5299,6 +5513,20 @@ type
     external 'opencl' name 'clEnqueueReadImage';
     private static function z_EnqueueReadImage_8(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueReadImage';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadImage_8(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadImage_8(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadImage_7(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadImage_7(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
       Result := z_EnqueueReadImage_8(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
@@ -5314,6 +5542,20 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
       Result := z_EnqueueReadImage_5(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadImage_4(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadImage_4(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueReadImage_3(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueReadImage_3(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadImage(command_queue: cl_command_queue; image: cl_mem; blocking_read: Bool; var origin: UIntPtr; var region: UIntPtr; row_pitch: UIntPtr; slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueReadImage_4(command_queue, image, blocking_read, origin, region, row_pitch, slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
@@ -6008,6 +6250,20 @@ type
     external 'opencl' name 'clEnqueueWriteBufferRect';
     private static function z_EnqueueWriteBufferRect_8(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteBufferRect';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteBufferRect_8(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteBufferRect_8(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteBufferRect_7(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteBufferRect_7(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
       Result := z_EnqueueWriteBufferRect_8(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
@@ -6023,6 +6279,20 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect<T>(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
       Result := z_EnqueueWriteBufferRect_5(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteBufferRect_4(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteBufferRect_4(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteBufferRect_3(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteBufferRect_3(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteBufferRect(command_queue: cl_command_queue; buffer: cl_mem; blocking_write: Bool; var buffer_origin: UIntPtr; var host_origin: UIntPtr; var region: UIntPtr; buffer_row_pitch: UIntPtr; buffer_slice_pitch: UIntPtr; host_row_pitch: UIntPtr; host_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteBufferRect_4(command_queue, buffer, blocking_write, buffer_origin, host_origin, region, buffer_row_pitch, buffer_slice_pitch, host_row_pitch, host_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);
@@ -6050,6 +6320,20 @@ type
     external 'opencl' name 'clEnqueueWriteImage';
     private static function z_EnqueueWriteImage_8(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: Byte; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode;
     external 'opencl' name 'clEnqueueWriteImage';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteImage_8(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteImage_8(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode; where T: record;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteImage_7(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteImage_7(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode; where T: record;
     begin
       Result := z_EnqueueWriteImage_8(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
@@ -6065,6 +6349,20 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage<T>(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; var ptr: T; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode; where T: record;
     begin
       Result := z_EnqueueWriteImage_5(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, PByte(pointer(@ptr))^, num_events_in_wait_list, event_wait_list, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var &event: cl_event): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteImage_4(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteImage_4(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; &event: IntPtr): ErrorCode;
+    type Pcl_event=^cl_event;
+    begin
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        z_EnqueueWriteImage_3(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list[0], &event) else
+        z_EnqueueWriteImage_3(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, Pcl_event(nil)^, &event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteImage(command_queue: cl_command_queue; image: cl_mem; blocking_write: Bool; var origin: UIntPtr; var region: UIntPtr; input_row_pitch: UIntPtr; input_slice_pitch: UIntPtr; ptr: pointer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var &event: cl_event): ErrorCode :=
     z_EnqueueWriteImage_4(command_queue, image, blocking_write, origin, region, input_row_pitch, input_slice_pitch, ptr, num_events_in_wait_list, event_wait_list, &event);

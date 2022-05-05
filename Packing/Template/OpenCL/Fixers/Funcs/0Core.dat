@@ -38,7 +38,7 @@
 
 # clEnqueue[%Read,Write%]BufferRect
 !possible_par_types
- *	| *	| *	| *	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| *	| *	| +var T -IntPtr +pointer	| *	| -array of cl_event	| *	|
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| *	| *	| +var T -IntPtr +pointer	| *	| *	| *	|
 
 # clEnqueueCopyBufferRect
 !possible_par_types
@@ -52,8 +52,6 @@
  *	| *	| *	| +array of T +var T -IntPtr +pointer	| *	| *	| *	| *	| *	| *	|
 
 # clEnqueueMapBuffer
-!possible_par_types
- *	| *	| *	| *	| *	| *	| *	| *	| *	| -array of cl_event	| *	|
 
 # clCreateImage
 !possible_par_types
@@ -73,11 +71,11 @@
 
 # clEnqueue[%Read,Write%]Image
 !possible_par_types
- *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| +var T -IntPtr +pointer	| *	| -array of cl_event	| *	|
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| +var T -IntPtr +pointer	| *	| *	| *	|
 
 # clEnqueueFillImage
 !possible_par_types
- *	| *	| *	| +var T -IntPtr +pointer	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| *	| -array of cl_event	| *	|
+ *	| *	| *	| +var T -IntPtr +pointer	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| *	| *	| *	|
 
 # clEnqueueCopyImage
 !possible_par_types
@@ -102,11 +100,11 @@
 
 # clEnqueueMapImage
 !possible_par_types
- *	| *	| *	| *	| *	| *					| *					| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| -array of cl_event	| *	|
+ *	| *	| *	| *	| *	| *					| *					| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	|*	| *	|
 !limit_ovrs
- *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *							| *							| *	| *	| *						| *	|
- *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *							| *							| *	| *	| *						| *	|
- *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *							| *							| *	| *	| *						| *	|
+ *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *							| *							| *	| *	| *	| *	|
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *							| *							| *	| *	| *	| *	|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *							| *							| *	| *	| *	| *	|
 
 # clGetImageInfo
 !possible_par_types
@@ -231,8 +229,10 @@ array of Int32 = array of ErrorCode
  *	| *	| *	| *	| *					| var UIntPtr		| IntPtr			| *	| *	| *	|
 
 # clEnqueueNativeKernel
-!possible_par_types
- *	| *	| *	| *	| *	| *	| -array of cl_mem	| -array of IntPtr	| *	| -array of cl_event	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| array of cl_mem	| array of IntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| *	| *	| var cl_mem		| var IntPtr		| *	| *	| *	|
+ *	| *	| *	| *	| *	| *	| IntPtr			| pointer			| *	| *	| *	|
 
 
 

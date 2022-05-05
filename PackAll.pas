@@ -264,10 +264,7 @@ var AllStages := HSet(
       if CurrentStages.Contains(mn+'ABC') then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
       
       if CurrentStages.Contains(mn+'ABC') then
-      begin
-        if not CurrentStages.Contains(mn) then System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true);
-        Result += CompTask($'Modules.Packed\{mn}ABC.pas');
-      end else
+        Result += CompTask($'Modules.Packed\{mn}ABC.pas') else
       if CurrentStages.Contains(mn) then
         Result += CompTask($'Modules.Packed\{mn}.pas');
       

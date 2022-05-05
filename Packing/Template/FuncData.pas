@@ -990,18 +990,26 @@ type
     private procedure _FixCL;
     begin
       if all_overloads<>nil then exit;
-      var last_pars := org_par?[^1:0:-1];
+      var rev_pars := org_par?[:-Ord(is_proc):-1];
       
-      if (last_pars.Length>=1) and (last_pars[0].GetTName = 'ErrorCode') then
+      var rem_from := procedure(ppt: List<FuncParamT>; t: FuncParamT)->
+      if not ppt.Remove(t) then Otp($'ERROR: Func [{self.name}] failed to FixCL, removing [{t}] from par#{possible_par_types.IndexOf(ppt)}: {_ObjectToString(ppt.Select(par->par.ToString(true,true)))}');
+      
+      if rev_pars.Length < 1 then exit;
+      var last_err_code := rev_pars[0].GetTName = 'ErrorCode';
+      if last_err_code then
       begin
         InitPossibleParTypes;
-        possible_par_types[^1].RemoveLast; // IntPtr
-      end else
-      if (last_pars.Length>=2) and last_pars.Take(2).All(par->(par.GetTName='cl_event') and (par.ptr=1)) then
+        rem_from(possible_par_types[^1], new FuncParamT('IntPtr'));
+      end;
+      
+      var ind_sh := Ord(last_err_code);
+      if rev_pars.Length < 2+ind_sh then exit;
+      if rev_pars.Skip(ind_sh).Take(2).All(par->(par.GetTName='cl_event') and (par.ptr=1)) then
       begin
         InitPossibleParTypes;
-        possible_par_types[^1].RemoveAt(0);
-        unopt_arr[^2] := true;
+        rem_from(possible_par_types[^(1+ind_sh)], new FuncParamT('array of cl_event'));
+        unopt_arr[^(2+ind_sh)] := true;
       end;
       
     end;
@@ -1024,6 +1032,10 @@ type
         if is_proc and (par_i=0) then continue;
         if unopt_arr[par_i] then continue;
         opt_arr[par_i] := types.Any(par->par.arr_lvl=0) and types.Any(par->par.arr_lvl<>0);
+        if unopt_arr[par_i] then
+          if opt_arr[par_i] then
+            opt_arr[par_i] := false else
+            Otp($'WARNING: Func [{self.name}] had par#{par_i} as unopt_arr, but it does not need it: {_ObjectToString(types.Select(par->par.ToString(true,true)))}');
       end;
       
       var cap := 1;

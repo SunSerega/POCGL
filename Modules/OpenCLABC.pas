@@ -19,7 +19,8 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO "-array of cl_event" куча где для пред-последнего параметра
+//TODO Названия параметров в ffo
+//TODO Фиксе добавляющий "var T" или "var IntPtr" должен автоматически менять "IntPtr" на "pointer"
 //TODO "cl_" не попадают в строки расширений в OpenCL
 
 //TODO Аргументы компиляции OpenCL-C кода
@@ -238,8 +239,6 @@ uses OpenCL{%!!} in '..\Modules.Packed\OpenCL'{%};
 type
   
   {$region Re-definition's}
-  
-  OpenCLException         = OpenCL.OpenCLException;
   
   DeviceType              = OpenCL.DeviceType;
   DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;

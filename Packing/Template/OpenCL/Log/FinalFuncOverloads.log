@@ -238,15 +238,19 @@
 	ErrorCode | cl_command_queue | cl_mem | pointer    | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | cl_mem | pointer    | UIntPtr | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       |
 
-# clEnqueueFillImage[8]:
-	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr       | IntPtr       |
+# clEnqueueFillImage[12]:
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | var T   | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | pointer | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueMapBuffer[6]:
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | UIntPtr | UIntPtr | UInt32 | array of cl_event | var cl_event | var ErrorCode |
@@ -256,13 +260,21 @@
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | UIntPtr | UIntPtr | UInt32 | IntPtr            | var cl_event | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | UIntPtr | UIntPtr | UInt32 | IntPtr            | IntPtr       | var ErrorCode |
 
-# clEnqueueMapImage[10]:
+# clEnqueueMapImage[18]:
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | array of UIntPtr | array of UIntPtr | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | var cl_event | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | array of UIntPtr | array of UIntPtr | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | IntPtr       | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | array of UIntPtr | array of UIntPtr | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | var cl_event | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | array of UIntPtr | array of UIntPtr | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | IntPtr       | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | array of UIntPtr | array of UIntPtr | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | var cl_event | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | array of UIntPtr | array of UIntPtr | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | IntPtr       | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | var UIntPtr      | var UIntPtr      | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | var cl_event | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | var UIntPtr      | var UIntPtr      | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | IntPtr       | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | var UIntPtr      | var UIntPtr      | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | var cl_event | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | var UIntPtr      | var UIntPtr      | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | IntPtr       | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | var UIntPtr      | var UIntPtr      | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | var cl_event | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | var UIntPtr      | var UIntPtr      | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | IntPtr       | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | IntPtr           | IntPtr           | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | var cl_event | var ErrorCode |
+	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | IntPtr           | IntPtr           | var UIntPtr | var UIntPtr | UInt32 | array of cl_event | IntPtr       | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | IntPtr           | IntPtr           | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | var cl_event | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | IntPtr           | IntPtr           | var UIntPtr | var UIntPtr | UInt32 | var cl_event      | IntPtr       | var ErrorCode |
 	IntPtr | cl_command_queue | cl_mem | Bool | MapFlags | IntPtr           | IntPtr           | var UIntPtr | var UIntPtr | UInt32 | IntPtr            | var cl_event | var ErrorCode |
@@ -298,23 +310,25 @@
 	ErrorCode | cl_command_queue | UInt32 | IntPtr          | MemMigrationFlags | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | UInt32 | IntPtr          | MemMigrationFlags | UInt32 | IntPtr            | IntPtr       |
 
-# clEnqueueNativeKernel[16]:
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | var IntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | var IntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | var IntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | var IntPtr | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | pointer    | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | pointer    | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | pointer    | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem | pointer    | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | var IntPtr | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | var IntPtr | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | var IntPtr | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | var IntPtr | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | pointer    | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | pointer    | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | pointer    | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr     | pointer    | UInt32 | IntPtr       | IntPtr       |
+# clEnqueueNativeKernel[18]:
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | array of cl_mem | array of IntPtr | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | array of cl_mem | array of IntPtr | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | array of cl_mem | array of IntPtr | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | array of cl_mem | array of IntPtr | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | array of cl_mem | array of IntPtr | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | array of cl_mem | array of IntPtr | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem      | var IntPtr      | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem      | var IntPtr      | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem      | var IntPtr      | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem      | var IntPtr      | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem      | var IntPtr      | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | var cl_mem      | var IntPtr      | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr          | pointer         | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr          | pointer         | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr          | pointer         | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr          | pointer         | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr          | pointer         | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | EnqueueNativeKernelCallback | IntPtr | UIntPtr | UInt32 | IntPtr          | pointer         | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueNDRangeKernel[30]:
 	ErrorCode | cl_command_queue | cl_kernel | UInt32 | array of UIntPtr | array of UIntPtr | array of UIntPtr | UInt32 | array of cl_event | var cl_event |
@@ -368,25 +382,33 @@
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | IntPtr       |
 
-# clEnqueueReadBufferRect[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
+# clEnqueueReadBufferRect[12]:
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | IntPtr       |
 
-# clEnqueueReadImage[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
+# clEnqueueReadImage[12]:
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | IntPtr       |
 
 # clEnqueueSVMFree[18]:
 	ErrorCode | cl_command_queue | UInt32 | array of IntPtr | EnqueueSVMFreeCallback | IntPtr | UInt32 | array of cl_event | var cl_event |
@@ -513,25 +535,33 @@
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | var cl_event |
 	ErrorCode | cl_command_queue | cl_mem | Bool | UIntPtr | UIntPtr | pointer    | UInt32 | IntPtr            | IntPtr       |
 
-# clEnqueueWriteBufferRect[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
+# clEnqueueWriteBufferRect[12]:
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | IntPtr       |
 
-# clEnqueueWriteImage[8]:
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr       | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event | IntPtr       |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | var cl_event |
-	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr       | IntPtr       |
+# clEnqueueWriteImage[12]:
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | var T   | UInt32 | IntPtr            | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | array of cl_event | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | var cl_event      | IntPtr       |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | var cl_event |
+	ErrorCode | cl_command_queue | cl_mem | Bool | var UIntPtr | var UIntPtr | UIntPtr | UIntPtr | pointer | UInt32 | IntPtr            | IntPtr       |
 
 # clFinish[1]:
 	ErrorCode | cl_command_queue |
