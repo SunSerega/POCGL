@@ -231,7 +231,7 @@ begin
         gl.Uniform1i(uniform_point_count, point_count);
         // Плохо - пересоздаём всё тело буфера при каждой перерисовке
         // Но по сравнению с фрагментным шейдером - это капля в море
-        gl.NamedBufferData(buffer_points, new IntPtr(point_count*sizeof(vec2d)), points, VertexBufferObjectUsage.DYNAMIC_READ);
+        gl.NamedBufferData(buffer_points, new UIntPtr(point_count*sizeof(vec2d)), points, VertexBufferObjectUsage.DYNAMIC_READ);
         // Записать point_count точек из массива можно так:
 //        gl.NamedBufferSubData(buffer_points, IntPtr.Zero, new IntPtr(point_count * sizeof(Vec2d)), points);
       end;

@@ -44,7 +44,7 @@ begin
     gl.CreateBuffers(1, vertex_pos_buffer);
     gl.NamedBufferData(
       vertex_pos_buffer,
-      new IntPtr(3*sizeof(Vec2f)),
+      new UIntPtr(3*sizeof(Vec2f)),
       ArrGen(3, i->
       begin
         var rot := i * Pi * 2 / 3;
@@ -71,7 +71,7 @@ begin
     gl.CreateBuffers(1, vertex_clr_buffer);
     gl.NamedBufferData(
       vertex_clr_buffer,
-      new IntPtr(3*sizeof(Vec3f)),
+      new UIntPtr(3*sizeof(Vec3f)),
       |
         new Vec3f(1,0,0),
         new Vec3f(0,1,0),
