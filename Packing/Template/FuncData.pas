@@ -1158,9 +1158,10 @@ type
         if not is_proc or (org_par.Length>1) then
         begin
           var i_off := integer(is_proc);
+          var need_par_names := org_par.Length>1;
           
           var max_w := new integer[org_par.Length-i_off];
-          var tt := new string[all_overloads.Count, max_w.Length];
+          var tt := new string[all_overloads.Count+Ord(need_par_names), max_w.Length];
           foreach var ovr in all_overloads index ovr_i do
             for var i := i_off to org_par.Length-1 do
             begin
@@ -1169,12 +1170,35 @@ type
               max_w[tt_i] := Max(max_w[tt_i], s.Length);
               tt[ovr_i, tt_i] := s;
             end;
+          if need_par_names then
+            for var i := 1 to org_par.Length-1 do
+            begin
+              var s := if i=0 then '' else org_par[i].name.TrimStart('&');
+              var tt_i := i-i_off;
+              max_w[tt_i] := Max(max_w[tt_i], s.Length);
+              tt[all_overloads.Count, tt_i] := s;
+            end;
           
           var l_cap := 1+max_w.Sum + max_w.Length*3;
           var l := new StringBuilder(l_cap);
-          foreach var ovr_i in all_overloads.Indices do
+          for var ovr_i := 0 to tt.GetLength(0)-1 do
           begin
             l += #9;
+            
+            if ovr_i=all_overloads.Count then
+            begin
+              
+              foreach var w in max_w index tt_i do
+              begin
+                loop w do l += '-';
+                l += ' | ';
+              end;
+              
+              l.Length -= 1;
+              log_func_ovrs.Otp(l.ToString);
+              l.Clear;
+              l += #9;
+            end;
             
             foreach var w in max_w index tt_i do
             begin

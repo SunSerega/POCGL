@@ -5,10 +5,14 @@
 
 # v2InpString[1]:
 	IntPtr |
+	------ |
+	s      |
 
 # v2InpStringReadOnly[2]:
 	string |
 	IntPtr |
+	------ |
+	s      |
 
 # v3ResString[1]:
 	string |
@@ -23,15 +27,21 @@
 	array of array of IntPtr                       |
 	var IntPtr                                     |
 	pointer                                        |
+	---------------------------------------------- |
+	a                                              |
 
 # v5Generic[3]:
 	array of T |
 	var T      |
 	IntPtr     |
+	---------- |
+	a          |
 
 # v6Generic[2]:
 	array of T |
 	IntPtr     |
+	---------- |
+	a          |
 
 # v7Mix[18]:
 	string | IntPtr | string | array of T1 | array of array of array of array of T2 |
@@ -52,25 +62,35 @@
 	string | IntPtr | IntPtr | IntPtr      | array of array of IntPtr               |
 	string | IntPtr | IntPtr | IntPtr      | var IntPtr                             |
 	string | IntPtr | IntPtr | IntPtr      | pointer                                |
+	------ | ------ | ------ | ----------- | -------------------------------------- |
+	       | s1     | s2     | gen         | a                                      |
 
 # v8BoolPtr[2]:
 	var boolean |
 	IntPtr      |
+	----------- |
+	b           |
 
 # v9StringArray[4]:
 	array of array of string |
 	array of array of IntPtr |
 	var IntPtr               |
 	pointer                  |
+	------------------------ |
+	a                        |
 
 # vDyn1NoParam[1]:
 
 # vDyn2InpString[1]:
 	IntPtr |
+	------ |
+	s      |
 
 # vDyn2InpStringReadOnly[2]:
 	string |
 	IntPtr |
+	------ |
+	s      |
 
 # vDyn3ResString[1]:
 	string |
@@ -85,15 +105,21 @@
 	array of array of IntPtr                       |
 	var IntPtr                                     |
 	pointer                                        |
+	---------------------------------------------- |
+	a                                              |
 
 # vDyn5Generic[3]:
 	array of T |
 	var T      |
 	IntPtr     |
+	---------- |
+	a          |
 
 # vDyn6Generic[2]:
 	array of T |
 	IntPtr     |
+	---------- |
+	a          |
 
 # vDyn7Mix[18]:
 	string | IntPtr | string | array of T1 | array of array of array of array of T2 |
@@ -114,15 +140,21 @@
 	string | IntPtr | IntPtr | IntPtr      | array of array of IntPtr               |
 	string | IntPtr | IntPtr | IntPtr      | var IntPtr                             |
 	string | IntPtr | IntPtr | IntPtr      | pointer                                |
+	------ | ------ | ------ | ----------- | -------------------------------------- |
+	       | s1     | s2     | gen         | a                                      |
 
 # vDyn8BoolPtr[2]:
 	var boolean |
 	IntPtr      |
+	----------- |
+	b           |
 
 # vDyn9StringArray[4]:
 	array of array of string |
 	array of array of IntPtr |
 	var IntPtr               |
 	pointer                  |
+	------------------------ |
+	a                        |
 
 
