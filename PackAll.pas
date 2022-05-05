@@ -227,12 +227,9 @@ var AllStages := HSet(
   LLModuleStage = sealed class(ModulePackingStage)
     
     function MakeModuleTask: AsyncTask; override :=
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\Template\{id}.pas"', $'"otp_fname=Modules\{id}.pas"') +
-      ProcTask(()->
-      begin
-        Directory.CreateDirectory('Modules.Packed');
-        System.IO.File.Copy($'Modules\{id}.pas', $'Modules.Packed\{id}.pas', true);
-      end)
+      ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
+      +
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
     ;
     
   end;
@@ -241,7 +238,7 @@ var AllStages := HSet(
     function MakeModuleTask: AsyncTask; override :=
       ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
       +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]',     $'nick={id}', $'"inp_fname=Modules\{id}.pas"',              $'"otp_fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
       +
       ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
     ;

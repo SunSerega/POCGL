@@ -36,9 +36,6 @@ unit OpenCLABC;
 // - #define-ы особо полезны, но там куча всего...
 // - https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#compiler-options
 
-//TODO Подключать OpenCL из Modules.Packed
-// - Чтобы перенести огрызок OpenCL в Modules
-
 //TODO Деприкация в OpenCL?
 // - К примеру clCreateImage2D не должна использоваться после 1.2
 

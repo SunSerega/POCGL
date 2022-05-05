@@ -8,7 +8,7 @@
 unit OpenGLABC;
 
 uses System;
-uses OpenGL;
+uses OpenGL{%!!} in '..\Modules.Packed\OpenGL'{%};
 
 type
   
