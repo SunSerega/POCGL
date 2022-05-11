@@ -29,8 +29,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO CLContext.GenerateCheckedDefault
-
 //TODO Проверить во что восстанавливаются бинарники при загрузке назад
 
 
@@ -2730,6 +2728,7 @@ type
     private static function GetDefault: CLContext;
     begin
       if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
+        // Another exchange, because Default could be explicitly set
         Interlocked.CompareExchange(_default, MakeNewDefaultContext, nil);
       Result := _default;
     end;
@@ -2764,6 +2763,8 @@ type
       end;
       
     end;
+    
+    public static procedure GenerateAndCheckDefault(test_size: integer := 1024*24; test_max_seconds: real := 0.25);
     
     {$endregion Default}
     
@@ -3436,12 +3437,12 @@ type
         if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
           general_pt := pt else
         if general_pt<>pt then
-          raise new NotSupportedException($'BinCLCode:Deserialize:ProgramBinaryType:Different');
+          raise new NotSupportedException($'');
         
       end;
       
       if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
-        raise new NotSupportedException($'BinCLCode:Deserialize:ProgramBinaryType:Missing') else
+        raise new NotSupportedException($'') else
       if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
         Result := new CLCompCode(ntv,false) else
       if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
@@ -8749,6 +8750,90 @@ end;
 
 {$endregion CLDevice}
 
+{$region CLContext}
+
+static procedure CLContext.GenerateAndCheckDefault(test_size: integer; test_max_seconds: real);
+begin
+  var test_prog := 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
+  var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
+  
+  var Q_Test: CommandQueue<boolean>;
+  var P_Arr := new ParameterQueue<CLArray<integer>>('A');
+  var P_Prog := new ParameterQueue<CLProgramCode>('Prog');
+  begin
+    var rng := new Random;
+    var test_arr := ArrGen(test_size, i->rng.Next);
+     Q_Test :=
+       CLKernelCCQ.Create(P_Prog.ThenConstConvert(p->p['k']))
+         .ThenExec1(test_size, CLArrayCCQ&<integer>.Create(P_Arr)
+           .ThenWriteArray(test_arr)
+         ) as object as CommandQueueBase + //TODO Можно перетасовать модуль...
+       CLArrayCCQ&<integer>.Create(P_Arr)
+         .ThenGetArray
+         .ThenQuickConvert(test_res->
+           test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r)
+         );
+  end;
+  
+  var c := CLPlatform.All.SelectMany(pl->
+  begin
+    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToList;
+    
+    System.Threading.Tasks.Parallel.For(0,dvcs.Count, i->
+    begin
+      var del := true;
+      
+      var c := new CLContext(dvcs[i]);
+      var S_Arr := P_Arr.NewSetter(new CLArray<integer>(c, test_size));
+      var S_Prog := P_Prog.NewSetter(new CLProgramCode(test_prog, c));
+      
+      var thr := new Thread(()->
+      try
+        del := not c.SyncInvoke(Q_Test, S_Arr, S_Prog);
+      except
+      end);
+      thr.IsBackground := true;
+      thr.Start;
+      
+      if not thr.Join(test_max_time) then
+        thr.Abort;
+      
+      if del then dvcs[i] := nil;
+    end);
+    dvcs.RemoveAll(d->d=nil);
+    
+    Result := if dvcs.Count=0 then
+      System.Linq.Enumerable.Empty&<(CLContext,TimeSpan)> else
+      |true,false|.Cartesian(dvcs.Count)
+      .Select(choise->
+      begin
+        Result := new List<CLDevice>(dvcs.Count);
+        for var i := 0 to dvcs.Count-1 do
+          if choise[i] then Result += dvcs[i];
+      end)
+      .Where(l_dvcs->l_dvcs.Count<>0)
+      .Select(l_dvcs->
+      begin
+        var c := new CLContext(l_dvcs, l_dvcs[0]);
+        
+        var sw := Stopwatch.StartNew;
+        c.SyncInvoke(Q_Test.DiscardResult,
+          P_Arr.NewSetter(new CLArray<integer>(c, test_size)),
+          P_Prog.NewSetter(new CLProgramCode(test_prog, c))
+        );
+        sw.Stop;
+        
+        Result := (c, sw.Elapsed);
+      end);
+  end)
+  .DefaultIfEmpty((default(CLContext),TimeSpan.Zero))
+  .MinBy(t->t[1])[0];
+  
+  Interlocked.CompareExchange(_default, c, nil);
+end;
+
+{$endregion CLContext}
+
 {$region CLProgramCompOptions}
 
 procedure CLProgramCompOptions.LowerVersionToSupported;
@@ -9509,13 +9594,15 @@ type
       );
       
       var mre := after.ToMRE({$ifdef EventDebug}$'Threaded work with res_ev={res}'{$endif});
-      Thread.Create(()->
+      var thr := new Thread(()->
       try
         if mre<>nil then mre.Wait;
         work;
       finally
         res.SetComplete;
-      end).Start;
+      end);
+      thr.IsBackground := true;
+      thr.Start;
       
       Result := res;
     end;
@@ -10734,13 +10821,15 @@ type
       g.FinishInvoke;
       
       var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTaskNil.FinishExecution'{$endif});
-      Thread.Create(()->
+      var thr := new Thread(()->
       begin
         if mre<>nil then mre.Wait;
         qr.InvokeActions(self.org_c);
         g.FinishExecution(self.err_lst);
         self.wh.Set;
-      end).Start;
+      end);
+      thr.IsBackground := true;
+      thr.Start;
       
     end;
     
@@ -10761,13 +10850,15 @@ type
       g.FinishInvoke;
       
       var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTask<{typeof(T)}>.FinishExecution'{$endif});
-      Thread.Create(()->
+      var thr := new Thread(()->
       begin
         if mre<>nil then mre.Wait;
         self.res := qr.GetRes(self.org_c);
         g.FinishExecution(self.err_lst);
         self.wh.Set;
-      end).Start;
+      end);
+      thr.IsBackground := true;
+      thr.Start;
       
     end;
     
