@@ -10,7 +10,7 @@ var Q :=
   + Qs[9];
 for i := 0 to Qs.Length-1 do
 try
-  Context.Default.SyncInvoke(Q);
+  CLContext.Default.SyncInvoke(Q);
 except
   on e: System.AggregateException do
   begin

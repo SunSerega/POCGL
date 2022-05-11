@@ -4,7 +4,7 @@
 #DelegateCount
 3
 
-#ExpOtp
+#ExpExecOtp
 ConstQueue<Object>#0: ()
 ConstQueue<Object>#0: Exception{ System.Exception: TestOK }
 ConstQueue<Object>#0: { nil }

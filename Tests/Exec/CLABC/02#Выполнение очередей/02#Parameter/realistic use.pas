@@ -14,7 +14,7 @@ type
     .ThenGetValue&<integer>;
     
     public function Invoke(par1: integer; par2: string) :=
-    Context.Default.SyncInvoke(self.Q,
+    CLContext.Default.SyncInvoke(self.Q,
       self.par1.NewSetter(par1),
       self.par2.NewSetter(par2)
     );

@@ -11,6 +11,7 @@ type
     private generics := new List<string>;
     private operator_equ := default(string);
     private to_string_def := default(string);
+    private is_abstract := false;
     
     public constructor(name: string) := self.name := name;
     private constructor := raise new System.InvalidOperationException;
@@ -53,6 +54,9 @@ begin
             raise new System.InvalidOperationException else
             t.to_string_def := setting_lines.Single;
           
+          'Abstract':
+          t.is_abstract := true;
+          
           else raise new System.InvalidOperationException($'#{tname}!{setting_name}');
         end;
       
@@ -81,7 +85,10 @@ begin
       res += '  ';
       res += t.name;
       WriteGenerics;
-      res += ' = partial class';
+      res += ' = ';
+      if t.is_abstract then
+        res += 'abstract ';
+      res += 'partial class';
       if not is_direct_wrap then
       begin
         res += '(';

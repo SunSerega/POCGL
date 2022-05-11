@@ -1,0 +1,14 @@
+cl_program
+ProgramInfo
+clGetProgramInfo
+
+
+
+# REFERENCE_COUNT:				UInt32
+# SOURCE:						String
+# IL:							array of Byte
+
+# SCOPE_GLOBAL_CTORS_PRESENT:	Bool
+# SCOPE_GLOBAL_DTORS_PRESENT:	Bool
+
+

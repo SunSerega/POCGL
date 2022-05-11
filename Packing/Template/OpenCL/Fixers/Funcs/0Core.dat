@@ -167,10 +167,6 @@ array of Int32 = array of ErrorCode
  *	| *	| *	| *	| +array of T +var T	|
 
 # clCompileProgram
-!limit_ovrs
- *	| *	| *	| *	| string	| *	| *	| array of string	| *	| *	|
- *	| *	| *	| *	| IntPtr	| *	| *	| var IntPtr		| *	| *	|
- *	| *	| *	| *	| IntPtr	| *	| *	| pointer			| *	| *	|
 
 # clGetProgramInfo
 !possible_par_types

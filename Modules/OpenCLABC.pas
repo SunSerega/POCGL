@@ -19,9 +19,18 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Аргументы компиляции OpenCL-C кода
-// - #define-ы особо полезны, но там куча всего...
-// - https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#compiler-options
+//TODO CLContext.GenerateCheckedDefault
+
+//TODO Проверить во что восстанавливаются бинарники при загрузке назад
+
+
+
+//TODO Пусть CLKernel хранит List<cl_kernel>
+// - Таким образом может не создавать новые cl_kernel лишний раз
+
+//TODO Попробовать применять константные CLKernelArg к константному CLKernel в момент создания команды
+// - "var TODO := 0" дающий предупреждение уже стоит
+// - Но если не все CLKernelArg константные, если CLKernel выполнен 2 раза одновременно - его придётся скопировать и применить аргументы ещё раз
 
 //TODO Деприкация в OpenCL?
 // - К примеру clCreateImage2D не должна использоваться после 1.2
@@ -29,37 +38,42 @@ unit OpenCLABC;
 //TODO [In] и [Out] в кодогенераторах
 // - [Out] строки без [In] заменять на StringBuilder
 // - Полезно, к примеру, в cl.GetProgramBuildInfo
+// - А в cl.GetProgramInfo надо принимать [Out] "array of array of Byte" вместо "var IntPtr"
 
 //TODO Тесты и справка:
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 
+//TODO NativeMemoryArea в отдельный модуль
+// - При этом сделать его кросс-платформенным
+
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQBase)
-// - Лучше сделать так же как для KernelArgGlobal
+// - Лучше сделать так же как для CLKernelArgGlobal
 // - В справку
 // --- В том числе то, что Map быстрее Read, который быстрее Get
 // --- (собсна протестить)
-//TODO operator implicit для NativeValue=>KernelArg[Global] не генерируются?
+//TODO operator implicit для NativeValue=>CLKernelArg[Global] не генерируются?
 // - Правда теперь не релевантно, потому что:
-//TODO KernelArgGlobal (и Constant) из адреса RAM не обязан копировать данные с кеша GPU назад в RAM после выполнения kernel'а
+//TODO CLKernelArgGlobal (и Constant) из адреса RAM не обязан копировать данные с кеша GPU назад в RAM после выполнения kernel'а
 // - Для этого случая (+оптимизации чтения/записи) и используется MapBuffer
 // - В справку
 //TODO При чём это в обе стороны (не-)работает
 //  var v1 := new NativeValue<integer>(1);
 //  var v2 := new CLValue<integer>(-1);
-//  var Q_Copy := k.NewQueue.ThenExec1(1,KernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
+//  var Q_Copy := k.NewQueue.ThenExec1(1,CLKernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
 //  
 //  v1.Value := 3;
-//  Context.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
+//  CLContext.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
 //  v1.Value := 5;
-//  Context.Default.SyncInvoke(Q_Copy).Println; // тут всё ещё старое значение
+//  CLContext.Default.SyncInvoke(Q_Copy).Println; // тут всё ещё старое значение
 //TODO Нет смысла в Global/Constant KernlArg'е хранящем NativeValue[Area]
 // - CLMemory.FromHostMemory(copy: boolean? := nil)
-// --- Создаёт или CLMemory (если copy), или его наследник, хранящий ещё "host_hnd: GCHandle" или "host_obj_ref: object"
-// --- Если nil то используется Contex.MainDevice.CLPreferHostMemoryCopy := Type=GPU
+// --- Создаёт или Memory(если copy), или его наследник, хранящий ещё "host_hnd: GCHandle" или "host_obj_ref: object"
+// --- Если nil то используется Contex.MainDevice.CLPreferHostCLMemoryCopy := Type=GPU
 // - А в обычном конструкторе добавить параметр prealloc_map_mem и убрать передачу существующей памяти
+// --- MEM_ALLOC_HOST_PTR
 // - В справку:
-// --- FromHostMemory(copy=false) полезно для существующих объектов, но использовать вне .MapMemory их всё равно нельзя
+// --- FromHostMemory(copy=false) полезно для существующих объектов, но использовать вне .MapCLMemory их всё равно нельзя
 // --- Кроме того, плотно упаковывать элементы плохо
 // --- К примеру принимать float3* нельзя, надо принимать и передавать float4*
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
@@ -69,12 +83,12 @@ unit OpenCLABC;
 //TODO github.io
 
 //TODO Справка:
-// - KernelArg
+// - CLKernelArg
 // - NativeArray
 // - CLValue
-// - !CL!Memory[SubSegment]
-// - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
-// - MemoryUsage
+// - !CL!CLMemory[SubSegment]
+// - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки CLKernelArg для CL- типов
+// - CLMemoryUsage
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
 // --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
@@ -89,6 +103,7 @@ unit OpenCLABC;
 // Запланированное:
 
 //TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
+// - Реализовано в ветке с новыми TypeName
 
 //TODO Переделать кодогенераторы под что то типа .cshtml
 
@@ -118,7 +133,7 @@ unit OpenCLABC;
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
-//TODO Попробовать получать информацию о параметрах Kernel'а и выдавать адекватные ошибки, если передают что-то не то
+//TODO Попробовать получать информацию о параметрах CLKernel'а и выдавать адекватные ошибки, если передают что-то не то
 // - clGetKernelArgInfo
 // - Для этого нужна опция "-cl-kernel-arg-info" при компиляции
 
@@ -132,16 +147,9 @@ unit OpenCLABC;
 //TODO Несколько TODO в:
 // - Queue converter's >> Wait
 
-//TODO NativeMemoryArea в отдельный модуль
-// - При этом сделать его кросс-платформенным
-
-//TODO Исправить перегрузки Kernel.Exec
+//TODO Исправить перегрузки CLKernel.Exec
 // - Но сначала решить как исправлять
-
-//TODO MEM_ALLOC_HOST_PTR, на сколько я понял он:
-// - Медленнее чем MEM_USE_HOST_PTR для выровеных данных, потому что копирование
-// - Быстрее чем MEM_USE_HOST_PTR в остальных случаях
-// - Протестировать
+// - Перегрузки с UIntPtr перед перегрузками integer?
 
 //TODO Фичи версий OpenCL:
 // - 2.0
@@ -165,14 +173,15 @@ unit OpenCLABC;
 //
 // - ???
 // --- clEnqueueMigrateMemObjects
-// --- clCreateProgramWithIL
 
 //===================================
 // Сделать когда-нибуть:
 
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
-// - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
+// - clGetCLKernelWorkGroupInfo - свойства кернела на определённом устройстве
 // - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
+// - clCreateProgramWithIL
+// - Асинхронные cl_command_queue
 // - Другие типы cl_mem (сейчас используется только буфер)
 // - clEnqueueNativeKernel
 // --- CL_DEVICE_BUILT_IN_KERNELS
@@ -234,770 +243,7 @@ uses OpenCL{%!!} in '..\Modules.Packed\OpenCL'{%};
 
 type
   
-  {$region Re-definition's}
-  
-  DeviceType              = OpenCL.DeviceType;
-  DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
-  
-  {$endregion Re-definition's}
-  
-  {$region OpenCLABCInternalException}
-  
-  OpenCLABCInternalException = sealed class(Exception)
-    
-    private constructor(message: string) :=
-    inherited Create(message);
-//    private constructor(message: string; ec: ErrorCode) :=
-//    inherited Create($'{message} with {ec}');
-    private constructor(ec: ErrorCode) :=
-    inherited Create(OpenCLException.Create(ec).Message);
-    private constructor :=
-    inherited Create($'%Err:NoParamCtor%');
-    
-    private static procedure RaiseIfError(ec: ErrorCode) :=
-    if ec.IS_ERROR then raise new OpenCLABCInternalException(ec);
-    
-    private static procedure RaiseIfError(st: CommandExecutionStatus) :=
-    if st.val<0 then RaiseIfError(ErrorCode(st));
-    
-  end;
-  
-  {$endregion OpenCLABCInternalException}
-  
-  {$region DEBUG}
-  
-  {$region EventDebug}{$ifdef EventDebug}
-  
-  EventRetainReleaseData = record
-    private is_release: boolean;
-    private reason: string;
-    
-    private static debug_time_counter := Stopwatch.StartNew;
-    private time: TimeSpan;
-    
-    public constructor(is_release: boolean; reason: string);
-    begin
-      self.is_release := is_release;
-      self.reason := reason;
-      self.time := debug_time_counter.Elapsed;
-    end;
-    
-    private function GetActStr := is_release ? 'Released' : 'Retained';
-    public function ToString: string; override :=
-    $'{time} | {GetActStr} when: {reason}';
-    
-  end;
-  EventDebug = static class
-    
-    {$region Retain/Release}
-    
-    private static RefCounter := new ConcurrentDictionary<cl_event, ConcurrentQueue<EventRetainReleaseData>>;
-    private static function RefCounterFor(ev: cl_event) := RefCounter.GetOrAdd(ev, ev->new ConcurrentQueue<EventRetainReleaseData>);
-    
-    public static procedure RegisterEventRetain(ev: cl_event; reason: string) :=
-    if ev=cl_event.Zero then raise new OpenCLABCInternalException($'Zero event retain') else
-    RefCounterFor(ev).Enqueue(new EventRetainReleaseData(false, reason));
-    public static procedure RegisterEventRelease(ev: cl_event; reason: string) :=
-    begin
-      EventDebug.CheckExists(ev, reason);
-      RefCounterFor(ev).Enqueue(new EventRetainReleaseData(true, reason));
-    end;
-    
-    public static procedure ReportRefCounterInfo(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
-    begin
-      otp.WriteLine(System.Environment.StackTrace);
-      
-      foreach var kvp in RefCounter.OrderBy(kvp->kvp.Value.First.time) do
-      begin
-        otp.WriteLine($'Logging state change of {kvp.Key}:');
-        var c := 0;
-        foreach var act in kvp.Value do
-        begin
-          c += if act.is_release then -1 else +1;
-          otp.WriteLine($'{c,3} | {act}');
-        end;
-        otp.WriteLine('-'*30);
-      end;
-      
-      otp.WriteLine('='*40);
-      otp.Flush;
-    end;
-    
-    public static function CountRetains(ev: cl_event) :=
-    RefCounter[ev].Sum(act->act.is_release ? -1 : +1);
-    public static procedure CheckExists(ev: cl_event; reason: string) :=
-    if CountRetains(ev)<=0 then lock output do
-    begin
-      ReportRefCounterInfo(Console.Error);
-      Sleep(1000);
-      raise new OpenCLABCInternalException($'Event {ev} was released before last use ({reason}) at');
-    end;
-    
-    public static procedure FinallyReport;
-    begin
-      if RefCounter.Count=0 then exit;
-      foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
-      begin
-        ReportRefCounterInfo(Console.Error);
-        Sleep(1000);
-        raise new OpenCLABCInternalException(ev.ToString);
-      end;
-      var total_ev_count := RefCounter.Values.Sum(q->q.Select(act->act.is_release ? -1 : +1).PartialSum.CountOf(0));
-      $'[EventDebug]: {total_ev_count} event''s created'.Println;
-    end;
-    
-    {$endregion Retain/Release}
-    
-  end;
-  
-  {$endif EventDebug}{$endregion EventDebug}
-  
-  {$region QueueDebug}{$ifdef QueueDebug}
-  
-  QueueDebug = static class
-    
-    private static QueueUses := new ConcurrentDictionary<cl_command_queue, ConcurrentQueue<string>>;
-    private static function QueueUsesFor(cq: cl_command_queue) := QueueUses.GetOrAdd(cq, cq->new ConcurrentQueue<string>);
-    private static procedure Add(cq: cl_command_queue; use: string) := QueueUsesFor(cq).Enqueue(use);
-    
-    public static procedure ReportQueueUses(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
-    begin
-      otp.WriteLine(System.Environment.StackTrace);
-      
-      foreach var kvp in QueueUses do
-      begin
-        otp.WriteLine($'Logging uses of {kvp.Key}:');
-        foreach var use in kvp.Value do
-          otp.WriteLine(use);
-        otp.WriteLine('-'*30);
-      end;
-      
-      otp.WriteLine('='*40);
-      otp.Flush;
-    end;
-    
-    public static procedure FinallyReport :=
-    if QueueUses.Count<>0 then
-    begin
-      var total_q_count := QueueUses.Keys.Sum(q->
-      begin
-        Result := 0;
-        var last_return := false;
-        foreach var use in QueueUses[q] do
-        begin
-          last_return := ('- return -' in use) or ('- last q -' in use);
-          Result += ord(last_return);
-        end;
-        if last_return then exit;
-        ReportQueueUses(Console.Error);
-        Sleep(1000);
-        raise new OpenCLABCInternalException(q.ToString);
-      end);
-      $'[QueueDebug]: {total_q_count} queue''s created'.Println;
-    end;
-    
-  end;
-  
-  {$endif}{$endregion QueueDebug}
-  
-  {$region WaitDebug}{$ifdef WaitDebug}
-  
-  WaitDebug = static class
-    
-    private static WaitActions := new ConcurrentDictionary<object, ConcurrentQueue<string>>;
-    
-    private static procedure RegisterAction(handler: object; act: string) :=
-    WaitActions.GetOrAdd(handler, hc->new System.Collections.Concurrent.ConcurrentQueue<string>).Enqueue(act);
-    
-    public static procedure ReportWaitActions(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
-    begin
-      otp.WriteLine(System.Environment.StackTrace);
-      
-      foreach var kvp in WaitActions do
-      begin
-        otp.WriteLine($'Logging actions of handler[{kvp.Key.GetHashCode}]:');
-        foreach var act in kvp.Value do
-          otp.WriteLine(act);
-        otp.WriteLine('-'*30);
-      end;
-      
-      otp.WriteLine('='*40);
-      otp.Flush;
-    end;
-    
-    public static procedure FinallyReport := if WaitActions.Count<>0 then
-    $'[WaitDebug]: {WaitActions.Count} wait handler''s created'.Println;
-    
-  end;
-  
-  {$endif}{$endregion WaitDebug}
-  
-  {$endregion DEBUG}
-  
-  {$region WrapperProperties}
-  
-  {%WrapperProperties\Interface!WrapperProperties.pas%}
-  
-  {$endregion WrapperProperties}
-  
-  {$region Wrappers}
-  // For parameters of CCQ-involved methods
-  CommandQueue<T> = abstract partial class end;
-  KernelArg = abstract partial class end;
-  
-  {$region ContextData}
-  
-  {$region Platform}
-  
-  Platform = partial class
-    private ntv: cl_platform_id;
-    
-    public constructor(ntv: cl_platform_id) := self.ntv := ntv;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    private static all_need_init := true;
-    private static _all: IList<Platform>;
-    private static function MakeAll: IList<Platform>;
-    begin
-      Result := nil;
-      
-      var c: UInt32;
-      begin
-        var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
-        if ec=ErrorCode.PLATFORM_NOT_FOUND_KHR then exit;
-        OpenCLABCInternalException.RaiseIfError(ec);
-      end;
-      if c=0 then exit;
-      
-      var all_arr := new cl_platform_id[c];
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
-      );
-      
-      Result := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
-    end;
-    private static function GetAll: IList<Platform>;
-    begin
-      if all_need_init then
-      begin
-        _all := MakeAll;
-        all_need_init := false;
-      end;
-      Result := _all;
-    end;
-    public static property All: IList<Platform> read GetAll;
-    
-  end;
-  
-  {$endregion Platform}
-  
-  {$region Device}
-  
-  Device = partial class
-    private ntv: cl_device_id;
-    
-    private constructor(ntv: cl_device_id) := self.ntv := ntv;
-    public static function FromNative(ntv: cl_device_id): Device;
-    
-    private constructor := raise new OpenCLABCInternalException;
-    
-    private function GetBasePlatform: Platform;
-    begin
-      var pl: cl_platform_id;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetDeviceInfo(self.ntv, DeviceInfo.DEVICE_PLATFORM, new UIntPtr(sizeof(cl_platform_id)), pl, IntPtr.Zero)
-      );
-      Result := new Platform(pl);
-    end;
-    public property BasePlatform: Platform read GetBasePlatform;
-    
-    public static function GetAllFor(pl: Platform; t: DeviceType): array of Device;
-    begin
-      
-      var c: UInt32;
-      var ec := cl.GetDeviceIDs(pl.ntv, t, 0, IntPtr.Zero, c);
-      if ec=ErrorCode.DEVICE_NOT_FOUND then exit;
-      OpenCLABCInternalException.RaiseIfError(ec);
-      
-      var all := new cl_device_id[c];
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetDeviceIDs(pl.ntv, t, c, all[0], IntPtr.Zero)
-      );
-      
-      Result := all.ConvertAll(dvc->new Device(dvc));
-    end;
-    public static function GetAllFor(pl: Platform) := GetAllFor(pl, DeviceType.DEVICE_TYPE_GPU);
-    
-  end;
-  
-  {$endregion Device}
-  
-  {$region SubDevice}
-  
-  SubDevice = partial class(Device)
-    private _parent: cl_device_id;
-    public property Parent: Device read Device.FromNative(_parent);
-    
-    private constructor(parent, ntv: cl_device_id);
-    begin
-      inherited Create(ntv);
-      self._parent := parent;
-    end;
-    
-    private constructor := inherited;
-    
-    protected procedure Finalize; override :=
-    OpenCLABCInternalException.RaiseIfError(cl.ReleaseDevice(ntv));
-    
-  end;
-  
-  {$endregion SubDevice}
-  
-  {$region Context}
-  
-  Context = partial class
-    private ntv: cl_context;
-    
-    private dvcs: IList<Device>;
-    public property AllDevices: IList<Device> read dvcs;
-    
-    private main_dvc: Device;
-    public property MainDevice: Device        read main_dvc;
-    
-    private function GetAllNtvDevices: array of cl_device_id;
-    begin
-      Result := new cl_device_id[dvcs.Count];
-      for var i := 0 to Result.Length-1 do
-        Result[i] := dvcs[i].ntv;
-    end;
-    
-    {$region Default}
-    
-    private static default_was_inited := 0;
-    private static _default: Context;
-    
-    private static function GetDefault: Context;
-    begin
-      if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
-        Interlocked.CompareExchange(_default, MakeNewDefaultContext, nil);
-      Result := _default;
-    end;
-    private static procedure SetDefault(new_default: Context);
-    begin
-      default_was_inited := 1;
-      _default := new_default;
-    end;
-    public static property &Default: Context read GetDefault write SetDefault;
-    
-    protected static function MakeNewDefaultContext: Context;
-    begin
-      Result := nil;
-      
-      var pls := Platform.All;
-      if pls=nil then exit;
-      
-      foreach var pl in pls do
-      begin
-        var dvcs := Device.GetAllFor(pl);
-        if dvcs=nil then continue;
-        Result := new Context(dvcs);
-        exit;
-      end;
-      
-      foreach var pl in pls do
-      begin
-        var dvcs := Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
-        if dvcs=nil then continue;
-        Result := new Context(dvcs);
-        exit;
-      end;
-      
-    end;
-    
-    {$endregion Default}
-    
-    {$region constructor's}
-    
-    private static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
-    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:Context:WrongMainDvc%');
-    
-    public constructor(dvcs: IList<Device>; main_dvc: Device);
-    begin
-      CheckMainDevice(main_dvc, dvcs);
-      
-      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs.ToArray);
-      var ntv_dvcs := GetAllNtvDevices;
-      
-      var ec: ErrorCode;
-      self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
-      OpenCLABCInternalException.RaiseIfError(ec);
-      
-      self.main_dvc := main_dvc;
-    end;
-    public constructor(params dvcs: array of Device) := Create(dvcs, dvcs[0]);
-    
-    protected static function GetContextDevices(ntv: cl_context): array of Device;
-    begin
-      
-      var sz: UIntPtr;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, UIntPtr.Zero, IntPtr.Zero, sz)
-      );
-      
-      var res := new cl_device_id[uint64(sz) div cl_device_id.Size];
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, sz, res[0], IntPtr.Zero)
-      );
-      
-      Result := res.ConvertAll(dvc->new Device(dvc));
-    end;
-    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<Device>; main_dvc: Device);
-    begin
-      CheckMainDevice(main_dvc, dvcs);
-      OpenCLABCInternalException.RaiseIfError( cl.RetainContext(ntv) );
-      self.ntv := ntv;
-      // Копирование должно происходить в вызывающих методах
-      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs);
-      self.main_dvc := main_dvc;
-    end;
-    public constructor(ntv: cl_context; main_dvc: Device) :=
-    InitFromNtv(ntv, GetContextDevices(ntv), main_dvc);
-    
-    public constructor(ntv: cl_context);
-    begin
-      var dvcs := GetContextDevices(ntv);
-      InitFromNtv(ntv, dvcs, dvcs[0]);
-    end;
-    
-    private constructor(c: Context; main_dvc: Device) :=
-    InitFromNtv(c.ntv, c.dvcs, main_dvc);
-    public function MakeSibling(new_main_dvc: Device) := new Context(self, new_main_dvc);
-    
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure Dispose;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseContext(new cl_context(prev)) );
-    end;
-    protected procedure Finalize; override := Dispose;
-    
-    {$endregion constructor's}
-    
-  end;
-  
-  {$endregion Context}
-  
-  {$endregion ContextData}
-  
-  {$region KernelData}
-  
-  {$region ProgramOptions}
-  
-  ProgramDefines = Dictionary<string, string>;
-  ProgramOptions = record
-    
-    public constructor(c: Context) := self.c := c;
-    public constructor := Create(Context.Default);
-    
-    public static function operator implicit(c: Context): ProgramOptions := new ProgramOptions(c);
-    
-    public auto property c: Context;
-    
-    public auto property Defines: ProgramDefines := new ProgramDefines;
-    
-    public auto property KernelArgInfo: boolean := true;
-    
-    public function ToString: string; override;
-    begin
-      var res := new StringBuilder;
-      
-      foreach var kvp in Defines do
-      begin
-        res += '-D ';
-        res += kvp.Key;
-        if kvp.Value<>nil then
-        begin
-          res += '=';
-          res += kvp.Value;
-        end;
-        res += ' ';
-      end;
-      
-      if KernelArgInfo then
-        res += '-cl-kernel-arg-info ';
-      
-      Result := res.ToString;
-    end;
-    
-  end;
-  
-  {$endregion ProgramOptions}
-  
-  {$region ProgramCode}
-  
-  ProgramCode = partial class
-    private ntv: cl_program;
-    
-    {$region constructor's}
-    
-    private procedure Build(opt: ProgramOptions);
-    begin
-      
-      var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
-      if not ec.IS_ERROR then exit;
-      
-      if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
-      begin
-        var sb := new StringBuilder($'%Err:ProgramCode:BuildFail%');
-        
-        foreach var dvc in opt.c.AllDevices do
-        begin
-          sb += #10#10;
-          sb += dvc.ToString;
-          sb += ':'#10;
-          
-          var sz: UIntPtr;
-          OpenCLABCInternalException.RaiseIfError(
-            cl.GetProgramBuildInfo(self.ntv, dvc.ntv, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
-          );
-          
-          var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-          try
-            OpenCLABCInternalException.RaiseIfError(
-              cl.GetProgramBuildInfo(self.ntv, dvc.ntv, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
-            );
-            sb += Marshal.PtrToStringAnsi(str_ptr);
-          finally
-            Marshal.FreeHGlobal(str_ptr);
-          end;
-          
-        end;
-        
-        raise new OpenCLException(ec, sb.ToString);
-      end else
-        OpenCLABCInternalException.RaiseIfError(ec);
-      
-    end;
-    
-    public constructor(opt: ProgramOptions; params file_texts: array of string);
-    begin
-      
-      var ec: ErrorCode;
-      self.ntv := cl.CreateProgramWithSource(opt.c.ntv, file_texts.Length, file_texts, nil, ec);
-      OpenCLABCInternalException.RaiseIfError(ec);
-      
-      self.Build(opt);
-    end;
-    public constructor(params file_texts: array of string) := Create(new ProgramOptions, file_texts);
-    
-    public constructor(ntv: cl_program);
-    begin
-      OpenCLABCInternalException.RaiseIfError( cl.RetainProgram(ntv) );
-      self.ntv := ntv;
-    end;
-    
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure Dispose;
-    begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseProgram(new cl_program(prev)) );
-    end;
-    protected procedure Finalize; override := Dispose;
-    
-    {$endregion constructor's}
-    
-    private function GetBuildContext: Context;
-    begin
-      
-      var c_ntv: cl_context;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramInfo(self.ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(cl_context.Size), c_ntv, IntPtr.Zero)
-      );
-      
-      Result := new Context(c_ntv);
-    end;
-    public property BuildContext: Context read GetBuildContext;
-    
-    {$region Serialize}
-    
-    public function Serialize: array of array of byte;
-    begin
-      var sz: UIntPtr;
-      
-      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, UIntPtr.Zero, nil, sz) );
-      var szs := new UIntPtr[sz.ToUInt64 div sizeof(UIntPtr)];
-      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, sz, szs[0], IntPtr.Zero) );
-      
-      var res := new IntPtr[szs.Length];
-      SetLength(Result, szs.Length);
-      
-      for var i := 0 to szs.Length-1 do res[i] := Marshal.AllocHGlobal(IntPtr(pointer(szs[i])));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARIES, sz, res[0], IntPtr.Zero)
-        );
-        for var i := 0 to szs.Length-1 do
-        begin
-          var a := new byte[szs[i].ToUInt64];
-          Marshal.Copy(res[i], a, 0, a.Length);
-          Result[i] := a;
-        end;
-      finally
-        for var i := 0 to szs.Length-1 do Marshal.FreeHGlobal(res[i]);
-      end;
-      
-    end;
-    
-    public procedure SerializeTo(bw: System.IO.BinaryWriter);
-    begin
-      var bin := Serialize;
-      
-      bw.Write(bin.Length);
-      foreach var a in bin do
-      begin
-        bw.Write(a.Length);
-        bw.Write(a);
-      end;
-      
-    end;
-    public procedure SerializeTo(str: System.IO.Stream) :=
-    SerializeTo(new System.IO.BinaryWriter(str));
-    
-    {$endregion Serialize}
-    
-    {$region Deserialize}
-    
-    public static function Deserialize(opt: ProgramOptions; bin: array of array of byte): ProgramCode;
-    begin
-      var ntv: cl_program;
-      
-      var dvcs := opt.c.GetAllNtvDevices;
-      
-      var ec: ErrorCode;
-      //TODO А нади ли девайсы передавать?
-      //TODO Отдельные эррор коды?
-      ntv := cl.CreateProgramWithBinary(
-        opt.c.ntv, dvcs.Length, dvcs,
-        bin.ConvertAll(a->new UIntPtr(a.Length)), bin,
-        nil,ec
-      );
-      OpenCLABCInternalException.RaiseIfError(ec);
-      
-      Result := new ProgramCode(ntv);
-      Result.Build(opt);
-      
-    end;
-    
-    public static function DeserializeFrom(opt: ProgramOptions; br: System.IO.BinaryReader): ProgramCode;
-    begin
-      var bin: array of array of byte;
-      
-      SetLength(bin, br.ReadInt32);
-      for var i := 0 to bin.Length-1 do
-      begin
-        var len := br.ReadInt32;
-        bin[i] := br.ReadBytes(len);
-        if bin[i].Length<>len then raise new System.IO.EndOfStreamException;
-      end;
-      
-      Result := Deserialize(opt, bin);
-    end;
-    public static function DeserializeFrom(opt: ProgramOptions; str: System.IO.Stream) :=
-    DeserializeFrom(opt, new System.IO.BinaryReader(str));
-    
-    {$endregion Deserialize}
-    
-  end;
-  
-  {$endregion ProgramCode}
-  
-  {$region Kernel}
-  
-  Kernel = partial class
-    
-    private code: ProgramCode;
-    public property CodeContainer: ProgramCode read code;
-    
-    private k_name: string;
-    public property Name: string read k_name;
-    
-    private function ntv: cl_kernel;
-    begin
-      var ec: ErrorCode;
-      Result := cl.CreateKernel(code.ntv, k_name, ec);
-      OpenCLABCInternalException.RaiseIfError(ec);
-    end;
-    
-    {$region constructor's}
-    
-    private constructor(code: ProgramCode; k_name: string);
-    begin
-      self.code := code;
-      self.k_name := k_name;
-    end;
-    
-    public constructor(ntv: cl_kernel);
-    begin
-      
-      var code_ntv: cl_program;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), code_ntv, IntPtr.Zero)
-      );
-      self.code := new ProgramCode(code_ntv);
-      
-      var sz: UIntPtr;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, IntPtr.Zero, sz)
-      );
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, sz, str_ptr, IntPtr.Zero)
-        );
-        self.k_name := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
-      
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    {$endregion constructor's}
-    
-    {%ContainerMethods\Kernel.Exec\Implicit.Interface!ContainerExecMethods.pas%}
-    
-  end;
-  
-  ProgramCode = partial class
-    
-    public property KernelByName[kname: string]: Kernel read new Kernel(self, kname); default;
-    
-    public function GetAllKernels: array of Kernel;
-    begin
-      
-      var c: UInt32;
-      OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, 0, IntPtr.Zero, c) );
-      
-      var res := new cl_kernel[c];
-      OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, c, res[0], IntPtr.Zero) );
-      
-      Result := res.ConvertAll(k->new Kernel(k));
-    end;
-    
-  end;
-  
-  {$endregion Kernel}
-  
-  {$endregion KernelData}
-  
-  {$region Memory}
+  {$region TODO MOVE}
   
   {$region NativeArea}
   
@@ -1068,11 +314,11 @@ type
     
     {$region CopyOverlapped}
     
-    private static procedure RtlMoveMemory (dst: IntPtr; source: IntPtr; length: UIntPtr);
+    private static procedure RtlMoveMemory(dst: IntPtr; source: IntPtr; length: UIntPtr);
     external 'kernel32.dll';
-    private static procedure RtlMoveMemory (var dst: byte; source: IntPtr; length: UIntPtr);
+    private static procedure RtlMoveMemory(var dst: byte; source: IntPtr; length: UIntPtr);
     external 'kernel32.dll';
-    private static procedure RtlMoveMemory (dst: IntPtr; var source: byte; length: UIntPtr);
+    private static procedure RtlMoveMemory(dst: IntPtr; var source: byte; length: UIntPtr);
     external 'kernel32.dll';
     
     public procedure CopyOverlappedTo(area: NativeMemoryArea) := RtlMoveMemory(area.ptr, self.ptr, self.sz);
@@ -1327,7 +573,7 @@ type
       self._area.sz := sz;
       self._area.Alloc;
     end;
-    private constructor := raise new OpenCLABCInternalException;
+    private constructor := raise new InvalidOperationException;
     
     {$endregion constructor's}
     
@@ -1414,7 +660,7 @@ type
       self.AreaUntyped.CopyFrom(a);
     end;
     
-    private constructor := raise new OpenCLABCInternalException;
+    private constructor := raise new InvalidOperationException;
     
     {$endregion constructor's}
     
@@ -1557,11 +803,1178 @@ type
   
   {$endregion Native}
   
-  {$region OpenCL}
+  {$endregion TODO MOVE}
   
-  {$region MemoryUsage}
+  {$region Re-definition's}
   
-  MemoryUsage = record
+  CLDeviceType              = OpenCL.DeviceType;
+  CLDeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
+  
+  {$endregion Re-definition's}
+  
+  {$region OpenCLABCInternalException}
+  
+  OpenCLABCInternalException = sealed class(Exception)
+    
+    private constructor(message: string) :=
+    inherited Create(message);
+//    private constructor(message: string; ec: ErrorCode) :=
+//    inherited Create($'{message} with {ec}');
+    private constructor(ec: ErrorCode) :=
+    inherited Create(OpenCLException.Create(ec).Message);
+    private constructor :=
+    inherited Create($'%Err:NoParamCtor%');
+    
+    private static procedure RaiseIfError(ec: ErrorCode) :=
+    if ec.IS_ERROR then raise new OpenCLABCInternalException(ec);
+    
+    private static procedure RaiseIfError(st: CommandExecutionStatus) :=
+    if st.val<0 then RaiseIfError(ErrorCode(st));
+    
+  end;
+  
+  {$endregion OpenCLABCInternalException}
+  
+  {$region DEBUG}
+  
+  {$region EventDebug}{$ifdef EventDebug}
+  
+  EventRetainReleaseData = record
+    private is_release: boolean;
+    private reason: string;
+    
+    private static debug_time_counter := Stopwatch.StartNew;
+    private time: TimeSpan;
+    
+    public constructor(is_release: boolean; reason: string);
+    begin
+      self.is_release := is_release;
+      self.reason := reason;
+      self.time := debug_time_counter.Elapsed;
+    end;
+    
+    private function GetActStr := is_release ? 'Released' : 'Retained';
+    public function ToString: string; override :=
+    $'{time} | {GetActStr} when: {reason}';
+    
+  end;
+  EventDebug = static class
+    
+    {$region Retain/Release}
+    
+    private static RefCounter := new ConcurrentDictionary<cl_event, ConcurrentQueue<EventRetainReleaseData>>;
+    private static function RefCounterFor(ev: cl_event) := RefCounter.GetOrAdd(ev, ev->new ConcurrentQueue<EventRetainReleaseData>);
+    
+    public static procedure RegisterEventRetain(ev: cl_event; reason: string) :=
+    if ev=cl_event.Zero then raise new OpenCLABCInternalException($'Zero event retain') else
+    RefCounterFor(ev).Enqueue(new EventRetainReleaseData(false, reason));
+    public static procedure RegisterEventRelease(ev: cl_event; reason: string) :=
+    begin
+      EventDebug.CheckExists(ev, reason);
+      RefCounterFor(ev).Enqueue(new EventRetainReleaseData(true, reason));
+    end;
+    
+    public static procedure ReportRefCounterInfo(otp: System.IO.TextWriter := Console.Out) :=
+    lock otp do
+    begin
+      otp.WriteLine(System.Environment.StackTrace);
+      
+      foreach var kvp in RefCounter.OrderBy(kvp->kvp.Value.First.time) do
+      begin
+        otp.WriteLine($'Logging state change of {kvp.Key}:');
+        var c := 0;
+        foreach var act in kvp.Value do
+        begin
+          c += if act.is_release then -1 else +1;
+          otp.WriteLine($'{c,3} | {act}');
+        end;
+        otp.WriteLine('-'*30);
+      end;
+      
+      otp.WriteLine('='*40);
+      otp.Flush;
+    end;
+    
+    public static function CountRetains(ev: cl_event) :=
+    RefCounter[ev].Sum(act->act.is_release ? -1 : +1);
+    public static procedure CheckExists(ev: cl_event; reason: string) :=
+    if CountRetains(ev)<=0 then lock output do
+    begin
+      ReportRefCounterInfo(Console.Error);
+      Sleep(1000);
+      raise new OpenCLABCInternalException($'Event {ev} was released before last use ({reason}) at');
+    end;
+    
+    public static procedure FinallyReport;
+    begin
+      if RefCounter.Count=0 then exit;
+      foreach var ev in RefCounter.Keys do if CountRetains(ev)<>0 then
+      begin
+        ReportRefCounterInfo(Console.Error);
+        Sleep(1000);
+        raise new OpenCLABCInternalException(ev.ToString);
+      end;
+      var total_ev_count := RefCounter.Values.Sum(q->q.Select(act->act.is_release ? -1 : +1).PartialSum.CountOf(0));
+      $'[EventDebug]: {total_ev_count} event''s created'.Println;
+    end;
+    
+    {$endregion Retain/Release}
+    
+  end;
+  
+  {$endif EventDebug}{$endregion EventDebug}
+  
+  {$region QueueDebug}{$ifdef QueueDebug}
+  
+  QueueDebug = static class
+    
+    private static QueueUses := new ConcurrentDictionary<cl_command_queue, ConcurrentQueue<string>>;
+    private static function QueueUsesFor(cq: cl_command_queue) := QueueUses.GetOrAdd(cq, cq->new ConcurrentQueue<string>);
+    private static procedure Add(cq: cl_command_queue; use: string) := QueueUsesFor(cq).Enqueue(use);
+    
+    public static procedure ReportQueueUses(otp: System.IO.TextWriter := Console.Out) :=
+    lock otp do
+    begin
+      otp.WriteLine(System.Environment.StackTrace);
+      
+      foreach var kvp in QueueUses do
+      begin
+        otp.WriteLine($'Logging uses of {kvp.Key}:');
+        foreach var use in kvp.Value do
+          otp.WriteLine(use);
+        otp.WriteLine('-'*30);
+      end;
+      
+      otp.WriteLine('='*40);
+      otp.Flush;
+    end;
+    
+    public static procedure FinallyReport :=
+    if QueueUses.Count<>0 then
+    begin
+      var total_q_count := QueueUses.Keys.Sum(q->
+      begin
+        Result := 0;
+        var last_return := false;
+        foreach var use in QueueUses[q] do
+        begin
+          last_return := ('- return -' in use) or ('- last q -' in use);
+          Result += ord(last_return);
+        end;
+        if last_return then exit;
+        ReportQueueUses(Console.Error);
+        Sleep(1000);
+        raise new OpenCLABCInternalException(q.ToString);
+      end);
+      $'[QueueDebug]: {total_q_count} queue''s created'.Println;
+    end;
+    
+  end;
+  
+  {$endif}{$endregion QueueDebug}
+  
+  {$region WaitDebug}{$ifdef WaitDebug}
+  
+  WaitDebug = static class
+    
+    private static WaitActions := new ConcurrentDictionary<object, ConcurrentQueue<string>>;
+    
+    private static procedure RegisterAction(handler: object; act: string) :=
+    WaitActions.GetOrAdd(handler, hc->new System.Collections.Concurrent.ConcurrentQueue<string>).Enqueue(act);
+    
+    public static procedure ReportWaitActions(otp: System.IO.TextWriter := Console.Out) :=
+    lock otp do
+    begin
+      otp.WriteLine(System.Environment.StackTrace);
+      
+      foreach var kvp in WaitActions do
+      begin
+        otp.WriteLine($'Logging actions of handler[{kvp.Key.GetHashCode}]:');
+        foreach var act in kvp.Value do
+          otp.WriteLine(act);
+        otp.WriteLine('-'*30);
+      end;
+      
+      otp.WriteLine('='*40);
+      otp.Flush;
+    end;
+    
+    public static procedure FinallyReport := if WaitActions.Count<>0 then
+    $'[WaitDebug]: {WaitActions.Count} wait handler''s created'.Println;
+    
+  end;
+  
+  {$endif}{$endregion WaitDebug}
+  
+  {$endregion DEBUG}
+  
+  {$region WrapperProperties}
+  
+  {%WrapperProperties\Interface!WrapperProperties.pas%}
+  
+  {$endregion WrapperProperties}
+  
+  {$region Wrappers}
+  // For parameters of CCQ-involved methods
+  CommandQueue<T> = abstract partial class end;
+  CLKernelArg = abstract partial class end;
+  
+  {$region CLContext data}
+  
+  {$region CLPlatform}
+  
+  CLPlatform = partial class
+    private ntv: cl_platform_id;
+    
+    public constructor(ntv: cl_platform_id) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private static all_need_init := true;
+    private static _all: IList<CLPlatform>;
+    private static function MakeAll: IList<CLPlatform>;
+    begin
+      Result := nil;
+      
+      var c: UInt32;
+      begin
+        var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
+        if ec=ErrorCode.PLATFORM_NOT_FOUND_KHR then exit;
+        OpenCLABCInternalException.RaiseIfError(ec);
+      end;
+      if c=0 then exit;
+      
+      var all_arr := new cl_platform_id[c];
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
+      );
+      
+      Result := new ReadOnlyCollection<CLPlatform>(all_arr.ConvertAll(pl->new CLPlatform(pl)));
+    end;
+    private static function GetAll: IList<CLPlatform>;
+    begin
+      if all_need_init then
+      begin
+        _all := MakeAll;
+        all_need_init := false;
+      end;
+      Result := _all;
+    end;
+    public static property All: IList<CLPlatform> read GetAll;
+    
+  end;
+  
+  {$endregion CLPlatform}
+  
+  {$region CLDevice}
+  
+  CLDevice = partial class
+    private ntv: cl_device_id;
+    
+    private constructor(ntv: cl_device_id) := self.ntv := ntv;
+    public static function FromNative(ntv: cl_device_id): CLDevice;
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetBaseCLPlatform: CLPlatform;
+    begin
+      var pl: cl_platform_id;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetDeviceInfo(self.ntv, DeviceInfo.DEVICE_PLATFORM, new UIntPtr(sizeof(cl_platform_id)), pl, IntPtr.Zero)
+      );
+      Result := new CLPlatform(pl);
+    end;
+    public property BaseCLPlatform: CLPlatform read GetBaseCLPlatform;
+    
+    public static function GetAllFor(pl: CLPlatform; t: CLDeviceType): array of CLDevice;
+    begin
+      
+      var c: UInt32;
+      var ec := cl.GetDeviceIDs(pl.ntv, t, 0, IntPtr.Zero, c);
+      if ec=ErrorCode.DEVICE_NOT_FOUND then exit;
+      OpenCLABCInternalException.RaiseIfError(ec);
+      
+      var all := new cl_device_id[c];
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetDeviceIDs(pl.ntv, t, c, all[0], IntPtr.Zero)
+      );
+      
+      Result := all.ConvertAll(dvc->new CLDevice(dvc));
+    end;
+    public static function GetAllFor(pl: CLPlatform) := GetAllFor(pl, CLDeviceType.DEVICE_TYPE_GPU);
+    
+  end;
+  
+  {$endregion CLDevice}
+  
+  {$region CLSubDevice}
+  
+  CLSubDevice = partial class(CLDevice)
+    private _parent: cl_device_id;
+    public property Parent: CLDevice read CLDevice.FromNative(_parent);
+    
+    private constructor(parent, ntv: cl_device_id);
+    begin
+      inherited Create(ntv);
+      self._parent := parent;
+    end;
+    
+    private constructor := inherited;
+    
+    protected procedure Finalize; override :=
+    OpenCLABCInternalException.RaiseIfError(cl.ReleaseDevice(ntv));
+    
+  end;
+  
+  {$endregion CLSubDevice}
+  
+  {$region CLContext}
+  
+  CLContext = partial class
+    private ntv: cl_context;
+    
+    private dvcs: IList<CLDevice>;
+    public property AllDevices: IList<CLDevice> read dvcs;
+    
+    private main_dvc: CLDevice;
+    public property MainDevice: CLDevice        read main_dvc;
+    
+    private function GetAllNtvDevices: array of cl_device_id;
+    begin
+      Result := new cl_device_id[dvcs.Count];
+      for var i := 0 to Result.Length-1 do
+        Result[i] := dvcs[i].ntv;
+    end;
+    
+    {$region Default}
+    
+    private static default_was_inited := 0;
+    private static _default: CLContext;
+    
+    private static function GetDefault: CLContext;
+    begin
+      if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
+        Interlocked.CompareExchange(_default, MakeNewDefaultContext, nil);
+      Result := _default;
+    end;
+    private static procedure SetDefault(new_default: CLContext);
+    begin
+      default_was_inited := 1;
+      _default := new_default;
+    end;
+    public static property &Default: CLContext read GetDefault write SetDefault;
+    
+    protected static function MakeNewDefaultContext: CLContext;
+    begin
+      Result := nil;
+      
+      var pls := CLPlatform.All;
+      if pls=nil then exit;
+      
+      foreach var pl in pls do
+      begin
+        var dvcs := CLDevice.GetAllFor(pl);
+        if dvcs=nil then continue;
+        Result := new CLContext(dvcs);
+        exit;
+      end;
+      
+      foreach var pl in pls do
+      begin
+        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
+        if dvcs=nil then continue;
+        Result := new CLContext(dvcs);
+        exit;
+      end;
+      
+    end;
+    
+    {$endregion Default}
+    
+    {$region constructor's}
+    
+    private static procedure CheckMainDevice(main_dvc: CLDevice; dvc_lst: IList<CLDevice>) :=
+    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:CLContext:WrongMainDvc%');
+    
+    public constructor(dvcs: IList<CLDevice>; main_dvc: CLDevice);
+    begin
+      CheckMainDevice(main_dvc, dvcs);
+      
+      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs.ToArray);
+      var ntv_dvcs := GetAllNtvDevices;
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
+      OpenCLABCInternalException.RaiseIfError(ec);
+      
+      self.main_dvc := main_dvc;
+    end;
+    public constructor(params dvcs: array of CLDevice) := Create(dvcs, dvcs[0]);
+    
+    protected static function GetContextDevices(ntv: cl_context): array of CLDevice;
+    begin
+      
+      var sz: UIntPtr;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, UIntPtr.Zero, IntPtr.Zero, sz)
+      );
+      
+      var res := new cl_device_id[uint64(sz) div cl_device_id.Size];
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, sz, res[0], IntPtr.Zero)
+      );
+      
+      Result := res.ConvertAll(dvc->new CLDevice(dvc));
+    end;
+    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<CLDevice>; main_dvc: CLDevice);
+    begin
+      CheckMainDevice(main_dvc, dvcs);
+      OpenCLABCInternalException.RaiseIfError( cl.RetainContext(ntv) );
+      self.ntv := ntv;
+      // Копирование должно происходить в вызывающих методах
+      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs);
+      self.main_dvc := main_dvc;
+    end;
+    public constructor(ntv: cl_context; main_dvc: CLDevice) :=
+    InitFromNtv(ntv, GetContextDevices(ntv), main_dvc);
+    
+    public constructor(ntv: cl_context);
+    begin
+      var dvcs := GetContextDevices(ntv);
+      InitFromNtv(ntv, dvcs, dvcs[0]);
+    end;
+    
+    private constructor(c: CLContext; main_dvc: CLDevice) :=
+    InitFromNtv(c.ntv, c.dvcs, main_dvc);
+    public function MakeSibling(new_main_dvc: CLDevice) := new CLContext(self, new_main_dvc);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public procedure Dispose;
+    begin
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      OpenCLABCInternalException.RaiseIfError( cl.ReleaseContext(new cl_context(prev)) );
+    end;
+    protected procedure Finalize; override := Dispose;
+    
+    {$endregion constructor's}
+    
+  end;
+  
+  {$endregion CLContext}
+  
+  {$endregion CLContext data}
+  
+  {$region CLKernel data}
+  
+  {$region CLCodeOptions}
+  
+  CLCodeOptions = abstract class
+    
+    public constructor(c: CLContext) := self.BuildContext := c;
+    public constructor := Create(CLContext.Default);
+    
+    public auto property BuildContext: CLContext;
+    
+    public auto property KeepLog: boolean := false;
+    
+    protected procedure ToString(res: StringBuilder); abstract;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  CLCodeLibOptions = class(CLCodeOptions)
+    
+    public static function operator implicit(c: CLContext): CLCodeLibOptions := new CLCodeLibOptions(c);
+    
+    public auto property ForceAcceptProgramLinkOptions: boolean := false;
+    
+    protected procedure ToString(res: StringBuilder); override;
+    begin
+//      inherited; // abstract
+      
+      res += '-create-library ';
+      
+      if ForceAcceptProgramLinkOptions then
+        res += '-enable-link-options ';
+      
+    end;
+    
+  end;
+  
+  CLProgramOptions = abstract class(CLCodeOptions)
+    
+    public auto property _MathDenormsAreZero: boolean := false;
+    
+    public auto property OptSignedZero: boolean := false;
+    
+    public property OptUnsafeMath: boolean
+    read _MathDenormsAreZero and not OptSignedZero
+    write
+    begin
+      _MathDenormsAreZero := value;
+      OptSignedZero       := not value;
+    end; virtual;
+    
+    public auto property OptNoDenorms: boolean := false;
+    
+    public property OptFastMath: boolean
+    read OptUnsafeMath and OptNoDenorms
+    write
+    begin
+      OptUnsafeMath := value;
+      OptNoDenorms  := value;
+    end;
+    
+    public auto property OptRequireIFP: boolean := true;
+    
+    protected procedure ToString(res: StringBuilder); override;
+    begin
+//      inherited; // abstract
+      
+      if OptFastMath then
+        res += '-cl-fast-relaxed-math ' else
+      begin
+        
+        if OptUnsafeMath then
+          res += '-cl-unsafe-math-optimizations ' else
+        begin
+          
+          if _MathDenormsAreZero then
+            res += '-cl-denorms-are-zero ';
+          
+          // Only for ProgramComp
+//          if OptCanUseMAD then
+//            res += '-cl-mad-enable ';
+          
+          if not OptSignedZero then
+            res += '-cl-no-signed-zeros ';
+          
+        end;
+        
+        if OptNoDenorms then
+          res += '-cl-finite-math-only ';
+        
+      end;
+      
+    end;
+    
+  end;
+  
+  CLCodeDefines = Dictionary<string, string>;
+  CLProgramCompOptions = class(CLProgramOptions)
+    
+    public static function operator implicit(c: CLContext): CLProgramCompOptions := new CLProgramCompOptions(c);
+    
+    public auto property Defines: CLCodeDefines := new CLCodeDefines;
+    
+    public auto property _MathSinglePrecisionConstant: boolean := false;
+    
+    public auto property _MathFP32CorrectlyRoundedDivideSqrt: boolean := false;
+    
+    public auto property Optimize: boolean := true;
+    
+    public auto property OptOnlyUniformWorkGroups: boolean := false;
+    
+    public auto property OptCanUseMAD: boolean := false;
+    
+    public property OptUnsafeMath: boolean
+    read _MathDenormsAreZero and OptCanUseMAD and not OptSignedZero
+    write
+    begin
+      _MathDenormsAreZero := value;
+      OptCanUseMAD        := value;
+      OptSignedZero       := not value;
+    end; override;
+    
+    public auto property WarningLevel: (
+      WL_Ignore,
+      WL_Warn,
+      WL_Error
+    ) := WL_Warn;
+    
+    public auto property Version: (integer, integer) := nil;
+    public procedure LowerVersionToSupported;
+    
+    public auto property CLKernelArgInfo: boolean := true;
+    
+    public auto property LiveEnqueueDebug: boolean := false;
+    
+    protected procedure ToString(res: StringBuilder); override;
+    begin
+      inherited;
+      
+      foreach var kvp in Defines do
+      begin
+        res += '-D ';
+        res += kvp.Key;
+        if kvp.Value<>nil then
+        begin
+          res += '=';
+          res += kvp.Value;
+        end;
+        res += ' ';
+      end;
+      
+      if _MathSinglePrecisionConstant then
+        res += '-cl-single-precision-constant ';
+      
+      if _MathFP32CorrectlyRoundedDivideSqrt then
+        res += '-cl-fp32-correctly-rounded-divide-sqrt ';
+      
+      if not Optimize then
+        res += '-cl-opt-disable ';
+      
+      if OptOnlyUniformWorkGroups then
+        res += '-cl-uniform-work-group-size ';
+      
+      if not OptUnsafeMath and OptCanUseMAD then
+        res += '-cl-mad-enable ';
+      
+      case WarningLevel of
+        WL_Ignore:  res += '-w ';
+        WL_Warn:    ;
+        WL_Error:   res += '-Werror ';
+        else raise new System.ArgumentException($'%Err:ProgramOptions:WarningLevel:Invalid%');
+      end;
+      
+      if Version<>nil then
+      begin
+        res += '-cl-std=CL';
+        res.Append(Version[0]);
+        res += '.';
+        res.Append(Version[1]);
+        res += ' ';
+      end;
+      
+      if CLKernelArgInfo then
+        res += '-cl-kernel-arg-info ';
+      
+      if LiveEnqueueDebug then
+        res += '-g ';
+      
+    end;
+    
+  end;
+  
+  CLProgramLinkOptions = class(CLProgramOptions)
+    
+    public static function operator implicit(c: CLContext): CLProgramLinkOptions := new CLProgramLinkOptions(c);
+    
+//    protected procedure ToString(res: StringBuilder); override;
+//    begin
+//      inherited;
+//      
+//    end;
+    
+  end;
+  
+  {$endregion CLCodeOptions}
+  
+  {$region CLCode}
+  
+  {$region CLCode}
+  
+  CLCode = abstract partial class
+    private ntv: cl_program;
+    
+    protected constructor(code_text: string; c: CLContext);
+    begin
+      
+      var ec: ErrorCode;
+      self.ntv := cl.CreateProgramWithSource(c.ntv, 1,|code_text|,nil, ec);
+      OpenCLABCInternalException.RaiseIfError(ec);
+      
+    end;
+    
+    protected constructor(ntv: cl_program; need_retain: boolean);
+    begin
+      if need_retain then
+        OpenCLABCInternalException.RaiseIfError(
+          cl.RetainProgram(ntv)
+        );
+      self.ntv := ntv;
+    end;
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public procedure Dispose;
+    begin
+      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
+      if prev=IntPtr.Zero then exit;
+      OpenCLABCInternalException.RaiseIfError( cl.ReleaseProgram(new cl_program(prev)) );
+    end;
+    protected procedure Finalize; override := Dispose;
+    
+  end;
+  
+  {$endregion CLCode}
+  
+  {$region CLHeaderCode}
+  
+  CLHeaderCode = partial class(CLCode)
+    
+    public constructor(code_text: string; c: CLContext := nil) := inherited Create(code_text, c??CLContext.Default);
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+  end;
+  
+  {$endregion CLHeaderCode}
+  
+  {$region BinCLCode}
+  
+  BinCLCode = abstract partial class(CLCode)
+    
+    {$region Utils}
+    
+    protected function GetLastLog(d: cl_device_id): string;
+    begin
+      
+      var sz: UIntPtr;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramBuildInfo(self.ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
+      );
+      
+      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
+      try
+        OpenCLABCInternalException.RaiseIfError(
+          cl.GetProgramBuildInfo(self.ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
+        );
+        Result := Marshal.PtrToStringAnsi(str_ptr);
+      finally
+        Marshal.FreeHGlobal(str_ptr);
+      end;
+      
+    end;
+    
+    protected procedure CheckBuildFail(ec, fail_code: ErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
+    begin
+      
+      if ec=fail_code then
+      begin
+        var sb := new StringBuilder(fail_descr);
+        
+        foreach var dvc in dvcs do
+        begin
+          sb += #10#10;
+          sb += dvc.ToString;
+          sb += ':'#10;
+          sb += self.GetLastLog(dvc.ntv);
+        end;
+        
+        raise new InvalidOperationException(sb.ToString);
+      end else
+        OpenCLABCInternalException.RaiseIfError(ec);
+      
+    end;
+    
+    {$endregion Utils}
+    
+    {$region Logs}
+    
+    private logs := new Dictionary<cl_device_id, string>;
+    public property BuildLog[d: CLDevice]: string read logs[d.ntv];
+    
+    protected procedure SaveLogsFor(dvcs: sequence of CLDevice);
+    begin
+      {$ifdef DEBUG}
+      if logs.Count<>0 then raise new OpenCLABCInternalException($'Multiple calls to SaveLogsFor from {TypeName(self)}');
+      {$endif DEBUG}
+//      logs.Clear;
+      foreach var d in dvcs do logs[d.ntv] := GetLastLog(d.ntv);
+    end;
+    
+    {$endregion Logs}
+    
+    {$region Serialize}
+    
+    public function Serialize: array of array of byte;
+    begin
+      var sz: UIntPtr;
+      
+      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, UIntPtr.Zero, nil, sz) );
+      var szs := new UIntPtr[sz.ToUInt64 div UIntPtr.Size];
+      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, sz, szs[0], IntPtr.Zero) );
+      
+      var res := szs.ConvertAll(sz_i->new NativeArray<byte>(sz_i.ToUInt32));
+      
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARIES, sz, res.ConvertAll(a->a.Area.first_ptr)[0], IntPtr.Zero)
+      );
+      
+      Result := res.ConvertAll(a->a.Area.ManagedCopy);
+      GC.KeepAlive(res);
+    end;
+    
+    public procedure SerializeTo(bw: System.IO.BinaryWriter);
+    begin
+      var bin := Serialize;
+      
+      bw.Write(bin.Length);
+      foreach var a in bin do
+      begin
+        bw.Write(a.Length);
+        bw.Write(a);
+      end;
+      
+    end;
+    public procedure SerializeTo(str: System.IO.Stream) :=
+    SerializeTo(new System.IO.BinaryWriter(str));
+    
+    {$endregion Serialize}
+    
+    {$region Deserialize}
+    
+    protected static function DeserializeNative(c: CLContext; bin: array of array of byte): cl_program;
+    begin
+      var ec: ErrorCode;
+      
+      var dvcs := c.GetAllNtvDevices;
+      //TODO Отдельные эррор коды?
+      Result := cl.CreateProgramWithBinary(
+        c.ntv, dvcs.Length, dvcs,
+        bin.ConvertAll(a->new UIntPtr(a.Length)), bin,
+        nil,ec
+      );
+      
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    protected static function LoadBins(br: System.IO.BinaryReader) :=
+    ArrGen(br.ReadInt32, i->
+    begin
+      var len := br.ReadInt32;
+      Result := br.ReadBytes(len);
+      if Result.Length<>len then raise new System.IO.EndOfStreamException;
+    end);
+    
+    {$endregion}
+    
+  end;
+  
+  {$endregion BinCLCode}
+  
+  {$region LinkableCLCode}
+  
+  LinkableCLCode = abstract partial class(BinCLCode)
+    
+  end;
+  
+  BinCLCode = abstract partial class(CLCode)
+    
+    private function link_ntv(bins: IList<LinkableCLCode>; opt: CLCodeOptions): cl_program;
+    begin
+      var bin_ntvs := new cl_program[bins.Count];
+      for var i := 0 to bin_ntvs.Length-1 do
+        bin_ntvs[i] := bins[i].ntv;
+      
+      var ec: ErrorCode;
+      Result := cl.LinkProgram(opt.BuildContext.ntv, 0,nil, opt.ToString, bin_ntvs.Length,bin_ntvs, nil,IntPtr.Zero, ec);
+      
+      self.CheckBuildFail(
+        ec, ErrorCode.LINK_PROGRAM_FAILURE,
+        $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
+      );
+      
+    end;
+    public constructor(bins: IList<LinkableCLCode>; opt: CLCodeOptions);
+    begin
+      inherited Create(link_ntv(bins, opt), false);
+      if opt.KeepLog then self.SaveLogsFor(opt.BuildContext.AllDevices);
+    end;
+    
+  end;
+  
+  {$endregion LinkableCLCode}
+  
+  {$region CLCompCode}
+  
+  CLCompCode = partial class(LinkableCLCode)
+    
+    {$region constructor's}
+    
+    public constructor(code_text: string; headers: Dictionary<string, CLHeaderCode> := nil; opt: CLProgramCompOptions := nil);
+    begin
+      inherited Create(code_text, (opt??new CLProgramCompOptions).BuildContext);
+      opt := opt??new CLProgramCompOptions;
+      
+      var ec: ErrorCode;
+      if headers=nil then
+        ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, 0,nil,nil, nil,IntPtr.Zero) else
+      begin
+        var hs := new cl_program[headers.Count];
+        var hns := new string[headers.Count];
+        foreach var kvp in headers index i do
+        begin
+          hs[i] := kvp.Value.ntv;
+          hns[i] := kvp.Key;
+        end;
+        
+        ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, hs.Length,hs,hns, nil,IntPtr.Zero);
+      end;
+      
+      CheckBuildFail(
+        ec, ErrorCode.COMPILE_PROGRAM_FAILURE,
+        $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
+      );
+      
+      if opt.KeepLog then SaveLogsFor(opt.BuildContext.AllDevices);
+    end;
+    
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region Deserialize}
+    
+    public static function Deserialize(bin: array of array of byte; c: CLContext := nil) :=
+    new CLCompCode(DeserializeNative(c, bin), false);
+    public static function DeserializeFrom(br: System.IO.BinaryReader; c: CLContext := nil) :=
+    Deserialize(LoadBins(br), c);
+    public static function DeserializeFrom(str: System.IO.Stream; c: CLContext := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), c);
+    
+    {$endregion Deserialize}
+    
+  end;
+  
+  {$endregion CLCompCode}
+  
+  {$region CLCodeLib}
+  
+  CLCodeLib = partial class(LinkableCLCode)
+    
+    {$region constructor's}
+    
+    public constructor(bins: IList<LinkableCLCode>; opt: CLCodeLibOptions := nil) := inherited Create(bins, opt??new CLCodeLibOptions);
+    public constructor(params bins: array of LinkableCLCode) := Create(bins as IList<LinkableCLCode>);
+    
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region Deserialize}
+    
+    public static function Deserialize(bin: array of array of byte; c: CLContext := nil) :=
+    new CLCodeLib(DeserializeNative(c, bin), false);
+    public static function DeserializeFrom(br: System.IO.BinaryReader; c: CLContext := nil) :=
+    Deserialize(LoadBins(br), c);
+    public static function DeserializeFrom(str: System.IO.Stream; c: CLContext := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), c);
+    
+    {$endregion Deserialize}
+    
+  end;
+  
+  {$endregion CLCodeLib}
+  
+  {$region CLProgramCode}
+  
+  CLProgramCode = partial class(BinCLCode)
+    
+    {$region constructor's}
+    
+    public constructor(bins: IList<LinkableCLCode>; opt: CLProgramLinkOptions := nil) := inherited Create(bins, opt??new CLProgramLinkOptions);
+    public constructor(params bins: array of LinkableCLCode) := Create(bins as IList<LinkableCLCode>);
+    
+    private procedure Build(opt: CLProgramCompOptions);
+    begin
+      var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
+      
+      CheckBuildFail(
+        ec, ErrorCode.BUILD_PROGRAM_FAILURE,
+        $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
+      );
+      
+      if opt.KeepLog then SaveLogsFor(opt.BuildContext.AllDevices);
+    end;
+    public constructor(code_text: string; opt: CLProgramCompOptions := nil);
+    begin
+      inherited Create(code_text, if opt=nil then CLContext.Default else opt.BuildContext);
+      self.Build(opt ?? new CLProgramCompOptions);
+    end;
+    
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region Deserialize}
+    
+    public static function Deserialize(bin: array of array of byte; opt: CLProgramCompOptions := nil): CLProgramCode;
+    begin
+      if opt=nil then opt := new CLProgramCompOptions;
+      
+      Result := new CLProgramCode(
+        DeserializeNative(opt.BuildContext, bin), false
+      );
+      
+      Result.Build(opt);
+    end;
+    
+    public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
+    Deserialize(LoadBins(br), opt);
+    public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+    
+    {$endregion Deserialize}
+    
+    //TODO #2668
+    public static function operator=(p1,p2: CLProgramCode) := p1.Equals(p2);
+    
+  end;
+  
+  {$endregion CLProgramCode}
+  
+  {$region BinCLCode.Deserialize}
+  
+  BinCLCode = abstract partial class(CLCode)
+    
+    public static function Deserialize(bin: array of array of byte; opt: CLProgramCompOptions := nil): BinCLCode;
+    begin
+      if opt=nil then opt := new CLProgramCompOptions;
+      
+      var ntv := DeserializeNative(opt.BuildContext, bin);
+      
+      var general_pt := ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE;
+      foreach var d in opt.BuildContext.AllDevices do
+      begin
+        var pt: ProgramBinaryType;
+        OpenCLABCInternalException.RaiseIfError(
+          cl.GetProgramBuildInfo(ntv,d.ntv, ProgramBuildInfo.PROGRAM_BINARY_TYPE, new UIntPtr(sizeof(ProgramBinaryType)),pt,IntPtr.Zero)
+        );
+        
+        if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+          general_pt := pt else
+        if general_pt<>pt then
+          raise new NotSupportedException($'BinCLCode:Deserialize:ProgramBinaryType:Different');
+        
+      end;
+      
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+        raise new NotSupportedException($'BinCLCode:Deserialize:ProgramBinaryType:Missing') else
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
+        Result := new CLCompCode(ntv,false) else
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
+        Result := new CLCodeLib(ntv,false) else
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_EXECUTABLE then
+      begin
+        var res := new CLProgramCode(ntv,false);
+        res.Build(opt);
+        Result := res;
+      end else
+        raise new NotImplementedException(general_pt.ToString);
+      
+    end;
+    
+    public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
+    Deserialize(LoadBins(br), opt);
+    public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+    
+  end;
+  
+  {$endregion BinCLCode.Deserialize}
+  
+  {$endregion CLCode}
+  
+  {$region CLKernel}
+  
+  CLKernel = partial class
+    
+    private code: CLProgramCode;
+    public property CodeContainer: CLProgramCode read code;
+    
+    private k_name: string;
+    public property Name: string read k_name;
+    
+    private function ntv: cl_kernel;
+    begin
+      var ec: ErrorCode;
+      Result := cl.CreateKernel(code.ntv, k_name, ec);
+      OpenCLABCInternalException.RaiseIfError(ec);
+    end;
+    
+    {$region constructor's}
+    
+    private constructor(code: CLProgramCode; k_name: string);
+    begin
+      self.code := code;
+      self.k_name := k_name;
+    end;
+    
+    public constructor(ntv: cl_kernel);
+    begin
+      
+      var code_ntv: cl_program;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), code_ntv, IntPtr.Zero)
+      );
+      self.code := new CLProgramCode(code_ntv, true);
+      
+      var sz: UIntPtr;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, IntPtr.Zero, sz)
+      );
+      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
+      try
+        OpenCLABCInternalException.RaiseIfError(
+          cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, sz, str_ptr, IntPtr.Zero)
+        );
+        self.k_name := Marshal.PtrToStringAnsi(str_ptr);
+      finally
+        Marshal.FreeHGlobal(str_ptr);
+      end;
+      
+      cl.ReleaseKernel(ntv).RaiseIfError;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {%ContainerMethods\CLKernel.Exec\Implicit.Interface!ContainerExecMethods.pas%}
+    
+  end;
+  
+  CLProgramCode = partial class
+    
+    public property KernelByName[kname: string]: CLKernel read new CLKernel(self, kname); default;
+    
+    public function GetAllKernels: array of CLKernel;
+    begin
+      
+      var c: UInt32;
+      OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, 0, IntPtr.Zero, c) );
+      
+      var res := new cl_kernel[c];
+      OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, c, res[0], IntPtr.Zero) );
+      
+      Result := res.ConvertAll(k->new CLKernel(k));
+    end;
+    
+  end;
+  
+  {$endregion CLKernel}
+  
+  {$endregion CLKernel data}
+  
+  {$region CLMemory}
+  
+  {$region CLMemoryUsage}
+  
+  CLMemoryUsage = record
     private data: integer;
     
     private const can_read_bit = 1;
@@ -1574,22 +1987,22 @@ type
       integer(can_read ) * can_read_bit +
       integer(can_write) * can_write_bit
     );
-    private static function operator implicit(data: integer): MemoryUsage := new MemoryUsage(data);
+    private static function operator implicit(data: integer): CLMemoryUsage := new CLMemoryUsage(data);
     
-    public static property None:      MemoryUsage read new MemoryUsage(false, false);
-    public static property ReadOnly:  MemoryUsage read new MemoryUsage(true,  false);
-    public static property WriteOnly: MemoryUsage read new MemoryUsage(false, true);
-    public static property ReadWrite: MemoryUsage read new MemoryUsage(true,  true);
+    public static property None:      CLMemoryUsage read new CLMemoryUsage(false, false);
+    public static property ReadOnly:  CLMemoryUsage read new CLMemoryUsage(true,  false);
+    public static property WriteOnly: CLMemoryUsage read new CLMemoryUsage(false, true);
+    public static property ReadWrite: CLMemoryUsage read new CLMemoryUsage(true,  true);
     
     public property CanRead: boolean read data and can_read_bit <> 0;
     public property CanWrite: boolean read data and can_write_bit <> 0;
     
-    private static function MakeCLFlags(kernel_use, map_use: MemoryUsage): MemFlags;
+    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): MemFlags;
     begin
       
       case kernel_use.data of
         none_bits:
-          raise new ArgumentException($'%Err:MemoryUsage:NoKernelAccess%');
+          raise new ArgumentException($'%Err:CLMemoryUsage:NoCLKernelAccess%');
         can_read_bit:
           Result := MemFlags.MEM_READ_ONLY;
         can_write_bit:
@@ -1597,7 +2010,7 @@ type
         read_write_bits:
           Result := MemFlags.MEM_READ_WRITE;
         else
-          raise new ArgumentException($'%Err:MemoryUsage:Invalid%');
+          raise new ArgumentException($'%Err:CLMemoryUsage:Invalid%');
       end;
       
       case map_use.data of
@@ -1610,7 +2023,7 @@ type
         read_write_bits:
           ;
         else
-          raise new ArgumentException($'%Err:MemoryUsage:Invalid%');
+          raise new ArgumentException($'%Err:CLMemoryUsage:Invalid%');
       end;
       
     end;
@@ -1618,7 +2031,7 @@ type
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
-      res += typeof(MemoryUsage).Name;
+      res += typeof(CLMemoryUsage).Name;
       res += '[';
       if CanRead  then res += 'Read';
       if CanWrite then res += 'Write';
@@ -1628,7 +2041,7 @@ type
     
   end;
   
-  {$endregion MemoryUsage}
+  {$endregion CLMemoryUsage}
   
   {$region CLMemory}
   
@@ -1637,24 +2050,24 @@ type
     
     {$region constructor's}
     
-    public constructor(size: UIntPtr; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(size: UIntPtr; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
-    public constructor(size: integer; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: integer; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), c, kernel_use, map_use);
-    public constructor(size: int64;   c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: int64;   c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), c, kernel_use, map_use);
     
-    public constructor(size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(size, Context.Default, kernel_use, map_use);
-    public constructor(size: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: UIntPtr; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(size, CLContext.Default, kernel_use, map_use);
+    public constructor(size: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), kernel_use, map_use);
-    public constructor(size: int64;   kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: int64;   kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), kernel_use, map_use);
     
     private constructor(ntv: cl_mem);
@@ -1717,14 +2130,14 @@ type
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
-      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), MemoryUsage.MakeCLFlags(kernel_use, map_use)) );
+      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), CLMemoryUsage.MakeCLFlags(kernel_use, map_use)) );
       self._parent := parent.ntv;
     end;
-    public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
-    public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
     // For the CLMemory.FromNative
@@ -1755,27 +2168,27 @@ type
     
     {$region constructor's}
     
-    public constructor(c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
-    public constructor(c: Context; val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
     
-    public constructor(kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, kernel_use, map_use);
-    public constructor(val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, val, kernel_use, map_use);
+    public constructor(kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, kernel_use, map_use);
+    public constructor(val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, val, kernel_use, map_use);
     
     public constructor(ntv: cl_mem);
     begin
@@ -1824,46 +2237,46 @@ type
     
     {$region constructor's}
     
-    private procedure InitByLen(c: Context; kernel_use, map_use: MemoryUsage);
+    private procedure InitByLen(c: CLContext; kernel_use, map_use: CLMemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
-    private procedure InitByVal(c: Context; var els: T; kernel_use, map_use: MemoryUsage);
+    private procedure InitByVal(c: CLContext; var els: T; kernel_use, map_use: CLMemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
     
-    public constructor(c: Context; len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; len: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       self.len := len;
       InitByLen(c, kernel_use, map_use);
     end;
-    public constructor(len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, len, kernel_use, map_use);
+    public constructor(len: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, len, kernel_use, map_use);
     
-    public constructor(c: Context; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       self.len := els.Length;
       InitByVal(c, els[0], kernel_use, map_use);
     end;
-    public constructor(els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, els, kernel_use, map_use);
+    public constructor(els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, els, kernel_use, map_use);
     
-    public constructor(c: Context; els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       self.len := len;
       InitByVal(c, els[els_from], kernel_use, map_use);
     end;
-    public constructor(els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, els_from, len, els, kernel_use, map_use);
+    public constructor(els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
     
     public constructor(ntv: cl_mem);
     begin
@@ -1926,9 +2339,7 @@ type
   
   {$endregion CLArray}
   
-  {$endregion OpenCL}
-  
-  {$endregion Memory}
+  {$endregion CLMemory}
   
   {$region Common}
   
@@ -1938,7 +2349,7 @@ type
   
   {$region Misc}
   
-  Device = partial class
+  CLDevice = partial class
     
     private supported_split_modes: array of DevicePartitionProperty := nil;
     private function GetSSM: array of DevicePartitionProperty;
@@ -1947,10 +2358,10 @@ type
       Result := supported_split_modes;
     end;
     
-    private function Split(params props: array of DevicePartitionProperty): array of SubDevice;
+    private function Split(params props: array of DevicePartitionProperty): array of CLSubDevice;
     begin
       if not GetSSM.Contains(props[0]) then
-        raise new NotSupportedException($'%Err:Device:SplitNotSupported%');
+        raise new NotSupportedException($'%Err:CLDevice:SplitNotSupported%');
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, 0, IntPtr.Zero, c) );
@@ -1958,13 +2369,13 @@ type
       var res := new cl_device_id[int64(c)];
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, c, res[0], IntPtr.Zero) );
       
-      Result := res.ConvertAll(sdvc->new SubDevice(self.ntv, sdvc));
+      Result := res.ConvertAll(sdvc->new CLSubDevice(self.ntv, sdvc));
     end;
     
     public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
-    public function SplitEqually(CUCount: integer): array of SubDevice;
+    public function SplitEqually(CUCount: integer): array of CLSubDevice;
     begin
-      if CUCount <= 0 then raise new ArgumentException($'%Err:Device:SplitCUCount%');
+      if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       Result := Split(
         DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
         DevicePartitionProperty.Create(CUCount),
@@ -1973,10 +2384,10 @@ type
     end;
     
     public property CanSplitByCounts: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
-    public function SplitByCounts(params CUCounts: array of integer): array of SubDevice;
+    public function SplitByCounts(params CUCounts: array of integer): array of CLSubDevice;
     begin
       foreach var CUCount in CUCounts do
-        if CUCount <= 0 then raise new ArgumentException($'%Err:Device:SplitCUCount%');
+        if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       
       var props := new DevicePartitionProperty[CUCounts.Length+2];
       props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
@@ -1988,7 +2399,7 @@ type
     end;
     
     public property CanSplitByAffinityDomain: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
-    public function SplitByAffinityDomain(affinity_domain: DeviceAffinityDomain) :=
+    public function SplitByAffinityDomain(affinity_domain: CLDeviceAffinityDomain) :=
     Split(
       DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN,
       DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
@@ -2345,32 +2756,32 @@ type
     {$region Convert}
     
     public function ThenConstConvert<TOtp>(f: T->TOtp           ): CommandQueue<TOtp>;
-    public function ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenConstConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
     
     public function ThenQuickConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
-    public function ThenQuickConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenQuickConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
     
     public function ThenThreadedConvert<TOtp>(f: T->TOtp           ): CommandQueue<TOtp>;
-    public function ThenThreadedConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenThreadedConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
     
     public function ThenConvert<TOtp>(f: T->TOtp           ) := ThenThreadedConvert(f);
-    public function ThenConvert<TOtp>(f: (T, Context)->TOtp) := ThenThreadedConvert(f);
+    public function ThenConvert<TOtp>(f: (T, CLContext)->TOtp) := ThenThreadedConvert(f);
     
     {$endregion Convert}
     
     {$region Use}
     
     public function ThenConstUse(p: T->()           ): CommandQueue<T>;
-    public function ThenConstUse(p: (T, Context)->()): CommandQueue<T>;
+    public function ThenConstUse(p: (T, CLContext)->()): CommandQueue<T>;
     
     public function ThenQuickUse(p: T->()           ): CommandQueue<T>;
-    public function ThenQuickUse(p: (T, Context)->()): CommandQueue<T>;
+    public function ThenQuickUse(p: (T, CLContext)->()): CommandQueue<T>;
     
     public function ThenThreadedUse(p: T->()           ): CommandQueue<T>;
-    public function ThenThreadedUse(p: (T, Context)->()): CommandQueue<T>;
+    public function ThenThreadedUse(p: (T, CLContext)->()): CommandQueue<T>;
     
     public function ThenUse(p: T->()           ) := ThenThreadedUse(p);
-    public function ThenUse(p: (T, Context)->()) := ThenThreadedUse(p);
+    public function ThenUse(p: (T, CLContext)->()) := ThenThreadedUse(p);
     
     {$endregion Use}
     
@@ -2608,14 +3019,14 @@ type
   {$region CLTask}
   
   CLTaskBase = abstract partial class
-    private org_c: Context;
+    private org_c: CLContext;
     private wh := new ManualResetEventSlim(false);
     private err_lst: List<Exception>;
     
     private function OrgQueueBase: CommandQueueBase; abstract;
     public property OrgQueue: CommandQueueBase read OrgQueueBase;
     
-    public property OrgContext: Context read org_c;
+    public property OrgCLContext: CLContext read org_c;
     
     public procedure Wait;
     begin
@@ -2648,7 +3059,7 @@ type
     
   end;
   
-  Context = partial class
+  CLContext = partial class
     
     public function BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter): CLTaskBase;
     public function BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter): CLTaskNil;
@@ -2664,23 +3075,23 @@ type
   
   {$region CCQ's}
   
-  {$region KernelCCQ}
+  {$region CLKernelCCQ}
   
-  KernelCCQ = sealed partial class
+  CLKernelCCQ = sealed partial class
     
-    {%ContainerCommon\Kernel\Interface!ContainerCommon.pas%}
+    {%ContainerCommon\CLKernel\Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\Kernel.Exec\Explicit.Interface!ContainerExecMethods.pas%}
+    {%ContainerMethods\CLKernel.Exec\Explicit.Interface!ContainerExecMethods.pas%}
     
   end;
   
-  Kernel = partial class
-    public function NewQueue := new KernelCCQ({%>self%});
+  CLKernel = partial class
+    public function NewQueue := new CLKernelCCQ({%>self%});
   end;
   
-  {$endregion KernelCCQ}
+  {$endregion CLKernelCCQ}
   
-  {$region MemorySegmentCCQ}
+  {$region CLMemorySegmentCCQ}
   
   CLMemoryCCQ = sealed partial class
     
@@ -2696,7 +3107,7 @@ type
     public function NewQueue := new CLMemoryCCQ({%>self%});
   end;
   
-  {$endregion MemorySegmentCCQ}
+  {$endregion CLMemorySegmentCCQ}
   
   {$region CLValueCCQ}
   
@@ -2738,13 +3149,13 @@ type
   
   {$endregion CCQ's}
   
-  {$region KernelArg}
+  {$region CLKernelArg}
   
-  {%KernelArg\interface!KernelArg.pas%}
+  {%CLKernelArg\interface!CLKernelArg.pas%}
   
   {$region ToString}
   
-  KernelArg = abstract partial class
+  CLKernelArg = abstract partial class
     
     {$region ToString}
     
@@ -2773,12 +3184,12 @@ type
       Result := sb.ToString;
     end;
     
-    public function Print: KernelArg;
+    public function Print: CLKernelArg;
     begin
       Write(self.ToString);
       Result := self;
     end;
-    public function Println: KernelArg;
+    public function Println: CLKernelArg;
     begin
       Writeln(self.ToString);
       Result := self;
@@ -2790,7 +3201,7 @@ type
   
   {$endregion ToString}
   
-  {$endregion KernelArg}
+  {$endregion CLKernelArg}
   
 {$region Global subprograms}
 
@@ -2803,14 +3214,14 @@ function CQ<T>(o: T): CommandQueue<T>;
 {$region HFQ/HPQ}
 
 function HQFQ<T>(f: ()->T): CommandQueue<T>;
-function HQFQ<T>(f: Context->T): CommandQueue<T>;
+function HQFQ<T>(f: CLContext->T): CommandQueue<T>;
 function HTFQ<T>(f: ()->T): CommandQueue<T>;
-function HTFQ<T>(f: Context->T): CommandQueue<T>;
+function HTFQ<T>(f: CLContext->T): CommandQueue<T>;
 
 function HQPQ(p: ()->()): CommandQueueNil;
-function HQPQ(p: Context->()): CommandQueueNil;
+function HQPQ(p: CLContext->()): CommandQueueNil;
 function HTPQ(p: ()->()): CommandQueueNil;
-function HTPQ(p: Context->()): CommandQueueNil;
+function HTPQ(p: CLContext->()): CommandQueueNil;
 
 {$endregion HFQ/HPQ}
 
@@ -2895,9 +3306,9 @@ type
 
 {$region Wrappers}
 
-{$region Device}
+{$region CLDevice}
 
-static function Device.FromNative(ntv: cl_device_id): Device;
+static function CLDevice.FromNative(ntv: cl_device_id): CLDevice;
 begin
   
   var parent: cl_device_id;
@@ -2906,12 +3317,43 @@ begin
   );
   
   if parent=cl_device_id.Zero then
-    Result := new Device(ntv) else
-    Result := new SubDevice(parent, ntv);
+    Result := new CLDevice(ntv) else
+    Result := new CLSubDevice(parent, ntv);
   
 end;
 
-{$endregion Device}
+{$endregion CLDevice}
+
+{$region CLProgramCompOptions}
+
+procedure CLProgramCompOptions.LowerVersionToSupported;
+begin
+  var max_v := Version;
+  
+  foreach var d in BuildContext.AllDevices do
+  begin
+    var v_str := {%>d.Properties.OpenclCVersion!!}default(string){%};
+    var v_str_beg := 'OpenCL C ';
+    if not v_str.StartsWith(v_str_beg) then raise new System.NotSupportedException;
+    var v_spl := v_str.Substring(v_str_beg.Length).Split(|'.'|, 2);
+    var v := (v_spl[0].ToInteger, v_spl[1].ToInteger);
+    if max_v<>nil then
+    begin
+      case Sign(max_v[0]-v[0]) of
+        1: continue;
+        0:
+        case Sign(max_v[1]-v[1]) of
+          1: continue;
+          0: ;
+        end;
+      end;
+    end;
+    max_v := v;
+  end;
+  
+end;
+
+{$endregion CLProgramCompOptions}
 
 {$region CLMemory}
 
@@ -3136,7 +3578,7 @@ type
 
 type
   CLTaskGlobalData = sealed partial class
-    public c: Context;
+    public c: CLContext;
     public cl_c: cl_context;
     public cl_dvc: cl_device_id;
     
@@ -3218,7 +3660,7 @@ type
   
   ISimpleProcContainer<TInp> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp: TInp; c: Context);
+    procedure Invoke(inp: TInp; c: CLContext);
     
   end;
   
@@ -3230,21 +3672,21 @@ type
       Result.d := d;
     end;
     
-    public procedure Invoke(inp: TInp; c: Context) := d(inp);
+    public procedure Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProcContainerC<TInp> = record(ISimpleProcContainer<TInp>)
-    private d: (TInp, Context)->();
+    private d: (TInp, CLContext)->();
     
-    public static function operator implicit(d: (TInp, Context)->()): SimpleProcContainerC<TInp>;
+    public static function operator implicit(d: (TInp, CLContext)->()): SimpleProcContainerC<TInp>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp: TInp; c: Context) := d(inp, c);
+    public procedure Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -3257,7 +3699,7 @@ type
   
   ISimpleFuncContainer<TInp,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp: TInp; c: Context): TRes;
+    function Invoke(inp: TInp; c: CLContext): TRes;
     
   end;
   
@@ -3269,21 +3711,21 @@ type
       Result.d := d;
     end;
     
-    public function Invoke(inp: TInp; c: Context) := d(inp);
+    public function Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFuncContainerC<TInp,TRes> = record(ISimpleFuncContainer<TInp,TRes>)
-    private d: (TInp, Context)->TRes;
+    private d: (TInp, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp, Context)->TRes): SimpleFuncContainerC<TInp,TRes>;
+    public static function operator implicit(d: (TInp, CLContext)->TRes): SimpleFuncContainerC<TInp,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp: TInp; c: Context) := d(inp, c);
+    public function Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -3697,7 +4139,7 @@ type
 {$region QueueResAction}
 
 type
-  QueueResAction = Context->();
+  QueueResAction = CLContext->();
   
   [StructLayout(LayoutKind.Auto)]
   QueueResComplDelegateData = record
@@ -3727,7 +4169,7 @@ type
     {$ifdef DEBUG}
     private last_invoke_trace := default(string);
     {$endif DEBUG}
-    public procedure Invoke(c: Context);
+    public procedure Invoke(c: CLContext);
     begin
       {$ifdef DEBUG}
       if last_invoke_trace<>nil then raise new System.InvalidProgramException($'{TypeName(self)}: {#10}{last_invoke_trace}{#10+''-''*30+#10}{System.Environment.StackTrace}');
@@ -3877,7 +4319,7 @@ type
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
     
     public function IQueueRes.GetActions := base.GetActions;
-    public procedure InvokeActions(c: Context) := base.complition_delegate.Invoke(c);
+    public procedure InvokeActions(c: CLContext) := base.complition_delegate.Invoke(c);
     
     public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes :=
     new QueueResNil(new CLTaskLocalData(new_ev));
@@ -4006,7 +4448,7 @@ type
       SetResDirect(res);
     end;
     protected procedure SetResDirect(res: T); abstract;
-    public function GetRes(c: Context): T;
+    public function GetRes(c: CLContext): T;
     begin
       base.complition_delegate.Invoke(c);
       Result := GetResDirect;
@@ -4548,7 +4990,7 @@ type
 procedure TODO_2036_1 := exit; //TODO #2036
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-procedure Invoke<TInp>(self: ISimpleProcContainer<TInp>; err_handler: CLTaskErrHandler; inp: TInp; c: Context); extensionmethod;
+procedure Invoke<TInp>(self: ISimpleProcContainer<TInp>; err_handler: CLTaskErrHandler; inp: TInp; c: CLContext); extensionmethod;
 begin
   if err_handler.HadError then exit;
   try
@@ -4559,7 +5001,7 @@ begin
 end;
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-function Invoke<TInp,TRes>(self: ISimpleFuncContainer<TInp,TRes>; err_handler: CLTaskErrHandler; inp: TInp; c: Context): TRes; extensionmethod;
+function Invoke<TInp,TRes>(self: ISimpleFuncContainer<TInp,TRes>; err_handler: CLTaskErrHandler; inp: TInp; c: CLContext): TRes; extensionmethod;
 begin
   if err_handler.HadError then exit;
   try
@@ -4710,7 +5152,7 @@ type
 type
   CLTaskGlobalData = sealed partial class
     
-    public constructor(c: Context);
+    public constructor(c: CLContext);
     begin
       
       self.c := c;
@@ -4854,7 +5296,7 @@ type
   
   CLTaskNil = sealed partial class(CLTaskBase)
     
-    private constructor(q: CommandQueueNil; c: Context; pars: array of ParameterQueueSetter);
+    private constructor(q: CommandQueueNil; c: CLContext; pars: array of ParameterQueueSetter);
     begin
       self.q := q;
       self.org_c := c;
@@ -4881,7 +5323,7 @@ type
   CLTask<T> = sealed partial class(CLTaskBase)
     private res: T;
     
-    private constructor(q: CommandQueue<T>; c: Context; pars: array of ParameterQueueSetter);
+    private constructor(q: CommandQueue<T>; c: CLContext; pars: array of ParameterQueueSetter);
     begin
       self.q := q;
       self.org_c := c;
@@ -4907,9 +5349,9 @@ type
   end;
   
   CLTaskFactory = record(ITypedCQConverter<CLTaskBase>)
-    private c: Context;
+    private c: CLContext;
     private pars: array of ParameterQueueSetter;
-    public constructor(c: Context; pars: array of ParameterQueueSetter);
+    public constructor(c: CLContext; pars: array of ParameterQueueSetter);
     begin
       self.c := c;
       self.pars := pars;
@@ -4921,9 +5363,9 @@ type
     
   end;
   
-function Context.BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := q.ConvertTyped(new CLTaskFactory(self, parameters));
-function Context.BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := new CLTaskNil(q, self, parameters);
-function Context.BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := new CLTask<T>(q, self, parameters);
+function CLContext.BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := q.ConvertTyped(new CLTaskFactory(self, parameters));
+function CLContext.BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := new CLTaskNil(q, self, parameters);
+function CLContext.BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := new CLTask<T>(q, self, parameters);
 
 function CLTask<T>.WaitRes: T;
 begin
@@ -5158,14 +5600,14 @@ type
 function CommandQueue<T>.ThenQuickConvert<TOtp>(f: T->TOtp) :=
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainer <T,TOtp>, TBooleanFalseFlag>(self, f);
 
-function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, Context)->TOtp) :=
+function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, CLContext)->TOtp) :=
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>, TBooleanFalseFlag>(self, f);
 
 function CommandQueue<T>.ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> :=
 if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value)) else
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainer <T,TOtp>, TBooleanTrueFlag>(self, f);
 
-function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp> :=
+function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp> :=
 if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value, nil)) else
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>, TBooleanTrueFlag>(self, f);
 
@@ -5213,7 +5655,7 @@ type
 function CommandQueue<T>.ThenQuickUse(p: T->()) :=
 new CommandQueueThenQuickUse<T, SimpleProcContainer <T>, TBooleanFalseFlag>(self, p);
 
-function CommandQueue<T>.ThenQuickUse(p: (T, Context)->()) :=
+function CommandQueue<T>.ThenQuickUse(p: (T, CLContext)->()) :=
 new CommandQueueThenQuickUse<T, SimpleProcContainerC<T>, TBooleanFalseFlag>(self, p);
 
 function CommandQueue<T>.ThenConstUse(p: T->()): CommandQueue<T>;
@@ -5226,7 +5668,7 @@ begin
     Result := new CommandQueueThenQuickUse<T, SimpleProcContainer<T>, TBooleanTrueFlag>(self, p);
 end;
 
-function CommandQueue<T>.ThenConstUse(p: (T, Context)->()): CommandQueue<T>;
+function CommandQueue<T>.ThenConstUse(p: (T, CLContext)->()): CommandQueue<T>;
 begin
   if self is ConstQueue<T>(var c_q) then
   begin
@@ -5249,14 +5691,14 @@ type
   where TFunc: ISimpleFuncContainer<TInp,TRes>;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
         d.Invoke(err_handler, prev_qr.GetRes(c), c)
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->own_qr.SetRes(
         d.Invoke(err_handler, prev_qr.GetRes(c), c)
@@ -5264,7 +5706,7 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueRes<TInp>,CLTaskErrHandler,Context,TR)->Action): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueRes<TInp>,CLTaskErrHandler,CLContext,TR)->Action): TR; where TR: IQueueRes;
     begin
       var prev_qr := q.InvokeToAny(g, l);
       
@@ -5284,7 +5726,7 @@ type
 function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: T->TOtp) :=
 new CommandQueueThenThreadedConvert<T, TOtp, SimpleFuncContainer<T,TOtp>>(self, f);
 
-function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: (T, Context)->TOtp) :=
+function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: (T, CLContext)->TOtp) :=
 new CommandQueueThenThreadedConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>>(self, f);
 
 {$endregion Convert}
@@ -5329,7 +5771,7 @@ type
 function CommandQueue<T>.ThenThreadedUse(p: T->()) :=
 new CommandQueueThenThreadedUse<T, SimpleProcContainer<T>>(self, p);
 
-function CommandQueue<T>.ThenThreadedUse(p: (T, Context)->()) :=
+function CommandQueue<T>.ThenThreadedUse(p: (T, CLContext)->()) :=
 new CommandQueueThenThreadedUse<T, SimpleProcContainerC<T>>(self, p);
 
 {$endregion Use}
@@ -5721,7 +6163,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArrayWork<TInp,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp: array of TInp; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp: array of TInp; c: CLContext): TRes;
     
   end;
   
@@ -5729,7 +6171,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFuncContainer<array of TInp,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp: array of TInp; c: Context) :=
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp: array of TInp; c: CLContext) :=
     f.Invoke(err_handler, inp, c);
     
   end;
@@ -5738,7 +6180,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProcContainer<array of T>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp: array of T; c: Context): array of T; 
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp: array of T; c: CLContext): array of T; 
     begin
       p.Invoke(err_handler, inp, c);
       Result := inp;
@@ -5800,7 +6242,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TWork: IQueueArrayWork<TInp,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -5810,7 +6252,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -5823,7 +6265,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR;
-      make_body: (QueueResComplDelegateData, QueueResArr<TInp>,CLTaskErrHandler,Context,TR)->Action
+      make_body: (QueueResComplDelegateData, QueueResArr<TInp>,CLTaskErrHandler,CLContext,TR)->Action
     ): TR; where TR: IQueueRes;
     begin
       var inv_data := TInv.Create.Invoke(self.qs, g, l);
@@ -7706,19 +8148,19 @@ type
   
 {$endregion Core}
 
-{$region Kernel}
+{$region CLKernel}
 
 type
-  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
+  CLKernelCCQ = sealed partial class(GPUCommandContainer<CLKernel>)
     
-    private constructor(ccq: GPUCommandContainer<Kernel>) := inherited;
-    public function Clone: GPUCommandContainer<Kernel>; override := new KernelCCQ(self);
+    private constructor(ccq: GPUCommandContainer<CLKernel>) := inherited;
+    public function Clone: GPUCommandContainer<CLKernel>; override := new CLKernelCCQ(self);
     
   end;
   
-{%ContainerCommon\Kernel\Implementation!ContainerCommon.pas%}
+{%ContainerCommon\CLKernel\Implementation!ContainerCommon.pas%}
 
-{$endregion Kernel}
+{$endregion CLKernel}
 
 {$region CLMemory}
 
@@ -7764,20 +8206,20 @@ type
 
 {$endregion GPUCommandContainer}
 
-{$region KernelArg}
+{$region CLKernelArg}
 
 {$region Common}
 
 {$region Base}
 
 type
-  KernelArgCacheEntry = record
+  CLKernelArgCacheEntry = record
     public val_is_set: boolean;
     public last_set_val: object;
   end;
-  KernelArgCache = array of KernelArgCacheEntry;
+  CLKernelArgCache = array of CLKernelArgCacheEntry;
   
-  KernelArgSetter = abstract class
+  CLKernelArgSetter = abstract class
     private is_const: boolean;
     
     public constructor(is_const: boolean) := self.is_const := is_const;
@@ -7785,10 +8227,10 @@ type
     
     public property IsConst: boolean read is_const;
     
-    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); abstract;
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: CLKernelArgCache); abstract;
     
   end;
-  KernelArgSetterTyped<T> = abstract class(KernelArgSetter)
+  CLKernelArgSetterTyped<T> = abstract class(CLKernelArgSetter)
     protected o := default(T);
     
     public constructor(o: T);
@@ -7807,7 +8249,7 @@ type
       self.o := o;
     end;
     
-    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); override;
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: CLKernelArgCache); override;
     begin
       
       if cache<>nil then
@@ -7829,11 +8271,11 @@ type
     
   end;
   
-  KernelArg = abstract partial class
+  CLKernelArg = abstract partial class
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; abstract;
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; abstract;
     
   end;
   
@@ -7842,7 +8284,7 @@ type
 {$region GlobalConv}
 
 type
-  KernelArgSetterGlobalConv = class(KernelArgSetterTyped<cl_mem>)
+  CLKernelArgSetterGlobalConv = class(CLKernelArgSetterTyped<cl_mem>)
     
     public constructor(mem: cl_mem) := inherited Create(mem);
     private constructor := raise new OpenCLABCInternalException;
@@ -7858,7 +8300,7 @@ type
     );
     
   end;
-  KernelArgSetterGlobalConvHnd = sealed class(KernelArgSetterGlobalConv)
+  CLKernelArgSetterGlobalConvHnd = sealed class(CLKernelArgSetterGlobalConv)
     private gc_hnd: GCHandle;
     
     public constructor(mem: cl_mem; gc_hnd: GCHandle);
@@ -7876,17 +8318,17 @@ type
     
   end;
   
-  KernelArgGlobalConvCommon = record
-    private setter: KernelArgSetterGlobalConv;
+  CLKernelArgGlobalConvCommon = record
+    private setter: CLKernelArgSetterGlobalConv;
     
     public constructor(mem: cl_mem) :=
-    self.setter := new KernelArgSetterGlobalConv(mem);
+    self.setter := new CLKernelArgSetterGlobalConv(mem);
     public constructor(mem: cl_mem; gc_hnd: GCHandle) :=
-    self.setter := new KernelArgSetterGlobalConvHnd(mem, gc_hnd);
+    self.setter := new CLKernelArgSetterGlobalConvHnd(mem, gc_hnd);
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke := ValueTuple.Create(self.setter as KernelArgSetter, EventList.Empty);
+    function Invoke := ValueTuple.Create(self.setter as CLKernelArgSetter, EventList.Empty);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
@@ -7897,14 +8339,14 @@ type
     end;
     
   end;
-  KernelArgConstantConvCommon = KernelArgGlobalConvCommon;
+  CLKernelArgConstantConvCommon = CLKernelArgGlobalConvCommon;
   
 {$endregion GlobalConv}
 
 {$region GlobalWrap}
 
 type
-  KernelArgSetterGlobalWrap<TWrap> = sealed class(KernelArgSetterTyped<cl_mem>)
+  CLKernelArgSetterGlobalWrap<TWrap> = sealed class(CLKernelArgSetterTyped<cl_mem>)
   where TWrap: class;
     private wrap: TWrap := nil;
     
@@ -7932,7 +8374,7 @@ type
     
   end;
   
-  KernelArgGlobalWrapCommon<TWrap> = record
+  CLKernelArgGlobalWrapCommon<TWrap> = record
   where TWrap: class;
     private q: CommandQueue<TWrap>;
     
@@ -7940,17 +8382,17 @@ type
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<KernelArgSetter, EventList>;
+    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<CLKernelArgSetter, EventList>;
     begin
       var wrap_qr := inv.InvokeBranch(q.InvokeToAny);
-      var arg_setter: KernelArgSetter;
+      var arg_setter: CLKernelArgSetter;
       if wrap_qr.IsConst then
       begin
         var wrap := wrap_qr.GetResDirect;
-        arg_setter := new KernelArgSetterGlobalWrap<TWrap>(wrap, get_ntv(wrap));
+        arg_setter := new CLKernelArgSetterGlobalWrap<TWrap>(wrap, get_ntv(wrap));
       end else
       begin
-        var res := new KernelArgSetterGlobalWrap<TWrap>;
+        var res := new CLKernelArgSetterGlobalWrap<TWrap>;
         wrap_qr.AddAction(c->
         begin
           var wrap := wrap_qr.GetResDirect;
@@ -7971,22 +8413,22 @@ type
     end;
     
   end;
-  KernelArgConstantWrapCommon<TWrap> = KernelArgGlobalWrapCommon<TWrap>;
+  CLKernelArgConstantWrapCommon<TWrap> = CLKernelArgGlobalWrapCommon<TWrap>;
   
 {$endregion GlobalWrap}
 
 {$region Local}
 
 type
-  KernelArgSetterLocalBytes = sealed class(KernelArgSetterTyped<UIntPtr>)
+  CLKernelArgSetterLocalBytes = sealed class(CLKernelArgSetterTyped<UIntPtr>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
     
   end;
   
-  KernelArgLocal = abstract partial class(KernelArg) end;
-  KernelArgLocalBytes = sealed class(KernelArgLocal)
+  CLKernelArgLocal = abstract partial class(CLKernelArg) end;
+  CLKernelArgLocalBytes = sealed class(CLKernelArgLocal)
     private bytes: CommandQueue<UIntPtr>;
     
     public constructor(bytes: CommandQueue<UIntPtr>) := self.bytes := bytes;
@@ -7995,14 +8437,14 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     bytes.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override;
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override;
     begin
       var bytes_qr := inv.InvokeBranch(bytes.InvokeToAny);
-      var arg_setter: KernelArgSetter;
+      var arg_setter: CLKernelArgSetter;
       if bytes_qr.IsConst then
-        arg_setter := new KernelArgSetterLocalBytes(bytes_qr.GetResDirect) else
+        arg_setter := new CLKernelArgSetterLocalBytes(bytes_qr.GetResDirect) else
       begin
-        var res := new KernelArgSetterLocalBytes;
+        var res := new CLKernelArgSetterLocalBytes;
         bytes_qr.AddAction(c->res.SetObj(bytes_qr.GetResDirect));
         arg_setter := res;
       end;
@@ -8024,17 +8466,17 @@ type
 {$region Private}
 
 type
-  KernelArgPrivateCommon<TInp> = record
+  CLKernelArgPrivateCommon<TInp> = record
     private q: CommandQueue<TInp>;
     
     public constructor(q: CommandQueue<TInp>) := self.q := q;
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->KernelArgSetterTyped<TInp>; make_delayed: ()->KernelArgSetterTyped<TInp>): ValueTuple<KernelArgSetter, EventList>;
+    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->CLKernelArgSetterTyped<TInp>; make_delayed: ()->CLKernelArgSetterTyped<TInp>): ValueTuple<CLKernelArgSetter, EventList>;
     begin
       var prev_qr := inv.InvokeBranch(q.InvokeToAny);
-      var arg_setter: KernelArgSetter;
+      var arg_setter: CLKernelArgSetter;
       if prev_qr.IsConst then
         arg_setter := make_const(prev_qr.GetResDirect) else
       begin
@@ -8060,9 +8502,9 @@ type
 
 {$endregion Common}
 
-{%KernelArg\implementation!KernelArg.pas%}
+{%CLKernelArg\implementation!CLKernelArg.pas%}
 
-{$endregion KernelArg}
+{$endregion CLKernelArg}
 
 {$region Enqueueable's}
 
@@ -8227,26 +8669,26 @@ type
     
   end;
   
-  EnqueueableExecCommand = abstract class(CommonGPUCommand<Kernel>)
-    private args: array of KernelArg;
+  EnqueueableExecCommand = abstract class(CommonGPUCommand<CLKernel>)
+    private args: array of CLKernelArg;
     
-    protected constructor(args: array of KernelArg) := self.args := args;
+    protected constructor(args: array of CLKernelArg) := self.args := args;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected function ValidateForObj(k: Kernel): boolean; override;
+    protected function ValidateForObj(k: CLKernel): boolean; override;
     begin
       Result := true;
       var TODO := 0; // Попробовать пред-устанавливать аргументы
     end;
-    protected function ValidateForQueue(q: CommandQueue<Kernel>): boolean; override := true;
+    protected function ValidateForQueue(q: CommandQueue<CLKernel>): boolean; override := true;
     
     public function EnqEvCapacity: integer; abstract;
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; abstract;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; abstract;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of KernelArgSetter;
+    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of CLKernelArgSetter;
     begin
-      Result := new KernelArgSetter[self.args.Length];
+      Result := new CLKernelArgSetter[self.args.Length];
       for var i := 0 to self.args.Length-1 do
       begin
         var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
@@ -8260,15 +8702,15 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure KeepArgsGCAlive := GC.KeepAlive(self.args);
     
-    private own_k := default(Kernel);
+    private own_k := default(CLKernel);
     private own_k_ntv := cl_kernel.Zero;
-    private own_arg_cache := default(KernelArgCache);
+    private own_arg_cache := default(CLKernelArgCache);
     
-    protected function Invoke(k_const: boolean; get_k: ()->Kernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    protected function Invoke(k_const: boolean; get_k: ()->CLKernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
       var own_lock := new ExecCommandOwnKLock(if k_const then self else nil);
       try
-        var arg_cache := default(KernelArgCache);
+        var arg_cache := default(CLKernelArgCache);
         var get_k_ntv: ()->cl_kernel;
         
         // If CCQ is created from regular object or const/parameter queue
@@ -8282,7 +8724,7 @@ type
           begin
             own_k := k;
             own_k_ntv := k.ntv();
-            arg_cache := new KernelArgCacheEntry[self.args.Length];
+            arg_cache := new CLKernelArgCacheEntry[self.args.Length];
             self.own_arg_cache := arg_cache;
           end;
           
@@ -8358,21 +8800,21 @@ type
   
 {$endregion GetCommand}
 
-{$region Kernel}
+{$region CLKernel}
 
 {$region Implicit}
 
-{%ContainerMethods\Kernel.Exec\Implicit.Implementation!ContainerExecMethods.pas%}
+{%ContainerMethods\CLKernel.Exec\Implicit.Implementation!ContainerExecMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\Kernel.Exec\Explicit.Implementation!ContainerExecMethods.pas%}
+{%ContainerMethods\CLKernel.Exec\Explicit.Implementation!ContainerExecMethods.pas%}
 
 {$endregion Explicit}
 
-{$endregion Kernel}
+{$endregion CLKernel}
 
 {$region CLMemory}
 
@@ -8452,7 +8894,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
   
   ISimpleFunc0Container<T> = interface(ISimpleDelegateContainer)
     
-    function Invoke(c: Context): T;
+    function Invoke(c: CLContext): T;
     
   end;
   
@@ -8464,21 +8906,21 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
       Result.d := d;
     end;
     
-    public function Invoke(c: Context) := d();
+    public function Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
-    private d: Context->T;
+    private d: CLContext->T;
     
-    public static function operator implicit(d: Context->T): SimpleFunc0ContainerC<T>;
+    public static function operator implicit(d: CLContext->T): SimpleFunc0ContainerC<T>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(c: Context) := d(c);
+    public function Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -8495,7 +8937,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeFunc(err_handler: CLTaskErrHandler; c: Context): T;
+    function InvokeFunc(err_handler: CLTaskErrHandler; c: CLContext): T;
     begin
       if err_handler.HadError then exit;
       try
@@ -8520,7 +8962,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
   
   ISimpleProc0Container = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(c: Context);
+    procedure Invoke(c: CLContext);
     
   end;
   
@@ -8532,21 +8974,21 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
       Result.d := d;
     end;
     
-    public procedure Invoke(c: Context) := d();
+    public procedure Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc0ContainerC = record(ISimpleProc0Container)
-    private d: Context->();
+    private d: CLContext->();
     
-    public static function operator implicit(d: Context->()): SimpleProc0ContainerC;
+    public static function operator implicit(d: CLContext->()): SimpleProc0ContainerC;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(c: Context) := d(c);
+    public procedure Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -8563,7 +9005,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InvokeProc(err_handler: CLTaskErrHandler; c: Context);
+    procedure InvokeProc(err_handler: CLTaskErrHandler; c: CLContext);
     begin
       if err_handler.HadError then exit;
       try
@@ -8617,7 +9059,7 @@ type
   
 function HQFQ<T>(f: ()->T) :=
 new CommandQueueHostQuickFunc<T, SimpleFunc0Container <T>>(f);
-function HQFQ<T>(f: Context->T) :=
+function HQFQ<T>(f: CLContext->T) :=
 new CommandQueueHostQuickFunc<T, SimpleFunc0ContainerC<T>>(f);
 
 {$endregion Func}
@@ -8643,7 +9085,7 @@ type
   
 function HQPQ(p: ()->()) :=
 new CommandQueueHostQuickProc<SimpleProc0Container >(p);
-function HQPQ(p: Context->()) :=
+function HQPQ(p: CLContext->()) :=
 new CommandQueueHostQuickProc<SimpleProc0Containerc>(p);
 
 {$endregion Proc}
@@ -8658,12 +9100,12 @@ type
   CommandQueueHostThreadedFunc<T, TFunc> = sealed class(CommandQueueHostFuncBase<T, TFunc>)
   where TFunc: ISimpleFunc0Container<T>;
     
-    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: Context; err_handler: CLTaskErrHandler; own_qr: QueueResNil): Action := ()->
+    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: QueueResNil): Action := ()->
     begin
       prev_d.Invoke(c);
       InvokeFunc(err_handler, c);
     end;
-    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: Context; err_handler: CLTaskErrHandler; own_qr: TR): Action; where TR: QueueRes<T>;
+    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: TR): Action; where TR: QueueRes<T>;
     begin
       Result := ()->
       begin
@@ -8673,7 +9115,7 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueResComplDelegateData,Context,CLTaskErrHandler,TR)->Action): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueResComplDelegateData,CLContext,CLTaskErrHandler,TR)->Action): TR; where TR: IQueueRes;
     begin
       Result := make_qr(qr->new CLTaskLocalData(
         UserEvent.StartWorkThread(l.prev_ev,
@@ -8691,7 +9133,7 @@ type
   
 function HTFQ<T>(f: ()->T) :=
 new CommandQueueHostThreadedFunc<T, SimpleFunc0Container <T>>(f);
-function HTFQ<T>(f: Context->T) :=
+function HTFQ<T>(f: CLContext->T) :=
 new CommandQueueHostThreadedFunc<T, SimpleFunc0ContainerC<T>>(f);
 
 {$endregion Func}
@@ -8702,7 +9144,7 @@ type
   CommandQueueHostThreadedProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
   where TProc: ISimpleProc0Container;
     
-    private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: CLTaskErrHandler; c: Context): Action := ()->
+    private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: CLTaskErrHandler; c: CLContext): Action := ()->
     begin
       prev_d.Invoke(c);
       InvokeProc(err_handler, c);
@@ -8718,7 +9160,7 @@ type
   
 function HTPQ(p: ()->()) :=
 new CommandQueueHostThreadedProc<SimpleProc0Container >(p);
-function HTPQ(p: Context->()) :=
+function HTPQ(p: CLContext->()) :=
 new CommandQueueHostThreadedProc<SimpleProc0ContainerC>(p);
 
 {$endregion Proc}

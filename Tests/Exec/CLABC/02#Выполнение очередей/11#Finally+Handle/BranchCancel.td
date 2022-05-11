@@ -4,7 +4,7 @@
 #DelegateCount
 3
 
-#ExpOtp
+#ExpExecOtp
 TestOK 
 [EventDebug]: 3 event's created 
 [QueueResNil]: 5 

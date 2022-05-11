@@ -4,11 +4,15 @@
 #DelegateCount
 4
 
-#ExpOtp
+#ExpExecOtp
 1020304 
 [EventDebug]: 2 event's created 
 [QueueDebug]: 2 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[QueueResNil]: 1 
+[QueueRes<T>]: 5 
+	QueueResPtr<integer>: 1 
+	QueueResValDirect<CLArray<integer>>: 2 
+	QueueResValDirect<integer>: 2 
 
 #ReqModules
 OpenCLABC

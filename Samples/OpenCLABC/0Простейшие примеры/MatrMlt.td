@@ -4,7 +4,7 @@
 #DelegateCount
 7
 
-#ExpOtp
+#ExpExecOtp
 Матрица A: 
    0.73   0.82   0.77   0.56
    0.21   0.56   0.91   0.44

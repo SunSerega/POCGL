@@ -4,7 +4,7 @@ var M1 := WaitMarker.Create;
 var M2 := WaitMarker.Create;
 
 var mre := new System.Threading.ManualResetEventSlim(false);
-var t := Context.Default.BeginInvoke(
+var t := CLContext.Default.BeginInvoke(
   (
     WaitFor(M1 and M2) +
     HQPQ(()->Println(2))

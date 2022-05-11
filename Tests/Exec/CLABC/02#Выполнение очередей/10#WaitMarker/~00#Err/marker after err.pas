@@ -1,12 +1,12 @@
 ﻿## uses OpenCLABC;
 
 var M := WaitMarker.Create;
-var t := Context.Default.BeginInvoke(
+var t := CLContext.Default.BeginInvoke(
   WaitFor(M) + HQPQ(()->Println(2))
 );
 
 try
-  Context.Default.SyncInvoke(
+  CLContext.Default.SyncInvoke(
     HQPQ(()->raise new Exception) + M
   );
 except

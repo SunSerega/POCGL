@@ -1,0 +1,101 @@
+﻿
+
+
+TestRange('Managed', ()->
+begin
+TestRange('Array', ()->
+begin
+Test(CLKernelArgPrivate.FromArray(CQ(a)));
+TestT&<CLKernelArgPrivate>(a);
+TestT&<CLKernelArgPrivate>(CQ(a));
+TestT&<CLKernelArgPrivate>(new ConstQueue<array of T>(a));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<array of T>('a', a));
+end);
+TestRange('Array2', ()->
+begin
+Test(CLKernelArgPrivate.FromArray2(CQ(a2)));
+TestT&<CLKernelArgPrivate>(a2);
+TestT&<CLKernelArgPrivate>(CQ(a2));
+TestT&<CLKernelArgPrivate>(new ConstQueue<array[,] of T>(a2));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<array[,] of T>('a2', a2));
+end);
+TestRange('Array3', ()->
+begin
+Test(CLKernelArgPrivate.FromArray3(CQ(a3)));
+TestT&<CLKernelArgPrivate>(a3);
+TestT&<CLKernelArgPrivate>(CQ(a3));
+TestT&<CLKernelArgPrivate>(new ConstQueue<array[,,] of T>(a3));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<array[,,] of T>('a3', a3));
+end);
+TestRange('ArraySegment', ()->
+begin
+Test(CLKernelArgPrivate.FromArraySegment(CQ(seg)));
+TestT&<CLKernelArgPrivate>(seg);
+TestT&<CLKernelArgPrivate>(CQ(seg));
+TestT&<CLKernelArgPrivate>(new ConstQueue<ArraySegment<T>>(seg));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<ArraySegment<T>>('seg', seg));
+end);
+end);
+TestRange('NativeArea', ()->
+begin
+TestRange('NativeMemoryArea', ()->
+begin
+Test(CLKernelArgPrivate.FromNativeMemoryArea(CQ(ntv_mem_area)));
+TestT&<CLKernelArgPrivate>(ntv_mem_area);
+TestT&<CLKernelArgPrivate>(CQ(ntv_mem_area));
+TestT&<CLKernelArgPrivate>(new ConstQueue<NativeMemoryArea>(ntv_mem_area));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<NativeMemoryArea>('ntv_mem_area', ntv_mem_area));
+end);
+TestRange('NativeValueArea', ()->
+begin
+Test(CLKernelArgPrivate.FromNativeValueArea(CQ(ntv_val_area)));
+TestT&<CLKernelArgPrivate>(ntv_val_area);
+TestT&<CLKernelArgPrivate>(CQ(ntv_val_area));
+TestT&<CLKernelArgPrivate>(new ConstQueue<NativeValueArea<T>>(ntv_val_area));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<NativeValueArea<T>>('ntv_val_area', ntv_val_area));
+end);
+TestRange('NativeArrayArea', ()->
+begin
+Test(CLKernelArgPrivate.FromNativeArrayArea(CQ(ntv_arr_area)));
+TestT&<CLKernelArgPrivate>(ntv_arr_area);
+TestT&<CLKernelArgPrivate>(CQ(ntv_arr_area));
+TestT&<CLKernelArgPrivate>(new ConstQueue<NativeArrayArea<T>>(ntv_arr_area));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<NativeArrayArea<T>>('ntv_arr_area', ntv_arr_area));
+end);
+end);
+TestRange('Native', ()->
+begin
+TestRange('NativeMemory', ()->
+begin
+Test(CLKernelArgPrivate.FromNativeMemory(CQ(ntv_mem)));
+TestT&<CLKernelArgPrivate>(ntv_mem);
+TestT&<CLKernelArgPrivate>(CQ(ntv_mem));
+TestT&<CLKernelArgPrivate>(new ConstQueue<NativeMemory>(ntv_mem));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<NativeMemory>('ntv_mem', ntv_mem));
+end);
+TestRange('NativeValue', ()->
+begin
+Test(CLKernelArgPrivate.FromNativeValue(CQ(ntv_val)));
+TestT&<CLKernelArgPrivate>(ntv_val);
+TestT&<CLKernelArgPrivate>(CQ(ntv_val));
+TestT&<CLKernelArgPrivate>(new ConstQueue<NativeValue<T>>(ntv_val));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<NativeValue<T>>('ntv_val', ntv_val));
+end);
+TestRange('NativeArray', ()->
+begin
+Test(CLKernelArgPrivate.FromNativeArray(CQ(ntv_arr)));
+TestT&<CLKernelArgPrivate>(ntv_arr);
+TestT&<CLKernelArgPrivate>(CQ(ntv_arr));
+TestT&<CLKernelArgPrivate>(new ConstQueue<NativeArray<T>>(ntv_arr));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<NativeArray<T>>('ntv_arr', ntv_arr));
+end);
+end);
+TestRange('Value', ()->
+begin
+Test(CLKernelArgPrivate.FromValue(CQ(val)));
+TestT&<CLKernelArgPrivate>(val);
+TestT&<CLKernelArgPrivate>(CQ(val));
+TestT&<CLKernelArgPrivate>(new ConstQueue<T>(val));
+TestT&<CLKernelArgPrivate>(new ParameterQueue<T>('val', val));
+end);
+

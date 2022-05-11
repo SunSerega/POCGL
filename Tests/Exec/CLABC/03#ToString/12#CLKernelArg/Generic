@@ -1,0 +1,91 @@
+﻿
+
+
+TestRange('Managed', ()->
+begin
+TestRange('Array', ()->
+begin
+Test(CLKernelArg.FromArray(a));
+end);
+TestRange('Array2', ()->
+begin
+Test(CLKernelArg.FromArray2(a2));
+end);
+TestRange('Array3', ()->
+begin
+Test(CLKernelArg.FromArray3(a3));
+end);
+TestRange('ArraySegment', ()->
+begin
+Test(CLKernelArg.FromArraySegment(seg));
+end);
+end);
+TestRange('NativeArea', ()->
+begin
+TestRange('NativeMemoryArea', ()->
+begin
+Test(CLKernelArg.FromNativeMemoryArea(ntv_mem_area));
+end);
+TestRange('NativeValueArea', ()->
+begin
+Test(CLKernelArg.FromNativeValueArea(ntv_val_area));
+end);
+TestRange('NativeArrayArea', ()->
+begin
+Test(CLKernelArg.FromNativeArrayArea(ntv_arr_area));
+end);
+end);
+TestRange('Native', ()->
+begin
+TestRange('NativeMemory', ()->
+begin
+Test(CLKernelArg.FromNativeMemory(ntv_mem));
+end);
+TestRange('NativeValue', ()->
+begin
+Test(CLKernelArg.FromNativeValue(ntv_val));
+end);
+TestRange('NativeArray', ()->
+begin
+Test(CLKernelArg.FromNativeArray(ntv_arr));
+end);
+end);
+TestRange('CL', ()->
+begin
+TestRange('CLMemory', ()->
+begin
+Test(CLKernelArg.FromCLMemory(CQ(cl_mem)));
+TestT&<CLKernelArg>(cl_mem);
+TestT&<CLKernelArg>(CQ(cl_mem));
+TestT&<CLKernelArg>(new ConstQueue<CLMemory>(cl_mem));
+TestT&<CLKernelArg>(new ParameterQueue<CLMemory>('cl_mem', cl_mem));
+TestT&<CLKernelArg>(cl_mem.NewQueue);
+end);
+TestRange('CLValue', ()->
+begin
+Test(CLKernelArg.FromCLValue(CQ(cl_val)));
+TestT&<CLKernelArg>(cl_val);
+TestT&<CLKernelArg>(CQ(cl_val));
+TestT&<CLKernelArg>(new ConstQueue<CLValue<T>>(cl_val));
+TestT&<CLKernelArg>(new ParameterQueue<CLValue<T>>('cl_val', cl_val));
+TestT&<CLKernelArg>(cl_val.NewQueue);
+end);
+TestRange('CLArray', ()->
+begin
+Test(CLKernelArg.FromCLArray(CQ(cl_arr)));
+TestT&<CLKernelArg>(cl_arr);
+TestT&<CLKernelArg>(CQ(cl_arr));
+TestT&<CLKernelArg>(new ConstQueue<CLArray<T>>(cl_arr));
+TestT&<CLKernelArg>(new ParameterQueue<CLArray<T>>('cl_arr', cl_arr));
+TestT&<CLKernelArg>(cl_arr.NewQueue);
+end);
+end);
+TestRange('Value', ()->
+begin
+Test(CLKernelArg.FromValue(CQ(val)));
+TestT&<CLKernelArg>(val);
+TestT&<CLKernelArg>(CQ(val));
+TestT&<CLKernelArg>(new ConstQueue<T>(val));
+TestT&<CLKernelArg>(new ParameterQueue<T>('val', val));
+end);
+

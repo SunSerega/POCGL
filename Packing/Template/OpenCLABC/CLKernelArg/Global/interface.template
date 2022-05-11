@@ -1,0 +1,126 @@
+﻿    
+    
+    
+    {$region Managed}
+    
+    {$region Array}
+    
+    public static function FromArray<T>(a: array of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion Array}
+    
+    {$region Array2}
+    
+    public static function FromArray2<T>(a2: array[,] of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion Array2}
+    
+    {$region Array3}
+    
+    public static function FromArray3<T>(a3: array[,,] of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion Array3}
+    
+    {$region ArraySegment}
+    
+    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion ArraySegment}
+    
+    {$endregion Managed}
+    
+    {$region NativeArea}
+    
+    {$region NativeMemoryArea}
+    
+    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal;
+    
+    {$endregion NativeMemoryArea}
+    
+    {$region NativeValueArea}
+    
+    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion NativeValueArea}
+    
+    {$region NativeArrayArea}
+    
+    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion NativeArrayArea}
+    
+    {$endregion NativeArea}
+    
+    {$region Native}
+    
+    {$region NativeMemory}
+    
+    public static function FromNativeMemory(ntv_mem: NativeMemory; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal;
+    
+    {$endregion NativeMemory}
+    
+    {$region NativeValue}
+    
+    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion NativeValue}
+    
+    {$region NativeArray}
+    
+    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
+    
+    {$endregion NativeArray}
+    
+    {$endregion Native}
+    
+    {$region CL}
+    
+    {$region CLMemory}
+    
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
+    public static function operator implicit(cl_mem: CLMemory): CLKernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): CLKernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): CLKernelArgGlobal;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgGlobal;
+    
+    {$endregion CLMemory}
+    
+    {$region CLValue}
+    
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgGlobal; where T: record;
+    
+    {$endregion CLValue}
+    
+    {$region CLArray}
+    
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgGlobal; where T: record;
+    
+    {$endregion CLArray}
+    
+    {$endregion CL}
+    
+    
+    

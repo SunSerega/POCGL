@@ -1,140 +1,140 @@
 ﻿  
   
   
-  Platform = partial class
+  CLPlatform = partial class
     
     public property Native: cl_platform_id read ntv;
     
-    private prop: PlatformProperties;
-    private function GetProperties: PlatformProperties;
+    private prop: CLPlatformProperties;
+    private function GetProperties: CLPlatformProperties;
     begin
-      if prop=nil then prop := new PlatformProperties(ntv);
+      if prop=nil then prop := new CLPlatformProperties(ntv);
       Result := prop;
     end;
-    public property Properties: PlatformProperties read GetProperties;
+    public property Properties: CLPlatformProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Platform): boolean :=
+    public static function operator=(wr1, wr2: CLPlatform): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Platform): boolean := false=
+    public static function operator<>(wr1, wr2: CLPlatform): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Platform(var wr)) and (self = wr);
+    (obj is CLPlatform(var wr)) and (self = wr);
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  Device = partial class
+  CLDevice = partial class
     
     public property Native: cl_device_id read ntv;
     
-    private prop: DeviceProperties;
-    private function GetProperties: DeviceProperties;
+    private prop: CLDeviceProperties;
+    private function GetProperties: CLDeviceProperties;
     begin
-      if prop=nil then prop := new DeviceProperties(ntv);
+      if prop=nil then prop := new CLDeviceProperties(ntv);
       Result := prop;
     end;
-    public property Properties: DeviceProperties read GetProperties;
+    public property Properties: CLDeviceProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Device): boolean :=
+    public static function operator=(wr1, wr2: CLDevice): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Device): boolean := false=
+    public static function operator<>(wr1, wr2: CLDevice): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Device(var wr)) and (self = wr);
+    (obj is CLDevice(var wr)) and (self = wr);
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  SubDevice = partial class(Device)
+  CLSubDevice = partial class(CLDevice)
     
-    private prop: SubDeviceProperties;
-    private function GetProperties: SubDeviceProperties;
+    private prop: CLSubDeviceProperties;
+    private function GetProperties: CLSubDeviceProperties;
     begin
-      if prop=nil then prop := new SubDeviceProperties(ntv);
+      if prop=nil then prop := new CLSubDeviceProperties(ntv);
       Result := prop;
     end;
-    public property Properties: SubDeviceProperties read GetProperties;
+    public property Properties: CLSubDeviceProperties read GetProperties;
     
     public function ToString: string; override :=
     $'{inherited ToString} of {Parent}';
     
   end;
   
-  Context = partial class
+  CLContext = partial class
     
     public property Native: cl_context read ntv;
     
-    private prop: ContextProperties;
-    private function GetProperties: ContextProperties;
+    private prop: CLContextProperties;
+    private function GetProperties: CLContextProperties;
     begin
-      if prop=nil then prop := new ContextProperties(ntv);
+      if prop=nil then prop := new CLContextProperties(ntv);
       Result := prop;
     end;
-    public property Properties: ContextProperties read GetProperties;
+    public property Properties: CLContextProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Context): boolean :=
+    public static function operator=(wr1, wr2: CLContext): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Context): boolean := false=
+    public static function operator<>(wr1, wr2: CLContext): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Context(var wr)) and (self = wr);
+    (obj is CLContext(var wr)) and (self = wr);
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}';
     
   end;
   
-  ProgramCode = partial class
+  CLCode = abstract partial class
     
     public property Native: cl_program read ntv;
     
-    private prop: ProgramCodeProperties;
-    private function GetProperties: ProgramCodeProperties;
+    private prop: CLCodeProperties;
+    private function GetProperties: CLCodeProperties;
     begin
-      if prop=nil then prop := new ProgramCodeProperties(ntv);
+      if prop=nil then prop := new CLCodeProperties(ntv);
       Result := prop;
     end;
-    public property Properties: ProgramCodeProperties read GetProperties;
+    public property Properties: CLCodeProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: ProgramCode): boolean :=
+    public static function operator=(wr1, wr2: CLCode): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: ProgramCode): boolean := false=
+    public static function operator<>(wr1, wr2: CLCode): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is ProgramCode(var wr)) and (self = wr);
+    (obj is CLCode(var wr)) and (self = wr);
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  Kernel = partial class
+  CLKernel = partial class
     
     public property Native: cl_kernel read ntv;
     
-    private prop: KernelProperties;
-    private function GetProperties: KernelProperties;
+    private prop: CLKernelProperties;
+    private function GetProperties: CLKernelProperties;
     begin
-      if prop=nil then prop := new KernelProperties(ntv);
+      if prop=nil then prop := new CLKernelProperties(ntv);
       Result := prop;
     end;
-    public property Properties: KernelProperties read GetProperties;
+    public property Properties: CLKernelProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Kernel): boolean :=
+    public static function operator=(wr1, wr2: CLKernel): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
-    public static function operator<>(wr1, wr2: Kernel): boolean := false=
+    public static function operator<>(wr1, wr2: CLKernel): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Kernel(var wr)) and (self = wr);
+    (obj is CLKernel(var wr)) and (self = wr);
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{Name}] from {code}';

@@ -25,7 +25,7 @@ begin
   var E1 := NamedQ('E1');
   var E2 := NamedQ('E2');
   
-  Context.Default.SyncInvoke(
+  CLContext.Default.SyncInvoke(
     ( A1 + B1 + C1 + Dw + E1 ) *
     ( A2 + Bw + C2 + D2 + E2 )
   );
@@ -35,7 +35,7 @@ begin
   // Его можно расписать без Wait, к примеру:
   var B1s := (A1+B1).Multiusable;
   var D2s := ((B1s()*A2)+C2+D2).Multiusable;
-  Context.Default.SyncInvoke(
+  CLContext.Default.SyncInvoke(
     ( (B1s()+C1) * D2s() + E1 ) *
     ( D2s() + E2 )
   );

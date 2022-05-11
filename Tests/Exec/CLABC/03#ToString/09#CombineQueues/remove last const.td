@@ -4,7 +4,7 @@
 #DelegateCount
 3
 
-#ExpOtp
+#ExpExecOtp
 CommandQueueHostThreadedProc<SimpleProc0Container>#0: procedure lambda
 
 SimpleSyncQueueArrayNil#0

@@ -1,11 +1,11 @@
 ﻿## uses OpenCLABC;
 
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   HTPQ(()->Println(1)) >= HTPQ(()->Println(2))
 );
 
 try
-  Context.Default.SyncInvoke(
+  CLContext.Default.SyncInvoke(
     HTPQ(()->raise new Exception('ErrorOK')) + HTPQ(()->Println(3))
     >= HTPQ(()->Println(4)) + HTPQ(()->Println(5))
   );

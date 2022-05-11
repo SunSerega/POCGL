@@ -132,7 +132,7 @@ type
         wr += if is_conv then 'function' else 'procedure';
         wr += ' Invoke(';
         WriteNumbered('inp%: TInp%; ');
-        wr += 'c: Context)';
+        wr += 'c: CLContext)';
         if is_conv then
           wr += ': TRes';
         wr += ';'#10;
@@ -155,7 +155,7 @@ type
             wr += 'd: (';
             WriteNumbered('TInp%!,');
             if need_c then
-              wr += ', Context';
+              wr += ', CLContext';
             wr += ')->';
             wr += if is_conv then 'TRes' else '()';
           end;
@@ -179,7 +179,7 @@ type
           wr += if is_conv then 'function' else 'procedure';
           wr += ' Invoke(';
           WriteNumbered('inp%: TInp%; ');
-          wr += 'c: Context) := d(';
+          wr += 'c: CLContext) := d(';
           WriteNumbered('inp%!,');
           if need_c then wr += ',c';
           wr += ');'#10;
@@ -332,7 +332,7 @@ type
       wr += '    '#10;
       wr += '    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; ';
       WriteNumbered('inp%: TInp%; ');
-      wr += 'c: Context): TRes;'#10;
+      wr += 'c: CLContext): TRes;'#10;
       wr += '    '#10;
       wr += '  end;'#10;
       wr += '  '#10;
@@ -379,7 +379,7 @@ type
         wr += d_word;
         wr += '; err_handler: CLTaskErrHandler; ';
         WriteNumbered('inp%: TInp%; ');
-        wr += 'c: Context): ';
+        wr += 'c: CLContext): ';
         if is_conv then
           wr += 'TRes' else
           WriteVT;
@@ -443,7 +443,7 @@ type
         WriteDMakeBody;
         wr += ' = function(acts: QueueResComplDelegateData; ';
         WriteNumbered('qr%: QueueRes<TInp%>; ');
-        wr += 'err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;'#10;
+        wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;'#10;
       end;
       
       wr += '  CommandQueue';
@@ -488,7 +488,7 @@ type
           wr += if need_res then '<TR>' else '    ';
           wr += '(acts: QueueResComplDelegateData; ';
           WriteNumbered('qr%: QueueRes<TInp%>; ');
-          wr += 'err_handler: CLTaskErrHandler; c: Context; own_qr: ';
+          wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: ';
           wr += if need_res then 'TR' else 'QueueResNil';
           wr += '): Action;';
           if need_res then

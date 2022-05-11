@@ -10,11 +10,11 @@
     public function ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
     
     public function ThenConstProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenConstProc(p: (CLValue<T>, Context)->()): CLValueCCQ<T>;
+    public function ThenConstProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
     public function ThenQuickProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenQuickProc(p: (CLValue<T>, Context)->()): CLValueCCQ<T>;
+    public function ThenQuickProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
     public function ThenThreadedProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenThreadedProc(p: (CLValue<T>, Context)->()): CLValueCCQ<T>;
+    public function ThenThreadedProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
     
     public function ThenWait(marker: WaitMarker): CLValueCCQ<T>;
     

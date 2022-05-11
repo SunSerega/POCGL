@@ -5,14 +5,14 @@ begin
   q.Print;
   
   ('-'*30).Println;
-  Context.Default.SyncInvoke(q
+  CLContext.Default.SyncInvoke(q
     .ThenUse(x->Println(x))
     .ThenConvert(x->(x*x).Println)
     .ThenUse(x->Println(x))
   );
   
   ('-'*30).Println;
-  Context.Default.SyncInvoke(q
+  CLContext.Default.SyncInvoke(q
     .ThenQuickUse(x->Println(x))
     .ThenQuickConvert(x->(x*x).Println)
     .ThenQuickUse(x->Println(x+1))

@@ -9,7 +9,7 @@ begin
     thr_ids.Add(System.Threading.Thread.CurrentThread.ManagedThreadId);
   end;
   
-  Context.Default.SyncInvoke(
+  CLContext.Default.SyncInvoke(
     Q(add_thr_id) + CombineAsyncQueueNil(ArrFill(16, HQPQ(add_thr_id)))
   );
   

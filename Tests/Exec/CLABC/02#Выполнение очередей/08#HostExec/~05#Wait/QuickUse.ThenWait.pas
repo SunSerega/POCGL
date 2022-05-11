@@ -3,7 +3,7 @@
 var M := WaitMarker.Create;
 
 var mre := new System.Threading.ManualResetEventSlim(false);
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   HTPQ(()->
   begin
     mre.Wait;

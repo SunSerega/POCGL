@@ -3,7 +3,7 @@
 var A := HTPQ(()->raise new Exception('TestOK'));
 var S := new CLArray<byte>(1);
 
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   (A + S.NewQueue.ThenWriteValue(0, HQFQ(()->
   begin
     lock output do Println('Calculated anyway');

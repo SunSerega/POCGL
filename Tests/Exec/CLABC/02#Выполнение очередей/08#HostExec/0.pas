@@ -1,6 +1,6 @@
 ﻿## uses OpenCLABC;
 
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   HTPQ(()->Println(5))+
   HQFQ(()->7)
 ).Println;

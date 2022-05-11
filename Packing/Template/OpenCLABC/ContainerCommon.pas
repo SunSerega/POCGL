@@ -138,7 +138,7 @@ begin
           if need_c then res += '(';
           res += t;
           WriteGenerics(res);
-          if need_c then res += ', Context)';
+          if need_c then res += ', CLContext)';
           res += '->())';
           res_In += ': ';
           WriteCCQ(res_In);

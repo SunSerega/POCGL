@@ -4,7 +4,7 @@ procedure Test(M: WaitMarker; QErr: CommandQueueBase);
 begin
   var mre := new System.Threading.ManualResetEventSlim(false);
   
-  var t := Context.Default.BeginInvoke(
+  var t := CLContext.Default.BeginInvoke(
     WaitFor(M) +
     HQPQ(()->
     begin
@@ -13,7 +13,7 @@ begin
     end)
   );
   
-  Context.Default.SyncInvoke(QErr
+  CLContext.Default.SyncInvoke(QErr
     .HandleWithoutRes(e->
     begin
       mre.Wait;

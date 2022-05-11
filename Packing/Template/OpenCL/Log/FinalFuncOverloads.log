@@ -16,12 +16,21 @@
 	--------- | ------------- | ------------- |
 	          | source_kernel | errcode_ret   |
 
-# clCompileProgram[9]:
+# clCompileProgram[18]:
 	ErrorCode | cl_program | UInt32      | array of cl_device_id | string  | UInt32            | array of cl_program | array of string      | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | array of cl_device_id | IntPtr  | UInt32            | array of cl_program | array of string      | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | var cl_device_id      | string  | UInt32            | var cl_program      | var IntPtr           | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | var cl_device_id      | string  | UInt32            | var cl_program      | pointer              | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | var cl_device_id      | string  | UInt32            | IntPtr              | var IntPtr           | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | var cl_device_id      | string  | UInt32            | IntPtr              | pointer              | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | var cl_device_id      | IntPtr  | UInt32            | var cl_program      | var IntPtr           | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | var cl_device_id      | IntPtr  | UInt32            | var cl_program      | pointer              | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | var cl_device_id      | IntPtr  | UInt32            | IntPtr              | var IntPtr           | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | var cl_device_id      | IntPtr  | UInt32            | IntPtr              | pointer              | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | IntPtr                | string  | UInt32            | var cl_program      | var IntPtr           | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | IntPtr                | string  | UInt32            | var cl_program      | pointer              | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | IntPtr                | string  | UInt32            | IntPtr              | var IntPtr           | ProgramCallback | IntPtr    |
+	ErrorCode | cl_program | UInt32      | IntPtr                | string  | UInt32            | IntPtr              | pointer              | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | IntPtr                | IntPtr  | UInt32            | var cl_program      | var IntPtr           | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | IntPtr                | IntPtr  | UInt32            | var cl_program      | pointer              | ProgramCallback | IntPtr    |
 	ErrorCode | cl_program | UInt32      | IntPtr                | IntPtr  | UInt32            | IntPtr              | var IntPtr           | ProgramCallback | IntPtr    |

@@ -5,6 +5,6 @@ var q := CLMemory.Create(1).NewQueue
   .ThenQuickProc(mem->Println(2))
 ;
 
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   q.ThenQueue(q)
 );

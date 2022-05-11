@@ -1,6 +1,6 @@
 ﻿## uses OpenCLABC;
 
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   HQFQ(()->5).ThenConstConvert(i->
   begin
     Result := i;

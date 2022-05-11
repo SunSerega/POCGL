@@ -97,8 +97,8 @@ begin
         
         for var need_context := false to true do
         begin
-          var reg_name := need_context ? 'Context' : 'NonContext';
-          var context_par := need_context ? ', Context' : nil;
+          var reg_name := need_context ? 'CLContext' : 'NonContext';
+          var context_par := need_context ? ', CLContext' : nil;
           
           wr += '{$region ';
           wr += reg_name;

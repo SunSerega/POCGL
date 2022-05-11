@@ -1,9 +1,9 @@
 ﻿  
   
   
-  {$region Platform}
+  {$region CLPlatform}
   
-  PlatformProperties = partial class
+  CLPlatformProperties = partial class
     
     public constructor(ntv: cl_platform_id);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -81,11 +81,11 @@
     
   end;
   
-  {$endregion Platform}
+  {$endregion CLPlatform}
   
-  {$region Device}
+  {$region CLDevice}
   
-  DeviceProperties = partial class
+  CLDeviceProperties = partial class
     
     public constructor(ntv: cl_device_id);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -1023,22 +1023,22 @@
     
   end;
   
-  {$endregion Device}
+  {$endregion CLDevice}
   
-  {$region SubDevice}
+  {$region CLSubDevice}
   
-  SubDeviceProperties = partial class(DeviceProperties)
+  CLSubDeviceProperties = partial class(CLDeviceProperties)
     
     public constructor(ntv: cl_device_id);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
     
   end;
   
-  {$endregion SubDevice}
+  {$endregion CLSubDevice}
   
-  {$region Context}
+  {$region CLContext}
   
-  ContextProperties = partial class
+  CLContextProperties = partial class
     
     public constructor(ntv: cl_context);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -1086,11 +1086,11 @@
     
   end;
   
-  {$endregion Context}
+  {$endregion CLContext}
   
-  {$region ProgramCode}
+  {$region CLCode}
   
-  ProgramCodeProperties = partial class
+  CLCodeProperties = partial class
     
     public constructor(ntv: cl_program);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -1098,16 +1098,12 @@
     private function GetReferenceCount: UInt32;
     private function GetSource: String;
     private function GetIl: array of Byte;
-    private function GetNumKernels: UIntPtr;
-    private function GetKernelNames: String;
     private function GetScopeGlobalCtorsPresent: Bool;
     private function GetScopeGlobalDtorsPresent: Bool;
     
     public property ReferenceCount:          UInt32        read GetReferenceCount;
     public property Source:                  String        read GetSource;
     public property Il:                      array of Byte read GetIl;
-    public property NumKernels:              UIntPtr       read GetNumKernels;
-    public property KernelNames:             String        read GetKernelNames;
     public property ScopeGlobalCtorsPresent: Bool          read GetScopeGlobalCtorsPresent;
     public property ScopeGlobalDtorsPresent: Bool          read GetScopeGlobalDtorsPresent;
     
@@ -1132,22 +1128,6 @@
       res += 'Il                      = ';
       try
         res += _ObjectToString(Il);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NumKernels              = ';
-      try
-        res += _ObjectToString(NumKernels);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'KernelNames             = ';
-      try
-        res += _ObjectToString(KernelNames);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -1178,11 +1158,11 @@
     
   end;
   
-  {$endregion ProgramCode}
+  {$endregion CLCode}
   
-  {$region Kernel}
+  {$region CLKernel}
   
-  KernelProperties = partial class
+  CLKernelProperties = partial class
     
     public constructor(ntv: cl_kernel);
     private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
@@ -1240,7 +1220,7 @@
     
   end;
   
-  {$endregion Kernel}
+  {$endregion CLKernel}
   
   {$region CLMemory}
   

@@ -48,7 +48,7 @@
   
   ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
     
   end;
   
@@ -60,21 +60,21 @@
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = record(ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->TRes;
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->TRes): SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->TRes): SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -83,7 +83,7 @@
   
   ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext);
     
   end;
   
@@ -95,21 +95,21 @@
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5> = record(ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->();
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->()): SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->()): SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -197,7 +197,7 @@
   IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
     
   end;
   
@@ -205,7 +205,7 @@
   where TFunc: ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -221,7 +221,7 @@
   where TProc: ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>;
     begin
       if err_handler.HadError then exit;
       try
@@ -283,14 +283,14 @@
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>)
   where TInv: IQueueArray5Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -300,7 +300,7 @@
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin

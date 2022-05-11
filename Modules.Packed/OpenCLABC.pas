@@ -29,13 +29,18 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Названия параметров в ffo
-//TODO Фиксе добавляющий "var T" или "var IntPtr" должен автоматически менять "IntPtr" на "pointer"
-//TODO "cl_" не попадают в строки расширений в OpenCL
+//TODO CLContext.GenerateCheckedDefault
 
-//TODO Аргументы компиляции OpenCL-C кода
-// - #define-ы особо полезны, но там куча всего...
-// - https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_API.html#compiler-options
+//TODO Проверить во что восстанавливаются бинарники при загрузке назад
+
+
+
+//TODO Пусть CLKernel хранит List<cl_kernel>
+// - Таким образом может не создавать новые cl_kernel лишний раз
+
+//TODO Попробовать применять константные CLKernelArg к константному CLKernel в момент создания команды
+// - "var TODO := 0" дающий предупреждение уже стоит
+// - Но если не все CLKernelArg константные, если CLKernel выполнен 2 раза одновременно - его придётся скопировать и применить аргументы ещё раз
 
 //TODO Деприкация в OpenCL?
 // - К примеру clCreateImage2D не должна использоваться после 1.2
@@ -43,37 +48,42 @@ unit OpenCLABC;
 //TODO [In] и [Out] в кодогенераторах
 // - [Out] строки без [In] заменять на StringBuilder
 // - Полезно, к примеру, в cl.GetProgramBuildInfo
+// - А в cl.GetProgramInfo надо принимать [Out] "array of array of Byte" вместо "var IntPtr"
 
 //TODO Тесты и справка:
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
 
+//TODO NativeMemoryArea в отдельный модуль
+// - При этом сделать его кросс-платформенным
+
 //TODO Использовать cl.EnqueueMapBuffer
-// - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQNil)
-// - Лучше сделать так же как для KernelArgGlobal
+// - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQBase)
+// - Лучше сделать так же как для CLKernelArgGlobal
 // - В справку
 // --- В том числе то, что Map быстрее Read, который быстрее Get
 // --- (собсна протестить)
-//TODO operator implicit для NativeValue=>KernelArg[Global] не генерируются?
+//TODO operator implicit для NativeValue=>CLKernelArg[Global] не генерируются?
 // - Правда теперь не релевантно, потому что:
-//TODO KernelArgGlobal (и Constant) из адреса RAM не обязан копировать данные с кеша GPU назад в RAM после выполнения kernel'а
+//TODO CLKernelArgGlobal (и Constant) из адреса RAM не обязан копировать данные с кеша GPU назад в RAM после выполнения kernel'а
 // - Для этого случая (+оптимизации чтения/записи) и используется MapBuffer
 // - В справку
 //TODO При чём это в обе стороны (не-)работает
 //  var v1 := new NativeValue<integer>(1);
 //  var v2 := new CLValue<integer>(-1);
-//  var Q_Copy := k.NewQueue.ThenExec1(1,KernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
+//  var Q_Copy := k.NewQueue.ThenExec1(1,CLKernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
 //  
 //  v1.Value := 3;
-//  Context.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
+//  CLContext.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
 //  v1.Value := 5;
-//  Context.Default.SyncInvoke(Q_Copy).Println; // тут всё ещё старое значение
+//  CLContext.Default.SyncInvoke(Q_Copy).Println; // тут всё ещё старое значение
 //TODO Нет смысла в Global/Constant KernlArg'е хранящем NativeValue[Area]
 // - CLMemory.FromHostMemory(copy: boolean? := nil)
-// --- Создаёт или CLMemory (если copy), или его наследник, хранящий ещё "host_hnd: GCHandle" или "host_obj_ref: object"
-// --- Если nil то используется Contex.MainDevice.CLPreferHostMemoryCopy := Type=GPU
+// --- Создаёт или Memory(если copy), или его наследник, хранящий ещё "host_hnd: GCHandle" или "host_obj_ref: object"
+// --- Если nil то используется Contex.MainDevice.CLPreferHostCLMemoryCopy := Type=GPU
 // - А в обычном конструкторе добавить параметр prealloc_map_mem и убрать передачу существующей памяти
+// --- MEM_ALLOC_HOST_PTR
 // - В справку:
-// --- FromHostMemory(copy=false) полезно для существующих объектов, но использовать вне .MapMemory их всё равно нельзя
+// --- FromHostMemory(copy=false) полезно для существующих объектов, но использовать вне .MapCLMemory их всё равно нельзя
 // --- Кроме того, плотно упаковывать элементы плохо
 // --- К примеру принимать float3* нельзя, надо принимать и передавать float4*
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
@@ -83,12 +93,12 @@ unit OpenCLABC;
 //TODO github.io
 
 //TODO Справка:
-// - KernelArg
+// - CLKernelArg
 // - NativeArray
 // - CLValue
-// - !CL!Memory[SubSegment]
-// - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки KernelArg для CL- типов
-// - MemoryUsage
+// - !CL!CLMemory[SubSegment]
+// - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки CLKernelArg для CL- типов
+// - CLMemoryUsage
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
 // --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
@@ -103,6 +113,7 @@ unit OpenCLABC;
 // Запланированное:
 
 //TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
+// - Реализовано в ветке с новыми TypeName
 
 //TODO Переделать кодогенераторы под что то типа .cshtml
 
@@ -132,7 +143,7 @@ unit OpenCLABC;
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
-//TODO Попробовать получать информацию о параметрах Kernel'а и выдавать адекватные ошибки, если передают что-то не то
+//TODO Попробовать получать информацию о параметрах CLKernel'а и выдавать адекватные ошибки, если передают что-то не то
 // - clGetKernelArgInfo
 // - Для этого нужна опция "-cl-kernel-arg-info" при компиляции
 
@@ -146,16 +157,9 @@ unit OpenCLABC;
 //TODO Несколько TODO в:
 // - Queue converter's >> Wait
 
-//TODO NativeMemoryArea в отдельный модуль
-// - При этом сделать его кросс-платформенным
-
-//TODO Исправить перегрузки Kernel.Exec
+//TODO Исправить перегрузки CLKernel.Exec
 // - Но сначала решить как исправлять
-
-//TODO MEM_ALLOC_HOST_PTR, на сколько я понял он:
-// - Медленнее чем MEM_USE_HOST_PTR для выровеных данных, потому что копирование
-// - Быстрее чем MEM_USE_HOST_PTR в остальных случаях
-// - Протестировать
+// - Перегрузки с UIntPtr перед перегрузками integer?
 
 //TODO Фичи версий OpenCL:
 // - 2.0
@@ -179,14 +183,15 @@ unit OpenCLABC;
 //
 // - ???
 // --- clEnqueueMigrateMemObjects
-// --- clCreateProgramWithIL
 
 //===================================
 // Сделать когда-нибуть:
 
 //TODO Пройтись по всем функциям OpenCL, посмотреть функционал каких не доступен из OpenCLABC
-// - clGetKernelWorkGroupInfo - свойства кернела на определённом устройстве
+// - clGetCLKernelWorkGroupInfo - свойства кернела на определённом устройстве
 // - clCreateContext: CL_CONTEXT_INTEROP_USER_SYNC
+// - clCreateProgramWithIL
+// - Асинхронные cl_command_queue
 // - Другие типы cl_mem (сейчас используется только буфер)
 // - clEnqueueNativeKernel
 // --- CL_DEVICE_BUILT_IN_KERNELS
@@ -248,12 +253,672 @@ uses OpenCL;
 
 type
   
+  {$region TODO MOVE}
+  
+  {$region NativeArea}
+  
+  {$region NativeMemoryArea}
+  
+  ///Описывает неуправляемою область памяти
+  NativeMemoryArea = record
+    public ptr: IntPtr;
+    public sz: UIntPtr;
+    
+    {$region constructor's}
+    
+    ///Создаёт описание указанной области памяти
+    public constructor(ptr: IntPtr; sz: UIntPtr);
+    begin
+      self.ptr := ptr;
+      self.sz := sz;
+    end;
+    public constructor(sz: UIntPtr);
+    begin
+      self.sz := sz;
+      Alloc;
+    end;
+    public constructor;
+    begin
+      self.ptr := IntPtr.Zero;
+      self.sz := UIntPtr.Zero;
+    end;
+    
+    {$endregion constructor's}
+    
+    {$region Method's}
+    
+    {$region Fill}
+    
+    private static procedure RtlZeroMemory(dst: IntPtr; length: UIntPtr);
+    external 'kernel32.dll';
+    private static procedure RtlFillMemory(dst: IntPtr; length: UIntPtr; fill: byte);
+    external 'kernel32.dll';
+    
+    ///Заполняет всю область памяти нулевыми байтами
+    public procedure FillZero := RtlZeroMemory(ptr, sz);
+    ///Заполняет всю область памяти указанными байтами
+    public procedure Fill(val: byte) := RtlFillMemory(ptr, sz, val);
+    
+    {$endregion Fill}
+    
+    {$region Copy}
+    
+    private static procedure RtlCopyMemory(dst: IntPtr; source: IntPtr; length: UIntPtr);
+    external 'kernel32.dll';
+    private static procedure RtlCopyMemory(var dst: byte; source: IntPtr; length: UIntPtr);
+    external 'kernel32.dll';
+    private static procedure RtlCopyMemory(dst: IntPtr; var source: byte; length: UIntPtr);
+    external 'kernel32.dll';
+    
+    ///Копирует данные из данной области памяти в указанную
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyMinSize
+    public procedure CopyTo(area: NativeMemoryArea) := RtlCopyMemory(area.ptr, self.ptr, self.sz);
+    ///Копирует данные из указанной области памяти в данную
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyMinSize
+    public procedure CopyFrom(area: NativeMemoryArea) := RtlCopyMemory(self.ptr, area.ptr, self.sz);
+    ///Копирует данные между указанными областями памяти
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Количество копируемых байт равняется минимальному размеру указанных областей памяти
+    public static procedure CopyMinSize(source, dest: NativeMemoryArea);
+    begin
+      var min_sz := if source.sz.ToUInt64<dest.sz.ToUInt64 then source.sz else dest.sz;
+      RtlCopyMemory(dest.ptr, source.ptr, min_sz);
+    end;
+    
+    ///Копирует данные из данной области памяти в указанную
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyTo<T>(var el: T) := RtlCopyMemory(PByte(pointer(@el))^, self.ptr, self.sz);
+    ///Копирует данные из данной области памяти в указанную
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyTo<T>(a: array of T) := CopyTo(a[0]);
+    
+    ///Копирует данные из указанной области памяти в данную
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyFrom<T>(var el: T) := RtlCopyMemory(self.ptr, PByte(pointer(@el))^, self.sz);
+    ///Копирует данные из указанной области памяти в данную
+    ///Области памяти не должны пересекаться. Иначе поведение неопределено
+    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyFrom<T>(a: array of T) := CopyFrom(a[0]);
+    
+    {$endregion Copy}
+    
+    {$region CopyOverlapped}
+    
+    private static procedure RtlMoveMemory(dst: IntPtr; source: IntPtr; length: UIntPtr);
+    external 'kernel32.dll';
+    private static procedure RtlMoveMemory(var dst: byte; source: IntPtr; length: UIntPtr);
+    external 'kernel32.dll';
+    private static procedure RtlMoveMemory(dst: IntPtr; var source: byte; length: UIntPtr);
+    external 'kernel32.dll';
+    
+    ///Копирует данные из данной области памяти в указанную
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyOverlappedMinSize
+    public procedure CopyOverlappedTo(area: NativeMemoryArea) := RtlMoveMemory(area.ptr, self.ptr, self.sz);
+    ///Копирует данные из указанной области памяти в данную
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyOverlappedMinSize
+    public procedure CopyOverlappedFrom(area: NativeMemoryArea) := RtlMoveMemory(self.ptr, area.ptr, self.sz);
+    ///Копирует данные между указанными областями памяти
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Количество копируемых байт равняется минимальному размеру указанных областей памяти
+    public static procedure CopyOverlappedMinSize(source, dest: NativeMemoryArea);
+    begin
+      var min_sz := if source.sz.ToUInt64<dest.sz.ToUInt64 then source.sz else dest.sz;
+      RtlMoveMemory(dest.ptr, source.ptr, min_sz);
+    end;
+    
+    ///Копирует данные из данной области памяти в указанную
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyOverlappedTo<T>(var el: T) := RtlMoveMemory(PByte(pointer(@el))^, self.ptr, self.sz);
+    ///Копирует данные из данной области памяти в указанную
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyOverlappedTo<T>(a: array of T) := CopyTo(a[0]);
+    
+    ///Копирует данные из указанной области памяти в данную
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyOverlappedFrom<T>(var el: T) := RtlMoveMemory(self.ptr, PByte(pointer(@el))^, self.sz);
+    ///Копирует данные из указанной области памяти в данную
+    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
+    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
+    public procedure CopyOverlappedFrom<T>(a: array of T) := CopyTo(a[0]);
+    
+    {$endregion CopyOverlapped}
+    
+    {$endregion Method's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      self.ptr := Marshal.AllocHGlobal(IntPtr(self.sz.ToPointer));
+      GC.AddMemoryPressure(self.sz.ToUInt64);
+    end;
+    public procedure Release;
+    begin
+      GC.RemoveMemoryPressure(self.sz.ToUInt64);
+      Marshal.FreeHGlobal(self.ptr);
+      self.ptr := IntPtr.Zero;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := new NativeMemoryArea(
+        Interlocked.Exchange(self.ptr, IntPtr.Zero),
+        self.sz
+      );
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    ///Возвращает строку с основными данными о данном объекте
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
+    
+  end;
+  
+  {$endregion NativeMemoryArea}
+  
+  {$region NativeValueArea}
+  
+  NativeValueArea<T> = record
+  where T: record;
+    public ptr: IntPtr;
+    
+    {$region constructor's}
+    
+    static constructor;
+    
+    public constructor(ptr: IntPtr) := self.ptr := ptr;
+    public constructor(alloc: boolean := false) :=
+    if alloc then self.Alloc else
+    self.ptr := IntPtr.Zero;
+    
+    public static function operator implicit(p: ^T): NativeValueArea<T> := new NativeValueArea<T>(new IntPtr(p));
+    public static function operator implicit(area: NativeValueArea<T>): ^T := area.Pointer;
+    public static function operator implicit(area: NativeValueArea<T>): NativeMemoryArea := area.UntypedArea;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public static property ValueSize: integer read Marshal.SizeOf(default(T));
+    public property ByteSize: UIntPtr read new UIntPtr(ValueSize);
+    
+    //TODO #????
+    private function PointerUntyped := pointer(ptr);
+    public property Pointer: ^T read PointerUntyped();
+    public property Value: T read Pointer^ write Pointer^ := value;
+    
+    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.ptr, self.ByteSize);
+    
+    {$endregion property's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      var temp := self.UntypedArea;
+      temp.Alloc;
+      self.ptr := temp.ptr;
+    end;
+    public procedure Release;
+    begin
+      var temp := self.UntypedArea;
+      temp.Release;
+      self.ptr := temp.ptr;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := self.UntypedArea;
+      temp.ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${ptr.ToString(''X'')}';
+    
+  end;
+  
+  {$endregion NativeValueArea}
+  
+  {$region NativeArrayArea}
+  
+  NativeArrayArea<T> = record
+  where T: record;
+    public first_ptr: IntPtr;
+    public item_count: UInt32;
+    
+    {$region constructor's}
+    
+    static constructor;
+    
+    public constructor(first_ptr: IntPtr; item_count: UInt32);
+    begin
+      self.first_ptr  := first_ptr;
+      self.item_count := item_count;
+    end;
+    public constructor(item_count: UInt32);
+    begin
+      self.item_count := item_count;
+      Alloc;
+    end;
+    public constructor;
+    begin
+      self.first_ptr  := IntPtr.Zero;
+      self.item_count := 0;
+    end;
+    
+    public static function operator implicit(area: NativeArrayArea<T>): NativeMemoryArea := area.UntypedArea;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public static property ItemSize: integer read Marshal.SizeOf(default(T));
+    public property ByteSize: UIntPtr read new UIntPtr( item_count*uint64(ItemSize) );
+    
+    public property Length: cardinal read self.item_count;
+    
+    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read new NativeValueArea<T>(self.first_ptr + i*ItemSize);
+    
+    private function GetAndCheckItemArea(i: integer): NativeValueArea<T>;
+    begin
+      if cardinal(i)>=self.item_count then raise new IndexOutOfRangeException;
+      Result := ItemAreaUnchecked[i];
+    end;
+    public property ItemArea[i: integer]: NativeValueArea<T> read GetAndCheckItemArea;
+    public property Item[i: integer]: T read ItemArea[i].Value write ItemArea[i].Value := value; default;
+    
+    public property SliceUnchecked[r: IntRange]: NativeArrayArea<T> read
+    new NativeArrayArea<T>( ItemAreaUnchecked[r.Low].ptr, r.High-r.Low+1 );
+    private function GetSliceAndCheck(r: IntRange): NativeArrayArea<T>;
+    begin
+      if r.Low<0 then raise new IndexOutOfRangeException('r.Low');
+      if cardinal(r.High)>=self.item_count then raise new IndexOutOfRangeException('r.High');
+      Result := SliceUnchecked[r];
+      if integer(Result.item_count)<0 then raise new ArgumentOutOfRangeException('r.Count');
+    end;
+    public property Slice[r: IntRange]: NativeArrayArea<T> read GetSliceAndCheck;
+    
+    private function GetManagedCopy: array of T;
+    begin
+      Result := new T[self.item_count];
+      self.UntypedArea.CopyTo(Result);
+    end;
+    public property ManagedCopy: array of T read GetManagedCopy write
+    begin
+      if value.Length<>self.item_count then raise new ArgumentException($'');
+      self.UntypedArea.CopyFrom(value);
+    end;
+    
+    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.first_ptr, self.ByteSize);
+    
+    {$endregion property's}
+    
+    {$region Alloc/Release}
+    
+    public property IsAllocated: boolean read self.first_ptr<>IntPtr.Zero;
+    
+    public procedure Alloc;
+    begin
+      var temp := self.UntypedArea;
+      temp.Alloc;
+      self.first_ptr := temp.ptr;
+    end;
+    public procedure Release;
+    begin
+      var temp := self.UntypedArea;
+      temp.Release;
+      self.first_ptr := temp.ptr;
+    end;
+    public function TryRelease: boolean;
+    begin
+      Result := false;
+      var temp := self.UntypedArea;
+      temp.ptr := Interlocked.Exchange(self.first_ptr, IntPtr.Zero);
+      if not temp.IsAllocated then exit;
+      temp.Release;
+      self.first_ptr := temp.ptr;
+      Result := true;
+    end;
+    
+    {$endregion Alloc/Release}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
+    
+  end;
+  
+  {$endregion NativeArrayArea}
+  
+  {$endregion NativeArea}
+  
+  {$region Native}
+  
+  {$region NativeMemory}
+  
+  NativeMemory = partial class(IDisposable)
+    private _area: NativeMemoryArea;
+    
+    {$region constructor's}
+    
+    public constructor(sz: UIntPtr);
+    begin
+      self._area.sz := sz;
+      self._area.Alloc;
+    end;
+    private constructor := raise new InvalidOperationException;
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    public property Area: NativeMemoryArea read _area;
+    
+    {$endregion property's}
+    
+    {$region IDisposable}
+    
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
+    protected procedure Finalize; override := Dispose;
+    
+    {$endregion IDisposable}
+    
+    public function ToString: string; override :=
+    $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+    
+  end;
+  
+  {$endregion NativeMemory}
+  
+  {$region NativeValue}
+  
+  ///Представляет запись, значение которой хранится в неуправляемой области памяти
+  NativeValue<T> = partial class(IDisposable)
+  where T: record;
+    private _area := new NativeValueArea<T>(true);
+    
+    {$region constructor's}
+    
+    ///Выделяет и обнуляет область неуправляемой памяти
+    public constructor := self.AreaUntyped.FillZero;
+    ///Выделяет область неуправляемой памяти и сохраняет в него указанное значение
+    public constructor(o: T) := self.Value := o;
+    public static function operator implicit(o: T): NativeValue<T> := new NativeValue<T>(o);
+    
+    {$endregion constructor's}
+    
+    {$region property's}
+    
+    ///Возвращает размер значения, в байтах
+    public static property ValueSize: integer read NativeValueArea&<T>.ValueSize;
+    
+    public property Area: NativeValueArea<T> read _area;
+    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
+    
+    ///Возвращает указатель на значение, сохранённое неуправляемой памяти
+    public property Pointer: ^T read Area.Pointer;
+    ///Возвращает или задаёт значение, сохранённое неуправляемой памяти
+    public property Value: T read Area.Value write Area.Value := value;
+    
+    {$endregion property's}
+    
+    {$region IDisposable}
+    
+    ///Освобождает значение, сохранённое неуправляемой памяти
+    ///Ничего не делает, если значение уже освобождено
+    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
+    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
+    protected procedure Finalize; override := Dispose;
+    
+    {$endregion IDisposable}
+    
+    ///Возвращает строку с основными данными о данном объекте
+    public function ToString: string; override :=
+    $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
+    
+  end;
+  
+  {$endregion NativeValue}
+  
+  {$region NativeArray}
+  
+  ///Представляет массив, содержимое которого хранится в неуправляемой области памяти
+  NativeArray<T> = partial class
+  where T: record;
+    private _area: NativeArrayArea<T>;
+    
+    {$region constructor's}
+    
+    private procedure AllocArea(length: UInt32) :=
+    self._area := new NativeArrayArea<T>(length);
+    public constructor(length: UInt32);
+    begin
+      AllocArea(length);
+      self.AreaUntyped.FillZero;
+    end;
+    ///Выделяет неуправляемую память и сохраняет в неё копию указанных данных
+    public constructor(a: array of T);
+    begin
+      AllocArea(a.Length);
+      self.AreaUntyped.CopyFrom(a);
+    end;
+    
+    private constructor := raise new InvalidOperationException;
+    
+    {$endregion constructor's}
+    
+    {$region Method's}
+    
+    ///Возвращает индекс по которому находится указанный элемент
+    ///Если элемент таковой найден - возвращает nil
+    public function IndexOf(item: T): integer?;
+    begin
+      Result := nil;
+      for var i := 0 to Length-1 do
+        if self.Item[i]=item then
+        begin
+          Result := i;
+          break;
+        end;
+    end;
+    
+    {$endregion Method's}
+    
+    {$region property's}
+    
+    ///Возвращает размер одного элемента массива, в байтах
+    public static property ItemSize: integer read NativeArrayArea&<T>.ItemSize;
+    
+    public property Area: NativeArrayArea<T> read self._area;
+    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
+    
+    public property Length: cardinal read self.Area.item_count;
+    
+    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read Area.ItemAreaUnchecked[i];
+    public property ItemArea[i: integer]: NativeValueArea<T> read Area.ItemArea[i];
+    ///Возвращает или задаёт элемент массива по указанному индексу
+    ///Данное свойство проверяет правильность переданных индексов
+    public property Item[i: integer]: T read Area[i] write Area[i] := value; default;
+    
+    ///Возвращает описание области памяти для указанного среза элементов
+    ///Данное свойство не проверяет правильность переданных индексов
+    public property SliceAreaUnchecked[r: IntRange]: NativeArrayArea<T> read Area.SliceUnchecked[r];
+    ///Возвращает описание области памяти для указанного среза элементов
+    ///Данное свойство проверяет правильность переданных индексов
+    public property SliceArea[r: IntRange]: NativeArrayArea<T> read Area.Slice[r];
+    
+    {$endregion property's}
+    
+  end;
+  
+  ///Представляет перечислитель для типа NativeArray<>
+  NativeArrayEnumerator<T> = record(IEnumerator<T>)
+  where T: record;
+    private a: NativeArray<T>;
+    private i: integer;
+    
+    ///Создаёт перечислитель для указанного массива
+    public constructor(a: NativeArray<T>);
+    begin
+      self.a := a;
+      self.Reset;
+    end;
+    ///--
+    public constructor := exit;
+    
+    ///Переходит к следующему элементу массива
+    ///Возвращаемое значение указывает можно ли читать данные из свойства Current
+    public function MoveNext: boolean;
+    begin
+      i += 1;
+      Result := i < a.Length;
+    end;
+    ///Сбрасывает перечислитель в его исходное положение
+    public procedure Reset := self.i := -1;
+    
+    ///Возвращает элемент массива на который указывает данный перечислитель
+    ///Данное свойство проверяет правильность переданных индексов
+    public property Current: T read a[i];
+    public property System.Collections.IEnumerator.Current: object read a[i];
+    
+    ///Обнуляет ссылку перечислителя на массив
+    public procedure Dispose := a := nil;
+    
+  end;
+  ///Представляет массив, содержимое которого хранится в неуправляемой области памяти
+  NativeArray<T> = partial class(IList<T>, IDisposable)
+    
+    {$region IList}
+    
+    public function System.Collections.Generic.IList<T>.IndexOf(item: T): integer := (self.IndexOf(item) ?? -1).Value;
+    
+    public procedure System.Collections.Generic.IList<T>.Insert(index: integer; item: T) := raise new NotSupportedException;
+    public procedure System.Collections.Generic.IList<T>.RemoveAt(index: integer) := raise new NotSupportedException;
+    
+    {$endregion IList}
+    
+    {$region ICollection}
+    
+    //TODO #????
+    ///--
+    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.Length;
+    public property System.Collections.Generic.ICollection<T>.IsReadOnly: boolean read boolean(true);
+    
+    public procedure System.Collections.Generic.ICollection<T>.Add(item: T) := raise new NotSupportedException;
+    public function System.Collections.Generic.ICollection<T>.Remove(item: T): boolean;
+    begin
+      Result := false;
+      raise new NotSupportedException;
+    end;
+    public procedure System.Collections.Generic.ICollection<T>.Clear := raise new NotSupportedException;
+    
+    ///Определяет содержится ли элемент в массиве
+    public function Contains(item: T) := self.IndexOf(item) <> nil;
+    
+    ///Копирует всё содержимое данного массива в указанный
+    ///Данное свойство проверяет правильность переданных индексов
+    public procedure CopyTo(&array: array of T; arrayIndex: integer);
+    begin
+      if arrayIndex+self.Length > &array.Length then raise new IndexOutOfRangeException;
+      self.AreaUntyped.CopyTo(&array[arrayIndex]);
+    end;
+    
+    {$endregion ICollection}
+    
+    {$region IEnumerable}
+    
+    ///Возвращает перечислитель данного массива
+    public function GetEnumerator: System.Collections.Generic.IEnumerator<T> := new NativeArrayEnumerator<T>(self);
+    public function System.Collections.IEnumerable.GetEnumerator: System.Collections.IEnumerator := new NativeArrayEnumerator<T>(self);
+    
+    {$endregion IEnumerable}
+    
+    {$region IDisposable}
+    
+    ///Освобождает неуправляемую память из по данного массива
+    ///Этот метод потоко-безопасен
+    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
+    public procedure Dispose :=
+    if Area.TryRelease then GC.SuppressFinalize(self);
+    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
+    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
+    protected procedure Finalize; override := Dispose;
+    
+    {$endregion IDisposable}
+    
+    ///Возвращает строку с основными данными о данном объекте
+    public function ToString: string; override;
+    begin
+      var sb := new StringBuilder;
+      sb += TypeName(self);
+      sb += '{';
+      if self.Length<>0 then
+      begin
+        sb += ' ';
+        //TODO #????: as
+        foreach var x in self as IList<T> do
+        begin
+          sb += _ObjectToString(x);
+          sb += ', ';
+        end;
+        sb.Length -= ', '.Length;
+        sb += ' ';
+      end;
+      sb += '}';
+      Result := sb.ToString;
+    end;
+    
+  end;
+  
+  {$endregion NativeArray}
+  
+  {$endregion Native}
+  
+  {$endregion TODO MOVE}
+  
   {$region Re-definition's}
   
-  ///Тип устройства, поддерживающего OpenCL
-  DeviceType              = OpenCL.DeviceType;
-  ///Уровень кэша, используемый в Device.SplitByAffinityDomain
-  DeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
+  CLDeviceType              = OpenCL.DeviceType;
+  CLDeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
   
   {$endregion Re-definition's}
   
@@ -457,9 +1122,9 @@ type
   
   {$region WrapperProperties}
   
-  {$region Platform}
+  {$region CLPlatform}
   
-  PlatformProperties = partial class
+  CLPlatformProperties = partial class
     
     public constructor(ntv: cl_platform_id);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -537,11 +1202,11 @@ type
     
   end;
   
-  {$endregion Platform}
+  {$endregion CLPlatform}
   
-  {$region Device}
+  {$region CLDevice}
   
-  DeviceProperties = partial class
+  CLDeviceProperties = partial class
     
     public constructor(ntv: cl_device_id);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -1479,22 +2144,22 @@ type
     
   end;
   
-  {$endregion Device}
+  {$endregion CLDevice}
   
-  {$region SubDevice}
+  {$region CLSubDevice}
   
-  SubDeviceProperties = partial class(DeviceProperties)
+  CLSubDeviceProperties = partial class(CLDeviceProperties)
     
     public constructor(ntv: cl_device_id);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
   end;
   
-  {$endregion SubDevice}
+  {$endregion CLSubDevice}
   
-  {$region Context}
+  {$region CLContext}
   
-  ContextProperties = partial class
+  CLContextProperties = partial class
     
     public constructor(ntv: cl_context);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -1542,11 +2207,11 @@ type
     
   end;
   
-  {$endregion Context}
+  {$endregion CLContext}
   
-  {$region ProgramCode}
+  {$region CLCode}
   
-  ProgramCodeProperties = partial class
+  CLCodeProperties = partial class
     
     public constructor(ntv: cl_program);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -1554,16 +2219,12 @@ type
     private function GetReferenceCount: UInt32;
     private function GetSource: String;
     private function GetIl: array of Byte;
-    private function GetNumKernels: UIntPtr;
-    private function GetKernelNames: String;
     private function GetScopeGlobalCtorsPresent: Bool;
     private function GetScopeGlobalDtorsPresent: Bool;
     
     public property ReferenceCount:          UInt32        read GetReferenceCount;
     public property Source:                  String        read GetSource;
     public property Il:                      array of Byte read GetIl;
-    public property NumKernels:              UIntPtr       read GetNumKernels;
-    public property KernelNames:             String        read GetKernelNames;
     public property ScopeGlobalCtorsPresent: Bool          read GetScopeGlobalCtorsPresent;
     public property ScopeGlobalDtorsPresent: Bool          read GetScopeGlobalDtorsPresent;
     
@@ -1588,22 +2249,6 @@ type
       res += 'Il                      = ';
       try
         res += _ObjectToString(Il);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NumKernels              = ';
-      try
-        res += _ObjectToString(NumKernels);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'KernelNames             = ';
-      try
-        res += _ObjectToString(KernelNames);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -1634,11 +2279,11 @@ type
     
   end;
   
-  {$endregion ProgramCode}
+  {$endregion CLCode}
   
-  {$region Kernel}
+  {$region CLKernel}
   
-  KernelProperties = partial class
+  CLKernelProperties = partial class
     
     public constructor(ntv: cl_kernel);
     private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
@@ -1696,7 +2341,7 @@ type
     
   end;
   
-  {$endregion Kernel}
+  {$endregion CLKernel}
   
   {$region CLMemory}
   
@@ -1949,24 +2594,21 @@ type
   ///Представляет очередь команд, в основном выполняемых на GPU
   ///Такая очередь всегда возвращает значение типа T
   CommandQueue<T> = abstract partial class end;
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class end;
+  CLKernelArg = abstract partial class end;
   
-  {$region ContextData}
+  {$region CLContext data}
   
-  {$region Platform}
+  {$region CLPlatform}
   
-  ///Представляет платформу OpenCL, объединяющую одно или несколько устройств
-  Platform = partial class
+  CLPlatform = partial class
     private ntv: cl_platform_id;
     
-    ///Создаёт обёртку для указанного неуправляемого объекта
     public constructor(ntv: cl_platform_id) := self.ntv := ntv;
     private constructor := raise new OpenCLABCInternalException;
     
     private static all_need_init := true;
-    private static _all: IList<Platform>;
-    private static function MakeAll: IList<Platform>;
+    private static _all: IList<CLPlatform>;
+    private static function MakeAll: IList<CLPlatform>;
     begin
       Result := nil;
       
@@ -1983,9 +2625,9 @@ type
         cl.GetPlatformIDs(c, all_arr[0], IntPtr.Zero)
       );
       
-      Result := new ReadOnlyCollection<Platform>(all_arr.ConvertAll(pl->new Platform(pl)));
+      Result := new ReadOnlyCollection<CLPlatform>(all_arr.ConvertAll(pl->new CLPlatform(pl)));
     end;
-    private static function GetAll: IList<Platform>;
+    private static function GetAll: IList<CLPlatform>;
     begin
       if all_need_init then
       begin
@@ -1994,40 +2636,33 @@ type
       end;
       Result := _all;
     end;
-    ///Возвращает список всех доступных платформ OpenCL
-    ///Данный список создаётся 1 раз, при первом обращении
-    public static property All: IList<Platform> read GetAll;
+    public static property All: IList<CLPlatform> read GetAll;
     
   end;
   
-  {$endregion Platform}
+  {$endregion CLPlatform}
   
-  {$region Device}
+  {$region CLDevice}
   
-  ///Представляет устройство, поддерживающее OpenCL
-  Device = partial class
+  CLDevice = partial class
     private ntv: cl_device_id;
     
     private constructor(ntv: cl_device_id) := self.ntv := ntv;
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    public static function FromNative(ntv: cl_device_id): Device;
+    public static function FromNative(ntv: cl_device_id): CLDevice;
     
     private constructor := raise new OpenCLABCInternalException;
     
-    private function GetBasePlatform: Platform;
+    private function GetBaseCLPlatform: CLPlatform;
     begin
       var pl: cl_platform_id;
       OpenCLABCInternalException.RaiseIfError(
         cl.GetDeviceInfo(self.ntv, DeviceInfo.DEVICE_PLATFORM, new UIntPtr(sizeof(cl_platform_id)), pl, IntPtr.Zero)
       );
-      Result := new Platform(pl);
+      Result := new CLPlatform(pl);
     end;
-    ///Возвращает платформу данного устройства
-    public property BasePlatform: Platform read GetBasePlatform;
+    public property BaseCLPlatform: CLPlatform read GetBaseCLPlatform;
     
-    ///Собирает массив устройств указанного типа для указанной платформы
-    ///Возвращает nil, если ни одно устройство не найдено
-    public static function GetAllFor(pl: Platform; t: DeviceType): array of Device;
+    public static function GetAllFor(pl: CLPlatform; t: CLDeviceType): array of CLDevice;
     begin
       
       var c: UInt32;
@@ -2040,24 +2675,19 @@ type
         cl.GetDeviceIDs(pl.ntv, t, c, all[0], IntPtr.Zero)
       );
       
-      Result := all.ConvertAll(dvc->new Device(dvc));
+      Result := all.ConvertAll(dvc->new CLDevice(dvc));
     end;
-    ///Собирает массив устройств GPU для указанной платформы
-    ///Возвращает nil, если ни одно устройство не найдено
-    public static function GetAllFor(pl: Platform) := GetAllFor(pl, DeviceType.DEVICE_TYPE_GPU);
+    public static function GetAllFor(pl: CLPlatform) := GetAllFor(pl, CLDeviceType.DEVICE_TYPE_GPU);
     
   end;
   
-  {$endregion Device}
+  {$endregion CLDevice}
   
-  {$region SubDevice}
+  {$region CLSubDevice}
   
-  ///Представляет виртуальное устройство, использующее часть ядер другого устройства
-  ///Объекты данного типа обычно создаются методами "Device.Split*"
-  SubDevice = partial class(Device)
+  CLSubDevice = partial class(CLDevice)
     private _parent: cl_device_id;
-    ///Возвращает родительское устройство, часть ядер которого использует данное устройство
-    public property Parent: Device read Device.FromNative(_parent);
+    public property Parent: CLDevice read CLDevice.FromNative(_parent);
     
     private constructor(parent, ntv: cl_device_id);
     begin
@@ -2067,28 +2697,23 @@ type
     
     private constructor := inherited;
     
-    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
-    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override :=
     OpenCLABCInternalException.RaiseIfError(cl.ReleaseDevice(ntv));
     
   end;
   
-  {$endregion SubDevice}
+  {$endregion CLSubDevice}
   
-  {$region Context}
+  {$region CLContext}
   
-  ///Представляет контекст для хранения данных и выполнения команд на GPU
-  Context = partial class
+  CLContext = partial class
     private ntv: cl_context;
     
-    private dvcs: IList<Device>;
-    ///Возвращает список устройств, используемых данным контекстом
-    public property AllDevices: IList<Device> read dvcs;
+    private dvcs: IList<CLDevice>;
+    public property AllDevices: IList<CLDevice> read dvcs;
     
-    private main_dvc: Device;
-    ///Возвращает главное устройство контекста, на котором выделяется память
-    public property MainDevice: Device        read main_dvc;
+    private main_dvc: CLDevice;
+    public property MainDevice: CLDevice        read main_dvc;
     
     private function GetAllNtvDevices: array of cl_device_id;
     begin
@@ -2100,48 +2725,41 @@ type
     {$region Default}
     
     private static default_was_inited := 0;
-    private static _default: Context;
+    private static _default: CLContext;
     
-    private static function GetDefault: Context;
+    private static function GetDefault: CLContext;
     begin
       if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
         Interlocked.CompareExchange(_default, MakeNewDefaultContext, nil);
       Result := _default;
     end;
-    private static procedure SetDefault(new_default: Context);
+    private static procedure SetDefault(new_default: CLContext);
     begin
       default_was_inited := 1;
       _default := new_default;
     end;
-    ///Возвращает или задаёт главный контекст, используемый там, где контекст не указывается явно (как неявные очереди)
-    ///При первом обращении к данному свойству OpenCLABC пытается создать новый контекст
-    ///При создании главного контекста приоритет отдаётся полноценным GPU, но если таких нет - берётся любое устройство, поддерживающее OpenCL
-    ///
-    ///Если устройств поддерживающих OpenCL нет, то Context.Default изначально будет nil
-    ///Но это свидетельствует скорее об отсутствии драйверов, чем отстутсвии устройств
-    public static property &Default: Context read GetDefault write SetDefault;
+    public static property &Default: CLContext read GetDefault write SetDefault;
     
-    ///Создаёт новый контекст, соответствующий изначальному значению Context.Default
-    protected static function MakeNewDefaultContext: Context;
+    protected static function MakeNewDefaultContext: CLContext;
     begin
       Result := nil;
       
-      var pls := Platform.All;
+      var pls := CLPlatform.All;
       if pls=nil then exit;
       
       foreach var pl in pls do
       begin
-        var dvcs := Device.GetAllFor(pl);
+        var dvcs := CLDevice.GetAllFor(pl);
         if dvcs=nil then continue;
-        Result := new Context(dvcs);
+        Result := new CLContext(dvcs);
         exit;
       end;
       
       foreach var pl in pls do
       begin
-        var dvcs := Device.GetAllFor(pl, DeviceType.DEVICE_TYPE_ALL);
+        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
         if dvcs=nil then continue;
-        Result := new Context(dvcs);
+        Result := new CLContext(dvcs);
         exit;
       end;
       
@@ -2151,15 +2769,14 @@ type
     
     {$region constructor's}
     
-    private static procedure CheckMainDevice(main_dvc: Device; dvc_lst: IList<Device>) :=
-    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'main_dvc должен быть в списке устройств контекста');
+    private static procedure CheckMainDevice(main_dvc: CLDevice; dvc_lst: IList<CLDevice>) :=
+    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'');
     
-    ///Создаёт контекст с указанными AllDevices и MainDevice
-    public constructor(dvcs: IList<Device>; main_dvc: Device);
+    public constructor(dvcs: IList<CLDevice>; main_dvc: CLDevice);
     begin
       CheckMainDevice(main_dvc, dvcs);
       
-      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs.ToArray);
+      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs.ToArray);
       var ntv_dvcs := GetAllNtvDevices;
       
       var ec: ErrorCode;
@@ -2168,12 +2785,9 @@ type
       
       self.main_dvc := main_dvc;
     end;
-    ///Создаёт контекст с указанными AllDevices
-    ///В качестве MainDevice берётся первое устройство из массива
-    public constructor(params dvcs: array of Device) := Create(dvcs, dvcs[0]);
+    public constructor(params dvcs: array of CLDevice) := Create(dvcs, dvcs[0]);
     
-    ///Получает неуправляемые устройства указанного неуправляемого контекста
-    protected static function GetContextDevices(ntv: cl_context): array of Device;
+    protected static function GetContextDevices(ntv: cl_context): array of CLDevice;
     begin
       
       var sz: UIntPtr;
@@ -2186,80 +2800,191 @@ type
         cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, sz, res[0], IntPtr.Zero)
       );
       
-      Result := res.ConvertAll(dvc->new Device(dvc));
+      Result := res.ConvertAll(dvc->new CLDevice(dvc));
     end;
-    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<Device>; main_dvc: Device);
+    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<CLDevice>; main_dvc: CLDevice);
     begin
       CheckMainDevice(main_dvc, dvcs);
       OpenCLABCInternalException.RaiseIfError( cl.RetainContext(ntv) );
       self.ntv := ntv;
       // Копирование должно происходить в вызывающих методах
-      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<Device>(dvcs);
+      self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs);
       self.main_dvc := main_dvc;
     end;
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    ///При успешном создании обёртки вызывается cl.Retain
-    ///А во время вызова .Dispose - cl.Release
-    public constructor(ntv: cl_context; main_dvc: Device) :=
+    public constructor(ntv: cl_context; main_dvc: CLDevice) :=
     InitFromNtv(ntv, GetContextDevices(ntv), main_dvc);
     
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    ///При успешном создании обёртки вызывается cl.Retain
-    ///А во время вызова .Dispose - cl.Release
     public constructor(ntv: cl_context);
     begin
       var dvcs := GetContextDevices(ntv);
       InitFromNtv(ntv, dvcs, dvcs[0]);
     end;
     
-    private constructor(c: Context; main_dvc: Device) :=
+    private constructor(c: CLContext; main_dvc: CLDevice) :=
     InitFromNtv(c.ntv, c.dvcs, main_dvc);
-    ///Создаёт совместимый контекст, равный данному с одним отличием - MainDevice заменён на dvc
-    public function MakeSibling(new_main_dvc: Device) := new Context(self, new_main_dvc);
+    public function MakeSibling(new_main_dvc: CLDevice) := new CLContext(self, new_main_dvc);
     
     private constructor := raise new OpenCLABCInternalException;
     
-    ///Позволяет OpenCL удалить неуправляемый объект
-    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
     public procedure Dispose;
     begin
       var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
       if prev=IntPtr.Zero then exit;
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseContext(new cl_context(prev)) );
     end;
-    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
-    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
     
     {$endregion constructor's}
     
   end;
   
-  {$endregion Context}
+  {$endregion CLContext}
   
-  {$endregion ContextData}
+  {$endregion CLContext data}
   
-  {$region KernelData}
+  {$region CLKernel data}
   
-  {$region ProgramOptions}
+  {$region CLCodeOptions}
   
-  ProgramDefines = Dictionary<string, string>;
-  ProgramOptions = record
+  CLCodeOptions = abstract class
     
-    public constructor(c: Context) := self.c := c;
-    public constructor := Create(Context.Default);
+    public constructor(c: CLContext) := self.BuildContext := c;
+    public constructor := Create(CLContext.Default);
     
-    public static function operator implicit(c: Context): ProgramOptions := new ProgramOptions(c);
+    public auto property BuildContext: CLContext;
     
-    public auto property c: Context;
+    public auto property KeepLog: boolean := false;
     
-    public auto property Defines: ProgramDefines := new ProgramDefines;
-    
-    public auto property KernelArgInfo: boolean := true;
-    
+    protected procedure ToString(res: StringBuilder); abstract;
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  CLCodeLibOptions = class(CLCodeOptions)
+    
+    public static function operator implicit(c: CLContext): CLCodeLibOptions := new CLCodeLibOptions(c);
+    
+    public auto property ForceAcceptProgramLinkOptions: boolean := false;
+    
+    protected procedure ToString(res: StringBuilder); override;
+    begin
+//      inherited; // abstract
+      
+      res += '-create-library ';
+      
+      if ForceAcceptProgramLinkOptions then
+        res += '-enable-link-options ';
+      
+    end;
+    
+  end;
+  
+  CLProgramOptions = abstract class(CLCodeOptions)
+    
+    public auto property _MathDenormsAreZero: boolean := false;
+    
+    public auto property OptSignedZero: boolean := false;
+    
+    public property OptUnsafeMath: boolean
+    read _MathDenormsAreZero and not OptSignedZero
+    write
+    begin
+      _MathDenormsAreZero := value;
+      OptSignedZero       := not value;
+    end; virtual;
+    
+    public auto property OptNoDenorms: boolean := false;
+    
+    public property OptFastMath: boolean
+    read OptUnsafeMath and OptNoDenorms
+    write
+    begin
+      OptUnsafeMath := value;
+      OptNoDenorms  := value;
+    end;
+    
+    public auto property OptRequireIFP: boolean := true;
+    
+    protected procedure ToString(res: StringBuilder); override;
+    begin
+//      inherited; // abstract
+      
+      if OptFastMath then
+        res += '-cl-fast-relaxed-math ' else
+      begin
+        
+        if OptUnsafeMath then
+          res += '-cl-unsafe-math-optimizations ' else
+        begin
+          
+          if _MathDenormsAreZero then
+            res += '-cl-denorms-are-zero ';
+          
+          // Only for ProgramComp
+//          if OptCanUseMAD then
+//            res += '-cl-mad-enable ';
+          
+          if not OptSignedZero then
+            res += '-cl-no-signed-zeros ';
+          
+        end;
+        
+        if OptNoDenorms then
+          res += '-cl-finite-math-only ';
+        
+      end;
+      
+    end;
+    
+  end;
+  
+  CLCodeDefines = Dictionary<string, string>;
+  CLProgramCompOptions = class(CLProgramOptions)
+    
+    public static function operator implicit(c: CLContext): CLProgramCompOptions := new CLProgramCompOptions(c);
+    
+    public auto property Defines: CLCodeDefines := new CLCodeDefines;
+    
+    public auto property _MathSinglePrecisionConstant: boolean := false;
+    
+    public auto property _MathFP32CorrectlyRoundedDivideSqrt: boolean := false;
+    
+    public auto property Optimize: boolean := true;
+    
+    public auto property OptOnlyUniformWorkGroups: boolean := false;
+    
+    public auto property OptCanUseMAD: boolean := false;
+    
+    public property OptUnsafeMath: boolean
+    read _MathDenormsAreZero and OptCanUseMAD and not OptSignedZero
+    write
+    begin
+      _MathDenormsAreZero := value;
+      OptCanUseMAD        := value;
+      OptSignedZero       := not value;
+    end; override;
+    
+    public auto property WarningLevel: (
+      WL_Ignore,
+      WL_Warn,
+      WL_Error
+    ) := WL_Warn;
+    
+    public auto property Version: (integer, integer) := nil;
+    public procedure LowerVersionToSupported;
+    
+    public auto property CLKernelArgInfo: boolean := true;
+    
+    public auto property LiveEnqueueDebug: boolean := false;
+    
+    protected procedure ToString(res: StringBuilder); override;
+    begin
+      inherited;
       
       foreach var kvp in Defines do
       begin
@@ -2273,145 +2998,198 @@ type
         res += ' ';
       end;
       
-      if KernelArgInfo then
+      if _MathSinglePrecisionConstant then
+        res += '-cl-single-precision-constant ';
+      
+      if _MathFP32CorrectlyRoundedDivideSqrt then
+        res += '-cl-fp32-correctly-rounded-divide-sqrt ';
+      
+      if not Optimize then
+        res += '-cl-opt-disable ';
+      
+      if OptOnlyUniformWorkGroups then
+        res += '-cl-uniform-work-group-size ';
+      
+      if not OptUnsafeMath and OptCanUseMAD then
+        res += '-cl-mad-enable ';
+      
+      case WarningLevel of
+        WL_Ignore:  res += '-w ';
+        WL_Warn:    ;
+        WL_Error:   res += '-Werror ';
+        else raise new System.ArgumentException($'');
+      end;
+      
+      if Version<>nil then
+      begin
+        res += '-cl-std=CL';
+        res.Append(Version[0]);
+        res += '.';
+        res.Append(Version[1]);
+        res += ' ';
+      end;
+      
+      if CLKernelArgInfo then
         res += '-cl-kernel-arg-info ';
       
-      Result := res.ToString;
+      if LiveEnqueueDebug then
+        res += '-g ';
+      
     end;
     
   end;
   
-  {$endregion ProgramOptions}
+  CLProgramLinkOptions = class(CLProgramOptions)
+    
+    public static function operator implicit(c: CLContext): CLProgramLinkOptions := new CLProgramLinkOptions(c);
+    
+//    protected procedure ToString(res: StringBuilder); override;
+//    begin
+//      inherited;
+//      
+//    end;
+    
+  end;
   
-  {$region ProgramCode}
+  {$endregion CLCodeOptions}
   
-  ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
-  ProgramCode = partial class
+  {$region CLCode}
+  
+  {$region CLCode}
+  
+  CLCode = abstract partial class
     private ntv: cl_program;
     
-    {$region constructor's}
-    
-    private procedure Build(opt: ProgramOptions);
-    begin
-      
-      var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
-      if not ec.IS_ERROR then exit;
-      
-      if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
-      begin
-        var sb := new StringBuilder($'Ошибка компиляции OpenCL программы:');
-        
-        foreach var dvc in opt.c.AllDevices do
-        begin
-          sb += #10#10;
-          sb += dvc.ToString;
-          sb += ':'#10;
-          
-          var sz: UIntPtr;
-          OpenCLABCInternalException.RaiseIfError(
-            cl.GetProgramBuildInfo(self.ntv, dvc.ntv, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
-          );
-          
-          var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-          try
-            OpenCLABCInternalException.RaiseIfError(
-              cl.GetProgramBuildInfo(self.ntv, dvc.ntv, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
-            );
-            sb += Marshal.PtrToStringAnsi(str_ptr);
-          finally
-            Marshal.FreeHGlobal(str_ptr);
-          end;
-          
-        end;
-        
-        raise new OpenCLException(ec, sb.ToString);
-      end else
-        OpenCLABCInternalException.RaiseIfError(ec);
-      
-    end;
-    
-    public constructor(opt: ProgramOptions; params file_texts: array of string);
+    protected constructor(code_text: string; c: CLContext);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateProgramWithSource(opt.c.ntv, file_texts.Length, file_texts, nil, ec);
+      self.ntv := cl.CreateProgramWithSource(c.ntv, 1,|code_text|,nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      self.Build(opt);
     end;
-    ///Компилирует указанные тексты программ в контексте Context.Default
-    ///Внимание! Именно тексты, Не имена файлов
-    public constructor(params file_texts: array of string) := Create(new ProgramOptions, file_texts);
     
-    ///Создаёт обёртку для указанного неуправляемого объекта
-    ///При успешном создании обёртки вызывается cl.Retain
-    ///А во время вызова .Dispose - cl.Release
-    public constructor(ntv: cl_program);
+    protected constructor(ntv: cl_program; need_retain: boolean);
     begin
-      OpenCLABCInternalException.RaiseIfError( cl.RetainProgram(ntv) );
+      if need_retain then
+        OpenCLABCInternalException.RaiseIfError(
+          cl.RetainProgram(ntv)
+        );
       self.ntv := ntv;
     end;
     
     private constructor := raise new OpenCLABCInternalException;
     
-    ///Позволяет OpenCL удалить неуправляемый объект
-    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
     public procedure Dispose;
     begin
       var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
       if prev=IntPtr.Zero then exit;
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseProgram(new cl_program(prev)) );
     end;
-    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
-    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
     
-    {$endregion constructor's}
+  end;
+  
+  {$endregion CLCode}
+  
+  {$region CLHeaderCode}
+  
+  CLHeaderCode = partial class(CLCode)
     
-    private function GetBuildContext: Context;
+    public constructor(code_text: string; c: CLContext := nil) := inherited Create(code_text, c??CLContext.Default);
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+  end;
+  
+  {$endregion CLHeaderCode}
+  
+  {$region BinCLCode}
+  
+  BinCLCode = abstract partial class(CLCode)
+    
+    {$region Utils}
+    
+    protected function GetLastLog(d: cl_device_id): string;
     begin
       
-      var c_ntv: cl_context;
+      var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramInfo(self.ntv, ProgramInfo.PROGRAM_CONTEXT, new UIntPtr(cl_context.Size), c_ntv, IntPtr.Zero)
+        cl.GetProgramBuildInfo(self.ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
       );
       
-      Result := new Context(c_ntv);
+      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
+      try
+        OpenCLABCInternalException.RaiseIfError(
+          cl.GetProgramBuildInfo(self.ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
+        );
+        Result := Marshal.PtrToStringAnsi(str_ptr);
+      finally
+        Marshal.FreeHGlobal(str_ptr);
+      end;
+      
     end;
-    public property BuildContext: Context read GetBuildContext;
+    
+    protected procedure CheckBuildFail(ec, fail_code: ErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
+    begin
+      
+      if ec=fail_code then
+      begin
+        var sb := new StringBuilder(fail_descr);
+        
+        foreach var dvc in dvcs do
+        begin
+          sb += #10#10;
+          sb += dvc.ToString;
+          sb += ':'#10;
+          sb += self.GetLastLog(dvc.ntv);
+        end;
+        
+        raise new InvalidOperationException(sb.ToString);
+      end else
+        OpenCLABCInternalException.RaiseIfError(ec);
+      
+    end;
+    
+    {$endregion Utils}
+    
+    {$region Logs}
+    
+    private logs := new Dictionary<cl_device_id, string>;
+    public property BuildLog[d: CLDevice]: string read logs[d.ntv];
+    
+    protected procedure SaveLogsFor(dvcs: sequence of CLDevice);
+    begin
+      {$ifdef DEBUG}
+      if logs.Count<>0 then raise new OpenCLABCInternalException($'Multiple calls to SaveLogsFor from {TypeName(self)}');
+      {$endif DEBUG}
+//      logs.Clear;
+      foreach var d in dvcs do logs[d.ntv] := GetLastLog(d.ntv);
+    end;
+    
+    {$endregion Logs}
     
     {$region Serialize}
     
-    ///Сохраняет прекомпилированную программу как набор байт
     public function Serialize: array of array of byte;
     begin
       var sz: UIntPtr;
       
       OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, UIntPtr.Zero, nil, sz) );
-      var szs := new UIntPtr[sz.ToUInt64 div sizeof(UIntPtr)];
+      var szs := new UIntPtr[sz.ToUInt64 div UIntPtr.Size];
       OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, sz, szs[0], IntPtr.Zero) );
       
-      var res := new IntPtr[szs.Length];
-      SetLength(Result, szs.Length);
+      var res := szs.ConvertAll(sz_i->new NativeArray<byte>(sz_i.ToUInt32));
       
-      for var i := 0 to szs.Length-1 do res[i] := Marshal.AllocHGlobal(IntPtr(pointer(szs[i])));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARIES, sz, res[0], IntPtr.Zero)
-        );
-        for var i := 0 to szs.Length-1 do
-        begin
-          var a := new byte[szs[i].ToUInt64];
-          Marshal.Copy(res[i], a, 0, a.Length);
-          Result[i] := a;
-        end;
-      finally
-        for var i := 0 to szs.Length-1 do Marshal.FreeHGlobal(res[i]);
-      end;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARIES, sz, res.ConvertAll(a->a.Area.first_ptr)[0], IntPtr.Zero)
+      );
       
+      Result := res.ConvertAll(a->a.Area.ManagedCopy);
+      GC.KeepAlive(res);
     end;
     
-    ///Сохраняет прекомпилированную программу в поток
     public procedure SerializeTo(bw: System.IO.BinaryWriter);
     begin
       var bin := Serialize;
@@ -2424,7 +3202,6 @@ type
       end;
       
     end;
-    ///Сохраняет прекомпилированную программу в поток
     public procedure SerializeTo(str: System.IO.Stream) :=
     SerializeTo(new System.IO.BinaryWriter(str));
     
@@ -2432,61 +3209,272 @@ type
     
     {$region Deserialize}
     
-    public static function Deserialize(opt: ProgramOptions; bin: array of array of byte): ProgramCode;
+    protected static function DeserializeNative(c: CLContext; bin: array of array of byte): cl_program;
     begin
-      var ntv: cl_program;
-      
-      var dvcs := opt.c.GetAllNtvDevices;
-      
       var ec: ErrorCode;
-      //TODO А нади ли девайсы передавать?
+      
+      var dvcs := c.GetAllNtvDevices;
       //TODO Отдельные эррор коды?
-      ntv := cl.CreateProgramWithBinary(
-        opt.c.ntv, dvcs.Length, dvcs,
+      Result := cl.CreateProgramWithBinary(
+        c.ntv, dvcs.Length, dvcs,
         bin.ConvertAll(a->new UIntPtr(a.Length)), bin,
         nil,ec
       );
+      
       OpenCLABCInternalException.RaiseIfError(ec);
-      
-      Result := new ProgramCode(ntv);
-      Result.Build(opt);
-      
     end;
     
-    public static function DeserializeFrom(opt: ProgramOptions; br: System.IO.BinaryReader): ProgramCode;
+    protected static function LoadBins(br: System.IO.BinaryReader) :=
+    ArrGen(br.ReadInt32, i->
     begin
-      var bin: array of array of byte;
+      var len := br.ReadInt32;
+      Result := br.ReadBytes(len);
+      if Result.Length<>len then raise new System.IO.EndOfStreamException;
+    end);
+    
+    {$endregion}
+    
+  end;
+  
+  {$endregion BinCLCode}
+  
+  {$region LinkableCLCode}
+  
+  LinkableCLCode = abstract partial class(BinCLCode)
+    
+  end;
+  
+  BinCLCode = abstract partial class(CLCode)
+    
+    private function link_ntv(bins: IList<LinkableCLCode>; opt: CLCodeOptions): cl_program;
+    begin
+      var bin_ntvs := new cl_program[bins.Count];
+      for var i := 0 to bin_ntvs.Length-1 do
+        bin_ntvs[i] := bins[i].ntv;
       
-      SetLength(bin, br.ReadInt32);
-      for var i := 0 to bin.Length-1 do
+      var ec: ErrorCode;
+      Result := cl.LinkProgram(opt.BuildContext.ntv, 0,nil, opt.ToString, bin_ntvs.Length,bin_ntvs, nil,IntPtr.Zero, ec);
+      
+      self.CheckBuildFail(
+        ec, ErrorCode.LINK_PROGRAM_FAILURE,
+        $'', opt.BuildContext.AllDevices
+      );
+      
+    end;
+    public constructor(bins: IList<LinkableCLCode>; opt: CLCodeOptions);
+    begin
+      inherited Create(link_ntv(bins, opt), false);
+      if opt.KeepLog then self.SaveLogsFor(opt.BuildContext.AllDevices);
+    end;
+    
+  end;
+  
+  {$endregion LinkableCLCode}
+  
+  {$region CLCompCode}
+  
+  CLCompCode = partial class(LinkableCLCode)
+    
+    {$region constructor's}
+    
+    public constructor(code_text: string; headers: Dictionary<string, CLHeaderCode> := nil; opt: CLProgramCompOptions := nil);
+    begin
+      inherited Create(code_text, (opt??new CLProgramCompOptions).BuildContext);
+      opt := opt??new CLProgramCompOptions;
+      
+      var ec: ErrorCode;
+      if headers=nil then
+        ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, 0,nil,nil, nil,IntPtr.Zero) else
       begin
-        var len := br.ReadInt32;
-        bin[i] := br.ReadBytes(len);
-        if bin[i].Length<>len then raise new System.IO.EndOfStreamException;
+        var hs := new cl_program[headers.Count];
+        var hns := new string[headers.Count];
+        foreach var kvp in headers index i do
+        begin
+          hs[i] := kvp.Value.ntv;
+          hns[i] := kvp.Key;
+        end;
+        
+        ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, hs.Length,hs,hns, nil,IntPtr.Zero);
       end;
       
-      Result := Deserialize(opt, bin);
+      CheckBuildFail(
+        ec, ErrorCode.COMPILE_PROGRAM_FAILURE,
+        $'', opt.BuildContext.AllDevices
+      );
+      
+      if opt.KeepLog then SaveLogsFor(opt.BuildContext.AllDevices);
     end;
-    public static function DeserializeFrom(opt: ProgramOptions; str: System.IO.Stream) :=
-    DeserializeFrom(opt, new System.IO.BinaryReader(str));
+    
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region Deserialize}
+    
+    public static function Deserialize(bin: array of array of byte; c: CLContext := nil) :=
+    new CLCompCode(DeserializeNative(c, bin), false);
+    public static function DeserializeFrom(br: System.IO.BinaryReader; c: CLContext := nil) :=
+    Deserialize(LoadBins(br), c);
+    public static function DeserializeFrom(str: System.IO.Stream; c: CLContext := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), c);
     
     {$endregion Deserialize}
     
   end;
   
-  {$endregion ProgramCode}
+  {$endregion CLCompCode}
   
-  {$region Kernel}
+  {$region CLCodeLib}
   
-  ///Представляет подпрограмму, выполняемую на GPU
-  Kernel = partial class
+  CLCodeLib = partial class(LinkableCLCode)
     
-    private code: ProgramCode;
-    ///Возвращает контейнер кода, содержащий данную подпрограмму
-    public property CodeContainer: ProgramCode read code;
+    {$region constructor's}
+    
+    public constructor(bins: IList<LinkableCLCode>; opt: CLCodeLibOptions := nil) := inherited Create(bins, opt??new CLCodeLibOptions);
+    public constructor(params bins: array of LinkableCLCode) := Create(bins as IList<LinkableCLCode>);
+    
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region Deserialize}
+    
+    public static function Deserialize(bin: array of array of byte; c: CLContext := nil) :=
+    new CLCodeLib(DeserializeNative(c, bin), false);
+    public static function DeserializeFrom(br: System.IO.BinaryReader; c: CLContext := nil) :=
+    Deserialize(LoadBins(br), c);
+    public static function DeserializeFrom(str: System.IO.Stream; c: CLContext := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), c);
+    
+    {$endregion Deserialize}
+    
+  end;
+  
+  {$endregion CLCodeLib}
+  
+  {$region CLProgramCode}
+  
+  CLProgramCode = partial class(BinCLCode)
+    
+    {$region constructor's}
+    
+    public constructor(bins: IList<LinkableCLCode>; opt: CLProgramLinkOptions := nil) := inherited Create(bins, opt??new CLProgramLinkOptions);
+    public constructor(params bins: array of LinkableCLCode) := Create(bins as IList<LinkableCLCode>);
+    
+    private procedure Build(opt: CLProgramCompOptions);
+    begin
+      var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
+      
+      CheckBuildFail(
+        ec, ErrorCode.BUILD_PROGRAM_FAILURE,
+        $'', opt.BuildContext.AllDevices
+      );
+      
+      if opt.KeepLog then SaveLogsFor(opt.BuildContext.AllDevices);
+    end;
+    public constructor(code_text: string; opt: CLProgramCompOptions := nil);
+    begin
+      inherited Create(code_text, if opt=nil then CLContext.Default else opt.BuildContext);
+      self.Build(opt ?? new CLProgramCompOptions);
+    end;
+    
+    public constructor(ntv: cl_program; need_retain: boolean := true) := inherited Create(ntv, need_retain);
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
+    {$endregion constructor's}
+    
+    {$region Deserialize}
+    
+    public static function Deserialize(bin: array of array of byte; opt: CLProgramCompOptions := nil): CLProgramCode;
+    begin
+      if opt=nil then opt := new CLProgramCompOptions;
+      
+      Result := new CLProgramCode(
+        DeserializeNative(opt.BuildContext, bin), false
+      );
+      
+      Result.Build(opt);
+    end;
+    
+    public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
+    Deserialize(LoadBins(br), opt);
+    public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+    
+    {$endregion Deserialize}
+    
+    //TODO #2668
+    public static function operator=(p1,p2: CLProgramCode) := p1.Equals(p2);
+    
+  end;
+  
+  {$endregion CLProgramCode}
+  
+  {$region BinCLCode.Deserialize}
+  
+  BinCLCode = abstract partial class(CLCode)
+    
+    public static function Deserialize(bin: array of array of byte; opt: CLProgramCompOptions := nil): BinCLCode;
+    begin
+      if opt=nil then opt := new CLProgramCompOptions;
+      
+      var ntv := DeserializeNative(opt.BuildContext, bin);
+      
+      var general_pt := ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE;
+      foreach var d in opt.BuildContext.AllDevices do
+      begin
+        var pt: ProgramBinaryType;
+        OpenCLABCInternalException.RaiseIfError(
+          cl.GetProgramBuildInfo(ntv,d.ntv, ProgramBuildInfo.PROGRAM_BINARY_TYPE, new UIntPtr(sizeof(ProgramBinaryType)),pt,IntPtr.Zero)
+        );
+        
+        if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+          general_pt := pt else
+        if general_pt<>pt then
+          raise new NotSupportedException($'BinCLCode:Deserialize:ProgramBinaryType:Different');
+        
+      end;
+      
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+        raise new NotSupportedException($'BinCLCode:Deserialize:ProgramBinaryType:Missing') else
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
+        Result := new CLCompCode(ntv,false) else
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
+        Result := new CLCodeLib(ntv,false) else
+      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_EXECUTABLE then
+      begin
+        var res := new CLProgramCode(ntv,false);
+        res.Build(opt);
+        Result := res;
+      end else
+        raise new NotImplementedException(general_pt.ToString);
+      
+    end;
+    
+    public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
+    Deserialize(LoadBins(br), opt);
+    public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
+    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+    
+  end;
+  
+  {$endregion BinCLCode.Deserialize}
+  
+  {$endregion CLCode}
+  
+  {$region CLKernel}
+  
+  CLKernel = partial class
+    
+    private code: CLProgramCode;
+    public property CodeContainer: CLProgramCode read code;
     
     private k_name: string;
-    ///Возвращает имя данной подпрограммы
     public property Name: string read k_name;
     
     private function ntv: cl_kernel;
@@ -2498,7 +3486,7 @@ type
     
     {$region constructor's}
     
-    private constructor(code: ProgramCode; k_name: string);
+    private constructor(code: CLProgramCode; k_name: string);
     begin
       self.code := code;
       self.k_name := k_name;
@@ -2511,7 +3499,7 @@ type
       OpenCLABCInternalException.RaiseIfError(
         cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), code_ntv, IntPtr.Zero)
       );
-      self.code := new ProgramCode(code_ntv);
+      self.code := new CLProgramCode(code_ntv, true);
       
       var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
@@ -2527,6 +3515,7 @@ type
         Marshal.FreeHGlobal(str_ptr);
       end;
       
+      cl.ReleaseKernel(ntv).RaiseIfError;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -2534,33 +3523,23 @@ type
     
     {$region Exec}
     
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel;
+    public function Exec1(sz1: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
     
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function Exec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): Kernel;
+    public function Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
     
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): Kernel;
+    public function Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
     
-    ///Выполняет kernel с расширенным набором параметров
-    ///Данная перегрузка используется в первую очередь для тонких оптимизаций
-    ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
-    public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel;
+    public function Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg): CLKernel;
     
     {$endregion Exec}
     
   end;
   
-  ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
-  ProgramCode = partial class
+  CLProgramCode = partial class
     
-    ///Находит в коде kernel с указанным именем
-    ///Регистр имени важен!
-    public property KernelByName[kname: string]: Kernel read new Kernel(self, kname); default;
+    public property KernelByName[kname: string]: CLKernel read new CLKernel(self, kname); default;
     
-    ///Создаёт массив из всех kernel-ов данного кода
-    public function GetAllKernels: array of Kernel;
+    public function GetAllKernels: array of CLKernel;
     begin
       
       var c: UInt32;
@@ -2569,680 +3548,20 @@ type
       var res := new cl_kernel[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, c, res[0], IntPtr.Zero) );
       
-      Result := res.ConvertAll(k->new Kernel(k));
+      Result := res.ConvertAll(k->new CLKernel(k));
     end;
     
   end;
   
-  {$endregion Kernel}
+  {$endregion CLKernel}
   
-  {$endregion KernelData}
+  {$endregion CLKernel data}
   
-  {$region Memory}
+  {$region CLMemory}
   
-  {$region NativeArea}
+  {$region CLMemoryUsage}
   
-  {$region NativeMemoryArea}
-  
-  ///Описывает неуправляемою область памяти
-  NativeMemoryArea = record
-    public ptr: IntPtr;
-    public sz: UIntPtr;
-    
-    {$region constructor's}
-    
-    ///Создаёт описание указанной области памяти
-    public constructor(ptr: IntPtr; sz: UIntPtr);
-    begin
-      self.ptr := ptr;
-      self.sz := sz;
-    end;
-    public constructor(sz: UIntPtr);
-    begin
-      self.sz := sz;
-      Alloc;
-    end;
-    public constructor;
-    begin
-      self.ptr := IntPtr.Zero;
-      self.sz := UIntPtr.Zero;
-    end;
-    
-    {$endregion constructor's}
-    
-    {$region Method's}
-    
-    {$region Fill}
-    
-    private static procedure RtlZeroMemory(dst: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
-    private static procedure RtlFillMemory(dst: IntPtr; length: UIntPtr; fill: byte);
-    external 'kernel32.dll';
-    
-    ///Заполняет всю область памяти нулевыми байтами
-    public procedure FillZero := RtlZeroMemory(ptr, sz);
-    ///Заполняет всю область памяти указанными байтами
-    public procedure Fill(val: byte) := RtlFillMemory(ptr, sz, val);
-    
-    {$endregion Fill}
-    
-    {$region Copy}
-    
-    private static procedure RtlCopyMemory(dst: IntPtr; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
-    private static procedure RtlCopyMemory(var dst: byte; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
-    private static procedure RtlCopyMemory(dst: IntPtr; var source: byte; length: UIntPtr);
-    external 'kernel32.dll';
-    
-    ///Копирует данные из данной области памяти в указанную
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyMinSize
-    public procedure CopyTo(area: NativeMemoryArea) := RtlCopyMemory(area.ptr, self.ptr, self.sz);
-    ///Копирует данные из указанной области памяти в данную
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyMinSize
-    public procedure CopyFrom(area: NativeMemoryArea) := RtlCopyMemory(self.ptr, area.ptr, self.sz);
-    ///Копирует данные между указанными областями памяти
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Количество копируемых байт равняется минимальному размеру указанных областей памяти
-    public static procedure CopyMinSize(source, dest: NativeMemoryArea);
-    begin
-      var min_sz := if source.sz.ToUInt64<dest.sz.ToUInt64 then source.sz else dest.sz;
-      RtlCopyMemory(dest.ptr, source.ptr, min_sz);
-    end;
-    
-    ///Копирует данные из данной области памяти в указанную
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyTo<T>(var el: T) := RtlCopyMemory(PByte(pointer(@el))^, self.ptr, self.sz);
-    ///Копирует данные из данной области памяти в указанную
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyTo<T>(a: array of T) := CopyTo(a[0]);
-    
-    ///Копирует данные из указанной области памяти в данную
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyFrom<T>(var el: T) := RtlCopyMemory(self.ptr, PByte(pointer(@el))^, self.sz);
-    ///Копирует данные из указанной области памяти в данную
-    ///Области памяти не должны пересекаться. Иначе поведение неопределено
-    ///Если пересечение возможно, используйте соответствующий .CopyOverlapped* метод
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyFrom<T>(a: array of T) := CopyFrom(a[0]);
-    
-    {$endregion Copy}
-    
-    {$region CopyOverlapped}
-    
-    private static procedure RtlMoveMemory (dst: IntPtr; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
-    private static procedure RtlMoveMemory (var dst: byte; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
-    private static procedure RtlMoveMemory (dst: IntPtr; var source: byte; length: UIntPtr);
-    external 'kernel32.dll';
-    
-    ///Копирует данные из данной области памяти в указанную
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyOverlappedMinSize
-    public procedure CopyOverlappedTo(area: NativeMemoryArea) := RtlMoveMemory(area.ptr, self.ptr, self.sz);
-    ///Копирует данные из указанной области памяти в данную
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    ///Если надо скопировать минимум размеров данной и указанной области памяти используйте статический метод NativeMemoryArea.CopyOverlappedMinSize
-    public procedure CopyOverlappedFrom(area: NativeMemoryArea) := RtlMoveMemory(self.ptr, area.ptr, self.sz);
-    ///Копирует данные между указанными областями памяти
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Количество копируемых байт равняется минимальному размеру указанных областей памяти
-    public static procedure CopyOverlappedMinSize(source, dest: NativeMemoryArea);
-    begin
-      var min_sz := if source.sz.ToUInt64<dest.sz.ToUInt64 then source.sz else dest.sz;
-      RtlMoveMemory(dest.ptr, source.ptr, min_sz);
-    end;
-    
-    ///Копирует данные из данной области памяти в указанную
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyOverlappedTo<T>(var el: T) := RtlMoveMemory(PByte(pointer(@el))^, self.ptr, self.sz);
-    ///Копирует данные из данной области памяти в указанную
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyOverlappedTo<T>(a: array of T) := CopyTo(a[0]);
-    
-    ///Копирует данные из указанной области памяти в данную
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyOverlappedFrom<T>(var el: T) := RtlMoveMemory(self.ptr, PByte(pointer(@el))^, self.sz);
-    ///Копирует данные из указанной области памяти в данную
-    ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
-    ///Кол-во копируемых байт берётся из данной области памяти, даже если указанная область памяти имеет меньший размер
-    public procedure CopyOverlappedFrom<T>(a: array of T) := CopyTo(a[0]);
-    
-    {$endregion CopyOverlapped}
-    
-    {$endregion Method's}
-    
-    {$region Alloc/Release}
-    
-    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
-    
-    public procedure Alloc;
-    begin
-      self.ptr := Marshal.AllocHGlobal(IntPtr(self.sz.ToPointer));
-      GC.AddMemoryPressure(self.sz.ToUInt64);
-    end;
-    public procedure Release;
-    begin
-      GC.RemoveMemoryPressure(self.sz.ToUInt64);
-      Marshal.FreeHGlobal(self.ptr);
-      self.ptr := IntPtr.Zero;
-    end;
-    public function TryRelease: boolean;
-    begin
-      Result := false;
-      var temp := new NativeMemoryArea(
-        Interlocked.Exchange(self.ptr, IntPtr.Zero),
-        self.sz
-      );
-      if not temp.IsAllocated then exit;
-      temp.Release;
-      self.ptr := temp.ptr;
-      Result := true;
-    end;
-    
-    {$endregion Alloc/Release}
-    
-    ///Возвращает строку с основными данными о данном объекте
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
-    
-  end;
-  
-  {$endregion NativeMemoryArea}
-  
-  {$region NativeValueArea}
-  
-  NativeValueArea<T> = record
-  where T: record;
-    public ptr: IntPtr;
-    
-    {$region constructor's}
-    
-    static constructor;
-    
-    public constructor(ptr: IntPtr) := self.ptr := ptr;
-    public constructor(alloc: boolean := false) :=
-    if alloc then self.Alloc else
-    self.ptr := IntPtr.Zero;
-    
-    public static function operator implicit(p: ^T): NativeValueArea<T> := new NativeValueArea<T>(new IntPtr(p));
-    public static function operator implicit(area: NativeValueArea<T>): ^T := area.Pointer;
-    public static function operator implicit(area: NativeValueArea<T>): NativeMemoryArea := area.UntypedArea;
-    
-    {$endregion constructor's}
-    
-    {$region property's}
-    
-    public static property ValueSize: integer read Marshal.SizeOf(default(T));
-    public property ByteSize: UIntPtr read new UIntPtr(ValueSize);
-    
-    //TODO #????
-    private function PointerUntyped := pointer(ptr);
-    public property Pointer: ^T read PointerUntyped();
-    public property Value: T read Pointer^ write Pointer^ := value;
-    
-    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.ptr, self.ByteSize);
-    
-    {$endregion property's}
-    
-    {$region Alloc/Release}
-    
-    public property IsAllocated: boolean read self.ptr<>IntPtr.Zero;
-    
-    public procedure Alloc;
-    begin
-      var temp := self.UntypedArea;
-      temp.Alloc;
-      self.ptr := temp.ptr;
-    end;
-    public procedure Release;
-    begin
-      var temp := self.UntypedArea;
-      temp.Release;
-      self.ptr := temp.ptr;
-    end;
-    public function TryRelease: boolean;
-    begin
-      Result := false;
-      var temp := self.UntypedArea;
-      temp.ptr := Interlocked.Exchange(self.ptr, IntPtr.Zero);
-      if not temp.IsAllocated then exit;
-      temp.Release;
-      self.ptr := temp.ptr;
-      Result := true;
-    end;
-    
-    {$endregion Alloc/Release}
-    
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${ptr.ToString(''X'')}';
-    
-  end;
-  
-  {$endregion NativeValueArea}
-  
-  {$region NativeArrayArea}
-  
-  NativeArrayArea<T> = record
-  where T: record;
-    public first_ptr: IntPtr;
-    public item_count: UInt32;
-    
-    {$region constructor's}
-    
-    static constructor;
-    
-    public constructor(first_ptr: IntPtr; item_count: UInt32);
-    begin
-      self.first_ptr  := first_ptr;
-      self.item_count := item_count;
-    end;
-    public constructor(item_count: UInt32);
-    begin
-      self.item_count := item_count;
-      Alloc;
-    end;
-    public constructor;
-    begin
-      self.first_ptr  := IntPtr.Zero;
-      self.item_count := 0;
-    end;
-    
-    public static function operator implicit(area: NativeArrayArea<T>): NativeMemoryArea := area.UntypedArea;
-    
-    {$endregion constructor's}
-    
-    {$region property's}
-    
-    public static property ItemSize: integer read Marshal.SizeOf(default(T));
-    public property ByteSize: UIntPtr read new UIntPtr( item_count*uint64(ItemSize) );
-    
-    public property Length: cardinal read self.item_count;
-    
-    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read new NativeValueArea<T>(self.first_ptr + i*ItemSize);
-    
-    private function GetAndCheckItemArea(i: integer): NativeValueArea<T>;
-    begin
-      if cardinal(i)>=self.item_count then raise new IndexOutOfRangeException;
-      Result := ItemAreaUnchecked[i];
-    end;
-    public property ItemArea[i: integer]: NativeValueArea<T> read GetAndCheckItemArea;
-    public property Item[i: integer]: T read ItemArea[i].Value write ItemArea[i].Value := value; default;
-    
-    public property SliceUnchecked[r: IntRange]: NativeArrayArea<T> read
-    new NativeArrayArea<T>( ItemAreaUnchecked[r.Low].ptr, r.High-r.Low+1 );
-    private function GetSliceAndCheck(r: IntRange): NativeArrayArea<T>;
-    begin
-      if r.Low<0 then raise new IndexOutOfRangeException('r.Low');
-      if cardinal(r.High)>=self.item_count then raise new IndexOutOfRangeException('r.High');
-      Result := SliceUnchecked[r];
-      if integer(Result.item_count)<0 then raise new ArgumentOutOfRangeException('r.Count');
-    end;
-    public property Slice[r: IntRange]: NativeArrayArea<T> read GetSliceAndCheck;
-    
-    private function GetManagedCopy: array of T;
-    begin
-      Result := new T[self.item_count];
-      self.UntypedArea.CopyTo(Result);
-    end;
-    public property ManagedCopy: array of T read GetManagedCopy write
-    begin
-      if value.Length<>self.item_count then raise new ArgumentException($'');
-      self.UntypedArea.CopyFrom(value);
-    end;
-    
-    public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.first_ptr, self.ByteSize);
-    
-    {$endregion property's}
-    
-    {$region Alloc/Release}
-    
-    public property IsAllocated: boolean read self.first_ptr<>IntPtr.Zero;
-    
-    public procedure Alloc;
-    begin
-      var temp := self.UntypedArea;
-      temp.Alloc;
-      self.first_ptr := temp.ptr;
-    end;
-    public procedure Release;
-    begin
-      var temp := self.UntypedArea;
-      temp.Release;
-      self.first_ptr := temp.ptr;
-    end;
-    public function TryRelease: boolean;
-    begin
-      Result := false;
-      var temp := self.UntypedArea;
-      temp.ptr := Interlocked.Exchange(self.first_ptr, IntPtr.Zero);
-      if not temp.IsAllocated then exit;
-      temp.Release;
-      self.first_ptr := temp.ptr;
-      Result := true;
-    end;
-    
-    {$endregion Alloc/Release}
-    
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
-    
-  end;
-  
-  {$endregion NativeArrayArea}
-  
-  {$endregion NativeArea}
-  
-  {$region Native}
-  
-  {$region NativeMemory}
-  
-  NativeMemory = partial class(IDisposable)
-    private _area: NativeMemoryArea;
-    
-    {$region constructor's}
-    
-    public constructor(sz: UIntPtr);
-    begin
-      self._area.sz := sz;
-      self._area.Alloc;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    {$endregion constructor's}
-    
-    {$region property's}
-    
-    public property Area: NativeMemoryArea read _area;
-    
-    {$endregion property's}
-    
-    {$region IDisposable}
-    
-    public procedure Dispose :=
-    if Area.TryRelease then GC.SuppressFinalize(self);
-    protected procedure Finalize; override := Dispose;
-    
-    {$endregion IDisposable}
-    
-    public function ToString: string; override :=
-    $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
-    
-  end;
-  
-  {$endregion NativeMemory}
-  
-  {$region NativeValue}
-  
-  ///Представляет запись, значение которой хранится в неуправляемой области памяти
-  NativeValue<T> = partial class(IDisposable)
-  where T: record;
-    private _area := new NativeValueArea<T>(true);
-    
-    {$region constructor's}
-    
-    ///Выделяет и обнуляет область неуправляемой памяти
-    public constructor := self.AreaUntyped.FillZero;
-    ///Выделяет область неуправляемой памяти и сохраняет в него указанное значение
-    public constructor(o: T) := self.Value := o;
-    public static function operator implicit(o: T): NativeValue<T> := new NativeValue<T>(o);
-    
-    {$endregion constructor's}
-    
-    {$region property's}
-    
-    ///Возвращает размер значения, в байтах
-    public static property ValueSize: integer read NativeValueArea&<T>.ValueSize;
-    
-    public property Area: NativeValueArea<T> read _area;
-    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
-    
-    ///Возвращает указатель на значение, сохранённое неуправляемой памяти
-    public property Pointer: ^T read Area.Pointer;
-    ///Возвращает или задаёт значение, сохранённое неуправляемой памяти
-    public property Value: T read Area.Value write Area.Value := value;
-    
-    {$endregion property's}
-    
-    {$region IDisposable}
-    
-    ///Освобождает значение, сохранённое неуправляемой памяти
-    ///Ничего не делает, если значение уже освобождено
-    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
-    public procedure Dispose :=
-    if Area.TryRelease then GC.SuppressFinalize(self);
-    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
-    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
-    protected procedure Finalize; override := Dispose;
-    
-    {$endregion IDisposable}
-    
-    ///Возвращает строку с основными данными о данном объекте
-    public function ToString: string; override :=
-    $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
-    
-  end;
-  
-  {$endregion NativeValue}
-  
-  {$region NativeArray}
-  
-  ///Представляет массив, содержимое которого хранится в неуправляемой области памяти
-  NativeArray<T> = partial class
-  where T: record;
-    private _area: NativeArrayArea<T>;
-    
-    {$region constructor's}
-    
-    private procedure AllocArea(length: UInt32) :=
-    self._area := new NativeArrayArea<T>(length);
-    public constructor(length: UInt32);
-    begin
-      AllocArea(length);
-      self.AreaUntyped.FillZero;
-    end;
-    ///Выделяет неуправляемую память и сохраняет в неё копию указанных данных
-    public constructor(a: array of T);
-    begin
-      AllocArea(a.Length);
-      self.AreaUntyped.CopyFrom(a);
-    end;
-    
-    private constructor := raise new OpenCLABCInternalException;
-    
-    {$endregion constructor's}
-    
-    {$region Method's}
-    
-    ///Возвращает индекс по которому находится указанный элемент
-    ///Если элемент таковой найден - возвращает nil
-    public function IndexOf(item: T): integer?;
-    begin
-      Result := nil;
-      for var i := 0 to Length-1 do
-        if self.Item[i]=item then
-        begin
-          Result := i;
-          break;
-        end;
-    end;
-    
-    {$endregion Method's}
-    
-    {$region property's}
-    
-    ///Возвращает размер одного элемента массива, в байтах
-    public static property ItemSize: integer read NativeArrayArea&<T>.ItemSize;
-    
-    public property Area: NativeArrayArea<T> read self._area;
-    public property AreaUntyped: NativeMemoryArea read Area.UntypedArea;
-    
-    public property Length: cardinal read self.Area.item_count;
-    
-    public property ItemAreaUnchecked[i: integer]: NativeValueArea<T> read Area.ItemAreaUnchecked[i];
-    public property ItemArea[i: integer]: NativeValueArea<T> read Area.ItemArea[i];
-    ///Возвращает или задаёт элемент массива по указанному индексу
-    ///Данное свойство проверяет правильность переданных индексов
-    public property Item[i: integer]: T read Area[i] write Area[i] := value; default;
-    
-    ///Возвращает описание области памяти для указанного среза элементов
-    ///Данное свойство не проверяет правильность переданных индексов
-    public property SliceAreaUnchecked[r: IntRange]: NativeArrayArea<T> read Area.SliceUnchecked[r];
-    ///Возвращает описание области памяти для указанного среза элементов
-    ///Данное свойство проверяет правильность переданных индексов
-    public property SliceArea[r: IntRange]: NativeArrayArea<T> read Area.Slice[r];
-    
-    {$endregion property's}
-    
-  end;
-  
-  ///Представляет перечислитель для типа NativeArray<>
-  NativeArrayEnumerator<T> = record(IEnumerator<T>)
-  where T: record;
-    private a: NativeArray<T>;
-    private i: integer;
-    
-    ///Создаёт перечислитель для указанного массива
-    public constructor(a: NativeArray<T>);
-    begin
-      self.a := a;
-      self.Reset;
-    end;
-    ///--
-    public constructor := exit;
-    
-    ///Переходит к следующему элементу массива
-    ///Возвращаемое значение указывает можно ли читать данные из свойства Current
-    public function MoveNext: boolean;
-    begin
-      i += 1;
-      Result := i < a.Length;
-    end;
-    ///Сбрасывает перечислитель в его исходное положение
-    public procedure Reset := self.i := -1;
-    
-    ///Возвращает элемент массива на который указывает данный перечислитель
-    ///Данное свойство проверяет правильность переданных индексов
-    public property Current: T read a[i];
-    public property System.Collections.IEnumerator.Current: object read a[i];
-    
-    ///Обнуляет ссылку перечислителя на массив
-    public procedure Dispose := a := nil;
-    
-  end;
-  ///Представляет массив, содержимое которого хранится в неуправляемой области памяти
-  NativeArray<T> = partial class(IList<T>, IDisposable)
-    
-    {$region IList}
-    
-    public function System.Collections.Generic.IList<T>.IndexOf(item: T): integer := (self.IndexOf(item) ?? -1).Value;
-    
-    public procedure System.Collections.Generic.IList<T>.Insert(index: integer; item: T) := raise new NotSupportedException;
-    public procedure System.Collections.Generic.IList<T>.RemoveAt(index: integer) := raise new NotSupportedException;
-    
-    {$endregion IList}
-    
-    {$region ICollection}
-    
-    //TODO #????
-    ///--
-    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.Length;
-    public property System.Collections.Generic.ICollection<T>.IsReadOnly: boolean read boolean(true);
-    
-    public procedure System.Collections.Generic.ICollection<T>.Add(item: T) := raise new NotSupportedException;
-    public function System.Collections.Generic.ICollection<T>.Remove(item: T): boolean;
-    begin
-      Result := false;
-      raise new NotSupportedException;
-    end;
-    public procedure System.Collections.Generic.ICollection<T>.Clear := raise new NotSupportedException;
-    
-    ///Определяет содержится ли элемент в массиве
-    public function Contains(item: T) := self.IndexOf(item) <> nil;
-    
-    ///Копирует всё содержимое данного массива в указанный
-    ///Данное свойство проверяет правильность переданных индексов
-    public procedure CopyTo(&array: array of T; arrayIndex: integer);
-    begin
-      if arrayIndex+self.Length > &array.Length then raise new IndexOutOfRangeException;
-      self.AreaUntyped.CopyTo(&array[arrayIndex]);
-    end;
-    
-    {$endregion ICollection}
-    
-    {$region IEnumerable}
-    
-    ///Возвращает перечислитель данного массива
-    public function GetEnumerator: System.Collections.Generic.IEnumerator<T> := new NativeArrayEnumerator<T>(self);
-    public function System.Collections.IEnumerable.GetEnumerator: System.Collections.IEnumerator := new NativeArrayEnumerator<T>(self);
-    
-    {$endregion IEnumerable}
-    
-    {$region IDisposable}
-    
-    ///Освобождает неуправляемую память из по данного массива
-    ///Этот метод потоко-безопасен
-    ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
-    public procedure Dispose :=
-    if Area.TryRelease then GC.SuppressFinalize(self);
-    ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
-    ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
-    protected procedure Finalize; override := Dispose;
-    
-    {$endregion IDisposable}
-    
-    ///Возвращает строку с основными данными о данном объекте
-    public function ToString: string; override;
-    begin
-      var sb := new StringBuilder;
-      sb += TypeName(self);
-      sb += '{';
-      if self.Length<>0 then
-      begin
-        sb += ' ';
-        //TODO #????: as
-        foreach var x in self as IList<T> do
-        begin
-          sb += _ObjectToString(x);
-          sb += ', ';
-        end;
-        sb.Length -= ', '.Length;
-        sb += ' ';
-      end;
-      sb += '}';
-      Result := sb.ToString;
-    end;
-    
-  end;
-  
-  {$endregion NativeArray}
-  
-  {$endregion Native}
-  
-  {$region OpenCL}
-  
-  {$region MemoryUsage}
-  
-  MemoryUsage = record
+  CLMemoryUsage = record
     private data: integer;
     
     private const can_read_bit = 1;
@@ -3255,17 +3574,17 @@ type
       integer(can_read ) * can_read_bit +
       integer(can_write) * can_write_bit
     );
-    private static function operator implicit(data: integer): MemoryUsage := new MemoryUsage(data);
+    private static function operator implicit(data: integer): CLMemoryUsage := new CLMemoryUsage(data);
     
-    public static property None:      MemoryUsage read new MemoryUsage(false, false);
-    public static property ReadOnly:  MemoryUsage read new MemoryUsage(true,  false);
-    public static property WriteOnly: MemoryUsage read new MemoryUsage(false, true);
-    public static property ReadWrite: MemoryUsage read new MemoryUsage(true,  true);
+    public static property None:      CLMemoryUsage read new CLMemoryUsage(false, false);
+    public static property ReadOnly:  CLMemoryUsage read new CLMemoryUsage(true,  false);
+    public static property WriteOnly: CLMemoryUsage read new CLMemoryUsage(false, true);
+    public static property ReadWrite: CLMemoryUsage read new CLMemoryUsage(true,  true);
     
     public property CanRead: boolean read data and can_read_bit <> 0;
     public property CanWrite: boolean read data and can_write_bit <> 0;
     
-    private static function MakeCLFlags(kernel_use, map_use: MemoryUsage): MemFlags;
+    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): MemFlags;
     begin
       
       case kernel_use.data of
@@ -3299,7 +3618,7 @@ type
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
-      res += typeof(MemoryUsage).Name;
+      res += typeof(CLMemoryUsage).Name;
       res += '[';
       if CanRead  then res += 'Read';
       if CanWrite then res += 'Write';
@@ -3309,7 +3628,7 @@ type
     
   end;
   
-  {$endregion MemoryUsage}
+  {$endregion CLMemoryUsage}
   
   {$region CLMemory}
   
@@ -3319,24 +3638,24 @@ type
     
     {$region constructor's}
     
-    public constructor(size: UIntPtr; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(size: UIntPtr; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
-    public constructor(size: integer; c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: integer; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), c, kernel_use, map_use);
-    public constructor(size: int64;   c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: int64;   c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), c, kernel_use, map_use);
     
-    public constructor(size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(size, Context.Default, kernel_use, map_use);
-    public constructor(size: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: UIntPtr; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(size, CLContext.Default, kernel_use, map_use);
+    public constructor(size: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), kernel_use, map_use);
-    public constructor(size: int64;   kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(size: int64;   kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), kernel_use, map_use);
     
     private constructor(ntv: cl_mem);
@@ -3941,14 +4260,14 @@ type
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
-      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), MemoryUsage.MakeCLFlags(kernel_use, map_use)) );
+      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), CLMemoryUsage.MakeCLFlags(kernel_use, map_use)) );
       self._parent := parent.ntv;
     end;
-    public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
-    public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
+    public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
     // For the CLMemory.FromNative
@@ -3981,27 +4300,27 @@ type
     
     {$region constructor's}
     
-    public constructor(c: Context; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
-    public constructor(c: Context; val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
     
-    public constructor(kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, kernel_use, map_use);
-    public constructor(val: T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, val, kernel_use, map_use);
+    public constructor(kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, kernel_use, map_use);
+    public constructor(val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, val, kernel_use, map_use);
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
@@ -4106,46 +4425,46 @@ type
     
     {$region constructor's}
     
-    private procedure InitByLen(c: Context; kernel_use, map_use: MemoryUsage);
+    private procedure InitByLen(c: CLContext; kernel_use, map_use: CLMemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
-    private procedure InitByVal(c: Context; var els: T; kernel_use, map_use: MemoryUsage);
+    private procedure InitByVal(c: CLContext; var els: T; kernel_use, map_use: CLMemoryUsage);
     begin
       
       var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, MemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
     
-    public constructor(c: Context; len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; len: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       self.len := len;
       InitByLen(c, kernel_use, map_use);
     end;
-    public constructor(len: integer; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, len, kernel_use, map_use);
+    public constructor(len: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, len, kernel_use, map_use);
     
-    public constructor(c: Context; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       self.len := els.Length;
       InitByVal(c, els[0], kernel_use, map_use);
     end;
-    public constructor(els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, els, kernel_use, map_use);
+    public constructor(els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, els, kernel_use, map_use);
     
-    public constructor(c: Context; els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits);
+    public constructor(c: CLContext; els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       self.len := len;
       InitByVal(c, els[els_from], kernel_use, map_use);
     end;
-    public constructor(els_from, len: integer; els: array of T; kernel_use: MemoryUsage := MemoryUsage.read_write_bits; map_use: MemoryUsage := MemoryUsage.read_write_bits) :=
-    Create(Context.Default, els_from, len, els, kernel_use, map_use);
+    public constructor(els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
+    Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
@@ -4568,176 +4887,145 @@ type
   
   {$endregion CLArray}
   
-  {$endregion OpenCL}
-  
-  {$endregion Memory}
+  {$endregion CLMemory}
   
   {$region Common}
   
-  ///Представляет платформу OpenCL, объединяющую одно или несколько устройств
-  Platform = partial class
+  CLPlatform = partial class
     
-    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_platform_id read ntv;
     
-    private prop: PlatformProperties;
-    private function GetProperties: PlatformProperties;
+    private prop: CLPlatformProperties;
+    private function GetProperties: CLPlatformProperties;
     begin
-      if prop=nil then prop := new PlatformProperties(ntv);
+      if prop=nil then prop := new CLPlatformProperties(ntv);
       Result := prop;
     end;
-    ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: PlatformProperties read GetProperties;
+    public property Properties: CLPlatformProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Platform): boolean :=
+    public static function operator=(wr1, wr2: CLPlatform): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Platform): boolean := false=
+    public static function operator<>(wr1, wr2: CLPlatform): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
-    ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is Platform(var wr)) and (self = wr);
+    (obj is CLPlatform(var wr)) and (self = wr);
     
-    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  ///Представляет устройство, поддерживающее OpenCL
-  Device = partial class
+  CLDevice = partial class
     
-    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_device_id read ntv;
     
-    private prop: DeviceProperties;
-    private function GetProperties: DeviceProperties;
+    private prop: CLDeviceProperties;
+    private function GetProperties: CLDeviceProperties;
     begin
-      if prop=nil then prop := new DeviceProperties(ntv);
+      if prop=nil then prop := new CLDeviceProperties(ntv);
       Result := prop;
     end;
-    ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: DeviceProperties read GetProperties;
+    public property Properties: CLDeviceProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Device): boolean :=
+    public static function operator=(wr1, wr2: CLDevice): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Device): boolean := false=
+    public static function operator<>(wr1, wr2: CLDevice): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
-    ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is Device(var wr)) and (self = wr);
+    (obj is CLDevice(var wr)) and (self = wr);
     
-    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  ///Представляет виртуальное устройство, использующее часть ядер другого устройства
-  ///Объекты данного типа обычно создаются методами "Device.Split*"
-  SubDevice = partial class(Device)
+  CLSubDevice = partial class(CLDevice)
     
-    private prop: SubDeviceProperties;
-    private function GetProperties: SubDeviceProperties;
+    private prop: CLSubDeviceProperties;
+    private function GetProperties: CLSubDeviceProperties;
     begin
-      if prop=nil then prop := new SubDeviceProperties(ntv);
+      if prop=nil then prop := new CLSubDeviceProperties(ntv);
       Result := prop;
     end;
-    ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: SubDeviceProperties read GetProperties;
+    public property Properties: CLSubDeviceProperties read GetProperties;
     
-    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{inherited ToString} of {Parent}';
     
   end;
   
-  ///Представляет контекст для хранения данных и выполнения команд на GPU
-  Context = partial class
+  CLContext = partial class
     
-    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_context read ntv;
     
-    private prop: ContextProperties;
-    private function GetProperties: ContextProperties;
+    private prop: CLContextProperties;
+    private function GetProperties: CLContextProperties;
     begin
-      if prop=nil then prop := new ContextProperties(ntv);
+      if prop=nil then prop := new CLContextProperties(ntv);
       Result := prop;
     end;
-    ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: ContextProperties read GetProperties;
+    public property Properties: CLContextProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Context): boolean :=
+    public static function operator=(wr1, wr2: CLContext): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Context): boolean := false=
+    public static function operator<>(wr1, wr2: CLContext): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
-    ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is Context(var wr)) and (self = wr);
+    (obj is CLContext(var wr)) and (self = wr);
     
-    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}';
     
   end;
   
-  ///Представляет контейнер с откомпилированным кодом для GPU, содержащим подпрограммы-kernel'ы
-  ProgramCode = partial class
+  CLCode = abstract partial class
     
-    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_program read ntv;
     
-    private prop: ProgramCodeProperties;
-    private function GetProperties: ProgramCodeProperties;
+    private prop: CLCodeProperties;
+    private function GetProperties: CLCodeProperties;
     begin
-      if prop=nil then prop := new ProgramCodeProperties(ntv);
+      if prop=nil then prop := new CLCodeProperties(ntv);
       Result := prop;
     end;
-    ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: ProgramCodeProperties read GetProperties;
+    public property Properties: CLCodeProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: ProgramCode): boolean :=
+    public static function operator=(wr1, wr2: CLCode): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: ProgramCode): boolean := false=
+    public static function operator<>(wr1, wr2: CLCode): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
-    ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is ProgramCode(var wr)) and (self = wr);
+    (obj is CLCode(var wr)) and (self = wr);
     
-    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  ///Представляет подпрограмму, выполняемую на GPU
-  Kernel = partial class
+  CLKernel = partial class
     
-    ///Возвращает имя (дескриптор) неуправляемого объекта
     public property Native: cl_kernel read ntv;
     
-    private prop: KernelProperties;
-    private function GetProperties: KernelProperties;
+    private prop: CLKernelProperties;
+    private function GetProperties: CLKernelProperties;
     begin
-      if prop=nil then prop := new KernelProperties(ntv);
+      if prop=nil then prop := new CLKernelProperties(ntv);
       Result := prop;
     end;
-    ///Возвращает контейнер свойств неуправляемого объекта
-    public property Properties: KernelProperties read GetProperties;
+    public property Properties: CLKernelProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Kernel): boolean :=
+    public static function operator=(wr1, wr2: CLKernel): boolean :=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
-    public static function operator<>(wr1, wr2: Kernel): boolean := false=
+    public static function operator<>(wr1, wr2: CLKernel): boolean := false=
     if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     
-    ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is Kernel(var wr)) and (self = wr);
+    (obj is CLKernel(var wr)) and (self = wr);
     
-    ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
     $'{TypeName(self)}[{Name}] from {code}';
     
@@ -4855,8 +5143,7 @@ type
   
   {$region Misc}
   
-  ///Представляет устройство, поддерживающее OpenCL
-  Device = partial class
+  CLDevice = partial class
     
     private supported_split_modes: array of DevicePartitionProperty := nil;
     private function GetSSM: array of DevicePartitionProperty;
@@ -4865,10 +5152,10 @@ type
       Result := supported_split_modes;
     end;
     
-    private function Split(params props: array of DevicePartitionProperty): array of SubDevice;
+    private function Split(params props: array of DevicePartitionProperty): array of CLSubDevice;
     begin
       if not GetSSM.Contains(props[0]) then
-        raise new NotSupportedException($'Данный режим .Split не поддерживается выбранным устройством');
+        raise new NotSupportedException($'');
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, 0, IntPtr.Zero, c) );
@@ -4876,16 +5163,13 @@ type
       var res := new cl_device_id[int64(c)];
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, c, res[0], IntPtr.Zero) );
       
-      Result := res.ConvertAll(sdvc->new SubDevice(self.ntv, sdvc));
+      Result := res.ConvertAll(sdvc->new CLSubDevice(self.ntv, sdvc));
     end;
     
-    ///Указывает, поддерживает ли это устройство вызов метода .SplitEqually
     public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
-    ///Создаёт максимальное возможное количество виртуальных устройств,
-    ///каждое из которых содержит CUCount ядер данного устройства
-    public function SplitEqually(CUCount: integer): array of SubDevice;
+    public function SplitEqually(CUCount: integer): array of CLSubDevice;
     begin
-      if CUCount <= 0 then raise new ArgumentException($'Количество ядер должно быть положительным числом, а не {CUCount}');
+      if CUCount <= 0 then raise new ArgumentException($'');
       Result := Split(
         DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
         DevicePartitionProperty.Create(CUCount),
@@ -4893,13 +5177,11 @@ type
       );
     end;
     
-    ///Указывает, поддерживает ли это устройство вызов метода .SplitByCounts
     public property CanSplitByCounts: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
-    ///Создаёт массив виртуальных устройств, каждое из которых содержит указанное кол-во ядер
-    public function SplitByCounts(params CUCounts: array of integer): array of SubDevice;
+    public function SplitByCounts(params CUCounts: array of integer): array of CLSubDevice;
     begin
       foreach var CUCount in CUCounts do
-        if CUCount <= 0 then raise new ArgumentException($'Количество ядер должно быть положительным числом, а не {CUCount}');
+        if CUCount <= 0 then raise new ArgumentException($'');
       
       var props := new DevicePartitionProperty[CUCounts.Length+2];
       props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
@@ -4910,11 +5192,8 @@ type
       Result := Split(props);
     end;
     
-    ///Указывает, поддерживает ли это устройство вызов метода .SplitByAffinityDomain
     public property CanSplitByAffinityDomain: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
-    ///Разделяет данное устройство на отдельные группы ядер так,
-    ///чтобы у каждой группы ядер был общий кэш указанного уровня
-    public function SplitByAffinityDomain(affinity_domain: DeviceAffinityDomain) :=
+    public function SplitByAffinityDomain(affinity_domain: CLDeviceAffinityDomain) :=
     Split(
       DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN,
       DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
@@ -5349,7 +5628,7 @@ type
     {$region Convert}
     
     public function ThenConstConvert<TOtp>(f: T->TOtp           ): CommandQueue<TOtp>;
-    public function ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenConstConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
     
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
@@ -5359,35 +5638,24 @@ type
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
     public function ThenQuickConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
-    ///Создаёт очередь, которая выполнит данную
-    ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenQuickConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
     
     public function ThenThreadedConvert<TOtp>(f: T->TOtp           ): CommandQueue<TOtp>;
-    public function ThenThreadedConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp>;
+    public function ThenThreadedConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
     
     ///Создаёт очередь, которая выполнит данную
     ///А затем выполнит на CPU функцию f, используя результат данной очереди
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
     ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
     public function ThenConvert<TOtp>(f: T->TOtp           ) := ThenThreadedConvert(f);
-    ///Создаёт очередь, которая выполнит данную
-    ///А затем выполнит на CPU функцию f, используя результат данной очереди и контекст выполнения
-    ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
-    public function ThenConvert<TOtp>(f: (T, Context)->TOtp) := ThenThreadedConvert(f);
+    public function ThenConvert<TOtp>(f: (T, CLContext)->TOtp) := ThenThreadedConvert(f);
     
     {$endregion Convert}
     
     {$region Use}
     
     public function ThenConstUse(p: T->()           ): CommandQueue<T>;
-    public function ThenConstUse(p: (T, Context)->()): CommandQueue<T>;
+    public function ThenConstUse(p: (T, CLContext)->()): CommandQueue<T>;
     
     ///Создаёт очередь, которая выполнит данную и вернёт её результат
     ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
@@ -5397,28 +5665,17 @@ type
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
     public function ThenQuickUse(p: T->()           ): CommandQueue<T>;
-    ///Создаёт очередь, которая выполнит данную и вернёт её результат
-    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат и контекст выполнения
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickUse(p: (T, Context)->()): CommandQueue<T>;
+    public function ThenQuickUse(p: (T, CLContext)->()): CommandQueue<T>;
     
     public function ThenThreadedUse(p: T->()           ): CommandQueue<T>;
-    public function ThenThreadedUse(p: (T, Context)->()): CommandQueue<T>;
+    public function ThenThreadedUse(p: (T, CLContext)->()): CommandQueue<T>;
     
     ///Создаёт очередь, которая выполнит данную и вернёт её результат
     ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
     ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
     ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
     public function ThenUse(p: T->()           ) := ThenThreadedUse(p);
-    ///Создаёт очередь, которая выполнит данную и вернёт её результат
-    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат и контекст выполнения
-    ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
-    public function ThenUse(p: (T, Context)->()) := ThenThreadedUse(p);
+    public function ThenUse(p: (T, CLContext)->()) := ThenThreadedUse(p);
     
     {$endregion Use}
     
@@ -5733,7 +5990,7 @@ type
   
   ///Представляет задачу выполнения очереди, создаваемую методом Context.BeginInvoke
   CLTaskBase = abstract partial class
-    private org_c: Context;
+    private org_c: CLContext;
     private wh := new ManualResetEventSlim(false);
     private err_lst: List<Exception>;
     
@@ -5741,8 +5998,7 @@ type
     ///Возвращает очередь, которую выполняет данный CLTask
     public property OrgQueue: CommandQueueBase read OrgQueueBase;
     
-    ///Возвращает контекст, в котором выполняется данный CLTask
-    public property OrgContext: Context read org_c;
+    public property OrgCLContext: CLContext read org_c;
     
     ///Ожидает окончания выполнения очереди (если оно ещё не завершилось)
     ///Кидает System.AggregateException, содержащие ошибки при выполнении очереди, если такие имеются
@@ -5784,27 +6040,14 @@ type
     
   end;
   
-  ///Представляет контекст для хранения данных и выполнения команд на GPU
-  Context = partial class
+  CLContext = partial class
     
-    ///Запускает данную очередь и все её подочереди
-    ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
     public function BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter): CLTaskBase;
-    ///Запускает данную очередь и все её подочереди
-    ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
     public function BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter): CLTaskNil;
-    ///Запускает данную очередь и все её подочереди
-    ///Как только всё запущено: возвращает CLTask, через который можно следить за процессом выполнения
     public function BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter): CLTask<T>;
     
-    ///Запускает данную очередь и все её подочереди
-    ///Затем ожидает окончания выполнения
     public procedure SyncInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := BeginInvoke(q, parameters).Wait;
-    ///Запускает данную очередь и все её подочереди
-    ///Затем ожидает окончания выполнения
     public procedure SyncInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := BeginInvoke(q, parameters).Wait;
-    ///Запускает данную очередь и все её подочереди
-    ///Затем ожидает окончания выполнения и возвращает полученный результат
     public function SyncInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := BeginInvoke(q, parameters).WaitRes;
     
   end;
@@ -5813,76 +6056,50 @@ type
   
   {$region CCQ's}
   
-  {$region KernelCCQ}
+  {$region CLKernelCCQ}
   
-  ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа Kernel
-  KernelCCQ = sealed partial class
+  CLKernelCCQ = sealed partial class
     
-    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
-    public constructor(o: Kernel);
-    ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
-    ///За каждое одно выполнение контейнера - q выполнится ровно один раз
-    public constructor(q: CommandQueue<Kernel>);
+    public constructor(o: CLKernel);
+    public constructor(q: CommandQueue<CLKernel>);
     private constructor;
     
     {$region Special .Add's}
     
-    ///Добавляет выполнение очереди в список обычных команд для GPU
-    public function ThenQueue(q: CommandQueueBase): KernelCCQ;
+    public function ThenQueue(q: CommandQueueBase): CLKernelCCQ;
     
-    public function ThenConstProc(p: Kernel->()): KernelCCQ;
-    public function ThenConstProc(p: (Kernel, Context)->()): KernelCCQ;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: Kernel->()): KernelCCQ;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: (Kernel, Context)->()): KernelCCQ;
-    public function ThenThreadedProc(p: Kernel->()): KernelCCQ;
-    public function ThenThreadedProc(p: (Kernel, Context)->()): KernelCCQ;
+    public function ThenConstProc(p: CLKernel->()): CLKernelCCQ;
+    public function ThenConstProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
+    public function ThenQuickProc(p: CLKernel->()): CLKernelCCQ;
+    public function ThenQuickProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
+    public function ThenThreadedProc(p: CLKernel->()): CLKernelCCQ;
+    public function ThenThreadedProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
     
-    ///Добавляет ожидание сигнала выполненности от заданного маркера
-    public function ThenWait(marker: WaitMarker): KernelCCQ;
+    public function ThenWait(marker: WaitMarker): CLKernelCCQ;
     
     {$endregion Special .Add's}
     
     {$region Exec}
     
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec1(sz1: CommandQueue<integer>; params args: array of CLKernelArg): CLKernelCCQ;
     
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg): CLKernelCCQ;
     
-    ///Выполняет kernel с указанным кол-вом ядер и передаёт в него указанные аргументы
-    public function ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg): CLKernelCCQ;
     
-    ///Выполняет kernel с расширенным набором параметров
-    ///Данная перегрузка используется в первую очередь для тонких оптимизаций
-    ///Если она вам понадобилась по другой причина - пожалуйста, напишите в issue
-    public function ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+    public function ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg): CLKernelCCQ;
     
     {$endregion Exec}
     
   end;
   
-  ///Представляет подпрограмму, выполняемую на GPU
-  Kernel = partial class
-    ///Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
-    public function NewQueue := new KernelCCQ(self);
+  CLKernel = partial class
+    public function NewQueue := new CLKernelCCQ(self);
   end;
   
-  {$endregion KernelCCQ}
+  {$endregion CLKernelCCQ}
   
-  {$region MemorySegmentCCQ}
+  {$region CLMemorySegmentCCQ}
   
   ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа CLMemory
   CLMemoryCCQ = sealed partial class
@@ -5900,7 +6117,7 @@ type
     public function ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
     
     public function ThenConstProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenConstProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    public function ThenConstProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
@@ -5908,15 +6125,9 @@ type
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
     public function ThenQuickProc(p: CLMemory->()): CLMemoryCCQ;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    public function ThenQuickProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
     public function ThenThreadedProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenThreadedProc(p: (CLMemory, Context)->()): CLMemoryCCQ;
+    public function ThenThreadedProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function ThenWait(marker: WaitMarker): CLMemoryCCQ;
@@ -6466,7 +6677,7 @@ type
     public function NewQueue := new CLMemoryCCQ(self);
   end;
   
-  {$endregion MemorySegmentCCQ}
+  {$endregion CLMemorySegmentCCQ}
   
   {$region CLValueCCQ}
   
@@ -6487,7 +6698,7 @@ type
     public function ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
     
     public function ThenConstProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenConstProc(p: (CLValue<T>, Context)->()): CLValueCCQ<T>;
+    public function ThenConstProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
@@ -6495,15 +6706,9 @@ type
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
     public function ThenQuickProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: (CLValue<T>, Context)->()): CLValueCCQ<T>;
+    public function ThenQuickProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
     public function ThenThreadedProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenThreadedProc(p: (CLValue<T>, Context)->()): CLValueCCQ<T>;
+    public function ThenThreadedProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function ThenWait(marker: WaitMarker): CLValueCCQ<T>;
@@ -6590,7 +6795,7 @@ type
     public function ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
     
     public function ThenConstProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenConstProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenConstProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
     ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
     ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
     ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
@@ -6598,15 +6803,9 @@ type
     ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
     ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
     public function ThenQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenQuickProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
     public function ThenThreadedProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenThreadedProc(p: (CLArray<T>, Context)->()): CLArrayCCQ<T>;
+    public function ThenThreadedProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function ThenWait(marker: WaitMarker): CLArrayCCQ<T>;
@@ -6975,35 +7174,35 @@ type
   
   {$endregion CCQ's}
   
-  {$region KernelArg}
+  {$region CLKernelArg}
   
   {$region Global}
   
-  KernelArgGlobal = abstract partial class(KernelArg)
+  CLKernelArgGlobal = abstract partial class(CLKernelArg)
     
     {$region Managed}
     
     {$region Array}
     
-    public static function FromArray<T>(a: array of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromArray<T>(a: array of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion Array}
     
     {$region Array2}
     
-    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion Array3}
     
     {$region ArraySegment}
     
-    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion ArraySegment}
     
@@ -7013,19 +7212,19 @@ type
     
     {$region NativeMemoryArea}
     
-    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal;
+    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal;
     
     {$endregion NativeMemoryArea}
     
     {$region NativeValueArea}
     
-    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion NativeValueArea}
     
     {$region NativeArrayArea}
     
-    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion NativeArrayArea}
     
@@ -7035,19 +7234,19 @@ type
     
     {$region NativeMemory}
     
-    public static function FromNativeMemory(ntv_mem: NativeMemory; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal;
+    public static function FromNativeMemory(ntv_mem: NativeMemory; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal;
     
     {$endregion NativeMemory}
     
     {$region NativeValue}
     
-    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion NativeValue}
     
     {$region NativeArray}
     
-    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArgGlobal; where T: record;
+    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArgGlobal; where T: record;
     
     {$endregion NativeArray}
     
@@ -7057,46 +7256,46 @@ type
     
     {$region CLMemory}
     
-    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
-    public static function operator implicit(cl_mem: CLMemory): KernelArgGlobal;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
+    public static function operator implicit(cl_mem: CLMemory): CLKernelArgGlobal;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArgGlobal;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): CLKernelArgGlobal;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArgGlobal;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): CLKernelArgGlobal;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArgGlobal;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgGlobal;
     
     {$endregion CLMemory}
     
     {$region CLValue}
     
-    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgGlobal; where T: record;
-    public static function operator implicit<T>(cl_val: CLValue<T>): KernelArgGlobal; where T: record;
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgGlobal; where T: record;
     
     {$endregion CLValue}
     
     {$region CLArray}
     
-    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgGlobal; where T: record;
-    public static function operator implicit<T>(cl_arr: CLArray<T>): KernelArgGlobal; where T: record;
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgGlobal; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgGlobal; where T: record;
     
     {$endregion CLArray}
     
@@ -7108,31 +7307,31 @@ type
   
   {$region Constant}
   
-  KernelArgConstant = abstract partial class(KernelArg)
+  CLKernelArgConstant = abstract partial class(CLKernelArg)
     
     {$region Managed}
     
     {$region Array}
     
-    public static function FromArray<T>(a: array of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray<T>(a: array of T; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion Array}
     
     {$region Array2}
     
-    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion Array3}
     
     {$region ArraySegment}
     
-    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion ArraySegment}
     
@@ -7142,19 +7341,19 @@ type
     
     {$region NativeMemoryArea}
     
-    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context := nil): KernelArgConstant;
+    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext := nil): CLKernelArgConstant;
     
     {$endregion NativeMemoryArea}
     
     {$region NativeValueArea}
     
-    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion NativeValueArea}
     
     {$region NativeArrayArea}
     
-    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion NativeArrayArea}
     
@@ -7164,19 +7363,19 @@ type
     
     {$region NativeMemory}
     
-    public static function FromNativeMemory(ntv_mem: NativeMemory; c: Context := nil): KernelArgConstant;
+    public static function FromNativeMemory(ntv_mem: NativeMemory; c: CLContext := nil): CLKernelArgConstant;
     
     {$endregion NativeMemory}
     
     {$region NativeValue}
     
-    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion NativeValue}
     
     {$region NativeArray}
     
-    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context := nil): KernelArgConstant; where T: record;
+    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext := nil): CLKernelArgConstant; where T: record;
     
     {$endregion NativeArray}
     
@@ -7186,46 +7385,46 @@ type
     
     {$region CLMemory}
     
-    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
-    public static function operator implicit(cl_mem: CLMemory): KernelArgConstant;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
+    public static function operator implicit(cl_mem: CLMemory): CLKernelArgConstant;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArgConstant;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): CLKernelArgConstant;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArgConstant;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): CLKernelArgConstant;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArgConstant;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgConstant;
     
     {$endregion CLMemory}
     
     {$region CLValue}
     
-    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgConstant; where T: record;
-    public static function operator implicit<T>(cl_val: CLValue<T>): KernelArgConstant; where T: record;
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): CLKernelArgConstant; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgConstant; where T: record;
     
     {$endregion CLValue}
     
     {$region CLArray}
     
-    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgConstant; where T: record;
-    public static function operator implicit<T>(cl_arr: CLArray<T>): KernelArgConstant; where T: record;
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): CLKernelArgConstant; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgConstant; where T: record;
     
     {$endregion CLArray}
     
@@ -7237,11 +7436,11 @@ type
   
   {$region Local}
   
-  KernelArgLocal = abstract partial class(KernelArg)
+  CLKernelArgLocal = abstract partial class(CLKernelArg)
     
     {$region FromBytes}
     
-    public static function FromBytes(bytes: CommandQueue<UIntPtr>): KernelArgLocal;
+    public static function FromBytes(bytes: CommandQueue<UIntPtr>): CLKernelArgLocal;
     public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
     public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
@@ -7251,41 +7450,41 @@ type
     
     {$region FromItemCount}
     
-    public static function FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
-    public static function FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+    public static function FromItemCount<T>(item_count: CommandQueue<UInt32>): CLKernelArgLocal; where T: record;
+    public static function FromItemCount<T>(item_count: CommandQueue<Int32>): CLKernelArgLocal; where T: record;
     
     {$endregion FromItemCount}
     
     {$region LikeArray}
     
-    public static function LikeArray<T>(a: CommandQueue<array of T>): KernelArgLocal; where T: record;
+    public static function LikeArray<T>(a: CommandQueue<array of T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
-    public static function LikeArray<T>(a: array of T): KernelArgLocal; where T: record;
+    public static function LikeArray<T>(a: array of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
-    public static function LikeArray2<T>(a: CommandQueue<array[,] of T>): KernelArgLocal; where T: record;
+    public static function LikeArray2<T>(a: CommandQueue<array[,] of T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
-    public static function LikeArray2<T>(a: array[,] of T): KernelArgLocal; where T: record;
+    public static function LikeArray2<T>(a: array[,] of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
-    public static function LikeArray3<T>(a: CommandQueue<array[,,] of T>): KernelArgLocal; where T: record;
+    public static function LikeArray3<T>(a: CommandQueue<array[,,] of T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
-    public static function LikeArray3<T>(a: array[,,] of T): KernelArgLocal; where T: record;
+    public static function LikeArray3<T>(a: array[,,] of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
-    public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): KernelArgLocal; where T: record;
+    public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
-    public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): KernelArgLocal; where T: record;
+    public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
-    public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): KernelArgLocal; where T: record;
+    public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
-    public static function LikeNativeArray<T>(a: NativeArray<T>): KernelArgLocal; where T: record;
+    public static function LikeNativeArray<T>(a: NativeArray<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
-    public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): KernelArgLocal; where T: record;
+    public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
-    public static function LikeCLArray<T>(a: CLArray<T>): KernelArgLocal; where T: record;
+    public static function LikeCLArray<T>(a: CLArray<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     {$endregion LikeArray}
@@ -7296,62 +7495,62 @@ type
   
   {$region Private}
   
-  KernelArgPrivate = abstract partial class(KernelArg)
+  CLKernelArgPrivate = abstract partial class(CLKernelArg)
     
     {$region Managed}
     
     {$region Array}
     
-    public static function FromArray<T>(a: CommandQueue<array of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a: array of T): KernelArgPrivate; where T: record;
+    public static function FromArray<T>(a: CommandQueue<array of T>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a: array of T): CLKernelArgPrivate; where T: record;
     begin Result := FromArray&<T>(a) end;
-    public static function operator implicit<T>(a: CommandQueue<array of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a: CommandQueue<array of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray&<T>(a) end;
-    public static function operator implicit<T>(a: ConstQueue<array of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a: ConstQueue<array of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray&<T>(a) end;
-    public static function operator implicit<T>(a: ParameterQueue<array of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a: ParameterQueue<array of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray&<T>(a) end;
     
     {$endregion Array}
     
     {$region Array2}
     
-    public static function FromArray2<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a2: array[,] of T): KernelArgPrivate; where T: record;
+    public static function FromArray2<T>(a2: CommandQueue<array[,] of T>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a2: array[,] of T): CLKernelArgPrivate; where T: record;
     begin Result := FromArray2&<T>(a2) end;
-    public static function operator implicit<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a2: CommandQueue<array[,] of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray2&<T>(a2) end;
-    public static function operator implicit<T>(a2: ConstQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a2: ConstQueue<array[,] of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray2&<T>(a2) end;
-    public static function operator implicit<T>(a2: ParameterQueue<array[,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a2: ParameterQueue<array[,] of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray2&<T>(a2) end;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(a3: array[,,] of T): KernelArgPrivate; where T: record;
+    public static function FromArray3<T>(a3: CommandQueue<array[,,] of T>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a3: array[,,] of T): CLKernelArgPrivate; where T: record;
     begin Result := FromArray3&<T>(a3) end;
-    public static function operator implicit<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a3: CommandQueue<array[,,] of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray3&<T>(a3) end;
-    public static function operator implicit<T>(a3: ConstQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a3: ConstQueue<array[,,] of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray3&<T>(a3) end;
-    public static function operator implicit<T>(a3: ParameterQueue<array[,,] of T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(a3: ParameterQueue<array[,,] of T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArray3&<T>(a3) end;
     
     {$endregion Array3}
     
     {$region ArraySegment}
     
-    public static function FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(seg: ArraySegment<T>): KernelArgPrivate; where T: record;
+    public static function FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(seg: ArraySegment<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromArraySegment&<T>(seg) end;
-    public static function operator implicit<T>(seg: CommandQueue<ArraySegment<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromArraySegment&<T>(seg) end;
-    public static function operator implicit<T>(seg: ConstQueue<ArraySegment<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(seg: ConstQueue<ArraySegment<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromArraySegment&<T>(seg) end;
-    public static function operator implicit<T>(seg: ParameterQueue<ArraySegment<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(seg: ParameterQueue<ArraySegment<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromArraySegment&<T>(seg) end;
     
     {$endregion ArraySegment}
@@ -7362,42 +7561,42 @@ type
     
     {$region NativeMemoryArea}
     
-    public static function FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): KernelArgPrivate;
-    public static function operator implicit(ntv_mem_area: NativeMemoryArea): KernelArgPrivate;
+    public static function FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArgPrivate;
+    public static function operator implicit(ntv_mem_area: NativeMemoryArea): CLKernelArgPrivate;
     begin Result := FromNativeMemoryArea(ntv_mem_area) end;
-    public static function operator implicit(ntv_mem_area: CommandQueue<NativeMemoryArea>): KernelArgPrivate;
+    public static function operator implicit(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArgPrivate;
     begin Result := FromNativeMemoryArea(ntv_mem_area) end;
-    public static function operator implicit(ntv_mem_area: ConstQueue<NativeMemoryArea>): KernelArgPrivate;
+    public static function operator implicit(ntv_mem_area: ConstQueue<NativeMemoryArea>): CLKernelArgPrivate;
     begin Result := FromNativeMemoryArea(ntv_mem_area) end;
-    public static function operator implicit(ntv_mem_area: ParameterQueue<NativeMemoryArea>): KernelArgPrivate;
+    public static function operator implicit(ntv_mem_area: ParameterQueue<NativeMemoryArea>): CLKernelArgPrivate;
     begin Result := FromNativeMemoryArea(ntv_mem_area) end;
     
     {$endregion NativeMemoryArea}
     
     {$region NativeValueArea}
     
-    public static function FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(ntv_val_area: NativeValueArea<T>): KernelArgPrivate; where T: record;
+    public static function FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val_area: NativeValueArea<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
-    public static function operator implicit<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
-    public static function operator implicit<T>(ntv_val_area: ConstQueue<NativeValueArea<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val_area: ConstQueue<NativeValueArea<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
-    public static function operator implicit<T>(ntv_val_area: ParameterQueue<NativeValueArea<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val_area: ParameterQueue<NativeValueArea<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
     
     {$endregion NativeValueArea}
     
     {$region NativeArrayArea}
     
-    public static function FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(ntv_arr_area: NativeArrayArea<T>): KernelArgPrivate; where T: record;
+    public static function FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr_area: NativeArrayArea<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
-    public static function operator implicit<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
-    public static function operator implicit<T>(ntv_arr_area: ConstQueue<NativeArrayArea<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr_area: ConstQueue<NativeArrayArea<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
-    public static function operator implicit<T>(ntv_arr_area: ParameterQueue<NativeArrayArea<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr_area: ParameterQueue<NativeArrayArea<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
     
     {$endregion NativeArrayArea}
@@ -7408,42 +7607,42 @@ type
     
     {$region NativeMemory}
     
-    public static function FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): KernelArgPrivate;
-    public static function operator implicit(ntv_mem: NativeMemory): KernelArgPrivate;
+    public static function FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): CLKernelArgPrivate;
+    public static function operator implicit(ntv_mem: NativeMemory): CLKernelArgPrivate;
     begin Result := FromNativeMemory(ntv_mem) end;
-    public static function operator implicit(ntv_mem: CommandQueue<NativeMemory>): KernelArgPrivate;
+    public static function operator implicit(ntv_mem: CommandQueue<NativeMemory>): CLKernelArgPrivate;
     begin Result := FromNativeMemory(ntv_mem) end;
-    public static function operator implicit(ntv_mem: ConstQueue<NativeMemory>): KernelArgPrivate;
+    public static function operator implicit(ntv_mem: ConstQueue<NativeMemory>): CLKernelArgPrivate;
     begin Result := FromNativeMemory(ntv_mem) end;
-    public static function operator implicit(ntv_mem: ParameterQueue<NativeMemory>): KernelArgPrivate;
+    public static function operator implicit(ntv_mem: ParameterQueue<NativeMemory>): CLKernelArgPrivate;
     begin Result := FromNativeMemory(ntv_mem) end;
     
     {$endregion NativeMemory}
     
     {$region NativeValue}
     
-    public static function FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(ntv_val: NativeValue<T>): KernelArgPrivate; where T: record;
+    public static function FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val: NativeValue<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValue&<T>(ntv_val) end;
-    public static function operator implicit<T>(ntv_val: CommandQueue<NativeValue<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValue&<T>(ntv_val) end;
-    public static function operator implicit<T>(ntv_val: ConstQueue<NativeValue<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val: ConstQueue<NativeValue<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValue&<T>(ntv_val) end;
-    public static function operator implicit<T>(ntv_val: ParameterQueue<NativeValue<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_val: ParameterQueue<NativeValue<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeValue&<T>(ntv_val) end;
     
     {$endregion NativeValue}
     
     {$region NativeArray}
     
-    public static function FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(ntv_arr: NativeArray<T>): KernelArgPrivate; where T: record;
+    public static function FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr: NativeArray<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArray&<T>(ntv_arr) end;
-    public static function operator implicit<T>(ntv_arr: CommandQueue<NativeArray<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArray&<T>(ntv_arr) end;
-    public static function operator implicit<T>(ntv_arr: ConstQueue<NativeArray<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr: ConstQueue<NativeArray<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArray&<T>(ntv_arr) end;
-    public static function operator implicit<T>(ntv_arr: ParameterQueue<NativeArray<T>>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(ntv_arr: ParameterQueue<NativeArray<T>>): CLKernelArgPrivate; where T: record;
     begin Result := FromNativeArray&<T>(ntv_arr) end;
     
     {$endregion NativeArray}
@@ -7452,14 +7651,14 @@ type
     
     {$region Value}
     
-    public static function FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-    public static function operator implicit<T>(val: T): KernelArgPrivate; where T: record;
+    public static function FromValue<T>(val: CommandQueue<T>): CLKernelArgPrivate; where T: record;
+    public static function operator implicit<T>(val: T): CLKernelArgPrivate; where T: record;
     begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(val: CommandQueue<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ConstQueue<T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(val: ConstQueue<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArgPrivate; where T: record;
+    public static function operator implicit<T>(val: ParameterQueue<T>): CLKernelArgPrivate; where T: record;
     begin Result := FromValue&<T>(val) end;
     
     {$endregion Value}
@@ -7470,32 +7669,31 @@ type
   
   {$region Generic}
   
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class
+  CLKernelArg = abstract partial class
     
     {$region Managed}
     
     {$region Array}
     
-    public static function FromArray<T>(a: array of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromArray<T>(a: array of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion Array}
     
     {$region Array2}
     
-    public static function FromArray2<T>(a2: array[,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromArray2<T>(a2: array[,] of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion Array2}
     
     {$region Array3}
     
-    public static function FromArray3<T>(a3: array[,,] of T; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromArray3<T>(a3: array[,,] of T; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion Array3}
     
     {$region ArraySegment}
     
-    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion ArraySegment}
     
@@ -7505,19 +7703,19 @@ type
     
     {$region NativeMemoryArea}
     
-    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg;
+    public static function FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg;
     
     {$endregion NativeMemoryArea}
     
     {$region NativeValueArea}
     
-    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion NativeValueArea}
     
     {$region NativeArrayArea}
     
-    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion NativeArrayArea}
     
@@ -7527,19 +7725,19 @@ type
     
     {$region NativeMemory}
     
-    public static function FromNativeMemory(ntv_mem: NativeMemory; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg;
+    public static function FromNativeMemory(ntv_mem: NativeMemory; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg;
     
     {$endregion NativeMemory}
     
     {$region NativeValue}
     
-    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion NativeValue}
     
     {$region NativeArray}
     
-    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context := nil; kernel_use: MemoryUsage := MemoryUsage.read_write_bits): KernelArg; where T: record;
+    public static function FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext := nil; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits): CLKernelArg; where T: record;
     
     {$endregion NativeArray}
     
@@ -7549,46 +7747,46 @@ type
     
     {$region CLMemory}
     
-    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArg;
-    public static function operator implicit(cl_mem: CLMemory): KernelArg;
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
+    public static function operator implicit(cl_mem: CLMemory): CLKernelArg;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): KernelArg;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): KernelArg;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): CLKernelArg;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): KernelArg;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): CLKernelArg;
     begin Result := FromCLMemory(cl_mem) end;
-    public static function operator implicit(cl_mem: CLMemoryCCQ): KernelArg;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): CLKernelArg;
     
     {$endregion CLMemory}
     
     {$region CLValue}
     
-    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(cl_val: CLValue<T>): KernelArg; where T: record;
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): CLKernelArg; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): CLKernelArg; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): CLKernelArg; where T: record;
     begin Result := FromCLValue&<T>(cl_val) end;
-    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArg; where T: record;
     
     {$endregion CLValue}
     
     {$region CLArray}
     
-    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-    public static function operator implicit<T>(cl_arr: CLArray<T>): KernelArg; where T: record;
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): CLKernelArg; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): CLKernelArg; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): CLKernelArg; where T: record;
     begin Result := FromCLArray&<T>(cl_arr) end;
-    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArg; where T: record;
     
     {$endregion CLArray}
     
@@ -7596,14 +7794,14 @@ type
     
     {$region Value}
     
-    public static function FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
-    public static function operator implicit<T>(val: T): KernelArg; where T: record;
+    public static function FromValue<T>(val: CommandQueue<T>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(val: T): CLKernelArg; where T: record;
     begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: CommandQueue<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(val: CommandQueue<T>): CLKernelArg; where T: record;
     begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ConstQueue<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(val: ConstQueue<T>): CLKernelArg; where T: record;
     begin Result := FromValue&<T>(val) end;
-    public static function operator implicit<T>(val: ParameterQueue<T>): KernelArg; where T: record;
+    public static function operator implicit<T>(val: ParameterQueue<T>): CLKernelArg; where T: record;
     begin Result := FromValue&<T>(val) end;
     
     {$endregion Value}
@@ -7614,8 +7812,7 @@ type
   
   {$region ToString}
   
-  ///Представляет аргумент, передаваемый в вызов kernel-а
-  KernelArg = abstract partial class
+  CLKernelArg = abstract partial class
     
     {$region ToString}
     
@@ -7637,8 +7834,6 @@ type
       
     end;
     
-    ///Возвращает строковое представление данного объекта
-    ///Используйте это значение только для отладки, потому что данный метод не оптимизирован
     public function ToString: string; override;
     begin
       var sb := new StringBuilder;
@@ -7646,14 +7841,12 @@ type
       Result := sb.ToString;
     end;
     
-    ///Вызывает Write(ToString) для данного объекта и возвращает его же
-    public function Print: KernelArg;
+    public function Print: CLKernelArg;
     begin
       Write(self.ToString);
       Result := self;
     end;
-    ///Вызывает Writeln(ToString) для данного объекта и возвращает его же
-    public function Println: KernelArg;
+    public function Println: CLKernelArg;
     begin
       Writeln(self.ToString);
       Result := self;
@@ -7665,7 +7858,7 @@ type
   
   {$endregion ToString}
   
-  {$endregion KernelArg}
+  {$endregion CLKernelArg}
   
 {$region Global subprograms}
 
@@ -7679,14 +7872,14 @@ function CQ<T>(o: T): CommandQueue<T>;
 {$region HFQ/HPQ}
 
 function HQFQ<T>(f: ()->T): CommandQueue<T>;
-function HQFQ<T>(f: Context->T): CommandQueue<T>;
+function HQFQ<T>(f: CLContext->T): CommandQueue<T>;
 function HTFQ<T>(f: ()->T): CommandQueue<T>;
-function HTFQ<T>(f: Context->T): CommandQueue<T>;
+function HTFQ<T>(f: CLContext->T): CommandQueue<T>;
 
 function HQPQ(p: ()->()): CommandQueueNil;
-function HQPQ(p: Context->()): CommandQueueNil;
+function HQPQ(p: CLContext->()): CommandQueueNil;
 function HTPQ(p: ()->()): CommandQueueNil;
-function HTPQ(p: Context->()): CommandQueueNil;
+function HTPQ(p: CLContext->()): CommandQueueNil;
 
 {$endregion HFQ/HPQ}
 
@@ -7818,92 +8011,36 @@ function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Conv}
 
@@ -7940,36 +8077,36 @@ function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6,
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 
-function CombineConstUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineConstUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
-function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 
-function CombineQuickUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineQuickUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
-function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 
-function CombineThreadedUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineThreadedUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Use}
 
@@ -8084,92 +8221,36 @@ function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 
-function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Conv}
 
@@ -8206,36 +8287,36 @@ function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 
-function CombineConstUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineConstUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
-function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 
-function CombineQuickUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineQuickUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
-function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 
-function CombineThreadedUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineThreadedUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Use}
 
@@ -8300,10 +8381,10 @@ type
   
 {$endregion Base}
 
-{$region Platform}
+{$region CLPlatform}
 
 type
-  PlatformProperties = partial class(NtvPropertiesBase<cl_platform_id, PlatformInfo>)
+  CLPlatformProperties = partial class(NtvPropertiesBase<cl_platform_id, PlatformInfo>)
     
     private static function clGetSize(ntv: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetPlatformInfo';
@@ -8317,21 +8398,21 @@ type
     
   end;
   
-constructor PlatformProperties.Create(ntv: cl_platform_id) := inherited Create(ntv);
+constructor CLPlatformProperties.Create(ntv: cl_platform_id) := inherited Create(ntv);
 
-function PlatformProperties.GetProfile             := GetString(PlatformInfo.PLATFORM_PROFILE);
-function PlatformProperties.GetVersion             := GetString(PlatformInfo.PLATFORM_VERSION);
-function PlatformProperties.GetName                := GetString(PlatformInfo.PLATFORM_NAME);
-function PlatformProperties.GetVendor              := GetString(PlatformInfo.PLATFORM_VENDOR);
-function PlatformProperties.GetExtensions          := GetString(PlatformInfo.PLATFORM_EXTENSIONS);
-function PlatformProperties.GetHostTimerResolution := GetVal&<UInt64>(PlatformInfo.PLATFORM_HOST_TIMER_RESOLUTION);
+function CLPlatformProperties.GetProfile             := GetString(PlatformInfo.PLATFORM_PROFILE);
+function CLPlatformProperties.GetVersion             := GetString(PlatformInfo.PLATFORM_VERSION);
+function CLPlatformProperties.GetName                := GetString(PlatformInfo.PLATFORM_NAME);
+function CLPlatformProperties.GetVendor              := GetString(PlatformInfo.PLATFORM_VENDOR);
+function CLPlatformProperties.GetExtensions          := GetString(PlatformInfo.PLATFORM_EXTENSIONS);
+function CLPlatformProperties.GetHostTimerResolution := GetVal&<UInt64>(PlatformInfo.PLATFORM_HOST_TIMER_RESOLUTION);
 
-{$endregion Platform}
+{$endregion CLPlatform}
 
-{$region Device}
+{$region CLDevice}
 
 type
-  DeviceProperties = partial class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
+  CLDeviceProperties = partial class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
     
     private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceInfo';
@@ -8345,107 +8426,107 @@ type
     
   end;
   
-constructor DeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
+constructor CLDeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
 
-function DeviceProperties.GetType                               := GetVal&<DeviceType>(DeviceInfo.DEVICE_TYPE);
-function DeviceProperties.GetVendorId                           := GetVal&<UInt32>(DeviceInfo.DEVICE_VENDOR_ID);
-function DeviceProperties.GetMaxComputeUnits                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_COMPUTE_UNITS);
-function DeviceProperties.GetMaxWorkItemDimensions              := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_WORK_ITEM_DIMENSIONS);
-function DeviceProperties.GetMaxWorkItemSizes                   := GetValArr&<UIntPtr>(DeviceInfo.DEVICE_MAX_WORK_ITEM_SIZES);
-function DeviceProperties.GetMaxWorkGroupSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_WORK_GROUP_SIZE);
-function DeviceProperties.GetPreferredVectorWidthChar           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_CHAR);
-function DeviceProperties.GetPreferredVectorWidthShort          := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_SHORT);
-function DeviceProperties.GetPreferredVectorWidthInt            := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_INT);
-function DeviceProperties.GetPreferredVectorWidthLong           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_LONG);
-function DeviceProperties.GetPreferredVectorWidthFloat          := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT);
-function DeviceProperties.GetPreferredVectorWidthDouble         := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE);
-function DeviceProperties.GetPreferredVectorWidthHalf           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_HALF);
-function DeviceProperties.GetNativeVectorWidthChar              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_CHAR);
-function DeviceProperties.GetNativeVectorWidthShort             := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_SHORT);
-function DeviceProperties.GetNativeVectorWidthInt               := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_INT);
-function DeviceProperties.GetNativeVectorWidthLong              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_LONG);
-function DeviceProperties.GetNativeVectorWidthFloat             := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_FLOAT);
-function DeviceProperties.GetNativeVectorWidthDouble            := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE);
-function DeviceProperties.GetNativeVectorWidthHalf              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_HALF);
-function DeviceProperties.GetMaxClockFrequency                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_CLOCK_FREQUENCY);
-function DeviceProperties.GetAddressBits                        := GetVal&<UInt32>(DeviceInfo.DEVICE_ADDRESS_BITS);
-function DeviceProperties.GetMaxMemAllocSize                    := GetVal&<UInt64>(DeviceInfo.DEVICE_MAX_MEM_ALLOC_SIZE);
-function DeviceProperties.GetImageSupport                       := GetVal&<Bool>(DeviceInfo.DEVICE_IMAGE_SUPPORT);
-function DeviceProperties.GetMaxReadImageArgs                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_READ_IMAGE_ARGS);
-function DeviceProperties.GetMaxWriteImageArgs                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_WRITE_IMAGE_ARGS);
-function DeviceProperties.GetMaxReadWriteImageArgs              := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_READ_WRITE_IMAGE_ARGS);
-function DeviceProperties.GetIlVersion                          := GetString(DeviceInfo.DEVICE_IL_VERSION);
-function DeviceProperties.GetImage2dMaxWidth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE2D_MAX_WIDTH);
-function DeviceProperties.GetImage2dMaxHeight                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE2D_MAX_HEIGHT);
-function DeviceProperties.GetImage3dMaxWidth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_WIDTH);
-function DeviceProperties.GetImage3dMaxHeight                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_HEIGHT);
-function DeviceProperties.GetImage3dMaxDepth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_DEPTH);
-function DeviceProperties.GetImageMaxBufferSize                 := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE_MAX_BUFFER_SIZE);
-function DeviceProperties.GetImageMaxArraySize                  := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE_MAX_ARRAY_SIZE);
-function DeviceProperties.GetMaxSamplers                        := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_SAMPLERS);
-function DeviceProperties.GetImagePitchAlignment                := GetVal&<UInt32>(DeviceInfo.DEVICE_IMAGE_PITCH_ALIGNMENT);
-function DeviceProperties.GetImageBaseAddressAlignment          := GetVal&<UInt32>(DeviceInfo.DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT);
-function DeviceProperties.GetMaxPipeArgs                        := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_PIPE_ARGS);
-function DeviceProperties.GetPipeMaxActiveReservations          := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS);
-function DeviceProperties.GetPipeMaxPacketSize                  := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_PACKET_SIZE);
-function DeviceProperties.GetMaxParameterSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_PARAMETER_SIZE);
-function DeviceProperties.GetMemBaseAddrAlign                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MEM_BASE_ADDR_ALIGN);
-function DeviceProperties.GetMinDataTypeAlignSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_MIN_DATA_TYPE_ALIGN_SIZE);
-function DeviceProperties.GetSingleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_SINGLE_FP_CONFIG);
-function DeviceProperties.GetDoubleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_DOUBLE_FP_CONFIG);
-function DeviceProperties.GetGlobalMemCacheType                 := GetVal&<DeviceMemCacheType>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_TYPE);
-function DeviceProperties.GetGlobalMemCachelineSize             := GetVal&<UInt32>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHELINE_SIZE);
-function DeviceProperties.GetGlobalMemCacheSize                 := GetVal&<UInt64>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_SIZE);
-function DeviceProperties.GetGlobalMemSize                      := GetVal&<UInt64>(DeviceInfo.DEVICE_GLOBAL_MEM_SIZE);
-function DeviceProperties.GetMaxConstantBufferSize              := GetVal&<UInt64>(DeviceInfo.DEVICE_MAX_CONSTANT_BUFFER_SIZE);
-function DeviceProperties.GetMaxConstantArgs                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_CONSTANT_ARGS);
-function DeviceProperties.GetMaxGlobalVariableSize              := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_GLOBAL_VARIABLE_SIZE);
-function DeviceProperties.GetGlobalVariablePreferredTotalSize   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE);
-function DeviceProperties.GetLocalMemType                       := GetVal&<DeviceLocalMemType>(DeviceInfo.DEVICE_LOCAL_MEM_TYPE);
-function DeviceProperties.GetLocalMemSize                       := GetVal&<UInt64>(DeviceInfo.DEVICE_LOCAL_MEM_SIZE);
-function DeviceProperties.GetErrorCorrectionSupport             := GetVal&<Bool>(DeviceInfo.DEVICE_ERROR_CORRECTION_SUPPORT);
-function DeviceProperties.GetHostUnifiedMemory                  := GetVal&<Bool>(DeviceInfo.DEVICE_HOST_UNIFIED_MEMORY);
-function DeviceProperties.GetProfilingTimerResolution           := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PROFILING_TIMER_RESOLUTION);
-function DeviceProperties.GetEndianLittle                       := GetVal&<Bool>(DeviceInfo.DEVICE_ENDIAN_LITTLE);
-function DeviceProperties.GetAvailable                          := GetVal&<Bool>(DeviceInfo.DEVICE_AVAILABLE);
-function DeviceProperties.GetCompilerAvailable                  := GetVal&<Bool>(DeviceInfo.DEVICE_COMPILER_AVAILABLE);
-function DeviceProperties.GetLinkerAvailable                    := GetVal&<Bool>(DeviceInfo.DEVICE_LINKER_AVAILABLE);
-function DeviceProperties.GetExecutionCapabilities              := GetVal&<DeviceExecCapabilities>(DeviceInfo.DEVICE_EXECUTION_CAPABILITIES);
-function DeviceProperties.GetQueueProperties                    := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_PROPERTIES);
-function DeviceProperties.GetQueueOnHostProperties              := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_HOST_PROPERTIES);
-function DeviceProperties.GetQueueOnDeviceProperties            := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PROPERTIES);
-function DeviceProperties.GetQueueOnDevicePreferredSize         := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE);
-function DeviceProperties.GetQueueOnDeviceMaxSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_MAX_SIZE);
-function DeviceProperties.GetMaxOnDeviceQueues                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_ON_DEVICE_QUEUES);
-function DeviceProperties.GetMaxOnDeviceEvents                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_ON_DEVICE_EVENTS);
-function DeviceProperties.GetBuiltInKernels                     := GetString(DeviceInfo.DEVICE_BUILT_IN_KERNELS);
-function DeviceProperties.GetName                               := GetString(DeviceInfo.DEVICE_NAME);
-function DeviceProperties.GetVendor                             := GetString(DeviceInfo.DEVICE_VENDOR);
-function DeviceProperties.GetDriverVersion                      := GetString(DeviceInfo.DRIVER_VERSION);
-function DeviceProperties.GetProfile                            := GetString(DeviceInfo.DEVICE_PROFILE);
-function DeviceProperties.GetVersion                            := GetString(DeviceInfo.DEVICE_VERSION);
-function DeviceProperties.GetOpenclCVersion                     := GetString(DeviceInfo.DEVICE_OPENCL_C_VERSION);
-function DeviceProperties.GetExtensions                         := GetString(DeviceInfo.DEVICE_EXTENSIONS);
-function DeviceProperties.GetPrintfBufferSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PRINTF_BUFFER_SIZE);
-function DeviceProperties.GetPreferredInteropUserSync           := GetVal&<Bool>(DeviceInfo.DEVICE_PREFERRED_INTEROP_USER_SYNC);
-function DeviceProperties.GetPartitionMaxSubDevices             := GetVal&<UInt32>(DeviceInfo.DEVICE_PARTITION_MAX_SUB_DEVICES);
-function DeviceProperties.GetPartitionProperties                := GetValArr&<DevicePartitionProperty>(DeviceInfo.DEVICE_PARTITION_PROPERTIES);
-function DeviceProperties.GetPartitionAffinityDomain            := GetVal&<DeviceAffinityDomain>(DeviceInfo.DEVICE_PARTITION_AFFINITY_DOMAIN);
-function DeviceProperties.GetPartitionType                      := GetValArr&<DevicePartitionProperty>(DeviceInfo.DEVICE_PARTITION_TYPE);
-function DeviceProperties.GetReferenceCount                     := GetVal&<UInt32>(DeviceInfo.DEVICE_REFERENCE_COUNT);
-function DeviceProperties.GetSvmCapabilities                    := GetVal&<DeviceSVMCapabilities>(DeviceInfo.DEVICE_SVM_CAPABILITIES);
-function DeviceProperties.GetPreferredPlatformAtomicAlignment   := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT);
-function DeviceProperties.GetPreferredGlobalAtomicAlignment     := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT);
-function DeviceProperties.GetPreferredLocalAtomicAlignment      := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT);
-function DeviceProperties.GetMaxNumSubGroups                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_NUM_SUB_GROUPS);
-function DeviceProperties.GetSubGroupIndependentForwardProgress := GetVal&<Bool>(DeviceInfo.DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS);
+function CLDeviceProperties.GetType                               := GetVal&<DeviceType>(DeviceInfo.DEVICE_TYPE);
+function CLDeviceProperties.GetVendorId                           := GetVal&<UInt32>(DeviceInfo.DEVICE_VENDOR_ID);
+function CLDeviceProperties.GetMaxComputeUnits                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_COMPUTE_UNITS);
+function CLDeviceProperties.GetMaxWorkItemDimensions              := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_WORK_ITEM_DIMENSIONS);
+function CLDeviceProperties.GetMaxWorkItemSizes                   := GetValArr&<UIntPtr>(DeviceInfo.DEVICE_MAX_WORK_ITEM_SIZES);
+function CLDeviceProperties.GetMaxWorkGroupSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_WORK_GROUP_SIZE);
+function CLDeviceProperties.GetPreferredVectorWidthChar           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_CHAR);
+function CLDeviceProperties.GetPreferredVectorWidthShort          := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_SHORT);
+function CLDeviceProperties.GetPreferredVectorWidthInt            := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_INT);
+function CLDeviceProperties.GetPreferredVectorWidthLong           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_LONG);
+function CLDeviceProperties.GetPreferredVectorWidthFloat          := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT);
+function CLDeviceProperties.GetPreferredVectorWidthDouble         := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE);
+function CLDeviceProperties.GetPreferredVectorWidthHalf           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_HALF);
+function CLDeviceProperties.GetNativeVectorWidthChar              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_CHAR);
+function CLDeviceProperties.GetNativeVectorWidthShort             := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_SHORT);
+function CLDeviceProperties.GetNativeVectorWidthInt               := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_INT);
+function CLDeviceProperties.GetNativeVectorWidthLong              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_LONG);
+function CLDeviceProperties.GetNativeVectorWidthFloat             := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_FLOAT);
+function CLDeviceProperties.GetNativeVectorWidthDouble            := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE);
+function CLDeviceProperties.GetNativeVectorWidthHalf              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_HALF);
+function CLDeviceProperties.GetMaxClockFrequency                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_CLOCK_FREQUENCY);
+function CLDeviceProperties.GetAddressBits                        := GetVal&<UInt32>(DeviceInfo.DEVICE_ADDRESS_BITS);
+function CLDeviceProperties.GetMaxMemAllocSize                    := GetVal&<UInt64>(DeviceInfo.DEVICE_MAX_MEM_ALLOC_SIZE);
+function CLDeviceProperties.GetImageSupport                       := GetVal&<Bool>(DeviceInfo.DEVICE_IMAGE_SUPPORT);
+function CLDeviceProperties.GetMaxReadImageArgs                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_READ_IMAGE_ARGS);
+function CLDeviceProperties.GetMaxWriteImageArgs                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_WRITE_IMAGE_ARGS);
+function CLDeviceProperties.GetMaxReadWriteImageArgs              := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_READ_WRITE_IMAGE_ARGS);
+function CLDeviceProperties.GetIlVersion                          := GetString(DeviceInfo.DEVICE_IL_VERSION);
+function CLDeviceProperties.GetImage2dMaxWidth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE2D_MAX_WIDTH);
+function CLDeviceProperties.GetImage2dMaxHeight                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE2D_MAX_HEIGHT);
+function CLDeviceProperties.GetImage3dMaxWidth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_WIDTH);
+function CLDeviceProperties.GetImage3dMaxHeight                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_HEIGHT);
+function CLDeviceProperties.GetImage3dMaxDepth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_DEPTH);
+function CLDeviceProperties.GetImageMaxBufferSize                 := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE_MAX_BUFFER_SIZE);
+function CLDeviceProperties.GetImageMaxArraySize                  := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE_MAX_ARRAY_SIZE);
+function CLDeviceProperties.GetMaxSamplers                        := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_SAMPLERS);
+function CLDeviceProperties.GetImagePitchAlignment                := GetVal&<UInt32>(DeviceInfo.DEVICE_IMAGE_PITCH_ALIGNMENT);
+function CLDeviceProperties.GetImageBaseAddressAlignment          := GetVal&<UInt32>(DeviceInfo.DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT);
+function CLDeviceProperties.GetMaxPipeArgs                        := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_PIPE_ARGS);
+function CLDeviceProperties.GetPipeMaxActiveReservations          := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS);
+function CLDeviceProperties.GetPipeMaxPacketSize                  := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_PACKET_SIZE);
+function CLDeviceProperties.GetMaxParameterSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_PARAMETER_SIZE);
+function CLDeviceProperties.GetMemBaseAddrAlign                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MEM_BASE_ADDR_ALIGN);
+function CLDeviceProperties.GetMinDataTypeAlignSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_MIN_DATA_TYPE_ALIGN_SIZE);
+function CLDeviceProperties.GetSingleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_SINGLE_FP_CONFIG);
+function CLDeviceProperties.GetDoubleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_DOUBLE_FP_CONFIG);
+function CLDeviceProperties.GetGlobalMemCacheType                 := GetVal&<DeviceMemCacheType>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_TYPE);
+function CLDeviceProperties.GetGlobalMemCachelineSize             := GetVal&<UInt32>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHELINE_SIZE);
+function CLDeviceProperties.GetGlobalMemCacheSize                 := GetVal&<UInt64>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_SIZE);
+function CLDeviceProperties.GetGlobalMemSize                      := GetVal&<UInt64>(DeviceInfo.DEVICE_GLOBAL_MEM_SIZE);
+function CLDeviceProperties.GetMaxConstantBufferSize              := GetVal&<UInt64>(DeviceInfo.DEVICE_MAX_CONSTANT_BUFFER_SIZE);
+function CLDeviceProperties.GetMaxConstantArgs                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_CONSTANT_ARGS);
+function CLDeviceProperties.GetMaxGlobalVariableSize              := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_GLOBAL_VARIABLE_SIZE);
+function CLDeviceProperties.GetGlobalVariablePreferredTotalSize   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE);
+function CLDeviceProperties.GetLocalMemType                       := GetVal&<DeviceLocalMemType>(DeviceInfo.DEVICE_LOCAL_MEM_TYPE);
+function CLDeviceProperties.GetLocalMemSize                       := GetVal&<UInt64>(DeviceInfo.DEVICE_LOCAL_MEM_SIZE);
+function CLDeviceProperties.GetErrorCorrectionSupport             := GetVal&<Bool>(DeviceInfo.DEVICE_ERROR_CORRECTION_SUPPORT);
+function CLDeviceProperties.GetHostUnifiedMemory                  := GetVal&<Bool>(DeviceInfo.DEVICE_HOST_UNIFIED_MEMORY);
+function CLDeviceProperties.GetProfilingTimerResolution           := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PROFILING_TIMER_RESOLUTION);
+function CLDeviceProperties.GetEndianLittle                       := GetVal&<Bool>(DeviceInfo.DEVICE_ENDIAN_LITTLE);
+function CLDeviceProperties.GetAvailable                          := GetVal&<Bool>(DeviceInfo.DEVICE_AVAILABLE);
+function CLDeviceProperties.GetCompilerAvailable                  := GetVal&<Bool>(DeviceInfo.DEVICE_COMPILER_AVAILABLE);
+function CLDeviceProperties.GetLinkerAvailable                    := GetVal&<Bool>(DeviceInfo.DEVICE_LINKER_AVAILABLE);
+function CLDeviceProperties.GetExecutionCapabilities              := GetVal&<DeviceExecCapabilities>(DeviceInfo.DEVICE_EXECUTION_CAPABILITIES);
+function CLDeviceProperties.GetQueueProperties                    := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_PROPERTIES);
+function CLDeviceProperties.GetQueueOnHostProperties              := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_HOST_PROPERTIES);
+function CLDeviceProperties.GetQueueOnDeviceProperties            := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PROPERTIES);
+function CLDeviceProperties.GetQueueOnDevicePreferredSize         := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE);
+function CLDeviceProperties.GetQueueOnDeviceMaxSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_MAX_SIZE);
+function CLDeviceProperties.GetMaxOnDeviceQueues                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_ON_DEVICE_QUEUES);
+function CLDeviceProperties.GetMaxOnDeviceEvents                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_ON_DEVICE_EVENTS);
+function CLDeviceProperties.GetBuiltInKernels                     := GetString(DeviceInfo.DEVICE_BUILT_IN_KERNELS);
+function CLDeviceProperties.GetName                               := GetString(DeviceInfo.DEVICE_NAME);
+function CLDeviceProperties.GetVendor                             := GetString(DeviceInfo.DEVICE_VENDOR);
+function CLDeviceProperties.GetDriverVersion                      := GetString(DeviceInfo.DRIVER_VERSION);
+function CLDeviceProperties.GetProfile                            := GetString(DeviceInfo.DEVICE_PROFILE);
+function CLDeviceProperties.GetVersion                            := GetString(DeviceInfo.DEVICE_VERSION);
+function CLDeviceProperties.GetOpenclCVersion                     := GetString(DeviceInfo.DEVICE_OPENCL_C_VERSION);
+function CLDeviceProperties.GetExtensions                         := GetString(DeviceInfo.DEVICE_EXTENSIONS);
+function CLDeviceProperties.GetPrintfBufferSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PRINTF_BUFFER_SIZE);
+function CLDeviceProperties.GetPreferredInteropUserSync           := GetVal&<Bool>(DeviceInfo.DEVICE_PREFERRED_INTEROP_USER_SYNC);
+function CLDeviceProperties.GetPartitionMaxSubDevices             := GetVal&<UInt32>(DeviceInfo.DEVICE_PARTITION_MAX_SUB_DEVICES);
+function CLDeviceProperties.GetPartitionProperties                := GetValArr&<DevicePartitionProperty>(DeviceInfo.DEVICE_PARTITION_PROPERTIES);
+function CLDeviceProperties.GetPartitionAffinityDomain            := GetVal&<DeviceAffinityDomain>(DeviceInfo.DEVICE_PARTITION_AFFINITY_DOMAIN);
+function CLDeviceProperties.GetPartitionType                      := GetValArr&<DevicePartitionProperty>(DeviceInfo.DEVICE_PARTITION_TYPE);
+function CLDeviceProperties.GetReferenceCount                     := GetVal&<UInt32>(DeviceInfo.DEVICE_REFERENCE_COUNT);
+function CLDeviceProperties.GetSvmCapabilities                    := GetVal&<DeviceSVMCapabilities>(DeviceInfo.DEVICE_SVM_CAPABILITIES);
+function CLDeviceProperties.GetPreferredPlatformAtomicAlignment   := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT);
+function CLDeviceProperties.GetPreferredGlobalAtomicAlignment     := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT);
+function CLDeviceProperties.GetPreferredLocalAtomicAlignment      := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT);
+function CLDeviceProperties.GetMaxNumSubGroups                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_NUM_SUB_GROUPS);
+function CLDeviceProperties.GetSubGroupIndependentForwardProgress := GetVal&<Bool>(DeviceInfo.DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS);
 
-{$endregion Device}
+{$endregion CLDevice}
 
-{$region SubDevice}
+{$region CLSubDevice}
 
 type
-  SubDeviceProperties = partial class(DeviceProperties)
+  CLSubDeviceProperties = partial class(CLDeviceProperties)
     
     private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetDeviceInfo';
@@ -8459,15 +8540,15 @@ type
     
   end;
   
-constructor SubDeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
+constructor CLSubDeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
 
 
-{$endregion SubDevice}
+{$endregion CLSubDevice}
 
-{$region Context}
+{$region CLContext}
 
 type
-  ContextProperties = partial class(NtvPropertiesBase<cl_context, ContextInfo>)
+  CLContextProperties = partial class(NtvPropertiesBase<cl_context, ContextInfo>)
     
     private static function clGetSize(ntv: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetContextInfo';
@@ -8481,18 +8562,18 @@ type
     
   end;
   
-constructor ContextProperties.Create(ntv: cl_context) := inherited Create(ntv);
+constructor CLContextProperties.Create(ntv: cl_context) := inherited Create(ntv);
 
-function ContextProperties.GetReferenceCount := GetVal&<UInt32>(ContextInfo.CONTEXT_REFERENCE_COUNT);
-function ContextProperties.GetNumDevices     := GetVal&<UInt32>(ContextInfo.CONTEXT_NUM_DEVICES);
-function ContextProperties.GetProperties     := GetValArr&<OpenCL.ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
+function CLContextProperties.GetReferenceCount := GetVal&<UInt32>(ContextInfo.CONTEXT_REFERENCE_COUNT);
+function CLContextProperties.GetNumDevices     := GetVal&<UInt32>(ContextInfo.CONTEXT_NUM_DEVICES);
+function CLContextProperties.GetProperties     := GetValArr&<OpenCL.ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
 
-{$endregion Context}
+{$endregion CLContext}
 
-{$region ProgramCode}
+{$region CLCode}
 
 type
-  ProgramCodeProperties = partial class(NtvPropertiesBase<cl_program, ProgramInfo>)
+  CLCodeProperties = partial class(NtvPropertiesBase<cl_program, ProgramInfo>)
     
     private static function clGetSize(ntv: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetProgramInfo';
@@ -8506,22 +8587,20 @@ type
     
   end;
   
-constructor ProgramCodeProperties.Create(ntv: cl_program) := inherited Create(ntv);
+constructor CLCodeProperties.Create(ntv: cl_program) := inherited Create(ntv);
 
-function ProgramCodeProperties.GetReferenceCount          := GetVal&<UInt32>(ProgramInfo.PROGRAM_REFERENCE_COUNT);
-function ProgramCodeProperties.GetSource                  := GetString(ProgramInfo.PROGRAM_SOURCE);
-function ProgramCodeProperties.GetIl                      := GetValArr&<Byte>(ProgramInfo.PROGRAM_IL);
-function ProgramCodeProperties.GetNumKernels              := GetVal&<UIntPtr>(ProgramInfo.PROGRAM_NUM_KERNELS);
-function ProgramCodeProperties.GetKernelNames             := GetString(ProgramInfo.PROGRAM_KERNEL_NAMES);
-function ProgramCodeProperties.GetScopeGlobalCtorsPresent := GetVal&<Bool>(ProgramInfo.PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT);
-function ProgramCodeProperties.GetScopeGlobalDtorsPresent := GetVal&<Bool>(ProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT);
+function CLCodeProperties.GetReferenceCount          := GetVal&<UInt32>(ProgramInfo.PROGRAM_REFERENCE_COUNT);
+function CLCodeProperties.GetSource                  := GetString(ProgramInfo.PROGRAM_SOURCE);
+function CLCodeProperties.GetIl                      := GetValArr&<Byte>(ProgramInfo.PROGRAM_IL);
+function CLCodeProperties.GetScopeGlobalCtorsPresent := GetVal&<Bool>(ProgramInfo.PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT);
+function CLCodeProperties.GetScopeGlobalDtorsPresent := GetVal&<Bool>(ProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT);
 
-{$endregion ProgramCode}
+{$endregion CLCode}
 
-{$region Kernel}
+{$region CLKernel}
 
 type
-  KernelProperties = partial class(NtvPropertiesBase<cl_kernel, KernelInfo>)
+  CLKernelProperties = partial class(NtvPropertiesBase<cl_kernel, KernelInfo>)
     
     private static function clGetSize(ntv: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
     external 'opencl.dll' name 'clGetKernelInfo';
@@ -8535,14 +8614,14 @@ type
     
   end;
   
-constructor KernelProperties.Create(ntv: cl_kernel) := inherited Create(ntv);
+constructor CLKernelProperties.Create(ntv: cl_kernel) := inherited Create(ntv);
 
-function KernelProperties.GetFunctionName   := GetString(KernelInfo.KERNEL_FUNCTION_NAME);
-function KernelProperties.GetNumArgs        := GetVal&<UInt32>(KernelInfo.KERNEL_NUM_ARGS);
-function KernelProperties.GetReferenceCount := GetVal&<UInt32>(KernelInfo.KERNEL_REFERENCE_COUNT);
-function KernelProperties.GetAttributes     := GetString(KernelInfo.KERNEL_ATTRIBUTES);
+function CLKernelProperties.GetFunctionName   := GetString(KernelInfo.KERNEL_FUNCTION_NAME);
+function CLKernelProperties.GetNumArgs        := GetVal&<UInt32>(KernelInfo.KERNEL_NUM_ARGS);
+function CLKernelProperties.GetReferenceCount := GetVal&<UInt32>(KernelInfo.KERNEL_REFERENCE_COUNT);
+function CLKernelProperties.GetAttributes     := GetString(KernelInfo.KERNEL_ATTRIBUTES);
 
-{$endregion Kernel}
+{$endregion CLKernel}
 
 {$region CLMemory}
 
@@ -8652,9 +8731,9 @@ function CLArrayProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_S
 
 {$region Wrappers}
 
-{$region Device}
+{$region CLDevice}
 
-static function Device.FromNative(ntv: cl_device_id): Device;
+static function CLDevice.FromNative(ntv: cl_device_id): CLDevice;
 begin
   
   var parent: cl_device_id;
@@ -8663,12 +8742,43 @@ begin
   );
   
   if parent=cl_device_id.Zero then
-    Result := new Device(ntv) else
-    Result := new SubDevice(parent, ntv);
+    Result := new CLDevice(ntv) else
+    Result := new CLSubDevice(parent, ntv);
   
 end;
 
-{$endregion Device}
+{$endregion CLDevice}
+
+{$region CLProgramCompOptions}
+
+procedure CLProgramCompOptions.LowerVersionToSupported;
+begin
+  var max_v := Version;
+  
+  foreach var d in BuildContext.AllDevices do
+  begin
+    var v_str := d.Properties.OpenclCVersion;
+    var v_str_beg := 'OpenCL C ';
+    if not v_str.StartsWith(v_str_beg) then raise new System.NotSupportedException;
+    var v_spl := v_str.Substring(v_str_beg.Length).Split(|'.'|, 2);
+    var v := (v_spl[0].ToInteger, v_spl[1].ToInteger);
+    if max_v<>nil then
+    begin
+      case Sign(max_v[0]-v[0]) of
+        1: continue;
+        0:
+        case Sign(max_v[1]-v[1]) of
+          1: continue;
+          0: ;
+        end;
+      end;
+    end;
+    max_v := v;
+  end;
+  
+end;
+
+{$endregion CLProgramCompOptions}
 
 {$region CLMemory}
 
@@ -8893,7 +9003,7 @@ type
 
 type
   CLTaskGlobalData = sealed partial class
-    public c: Context;
+    public c: CLContext;
     public cl_c: cl_context;
     public cl_dvc: cl_device_id;
     
@@ -8975,7 +9085,7 @@ type
   
   ISimpleProcContainer<TInp> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp: TInp; c: Context);
+    procedure Invoke(inp: TInp; c: CLContext);
     
   end;
   
@@ -8987,21 +9097,21 @@ type
       Result.d := d;
     end;
     
-    public procedure Invoke(inp: TInp; c: Context) := d(inp);
+    public procedure Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProcContainerC<TInp> = record(ISimpleProcContainer<TInp>)
-    private d: (TInp, Context)->();
+    private d: (TInp, CLContext)->();
     
-    public static function operator implicit(d: (TInp, Context)->()): SimpleProcContainerC<TInp>;
+    public static function operator implicit(d: (TInp, CLContext)->()): SimpleProcContainerC<TInp>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp: TInp; c: Context) := d(inp, c);
+    public procedure Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -9014,7 +9124,7 @@ type
   
   ISimpleFuncContainer<TInp,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp: TInp; c: Context): TRes;
+    function Invoke(inp: TInp; c: CLContext): TRes;
     
   end;
   
@@ -9026,21 +9136,21 @@ type
       Result.d := d;
     end;
     
-    public function Invoke(inp: TInp; c: Context) := d(inp);
+    public function Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFuncContainerC<TInp,TRes> = record(ISimpleFuncContainer<TInp,TRes>)
-    private d: (TInp, Context)->TRes;
+    private d: (TInp, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp, Context)->TRes): SimpleFuncContainerC<TInp,TRes>;
+    public static function operator implicit(d: (TInp, CLContext)->TRes): SimpleFuncContainerC<TInp,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp: TInp; c: Context) := d(inp, c);
+    public function Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -9454,7 +9564,7 @@ type
 {$region QueueResAction}
 
 type
-  QueueResAction = Context->();
+  QueueResAction = CLContext->();
   
   [StructLayout(LayoutKind.Auto)]
   QueueResComplDelegateData = record
@@ -9484,7 +9594,7 @@ type
     {$ifdef DEBUG}
     private last_invoke_trace := default(string);
     {$endif DEBUG}
-    public procedure Invoke(c: Context);
+    public procedure Invoke(c: CLContext);
     begin
       {$ifdef DEBUG}
       if last_invoke_trace<>nil then raise new System.InvalidProgramException($'{TypeName(self)}: {#10}{last_invoke_trace}{#10+''-''*30+#10}{System.Environment.StackTrace}');
@@ -9634,7 +9744,7 @@ type
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
     
     public function IQueueRes.GetActions := base.GetActions;
-    public procedure InvokeActions(c: Context) := base.complition_delegate.Invoke(c);
+    public procedure InvokeActions(c: CLContext) := base.complition_delegate.Invoke(c);
     
     public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes :=
     new QueueResNil(new CLTaskLocalData(new_ev));
@@ -9763,7 +9873,7 @@ type
       SetResDirect(res);
     end;
     protected procedure SetResDirect(res: T); abstract;
-    public function GetRes(c: Context): T;
+    public function GetRes(c: CLContext): T;
     begin
       base.complition_delegate.Invoke(c);
       Result := GetResDirect;
@@ -10305,7 +10415,7 @@ type
 procedure TODO_2036_1 := exit; //TODO #2036
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-procedure Invoke<TInp>(self: ISimpleProcContainer<TInp>; err_handler: CLTaskErrHandler; inp: TInp; c: Context); extensionmethod;
+procedure Invoke<TInp>(self: ISimpleProcContainer<TInp>; err_handler: CLTaskErrHandler; inp: TInp; c: CLContext); extensionmethod;
 begin
   if err_handler.HadError then exit;
   try
@@ -10316,7 +10426,7 @@ begin
 end;
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-function Invoke<TInp,TRes>(self: ISimpleFuncContainer<TInp,TRes>; err_handler: CLTaskErrHandler; inp: TInp; c: Context): TRes; extensionmethod;
+function Invoke<TInp,TRes>(self: ISimpleFuncContainer<TInp,TRes>; err_handler: CLTaskErrHandler; inp: TInp; c: CLContext): TRes; extensionmethod;
 begin
   if err_handler.HadError then exit;
   try
@@ -10467,7 +10577,7 @@ type
 type
   CLTaskGlobalData = sealed partial class
     
-    public constructor(c: Context);
+    public constructor(c: CLContext);
     begin
       
       self.c := c;
@@ -10611,7 +10721,7 @@ type
   
   CLTaskNil = sealed partial class(CLTaskBase)
     
-    private constructor(q: CommandQueueNil; c: Context; pars: array of ParameterQueueSetter);
+    private constructor(q: CommandQueueNil; c: CLContext; pars: array of ParameterQueueSetter);
     begin
       self.q := q;
       self.org_c := c;
@@ -10638,7 +10748,7 @@ type
   CLTask<T> = sealed partial class(CLTaskBase)
     private res: T;
     
-    private constructor(q: CommandQueue<T>; c: Context; pars: array of ParameterQueueSetter);
+    private constructor(q: CommandQueue<T>; c: CLContext; pars: array of ParameterQueueSetter);
     begin
       self.q := q;
       self.org_c := c;
@@ -10664,9 +10774,9 @@ type
   end;
   
   CLTaskFactory = record(ITypedCQConverter<CLTaskBase>)
-    private c: Context;
+    private c: CLContext;
     private pars: array of ParameterQueueSetter;
-    public constructor(c: Context; pars: array of ParameterQueueSetter);
+    public constructor(c: CLContext; pars: array of ParameterQueueSetter);
     begin
       self.c := c;
       self.pars := pars;
@@ -10678,9 +10788,9 @@ type
     
   end;
   
-function Context.BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := q.ConvertTyped(new CLTaskFactory(self, parameters));
-function Context.BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := new CLTaskNil(q, self, parameters);
-function Context.BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := new CLTask<T>(q, self, parameters);
+function CLContext.BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := q.ConvertTyped(new CLTaskFactory(self, parameters));
+function CLContext.BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := new CLTaskNil(q, self, parameters);
+function CLContext.BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := new CLTask<T>(q, self, parameters);
 
 function CLTask<T>.WaitRes: T;
 begin
@@ -10915,14 +11025,14 @@ type
 function CommandQueue<T>.ThenQuickConvert<TOtp>(f: T->TOtp) :=
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainer <T,TOtp>, TBooleanFalseFlag>(self, f);
 
-function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, Context)->TOtp) :=
+function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, CLContext)->TOtp) :=
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>, TBooleanFalseFlag>(self, f);
 
 function CommandQueue<T>.ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> :=
 if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value)) else
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainer <T,TOtp>, TBooleanTrueFlag>(self, f);
 
-function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, Context)->TOtp): CommandQueue<TOtp> :=
+function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp> :=
 if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value, nil)) else
 new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>, TBooleanTrueFlag>(self, f);
 
@@ -10970,7 +11080,7 @@ type
 function CommandQueue<T>.ThenQuickUse(p: T->()) :=
 new CommandQueueThenQuickUse<T, SimpleProcContainer <T>, TBooleanFalseFlag>(self, p);
 
-function CommandQueue<T>.ThenQuickUse(p: (T, Context)->()) :=
+function CommandQueue<T>.ThenQuickUse(p: (T, CLContext)->()) :=
 new CommandQueueThenQuickUse<T, SimpleProcContainerC<T>, TBooleanFalseFlag>(self, p);
 
 function CommandQueue<T>.ThenConstUse(p: T->()): CommandQueue<T>;
@@ -10983,7 +11093,7 @@ begin
     Result := new CommandQueueThenQuickUse<T, SimpleProcContainer<T>, TBooleanTrueFlag>(self, p);
 end;
 
-function CommandQueue<T>.ThenConstUse(p: (T, Context)->()): CommandQueue<T>;
+function CommandQueue<T>.ThenConstUse(p: (T, CLContext)->()): CommandQueue<T>;
 begin
   if self is ConstQueue<T>(var c_q) then
   begin
@@ -11006,14 +11116,14 @@ type
   where TFunc: ISimpleFuncContainer<TInp,TRes>;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
         d.Invoke(err_handler, prev_qr.GetRes(c), c)
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->own_qr.SetRes(
         d.Invoke(err_handler, prev_qr.GetRes(c), c)
@@ -11021,7 +11131,7 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueRes<TInp>,CLTaskErrHandler,Context,TR)->Action): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueRes<TInp>,CLTaskErrHandler,CLContext,TR)->Action): TR; where TR: IQueueRes;
     begin
       var prev_qr := q.InvokeToAny(g, l);
       
@@ -11041,7 +11151,7 @@ type
 function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: T->TOtp) :=
 new CommandQueueThenThreadedConvert<T, TOtp, SimpleFuncContainer<T,TOtp>>(self, f);
 
-function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: (T, Context)->TOtp) :=
+function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: (T, CLContext)->TOtp) :=
 new CommandQueueThenThreadedConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>>(self, f);
 
 {$endregion Convert}
@@ -11086,7 +11196,7 @@ type
 function CommandQueue<T>.ThenThreadedUse(p: T->()) :=
 new CommandQueueThenThreadedUse<T, SimpleProcContainer<T>>(self, p);
 
-function CommandQueue<T>.ThenThreadedUse(p: (T, Context)->()) :=
+function CommandQueue<T>.ThenThreadedUse(p: (T, CLContext)->()) :=
 new CommandQueueThenThreadedUse<T, SimpleProcContainerC<T>>(self, p);
 
 {$endregion Use}
@@ -11478,7 +11588,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArrayWork<TInp,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp: array of TInp; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp: array of TInp; c: CLContext): TRes;
     
   end;
   
@@ -11486,7 +11596,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFuncContainer<array of TInp,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp: array of TInp; c: Context) :=
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp: array of TInp; c: CLContext) :=
     f.Invoke(err_handler, inp, c);
     
   end;
@@ -11495,7 +11605,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProcContainer<array of T>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp: array of T; c: Context): array of T; 
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp: array of T; c: CLContext): array of T; 
     begin
       p.Invoke(err_handler, inp, c);
       Result := inp;
@@ -11557,7 +11667,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TWork: IQueueArrayWork<TInp,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -11567,7 +11677,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -11580,7 +11690,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR;
-      make_body: (QueueResComplDelegateData, QueueResArr<TInp>,CLTaskErrHandler,Context,TR)->Action
+      make_body: (QueueResComplDelegateData, QueueResArr<TInp>,CLTaskErrHandler,CLContext,TR)->Action
     ): TR; where TR: IQueueRes;
     begin
       var inv_data := TInv.Create.Invoke(self.qs, g, l);
@@ -11646,7 +11756,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleFunc2Container<TInp1,TInp2,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
     
   end;
   
@@ -11658,21 +11768,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; c: Context) := d(inp1,inp2);
+    public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc2ContainerC<TInp1,TInp2,TRes> = record(ISimpleFunc2Container<TInp1,TInp2,TRes>)
-    private d: (TInp1,TInp2, Context)->TRes;
+    private d: (TInp1,TInp2, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2, Context)->TRes): SimpleFunc2ContainerC<TInp1,TInp2,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2, CLContext)->TRes): SimpleFunc2ContainerC<TInp1,TInp2,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; c: Context) := d(inp1,inp2,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -11681,7 +11791,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleProc2Container<TInp1,TInp2> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext);
     
   end;
   
@@ -11693,21 +11803,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; c: Context) := d(inp1,inp2);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc2ContainerC<TInp1,TInp2> = record(ISimpleProc2Container<TInp1,TInp2>)
-    private d: (TInp1,TInp2, Context)->();
+    private d: (TInp1,TInp2, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2, Context)->()): SimpleProc2ContainerC<TInp1,TInp2>;
+    public static function operator implicit(d: (TInp1,TInp2, CLContext)->()): SimpleProc2ContainerC<TInp1,TInp2>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; c: Context) := d(inp1,inp2,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -11777,7 +11887,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray2Work<TInp1,TInp2,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
     
   end;
   
@@ -11785,7 +11895,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFunc2Container<TInp1,TInp2,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -11801,7 +11911,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProc2Container<TInp1,TInp2>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; c: Context): ValueTuple<TInp1,TInp2>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; c: CLContext): ValueTuple<TInp1,TInp2>;
     begin
       if err_handler.HadError then exit;
       try
@@ -11860,14 +11970,14 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate>)
   where TInv: IQueueArray2Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -11877,7 +11987,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -11957,7 +12067,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
     
   end;
   
@@ -11969,21 +12079,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context) := d(inp1,inp2,inp3);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes> = record(ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>)
-    private d: (TInp1,TInp2,TInp3, Context)->TRes;
+    private d: (TInp1,TInp2,TInp3, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3, Context)->TRes): SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3, CLContext)->TRes): SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context) := d(inp1,inp2,inp3,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -11992,7 +12102,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleProc3Container<TInp1,TInp2,TInp3> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext);
     
   end;
   
@@ -12004,21 +12114,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context) := d(inp1,inp2,inp3);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc3ContainerC<TInp1,TInp2,TInp3> = record(ISimpleProc3Container<TInp1,TInp2,TInp3>)
-    private d: (TInp1,TInp2,TInp3, Context)->();
+    private d: (TInp1,TInp2,TInp3, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3, Context)->()): SimpleProc3ContainerC<TInp1,TInp2,TInp3>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3, CLContext)->()): SimpleProc3ContainerC<TInp1,TInp2,TInp3>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context) := d(inp1,inp2,inp3,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -12094,7 +12204,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
     
   end;
   
@@ -12102,7 +12212,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -12118,7 +12228,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProc3Container<TInp1,TInp2,TInp3>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: Context): ValueTuple<TInp1,TInp2,TInp3>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): ValueTuple<TInp1,TInp2,TInp3>;
     begin
       if err_handler.HadError then exit;
       try
@@ -12178,14 +12288,14 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray3<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TDelegate>)
   where TInv: IQueueArray3Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -12195,7 +12305,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -12280,7 +12390,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
     
   end;
   
@@ -12292,21 +12402,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context) := d(inp1,inp2,inp3,inp4);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes> = record(ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4, Context)->TRes;
+    private d: (TInp1,TInp2,TInp3,TInp4, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4, Context)->TRes): SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4, CLContext)->TRes): SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context) := d(inp1,inp2,inp3,inp4,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -12315,7 +12425,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext);
     
   end;
   
@@ -12327,21 +12437,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context) := d(inp1,inp2,inp3,inp4);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4> = record(ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4>)
-    private d: (TInp1,TInp2,TInp3,TInp4, Context)->();
+    private d: (TInp1,TInp2,TInp3,TInp4, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4, Context)->()): SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4, CLContext)->()): SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context) := d(inp1,inp2,inp3,inp4,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -12423,7 +12533,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
     
   end;
   
@@ -12431,7 +12541,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -12447,7 +12557,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: Context): ValueTuple<TInp1,TInp2,TInp3,TInp4>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4>;
     begin
       if err_handler.HadError then exit;
       try
@@ -12508,14 +12618,14 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray4MakeBody<TInp1,TInp2,TInp3,TInp4, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray4MakeBody<TInp1,TInp2,TInp3,TInp4, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>)
   where TInv: IQueueArray4Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -12525,7 +12635,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -12615,7 +12725,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
     
   end;
   
@@ -12627,21 +12737,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = record(ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->TRes;
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->TRes): SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->TRes): SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -12650,7 +12760,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext);
     
   end;
   
@@ -12662,21 +12772,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5> = record(ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->();
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, Context)->()): SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5, CLContext)->()): SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context) := d(inp1,inp2,inp3,inp4,inp5,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -12764,7 +12874,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
     
   end;
   
@@ -12772,7 +12882,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -12788,7 +12898,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: Context): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>;
     begin
       if err_handler.HadError then exit;
       try
@@ -12850,14 +12960,14 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>)
   where TInv: IQueueArray5Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -12867,7 +12977,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -12962,7 +13072,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
     
   end;
   
@@ -12974,21 +13084,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes> = record(ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, Context)->TRes;
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, Context)->TRes): SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, CLContext)->TRes): SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -12997,7 +13107,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext);
     
   end;
   
@@ -13009,21 +13119,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = record(ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, Context)->();
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, Context)->()): SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, CLContext)->()): SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -13117,7 +13227,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
     
   end;
   
@@ -13125,7 +13235,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -13141,7 +13251,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: Context): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
     begin
       if err_handler.HadError then exit;
       try
@@ -13204,14 +13314,14 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>)
   where TInv: IQueueArray6Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -13221,7 +13331,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -13321,7 +13431,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = interface(ISimpleDelegateContainer)
     
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context): TRes;
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
     
   end;
   
@@ -13333,21 +13443,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, Context)->TRes;
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->TRes;
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, Context)->TRes): SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->TRes): SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -13356,7 +13466,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context);
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext);
     
   end;
   
@@ -13368,21 +13478,21 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, Context)->();
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->();
     
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, Context)->()): SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->()): SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -13482,7 +13592,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
     
   end;
   
@@ -13490,7 +13600,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TFunc: ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
     begin
       if err_handler.HadError then exit;
       try
@@ -13506,7 +13616,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   where TProc: ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: Context): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
     begin
       if err_handler.HadError then exit;
       try
@@ -13570,14 +13680,14 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray7MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action;
+  DCommandQueueThreadedArray7MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
   CommandQueueThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>)
   where TInv: IQueueArray7Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: Context; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
     begin
       Result := ()->
       begin
@@ -13587,7 +13697,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: Context; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -15483,40 +15593,40 @@ type
   
 {$endregion Core}
 
-{$region Kernel}
+{$region CLKernel}
 
 type
-  KernelCCQ = sealed partial class(GPUCommandContainer<Kernel>)
+  CLKernelCCQ = sealed partial class(GPUCommandContainer<CLKernel>)
     
-    private constructor(ccq: GPUCommandContainer<Kernel>) := inherited;
-    public function Clone: GPUCommandContainer<Kernel>; override := new KernelCCQ(self);
+    private constructor(ccq: GPUCommandContainer<CLKernel>) := inherited;
+    public function Clone: GPUCommandContainer<CLKernel>; override := new CLKernelCCQ(self);
     
   end;
   
-constructor KernelCCQ.Create(o: Kernel) := inherited;
-constructor KernelCCQ.Create(q: CommandQueue<Kernel>) := inherited;
-constructor KernelCCQ.Create := inherited;
+constructor CLKernelCCQ.Create(o: CLKernel) := inherited;
+constructor CLKernelCCQ.Create(q: CommandQueue<CLKernel>) := inherited;
+constructor CLKernelCCQ.Create := inherited;
 
 {$region Special .Add's}
 
-function KernelCCQ.ThenQueue(q: CommandQueueBase): KernelCCQ;
+function CLKernelCCQ.ThenQueue(q: CommandQueueBase): CLKernelCCQ;
 begin
-  var comm := QueueCommandFactory&<Kernel>.Make(q);
+  var comm := QueueCommandFactory&<CLKernel>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function KernelCCQ.ThenConstProc(p: Kernel->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeConst&<SimpleProcContainer<Kernel>>(p));
-function KernelCCQ.ThenConstProc(p: (Kernel, Context)->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeConst&<SimpleProcContainerC<Kernel>>(p));
-function KernelCCQ.ThenQuickProc(p: Kernel->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeQuick&<SimpleProcContainer<Kernel>>(p));
-function KernelCCQ.ThenQuickProc(p: (Kernel, Context)->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeQuick&<SimpleProcContainerC<Kernel>>(p));
-function KernelCCQ.ThenThreadedProc(p: Kernel->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeThreaded&<SimpleProcContainer<Kernel>>(p));
-function KernelCCQ.ThenThreadedProc(p: (Kernel, Context)->()) := AddCommand(self, ProcCommandFactory&<Kernel>.MakeThreaded&<SimpleProcContainerC<Kernel>>(p));
+function CLKernelCCQ.ThenConstProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainer<CLKernel>>(p));
+function CLKernelCCQ.ThenConstProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainerC<CLKernel>>(p));
+function CLKernelCCQ.ThenQuickProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainer<CLKernel>>(p));
+function CLKernelCCQ.ThenQuickProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainerC<CLKernel>>(p));
+function CLKernelCCQ.ThenThreadedProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainer<CLKernel>>(p));
+function CLKernelCCQ.ThenThreadedProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainerC<CLKernel>>(p));
 
-function KernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<Kernel>.Make(marker));
+function CLKernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLKernel>.Make(marker));
 
 {$endregion Special .Add's}
 
-{$endregion Kernel}
+{$endregion CLKernel}
 
 {$region CLMemory}
 
@@ -15541,11 +15651,11 @@ begin
 end;
 
 function CLMemoryCCQ.ThenConstProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainer<CLMemory>>(p));
-function CLMemoryCCQ.ThenConstProc(p: (CLMemory, Context)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainerC<CLMemory>>(p));
+function CLMemoryCCQ.ThenConstProc(p: (CLMemory, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainerC<CLMemory>>(p));
 function CLMemoryCCQ.ThenQuickProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainer<CLMemory>>(p));
-function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, Context)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainerC<CLMemory>>(p));
+function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainerC<CLMemory>>(p));
 function CLMemoryCCQ.ThenThreadedProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainer<CLMemory>>(p));
-function CLMemoryCCQ.ThenThreadedProc(p: (CLMemory, Context)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainerC<CLMemory>>(p));
+function CLMemoryCCQ.ThenThreadedProc(p: (CLMemory, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainerC<CLMemory>>(p));
 
 function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLMemory>.Make(marker));
 
@@ -15576,11 +15686,11 @@ begin
 end;
 
 function CLValueCCQ<T>.ThenConstProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainer<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenConstProc(p: (CLValue<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainerC<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenConstProc(p: (CLValue<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainerC<CLValue<T>>>(p));
 function CLValueCCQ<T>.ThenQuickProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainer<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenQuickProc(p: (CLValue<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainerC<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenQuickProc(p: (CLValue<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainerC<CLValue<T>>>(p));
 function CLValueCCQ<T>.ThenThreadedProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainer<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenThreadedProc(p: (CLValue<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainerC<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenThreadedProc(p: (CLValue<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainerC<CLValue<T>>>(p));
 
 function CLValueCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLValue<T>>.Make(marker));
 
@@ -15611,11 +15721,11 @@ begin
 end;
 
 function CLArrayCCQ<T>.ThenConstProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenConstProc(p: (CLArray<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainerC<CLArray<T>>>(p));
+function CLArrayCCQ<T>.ThenConstProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainerC<CLArray<T>>>(p));
 function CLArrayCCQ<T>.ThenQuickProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenQuickProc(p: (CLArray<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainerC<CLArray<T>>>(p));
+function CLArrayCCQ<T>.ThenQuickProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainerC<CLArray<T>>>(p));
 function CLArrayCCQ<T>.ThenThreadedProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenThreadedProc(p: (CLArray<T>, Context)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainerC<CLArray<T>>>(p));
+function CLArrayCCQ<T>.ThenThreadedProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainerC<CLArray<T>>>(p));
 
 function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLArray<T>>.Make(marker));
 
@@ -15625,20 +15735,20 @@ function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitComm
 
 {$endregion GPUCommandContainer}
 
-{$region KernelArg}
+{$region CLKernelArg}
 
 {$region Common}
 
 {$region Base}
 
 type
-  KernelArgCacheEntry = record
+  CLKernelArgCacheEntry = record
     public val_is_set: boolean;
     public last_set_val: object;
   end;
-  KernelArgCache = array of KernelArgCacheEntry;
+  CLKernelArgCache = array of CLKernelArgCacheEntry;
   
-  KernelArgSetter = abstract class
+  CLKernelArgSetter = abstract class
     private is_const: boolean;
     
     public constructor(is_const: boolean) := self.is_const := is_const;
@@ -15646,10 +15756,10 @@ type
     
     public property IsConst: boolean read is_const;
     
-    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); abstract;
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: CLKernelArgCache); abstract;
     
   end;
-  KernelArgSetterTyped<T> = abstract class(KernelArgSetter)
+  CLKernelArgSetterTyped<T> = abstract class(CLKernelArgSetter)
     protected o := default(T);
     
     public constructor(o: T);
@@ -15668,7 +15778,7 @@ type
       self.o := o;
     end;
     
-    public procedure Apply(k: cl_kernel; ind: UInt32; cache: KernelArgCache); override;
+    public procedure Apply(k: cl_kernel; ind: UInt32; cache: CLKernelArgCache); override;
     begin
       
       if cache<>nil then
@@ -15690,11 +15800,11 @@ type
     
   end;
   
-  KernelArg = abstract partial class
+  CLKernelArg = abstract partial class
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; abstract;
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; abstract;
     
   end;
   
@@ -15703,7 +15813,7 @@ type
 {$region GlobalConv}
 
 type
-  KernelArgSetterGlobalConv = class(KernelArgSetterTyped<cl_mem>)
+  CLKernelArgSetterGlobalConv = class(CLKernelArgSetterTyped<cl_mem>)
     
     public constructor(mem: cl_mem) := inherited Create(mem);
     private constructor := raise new OpenCLABCInternalException;
@@ -15719,7 +15829,7 @@ type
     );
     
   end;
-  KernelArgSetterGlobalConvHnd = sealed class(KernelArgSetterGlobalConv)
+  CLKernelArgSetterGlobalConvHnd = sealed class(CLKernelArgSetterGlobalConv)
     private gc_hnd: GCHandle;
     
     public constructor(mem: cl_mem; gc_hnd: GCHandle);
@@ -15737,17 +15847,17 @@ type
     
   end;
   
-  KernelArgGlobalConvCommon = record
-    private setter: KernelArgSetterGlobalConv;
+  CLKernelArgGlobalConvCommon = record
+    private setter: CLKernelArgSetterGlobalConv;
     
     public constructor(mem: cl_mem) :=
-    self.setter := new KernelArgSetterGlobalConv(mem);
+    self.setter := new CLKernelArgSetterGlobalConv(mem);
     public constructor(mem: cl_mem; gc_hnd: GCHandle) :=
-    self.setter := new KernelArgSetterGlobalConvHnd(mem, gc_hnd);
+    self.setter := new CLKernelArgSetterGlobalConvHnd(mem, gc_hnd);
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke := ValueTuple.Create(self.setter as KernelArgSetter, EventList.Empty);
+    function Invoke := ValueTuple.Create(self.setter as CLKernelArgSetter, EventList.Empty);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
@@ -15758,14 +15868,14 @@ type
     end;
     
   end;
-  KernelArgConstantConvCommon = KernelArgGlobalConvCommon;
+  CLKernelArgConstantConvCommon = CLKernelArgGlobalConvCommon;
   
 {$endregion GlobalConv}
 
 {$region GlobalWrap}
 
 type
-  KernelArgSetterGlobalWrap<TWrap> = sealed class(KernelArgSetterTyped<cl_mem>)
+  CLKernelArgSetterGlobalWrap<TWrap> = sealed class(CLKernelArgSetterTyped<cl_mem>)
   where TWrap: class;
     private wrap: TWrap := nil;
     
@@ -15793,7 +15903,7 @@ type
     
   end;
   
-  KernelArgGlobalWrapCommon<TWrap> = record
+  CLKernelArgGlobalWrapCommon<TWrap> = record
   where TWrap: class;
     private q: CommandQueue<TWrap>;
     
@@ -15801,17 +15911,17 @@ type
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<KernelArgSetter, EventList>;
+    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<CLKernelArgSetter, EventList>;
     begin
       var wrap_qr := inv.InvokeBranch(q.InvokeToAny);
-      var arg_setter: KernelArgSetter;
+      var arg_setter: CLKernelArgSetter;
       if wrap_qr.IsConst then
       begin
         var wrap := wrap_qr.GetResDirect;
-        arg_setter := new KernelArgSetterGlobalWrap<TWrap>(wrap, get_ntv(wrap));
+        arg_setter := new CLKernelArgSetterGlobalWrap<TWrap>(wrap, get_ntv(wrap));
       end else
       begin
-        var res := new KernelArgSetterGlobalWrap<TWrap>;
+        var res := new CLKernelArgSetterGlobalWrap<TWrap>;
         wrap_qr.AddAction(c->
         begin
           var wrap := wrap_qr.GetResDirect;
@@ -15832,22 +15942,22 @@ type
     end;
     
   end;
-  KernelArgConstantWrapCommon<TWrap> = KernelArgGlobalWrapCommon<TWrap>;
+  CLKernelArgConstantWrapCommon<TWrap> = CLKernelArgGlobalWrapCommon<TWrap>;
   
 {$endregion GlobalWrap}
 
 {$region Local}
 
 type
-  KernelArgSetterLocalBytes = sealed class(KernelArgSetterTyped<UIntPtr>)
+  CLKernelArgSetterLocalBytes = sealed class(CLKernelArgSetterTyped<UIntPtr>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
     
   end;
   
-  KernelArgLocal = abstract partial class(KernelArg) end;
-  KernelArgLocalBytes = sealed class(KernelArgLocal)
+  CLKernelArgLocal = abstract partial class(CLKernelArg) end;
+  CLKernelArgLocalBytes = sealed class(CLKernelArgLocal)
     private bytes: CommandQueue<UIntPtr>;
     
     public constructor(bytes: CommandQueue<UIntPtr>) := self.bytes := bytes;
@@ -15856,14 +15966,14 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     bytes.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override;
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override;
     begin
       var bytes_qr := inv.InvokeBranch(bytes.InvokeToAny);
-      var arg_setter: KernelArgSetter;
+      var arg_setter: CLKernelArgSetter;
       if bytes_qr.IsConst then
-        arg_setter := new KernelArgSetterLocalBytes(bytes_qr.GetResDirect) else
+        arg_setter := new CLKernelArgSetterLocalBytes(bytes_qr.GetResDirect) else
       begin
-        var res := new KernelArgSetterLocalBytes;
+        var res := new CLKernelArgSetterLocalBytes;
         bytes_qr.AddAction(c->res.SetObj(bytes_qr.GetResDirect));
         arg_setter := res;
       end;
@@ -15885,17 +15995,17 @@ type
 {$region Private}
 
 type
-  KernelArgPrivateCommon<TInp> = record
+  CLKernelArgPrivateCommon<TInp> = record
     private q: CommandQueue<TInp>;
     
     public constructor(q: CommandQueue<TInp>) := self.q := q;
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->KernelArgSetterTyped<TInp>; make_delayed: ()->KernelArgSetterTyped<TInp>): ValueTuple<KernelArgSetter, EventList>;
+    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->CLKernelArgSetterTyped<TInp>; make_delayed: ()->CLKernelArgSetterTyped<TInp>): ValueTuple<CLKernelArgSetter, EventList>;
     begin
       var prev_qr := inv.InvokeBranch(q.InvokeToAny);
-      var arg_setter: KernelArgSetter;
+      var arg_setter: CLKernelArgSetter;
       if prev_qr.IsConst then
         arg_setter := make_const(prev_qr.GetResDirect) else
       begin
@@ -15928,24 +16038,24 @@ type
 {$region Array}
 
 type
-  KernelArgGlobalArray<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalArray<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: array of T; c: Context; kernel_use: MemoryUsage);
+    public constructor(a: array of T; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
-      data := new KernelArgGlobalConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
+      data := new CLKernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -15953,32 +16063,32 @@ type
     
   end;
   
-static function KernelArgGlobal.FromArray<T>(a: array of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalArray<T>(a, c, kernel_use) end;
+static function CLKernelArgGlobal.FromArray<T>(a: array of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalArray<T>(a, c, kernel_use) end;
 
 {$endregion Array}
 
 {$region Array2}
 
 type
-  KernelArgGlobalArray2<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalArray2<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a2: array[,] of T; c: Context; kernel_use: MemoryUsage);
+    public constructor(a2: array[,] of T; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a2, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
-      data := new KernelArgGlobalConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
+      data := new CLKernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -15986,32 +16096,32 @@ type
     
   end;
   
-static function KernelArgGlobal.FromArray2<T>(a2: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalArray2<T>(a2, c, kernel_use) end;
+static function CLKernelArgGlobal.FromArray2<T>(a2: array[,] of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalArray2<T>(a2, c, kernel_use) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
 type
-  KernelArgGlobalArray3<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalArray3<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage);
+    public constructor(a3: array[,,] of T; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a3, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
-      data := new KernelArgGlobalConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
+      data := new CLKernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16019,32 +16129,32 @@ type
     
   end;
   
-static function KernelArgGlobal.FromArray3<T>(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalArray3<T>(a3, c, kernel_use) end;
+static function CLKernelArgGlobal.FromArray3<T>(a3: array[,,] of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalArray3<T>(a3, c, kernel_use) end;
 
 {$endregion Array3}
 
 {$region ArraySegment}
 
 type
-  KernelArgGlobalArraySegment<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalArraySegment<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(seg: ArraySegment<T>; c: Context; kernel_use: MemoryUsage);
+    public constructor(seg: ArraySegment<T>; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
-      data := new KernelArgGlobalConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
+      data := new CLKernelArgGlobalConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16052,8 +16162,8 @@ type
     
   end;
   
-static function KernelArgGlobal.FromArraySegment<T>(seg: ArraySegment<T>; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalArraySegment<T>(seg, c, kernel_use) end;
+static function CLKernelArgGlobal.FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalArraySegment<T>(seg, c, kernel_use) end;
 
 {$endregion ArraySegment}
 
@@ -16064,20 +16174,20 @@ begin Result := new KernelArgGlobalArraySegment<T>(seg, c, kernel_use) end;
 {$region NativeMemoryArea}
 
 type
-  KernelArgGlobalNativeMemoryArea = sealed class(KernelArgGlobal)
-    private data: KernelArgGlobalConvCommon;
+  CLKernelArgGlobalNativeMemoryArea = sealed class(CLKernelArgGlobal)
+    private data: CLKernelArgGlobalConvCommon;
     
-    public constructor(ntv_mem_area: NativeMemoryArea; c: Context; kernel_use: MemoryUsage);
+    public constructor(ntv_mem_area: NativeMemoryArea; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
-      data := new KernelArgGlobalConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
+      data := new CLKernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16085,31 +16195,31 @@ type
     
   end;
   
-static function KernelArgGlobal.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context; kernel_use: MemoryUsage): KernelArgGlobal;
-begin Result := new KernelArgGlobalNativeMemoryArea(ntv_mem_area, c, kernel_use) end;
+static function CLKernelArgGlobal.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal;
+begin Result := new CLKernelArgGlobalNativeMemoryArea(ntv_mem_area, c, kernel_use) end;
 
 {$endregion NativeMemoryArea}
 
 {$region NativeValueArea}
 
 type
-  KernelArgGlobalNativeValueArea<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalNativeValueArea<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_val_area: NativeValueArea<T>; c: Context; kernel_use: MemoryUsage);
+    public constructor(ntv_val_area: NativeValueArea<T>; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
-      data := new KernelArgGlobalConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
+      data := new CLKernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16117,31 +16227,31 @@ type
     
   end;
   
-static function KernelArgGlobal.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalNativeValueArea<T>(ntv_val_area, c, kernel_use) end;
+static function CLKernelArgGlobal.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalNativeValueArea<T>(ntv_val_area, c, kernel_use) end;
 
 {$endregion NativeValueArea}
 
 {$region NativeArrayArea}
 
 type
-  KernelArgGlobalNativeArrayArea<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalNativeArrayArea<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_arr_area: NativeArrayArea<T>; c: Context; kernel_use: MemoryUsage);
+    public constructor(ntv_arr_area: NativeArrayArea<T>; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
-      data := new KernelArgGlobalConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
+      data := new CLKernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16149,8 +16259,8 @@ type
     
   end;
   
-static function KernelArgGlobal.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalNativeArrayArea<T>(ntv_arr_area, c, kernel_use) end;
+static function CLKernelArgGlobal.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalNativeArrayArea<T>(ntv_arr_area, c, kernel_use) end;
 
 {$endregion NativeArrayArea}
 
@@ -16161,20 +16271,20 @@ begin Result := new KernelArgGlobalNativeArrayArea<T>(ntv_arr_area, c, kernel_us
 {$region NativeMemory}
 
 type
-  KernelArgGlobalNativeMemory = sealed class(KernelArgGlobal)
-    private data: KernelArgGlobalConvCommon;
+  CLKernelArgGlobalNativeMemory = sealed class(CLKernelArgGlobal)
+    private data: CLKernelArgGlobalConvCommon;
     
-    public constructor(ntv_mem: NativeMemory; c: Context; kernel_use: MemoryUsage);
+    public constructor(ntv_mem: NativeMemory; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
-      data := new KernelArgGlobalConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
+      data := new CLKernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16182,31 +16292,31 @@ type
     
   end;
   
-static function KernelArgGlobal.FromNativeMemory(ntv_mem: NativeMemory; c: Context; kernel_use: MemoryUsage): KernelArgGlobal;
-begin Result := new KernelArgGlobalNativeMemory(ntv_mem, c, kernel_use) end;
+static function CLKernelArgGlobal.FromNativeMemory(ntv_mem: NativeMemory; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal;
+begin Result := new CLKernelArgGlobalNativeMemory(ntv_mem, c, kernel_use) end;
 
 {$endregion NativeMemory}
 
 {$region NativeValue}
 
 type
-  KernelArgGlobalNativeValue<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalNativeValue<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_val: NativeValue<T>; c: Context; kernel_use: MemoryUsage);
+    public constructor(ntv_val: NativeValue<T>; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
-      data := new KernelArgGlobalConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
+      data := new CLKernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16214,31 +16324,31 @@ type
     
   end;
   
-static function KernelArgGlobal.FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalNativeValue<T>(ntv_val, c, kernel_use) end;
+static function CLKernelArgGlobal.FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalNativeValue<T>(ntv_val, c, kernel_use) end;
 
 {$endregion NativeValue}
 
 {$region NativeArray}
 
 type
-  KernelArgGlobalNativeArray<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalNativeArray<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalConvCommon;
+    private data: CLKernelArgGlobalConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_arr: NativeArray<T>; c: Context; kernel_use: MemoryUsage);
+    public constructor(ntv_arr: NativeArray<T>; c: CLContext; kernel_use: CLMemoryUsage);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(kernel_use, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
-      data := new KernelArgGlobalConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(kernel_use, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
+      data := new CLKernelArgGlobalConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16246,8 +16356,8 @@ type
     
   end;
   
-static function KernelArgGlobal.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context; kernel_use: MemoryUsage): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalNativeArray<T>(ntv_arr, c, kernel_use) end;
+static function CLKernelArgGlobal.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalNativeArray<T>(ntv_arr, c, kernel_use) end;
 
 {$endregion NativeArray}
 
@@ -16258,16 +16368,16 @@ begin Result := new KernelArgGlobalNativeArray<T>(ntv_arr, c, kernel_use) end;
 {$region CLMemory}
 
 type
-  KernelArgGlobalCLMemory = sealed class(KernelArgGlobal)
-    private data: KernelArgGlobalWrapCommon<CLMemory>;
+  CLKernelArgGlobalCLMemory = sealed class(CLKernelArgGlobal)
+    private data: CLKernelArgGlobalWrapCommon<CLMemory>;
     
     public constructor(cl_mem: CommandQueue<CLMemory>) :=
-    data := new KernelArgGlobalWrapCommon<CLMemory>(cl_mem);
+    data := new CLKernelArgGlobalWrapCommon<CLMemory>(cl_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke(inv, o->o.Native);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16275,9 +16385,9 @@ type
     
   end;
   
-static function KernelArgGlobal.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgGlobal;
-begin Result := new KernelArgGlobalCLMemory(cl_mem) end;
-static function KernelArgGlobal.operator implicit(cl_mem: CLMemoryCCQ): KernelArgGlobal;
+static function CLKernelArgGlobal.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
+begin Result := new CLKernelArgGlobalCLMemory(cl_mem) end;
+static function CLKernelArgGlobal.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgGlobal;
 begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
 {$endregion CLMemory}
@@ -16285,17 +16395,17 @@ begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 {$region CLValue}
 
 type
-  KernelArgGlobalCLValue<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalCLValue<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalWrapCommon<CLValue<T>>;
+    private data: CLKernelArgGlobalWrapCommon<CLValue<T>>;
     
     public constructor(cl_val: CommandQueue<CLValue<T>>) :=
-    data := new KernelArgGlobalWrapCommon<CLValue<T>>(cl_val);
+    data := new CLKernelArgGlobalWrapCommon<CLValue<T>>(cl_val);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke(inv, o->o.Native);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16303,9 +16413,9 @@ type
     
   end;
   
-static function KernelArgGlobal.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalCLValue<T>(cl_val) end;
-static function KernelArgGlobal.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgGlobal; where T: record;
+static function CLKernelArgGlobal.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalCLValue<T>(cl_val) end;
+static function CLKernelArgGlobal.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgGlobal; where T: record;
 begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
@@ -16313,17 +16423,17 @@ begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 {$region CLArray}
 
 type
-  KernelArgGlobalCLArray<T> = sealed class(KernelArgGlobal)
+  CLKernelArgGlobalCLArray<T> = sealed class(CLKernelArgGlobal)
   where T: record;
-    private data: KernelArgGlobalWrapCommon<CLArray<T>>;
+    private data: CLKernelArgGlobalWrapCommon<CLArray<T>>;
     
     public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
-    data := new KernelArgGlobalWrapCommon<CLArray<T>>(cl_arr);
+    data := new CLKernelArgGlobalWrapCommon<CLArray<T>>(cl_arr);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke(inv, o->o.Native);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16331,9 +16441,9 @@ type
     
   end;
   
-static function KernelArgGlobal.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgGlobal; where T: record;
-begin Result := new KernelArgGlobalCLArray<T>(cl_arr) end;
-static function KernelArgGlobal.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgGlobal; where T: record;
+static function CLKernelArgGlobal.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalCLArray<T>(cl_arr) end;
+static function CLKernelArgGlobal.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgGlobal; where T: record;
 begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
@@ -16349,24 +16459,24 @@ begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 {$region Array}
 
 type
-  KernelArgConstantArray<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantArray<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a: array of T; c: Context);
+    public constructor(a: array of T; c: CLContext);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
-      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a.Length)*uint64(Marshal.SizeOf(default(T)))), a[0], ec);
+      data := new CLKernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16374,32 +16484,32 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray<T>(a: array of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray<T>(a, c) end;
+static function CLKernelArgConstant.FromArray<T>(a: array of T; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantArray<T>(a, c) end;
 
 {$endregion Array}
 
 {$region Array2}
 
 type
-  KernelArgConstantArray2<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantArray2<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a2: array[,] of T; c: Context);
+    public constructor(a2: array[,] of T; c: CLContext);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a2, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
-      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a2.Length)*uint64(Marshal.SizeOf(default(T)))), a2[0,0], ec);
+      data := new CLKernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16407,32 +16517,32 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray2<T>(a2: array[,] of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray2<T>(a2, c) end;
+static function CLKernelArgConstant.FromArray2<T>(a2: array[,] of T; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantArray2<T>(a2, c) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
 type
-  KernelArgConstantArray3<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantArray3<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(a3: array[,,] of T; c: Context);
+    public constructor(a3: array[,,] of T; c: CLContext);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(a3, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
-      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(a3.Length)*uint64(Marshal.SizeOf(default(T)))), a3[0,0,0], ec);
+      data := new CLKernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16440,32 +16550,32 @@ type
     
   end;
   
-static function KernelArgConstant.FromArray3<T>(a3: array[,,] of T; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArray3<T>(a3, c) end;
+static function CLKernelArgConstant.FromArray3<T>(a3: array[,,] of T; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantArray3<T>(a3, c) end;
 
 {$endregion Array3}
 
 {$region ArraySegment}
 
 type
-  KernelArgConstantArraySegment<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantArraySegment<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(seg: ArraySegment<T>; c: Context);
+    public constructor(seg: ArraySegment<T>; c: CLContext);
     begin
       var ec: ErrorCode;
       var gc_hnd := GCHandle.Alloc(seg.Array, GCHandleType.Pinned);
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
-      data := new KernelArgConstantConvCommon(mem, gc_hnd);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, new UIntPtr(UInt32(seg.Count)*uint64(Marshal.SizeOf(default(T)))), seg.Array[seg.Offset], ec);
+      data := new CLKernelArgConstantConvCommon(mem, gc_hnd);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16473,8 +16583,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromArraySegment<T>(seg: ArraySegment<T>; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantArraySegment<T>(seg, c) end;
+static function CLKernelArgConstant.FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantArraySegment<T>(seg, c) end;
 
 {$endregion ArraySegment}
 
@@ -16485,20 +16595,20 @@ begin Result := new KernelArgConstantArraySegment<T>(seg, c) end;
 {$region NativeMemoryArea}
 
 type
-  KernelArgConstantNativeMemoryArea = sealed class(KernelArgConstant)
-    private data: KernelArgConstantConvCommon;
+  CLKernelArgConstantNativeMemoryArea = sealed class(CLKernelArgConstant)
+    private data: CLKernelArgConstantConvCommon;
     
-    public constructor(ntv_mem_area: NativeMemoryArea; c: Context);
+    public constructor(ntv_mem_area: NativeMemoryArea; c: CLContext);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
-      data := new KernelArgConstantConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem_area.sz, ntv_mem_area.ptr, ec);
+      data := new CLKernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16506,31 +16616,31 @@ type
     
   end;
   
-static function KernelArgConstant.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context): KernelArgConstant;
-begin Result := new KernelArgConstantNativeMemoryArea(ntv_mem_area, c) end;
+static function CLKernelArgConstant.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext): CLKernelArgConstant;
+begin Result := new CLKernelArgConstantNativeMemoryArea(ntv_mem_area, c) end;
 
 {$endregion NativeMemoryArea}
 
 {$region NativeValueArea}
 
 type
-  KernelArgConstantNativeValueArea<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantNativeValueArea<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_val_area: NativeValueArea<T>; c: Context);
+    public constructor(ntv_val_area: NativeValueArea<T>; c: CLContext);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
-      data := new KernelArgConstantConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val_area.ByteSize, ntv_val_area.ptr, ec);
+      data := new CLKernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16538,31 +16648,31 @@ type
     
   end;
   
-static function KernelArgConstant.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantNativeValueArea<T>(ntv_val_area, c) end;
+static function CLKernelArgConstant.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantNativeValueArea<T>(ntv_val_area, c) end;
 
 {$endregion NativeValueArea}
 
 {$region NativeArrayArea}
 
 type
-  KernelArgConstantNativeArrayArea<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantNativeArrayArea<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_arr_area: NativeArrayArea<T>; c: Context);
+    public constructor(ntv_arr_area: NativeArrayArea<T>; c: CLContext);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
-      data := new KernelArgConstantConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr_area.ByteSize, ntv_arr_area.first_ptr, ec);
+      data := new CLKernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16570,8 +16680,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantNativeArrayArea<T>(ntv_arr_area, c) end;
+static function CLKernelArgConstant.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantNativeArrayArea<T>(ntv_arr_area, c) end;
 
 {$endregion NativeArrayArea}
 
@@ -16582,20 +16692,20 @@ begin Result := new KernelArgConstantNativeArrayArea<T>(ntv_arr_area, c) end;
 {$region NativeMemory}
 
 type
-  KernelArgConstantNativeMemory = sealed class(KernelArgConstant)
-    private data: KernelArgConstantConvCommon;
+  CLKernelArgConstantNativeMemory = sealed class(CLKernelArgConstant)
+    private data: CLKernelArgConstantConvCommon;
     
-    public constructor(ntv_mem: NativeMemory; c: Context);
+    public constructor(ntv_mem: NativeMemory; c: CLContext);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
-      data := new KernelArgConstantConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_mem.Area.sz, ntv_mem.Area.ptr, ec);
+      data := new CLKernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16603,31 +16713,31 @@ type
     
   end;
   
-static function KernelArgConstant.FromNativeMemory(ntv_mem: NativeMemory; c: Context): KernelArgConstant;
-begin Result := new KernelArgConstantNativeMemory(ntv_mem, c) end;
+static function CLKernelArgConstant.FromNativeMemory(ntv_mem: NativeMemory; c: CLContext): CLKernelArgConstant;
+begin Result := new CLKernelArgConstantNativeMemory(ntv_mem, c) end;
 
 {$endregion NativeMemory}
 
 {$region NativeValue}
 
 type
-  KernelArgConstantNativeValue<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantNativeValue<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_val: NativeValue<T>; c: Context);
+    public constructor(ntv_val: NativeValue<T>; c: CLContext);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
-      data := new KernelArgConstantConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_val.Area.ByteSize, ntv_val.Area.ptr, ec);
+      data := new CLKernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16635,31 +16745,31 @@ type
     
   end;
   
-static function KernelArgConstant.FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantNativeValue<T>(ntv_val, c) end;
+static function CLKernelArgConstant.FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantNativeValue<T>(ntv_val, c) end;
 
 {$endregion NativeValue}
 
 {$region NativeArray}
 
 type
-  KernelArgConstantNativeArray<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantNativeArray<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantConvCommon;
+    private data: CLKernelArgConstantConvCommon;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
-    public constructor(ntv_arr: NativeArray<T>; c: Context);
+    public constructor(ntv_arr: NativeArray<T>; c: CLContext);
     begin
       var ec: ErrorCode;
-      var mem := cl.CreateBuffer((c??Context.Default).Native, MemoryUsage.MakeCLFlags(MemoryUsage.ReadOnly, MemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
-      data := new KernelArgConstantConvCommon(mem);
+      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(CLMemoryUsage.ReadOnly, CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ntv_arr.Area.ByteSize, ntv_arr.Area.first_ptr, ec);
+      data := new CLKernelArgConstantConvCommon(mem);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke();
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16667,8 +16777,8 @@ type
     
   end;
   
-static function KernelArgConstant.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantNativeArray<T>(ntv_arr, c) end;
+static function CLKernelArgConstant.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantNativeArray<T>(ntv_arr, c) end;
 
 {$endregion NativeArray}
 
@@ -16679,16 +16789,16 @@ begin Result := new KernelArgConstantNativeArray<T>(ntv_arr, c) end;
 {$region CLMemory}
 
 type
-  KernelArgConstantCLMemory = sealed class(KernelArgConstant)
-    private data: KernelArgConstantWrapCommon<CLMemory>;
+  CLKernelArgConstantCLMemory = sealed class(CLKernelArgConstant)
+    private data: CLKernelArgConstantWrapCommon<CLMemory>;
     
     public constructor(cl_mem: CommandQueue<CLMemory>) :=
-    data := new KernelArgConstantWrapCommon<CLMemory>(cl_mem);
+    data := new CLKernelArgConstantWrapCommon<CLMemory>(cl_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke(inv, o->o.Native);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16696,9 +16806,9 @@ type
     
   end;
   
-static function KernelArgConstant.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArgConstant;
-begin Result := new KernelArgConstantCLMemory(cl_mem) end;
-static function KernelArgConstant.operator implicit(cl_mem: CLMemoryCCQ): KernelArgConstant;
+static function CLKernelArgConstant.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
+begin Result := new CLKernelArgConstantCLMemory(cl_mem) end;
+static function CLKernelArgConstant.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgConstant;
 begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
 {$endregion CLMemory}
@@ -16706,17 +16816,17 @@ begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 {$region CLValue}
 
 type
-  KernelArgConstantCLValue<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantCLValue<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantWrapCommon<CLValue<T>>;
+    private data: CLKernelArgConstantWrapCommon<CLValue<T>>;
     
     public constructor(cl_val: CommandQueue<CLValue<T>>) :=
-    data := new KernelArgConstantWrapCommon<CLValue<T>>(cl_val);
+    data := new CLKernelArgConstantWrapCommon<CLValue<T>>(cl_val);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke(inv, o->o.Native);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16724,9 +16834,9 @@ type
     
   end;
   
-static function KernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantCLValue<T>(cl_val) end;
-static function KernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArgConstant; where T: record;
+static function CLKernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantCLValue<T>(cl_val) end;
+static function CLKernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgConstant; where T: record;
 begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
@@ -16734,17 +16844,17 @@ begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 {$region CLArray}
 
 type
-  KernelArgConstantCLArray<T> = sealed class(KernelArgConstant)
+  CLKernelArgConstantCLArray<T> = sealed class(CLKernelArgConstant)
   where T: record;
-    private data: KernelArgConstantWrapCommon<CLArray<T>>;
+    private data: CLKernelArgConstantWrapCommon<CLArray<T>>;
     
     public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
-    data := new KernelArgConstantWrapCommon<CLArray<T>>(cl_arr);
+    data := new CLKernelArgConstantWrapCommon<CLArray<T>>(cl_arr);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
     data.Invoke(inv, o->o.Native);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
@@ -16752,9 +16862,9 @@ type
     
   end;
   
-static function KernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArgConstant; where T: record;
-begin Result := new KernelArgConstantCLArray<T>(cl_arr) end;
-static function KernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArgConstant; where T: record;
+static function CLKernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
+begin Result := new CLKernelArgConstantCLArray<T>(cl_arr) end;
+static function CLKernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgConstant; where T: record;
 begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
@@ -16767,20 +16877,20 @@ begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$region FromBytes}
 
-static function KernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new KernelArgLocalBytes(bytes);
+static function CLKernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new CLKernelArgLocalBytes(bytes);
 
 {$endregion FromBytes}
 
 {$region FromItemCount}
 
-static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): KernelArgLocal; where T: record;
+static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): CLKernelArgLocal; where T: record;
 begin
   BlittableHelper.RaiseIfBad(typeof(T), '');
   Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
   )));
 end;
-static function KernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): KernelArgLocal; where T: record;
+static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): CLKernelArgLocal; where T: record;
 begin
   BlittableHelper.RaiseIfBad(typeof(T), '');
   Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
@@ -16803,140 +16913,140 @@ end;
 {$region Array}
 
 type
-  KernelArgPrivateSetterArray<T> = sealed class(KernelArgSetterTyped<array of T>)
+  CLKernelArgPrivateSetterArray<T> = sealed class(CLKernelArgSetterTyped<array of T>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0]) );
     
   end;
-  KernelArgPrivateArray<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateArray<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<array of T>;
+    private data: CLKernelArgPrivateCommon<array of T>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(a: CommandQueue<array of T>) :=
-    data := new KernelArgPrivateCommon<array of T>(a);
+    data := new CLKernelArgPrivateCommon<array of T>(a);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterArray<T>(o), ()->new KernelArgPrivateSetterArray<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray<T>(o), ()->new CLKernelArgPrivateSetterArray<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromArray<T>(a: CommandQueue<array of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray<T>(a) end;
+static function CLKernelArgPrivate.FromArray<T>(a: CommandQueue<array of T>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateArray<T>(a) end;
 
 {$endregion Array}
 
 {$region Array2}
 
 type
-  KernelArgPrivateSetterArray2<T> = sealed class(KernelArgSetterTyped<array[,] of T>)
+  CLKernelArgPrivateSetterArray2<T> = sealed class(CLKernelArgSetterTyped<array[,] of T>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0]) );
     
   end;
-  KernelArgPrivateArray2<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateArray2<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<array[,] of T>;
+    private data: CLKernelArgPrivateCommon<array[,] of T>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(a2: CommandQueue<array[,] of T>) :=
-    data := new KernelArgPrivateCommon<array[,] of T>(a2);
+    data := new CLKernelArgPrivateCommon<array[,] of T>(a2);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterArray2<T>(o), ()->new KernelArgPrivateSetterArray2<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray2<T>(o), ()->new CLKernelArgPrivateSetterArray2<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromArray2<T>(a2: CommandQueue<array[,] of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray2<T>(a2) end;
+static function CLKernelArgPrivate.FromArray2<T>(a2: CommandQueue<array[,] of T>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateArray2<T>(a2) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
 type
-  KernelArgPrivateSetterArray3<T> = sealed class(KernelArgSetterTyped<array[,,] of T>)
+  CLKernelArgPrivateSetterArray3<T> = sealed class(CLKernelArgSetterTyped<array[,,] of T>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0,0]) );
     
   end;
-  KernelArgPrivateArray3<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateArray3<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<array[,,] of T>;
+    private data: CLKernelArgPrivateCommon<array[,,] of T>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(a3: CommandQueue<array[,,] of T>) :=
-    data := new KernelArgPrivateCommon<array[,,] of T>(a3);
+    data := new CLKernelArgPrivateCommon<array[,,] of T>(a3);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterArray3<T>(o), ()->new KernelArgPrivateSetterArray3<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray3<T>(o), ()->new CLKernelArgPrivateSetterArray3<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromArray3<T>(a3: CommandQueue<array[,,] of T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArray3<T>(a3) end;
+static function CLKernelArgPrivate.FromArray3<T>(a3: CommandQueue<array[,,] of T>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateArray3<T>(a3) end;
 
 {$endregion Array3}
 
 {$region ArraySegment}
 
 type
-  KernelArgPrivateSetterArraySegment<T> = sealed class(KernelArgSetterTyped<ArraySegment<T>>)
+  CLKernelArgPrivateSetterArraySegment<T> = sealed class(CLKernelArgSetterTyped<ArraySegment<T>>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Count)*uint64(Marshal.SizeOf(default(T)))), self.o.Array[self.o.Offset]) );
     
   end;
-  KernelArgPrivateArraySegment<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateArraySegment<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<ArraySegment<T>>;
+    private data: CLKernelArgPrivateCommon<ArraySegment<T>>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(seg: CommandQueue<ArraySegment<T>>) :=
-    data := new KernelArgPrivateCommon<ArraySegment<T>>(seg);
+    data := new CLKernelArgPrivateCommon<ArraySegment<T>>(seg);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterArraySegment<T>(o), ()->new KernelArgPrivateSetterArraySegment<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArraySegment<T>(o), ()->new CLKernelArgPrivateSetterArraySegment<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateArraySegment<T>(seg) end;
+static function CLKernelArgPrivate.FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateArraySegment<T>(seg) end;
 
 {$endregion ArraySegment}
 
@@ -16947,101 +17057,101 @@ begin Result := new KernelArgPrivateArraySegment<T>(seg) end;
 {$region NativeMemoryArea}
 
 type
-  KernelArgPrivateSetterNativeMemoryArea = sealed class(KernelArgSetterTyped<NativeMemoryArea>)
+  CLKernelArgPrivateSetterNativeMemoryArea = sealed class(CLKernelArgSetterTyped<NativeMemoryArea>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.sz, self.o.ptr) );
     
   end;
-  KernelArgPrivateNativeMemoryArea = sealed class(KernelArgPrivate)
-    private data: KernelArgPrivateCommon<NativeMemoryArea>;
+  CLKernelArgPrivateNativeMemoryArea = sealed class(CLKernelArgPrivate)
+    private data: CLKernelArgPrivateCommon<NativeMemoryArea>;
     
     public constructor(ntv_mem_area: CommandQueue<NativeMemoryArea>) :=
-    data := new KernelArgPrivateCommon<NativeMemoryArea>(ntv_mem_area);
+    data := new CLKernelArgPrivateCommon<NativeMemoryArea>(ntv_mem_area);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterNativeMemoryArea(o), ()->new KernelArgPrivateSetterNativeMemoryArea);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemoryArea(o), ()->new CLKernelArgPrivateSetterNativeMemoryArea);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): KernelArgPrivate;
-begin Result := new KernelArgPrivateNativeMemoryArea(ntv_mem_area) end;
+static function CLKernelArgPrivate.FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArgPrivate;
+begin Result := new CLKernelArgPrivateNativeMemoryArea(ntv_mem_area) end;
 
 {$endregion NativeMemoryArea}
 
 {$region NativeValueArea}
 
 type
-  KernelArgPrivateSetterNativeValueArea<T> = sealed class(KernelArgSetterTyped<NativeValueArea<T>>)
+  CLKernelArgPrivateSetterNativeValueArea<T> = sealed class(CLKernelArgSetterTyped<NativeValueArea<T>>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.ByteSize, self.o.ptr) );
     
   end;
-  KernelArgPrivateNativeValueArea<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateNativeValueArea<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<NativeValueArea<T>>;
+    private data: CLKernelArgPrivateCommon<NativeValueArea<T>>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(ntv_val_area: CommandQueue<NativeValueArea<T>>) :=
-    data := new KernelArgPrivateCommon<NativeValueArea<T>>(ntv_val_area);
+    data := new CLKernelArgPrivateCommon<NativeValueArea<T>>(ntv_val_area);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterNativeValueArea<T>(o), ()->new KernelArgPrivateSetterNativeValueArea<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValueArea<T>(o), ()->new CLKernelArgPrivateSetterNativeValueArea<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateNativeValueArea<T>(ntv_val_area) end;
+static function CLKernelArgPrivate.FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateNativeValueArea<T>(ntv_val_area) end;
 
 {$endregion NativeValueArea}
 
 {$region NativeArrayArea}
 
 type
-  KernelArgPrivateSetterNativeArrayArea<T> = sealed class(KernelArgSetterTyped<NativeArrayArea<T>>)
+  CLKernelArgPrivateSetterNativeArrayArea<T> = sealed class(CLKernelArgSetterTyped<NativeArrayArea<T>>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.ByteSize, self.o.first_ptr) );
     
   end;
-  KernelArgPrivateNativeArrayArea<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateNativeArrayArea<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<NativeArrayArea<T>>;
+    private data: CLKernelArgPrivateCommon<NativeArrayArea<T>>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(ntv_arr_area: CommandQueue<NativeArrayArea<T>>) :=
-    data := new KernelArgPrivateCommon<NativeArrayArea<T>>(ntv_arr_area);
+    data := new CLKernelArgPrivateCommon<NativeArrayArea<T>>(ntv_arr_area);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterNativeArrayArea<T>(o), ()->new KernelArgPrivateSetterNativeArrayArea<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArrayArea<T>(o), ()->new CLKernelArgPrivateSetterNativeArrayArea<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateNativeArrayArea<T>(ntv_arr_area) end;
+static function CLKernelArgPrivate.FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateNativeArrayArea<T>(ntv_arr_area) end;
 
 {$endregion NativeArrayArea}
 
@@ -17052,101 +17162,101 @@ begin Result := new KernelArgPrivateNativeArrayArea<T>(ntv_arr_area) end;
 {$region NativeMemory}
 
 type
-  KernelArgPrivateSetterNativeMemory = sealed class(KernelArgSetterTyped<NativeMemory>)
+  CLKernelArgPrivateSetterNativeMemory = sealed class(CLKernelArgSetterTyped<NativeMemory>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.sz, self.o.Area.ptr) );
     
   end;
-  KernelArgPrivateNativeMemory = sealed class(KernelArgPrivate)
-    private data: KernelArgPrivateCommon<NativeMemory>;
+  CLKernelArgPrivateNativeMemory = sealed class(CLKernelArgPrivate)
+    private data: CLKernelArgPrivateCommon<NativeMemory>;
     
     public constructor(ntv_mem: CommandQueue<NativeMemory>) :=
-    data := new KernelArgPrivateCommon<NativeMemory>(ntv_mem);
+    data := new CLKernelArgPrivateCommon<NativeMemory>(ntv_mem);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterNativeMemory(o), ()->new KernelArgPrivateSetterNativeMemory);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemory(o), ()->new CLKernelArgPrivateSetterNativeMemory);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): KernelArgPrivate;
-begin Result := new KernelArgPrivateNativeMemory(ntv_mem) end;
+static function CLKernelArgPrivate.FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): CLKernelArgPrivate;
+begin Result := new CLKernelArgPrivateNativeMemory(ntv_mem) end;
 
 {$endregion NativeMemory}
 
 {$region NativeValue}
 
 type
-  KernelArgPrivateSetterNativeValue<T> = sealed class(KernelArgSetterTyped<NativeValue<T>>)
+  CLKernelArgPrivateSetterNativeValue<T> = sealed class(CLKernelArgSetterTyped<NativeValue<T>>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.ByteSize, self.o.Area.ptr) );
     
   end;
-  KernelArgPrivateNativeValue<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateNativeValue<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<NativeValue<T>>;
+    private data: CLKernelArgPrivateCommon<NativeValue<T>>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(ntv_val: CommandQueue<NativeValue<T>>) :=
-    data := new KernelArgPrivateCommon<NativeValue<T>>(ntv_val);
+    data := new CLKernelArgPrivateCommon<NativeValue<T>>(ntv_val);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterNativeValue<T>(o), ()->new KernelArgPrivateSetterNativeValue<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValue<T>(o), ()->new CLKernelArgPrivateSetterNativeValue<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateNativeValue<T>(ntv_val) end;
+static function CLKernelArgPrivate.FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateNativeValue<T>(ntv_val) end;
 
 {$endregion NativeValue}
 
 {$region NativeArray}
 
 type
-  KernelArgPrivateSetterNativeArray<T> = sealed class(KernelArgSetterTyped<NativeArray<T>>)
+  CLKernelArgPrivateSetterNativeArray<T> = sealed class(CLKernelArgSetterTyped<NativeArray<T>>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.ByteSize, self.o.Area.first_ptr) );
     
   end;
-  KernelArgPrivateNativeArray<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateNativeArray<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<NativeArray<T>>;
+    private data: CLKernelArgPrivateCommon<NativeArray<T>>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(ntv_arr: CommandQueue<NativeArray<T>>) :=
-    data := new KernelArgPrivateCommon<NativeArray<T>>(ntv_arr);
+    data := new CLKernelArgPrivateCommon<NativeArray<T>>(ntv_arr);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterNativeArray<T>(o), ()->new KernelArgPrivateSetterNativeArray<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArray<T>(o), ()->new CLKernelArgPrivateSetterNativeArray<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateNativeArray<T>(ntv_arr) end;
+static function CLKernelArgPrivate.FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateNativeArray<T>(ntv_arr) end;
 
 {$endregion NativeArray}
 
@@ -17155,35 +17265,35 @@ begin Result := new KernelArgPrivateNativeArray<T>(ntv_arr) end;
 {$region Value}
 
 type
-  KernelArgPrivateSetterValue<T> = sealed class(KernelArgSetterTyped<T>)
+  CLKernelArgPrivateSetterValue<T> = sealed class(CLKernelArgSetterTyped<T>)
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
     OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
     
   end;
-  KernelArgPrivateValue<T> = sealed class(KernelArgPrivate)
+  CLKernelArgPrivateValue<T> = sealed class(CLKernelArgPrivate)
   where T: record;
-    private data: KernelArgPrivateCommon<T>;
+    private data: CLKernelArgPrivateCommon<T>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
     
     public constructor(val: CommandQueue<T>) :=
-    data := new KernelArgPrivateCommon<T>(val);
+    data := new CLKernelArgPrivateCommon<T>(val);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<KernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new KernelArgPrivateSetterValue<T>(o), ()->new KernelArgPrivateSetterValue<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterValue<T>(o), ()->new CLKernelArgPrivateSetterValue<T>);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
     
   end;
   
-static function KernelArgPrivate.FromValue<T>(val: CommandQueue<T>): KernelArgPrivate; where T: record;
-begin Result := new KernelArgPrivateValue<T>(val) end;
+static function CLKernelArgPrivate.FromValue<T>(val: CommandQueue<T>): CLKernelArgPrivate; where T: record;
+begin Result := new CLKernelArgPrivateValue<T>(val) end;
 
 {$endregion Value}
 
@@ -17195,29 +17305,29 @@ begin Result := new KernelArgPrivateValue<T>(val) end;
 
 {$region Array}
 
-static function KernelArg.FromArray<T>(a: array of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray(a, c, kernel_use) end;
+static function CLKernelArg.FromArray<T>(a: array of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromArray(a, c, kernel_use) end;
 
 {$endregion Array}
 
 {$region Array2}
 
-static function KernelArg.FromArray2<T>(a2: array[,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray2(a2, c, kernel_use) end;
+static function CLKernelArg.FromArray2<T>(a2: array[,] of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromArray2(a2, c, kernel_use) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
-static function KernelArg.FromArray3<T>(a3: array[,,] of T; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArray3(a3, c, kernel_use) end;
+static function CLKernelArg.FromArray3<T>(a3: array[,,] of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromArray3(a3, c, kernel_use) end;
 
 {$endregion Array3}
 
 {$region ArraySegment}
 
-static function KernelArg.FromArraySegment<T>(seg: ArraySegment<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromArraySegment(seg, c, kernel_use) end;
+static function CLKernelArg.FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromArraySegment(seg, c, kernel_use) end;
 
 {$endregion ArraySegment}
 
@@ -17227,22 +17337,22 @@ begin Result := KernelArgGlobal.FromArraySegment(seg, c, kernel_use) end;
 
 {$region NativeMemoryArea}
 
-static function KernelArg.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: Context; kernel_use: MemoryUsage): KernelArg;
-begin Result := KernelArgGlobal.FromNativeMemoryArea(ntv_mem_area, c, kernel_use) end;
+static function CLKernelArg.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg;
+begin Result := CLKernelArgGlobal.FromNativeMemoryArea(ntv_mem_area, c, kernel_use) end;
 
 {$endregion NativeMemoryArea}
 
 {$region NativeValueArea}
 
-static function KernelArg.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromNativeValueArea(ntv_val_area, c, kernel_use) end;
+static function CLKernelArg.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromNativeValueArea(ntv_val_area, c, kernel_use) end;
 
 {$endregion NativeValueArea}
 
 {$region NativeArrayArea}
 
-static function KernelArg.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromNativeArrayArea(ntv_arr_area, c, kernel_use) end;
+static function CLKernelArg.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromNativeArrayArea(ntv_arr_area, c, kernel_use) end;
 
 {$endregion NativeArrayArea}
 
@@ -17252,22 +17362,22 @@ begin Result := KernelArgGlobal.FromNativeArrayArea(ntv_arr_area, c, kernel_use)
 
 {$region NativeMemory}
 
-static function KernelArg.FromNativeMemory(ntv_mem: NativeMemory; c: Context; kernel_use: MemoryUsage): KernelArg;
-begin Result := KernelArgGlobal.FromNativeMemory(ntv_mem, c, kernel_use) end;
+static function CLKernelArg.FromNativeMemory(ntv_mem: NativeMemory; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg;
+begin Result := CLKernelArgGlobal.FromNativeMemory(ntv_mem, c, kernel_use) end;
 
 {$endregion NativeMemory}
 
 {$region NativeValue}
 
-static function KernelArg.FromNativeValue<T>(ntv_val: NativeValue<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromNativeValue(ntv_val, c, kernel_use) end;
+static function CLKernelArg.FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromNativeValue(ntv_val, c, kernel_use) end;
 
 {$endregion NativeValue}
 
 {$region NativeArray}
 
-static function KernelArg.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: Context; kernel_use: MemoryUsage): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
+static function CLKernelArg.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
 
 {$endregion NativeArray}
 
@@ -17277,27 +17387,27 @@ begin Result := KernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
 
 {$region CLMemory}
 
-static function KernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): KernelArg;
-begin Result := KernelArgGlobal.FromCLMemory(cl_mem) end;
-static function KernelArg.operator implicit(cl_mem: CLMemoryCCQ): KernelArg;
+static function CLKernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
+begin Result := CLKernelArgGlobal.FromCLMemory(cl_mem) end;
+static function CLKernelArg.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArg;
 begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 
 {$endregion CLMemory}
 
 {$region CLValue}
 
-static function KernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromCLValue(cl_val) end;
-static function KernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): KernelArg; where T: record;
+static function CLKernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromCLValue(cl_val) end;
+static function CLKernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArg; where T: record;
 begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 
 {$endregion CLValue}
 
 {$region CLArray}
 
-static function KernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): KernelArg; where T: record;
-begin Result := KernelArgGlobal.FromCLArray(cl_arr) end;
-static function KernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): KernelArg; where T: record;
+static function CLKernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromCLArray(cl_arr) end;
+static function CLKernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArg; where T: record;
 begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$endregion CLArray}
@@ -17306,14 +17416,14 @@ begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
 
 {$region Value}
 
-static function KernelArg.FromValue<T>(val: CommandQueue<T>): KernelArg; where T: record;
-begin Result := KernelArgPrivate.FromValue(val) end;
+static function CLKernelArg.FromValue<T>(val: CommandQueue<T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromValue(val) end;
 
 {$endregion Value}
 
 {$endregion Generic}
 
-{$endregion KernelArg}
+{$endregion CLKernelArg}
 
 {$region Enqueueable's}
 
@@ -17478,26 +17588,26 @@ type
     
   end;
   
-  EnqueueableExecCommand = abstract class(CommonGPUCommand<Kernel>)
-    private args: array of KernelArg;
+  EnqueueableExecCommand = abstract class(CommonGPUCommand<CLKernel>)
+    private args: array of CLKernelArg;
     
-    protected constructor(args: array of KernelArg) := self.args := args;
+    protected constructor(args: array of CLKernelArg) := self.args := args;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected function ValidateForObj(k: Kernel): boolean; override;
+    protected function ValidateForObj(k: CLKernel): boolean; override;
     begin
       Result := true;
       var TODO := 0; // Попробовать пред-устанавливать аргументы
     end;
-    protected function ValidateForQueue(q: CommandQueue<Kernel>): boolean; override := true;
+    protected function ValidateForQueue(q: CommandQueue<CLKernel>): boolean; override := true;
     
     public function EnqEvCapacity: integer; abstract;
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; abstract;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; abstract;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of KernelArgSetter;
+    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of CLKernelArgSetter;
     begin
-      Result := new KernelArgSetter[self.args.Length];
+      Result := new CLKernelArgSetter[self.args.Length];
       for var i := 0 to self.args.Length-1 do
       begin
         var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
@@ -17511,15 +17621,15 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure KeepArgsGCAlive := GC.KeepAlive(self.args);
     
-    private own_k := default(Kernel);
+    private own_k := default(CLKernel);
     private own_k_ntv := cl_kernel.Zero;
-    private own_arg_cache := default(KernelArgCache);
+    private own_arg_cache := default(CLKernelArgCache);
     
-    protected function Invoke(k_const: boolean; get_k: ()->Kernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    protected function Invoke(k_const: boolean; get_k: ()->CLKernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
       var own_lock := new ExecCommandOwnKLock(if k_const then self else nil);
       try
-        var arg_cache := default(KernelArgCache);
+        var arg_cache := default(CLKernelArgCache);
         var get_k_ntv: ()->cl_kernel;
         
         // If CCQ is created from regular object or const/parameter queue
@@ -17533,7 +17643,7 @@ type
           begin
             own_k := k;
             own_k_ntv := k.ntv();
-            arg_cache := new KernelArgCacheEntry[self.args.Length];
+            arg_cache := new CLKernelArgCacheEntry[self.args.Length];
             self.own_arg_cache := arg_cache;
           end;
           
@@ -17609,30 +17719,30 @@ type
   
 {$endregion GetCommand}
 
-{$region Kernel}
+{$region CLKernel}
 
 {$region Implicit}
 
 {$region Exec}
 
-function Kernel.Exec1(sz1: CommandQueue<integer>; params args: array of KernelArg): Kernel;
+function CLKernel.Exec1(sz1: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec1(sz1, args));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec1(sz1, args));
 end;
 
-function Kernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): Kernel;
+function CLKernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec2(sz1, sz2, args));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec2(sz1, sz2, args));
 end;
 
-function Kernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): Kernel;
+function CLKernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec3(sz1, sz2, sz3, args));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec3(sz1, sz2, sz3, args));
 end;
 
-function Kernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): Kernel;
+function CLKernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenExec(global_work_offset, global_work_size, local_work_size, args));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec(global_work_offset, global_work_size, local_work_size, args));
 end;
 
 {$endregion Exec}
@@ -17646,13 +17756,13 @@ end;
 {$region Exec1}
 
 type
-  KernelCommandExec1 = sealed class(EnqueueableExecCommand)
+  CLKernelCommandExec1 = sealed class(EnqueueableExecCommand)
     private  sz1: CommandQueue<integer>;
-    private args: array of KernelArg;
+    private args: array of CLKernelArg;
     
     public function EnqEvCapacity: integer; override := 1;
     
-    public constructor(sz1: CommandQueue<integer>; params args: array of KernelArg);
+    public constructor(sz1: CommandQueue<integer>; params args: array of CLKernelArg);
     begin
       inherited Create(args);
       self. sz1 :=  sz1;
@@ -17666,10 +17776,10 @@ type
        sz1.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
-      var arg_setters: array of KernelArgSetter;
+      var arg_setters: array of CLKernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
@@ -17719,9 +17829,9 @@ type
     
   end;
   
-function KernelCCQ.ThenExec1(sz1: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function CLKernelCCQ.ThenExec1(sz1: CommandQueue<integer>; params args: array of CLKernelArg): CLKernelCCQ;
 begin
-  Result := AddCommand(self, new KernelCommandExec1(sz1, args));
+  Result := AddCommand(self, new CLKernelCommandExec1(sz1, args));
 end;
 
 {$endregion Exec1}
@@ -17729,14 +17839,14 @@ end;
 {$region Exec2}
 
 type
-  KernelCommandExec2 = sealed class(EnqueueableExecCommand)
+  CLKernelCommandExec2 = sealed class(EnqueueableExecCommand)
     private  sz1: CommandQueue<integer>;
     private  sz2: CommandQueue<integer>;
-    private args: array of KernelArg;
+    private args: array of CLKernelArg;
     
     public function EnqEvCapacity: integer; override := 2;
     
-    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg);
+    public constructor(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg);
     begin
       inherited Create(args);
       self. sz1 :=  sz1;
@@ -17752,11 +17862,11 @@ type
        sz2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
-      var arg_setters: array of KernelArgSetter;
+      var arg_setters: array of CLKernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
@@ -17813,9 +17923,9 @@ type
     
   end;
   
-function KernelCCQ.ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function CLKernelCCQ.ThenExec2(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg): CLKernelCCQ;
 begin
-  Result := AddCommand(self, new KernelCommandExec2(sz1, sz2, args));
+  Result := AddCommand(self, new CLKernelCommandExec2(sz1, sz2, args));
 end;
 
 {$endregion Exec2}
@@ -17823,15 +17933,15 @@ end;
 {$region Exec3}
 
 type
-  KernelCommandExec3 = sealed class(EnqueueableExecCommand)
+  CLKernelCommandExec3 = sealed class(EnqueueableExecCommand)
     private  sz1: CommandQueue<integer>;
     private  sz2: CommandQueue<integer>;
     private  sz3: CommandQueue<integer>;
-    private args: array of KernelArg;
+    private args: array of CLKernelArg;
     
     public function EnqEvCapacity: integer; override := 3;
     
-    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg);
+    public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg);
     begin
       inherited Create(args);
       self. sz1 :=  sz1;
@@ -17849,12 +17959,12 @@ type
        sz3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
       var  sz3_qr: QueueRes<integer>;
-      var arg_setters: array of KernelArgSetter;
+      var arg_setters: array of CLKernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
          sz1_qr := invoker.InvokeBranch&<QueueRes<integer>>( sz1.InvokeToAny); if sz1_qr.IsConst then enq_evs.AddL2(sz1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(sz1_qr.AttachInvokeActions(g));
@@ -17918,9 +18028,9 @@ type
     
   end;
   
-function KernelCCQ.ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of KernelArg): KernelCCQ;
+function CLKernelCCQ.ThenExec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg): CLKernelCCQ;
 begin
-  Result := AddCommand(self, new KernelCommandExec3(sz1, sz2, sz3, args));
+  Result := AddCommand(self, new CLKernelCommandExec3(sz1, sz2, sz3, args));
 end;
 
 {$endregion Exec3}
@@ -17928,15 +18038,15 @@ end;
 {$region Exec}
 
 type
-  KernelCommandExec = sealed class(EnqueueableExecCommand)
+  CLKernelCommandExec = sealed class(EnqueueableExecCommand)
     private global_work_offset: CommandQueue<array of UIntPtr>;
     private   global_work_size: CommandQueue<array of UIntPtr>;
     private    local_work_size: CommandQueue<array of UIntPtr>;
-    private               args: array of KernelArg;
+    private               args: array of CLKernelArg;
     
     public function EnqEvCapacity: integer; override := 3;
     
-    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg);
+    public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg);
     begin
       inherited Create(args);
       self.global_work_offset := global_work_offset;
@@ -17954,12 +18064,12 @@ type
          local_work_size.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: KernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
     begin
       var global_work_offset_qr: QueueRes<array of UIntPtr>;
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
       var    local_work_size_qr: QueueRes<array of UIntPtr>;
-      var arg_setters: array of KernelArgSetter;
+      var arg_setters: array of CLKernelArgSetter;
       g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
       begin
         global_work_offset_qr := invoker.InvokeBranch&<QueueRes<array of UIntPtr>>(global_work_offset.InvokeToAny); if global_work_offset_qr.IsConst then enq_evs.AddL2(global_work_offset_qr.AttachInvokeActions(g)) else enq_evs.AddL1(global_work_offset_qr.AttachInvokeActions(g));
@@ -18023,9 +18133,9 @@ type
     
   end;
   
-function KernelCCQ.ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of KernelArg): KernelCCQ;
+function CLKernelCCQ.ThenExec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg): CLKernelCCQ;
 begin
-  Result := AddCommand(self, new KernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
+  Result := AddCommand(self, new CLKernelCommandExec(global_work_offset, global_work_size, local_work_size, args));
 end;
 
 {$endregion Exec}
@@ -18034,7 +18144,7 @@ end;
 
 {$endregion Explicit}
 
-{$endregion Kernel}
+{$endregion CLKernel}
 
 {$region CLMemory}
 
@@ -18054,12 +18164,12 @@ end;
 
 function CLMemory.WriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function CLMemory.WriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue&<TRecord>(val, mem_offset));
 end;
 
 function CLMemory.WriteArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
@@ -18124,62 +18234,62 @@ end;
 
 function CLMemory.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a));
 end;
 
 function CLMemory.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a));
 end;
 
 function CLMemory.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a));
 end;
 
 function CLMemory.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a));
 end;
 
 function CLMemory.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a));
 end;
 
 function CLMemory.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a));
 end;
 
 function CLMemory.WriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray1&<TRecord>(a, a_ind, el_count, mem_offset));
 end;
 
 function CLMemory.WriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
 end;
 
 function CLMemory.WriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
 end;
 
 function CLMemory.ReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a, a_ind, el_count, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray1&<TRecord>(a, a_ind, el_count, mem_offset));
 end;
 
 function CLMemory.ReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray2&<TRecord>(a, a_ind1, a_ind2, el_count, mem_offset));
 end;
 
 function CLMemory.ReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, el_count, mem_offset));
 end;
 
 function CLMemory.WriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
@@ -18194,22 +18304,22 @@ end;
 
 function CLMemory.WriteData(ptr: CommandQueue<IntPtr>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
 end;
 
 function CLMemory.WriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, mem_offset, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, mem_offset, len));
 end;
 
 function CLMemory.ReadData(ptr: CommandQueue<IntPtr>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
 end;
 
 function CLMemory.ReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, mem_offset, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, mem_offset, len));
 end;
 
 function CLMemory.WriteData(ptr: pointer): CLMemory;
@@ -18414,62 +18524,62 @@ end;
 
 function CLMemory.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
 end;
 
 function CLMemory.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
 end;
 
 function CLMemory.WriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.WriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.WriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.WriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
 end;
 
 function CLMemory.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
 end;
 
 function CLMemory.ReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.ReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.ReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea&<TRecord>(native_data, mem_offset));
 end;
 
 function CLMemory.ReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray&<TRecord>(native_data, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -18478,22 +18588,22 @@ end;
 
 function CLMemory.FillValue<TRecord>(val: TRecord): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
 function CLMemory.FillValue<TRecord>(val: CommandQueue<TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val));
 end;
 
 function CLMemory.FillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue&<TRecord>(val, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillArray1<TRecord>(a: array of TRecord): CLMemory; where TRecord: record;
@@ -18528,52 +18638,52 @@ end;
 
 function CLMemory.FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a));
 end;
 
 function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a));
 end;
 
 function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a));
 end;
 
 function CLMemory.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray1&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray2&<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a));
 end;
 
 function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment&<TRecord>(a, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len));
 end;
 
 function CLMemory.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemory;
@@ -18648,62 +18758,62 @@ end;
 
 function CLMemory.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
 end;
 
 function CLMemory.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
 end;
 
 function CLMemory.FillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data));
 end;
 
 function CLMemory.FillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data));
 end;
 
 function CLMemory.FillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data));
 end;
 
 function CLMemory.FillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 function CLMemory.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data));
 end;
 
 function CLMemory.FillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data, mem_offset, fill_byte_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray&<TRecord>(native_data, mem_offset, fill_byte_len));
 end;
 
 {$endregion 2#Fill}
@@ -18712,22 +18822,22 @@ end;
 
 function CLMemory.CopyTo(mem: CommandQueue<CLMemory>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
 function CLMemory.CopyTo(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, from_offset, to_offset, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, from_offset, to_offset, len));
 end;
 
 function CLMemory.CopyFrom(mem: CommandQueue<CLMemory>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
 function CLMemory.CopyFrom(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemory;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, from_offset, to_offset, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, from_offset, to_offset, len));
 end;
 
 {$endregion 3#Copy}
@@ -18741,27 +18851,27 @@ end;
 
 function CLMemory.GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue&<TRecord>(mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetValue&<TRecord>(mem_offset));
 end;
 
 function CLMemory.GetArray<TRecord>: array of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>);
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>);
 end;
 
 function CLMemory.GetArray<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>(len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>(len));
 end;
 
 function CLMemory.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray2&<TRecord>(len1, len2));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray2&<TRecord>(len1, len2));
 end;
 
 function CLMemory.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray3&<TRecord>(len1, len2, len3));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray3&<TRecord>(len1, len2, len3));
 end;
 
 {$endregion Get}
@@ -25048,32 +25158,32 @@ end;
 
 function CLValue<T>.WriteValue(val: &T): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
 end;
 
 function CLValue<T>.WriteValue(val: CommandQueue<&T>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val));
 end;
 
 function CLValue<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data));
 end;
 
 function CLValue<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data));
 end;
 
 function CLValue<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data));
 end;
 
 function CLValue<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data));
 end;
 
 {$endregion 1#Write&Read}
@@ -25092,22 +25202,22 @@ end;
 
 function CLValue<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset));
 end;
 
 function CLValue<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset));
 end;
 
 function CLValue<T>.CopyTo(val: CommandQueue<CLValue<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(val));
 end;
 
 function CLValue<T>.CopyFrom(val: CommandQueue<CLValue<&T>>): CLValue<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(val));
 end;
 
 {$endregion 3#Copy}
@@ -25116,7 +25226,7 @@ end;
 
 function CLValue<T>.GetValue: &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue);
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetValue);
 end;
 
 {$endregion Get}
@@ -25900,72 +26010,72 @@ end;
 
 function CLArray<T>.WriteValue(val: &T; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a));
 end;
 
 function CLArray<T>.WriteArray2(a: CommandQueue<array[,] of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray2(a));
 end;
 
 function CLArray<T>.WriteArray3(a: CommandQueue<array[,,] of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray3(a));
 end;
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray(a));
 end;
 
 function CLArray<T>.ReadArray2(a: CommandQueue<array[,] of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray2(a));
 end;
 
 function CLArray<T>.ReadArray3(a: CommandQueue<array[,,] of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray3(a));
 end;
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>; a_ind, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a, a_ind, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a, a_ind, len, ind));
 end;
 
 function CLArray<T>.WriteArray2(a: CommandQueue<array[,] of &T>; a_ind1,a_ind2, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray2(a, a_ind1, a_ind2, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray2(a, a_ind1, a_ind2, len, ind));
 end;
 
 function CLArray<T>.WriteArray3(a: CommandQueue<array[,,] of &T>; a_ind1,a_ind2,a_ind3, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
 end;
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>; a_ind, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray(a, a_ind, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray(a, a_ind, len, ind));
 end;
 
 function CLArray<T>.ReadArray2(a: CommandQueue<array[,] of &T>; a_ind1,a_ind2, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray2(a, a_ind1, a_ind2, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray2(a, a_ind1, a_ind2, len, ind));
 end;
 
 function CLArray<T>.ReadArray3(a: CommandQueue<array[,,] of &T>; a_ind1,a_ind2,a_ind3, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
 end;
 
 function CLArray<T>.WriteArraySegment(a: CommandQueue<ArraySegment<&T>>): CLArray<T>;
@@ -25980,32 +26090,32 @@ end;
 
 function CLArray<T>.WriteArraySegment(a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteArraySegment(a, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArraySegment(a, ind));
 end;
 
 function CLArray<T>.ReadArraySegment(a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadArraySegment(a, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArraySegment(a, ind));
 end;
 
 function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
 end;
 
 function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, ind, len));
 end;
 
 function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
 end;
 
 function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, ind, len));
 end;
 
 function CLArray<T>.WriteData(ptr: pointer): CLArray<T>;
@@ -26090,62 +26200,62 @@ end;
 
 function CLArray<T>.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(native_data, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -26154,72 +26264,72 @@ end;
 
 function CLArray<T>.FillValue(val: &T): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
 end;
 
 function CLArray<T>.FillValue(val: CommandQueue<&T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
 end;
 
 function CLArray<T>.FillValue(val: &T; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
 end;
 
 function CLArray<T>.FillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
 end;
 
 function CLArray<T>.FillArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray(a));
 end;
 
 function CLArray<T>.FillArray2(a: CommandQueue<array[,] of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray2(a));
 end;
 
 function CLArray<T>.FillArray3(a: CommandQueue<array[,,] of &T>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray3(a));
 end;
 
 function CLArray<T>.FillArray(a: CommandQueue<array of &T>; a_ind, pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray(a, a_ind, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray(a, a_ind, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillArray2(a: CommandQueue<array[,] of &T>; a_ind1,a_ind2, pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray2(a, a_ind1, a_ind2, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray2(a, a_ind1, a_ind2, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillArray3(a: CommandQueue<array[,,] of &T>; a_ind1,a_ind2,a_ind3, pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArray3(a, a_ind1, a_ind2, a_ind3, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray3(a, a_ind1, a_ind2, a_ind3, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillArraySegment(a: CommandQueue<ArraySegment<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment(a));
 end;
 
 function CLArray<T>.FillArraySegment(a: CommandQueue<ArraySegment<&T>>; ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment(a, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment(a, ind, fill_len));
 end;
 
 function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len));
 end;
 
 function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArray<T>;
@@ -26294,62 +26404,62 @@ end;
 
 function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
 end;
 
 function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
 end;
 
 function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data));
 end;
 
 function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data));
 end;
 
 function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data));
 end;
 
 function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data));
 end;
 
 function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data, ind, fill_len));
 end;
 
 {$endregion 2#Fill}
@@ -26358,52 +26468,52 @@ end;
 
 function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
 end;
 
 function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset, ind, len));
 end;
 
 function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
 end;
 
 function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset, ind, len));
 end;
 
 function CLArray<T>.CopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(val, ind));
 end;
 
 function CLArray<T>.CopyFrom(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(val, ind));
 end;
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a));
 end;
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<&T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a, from_ind, to_ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a, from_ind, to_ind, len));
 end;
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<&T>>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a));
 end;
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<&T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a, from_ind, to_ind, len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a, from_ind, to_ind, len));
 end;
 
 {$endregion 3#Copy}
@@ -26412,27 +26522,27 @@ end;
 
 function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetValue(ind));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetValue(ind));
 end;
 
 function CLArray<T>.GetArray: array of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray);
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray);
 end;
 
 function CLArray<T>.GetArray(len: CommandQueue<integer>): array of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray(len));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray(len));
 end;
 
 function CLArray<T>.GetArray2(len1,len2: CommandQueue<integer>): array[,] of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray2(len1, len2));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray2(len1, len2));
 end;
 
 function CLArray<T>.GetArray3(len1,len2,len3: CommandQueue<integer>): array[,,] of &T;
 begin
-  Result := Context.Default.SyncInvoke(self.NewQueue.ThenGetArray3(len1, len2, len3));
+  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray3(len1, len2, len3));
 end;
 
 {$endregion Get}
@@ -32834,7 +32944,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
   
   ISimpleFunc0Container<T> = interface(ISimpleDelegateContainer)
     
-    function Invoke(c: Context): T;
+    function Invoke(c: CLContext): T;
     
   end;
   
@@ -32846,21 +32956,21 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
       Result.d := d;
     end;
     
-    public function Invoke(c: Context) := d();
+    public function Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
-    private d: Context->T;
+    private d: CLContext->T;
     
-    public static function operator implicit(d: Context->T): SimpleFunc0ContainerC<T>;
+    public static function operator implicit(d: CLContext->T): SimpleFunc0ContainerC<T>;
     begin
       Result.d := d;
     end;
     
-    public function Invoke(c: Context) := d(c);
+    public function Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -32877,7 +32987,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeFunc(err_handler: CLTaskErrHandler; c: Context): T;
+    function InvokeFunc(err_handler: CLTaskErrHandler; c: CLContext): T;
     begin
       if err_handler.HadError then exit;
       try
@@ -32902,7 +33012,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
   
   ISimpleProc0Container = interface(ISimpleDelegateContainer)
     
-    procedure Invoke(c: Context);
+    procedure Invoke(c: CLContext);
     
   end;
   
@@ -32914,21 +33024,21 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
       Result.d := d;
     end;
     
-    public procedure Invoke(c: Context) := d();
+    public procedure Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc0ContainerC = record(ISimpleProc0Container)
-    private d: Context->();
+    private d: CLContext->();
     
-    public static function operator implicit(d: Context->()): SimpleProc0ContainerC;
+    public static function operator implicit(d: CLContext->()): SimpleProc0ContainerC;
     begin
       Result.d := d;
     end;
     
-    public procedure Invoke(c: Context) := d(c);
+    public procedure Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
     CommandQueueBase.ToStringWriteDelegate(sb, d);
@@ -32945,7 +33055,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InvokeProc(err_handler: CLTaskErrHandler; c: Context);
+    procedure InvokeProc(err_handler: CLTaskErrHandler; c: CLContext);
     begin
       if err_handler.HadError then exit;
       try
@@ -32999,7 +33109,7 @@ type
   
 function HQFQ<T>(f: ()->T) :=
 new CommandQueueHostQuickFunc<T, SimpleFunc0Container <T>>(f);
-function HQFQ<T>(f: Context->T) :=
+function HQFQ<T>(f: CLContext->T) :=
 new CommandQueueHostQuickFunc<T, SimpleFunc0ContainerC<T>>(f);
 
 {$endregion Func}
@@ -33025,7 +33135,7 @@ type
   
 function HQPQ(p: ()->()) :=
 new CommandQueueHostQuickProc<SimpleProc0Container >(p);
-function HQPQ(p: Context->()) :=
+function HQPQ(p: CLContext->()) :=
 new CommandQueueHostQuickProc<SimpleProc0Containerc>(p);
 
 {$endregion Proc}
@@ -33040,12 +33150,12 @@ type
   CommandQueueHostThreadedFunc<T, TFunc> = sealed class(CommandQueueHostFuncBase<T, TFunc>)
   where TFunc: ISimpleFunc0Container<T>;
     
-    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: Context; err_handler: CLTaskErrHandler; own_qr: QueueResNil): Action := ()->
+    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: QueueResNil): Action := ()->
     begin
       prev_d.Invoke(c);
       InvokeFunc(err_handler, c);
     end;
-    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: Context; err_handler: CLTaskErrHandler; own_qr: TR): Action; where TR: QueueRes<T>;
+    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: TR): Action; where TR: QueueRes<T>;
     begin
       Result := ()->
       begin
@@ -33055,7 +33165,7 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueResComplDelegateData,Context,CLTaskErrHandler,TR)->Action): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueResComplDelegateData,CLContext,CLTaskErrHandler,TR)->Action): TR; where TR: IQueueRes;
     begin
       Result := make_qr(qr->new CLTaskLocalData(
         UserEvent.StartWorkThread(l.prev_ev,
@@ -33073,7 +33183,7 @@ type
   
 function HTFQ<T>(f: ()->T) :=
 new CommandQueueHostThreadedFunc<T, SimpleFunc0Container <T>>(f);
-function HTFQ<T>(f: Context->T) :=
+function HTFQ<T>(f: CLContext->T) :=
 new CommandQueueHostThreadedFunc<T, SimpleFunc0ContainerC<T>>(f);
 
 {$endregion Func}
@@ -33084,7 +33194,7 @@ type
   CommandQueueHostThreadedProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
   where TProc: ISimpleProc0Container;
     
-    private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: CLTaskErrHandler; c: Context): Action := ()->
+    private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: CLTaskErrHandler; c: CLContext): Action := ()->
     begin
       prev_d.Invoke(c);
       InvokeProc(err_handler, c);
@@ -33100,7 +33210,7 @@ type
   
 function HTPQ(p: ()->()) :=
 new CommandQueueHostThreadedProc<SimpleProc0Container >(p);
-function HTPQ(p: Context->()) :=
+function HTPQ(p: CLContext->()) :=
 new CommandQueueHostThreadedProc<SimpleProc0ContainerC>(p);
 
 {$endregion Proc}
@@ -33250,9 +33360,9 @@ end;
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 begin
   if qs.All(q->q is ConstQueue<TInp>) then
   begin
@@ -33262,7 +33372,7 @@ begin
     Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanTrueFlag>(qs.ToArray, conv);
 end;
 
-function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
   begin
@@ -33270,7 +33380,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanTrueFlag>(q1,q2, conv);
 end;
-function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
   begin
@@ -33278,7 +33388,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanTrueFlag>(q1,q2,q3, conv);
 end;
-function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
   begin
@@ -33286,7 +33396,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4, conv);
 end;
-function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
   begin
@@ -33294,7 +33404,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, conv);
 end;
-function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
   begin
@@ -33302,7 +33412,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, conv);
 end;
-function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
   begin
@@ -33311,67 +33421,67 @@ begin
     Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
 end;
 
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanFalseFlag>(qs.ToArray, conv);
 end;
 
-function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanFalseFlag>(q1,q2, conv);
 end;
-function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanFalseFlag>(q1,q2,q3, conv);
 end;
-function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4, conv);
 end;
-function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, conv);
 end;
-function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, conv);
 end;
-function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
 end;
 
-function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv);
 end;
 
-function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>>(q1,q2, conv);
 end;
-function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>>(q1,q2,q3, conv);
 end;
-function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>>(q1,q2,q3,q4, conv);
 end;
-function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>>(q1,q2,q3,q4,q5, conv);
 end;
-function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>>(q1,q2,q3,q4,q5,q6, conv);
 end;
-function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>>(q1,q2,q3,q4,q5,q6,q7, conv);
 end;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Conv}
 
@@ -33507,9 +33617,9 @@ end;
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 begin
   if qs.All(q->q is ConstQueue<TInp>) then
   begin
@@ -33520,7 +33630,7 @@ begin
     Result := new CommandQueueUseQuickArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanTrueFlag>(qs.ToArray, use);
 end;
 
-function CombineConstUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
   begin
@@ -33529,7 +33639,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanTrueFlag>(q1,q2, use);
 end;
-function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
   begin
@@ -33538,7 +33648,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanTrueFlag>(q1,q2,q3, use);
 end;
-function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
   begin
@@ -33547,7 +33657,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanTrueFlag>(q1,q2,q3,q4, use);
 end;
-function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
   begin
@@ -33556,7 +33666,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, use);
 end;
-function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
   begin
@@ -33565,7 +33675,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, use);
 end;
-function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
   begin
@@ -33575,67 +33685,67 @@ begin
     Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, use);
 end;
 
-function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 begin
   Result := new CommandQueueUseQuickArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanFalseFlag>(qs.ToArray, use);
 end;
 
-function CombineQuickUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
   Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanFalseFlag>(q1,q2, use);
 end;
-function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
   Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanFalseFlag>(q1,q2,q3, use);
 end;
-function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
   Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanFalseFlag>(q1,q2,q3,q4, use);
 end;
-function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
   Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, use);
 end;
-function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
   Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, use);
 end;
-function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
   Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, use);
 end;
 
-function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 begin
   Result := new CommandQueueUseThreadedArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use);
 end;
 
-function CombineThreadedUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseSyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
   Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>>(q1,q2, use);
 end;
-function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
   Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>>(q1,q2,q3, use);
 end;
-function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
   Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>>(q1,q2,q3,q4, use);
 end;
-function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
   Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>>(q1,q2,q3,q4,q5, use);
 end;
-function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
   Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>(q1,q2,q3,q4,q5,q6, use);
 end;
-function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
   Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>(q1,q2,q3,q4,q5,q6,q7, use);
 end;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Use}
 
@@ -33780,9 +33890,9 @@ end;
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 begin
   if qs.All(q->q is ConstQueue<TInp>) then
   begin
@@ -33792,7 +33902,7 @@ begin
     Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanTrueFlag>(qs.ToArray, conv);
 end;
 
-function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
   begin
@@ -33800,7 +33910,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanTrueFlag>(q1,q2, conv);
 end;
-function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
   begin
@@ -33808,7 +33918,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanTrueFlag>(q1,q2,q3, conv);
 end;
-function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
   begin
@@ -33816,7 +33926,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4, conv);
 end;
-function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
   begin
@@ -33824,7 +33934,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, conv);
 end;
-function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
   begin
@@ -33832,7 +33942,7 @@ begin
   end else
     Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, conv);
 end;
-function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
   begin
@@ -33841,67 +33951,67 @@ begin
     Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
 end;
 
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanFalseFlag>(qs.ToArray, conv);
 end;
 
-function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanFalseFlag>(q1,q2, conv);
 end;
-function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanFalseFlag>(q1,q2,q3, conv);
 end;
-function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4, conv);
 end;
-function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, conv);
 end;
-function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, conv);
 end;
-function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
 end;
 
-function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, Context, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv);
 end;
 
-function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>>(q1,q2, conv);
 end;
-function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>>(q1,q2,q3, conv);
 end;
-function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>>(q1,q2,q3,q4, conv);
 end;
-function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>>(q1,q2,q3,q4,q5, conv);
 end;
-function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>>(q1,q2,q3,q4,q5,q6, conv);
 end;
-function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
 begin
   Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>>(q1,q2,q3,q4,q5,q6,q7, conv);
 end;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Conv}
 
@@ -34037,9 +34147,9 @@ end;
 
 {$endregion NonContext}
 
-{$region Context}
+{$region CLContext}
 
-function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 begin
   if qs.All(q->q is ConstQueue<TInp>) then
   begin
@@ -34050,7 +34160,7 @@ begin
     Result := new CommandQueueUseQuickArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanTrueFlag>(qs.ToArray, use);
 end;
 
-function CombineConstUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineConstUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
   begin
@@ -34059,7 +34169,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanTrueFlag>(q1,q2, use);
 end;
-function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
   begin
@@ -34068,7 +34178,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanTrueFlag>(q1,q2,q3, use);
 end;
-function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
   begin
@@ -34077,7 +34187,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanTrueFlag>(q1,q2,q3,q4, use);
 end;
-function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
   begin
@@ -34086,7 +34196,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, use);
 end;
-function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
   begin
@@ -34095,7 +34205,7 @@ begin
   end else
     Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, use);
 end;
-function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
   if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
   begin
@@ -34105,67 +34215,67 @@ begin
     Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, use);
 end;
 
-function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 begin
   Result := new CommandQueueUseQuickArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanFalseFlag>(qs.ToArray, use);
 end;
 
-function CombineQuickUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineQuickUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
   Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanFalseFlag>(q1,q2, use);
 end;
-function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
   Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanFalseFlag>(q1,q2,q3, use);
 end;
-function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
   Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanFalseFlag>(q1,q2,q3,q4, use);
 end;
-function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
   Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, use);
 end;
-function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
   Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, use);
 end;
-function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
   Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, use);
 end;
 
-function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, Context>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
 begin
   Result := new CommandQueueUseThreadedArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use);
 end;
 
-function CombineThreadedUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineThreadedUseAsyncQueueN2<TInp1, TInp2, TRes>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
   Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>>(q1,q2, use);
 end;
-function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
   Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>>(q1,q2,q3, use);
 end;
-function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
   Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>>(q1,q2,q3,q4, use);
 end;
-function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
   Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>>(q1,q2,q3,q4,q5, use);
 end;
-function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
   Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>(q1,q2,q3,q4,q5,q6, use);
 end;
-function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
   Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>(q1,q2,q3,q4,q5,q6,q7, use);
 end;
 
-{$endregion Context}
+{$endregion CLContext}
 
 {$endregion Use}
 

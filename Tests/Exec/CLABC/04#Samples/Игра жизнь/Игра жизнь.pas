@@ -37,7 +37,7 @@ try
   var B := new CLArray<byte>(ArrGen(W*W, i->byte(Random(2))));
   var B_temp := new CLArray<byte>(B.Length);
   
-  var code := new ProgramCode(ReadAllText('Игра жизнь.cl'));
+  var code := new CLProgramCode(ReadAllText('Игра жизнь.cl'));
   
   var Q_1Step :=
     code['CalcStep']
@@ -60,13 +60,13 @@ try
   
 //  while true do
 //  begin
-//    Context.Default.SyncInvoke(
+//    CLContext.Default.SyncInvoke(
 //      Q_1Step +
 //      Q_Otp
 //    );
 //  end;
   
-  Context.Default.SyncInvoke(CombineSyncQueueBase(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
+  CLContext.Default.SyncInvoke(CombineSyncQueueBase(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
   field_states_q.Single.ConvertAll(b->b<>0?#9608:' ').Println(0);
   
 except

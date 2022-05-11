@@ -1,6 +1,6 @@
 ## uses OpenCLABC;
 
-Context.Default.SyncInvoke(
+CLContext.Default.SyncInvoke(
   CLMemory.Create(1).NewQueue.ThenWriteArray1(HQFQ(()->
   begin
     Result := new byte[0];

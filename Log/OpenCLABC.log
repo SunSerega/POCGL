@@ -6,7 +6,7 @@ Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapperProperties
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerExecMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [Kernel]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerOtherMethods.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -30,10 +30,10 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\KernelArg.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CLKernelArg.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\KernelArg.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\KernelArg.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]

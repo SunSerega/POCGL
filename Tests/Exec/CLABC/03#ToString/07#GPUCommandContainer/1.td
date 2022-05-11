@@ -4,14 +4,14 @@
 #DelegateCount
 5
 
-#ExpOtp
-KernelCCQ#0
-	CCCObj<Kernel>: Kernel[k] from ProgramCode[*]
-	KernelCommandExec2
+#ExpExecOtp
+CLKernelCCQ#0
+	CCCObj<CLKernel>: CLKernel[k] from CLProgramCode[*]
+	CLKernelCommandExec2
 		sz1: ConstQueue<integer>#1: 1
 		sz2: ConstQueue<integer>#2: 1
 		args:
-			KernelArgGlobalCLMemory
+			CLKernelArgGlobalCLMemory
 				CLMemoryCCQ#3
 					CCCQueue<CLMemory>
 						CommandQueueHostThreadedFunc<CLMemory,SimpleFunc0Container<CLMemory>>#4: function lambda: CLMemory
@@ -20,7 +20,7 @@ KernelCCQ#0
 					QuickProcCommand<CLMemory,SimpleProcContainer<CLMemory>,TBooleanTrueFlag>: procedure lambda(m: CLMemory)
 					QuickProcCommand<CLMemory,SimpleProcContainer<CLMemory>,TBooleanFalseFlag>: procedure lambda(m: CLMemory)
 					ThreadedProcCommand<CLMemory,SimpleProcContainer<CLMemory>>: procedure lambda(m: CLMemory)
-			KernelArgPrivateValue<integer>
+			CLKernelArgPrivateValue<integer>
 				ConstQueue<integer>#6: 5
 
 #ReqModules

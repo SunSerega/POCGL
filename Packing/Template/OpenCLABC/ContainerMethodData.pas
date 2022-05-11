@@ -1145,7 +1145,7 @@ type
       end else
       begin
         
-        res_IIm += 'Context.Default.SyncInvoke(self.NewQueue.Then';
+        res_IIm += 'CLContext.Default.SyncInvoke(self.NewQueue.Then';
         res_IIm += fn;
         if settings.generics_str <> nil then
         begin

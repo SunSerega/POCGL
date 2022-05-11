@@ -3103,7 +3103,28 @@ type
     external 'opencl' name 'clCompileProgram';
     private static function z_CompileProgram_8(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     external 'opencl' name 'clCompileProgram';
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_CompileProgram_1(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_headers: UInt32; input_headers: array of cl_program; header_include_names: array of IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_CompileProgram_1(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: IntPtr; num_input_headers: UInt32; input_headers: array of cl_program; header_include_names: array of IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    type Pcl_device_id=^cl_device_id;
+    type Pcl_program=^cl_program;
+    type PIntPtr=^IntPtr;
+    begin
+      Result := if (header_include_names<>nil) and (header_include_names.Length<>0) then
+        if (input_headers<>nil) and (input_headers.Length<>0) then
+          if (device_list<>nil) and (device_list.Length<>0) then
+            z_CompileProgram_8(&program, num_devices, device_list[0], options, num_input_headers, input_headers[0], header_include_names[0], pfn_notify, user_data) else
+            z_CompileProgram_8(&program, num_devices, Pcl_device_id(nil)^, options, num_input_headers, input_headers[0], header_include_names[0], pfn_notify, user_data) else
+          if (device_list<>nil) and (device_list.Length<>0) then
+            z_CompileProgram_8(&program, num_devices, device_list[0], options, num_input_headers, Pcl_program(nil)^, header_include_names[0], pfn_notify, user_data) else
+            z_CompileProgram_8(&program, num_devices, Pcl_device_id(nil)^, options, num_input_headers, Pcl_program(nil)^, header_include_names[0], pfn_notify, user_data) else
+        if (input_headers<>nil) and (input_headers.Length<>0) then
+          if (device_list<>nil) and (device_list.Length<>0) then
+            z_CompileProgram_8(&program, num_devices, device_list[0], options, num_input_headers, input_headers[0], PIntPtr(nil)^, pfn_notify, user_data) else
+            z_CompileProgram_8(&program, num_devices, Pcl_device_id(nil)^, options, num_input_headers, input_headers[0], PIntPtr(nil)^, pfn_notify, user_data) else
+          if (device_list<>nil) and (device_list.Length<>0) then
+            z_CompileProgram_8(&program, num_devices, device_list[0], options, num_input_headers, Pcl_program(nil)^, PIntPtr(nil)^, pfn_notify, user_data) else
+            z_CompileProgram_8(&program, num_devices, Pcl_device_id(nil)^, options, num_input_headers, Pcl_program(nil)^, PIntPtr(nil)^, pfn_notify, user_data);
+    end;
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_CompileProgram_2(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: string; num_input_headers: UInt32; input_headers: array of cl_program; header_include_names: array of IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
     type Pcl_device_id=^cl_device_id;
     type Pcl_program=^cl_program;
     type PIntPtr=^IntPtr;
@@ -3137,10 +3158,63 @@ type
         header_include_names_str_ptrs := header_include_names?.ConvertAll(arr_el1->
           Marshal.StringToHGlobalAnsi(arr_el1)
         );
+        Result := temp_CompileProgram_2(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names_str_ptrs, pfn_notify, user_data);
+      finally
+        if header_include_names_str_ptrs<>nil then foreach var arr_el1 in header_include_names_str_ptrs do
+          Marshal.FreeHGlobal(arr_el1);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: array of cl_device_id; options: IntPtr; num_input_headers: UInt32; input_headers: array of cl_program; header_include_names: array of string; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var header_include_names_str_ptrs: array of IntPtr;
+      try
+        header_include_names_str_ptrs := header_include_names?.ConvertAll(arr_el1->
+          Marshal.StringToHGlobalAnsi(arr_el1)
+        );
         Result := temp_CompileProgram_1(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names_str_ptrs, pfn_notify, user_data);
       finally
         if header_include_names_str_ptrs<>nil then foreach var arr_el1 in header_include_names_str_ptrs do
           Marshal.FreeHGlobal(arr_el1);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_8(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_7(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; input_headers: IntPtr; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_6(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: string; num_input_headers: UInt32; input_headers: IntPtr; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_5(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
@@ -3151,6 +3225,46 @@ type
     z_CompileProgram_6(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; var device_list: cl_device_id; options: IntPtr; num_input_headers: UInt32; input_headers: IntPtr; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
     z_CompileProgram_5(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: string; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_4(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: string; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_3(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: string; num_input_headers: UInt32; input_headers: IntPtr; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_2(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: string; num_input_headers: UInt32; input_headers: IntPtr; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode;
+    begin
+      var options_str_ptr: IntPtr;
+      try
+        options_str_ptr := Marshal.StringToHGlobalAnsi(options);
+        Result := z_CompileProgram_1(&program, num_devices, device_list, options_str_ptr, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
+      finally
+        Marshal.FreeHGlobal(options_str_ptr);
+      end;
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; var header_include_names: IntPtr; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=
     z_CompileProgram_4(&program, num_devices, device_list, options, num_input_headers, input_headers, header_include_names, pfn_notify, user_data);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CompileProgram(&program: cl_program; num_devices: UInt32; device_list: IntPtr; options: IntPtr; num_input_headers: UInt32; var input_headers: cl_program; header_include_names: pointer; pfn_notify: ProgramCallback; user_data: IntPtr): ErrorCode :=

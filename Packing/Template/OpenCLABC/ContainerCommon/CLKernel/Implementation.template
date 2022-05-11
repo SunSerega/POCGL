@@ -1,0 +1,27 @@
+﻿
+
+
+constructor CLKernelCCQ.Create(o: CLKernel) := inherited;
+constructor CLKernelCCQ.Create(q: CommandQueue<CLKernel>) := inherited;
+constructor CLKernelCCQ.Create := inherited;
+
+{$region Special .Add's}
+
+function CLKernelCCQ.ThenQueue(q: CommandQueueBase): CLKernelCCQ;
+begin
+  var comm := QueueCommandFactory&<CLKernel>.Make(q);
+  Result := if comm=nil then self else AddCommand(self, comm);
+end;
+
+function CLKernelCCQ.ThenConstProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainer<CLKernel>>(p));
+function CLKernelCCQ.ThenConstProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainerC<CLKernel>>(p));
+function CLKernelCCQ.ThenQuickProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainer<CLKernel>>(p));
+function CLKernelCCQ.ThenQuickProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainerC<CLKernel>>(p));
+function CLKernelCCQ.ThenThreadedProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainer<CLKernel>>(p));
+function CLKernelCCQ.ThenThreadedProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainerC<CLKernel>>(p));
+
+function CLKernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLKernel>.Make(marker));
+
+{$endregion Special .Add's}
+
+
