@@ -8,6 +8,10 @@ type
   FatalTestingException = sealed class(Exception) end;
   
   ExecutingTest = sealed class
+    private arg_executable: string;
+    private arg_max_exec_time: integer;
+    private arg_pause_when_loaded: boolean;
+    
     private executor: string;
     private p: Process;
     private paused: boolean;
@@ -16,6 +20,10 @@ type
     begin
       if System.IO.Path.GetExtension(executable) <> '.exe' then raise new System.NotSupportedException(executable);
       executable := GetFullPath(executable);
+      
+      self.arg_executable         := executable;
+      self.arg_max_exec_time      := max_exec_time;
+      self.arg_pause_when_loaded  := pause_when_loaded;
       
       {$resource TestExecutor.exe}
       executor := System.IO.Path.ChangeExtension(executable, '.Executor.exe');
@@ -26,7 +34,6 @@ type
       end;
       
       var args := new List<string>;
-//      args += $'Executable={executable}';
       args += $'MaxExecTime={max_exec_time}';
       if pause_when_loaded then
         args += 'PauseWhenLoaded';
@@ -43,6 +50,12 @@ type
       p.StartInfo.RedirectStandardError := true;
       p.Start;
     end;
+    
+    public constructor(test_to_repeat: ExecutingTest) := Create(
+      test_to_repeat.arg_executable,
+      test_to_repeat.arg_max_exec_time,
+      test_to_repeat.arg_pause_when_loaded
+    );
     
     public function FinishExecution: (string, string);
     begin
