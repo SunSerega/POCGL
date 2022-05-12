@@ -234,7 +234,7 @@ unit OpenCLABC;
 // Регистрация активаций/деактиваций всех WaitHandler-ов
 { $define WaitDebug}
 
-{$define ForceMaxDebug}
+{ $define ForceMaxDebug}
 {$ifdef ForceMaxDebug}
   {$define EventDebug}
   {$define QueueDebug}
@@ -9137,9 +9137,9 @@ type
     begin
       var sb := new StringBuilder;
       sb += 'Actions were not called:'#10;
-      foreach var act in call_list do
+      for var i := 0 to count-1 do
       begin
-        CommandQueueBase.ToStringWriteDelegate(sb, act);
+        CommandQueueBase.ToStringWriteDelegate(sb, call_list[i]);
         sb += #10;
       end;
       raise new System.InvalidProgramException(sb.ToString);
@@ -34326,21 +34326,6 @@ begin
   end)
   .DefaultIfEmpty((default(CLContext),TimeSpan.Zero))
   .MinBy(t->t[1])[0];
-  
-  {$ifdef ForceMaxDebug}
-  
-  {$ifdef EventDebug}
-  EventDebug.RefCounter.Clear;
-  {$endif EventDebug}
-  
-  {$ifdef QueueDebug}
-  QueueDebug.QueueUses.Clear;
-  {$endif QueueDebug}
-  
-  QueueResNil.created_count := 0;
-  QueueResT.created_count.Clear;
-  
-  {$endif ForceMaxDebug}
   
   Interlocked.CompareExchange(_default, c, nil);
 end;

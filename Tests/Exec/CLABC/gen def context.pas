@@ -11,3 +11,7 @@ foreach var dvc in c.AllDevices do
   bw.Write(dvc.Properties.Name);
 
 bw.Close;
+
+// Kill all debug output
+System.Environment.ExitCode := 0;
+System.Diagnostics.Process.GetCurrentProcess.Kill;

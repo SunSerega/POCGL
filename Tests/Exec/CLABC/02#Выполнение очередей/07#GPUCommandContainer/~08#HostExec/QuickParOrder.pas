@@ -5,8 +5,11 @@ var mre := new System.Threading.ManualResetEventSlim(false);
 var fast_id := 0;
 var Q_fast := HTFQ(()->
 begin
-  var fast_id := System.Threading.Interlocked.Increment(fast_id);
-  lock output do $'Fast#{fast_id}'.Println;
+  lock output do
+  begin
+    fast_id += 1;
+    $'Fast#{fast_id}'.Println;
+  end;
   if fast_id=2 then mre.Set;
   Result := 0;
 end);
@@ -15,8 +18,11 @@ var slow_id := 0;
 var Q_slow := HTFQ(()->
 begin
   mre.Wait;
-  var slow := System.Threading.Interlocked.Increment(slow_id);
-  lock output do $'Slow#{slow}'.Println;
+  lock output do
+  begin
+    slow_id += 1;
+    $'Slow#{slow_id}'.Println;
+  end;
   Result := 0;
 end);
 
