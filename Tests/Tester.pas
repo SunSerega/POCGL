@@ -3,8 +3,8 @@
 uses AOtp         in '..\Utils\AOtp';
 uses ATask        in '..\Utils\ATask';
 uses CLArgs       in '..\Utils\CLArgs';
-uses Testing      in '..\Utils\Testing';
 uses SubExecuters in '..\Utils\SubExecuters';
+uses Testing      in '..\Utils\Testing\Testing';
 
 {$string_nullbased+}
 

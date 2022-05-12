@@ -246,7 +246,7 @@ Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Кеширование CLProgramCode\0.pas"
+Tester: Compiling "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
 Tester: Compiling: OK
 Tester: Executing Test[Tests\Exec\CLABC\gen def context]
 Tester: Done executing
@@ -424,9 +424,9 @@ Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\Ma
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\0]
+Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\0]
+Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing
@@ -455,7 +455,7 @@ Packing sample file "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
 Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.cl"
 Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
 Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\0.cl"
-Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\0.pas"
+Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
 Packing sample file "Samples\OpenGLABC\Common.pas"
 Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
 Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.vert"

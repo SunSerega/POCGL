@@ -5,7 +5,7 @@
 4
 
 #ExpExecErr
-System.TypeInitializationException: Инициализатор типа "OpenCLABC.CLArray`1" выдал исключение. ---> OpenCLABC_implementation______.BlittableException: Значения типа boolean нельзя использовать как элементы CLArray<>
+System.TypeInitializationException: The type initializer for 'OpenCLABC.CLArray`1' threw an exception. ---> OpenCLABC_implementation______.BlittableException: Значения типа boolean нельзя использовать как элементы CLArray<>
    at OpenCLABC_implementation______.BlittableHelper.RaiseIfBad(Type t, String source_name) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    at OpenCLABC.CLArray`1..cctor() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
    --- End of inner exception stack trace ---
