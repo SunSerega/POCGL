@@ -34341,12 +34341,20 @@ begin
       var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
       try
         var pl_name := br.ReadString;
-        var pl := CLPlatform.All.Single(pl->pl.Properties.Name=pl_name);
-        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
+        var pl := CLPlatform.All.SingleOrDefault(pl->pl.Properties.Name=pl_name);
+        if pl=nil then
+        begin
+          var all_pl_names := CLPlatform.All.Select(pl->$'['+pl.Properties.Name+$']').JoinToString(', ');
+          raise new InvalidOperationException($'No platform with name [{pl_name}], only: {all_pl_names}');
+        end;
+        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->dvc.Properties.Name);
         Result := new CLContext(ArrGen(br.ReadInt32, i->
         begin
+          Result := default(CLDevice);
           var dvc_name := br.ReadString;
-          Result := dvcs.Single(dvc->dvc.Properties.Name=dvc_name);
+          if dvcs.TryGetValue(dvc_name, Result) then exit;
+          var all_dvc_names := dvcs.Keys.Select(key->$'[{key}]').JoinToString(', ');
+          raise new InvalidOperationException($'No device with name [{dvc_name}], only: {all_dvc_names}');
         end));
       finally
         br.Close;
