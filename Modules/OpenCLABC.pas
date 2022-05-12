@@ -9144,6 +9144,9 @@ end;
 
 static procedure CLContext.GenerateAndCheckDefault(test_size: integer; test_max_seconds: real);
 begin
+  if Interlocked.CompareExchange(default_was_inited, 1, 0)<>0 then
+    raise new System.InvalidOperationException($'%CLContext:GenerateAndCheckDefault:NotFirst%');
+  
   var test_prog := 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
   var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
   
