@@ -7,5 +7,6 @@
 *.bkp
 *.backup
 
-/Release
 *(Timed).log
+/TestContext.dat
+/Release

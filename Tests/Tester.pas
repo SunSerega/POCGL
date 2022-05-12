@@ -717,12 +717,12 @@ begin
     TestInfo.MakeDebugPCU;
     
     TestInfo.LoadAll('Tests\Comp',  'Comp');
-    TestInfo.LoadAll('Samples',     'Comp');
     TestInfo.LoadAll('Tests\Exec',  'Comp','Exec');
+    TestInfo.LoadAll('Samples',     'Comp');
     (*)
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('Samples',  'Comp');
+    TestInfo.LoadAll('Samples', 'Comp');
     (**)
     
     try

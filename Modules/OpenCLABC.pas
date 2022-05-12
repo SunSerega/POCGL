@@ -23,8 +23,11 @@ unit OpenCLABC;
 
 
 
-//TODO Пусть CLKernel хранит List<cl_kernel>
+//TODO Пусть CLKernel хранит array of cl_kernel
 // - Таким образом может не создавать новые cl_kernel лишний раз
+// - Увеличивать размер когда 75% заполнено, уменьшать когда 30%
+// - С другой стороны, каждому .ThenExec нужен свой ntv
+// - Создавать отдельный объект CLKernel для каждой команды?
 
 //TODO Попробовать применять константные CLKernelArg к константному CLKernel в момент создания команды
 // - "var TODO := 0" дающий предупреждение уже стоит
@@ -1151,8 +1154,16 @@ type
     private static function GetDefault: CLContext;
     begin
       if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
+      begin
+        var c :=
+        {$ifdef ForceMaxDebug}
+        LoadTestContext;
+        {$else ForceMaxDebug}
+        MakeNewDefaultContext;
+        {$endif ForceMaxDebug}
         // Another exchange, because Default could be explicitly set
-        Interlocked.CompareExchange(_default, MakeNewDefaultContext, nil);
+        Interlocked.CompareExchange(_default, c, nil);
+      end;
       Result := _default;
     end;
     private static procedure SetDefault(new_default: CLContext);
@@ -1188,6 +1199,8 @@ type
     end;
     
     public static procedure GenerateAndCheckDefault(test_size: integer := 1024*24; test_max_seconds: real := 0.25);
+    
+    private static function LoadTestContext: CLContext;
     
     {$endregion Default}
     
@@ -1535,18 +1548,18 @@ type
     
     {$region Utils}
     
-    protected function GetLastLog(d: cl_device_id): string;
+    protected static function GetLastLog(ntv: cl_program; d: cl_device_id): string;
     begin
       
       var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramBuildInfo(self.ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
+        cl.GetProgramBuildInfo(ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
       );
       
       var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
       try
         OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramBuildInfo(self.ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
+          cl.GetProgramBuildInfo(ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
         );
         Result := Marshal.PtrToStringAnsi(str_ptr);
       finally
@@ -1555,10 +1568,12 @@ type
       
     end;
     
-    protected procedure CheckBuildFail(ec, fail_code: ErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
+    protected static procedure CheckBuildFail(ntv: cl_program; ec, fail_code: ErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
     begin
       
-      if ec=fail_code then
+      // It is common OpenCL impl misstake, to return BUILD_PROGRAM_FAILURE wherever
+      if (ec=fail_code) or (ec=ErrorCode.BUILD_PROGRAM_FAILURE) then
+//      if ec<>ErrorCode.SUCCESS then
       begin
         var sb := new StringBuilder(fail_descr);
         
@@ -1567,7 +1582,7 @@ type
           sb += #10#10;
           sb += dvc.ToString;
           sb += ':'#10;
-          sb += self.GetLastLog(dvc.ntv);
+          sb += GetLastLog(ntv, dvc.ntv);
         end;
         
         raise new InvalidOperationException(sb.ToString);
@@ -1589,7 +1604,7 @@ type
       if logs.Count<>0 then raise new OpenCLABCInternalException($'Multiple calls to SaveLogsFor from {TypeName(self)}');
       {$endif DEBUG}
 //      logs.Clear;
-      foreach var d in dvcs do logs[d.ntv] := GetLastLog(d.ntv);
+      foreach var d in dvcs do logs[d.ntv] := GetLastLog(self.ntv, d.ntv);
     end;
     
     {$endregion Logs}
@@ -1679,10 +1694,13 @@ type
       var ec: ErrorCode;
       Result := cl.LinkProgram(opt.BuildContext.ntv, 0,nil, opt.ToString, bin_ntvs.Length,bin_ntvs, nil,IntPtr.Zero, ec);
       
-      self.CheckBuildFail(
-        ec, ErrorCode.LINK_PROGRAM_FAILURE,
-        $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
-      );
+      if Result=cl_program.Zero then
+        //TODO В этом случае нельзя получить лог???
+        ec.RaiseIfError else
+        CheckBuildFail(Result,
+          ec, ErrorCode.LINK_PROGRAM_FAILURE,
+          $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
+        );
       
     end;
     public constructor(bins: IList<LinkableCLCode>; opt: CLCodeOptions);
@@ -1721,7 +1739,7 @@ type
         ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, hs.Length,hs,hns, nil,IntPtr.Zero);
       end;
       
-      CheckBuildFail(
+      CheckBuildFail(self.ntv,
         ec, ErrorCode.COMPILE_PROGRAM_FAILURE,
         $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
@@ -1793,7 +1811,7 @@ type
     begin
       var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
       
-      CheckBuildFail(
+      CheckBuildFail(self.ntv,
         ec, ErrorCode.BUILD_PROGRAM_FAILURE,
         $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
@@ -3405,6 +3423,34 @@ begin
   .MinBy(t->t[1])[0];
   
   Interlocked.CompareExchange(_default, c, nil);
+end;
+
+static function CLContext.LoadTestContext: CLContext;
+begin
+  var dir := GetCurrentDir;
+  while true do
+  begin
+    var fname := System.IO.Path.Combine(dir, 'TestContext.dat');
+    if FileExists(fname) then
+    begin
+      var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
+      try
+        var pl_name := br.ReadString;
+        var pl := CLPlatform.All.Single(pl->{%>pl.Properties.Name!!}nil{%}=pl_name);
+        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
+        Result := new CLContext(ArrGen(br.ReadInt32, i->
+        begin
+          var dvc_name := br.ReadString;
+          Result := dvcs.Single(dvc->{%>dvc.Properties.Name!!}nil{%}=dvc_name);
+        end));
+      finally
+        br.Close;
+      end;
+      break;
+    end;
+    dir := System.IO.Path.GetDirectoryName(dir);
+    if dir=nil then exit;
+  end;
 end;
 
 {$endregion CLContext}
