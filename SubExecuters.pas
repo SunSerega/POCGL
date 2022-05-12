@@ -289,7 +289,7 @@ begin
   
   l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', general_task));
   
-  var args_strs := search_paths.Select(spath->$'/SearchDir:"{spath}"');
+  var args_strs := search_paths.Select(spath->$'/SearchDir:"{spath}"').Append('/Locale:en');
   if args<>nil then args_strs := args_strs.Append(args);
   args_strs := args_strs.Append($'"{fname}"');
   var psi := new ProcessStartInfo(
