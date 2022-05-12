@@ -2,7 +2,7 @@
 
 
 #DelegateCount
-3
+4
 
 #ExpExecOtp
 CLKernel[k1] from CLProgramCode[*]

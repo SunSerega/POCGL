@@ -2,7 +2,7 @@
 
 
 #DelegateCount
-2
+3
 
 #ExpExecOtp
 CLContext[*] on devices: [CLDevice[*]]; Main device: CLDevice[*] 

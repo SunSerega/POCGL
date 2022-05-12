@@ -19,7 +19,9 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Проверить во что восстанавливаются бинарники при загрузке назад
+//TODO Проверить аргументы
+
+//TODO Проверить сборку с 0 на всех 3 компах
 
 
 
@@ -3266,270 +3268,6 @@ function WaitFor(marker: WaitMarker): CommandQueueNil;
 
 implementation
 
-{$region Properties}
-
-{$region Base}
-
-type
-  NtvPropertiesBase<TNtv, TInfo> = abstract class
-    protected ntv: TNtv;
-    public constructor(ntv: TNtv) := self.ntv := ntv;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
-    protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
-    
-    protected function GetSize(id: TInfo): UIntPtr;
-    begin GetSizeImpl(id, Result); end;
-    
-    protected procedure FillPtr(id: TInfo; sz: UIntPtr; ptr: IntPtr) :=
-    GetValImpl(id, sz, PByte(pointer(ptr))^);
-    protected procedure FillVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
-    GetValImpl(id, sz, PByte(pointer(@res))^);
-    
-    protected function GetVal<T>(id: TInfo): T; where T: record;
-    begin
-      FillVal(id, new UIntPtr(Marshal.SizeOf(default(T))), Result);
-    end;
-    protected function GetValArr<T>(id: TInfo): array of T; where T: record;
-    begin
-      var sz := GetSize(id);
-      Result := new T[uint64(sz) div Marshal.SizeOf(default(T))];
-      
-      if Result.Length<>0 then
-        FillVal(id, sz, Result[0]);
-      
-    end;
-    
-    private function GetString(id: TInfo): string;
-    begin
-      var sz := GetSize(id);
-      
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        FillPtr(id, sz, str_ptr);
-        Result := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Base}
-
-{%WrapperProperties\Implementation!WrapperProperties.pas%}
-
-{$endregion Properties}
-
-{$region Wrappers}
-
-{$region CLDevice}
-
-static function CLDevice.FromNative(ntv: cl_device_id): CLDevice;
-begin
-  
-  var parent: cl_device_id;
-  OpenCLABCInternalException.RaiseIfError(
-    cl.GetDeviceInfo(ntv, DeviceInfo.DEVICE_PARENT_DEVICE, new UIntPtr(cl_device_id.Size), parent, IntPtr.Zero)
-  );
-  
-  if parent=cl_device_id.Zero then
-    Result := new CLDevice(ntv) else
-    Result := new CLSubDevice(parent, ntv);
-  
-end;
-
-{$endregion CLDevice}
-
-{$region CLContext}
-
-static procedure CLContext.GenerateAndCheckDefault(test_size: integer; test_max_seconds: real);
-begin
-  var test_prog := 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
-  var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
-  
-  var Q_Test: CommandQueue<boolean>;
-  var P_Arr := new ParameterQueue<CLArray<integer>>('A');
-  var P_Prog := new ParameterQueue<CLProgramCode>('Prog');
-  begin
-    var rng := new Random;
-    var test_arr := ArrGen(test_size, i->rng.Next);
-    {%> Q_Test :=%}
-    {%>   CLKernelCCQ.Create(P_Prog.ThenConstConvert(p->p['k']))%}
-    {%>     .ThenExec1(test_size, CLArrayCCQ&<integer>.Create(P_Arr)%}
-    {%>       .ThenWriteArray(test_arr)%}
-    {%>     ) as object as CommandQueueBase +%} //TODO Можно перетасовать модуль...
-    {%>   CLArrayCCQ&<integer>.Create(P_Arr)%}
-    {%>     .ThenGetArray%}
-    {%>     .ThenQuickConvert(test_res->%}
-    {%>       test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r)%}
-    {%>     );!!}test_arr := test_arr{%}
-  end;
-  
-  var c := CLPlatform.All.SelectMany(pl->
-  begin
-    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToList;
-    
-    System.Threading.Tasks.Parallel.For(0,dvcs.Count, i->
-    begin
-      var del := true;
-      
-      var c := new CLContext(dvcs[i]);
-      var S_Arr := P_Arr.NewSetter(new CLArray<integer>(c, test_size));
-      var S_Prog := P_Prog.NewSetter(new CLProgramCode(test_prog, c));
-      
-      var thr := new Thread(()->
-      try
-        del := not c.SyncInvoke(Q_Test, S_Arr, S_Prog);
-      except
-      end);
-      thr.IsBackground := true;
-      thr.Start;
-      
-      if not thr.Join(test_max_time) then
-        thr.Abort;
-      
-      if del then dvcs[i] := nil;
-    end);
-    dvcs.RemoveAll(d->d=nil);
-    
-    Result := if dvcs.Count=0 then
-      System.Linq.Enumerable.Empty&<(CLContext,TimeSpan)> else
-      |true,false|.Cartesian(dvcs.Count)
-      .Select(choise->
-      begin
-        Result := new List<CLDevice>(dvcs.Count);
-        for var i := 0 to dvcs.Count-1 do
-          if choise[i] then Result += dvcs[i];
-      end)
-      .Where(l_dvcs->l_dvcs.Count<>0)
-      .Select(l_dvcs->
-      begin
-        var c := new CLContext(l_dvcs, l_dvcs[0]);
-        
-        var sw := Stopwatch.StartNew;
-        c.SyncInvoke(Q_Test.DiscardResult,
-          P_Arr.NewSetter(new CLArray<integer>(c, test_size)),
-          P_Prog.NewSetter(new CLProgramCode(test_prog, c))
-        );
-        sw.Stop;
-        
-        Result := (c, sw.Elapsed);
-      end);
-  end)
-  .DefaultIfEmpty((default(CLContext),TimeSpan.Zero))
-  .MinBy(t->t[1])[0];
-  
-  Interlocked.CompareExchange(_default, c, nil);
-end;
-
-static function CLContext.LoadTestContext: CLContext;
-begin
-  var dir := GetCurrentDir;
-  while true do
-  begin
-    var fname := System.IO.Path.Combine(dir, 'TestContext.dat');
-    if FileExists(fname) then
-    begin
-      var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
-      try
-        var pl_name := br.ReadString;
-        var pl := CLPlatform.All.Single(pl->{%>pl.Properties.Name!!}nil{%}=pl_name);
-        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
-        Result := new CLContext(ArrGen(br.ReadInt32, i->
-        begin
-          var dvc_name := br.ReadString;
-          Result := dvcs.Single(dvc->{%>dvc.Properties.Name!!}nil{%}=dvc_name);
-        end));
-      finally
-        br.Close;
-      end;
-      break;
-    end;
-    dir := System.IO.Path.GetDirectoryName(dir);
-    if dir=nil then exit;
-  end;
-end;
-
-{$endregion CLContext}
-
-{$region CLProgramCompOptions}
-
-procedure CLProgramCompOptions.LowerVersionToSupported;
-begin
-  var max_v := Version;
-  
-  foreach var d in BuildContext.AllDevices do
-  begin
-    var v_str := {%>d.Properties.OpenclCVersion!!}default(string){%};
-    var v_str_beg := 'OpenCL C ';
-    if not v_str.StartsWith(v_str_beg) then raise new System.NotSupportedException;
-    var v_spl := v_str.Substring(v_str_beg.Length).Split(|'.'|, 2);
-    var v := (v_spl[0].ToInteger, v_spl[1].ToInteger);
-    if max_v<>nil then
-    begin
-      case Sign(max_v[0]-v[0]) of
-        1: continue;
-        0:
-        case Sign(max_v[1]-v[1]) of
-          1: continue;
-          0: ;
-        end;
-      end;
-    end;
-    max_v := v;
-  end;
-  
-end;
-
-{$endregion CLProgramCompOptions}
-
-{$region CLMemory}
-
-static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
-begin
-  var t: MemObjectType;
-  OpenCLABCInternalException.RaiseIfError(
-    cl.GetMemObjectInfo(ntv, MemInfo.MEM_TYPE, new UIntPtr(sizeof(MemObjectType)), t, IntPtr.Zero)
-  );
-  
-  if t<>MemObjectType.MEM_OBJECT_BUFFER then
-    raise new ArgumentException($'%Err:CLMemory:WrongNtvType%');
-  
-  var parent: cl_mem;
-  OpenCLABCInternalException.RaiseIfError(
-    cl.GetMemObjectInfo(ntv, MemInfo.MEM_ASSOCIATED_MEMOBJECT, new UIntPtr(cl_mem.Size), parent, IntPtr.Zero)
-  );
-  
-  if parent=cl_mem.Zero then
-    Result := new CLMemory(ntv) else
-    Result := new CLMemorySubSegment(parent, ntv);
-  
-end;
-
-{$endregion CLMemory}
-
-{$region CLArray}
-
-function CLArray<T>.GetItemProp(ind: integer): T :=
-{%>GetValue(ind)!!} default(T) {%};
-procedure CLArray<T>.SetItemProp(ind: integer; value: T) :=
-{%>WriteValue(value, ind)!!} exit() {%};
-
-function CLArray<T>.GetSliceProp(range: IntRange): array of T;
-begin
-  Result := new T[range.High-range.Low+1];
-  {%>ReadArray(Result, 0,Result.Length, range.Low);%}
-end;
-procedure CLArray<T>.SetSliceProp(range: IntRange; value: array of T) :=
-{%>WriteArray(value, range.Low, range.High-range.Low+1, 0)!!} exit() {%};
-
-{$endregion CLArray}
-
-{$endregion Wrappers}
-
 {$region Util type's}
 // To reorder first change OpenCLABC.Utils.drawio
 // Created using https://www.diagrams.net/
@@ -4314,7 +4052,17 @@ type
     
     {$ifdef DEBUG}
     public procedure AssertFinalIntegrity :=
-    if (call_list<>nil) and (last_invoke_trace=nil) then raise new System.InvalidProgramException(TypeName(self));
+    if (call_list<>nil) and (last_invoke_trace=nil) then
+    begin
+      var sb := new StringBuilder;
+      sb += 'Actions were not called:'#10;
+      foreach var act in call_list do
+      begin
+        CommandQueueBase.ToStringWriteDelegate(sb, act);
+        sb += #10;
+      end;
+      raise new System.InvalidProgramException(sb.ToString);
+    end;
     {$endif DEBUG}
     
   end;
@@ -4401,7 +4149,8 @@ type
     
     public property ResEv: EventList read ev;
     
-    public function ShouldInstaCallAction := CLTaskLocalData(self).ShouldInstaCallAction;
+    public function ShouldInstaCallAction :=
+    (complition_delegate.count<>-1) and CLTaskLocalData(self).ShouldInstaCallAction;
     
     public procedure AddAction(d: QueueResAction);
     begin
@@ -9313,6 +9062,285 @@ new CommandQueueHostThreadedProc<SimpleProc0ContainerC>(p);
 {$endregion CombineQueue's}
 
 {$endregion Global subprograms}
+
+{$region Properties}
+
+{$region Base}
+
+type
+  NtvPropertiesBase<TNtv, TInfo> = abstract class
+    protected ntv: TNtv;
+    public constructor(ntv: TNtv) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
+    protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
+    
+    protected function GetSize(id: TInfo): UIntPtr;
+    begin GetSizeImpl(id, Result); end;
+    
+    protected procedure FillPtr(id: TInfo; sz: UIntPtr; ptr: IntPtr) :=
+    GetValImpl(id, sz, PByte(pointer(ptr))^);
+    protected procedure FillVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
+    GetValImpl(id, sz, PByte(pointer(@res))^);
+    
+    protected function GetVal<T>(id: TInfo): T; where T: record;
+    begin
+      FillVal(id, new UIntPtr(Marshal.SizeOf(default(T))), Result);
+    end;
+    protected function GetValArr<T>(id: TInfo): array of T; where T: record;
+    begin
+      var sz := GetSize(id);
+      Result := new T[uint64(sz) div Marshal.SizeOf(default(T))];
+      
+      if Result.Length<>0 then
+        FillVal(id, sz, Result[0]);
+      
+    end;
+    
+    private function GetString(id: TInfo): string;
+    begin
+      var sz := GetSize(id);
+      
+      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
+      try
+        FillPtr(id, sz, str_ptr);
+        Result := Marshal.PtrToStringAnsi(str_ptr);
+      finally
+        Marshal.FreeHGlobal(str_ptr);
+      end;
+      
+    end;
+    
+  end;
+  
+{$endregion Base}
+
+{%WrapperProperties\Implementation!WrapperProperties.pas%}
+
+{$endregion Properties}
+
+{$region Wrappers}
+
+{$region CLDevice}
+
+static function CLDevice.FromNative(ntv: cl_device_id): CLDevice;
+begin
+  
+  var parent: cl_device_id;
+  OpenCLABCInternalException.RaiseIfError(
+    cl.GetDeviceInfo(ntv, DeviceInfo.DEVICE_PARENT_DEVICE, new UIntPtr(cl_device_id.Size), parent, IntPtr.Zero)
+  );
+  
+  if parent=cl_device_id.Zero then
+    Result := new CLDevice(ntv) else
+    Result := new CLSubDevice(parent, ntv);
+  
+end;
+
+{$endregion CLDevice}
+
+{$region CLContext}
+
+static procedure CLContext.GenerateAndCheckDefault(test_size: integer; test_max_seconds: real);
+begin
+  var test_prog := 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
+  var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
+  
+  var Q_Test: CommandQueue<boolean>;
+  var P_Arr := new ParameterQueue<CLArray<integer>>('A');
+  var P_Prog := new ParameterQueue<CLProgramCode>('Prog');
+  begin
+    var rng := new Random;
+    var test_arr := ArrGen(test_size, i->rng.Next);
+    {%> Q_Test :=%}
+    {%>   CLKernelCCQ.Create(P_Prog.ThenConstConvert(p->p['k']))%}
+    {%>     .ThenExec1(test_size, CLArrayCCQ&<integer>.Create(P_Arr)%}
+    {%>       .ThenWriteArray(test_arr)%}
+    {%>     ) +%}
+    {%>   CLArrayCCQ&<integer>.Create(P_Arr)%}
+    {%>     .ThenGetArray%}
+    {%>     .ThenQuickConvert(test_res->%}
+    {%>       test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r)%}
+    {%>     );!!}test_arr := test_arr{%}
+  end;
+  
+  var c := CLPlatform.All.SelectMany(pl->
+  begin
+    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToList;
+    
+    System.Threading.Tasks.Parallel.For(0,dvcs.Count, i->
+    begin
+      var del := true;
+      
+      var c := new CLContext(dvcs[i]);
+      var S_Arr := P_Arr.NewSetter(new CLArray<integer>(c, test_size));
+      var S_Prog := P_Prog.NewSetter(new CLProgramCode(test_prog, c));
+      
+      var thr := new Thread(()->
+      try
+        del := not c.SyncInvoke(Q_Test, S_Arr, S_Prog);
+      except
+      end);
+      thr.IsBackground := true;
+      thr.Start;
+      
+      if not thr.Join(test_max_time) then
+        thr.Abort;
+      
+      if del then dvcs[i] := nil;
+    end);
+    dvcs.RemoveAll(d->d=nil);
+    
+    Result := if dvcs.Count=0 then
+      System.Linq.Enumerable.Empty&<(CLContext,TimeSpan)> else
+      |true,false|.Cartesian(dvcs.Count)
+      .Select(choise->
+      begin
+        Result := new List<CLDevice>(dvcs.Count);
+        for var i := 0 to dvcs.Count-1 do
+          if choise[i] then Result += dvcs[i];
+      end)
+      .Where(l_dvcs->l_dvcs.Count<>0)
+      .Select(l_dvcs->
+      begin
+        var c := new CLContext(l_dvcs, l_dvcs[0]);
+        
+        var sw := Stopwatch.StartNew;
+        c.SyncInvoke(Q_Test.DiscardResult,
+          P_Arr.NewSetter(new CLArray<integer>(c, test_size)),
+          P_Prog.NewSetter(new CLProgramCode(test_prog, c))
+        );
+        sw.Stop;
+        
+        Result := (c, sw.Elapsed);
+      end);
+  end)
+  .DefaultIfEmpty((default(CLContext),TimeSpan.Zero))
+  .MinBy(t->t[1])[0];
+  
+  {$ifdef ForceMaxDebug}
+  
+  {$ifdef EventDebug}
+  EventDebug.RefCounter.Clear;
+  {$endif EventDebug}
+  
+  {$ifdef QueueDebug}
+  QueueDebug.QueueUses.Clear;
+  {$endif QueueDebug}
+  
+  QueueResNil.created_count := 0;
+  QueueResT.created_count.Clear;
+  
+  {$endif ForceMaxDebug}
+  
+  Interlocked.CompareExchange(_default, c, nil);
+end;
+
+static function CLContext.LoadTestContext: CLContext;
+begin
+  var dir := GetCurrentDir;
+  while true do
+  begin
+    var fname := System.IO.Path.Combine(dir, 'TestContext.dat');
+    if FileExists(fname) then
+    begin
+      var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
+      try
+        var pl_name := br.ReadString;
+        var pl := CLPlatform.All.Single(pl->{%>pl.Properties.Name!!}nil{%}=pl_name);
+        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
+        Result := new CLContext(ArrGen(br.ReadInt32, i->
+        begin
+          var dvc_name := br.ReadString;
+          Result := dvcs.Single(dvc->{%>dvc.Properties.Name!!}nil{%}=dvc_name);
+        end));
+      finally
+        br.Close;
+      end;
+      break;
+    end;
+    dir := System.IO.Path.GetDirectoryName(dir);
+    if dir=nil then exit;
+  end;
+end;
+
+{$endregion CLContext}
+
+{$region CLProgramCompOptions}
+
+procedure CLProgramCompOptions.LowerVersionToSupported;
+begin
+  var max_v := Version;
+  
+  foreach var d in BuildContext.AllDevices do
+  begin
+    var v_str := {%>d.Properties.OpenclCVersion!!}default(string){%};
+    var v_str_beg := 'OpenCL C ';
+    if not v_str.StartsWith(v_str_beg) then raise new System.NotSupportedException;
+    var v_spl := v_str.Substring(v_str_beg.Length).Split(|'.'|, 2);
+    var v := (v_spl[0].ToInteger, v_spl[1].ToInteger);
+    if max_v<>nil then
+    begin
+      case Sign(max_v[0]-v[0]) of
+        1: continue;
+        0:
+        case Sign(max_v[1]-v[1]) of
+          1: continue;
+          0: ;
+        end;
+      end;
+    end;
+    max_v := v;
+  end;
+  
+end;
+
+{$endregion CLProgramCompOptions}
+
+{$region CLMemory}
+
+static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
+begin
+  var t: MemObjectType;
+  OpenCLABCInternalException.RaiseIfError(
+    cl.GetMemObjectInfo(ntv, MemInfo.MEM_TYPE, new UIntPtr(sizeof(MemObjectType)), t, IntPtr.Zero)
+  );
+  
+  if t<>MemObjectType.MEM_OBJECT_BUFFER then
+    raise new ArgumentException($'%Err:CLMemory:WrongNtvType%');
+  
+  var parent: cl_mem;
+  OpenCLABCInternalException.RaiseIfError(
+    cl.GetMemObjectInfo(ntv, MemInfo.MEM_ASSOCIATED_MEMOBJECT, new UIntPtr(cl_mem.Size), parent, IntPtr.Zero)
+  );
+  
+  if parent=cl_mem.Zero then
+    Result := new CLMemory(ntv) else
+    Result := new CLMemorySubSegment(parent, ntv);
+  
+end;
+
+{$endregion CLMemory}
+
+{$region CLArray}
+
+function CLArray<T>.GetItemProp(ind: integer): T :=
+{%>GetValue(ind)!!} default(T) {%};
+procedure CLArray<T>.SetItemProp(ind: integer; value: T) :=
+{%>WriteValue(value, ind)!!} exit() {%};
+
+function CLArray<T>.GetSliceProp(range: IntRange): array of T;
+begin
+  Result := new T[range.High-range.Low+1];
+  {%>ReadArray(Result, 0,Result.Length, range.Low);%}
+end;
+procedure CLArray<T>.SetSliceProp(range: IntRange; value: array of T) :=
+{%>WriteArray(value, range.Low, range.High-range.Low+1, 0)!!} exit() {%};
+
+{$endregion CLArray}
+
+{$endregion Wrappers}
 
 {$ifdef ForceMaxDebug}
 initialization
