@@ -4,13 +4,14 @@ procedure OnException(e: Exception; et: string := 'General') :=
 lock Console.Error do
 begin
   System.Threading.Thread.CurrentThread.CurrentUICulture := new System.Globalization.CultureInfo('');
-  
   Console.Error.WriteLine($'%{et}Exception%');
   Console.Error.WriteLine(e);
   Halt;
 end;
 
 try
+  System.Threading.Thread.CurrentThread.CurrentUICulture := new System.Globalization.CultureInfo('');
+  
   System.AppDomain.CurrentDomain.UnhandledException += (o,e)->
   OnException(Exception(e.ExceptionObject));
   
