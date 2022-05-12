@@ -186,7 +186,7 @@ type
     
     protected procedure ReCalcTotalTime; override;
     begin
-      self.total_time := pack_timer.ElapsedTicks;
+      self.total_time := OtpLine.pack_timer.ElapsedTicks;
       inherited;
     end;
     

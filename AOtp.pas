@@ -8,11 +8,6 @@ uses System.Threading;
 uses AQueue;
 uses CLArgs;
 
-var pack_timer := Stopwatch.StartNew;
-
-var nfi := new System.Globalization.NumberFormatInfo;
-var enc := new System.Text.UTF8Encoding(true);
-
 type
   
   {$region Exception's}
@@ -31,40 +26,49 @@ type
   {$region OtpLine}
   
   OtpLine = class
-    s: string;
-    t: int64;
-    general: boolean;
+    private s: string;
+    private t: int64;
+    private general: boolean;
     
-    constructor(s: string; t: int64; general: boolean);
+    public static pack_timer := Stopwatch.StartNew;
+    
+    public constructor(s: string; t: int64; general: boolean);
     begin
       self.s := s;
       self.t := t;
       self.general := general;
     end;
-    constructor(s: string; general: boolean := false) := Create(s, pack_timer.ElapsedTicks, general);
+    public constructor(s: string; general: boolean := false) := Create(s, pack_timer.ElapsedTicks, general);
     
-    static function operator implicit(s: string): OtpLine := new OtpLine(s);
-    static function operator implicit(s: char): OtpLine := new OtpLine(s);
+    public static function operator implicit(s: string): OtpLine := new OtpLine(s);
+    public static function operator implicit(s: char): OtpLine := new OtpLine(s);
     
-    function ConvStr(f: string->string) := new OtpLine(f(self.s), self.t, self.general);
+    public function ConvStr(f: string->string) := new OtpLine(f(self.s), self.t, self.general);
     
-    function GetTimedStr :=
+    public function GetTimedStr :=
     $'{t/System.TimeSpan.TicksPerSecond,15:N7} | {s}';
     
-    procedure Println; virtual :=
+    public procedure WriteTo(bw: System.IO.BinaryWriter);
+    begin
+      bw.Write(self.s);
+      bw.Write(self.t);
+      bw.Write(self.general);
+    end;
+    
+    public procedure Println; virtual :=
     Console.WriteLine(s);
     
   end;
   OtpLineColored = sealed class(OtpLine)
-    bg_colors := System.Linq.Enumerable.Empty&<(integer,System.ConsoleColor)>;
+    private bg_colors := System.Linq.Enumerable.Empty&<(integer,System.ConsoleColor)>;
     
-    constructor(s: string; bg_colors: sequence of (integer,System.ConsoleColor));
+    public constructor(s: string; bg_colors: sequence of (integer,System.ConsoleColor));
     begin
       inherited Create(s);
       self.bg_colors := bg_colors;
     end;
     
-    procedure Println; override;
+    public procedure Println; override;
     begin
       var i := 0;
       foreach var t in bg_colors do
@@ -168,6 +172,9 @@ type
     private main_sw: System.IO.StreamWriter;
     private backup_sw: System.IO.StreamWriter;
     private timed, individual: boolean;
+    
+    public static nfi := new System.Globalization.NumberFormatInfo;
+    public static enc := new System.Text.UTF8Encoding(true);
     
     public constructor(fname: string; timed: boolean := false; individual: boolean := false);
     begin
@@ -360,7 +367,7 @@ initialization
   try
     Logger.main := new ConsoleLogger;
     RegisterThr;
-    DefaultEncoding := enc;
+    DefaultEncoding := FileLogger.enc;
   except
     on e: Exception do ErrOtp(e);
   end;

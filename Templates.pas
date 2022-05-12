@@ -161,7 +161,7 @@ type
 //          MiscUtils.Otp($'Reading');
 //          Writeln(inp_fname);
           if not FileExists(inp_fname) then raise new MessageException($'ERROR: File [{GetRelativePathRTA(inp_fname)}] not found');
-          var text := ReadAllText(inp_fname, enc).Trim.Remove(#13);
+          var text := ReadAllText(inp_fname, FileLogger.enc).Trim.Remove(#13);
           
           var ind1 := 0;
           while true do
@@ -206,7 +206,7 @@ type
       *
         ProcTask(()->
         begin
-          var sw := new StreamWriter(otp_fname, false, enc);
+          var sw := new StreamWriter(otp_fname, false, FileLogger.enc);
           foreach var s in otp do
             sw.Write(s);
           sw.Close;
@@ -229,7 +229,7 @@ begin
   *
     ProcTask(()->
     begin
-      var sw := new StreamWriter(output_fname, false, enc);
+      var sw := new StreamWriter(output_fname, false, FileLogger.enc);
       foreach var s in otp do
         sw.Write(s);
       sw.Close;

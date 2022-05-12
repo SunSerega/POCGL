@@ -46,9 +46,7 @@ type
     protected procedure OtpImpl(l: OtpLine); override;
     begin
       bw.Write(1);
-      bw.Write(l.s);
-      bw.Write(l.t);
-      bw.Write(l.general);
+      l.WriteTo(bw);
       bw.Flush;
     end;
     

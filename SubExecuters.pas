@@ -64,7 +64,7 @@ begin
   if fname in prev then exit;
   prev := prev+|fname|;
   
-  var text := ReadAllText(fname, enc);
+  var text := ReadAllText(fname, FileLogger.enc);
   if not text.Contains('{'+'$savepcu false}') then
     yield fname;
   
@@ -214,7 +214,7 @@ begin
 //  lock sec_procs do sec_procs += p;
   var exec_proc := procedure->
   begin
-    start_time_mark := pack_timer.ElapsedTicks;
+    start_time_mark := OtpLine.pack_timer.ElapsedTicks;
     try
       p.Start;
     except
