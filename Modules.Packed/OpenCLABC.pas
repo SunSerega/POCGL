@@ -2777,7 +2777,7 @@ type
       
     end;
     
-    public static procedure GenerateAndCheckDefault(test_size: integer := 1024*24; test_max_seconds: real := 0.25);
+    public static procedure GenerateAndCheckDefault(test_size: integer := 1024*24; test_max_seconds: real := 0.5);
     
     private static function LoadTestContext: CLContext;
     
