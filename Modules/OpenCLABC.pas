@@ -19,17 +19,9 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Вместо QueueResNil.Attach надо EventList.Attach(var acts), чтобы acts.count могло поменять
-
-//TODO Проверить аргументы
-
-//TODO Проверить сборку с 0 на всех 3 компах
-
-
-
 //TODO Пусть CLKernel хранит array of cl_kernel
-// - Таким образом может не создавать новые cl_kernel лишний раз
-// - Увеличивать размер когда 75% заполнено, уменьшать когда 30%
+// - Таким образом можно не создавать новые cl_kernel лишний раз
+// - Увеличивать размер когда ~75% заполнено, уменьшать когда ~30%
 // - С другой стороны, каждому .ThenExec нужен свой ntv
 // - Создавать отдельный объект CLKernel для каждой команды?
 
@@ -39,11 +31,6 @@ unit OpenCLABC;
 
 //TODO Деприкация в OpenCL?
 // - К примеру clCreateImage2D не должна использоваться после 1.2
-
-//TODO [In] и [Out] в кодогенераторах
-// - [Out] строки без [In] заменять на StringBuilder
-// - Полезно, к примеру, в cl.GetProgramBuildInfo
-// - А в cl.GetProgramInfo надо принимать [Out] "array of array of Byte" вместо "var IntPtr"
 
 //TODO Тесты и справка:
 // - (HPQ+Par).ThenQuickUse.ThenConstConvert
@@ -84,6 +71,18 @@ unit OpenCLABC;
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
 // --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
 
+//TODO .Cycle(integer)
+//TODO .Cycle // бесконечность циклов
+//TODO .CycleWhile(***->boolean)
+//TODO В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
+// - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
+//TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
+// - Или может метод MarkerQueue.Abort?
+//TODO .DelayInit, чтобы ветки .ThenIf можно было не инициализировать заранее
+// - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
+//TODO CCQ.ThenIf(cond, command, nil)
+// - Подумать как можно сделать это красивее, чем через MU
+
 //TODO Разделить .html справку и гайт по OpenCLABC
 //TODO github.io
 
@@ -107,6 +106,11 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
+//TODO [In] и [Out] в кодогенераторах
+// - [Out] строки без [In] заменять на StringBuilder
+// - Полезно, к примеру, в cl.GetProgramBuildInfo
+// - А в cl.GetProgramInfo надо принимать [Out] "array of array of Byte" вместо "var IntPtr"
+
 //TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
 // - Реализовано в ветке с новыми TypeName
 
@@ -115,7 +119,6 @@ unit OpenCLABC;
 //TODO Пользовательские очереди?
 // - Всё же я не всё могу предугадать, поэтому
 // - для окончательной версии модуля такая вещь необходима
-// - В то же время поидее это позволит быстрее тестировать с MT
 // - Но чтобы это сделать... придётся типы-утилиты перенести в отдельный модуль,
 // - чтобы они были доступны, но не на виду
 
@@ -123,18 +126,6 @@ unit OpenCLABC;
 // - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
-
-//TODO .Cycle(integer)
-//TODO .Cycle // бесконечность циклов
-//TODO .CycleWhile(***->boolean)
-//TODO В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
-// - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
-//TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
-// - Или может метод MarkerQueue.Abort?
-//TODO .DelayInit, чтобы ветки .ThenIf можно было не инициализировать заранее
-// - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
-//TODO CCQ.ThenIf(cond, command, nil)
-// - Подумать как можно сделать это красивее, чем через MU
 
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
@@ -1294,7 +1285,7 @@ type
     
     public auto property BuildContext: CLContext;
     
-    public auto property KeepLog: boolean := false;
+    public auto property KeepLog: boolean := true;
     
     protected procedure ToString(res: StringBuilder); abstract;
     public function ToString: string; override;
@@ -1327,15 +1318,15 @@ type
   
   CLProgramOptions = abstract class(CLCodeOptions)
     
-    public auto property _MathDenormsAreZero: boolean := false;
+    public auto property MathDenormsAreZero: boolean := false;
     
     public auto property OptSignedZero: boolean := false;
     
     public property OptUnsafeMath: boolean
-    read _MathDenormsAreZero and not OptSignedZero
+    read MathDenormsAreZero and not OptSignedZero
     write
     begin
-      _MathDenormsAreZero := value;
+      MathDenormsAreZero  := value;
       OptSignedZero       := not value;
     end; virtual;
     
@@ -1363,7 +1354,7 @@ type
           res += '-cl-unsafe-math-optimizations ' else
         begin
           
-          if _MathDenormsAreZero then
+          if MathDenormsAreZero then
             res += '-cl-denorms-are-zero ';
           
           // Only for ProgramComp
@@ -1380,6 +1371,9 @@ type
         
       end;
       
+      if not OptRequireIFP then
+        res += '-cl-no-subgroup-ifp ';
+      
     end;
     
   end;
@@ -1391,9 +1385,9 @@ type
     
     public auto property Defines: CLCodeDefines := new CLCodeDefines;
     
-    public auto property _MathSinglePrecisionConstant: boolean := false;
+    public auto property MathSinglePrecisionConstant: boolean := false;
     
-    public auto property _MathFP32CorrectlyRoundedDivideSqrt: boolean := false;
+    public auto property MathFP32CorrectlyRoundedDivideSqrt: boolean := false;
     
     public auto property Optimize: boolean := true;
     
@@ -1402,10 +1396,10 @@ type
     public auto property OptCanUseMAD: boolean := false;
     
     public property OptUnsafeMath: boolean
-    read _MathDenormsAreZero and OptCanUseMAD and not OptSignedZero
+    read MathDenormsAreZero and OptCanUseMAD and not OptSignedZero
     write
     begin
-      _MathDenormsAreZero := value;
+      MathDenormsAreZero  := value;
       OptCanUseMAD        := value;
       OptSignedZero       := not value;
     end; override;
@@ -1439,10 +1433,10 @@ type
         res += ' ';
       end;
       
-      if _MathSinglePrecisionConstant then
+      if MathSinglePrecisionConstant then
         res += '-cl-single-precision-constant ';
       
-      if _MathFP32CorrectlyRoundedDivideSqrt then
+      if MathFP32CorrectlyRoundedDivideSqrt then
         res += '-cl-fp32-correctly-rounded-divide-sqrt ';
       
       if not Optimize then
@@ -8138,6 +8132,9 @@ type
   end;
   CLKernelArgSetterTyped<T> = abstract class(CLKernelArgSetter)
     protected o := default(T);
+    {$ifdef DEBUG}
+    private o_set := false;
+    {$endif DEBUG}
     
     public constructor(o: T);
     begin
@@ -8150,7 +8147,8 @@ type
     public procedure SetObj(o: T);
     begin
       {$ifdef DEBUG}
-      if self.o<>default(T) then raise new OpenCLABCInternalException($'Conflicting {TypeName(self)} values');
+      if o_set then raise new OpenCLABCInternalException($'Conflicting {TypeName(self)} values');
+      o_set := true;
       {$endif DEBUG}
       self.o := o;
     end;
@@ -8167,7 +8165,7 @@ type
       end;
       
       {$ifdef DEBUG}
-      if self.o=default(T) then
+      if not o_set then
         raise new OpenCLABCInternalException($'Unset {TypeName(self)} value') else
       {$endif DEBUG}
       
@@ -9310,6 +9308,7 @@ begin
     max_v := v;
   end;
   
+  Version := max_v;
 end;
 
 {$endregion CLProgramCompOptions}
