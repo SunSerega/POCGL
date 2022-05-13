@@ -24,7 +24,7 @@ begin
   var context := cl.CreateContext(IntPtr.Zero, 1,device, nil,IntPtr.Zero, ec);
   ec.RaiseIfError;
   
-  var command_queue := cl.CreateCommandQueueWithProperties(context, device, nil, ec);
+  var command_queue := cl.CreateCommandQueue(context, device, CommandQueueProperties.NONE, ec);
   ec.RaiseIfError;
   
   // Чтение и компиляция .cl файла
@@ -45,7 +45,24 @@ begin
     ec.RaiseIfError;
   end;
   
-  cl.BuildProgram(prog, 1,device, nil, nil,IntPtr.Zero).RaiseIfError;
+  ec := cl.BuildProgram(prog, 1,device, nil, nil,IntPtr.Zero);
+  if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
+  begin
+    var sz: UIntPtr;
+    cl.GetProgramBuildInfo(prog, device, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz).RaiseIfError;
+    
+    var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(IntPtr(pointer(sz)));
+    try
+      cl.GetProgramBuildInfo(prog, device, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,ptr,IntPtr.Zero).RaiseIfError;
+      raise new InvalidOperationException(
+        System.Runtime.InteropServices.Marshal.PtrToStringAnsi(ptr)
+      );
+    finally
+      System.Runtime.InteropServices.Marshal.FreeHGlobal(ptr);
+    end;
+    
+  end else
+    ec.RaiseIfError;
   
   var MatrMltMatrKernel := cl.CreateKernel(prog, 'MatrMltMatr', ec);
   ec.RaiseIfError;

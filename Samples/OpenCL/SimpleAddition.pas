@@ -21,7 +21,7 @@ begin
   var context := cl.CreateContext(IntPtr.Zero, 1,device, nil,IntPtr.Zero, ec);
   ec.RaiseIfError;
   
-  var command_queue := cl.CreateCommandQueueWithProperties(context, device, nil, ec);
+  var command_queue := cl.CreateCommandQueue(context, device, CommandQueueProperties.NONE, ec);
   ec.RaiseIfError;
   
   // Чтение и компиляция .cl файла
