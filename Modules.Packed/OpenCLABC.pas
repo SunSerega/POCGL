@@ -10132,16 +10132,16 @@ type
         mrd.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
       mu_res := nil;
       
-    end;
-    
-    public procedure FinishExecution(var err_lst: List<Exception>);
-    begin
-      
       if curr_inv_cq<>cl_command_queue.Zero then
       begin
         OpenCLABCInternalException.RaiseIfError( cl.Flush(curr_inv_cq) );
         ReturnCQ(curr_inv_cq);
       end;
+      
+    end;
+    
+    public procedure FinishExecution(var err_lst: List<Exception>);
+    begin
       
       foreach var cq in free_cqs do
         OpenCLABCInternalException.RaiseIfError( cl.ReleaseCommandQueue(cq) );
