@@ -19,6 +19,8 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Вместо QueueResNil.Attach надо EventList.Attach(var acts), чтобы acts.count могло поменять
+
 //TODO Проверить аргументы
 
 //TODO Проверить сборку с 0 на всех 3 компах
@@ -3975,9 +3977,18 @@ type
     begin
       Result := done.TrySet(true);
       if not Result then exit;
-      OpenCLABCInternalException.RaiseIfError(
-        cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE)
-      );
+      //TODO INTEL#????
+      // - Иначе, если один из колбеков освобождает ивент
+      // - cl.SetUserEventStatus возвращает INVALID_EVENT
+      // - И остальные колбеки не выполняются
+      OpenCLABCInternalException.RaiseIfError(cl.RetainEvent(uev));
+      try
+        OpenCLABCInternalException.RaiseIfError(
+          cl.SetUserEventStatus(uev, CommandExecutionStatus.COMPLETE)
+        );
+      finally
+        OpenCLABCInternalException.RaiseIfError(cl.ReleaseEvent(uev));
+      end;
     end;
     
     {$endregion Status}
