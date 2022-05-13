@@ -64,7 +64,7 @@ unit OpenCLABC;
 // - В справку
 //TODO При чём это в обе стороны (не-)работает
 //  var v1 := new NativeValue<integer>(1);
-//  var v2 := new CLValue<integer>(-1);
+//  var v2 := new CLValue<integer>(1);
 //  var Q_Copy := k.NewQueue.ThenExec1(1,CLKernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
 //  
 //  v1.Value := 3;
@@ -4062,6 +4062,54 @@ type
     end;
     
     {$ifdef DEBUG}
+    private const _taken_out_acts_c = -1;
+    {$endif DEBUG}
+    public function IsTakenOut: boolean;
+    begin
+      Result := false;
+      {$ifdef DEBUG}
+      Result := self.count = _taken_out_acts_c;
+      {$endif DEBUG}
+    end;
+    public function TakeOut: QueueResComplDelegateData;
+    begin
+      Result := self;
+      {$ifdef DEBUG}
+      self.call_list := nil;
+      self.count := _taken_out_acts_c;
+      {$endif DEBUG}
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AttachInvokeTo(ev: EventList; g: CLTaskGlobalData{$ifdef EventDebug}; qr: object{$endif}): EventList;
+    begin
+      var acts := self.TakeOut;
+      
+      if acts.count=0 then
+      begin
+        Result := ev;
+        exit;
+      end else
+      {$ifdef DEBUG}
+      if acts.IsTakenOut then // Check double .AttachInvokeTo call
+        raise new OpenCLABCInternalException($'.AttachInvokeActions called twice') else
+      if (ev.count=0) and (acts.count<>0) then
+        raise new OpenCLABCInternalException($'Broken .Invoke') else
+      {$endif DEBUG}
+        ;
+      
+      var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {TypeName(qr)}.AttachInvokeActions, after: {ev.evs?.JoinToString}'{$endif});
+      var c := g.c;
+      ev.MultiAttachCallback(()->
+      begin
+        acts.Invoke(c);
+        uev.SetComplete;
+      end{$ifdef EventDebug}, $'body of {TypeName(qr)}.AttachInvokeActions with res_ev={uev}'{$endif});
+      
+      Result := uev;
+    end;
+    
+    {$ifdef DEBUG}
     public procedure AssertFinalIntegrity :=
     if (call_list<>nil) and (last_invoke_trace=nil) then
     begin
@@ -4100,6 +4148,10 @@ type
       {$endif DEBUG}
     end;
     
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AttachInvokeActions(g: CLTaskGlobalData) :=
+    prev_delegate.AttachInvokeTo(prev_ev, g{$ifdef EventDebug}, self{$endif});
+    
   end;
   
 {$endregion CLTaskLocalData}
@@ -4117,7 +4169,7 @@ type
     function ShouldInstaCallAction: boolean;
     procedure AddAction(d: QueueResAction);
     
-    function GetActions: QueueResComplDelegateData;
+    function AttachInvokeActions(g: CLTaskGlobalData): EventList;
     
     function MakeWrapWithImpl(new_ev: EventList): IQueueRes;
     
@@ -4160,8 +4212,14 @@ type
     
     public property ResEv: EventList read ev;
     
-    public function ShouldInstaCallAction :=
-    (complition_delegate.count<>-1) and CLTaskLocalData(self).ShouldInstaCallAction;
+    public function ShouldInstaCallAction: boolean;
+    begin
+      {$ifdef DEBUG}
+      if complition_delegate.IsTakenOut then
+        raise new OpenCLABCInternalException($'ShouldInstaCallAction when action is already gone');
+      {$endif DEBUG}
+      Result := CLTaskLocalData(self).ShouldInstaCallAction;
+    end;
     
     public procedure AddAction(d: QueueResAction);
     begin
@@ -4169,15 +4227,6 @@ type
       if ShouldInstaCallAction then raise new OpenCLABCInternalException($'Broken Quick.Invoke detected');
       {$endif DEBUG}
       complition_delegate.AddAction(d);
-    end;
-    
-    public function GetActions: QueueResComplDelegateData;
-    begin
-      Result := self.complition_delegate;
-      {$ifdef DEBUG}
-      self.complition_delegate := default(QueueResComplDelegateData);
-      self.complition_delegate.count := -1;
-      {$endif DEBUG}
     end;
     
   end;
@@ -4211,7 +4260,10 @@ type
     public function ShouldInstaCallAction := base.ShouldInstaCallAction;
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
     
-    public function IQueueRes.GetActions := base.GetActions;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AttachInvokeActions(g: CLTaskGlobalData) :=
+    base.complition_delegate.AttachInvokeTo(base.ResEv, g{$ifdef EventDebug}, self{$endif});
+    
     public procedure InvokeActions(c: CLContext) := base.complition_delegate.Invoke(c);
     
     public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes :=
@@ -4266,14 +4318,18 @@ type
     begin
       Result := res_const;
       {$ifdef DEBUG}
-      if not Result and ShouldInstaCallAction then raise new OpenCLABCInternalException($'Need to insta call implies const result');
+      if not Result and not base.complition_delegate.IsTakenOut and ShouldInstaCallAction then
+        raise new OpenCLABCInternalException($'Need to insta call implies const result');
       {$endif DEBUG}
     end;
     public property IsConst: boolean read GetIsConst;
     
     public function ShouldInstaCallAction := base.ShouldInstaCallAction;
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
-    public function GetActions := base.GetActions;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AttachInvokeActions(g: CLTaskGlobalData) :=
+    base.complition_delegate.AttachInvokeTo(base.ResEv, g{$ifdef EventDebug}, self{$endif});
     
     public function MakeWrapWithImpl(new_ev: EventList): IQueueRes; abstract;
     
@@ -4509,9 +4565,8 @@ type
     public function MakeWrap(prev_qr: QueueRes<T>; new_ev: EventList): QueueResPtr<T>;
     begin
       {$ifdef DEBUG}
-      // new_ev is expected to wait on (or be-) qr.ResEv, but with actions already attached
-      // But complition_delegate is nullified only when "$ifdef DEBUG"
-      if prev_qr.base.complition_delegate.count<>-1 then raise new OpenCLABCInternalException($'.GetActions should be called from .AttachInvokeActions before making a wrap qr');
+      if not prev_qr.base.complition_delegate.IsTakenOut then
+        raise new OpenCLABCInternalException($'.AttachInvokeActions should be called before making a wrap qr');
       {$endif DEBUG}
       
       if prev_qr is QueueResPtr<T>(var qrp) then
@@ -4572,52 +4627,6 @@ type
   end;
   
 {$endregion TransformResult}
-
-{$region AttachInvokeActions}
-
-//TODO #????
-procedure TODO := exit;
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-function AttachInvokeActions(self: IQueueRes; g: CLTaskGlobalData): EventList; extensionmethod;
-begin
-  var acts := self.GetActions;
-  if acts.count=0 then
-  begin
-    Result := self.ResEv;
-    exit;
-  end else
-  {$ifdef DEBUG}
-  if self.ShouldInstaCallAction then // auto raise
-    else
-  if acts.count=-1 then // Check double .GetActions call
-    raise new OpenCLABCInternalException($'.AttachInvokeActions called twice') else
-  {$endif DEBUG}
-    ;
-  
-  var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {TypeName(self)}.ThenAttachInvokeActions, after [{self.ResEv.evs?.JoinToString}]'{$endif});
-  var c := g.c;
-  self.ResEv.MultiAttachCallback(()->
-  begin
-    acts.Invoke(c);
-    uev.SetComplete;
-  end{$ifdef EventDebug}, $'body of {TypeName(self)}.ThenAttachInvokeActions with res_ev={uev}'{$endif});
-  
-  Result := uev;
-end;
-//TODO #????
-function AttachInvokeActions<T>(self: QueueRes<T>; g: CLTaskGlobalData); extensionmethod := (self as IQueueRes).AttachInvokeActions(g);
-
-//TODO Костыль, лучше бы вызывать эту перегрузку из перегрузки для IQueueRes
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-function AttachInvokeActions(self: CLTaskLocalData; g: CLTaskGlobalData): EventList; extensionmethod;
-begin
-  var qr := new QueueResNil(self);
-  //TODO #2663
-  Result := qr.AttachInvokeActions(g);
-end;
-
-{$endregion AttachInvokeActions}
 
 {$endregion Impl}
 
@@ -5638,7 +5647,7 @@ type
     function Invoke<TR1,TR2>(g: CLTaskGlobalData; l: CLTaskLocalData; q_invoker: CommandQueueInvoker<TR1>; qrw_factory: IQueueResWrapFactory<T,TR2>): TR2; where TR1: QueueRes<T>; where TR2: IQueueRes;
     begin
       var prev_qr := q_invoker(g, l);
-      var acts := prev_qr.GetActions;
+      var acts := prev_qr.base.complition_delegate.TakeOut;
       
       var err_handler := g.curr_err_handler;
       var c := g.c;

@@ -8,7 +8,7 @@
 TestOK1 
 TestOK1 
 TestOK2 
-[QueueResNil]: 10 
+[QueueResNil]: 6 
 
 #ReqModules
 OpenCLABC

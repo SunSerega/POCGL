@@ -31,7 +31,7 @@
 
 [EventDebug]: 13 event's created 
 [QueueDebug]: 3 queue's created 
-[QueueResNil]: 11 
+[QueueResNil]: 10 
 [QueueRes<T>]: 20 
 	QueueResValDirect<array [,] of real>: 3 
 	QueueResValDirect<array of real>: 2 

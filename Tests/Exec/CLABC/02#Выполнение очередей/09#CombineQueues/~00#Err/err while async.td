@@ -26,7 +26,7 @@ Err#8
 Err#9
 ------------------------------ 
 [EventDebug]: 100 event's created 
-[QueueResNil]: 160 
+[QueueResNil]: 130 
 
 #ReqModules
 OpenCLABC

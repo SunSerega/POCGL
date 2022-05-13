@@ -10,7 +10,6 @@ q выполнилась
 q выполнилась 
 3125 
 [EventDebug]: 1 event's created 
-[QueueResNil]: 5 
 [QueueRes<T>]: 14 
 	QueueResValDirect<array of integer>: 1 
 	QueueResValDirect<integer>: 6 

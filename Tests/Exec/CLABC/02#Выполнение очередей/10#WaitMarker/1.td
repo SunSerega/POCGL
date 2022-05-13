@@ -10,7 +10,7 @@ nil
 5 
 [EventDebug]: 7 event's created 
 [WaitDebug]: 6 wait handler's created 
-[QueueResNil]: 11 
+[QueueResNil]: 5 
 [QueueRes<T>]: 7 
 	QueueResValDirect<integer>: 2 
 	QueueResValDirect<Object>: 3 

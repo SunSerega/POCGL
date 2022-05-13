@@ -9,7 +9,7 @@
 2 
 [EventDebug]: 1 event's created 
 [WaitDebug]: 2 wait handler's created 
-[QueueResNil]: 5 
+[QueueResNil]: 4 
 
 #ReqModules
 OpenCLABC

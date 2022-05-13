@@ -6,7 +6,6 @@
 
 #ExpExecOtp
 5 25
-[QueueResNil]: 1 
 [QueueRes<T>]: 4 
 	QueueResValDirect<array of integer>: 1 
 	QueueResValDirect<integer>: 3 

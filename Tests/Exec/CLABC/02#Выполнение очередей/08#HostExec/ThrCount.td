@@ -9,7 +9,7 @@ True
 True 
 [EventDebug]: 34 event's created 
 [QueueDebug]: 1 queue's created 
-[QueueResNil]: 39 
+[QueueResNil]: 37 
 [QueueRes<T>]: 1 
 	QueueResValDirect<integer>: 1 
 
