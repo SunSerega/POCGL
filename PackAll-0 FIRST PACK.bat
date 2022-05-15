@@ -1,12 +1,5 @@
-@setlocal enableextensions
-@cd /d "%~dp0"
 
 
-
-IF NOT EXIST "Utils\.git" (
-	git submodule init
-	git submodule update --progress --init --remote -- "Utils"
-)
 
 IF NOT EXIST "PackAll.exe" (
 	"C:\Program Files (x86)\PascalABC.NET\pabcnetc" "PackAll.pas"
