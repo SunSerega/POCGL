@@ -78,7 +78,7 @@ type
       POCGL_Utils.Otp($'Packing reference "{nick}"');
       last_page_id := 0;
       
-      var ReleaseDir := GetFullPathRTA('!Release');
+      var ReleaseDir := GetFullPathRTA('0Release');
       System.IO.Directory.CreateDirectory(ReleaseDir);
       
       path := GetFullPathRTA(path);
