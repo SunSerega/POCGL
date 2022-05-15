@@ -1,0 +1,161 @@
+
+
+
+/* ============================== *\
+			 page base
+\* ============================== */
+
+body {
+	background-color: #F0F0F0;
+	margin: 0px;
+	overflow: hidden;
+}
+
+.page-base {
+	position: absolute;
+	display: flex;
+}
+
+#splitter {
+	width: 5px;
+	cursor: col-resize;
+	box-shadow: 0 0 4px #B0B0B0;
+}
+
+.page-container {
+	margin: 7.5px;
+	background-color: white;
+	overflow: auto;
+	flex-grow: 1;
+}
+#page-select-container {
+	white-space: nowrap;
+}
+
+#page-display-container-body {
+	padding: 7px;
+	width: fit-content;
+}
+
+/* ============================== *\
+		    page select
+\* ============================== */
+
+.arrow-page-root {
+	cursor: pointer;
+}
+.dot-page-root {
+	cursor: default;
+	margin-left: 5px;
+	margin-right: 6px;
+}
+
+.ps-root-container {
+	margin: 7px;
+}
+
+.ps-folder {
+	display: table;
+}
+.ps-folder-name {
+	cursor: pointer;
+	padding: 1;
+}
+.ps-container {
+	margin-left: 7px;
+	padding-left: 7px;
+	border-left: thin solid;
+	border-color: #80808080;
+}
+
+.ps-page {
+}
+.ps-page-name {
+	cursor: pointer;
+	padding: 1px;
+}
+
+/* ============================== *\
+	       page display
+\* ============================== */
+
+blockquote > *:first-child {
+	margin-top: 0;
+}
+blockquote > *:last-child {
+	margin-bottom: 0;
+}
+blockquote {
+	margin-left: 0;
+	margin-right: 0;
+	padding: 12px;
+	border-left: 5px solid #d0d0d0;
+	background-color: #f7f7f7;
+}
+
+.smart-link {
+	color: blue;
+	cursor: pointer;
+}
+
+.spoiler {
+	margin-left: 8px;
+}
+.spoiler-wrap {
+	border: solid;
+	border-width: 0px;
+	padding-left: 2px;
+}
+.spoiler-name {
+	border: solid;
+	border-width: 0px;
+}
+
+.code-block {
+	display: inline-block;
+	cursor: text;
+	border-radius: 3px;
+	
+	padding: 4px;
+	padding-right: 12px;
+	
+	margin: 0;
+	
+	position: relative;
+}
+.code-block-copier {
+	cursor: pointer;
+	padding: 2px;
+	
+	position: absolute;
+	top: 0;
+	
+	border: thin solid;
+	border-radius: 3.7px 0px 3.7px 3.7px;
+	box-shadow: -2px 2px 3px #0000004a;
+	background: linear-gradient(0deg, #f0f0f0, white);
+}
+.inline-code, .code-block {
+	background: #F0F0F0;
+}
+blockquote .inline-code,
+blockquote .code-block {
+	background: #DEDEDE;
+}
+
+.code-keyword {
+	font-weight: bold;
+}
+.code-build-in {
+	color: blue;
+}
+.code-red {
+	color: red;
+	font-weight: bold;
+}
+.code-glowing-bracket {
+	color: red;
+	background-color: #C0C0C0;
+}
+
+
