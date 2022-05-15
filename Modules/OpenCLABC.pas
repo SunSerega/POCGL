@@ -24,16 +24,12 @@ unit OpenCLABC;
 // - Увеличивать размер когда ~75% заполнено, уменьшать когда ~30%
 // - С другой стороны, каждому .ThenExec нужен свой ntv
 // - Создавать отдельный объект CLKernel для каждой команды?
-
 //TODO Попробовать применять константные CLKernelArg к константному CLKernel в момент создания команды
 // - "var TODO := 0" дающий предупреждение уже стоит
 // - Но если не все CLKernelArg константные, если CLKernel выполнен 2 раза одновременно - его придётся скопировать и применить аргументы ещё раз
 
-//TODO Деприкация в OpenCL?
-// - К примеру clCreateImage2D не должна использоваться после 1.2
-
 //TODO Тесты и справка:
-// - (HPQ+Par).ThenQuickUse.ThenConstConvert
+// - (HTPQ+Par).ThenQuickUse.ThenConstConvert
 
 //TODO NativeMemoryArea в отдельный модуль
 // - При этом сделать его кросс-платформенным
@@ -74,23 +70,26 @@ unit OpenCLABC;
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
 //TODO .CycleWhile(***->boolean)
-//TODO В продолжение Cycle: Однако всё ещё остаётся проблема - как сделать ветвление?
-// - И если уже делать - стоит сделать и метод CQ.ThenIf(res->boolean; if_true, if_false: CQ)
-//TODO И ещё - AbortQueue, который, по сути, может использоваться как exit, continue или break, если с обработчиками ошибок
-// - Или может метод MarkerQueue.Abort?
-//TODO .DelayInit, чтобы ветки .ThenIf можно было не инициализировать заранее
+// - Однако всё ещё остаётся вопрос - как сделать ветвление?
+//TODO И если уже делать ветвление - то сразу и .ThenIf:
+// - .ThenIf   (CQ<bool>, CQBase, CQBase): CQNil
+// - .ThenIfRes(CQ<bool>, CQ<T> , CQ<T> ): CQ<T>
+//TODO А может Cycle(CycleInfo: record Q_continue, Q_break: CQNil; end -> CQ)
+// - Но для них всё равно нужен .ThenIf
+// - И адекватную диагностику для недостижимого кода будет сложно вывести
+//TODO .DelayInit, чтобы ветки .ThenIf можно было НЕ инициализировать заранее
 // - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
 //TODO CCQ.ThenIf(cond, command, nil)
 // - Подумать как можно сделать это красивее, чем через MU
 
-//TODO Разделить .html справку и гайт по OpenCLABC
+//TODO Разделить .html справку и гайд по OpenCLABC
 //TODO github.io
 
 //TODO Справка:
 // - CLKernelArg
 // - NativeArray
 // - CLValue
-// - !CL!CLMemory[SubSegment]
+// - !CL!Memory[SubSegment]
 // - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки CLKernelArg для CL- типов
 // - CLMemoryUsage
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
@@ -110,6 +109,9 @@ unit OpenCLABC;
 // - [Out] строки без [In] заменять на StringBuilder
 // - Полезно, к примеру, в cl.GetProgramBuildInfo
 // - А в cl.GetProgramInfo надо принимать [Out] "array of array of Byte" вместо "var IntPtr"
+
+//TODO Деприкация в OpenCL?
+// - К примеру clCreateImage2D не должна использоваться после 1.2
 
 //TODO .ToString для простых обёрток лучше пусть возвращает hex представление ntv
 // - Реализовано в ветке с новыми TypeName
@@ -132,6 +134,12 @@ unit OpenCLABC;
 //TODO Попробовать получать информацию о параметрах CLKernel'а и выдавать адекватные ошибки, если передают что-то не то
 // - clGetKernelArgInfo
 // - Для этого нужна опция "-cl-kernel-arg-info" при компиляции
+
+//TODO (HTPQ+CQ(0)).ThenConstUse
+// - CQBase.TryGetConstRes ???
+// - Нет, это медленно
+// - Лучше хранить кэш константного результата
+// - И список зависимых очередей-параметров
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
