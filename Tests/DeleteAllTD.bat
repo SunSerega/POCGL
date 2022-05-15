@@ -1,7 +1,0 @@
-
-
-
-del /S *.td
-pause
-
-

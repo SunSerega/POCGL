@@ -1,6 +1,0 @@
-[submodule "DataScraping/Reps/OpenCL-Docs"]
-	path = DataScraping/Reps/OpenCL-Docs
-	url = git@github.com:KhronosGroup/OpenCL-Docs.git
-[submodule "DataScraping/Reps/OpenGL-Registry"]
-	path = DataScraping/Reps/OpenGL-Registry
-	url = git@github.com:KhronosGroup/OpenGL-Registry.git

@@ -1,8 +1,0 @@
-cl_device_id
-DeviceInfo
-clGetDeviceInfo
-
-!Base
-CLDevice
-
-
