@@ -90,7 +90,7 @@ type
       sw.WriteLine('<head>');
       sw.WriteLine('<meta charset="utf-8">');
       
-      sw.WriteLine('<link rel="stylesheet" href="Common/.css" />');
+      sw.WriteLine('<link rel="stylesheet" href="Common/0.css" />');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
@@ -100,7 +100,7 @@ type
         md_pipeline
       ).Trim);
       
-      sw.WriteLine('<script src="Common/.js" ></script>');
+      sw.WriteLine('<script src="Common/0.js" ></script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);
       
