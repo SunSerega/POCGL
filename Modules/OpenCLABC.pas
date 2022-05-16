@@ -14,17 +14,34 @@
 ///
 unit OpenCLABC;
 
+{$region DEBUG}{$ifdef DEBUG}
+
+// Регистрация всех cl.RetainEvent и cl.ReleaseEvent
+{ $define EventDebug}
+
+// Регистрация использований cl_command_queue
+{ $define QueueDebug}
+
+// Регистрация активаций/деактиваций всех WaitHandler-ов
+{ $define WaitDebug}
+
+// Регистрация попыток .Exec команд кешировать свой CLKernel
+{ $define ExecDebug}
+
+{ $define ForceMaxDebug}
+{$ifdef ForceMaxDebug}
+  {$define EventDebug}
+  {$define QueueDebug}
+  {$define WaitDebug}
+  {$define ExecDebug}
+{$endif ForceMaxDebug}
+
+{$endif DEBUG}{$endregion DEBUG}
+
 {$region TODO}
 
 //===================================
 // Обязательно сделать до следующей стабильной версии:
-
-//TODO Разделение Validate кривое, лучше иметь один метод, принимающий CQ<TObj>
-//TODO Всё же создавать целый кеш на 16 единиц, когда на входе константная очередь...
-
-//TODO Тесты:
-// - Один раз создать .ThenExec, затем дважды его выполнить с одним и тем же CLKernel-ом
-// - Из константной очереди, из очереди-параметра и из HQFQ
 
 //TODO Тесты и справка:
 // - (HTPQ+Par).ThenQuickUse.ThenConstConvert
@@ -214,30 +231,6 @@ unit OpenCLABC;
 // - NV#3035203
 
 {$endregion}
-
-{$region DEBUG}{$ifdef DEBUG}
-
-// Регистрация всех cl.RetainEvent и cl.ReleaseEvent
-{ $define EventDebug}
-
-// Регистрация использований cl_command_queue
-{ $define QueueDebug}
-
-// Регистрация активаций/деактиваций всех WaitHandler-ов
-{ $define WaitDebug}
-
-// Регистрация попыток .Exec команд кешировать свой CLKernel
-{ $define ExecDebug}
-
-{ $define ForceMaxDebug}
-{$ifdef ForceMaxDebug}
-  {$define EventDebug}
-  {$define QueueDebug}
-  {$define WaitDebug}
-  {$define ExecDebug}
-{$endif ForceMaxDebug}
-
-{$endif DEBUG}{$endregion DEBUG}
 
 interface
 
@@ -1021,15 +1014,24 @@ type
     
     private static ExecCacheTries := new ConcurrentDictionary<string, ConcurrentQueue<(boolean,string)>>;
     
+    private static count_of_type := new ConcurrentDictionary<System.Type, integer>;
+    private static prev_names := new ConcurrentDictionary<(System.Type,integer), string>;
+    private static function MakeName(command: object) :=
+    prev_names.GetOrAdd((command.GetType,command.GetHashCode), t->
+    begin
+      var n := count_of_type.AddOrUpdate(t[0], 1, (t,n)->n+1);
+      Result := $'{TypeToTypeName(t[0])}#{n}';
+    end);
+    
     private static procedure RegisterExecCacheTry(command: object; is_new: boolean; descr: string) :=
-    ExecCacheTries.GetOrAdd($'{TypeName(command)}[{command.GetHashCode}]', name->new ConcurrentQueue<(boolean,string)>).Enqueue((is_new,descr));
+    ExecCacheTries.GetOrAdd(MakeName(command), name->new ConcurrentQueue<(boolean,string)>).Enqueue((is_new,descr));
     
     public static procedure ReportExecCache(otp: System.IO.TextWriter := Console.Out) :=
     lock otp do
     begin
       otp.WriteLine(System.Environment.StackTrace);
       
-      foreach var kvp in ExecCacheTries do
+      foreach var kvp in ExecCacheTries.OrderBy(kvp->kvp.Key) do
       begin
         otp.WriteLine($'Logging caching tries of {kvp.key}:');
         foreach var (is_new, descr) in kvp.Value do
@@ -8684,7 +8686,12 @@ type
       Result := true;
       GetArgCache(k); // Auto calls ApplyConstArgsTo
     end;
-    protected function ValidateForQueue(q: CommandQueue<CLKernel>): boolean; override := true;
+    protected function ValidateForQueue(q: CommandQueue<CLKernel>): boolean; override;
+    begin
+      Result := true;
+      if (q is ParameterQueue<CLKernel>(var p_q)) and p_q.DefaultDefined then
+        GetArgCache(p_q.Default);
+    end;
     
     public function EnqEvCapacity: integer; abstract;
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; abstract;
@@ -8748,7 +8755,8 @@ type
       if enq_act<>nil then Result.AddAction(enq_act);
     end;
     
-    protected procedure Finalize; override := k_cache.Release({$ifdef ExecDebug}self{$endif});
+    protected procedure Finalize; override :=
+    k_cache.Release({$ifdef ExecDebug}self{$endif});
     
   end;
   
