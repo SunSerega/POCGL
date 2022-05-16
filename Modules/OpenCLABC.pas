@@ -5345,7 +5345,7 @@ type
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
       Result := nil;
-      raise new OpenCLABCInternalException($'Err:Invoke:InvalidToPtr');
+      raise new OpenCLABCInternalException($'%Err:Invoke:InvalidToPtr%');
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -6662,7 +6662,7 @@ type
     end;
     
     public procedure SendSignal; override :=
-    raise new System.InvalidProgramException($'Err:WaitMarkerCombination.SendSignal');
+    raise new System.InvalidProgramException($'%Err:WaitMarkerCombination.SendSignal%');
     
     {$endregion Disabled override's}
     
@@ -7976,7 +7976,7 @@ type
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
       Result := nil;
-      raise new OpenCLABCInternalException($'Err:Invoke:InvalidToPtr');
+      raise new OpenCLABCInternalException($'%Err:Invoke:InvalidToPtr%');
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
