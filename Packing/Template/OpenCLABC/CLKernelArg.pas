@@ -20,30 +20,15 @@ type
       self.need_ccq   := need_ccq;
     end;
     
-    // global/consntant
-    public common_data_extra_nick := default(string);
-    public kernel_use_is_constant: boolean;
-    public pinn_part := default(string);
-    public buff_create_pars := default(string);
-    
     // private
     public setter_set_pars := default(string);
     
     // generic
     public redirect_to := default(string);
     
-    public function DefineGlobalConv(kernel_use_is_constant: boolean; pinn_part: string; buff_create_pars: string): FromMethodSettings;
+    public function DefineGlobal: FromMethodSettings;
     begin
       Result := self;
-      Result.common_data_extra_nick := 'Conv';
-      Result.kernel_use_is_constant := kernel_use_is_constant;
-      Result.pinn_part := pinn_part;
-      Result.buff_create_pars := buff_create_pars;
-    end;
-    public function DefineGlobalWrap: FromMethodSettings;
-    begin
-      Result := self;
-      Result.common_data_extra_nick := 'Wrap';
     end;
     public function DefinePrivate(setter_set_pars: string): FromMethodSettings;
     begin
@@ -54,16 +39,13 @@ type
     begin
       Result := self;
       Result.redirect_to := redirect_to;
-      Result.kernel_use_is_constant := false;
     end;
     
-    public property IsGlobalOrConst: boolean read common_data_extra_nick<>nil;
-    public property IsGlobalOrConstConv: boolean read IsGlobalOrConst and (buff_create_pars<>nil);
-    public property IsGlobalOrConstWrap: boolean read IsGlobalOrConst and (buff_create_pars=nil);
+    public property IsGlobalOrConst: boolean read not IsPrivate and not IsGeneric;
     public property IsPrivate: boolean read setter_set_pars<>nil;
     public property IsGeneric: boolean read redirect_to<>nil;
     
-    public property NeedContextPar: boolean read IsGlobalOrConstConv or (IsGeneric and not need_ccq and not redirect_to.Contains('Private'));
+    public property NeedContextPar: boolean read IsGeneric and not need_ccq and not redirect_to.Contains('Private');
     
   end;
   
@@ -230,35 +212,19 @@ type
         wr += s.par_name;
         wr += ': ';
         write_inp_t(wr, wrap);
-        if s.NeedContextPar then
-        begin
-          wr += '; c: CLContext';
-          def_val_wr += ' := nil';
-          if not s.kernel_use_is_constant then
-          begin
-            wr += '; kernel_use: CLMemoryUsage';
-            def_val_wr += ' := CLMemoryUsage.read_write_bits';
-          end;
-        end;
         wr += ')';
       end;
       var write_pars_call := procedure(wr: Writer)->
       begin
         wr += '(';
         wr += s.par_name;
-        if s.NeedContextPar then
-        begin
-          wr += ', c';
-          if not s.kernel_use_is_constant then
-            wr += ', kernel_use';
-        end;
         wr += ')';
       end;
       
       {$endregion Misc write's}
       
-      // generic/constant/private
-      if s.redirect_to=nil then
+      // global/constant/private
+      if not s.IsGeneric then
       begin
         m += 'type'#10;
         
@@ -301,10 +267,7 @@ type
         var write_data_tname := procedure->
         begin
           m += class_name;
-          m += s.common_data_extra_nick;
-          m += 'Common';
-          if not s.IsGlobalOrConstConv then
-            write_inp_t(m, '');
+          write_inp_t(m, 'Common');
         end;
         
         m += '  ';
@@ -323,7 +286,7 @@ type
         m += ';'#10;
         m += '    '#10;
         
-        if s.gen and (s.IsGlobalOrConstConv or s.IsPrivate) then
+        if s.gen and s.IsPrivate then
         begin
           m += '    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $''%Err:Blittable:Source:';
           m += class_name;
@@ -334,68 +297,54 @@ type
         end;
         
         m += '    public constructor';
-        write_pars_def(m, new WriterEmpty, s.IsGlobalOrConstConv?nil:'CommandQueue');
-        if s.IsGlobalOrConstConv then
-        begin
-          m += ';'#10;
-          m += '    begin'#10;
-          m += '      var ec: ErrorCode;'#10;
-          
-          if s.pinn_part<>nil then
-          begin
-            m += '      var gc_hnd := GCHandle.Alloc(';
-            m += s.par_name;
-            m += s.pinn_part;
-            m += ', GCHandleType.Pinned);'#10;
-          end;
-          
-          //TODO Нужен ли map_use? Протестировать, может ли из за None отрубиться обновление данных RAM
-          m += '      var mem := cl.CreateBuffer((c??CLContext.Default).Native, CLMemoryUsage.MakeCLFlags(';
-          m += if s.kernel_use_is_constant then 'CLMemoryUsage.ReadOnly' else 'kernel_use';
-          m += ', CLMemoryUsage.ReadWrite) + MemFlags.MEM_USE_HOST_PTR, ';
-          m += s.buff_create_pars.Replace('%', s.par_name);
-          m += ', ec);'#10;
-          
-          m += '      data := new ';
-          write_data_tname;
-          m += '(mem';
-          if s.pinn_part<>nil then
-            m += ', gc_hnd';
-          m += ');'#10;
-          
-          m += '      OpenCLABCInternalException.RaiseIfError(ec);'#10;
-          m += '    end;'#10;
-        end else
-        // (global/constant)[non-conv] / private
-        begin
-          m += ' :='#10;
-          m += '    data := new ';
-          write_data_tname;
-          write_pars_call(m);
-          m += ';'#10;
-        end;
+        write_pars_def(m, new WriterEmpty, 'CommandQueue');
+        m += ' :='#10;
+        m += '    data := new ';
+        write_data_tname;
+        write_pars_call(m);
+        m += ';'#10;
         m += '    '#10;
         
-        m += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=';
-        if s.IsGlobalOrConstConv then
-          m += ' exit;'#10 else
+        if s.IsGlobalOrConst then
         begin
-          m += #10;
-          m += '    data.q.InitBeforeInvoke(g, inited_hubs);'#10;
+          m += '    private static function WrapToNative(o: ';
+          write_inp_t(m, nil);
+          m += ') := o.Native;'#10;
+          m += '    '#10;
         end;
+        
+        m += '    protected function TryGetConstSetter: CLKernelArgSetter; override :='#10;
+        m += '    ';
+        if s.IsGlobalOrConst then
+          m += 'data.TryGetConstSetter(WrapToNative);'#10 else
+        if s.IsPrivate then
+        begin
+          m += 'if data.q is ';
+          write_inp_t(m, 'ConstQueue');
+          m += '(var c_q) then'#10;
+          m += '      new ';
+          write_setter_name;
+          m += '(c_q.Value) else nil;'#10;
+        end else
+          raise new System.NotImplementedException;
+        m += '    '#10;
+        
+        m += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :='#10;
+        m += '    data.q.InitBeforeInvoke(g, inited_hubs);'#10;
         m += '    '#10;
         
         m += '    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :='#10;
         m += '    data.Invoke(';
-        if s.IsGlobalOrConstWrap then
-          m += 'inv, o->o.Native' else
+        if s.IsGlobalOrConst then
+          m += 'inv, WrapToNative' else
         if s.IsPrivate then
         begin
           m += 'inv, o->new ';
           write_setter_name;
           m += '(o), ()->new ';
           write_setter_name;
-        end;
+        end else
+          raise new System.NotImplementedException;
         m += ');'#10;
         m += '    '#10;
         
@@ -554,20 +503,15 @@ begin
     var wr_private  := new KATypeWriter('Private');
     var wr_generic  := new KATypeWriter('Generic');
     
-    var WriteGlobalConstantConvFrom := procedure(s: FromMethodSettings; pinn_part: string; buff_create_pars: string)->
+    var WriteGlobalConstantFrom := procedure(s: FromMethodSettings)->
     begin
-      wr_global   .WriteFrom(s.DefineGlobalConv(false,pinn_part,buff_create_pars));
-      wr_constant .WriteFrom(s.DefineGlobalConv(true, pinn_part,buff_create_pars));
-    end;
-    var WriteGlobalConstantWrapFrom := procedure(s: FromMethodSettings)->
-    begin
-      wr_global   .WriteFrom(s.DefineGlobalWrap);
-      wr_constant .WriteFrom(s.DefineGlobalWrap);
+      wr_global   .WriteFrom(s.DefineGlobal);
+      wr_constant .WriteFrom(s.DefineGlobal);
     end;
     
     
     
-    (wr_global*wr_constant*wr_private*wr_generic).WriteReg(2, 'Managed', ()->
+    (wr_private*wr_generic).WriteReg(2, 'Managed', ()->
     begin
       
       for var dim := 1 to 3 do
@@ -579,9 +523,8 @@ begin
         
         var cl_pars := 'new UIntPtr(UInt32(%.Length)*uint64(Marshal.SizeOf(default(T)))), %['+SeqFill(dim,'0').JoinToString(',') + ']';
         
-        WriteGlobalConstantConvFrom(s, '', cl_pars);
         wr_private.WriteFrom(s.DefinePrivate(cl_pars));
-        wr_generic.WriteFrom(s.DefineGeneric(wr_global.class_name));
+        wr_generic.WriteFrom(s.DefineGeneric(wr_private.class_name));
         
       end;
       
@@ -590,9 +533,8 @@ begin
         
         var cl_pars := 'new UIntPtr(UInt32(%.Count)*uint64(Marshal.SizeOf(default(T)))), %.Array[%.Offset]';
         
-        WriteGlobalConstantConvFrom(s, '.Array', cl_pars);
         wr_private.WriteFrom(s.DefinePrivate(cl_pars));
-        wr_generic.WriteFrom(s.DefineGeneric(wr_global.class_name));
+        wr_generic.WriteFrom(s.DefineGeneric(wr_private.class_name));
         
       end;
       
@@ -600,7 +542,7 @@ begin
     
     
     
-    foreach var area in |'Area',nil| do (wr_global*wr_constant*wr_private*wr_generic).WriteReg(2, 'Native'+area, ()->
+    foreach var area in |'Area',nil| do (wr_private*wr_generic).WriteReg(2, 'Native'+area, ()->
     begin
       
       foreach var t in |'Memory','Value','Array'| do
@@ -617,9 +559,8 @@ begin
         
         var cl_pars := $'{area_ref}.{sz_ref}, {area_ref}.{ptr_ref}';
         
-        WriteGlobalConstantConvFrom(s, nil, cl_pars);
         wr_private.WriteFrom(s.DefinePrivate(cl_pars));
-        wr_generic.WriteFrom(s.DefineGeneric(wr_global.class_name));
+        wr_generic.WriteFrom(s.DefineGeneric(wr_private.class_name));
         
       end;
       
@@ -636,7 +577,7 @@ begin
         var par_name := 'cl_'+t.Remove(3).ToLower;
         var s := new FromMethodSettings(full_t, par_name, full_t, t<>'Memory', true);
         
-        WriteGlobalConstantWrapFrom(s);
+        WriteGlobalConstantFrom(s);
         wr_generic  .WriteFrom(s.DefineGeneric(wr_global.class_name));
         
       end;

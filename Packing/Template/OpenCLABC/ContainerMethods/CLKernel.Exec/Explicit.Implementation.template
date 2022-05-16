@@ -26,7 +26,7 @@ type
        sz1.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
@@ -39,8 +39,7 @@ type
       Result := (o, cq, evs)->
       begin
         var  sz1 :=  sz1_qr.GetResDirect;
-        for var i := 0 to arg_setters.Length-1 do
-          arg_setters[i].Apply(o, i, arg_cache);
+        ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
         var ec := cl.EnqueueNDRangeKernel(
@@ -52,7 +51,6 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        cache_lock.TryReleaseLock;
         Result := new DirectEnqRes(res_ev, c->
         begin
           self.KeepArgsGCAlive;
@@ -112,7 +110,7 @@ type
        sz2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
@@ -128,8 +126,7 @@ type
       begin
         var  sz1 :=  sz1_qr.GetResDirect;
         var  sz2 :=  sz2_qr.GetResDirect;
-        for var i := 0 to arg_setters.Length-1 do
-          arg_setters[i].Apply(o, i, arg_cache);
+        ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
         var ec := cl.EnqueueNDRangeKernel(
@@ -141,7 +138,6 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        cache_lock.TryReleaseLock;
         Result := new DirectEnqRes(res_ev, c->
         begin
           self.KeepArgsGCAlive;
@@ -209,7 +205,7 @@ type
        sz3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; override;
     begin
       var  sz1_qr: QueueRes<integer>;
       var  sz2_qr: QueueRes<integer>;
@@ -228,8 +224,7 @@ type
         var  sz1 :=  sz1_qr.GetResDirect;
         var  sz2 :=  sz2_qr.GetResDirect;
         var  sz3 :=  sz3_qr.GetResDirect;
-        for var i := 0 to arg_setters.Length-1 do
-          arg_setters[i].Apply(o, i, arg_cache);
+        ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
         var ec := cl.EnqueueNDRangeKernel(
@@ -241,7 +236,6 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        cache_lock.TryReleaseLock;
         Result := new DirectEnqRes(res_ev, c->
         begin
           self.KeepArgsGCAlive;
@@ -314,7 +308,7 @@ type
          local_work_size.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; override;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; override;
     begin
       var global_work_offset_qr: QueueRes<array of UIntPtr>;
       var   global_work_size_qr: QueueRes<array of UIntPtr>;
@@ -333,8 +327,7 @@ type
         var global_work_offset := global_work_offset_qr.GetResDirect;
         var   global_work_size :=   global_work_size_qr.GetResDirect;
         var    local_work_size :=    local_work_size_qr.GetResDirect;
-        for var i := 0 to arg_setters.Length-1 do
-          arg_setters[i].Apply(o, i, arg_cache);
+        ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
         var ec := cl.EnqueueNDRangeKernel(
@@ -346,7 +339,6 @@ type
         );
         OpenCLABCInternalException.RaiseIfError(ec);
         
-        cache_lock.TryReleaseLock;
         Result := new DirectEnqRes(res_ev, c->
         begin
           self.KeepArgsGCAlive;

@@ -2,33 +2,10 @@
 
 
 #DelegateCount
-4
+5
 
 #ExpExecOtp
 Global 
-|	Managed 
-|	|	Array 
-|	|	|	CLKernelArgGlobalArray<byte>: cl_mem[*] 
-|	|	Array2 
-|	|	|	CLKernelArgGlobalArray2<byte>: cl_mem[*] 
-|	|	Array3 
-|	|	|	CLKernelArgGlobalArray3<byte>: cl_mem[*] 
-|	|	ArraySegment 
-|	|	|	CLKernelArgGlobalArraySegment<byte>: cl_mem[*] 
-|	NativeArea 
-|	|	NativeMemoryArea 
-|	|	|	CLKernelArgGlobalNativeMemoryArea: cl_mem[*] 
-|	|	NativeValueArea 
-|	|	|	CLKernelArgGlobalNativeValueArea<byte>: cl_mem[*] 
-|	|	NativeArrayArea 
-|	|	|	CLKernelArgGlobalNativeArrayArea<byte>: cl_mem[*] 
-|	Native 
-|	|	NativeMemory 
-|	|	|	CLKernelArgGlobalNativeMemory: cl_mem[*] 
-|	|	NativeValue 
-|	|	|	CLKernelArgGlobalNativeValue<byte>: cl_mem[*] 
-|	|	NativeArray 
-|	|	|	CLKernelArgGlobalNativeArray<byte>: cl_mem[*] 
 |	CL 
 |	|	CLMemory 
 |	|	|	CLKernelArgGlobalCLMemory 
@@ -73,29 +50,6 @@ Global
 |	|	|		CLArrayCCQ<byte>#0 
 |	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4 
 Constant 
-|	Managed 
-|	|	Array 
-|	|	|	CLKernelArgConstantArray<byte>: cl_mem[*] 
-|	|	Array2 
-|	|	|	CLKernelArgConstantArray2<byte>: cl_mem[*] 
-|	|	Array3 
-|	|	|	CLKernelArgConstantArray3<byte>: cl_mem[*] 
-|	|	ArraySegment 
-|	|	|	CLKernelArgConstantArraySegment<byte>: cl_mem[*] 
-|	NativeArea 
-|	|	NativeMemoryArea 
-|	|	|	CLKernelArgConstantNativeMemoryArea: cl_mem[*] 
-|	|	NativeValueArea 
-|	|	|	CLKernelArgConstantNativeValueArea<byte>: cl_mem[*] 
-|	|	NativeArrayArea 
-|	|	|	CLKernelArgConstantNativeArrayArea<byte>: cl_mem[*] 
-|	Native 
-|	|	NativeMemory 
-|	|	|	CLKernelArgConstantNativeMemory: cl_mem[*] 
-|	|	NativeValue 
-|	|	|	CLKernelArgConstantNativeValue<byte>: cl_mem[*] 
-|	|	NativeArray 
-|	|	|	CLKernelArgConstantNativeArray<byte>: cl_mem[*] 
 |	CL 
 |	|	CLMemory 
 |	|	|	CLKernelArgConstantCLMemory 
@@ -359,27 +313,117 @@ Private
 Generic 
 |	Managed 
 |	|	Array 
-|	|	|	CLKernelArgGlobalArray<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array of byte>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ParameterQueue<array of byte>#0["a"]: Default=[1,2,3,4] 
 |	|	Array2 
-|	|	|	CLKernelArgGlobalArray2<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateArray2<byte> 
+|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array of byte>#0: array [,] of byte{ [[1,2,3],[4,5,6]] } 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ParameterQueue<array [,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]] 
 |	|	Array3 
-|	|	|	CLKernelArgGlobalArray3<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateArray3<byte> 
+|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array of byte>#0: array [,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] } 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] 
+|	|	|	CLKernelArgPrivateArray<byte> 
+|	|	|		ParameterQueue<array [,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] 
 |	|	ArraySegment 
-|	|	|	CLKernelArgGlobalArraySegment<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateArraySegment<byte> 
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3] 
+|	|	|	CLKernelArgPrivateArraySegment<byte> 
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3] 
+|	|	|	CLKernelArgPrivateArraySegment<byte> 
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3] 
+|	|	|	CLKernelArgPrivateArraySegment<byte> 
+|	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3] 
+|	|	|	CLKernelArgPrivateArraySegment<byte> 
+|	|	|		ParameterQueue<ArraySegment<byte>>#0["seg"]: Default=[2,3] 
 |	NativeArea 
 |	|	NativeMemoryArea 
-|	|	|	CLKernelArgGlobalNativeMemoryArea: cl_mem[*] 
+|	|	|	CLKernelArgPrivateNativeMemoryArea 
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2] 
+|	|	|	CLKernelArgPrivateNativeMemoryArea 
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2] 
+|	|	|	CLKernelArgPrivateNativeMemoryArea 
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2] 
+|	|	|	CLKernelArgPrivateNativeMemoryArea 
+|	|	|		ConstQueue<NativeMemoryArea>#0: NativeMemoryArea:$1[2] 
+|	|	|	CLKernelArgPrivateNativeMemoryArea 
+|	|	|		ParameterQueue<NativeMemoryArea>#0["ntv_mem_area"]: Default=NativeMemoryArea:$1[2] 
 |	|	NativeValueArea 
-|	|	|	CLKernelArgGlobalNativeValueArea<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateNativeValueArea<byte> 
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3 
+|	|	|	CLKernelArgPrivateNativeValueArea<byte> 
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3 
+|	|	|	CLKernelArgPrivateNativeValueArea<byte> 
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3 
+|	|	|	CLKernelArgPrivateNativeValueArea<byte> 
+|	|	|		ConstQueue<NativeValueArea<byte>>#0: NativeValueArea<byte>:$3 
+|	|	|	CLKernelArgPrivateNativeValueArea<byte> 
+|	|	|		ParameterQueue<NativeValueArea<byte>>#0["ntv_val_area"]: Default=NativeValueArea<byte>:$3 
 |	|	NativeArrayArea 
-|	|	|	CLKernelArgGlobalNativeArrayArea<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateNativeArrayArea<byte> 
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5] 
+|	|	|	CLKernelArgPrivateNativeArrayArea<byte> 
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5] 
+|	|	|	CLKernelArgPrivateNativeArrayArea<byte> 
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5] 
+|	|	|	CLKernelArgPrivateNativeArrayArea<byte> 
+|	|	|		ConstQueue<NativeArrayArea<byte>>#0: NativeArrayArea<byte>:$4[5] 
+|	|	|	CLKernelArgPrivateNativeArrayArea<byte> 
+|	|	|		ParameterQueue<NativeArrayArea<byte>>#0["ntv_arr_area"]: Default=NativeArrayArea<byte>:$4[5] 
 |	Native 
 |	|	NativeMemory 
-|	|	|	CLKernelArgGlobalNativeMemory: cl_mem[*] 
+|	|	|	CLKernelArgPrivateNativeMemory 
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2] 
+|	|	|	CLKernelArgPrivateNativeMemory 
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2] 
+|	|	|	CLKernelArgPrivateNativeMemory 
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2] 
+|	|	|	CLKernelArgPrivateNativeMemory 
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2] 
+|	|	|	CLKernelArgPrivateNativeMemory 
+|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2] 
 |	|	NativeValue 
-|	|	|	CLKernelArgGlobalNativeValue<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateNativeValue<byte> 
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 } 
+|	|	|	CLKernelArgPrivateNativeValue<byte> 
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 } 
+|	|	|	CLKernelArgPrivateNativeValue<byte> 
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 } 
+|	|	|	CLKernelArgPrivateNativeValue<byte> 
+|	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 } 
+|	|	|	CLKernelArgPrivateNativeValue<byte> 
+|	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 } 
 |	|	NativeArray 
-|	|	|	CLKernelArgGlobalNativeArray<byte>: cl_mem[*] 
+|	|	|	CLKernelArgPrivateNativeArray<byte> 
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateNativeArray<byte> 
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateNativeArray<byte> 
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateNativeArray<byte> 
+|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4] 
+|	|	|	CLKernelArgPrivateNativeArray<byte> 
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=[1,2,3,4] 
 |	CL 
 |	|	CLMemory 
 |	|	|	CLKernelArgGlobalCLMemory 

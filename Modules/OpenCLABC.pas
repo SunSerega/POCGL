@@ -19,14 +19,12 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Пусть CLKernel хранит array of cl_kernel
-// - Таким образом можно не создавать новые cl_kernel лишний раз
-// - Увеличивать размер когда ~75% заполнено, уменьшать когда ~30%
-// - С другой стороны, каждому .ThenExec нужен свой ntv
-// - Создавать отдельный объект CLKernel для каждой команды?
-//TODO Попробовать применять константные CLKernelArg к константному CLKernel в момент создания команды
-// - "var TODO := 0" дающий предупреждение уже стоит
-// - Но если не все CLKernelArg константные, если CLKernel выполнен 2 раза одновременно - его придётся скопировать и применить аргументы ещё раз
+//TODO Разделение Validate кривое, лучше иметь один метод, принимающий CQ<TObj>
+//TODO Всё же создавать целый кеш на 16 единиц, когда на входе константная очередь...
+
+//TODO Тесты:
+// - Один раз создать .ThenExec, затем дважды его выполнить с одним и тем же CLKernel-ом
+// - Из константной очереди, из очереди-параметра и из HQFQ
 
 //TODO Тесты и справка:
 // - (HTPQ+Par).ThenQuickUse.ThenConstConvert
@@ -84,6 +82,8 @@ unit OpenCLABC;
 
 //TODO Разделить .html справку и гайд по OpenCLABC
 //TODO github.io
+// - Разобраться почему .css не работало до 0.css, но только на github.io
+// - Добавить index.html в справки, состоящий из всего 1 страницы
 
 //TODO Справка:
 // - CLKernelArg
@@ -132,8 +132,9 @@ unit OpenCLABC;
 //TODO Пройтись по интерфейсу, порасставлять кидание исключений
 //TODO Проверки и кидания исключений перед всеми cl.*, чтобы выводить норм сообщения об ошибках
 //TODO Попробовать получать информацию о параметрах CLKernel'а и выдавать адекватные ошибки, если передают что-то не то
+// - clGetKernelInfo:NUM_ARGS
 // - clGetKernelArgInfo
-// - Для этого нужна опция "-cl-kernel-arg-info" при компиляции
+//TODO clGetKernelInfo:ATTRIBUTES?
 
 //TODO (HTPQ+CQ(0)).ThenConstUse
 // - CQBase.TryGetConstRes ???
@@ -225,11 +226,15 @@ unit OpenCLABC;
 // Регистрация активаций/деактиваций всех WaitHandler-ов
 { $define WaitDebug}
 
+// Регистрация попыток .Exec команд кешировать свой CLKernel
+{ $define ExecDebug}
+
 { $define ForceMaxDebug}
 {$ifdef ForceMaxDebug}
   {$define EventDebug}
   {$define QueueDebug}
   {$define WaitDebug}
+  {$define ExecDebug}
 {$endif ForceMaxDebug}
 
 {$endif DEBUG}{$endregion DEBUG}
@@ -975,7 +980,7 @@ type
     
   end;
   
-  {$endif}{$endregion QueueDebug}
+  {$endif QueueDebug}{$endregion QueueDebug}
   
   {$region WaitDebug}{$ifdef WaitDebug}
   
@@ -984,7 +989,7 @@ type
     private static WaitActions := new ConcurrentDictionary<object, ConcurrentQueue<string>>;
     
     private static procedure RegisterAction(handler: object; act: string) :=
-    WaitActions.GetOrAdd(handler, hc->new System.Collections.Concurrent.ConcurrentQueue<string>).Enqueue(act);
+    WaitActions.GetOrAdd(handler, hc->new ConcurrentQueue<string>).Enqueue(act);
     
     public static procedure ReportWaitActions(otp: System.IO.TextWriter := Console.Out) :=
     lock otp do
@@ -1008,7 +1013,40 @@ type
     
   end;
   
-  {$endif}{$endregion WaitDebug}
+  {$endif WaitDebug}{$endregion WaitDebug}
+  
+  {$region ExecDebug}{$ifdef ExecDebug}
+  
+  ExecDebug = static class
+    
+    private static ExecCacheTries := new ConcurrentDictionary<string, ConcurrentQueue<(boolean,string)>>;
+    
+    private static procedure RegisterExecCacheTry(command: object; is_new: boolean; descr: string) :=
+    ExecCacheTries.GetOrAdd($'{TypeName(command)}[{command.GetHashCode}]', name->new ConcurrentQueue<(boolean,string)>).Enqueue((is_new,descr));
+    
+    public static procedure ReportExecCache(otp: System.IO.TextWriter := Console.Out) :=
+    lock otp do
+    begin
+      otp.WriteLine(System.Environment.StackTrace);
+      
+      foreach var kvp in ExecCacheTries do
+      begin
+        otp.WriteLine($'Logging caching tries of {kvp.key}:');
+        foreach var (is_new, descr) in kvp.Value do
+          otp.WriteLine(descr);
+        otp.WriteLine('-'*30);
+      end;
+      
+      otp.WriteLine('='*40);
+      otp.Flush;
+    end;
+    
+    public static procedure FinallyReport := if ExecCacheTries.Count<>0 then
+    $'[ExecDebug]: {ExecCacheTries.Values.Sum(q->q.Count(t->t[0]))} cache entries created'.Println;
+    
+  end;
+  
+  {$endif ExecDebug}{$endregion ExecDebug}
   
   {$endregion DEBUG}
   
@@ -1160,10 +1198,10 @@ type
       begin
         var c :=
         {$ifdef ForceMaxDebug}
-        LoadTestContext;
+        LoadTestContext
         {$else ForceMaxDebug}
-        MakeNewDefaultContext;
-        {$endif ForceMaxDebug}
+        MakeNewDefaultContext
+        {$endif ForceMaxDebug};
         // Another exchange, because Default could be explicitly set
         Interlocked.CompareExchange(_default, c, nil);
       end;
@@ -1702,7 +1740,7 @@ type
       
       if Result=cl_program.Zero then
         //TODO В этом случае нельзя получить лог???
-        ec.RaiseIfError else
+        OpenCLABCInternalException.RaiseIfError(ec) else
         CheckBuildFail(Result,
           ec, ErrorCode.LINK_PROGRAM_FAILURE,
           $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
@@ -1925,12 +1963,9 @@ type
     private k_name: string;
     public property Name: string read k_name;
     
-    private function ntv: cl_kernel;
-    begin
-      var ec: ErrorCode;
-      Result := cl.CreateKernel(code.ntv, k_name, ec);
-      OpenCLABCInternalException.RaiseIfError(ec);
-    end;
+    public function AllocNative: cl_kernel;
+    public procedure ReleaseNative(ntv: cl_kernel);
+    protected procedure AddExistingNative(ntv: cl_kernel);
     
     {$region constructor's}
     
@@ -1942,6 +1977,7 @@ type
     
     public constructor(ntv: cl_kernel);
     begin
+      AddExistingNative(ntv);
       
       var code_ntv: cl_program;
       OpenCLABCInternalException.RaiseIfError(
@@ -1963,7 +1999,6 @@ type
         Marshal.FreeHGlobal(str_ptr);
       end;
       
-      cl.ReleaseKernel(ntv).RaiseIfError;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -8124,8 +8159,39 @@ type
   CLKernelArgCacheEntry = record
     public val_is_set: boolean;
     public last_set_val: object;
+    
+    public function TrySetVal(val: object): boolean;
+    begin
+      Result := false;
+      if self.val_is_set and Object.Equals(self.last_set_val, val) then exit;
+      self.val_is_set := true;
+      self.last_set_val := val;
+      Result := true;
+    end;
+    
   end;
-  CLKernelArgCache = array of CLKernelArgCacheEntry;
+  CLKernelArgCache = record
+    private ntv: cl_kernel;
+    private vals: array of CLKernelArgCacheEntry;
+    
+    public constructor(k: CLKernel; args_c: integer);
+    begin
+      self.ntv := k.AllocNative;
+      self.vals := new CLKernelArgCacheEntry[args_c];
+    end;
+    public constructor := raise new OpenCLABCInternalException;
+    
+    public function TrySetVal(ind: integer; val: object) := vals[ind].TrySetVal(val);
+    
+    public procedure Release(k: CLKernel);
+    begin
+      k.ReleaseNative(self.ntv);
+      {$ifdef DEBUG}
+      self.ntv := cl_kernel.Zero;
+      {$endif DEBUG}
+    end;
+    
+  end;
   
   CLKernelArgSetter = abstract class
     private is_const: boolean;
@@ -8135,7 +8201,7 @@ type
     
     public property IsConst: boolean read is_const;
     
-    public procedure Apply(k: cl_kernel; ind: UInt32; cache: CLKernelArgCache); abstract;
+    public procedure Apply(ind: UInt32; cache: CLKernelArgCache); abstract;
     
   end;
   CLKernelArgSetterTyped<T> = abstract class(CLKernelArgSetter)
@@ -8161,29 +8227,24 @@ type
       self.o := o;
     end;
     
-    public procedure Apply(k: cl_kernel; ind: UInt32; cache: CLKernelArgCache); override;
+    public procedure Apply(ind: UInt32; cache: CLKernelArgCache); override;
     begin
-      
-      if cache<>nil then
-      begin
-        var curr_val := self.o;
-        if cache[ind].val_is_set and Object.Equals(cache[ind].last_set_val, curr_val) then exit;
-        cache[ind].val_is_set := true;
-        cache[ind].last_set_val := curr_val;
-      end;
-      
       {$ifdef DEBUG}
       if not o_set then
-        raise new OpenCLABCInternalException($'Unset {TypeName(self)} value') else
+        raise new OpenCLABCInternalException($'Unset {TypeName(self)} value');
       {$endif DEBUG}
       
-      ApplyImpl(k, ind);
+      if not cache.TrySetVal(ind, self.o) then exit;
+      
+      ApplyImpl(cache.ntv, ind);
     end;
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); abstract;
     
   end;
   
   CLKernelArg = abstract partial class
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; abstract;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
     
@@ -8193,72 +8254,10 @@ type
   
 {$endregion Base}
 
-{$region GlobalConv}
+{$region Global}
 
 type
-  CLKernelArgSetterGlobalConv = class(CLKernelArgSetterTyped<cl_mem>)
-    
-    public constructor(mem: cl_mem) := inherited Create(mem);
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError(
-      cl.SetKernelArg(k, ind, new UIntPtr(cl_mem.Size), self.o)
-    );
-    
-    protected procedure Finalize; override :=
-    OpenCLABCInternalException.RaiseIfError(
-      cl.ReleaseMemObject(self.o)
-    );
-    
-  end;
-  CLKernelArgSetterGlobalConvHnd = sealed class(CLKernelArgSetterGlobalConv)
-    private gc_hnd: GCHandle;
-    
-    public constructor(mem: cl_mem; gc_hnd: GCHandle);
-    begin
-      inherited Create(mem);
-      self.gc_hnd := gc_hnd;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure Finalize; override;
-    begin
-      inherited;
-      gc_hnd.Free;
-    end;
-    
-  end;
-  
-  CLKernelArgGlobalConvCommon = record
-    private setter: CLKernelArgSetterGlobalConv;
-    
-    public constructor(mem: cl_mem) :=
-    self.setter := new CLKernelArgSetterGlobalConv(mem);
-    public constructor(mem: cl_mem; gc_hnd: GCHandle) :=
-    self.setter := new CLKernelArgSetterGlobalConvHnd(mem, gc_hnd);
-    public constructor := raise new OpenCLABCInternalException;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke := ValueTuple.Create(self.setter as CLKernelArgSetter, EventList.Empty);
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
-    begin
-      sb += ': ';
-      CommandQueueBase.ToStringRuntimeValue(sb, setter.o);
-      sb += #10;
-    end;
-    
-  end;
-  CLKernelArgConstantConvCommon = CLKernelArgGlobalConvCommon;
-  
-{$endregion GlobalConv}
-
-{$region GlobalWrap}
-
-type
-  CLKernelArgSetterGlobalWrap<TWrap> = sealed class(CLKernelArgSetterTyped<cl_mem>)
+  CLKernelArgSetterGlobal<TWrap> = sealed class(CLKernelArgSetterTyped<cl_mem>)
   where TWrap: class;
     private wrap: TWrap := nil;
     
@@ -8286,12 +8285,17 @@ type
     
   end;
   
-  CLKernelArgGlobalWrapCommon<TWrap> = record
+  CLKernelArgGlobalCommon<TWrap> = record
   where TWrap: class;
     private q: CommandQueue<TWrap>;
     
     public constructor(q: CommandQueue<TWrap>) := self.q := q;
     public constructor := raise new OpenCLABCInternalException;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function TryGetConstSetter(get_ntv: TWrap->cl_mem): CLKernelArgSetter :=
+    if q is ConstQueue<TWrap>(var c_q) then
+      new CLKernelArgSetterGlobal<TWrap>(c_q.Value, get_ntv(c_q.Value)) else nil;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<CLKernelArgSetter, EventList>;
@@ -8301,10 +8305,10 @@ type
       if wrap_qr.IsConst then
       begin
         var wrap := wrap_qr.GetResDirect;
-        arg_setter := new CLKernelArgSetterGlobalWrap<TWrap>(wrap, get_ntv(wrap));
+        arg_setter := new CLKernelArgSetterGlobal<TWrap>(wrap, get_ntv(wrap));
       end else
       begin
-        var res := new CLKernelArgSetterGlobalWrap<TWrap>;
+        var res := new CLKernelArgSetterGlobal<TWrap>;
         wrap_qr.AddAction(c->
         begin
           var wrap := wrap_qr.GetResDirect;
@@ -8325,7 +8329,7 @@ type
     end;
     
   end;
-  CLKernelArgConstantWrapCommon<TWrap> = CLKernelArgGlobalWrapCommon<TWrap>;
+  CLKernelArgConstantCommon<TWrap> = CLKernelArgGlobalCommon<TWrap>;
   
 {$endregion GlobalWrap}
 
@@ -8345,6 +8349,10 @@ type
     
     public constructor(bytes: CommandQueue<UIntPtr>) := self.bytes := bytes;
     private constructor := raise new OpenCLABCInternalException;
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if bytes is ConstQueue<UIntPtr>(var c_bytes) then
+      new CLKernelArgSetterLocalBytes(c_bytes.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     bytes.InitBeforeInvoke(g, inited_hubs);
@@ -8431,6 +8439,11 @@ type
     
     private static function ExecuteEnqFunc<T>(prev_res: T; cq: cl_command_queue; ev_l2: EventList; enq_f: EnqFunc<T>; err_handler: CLTaskErrHandler{$ifdef EventDebug}; q: object{$endif}): EnqRes;
     begin
+      {$ifdef DEBUG}
+      if prev_res=default(t) then
+        raise new OpenCLABCInternalException($'NULL Native');
+      {$endif DEBUG}
+      
       var direct_enq_res: DirectEnqRes;
       try
         direct_enq_res := enq_f(prev_res, cq, ev_l2);
@@ -8555,54 +8568,137 @@ type
 {$region ExecCommand}
 
 type
-  ExecCommandOwnKLock = sealed class
-    private o: object;
-    private own_locked := InterlockedBoolean(false);
+  ExecCommandCLKernelCacheEntry = record
+    k: CLKernel;
+    cache: CLKernelArgCache;
+    last_use: DateTime;
     
-    public constructor(o: object);
+    procedure Bump := last_use := DateTime.Now;
+    
+    procedure TryRelease({$ifdef ExecDebug}command: object{$endif}) := if k<>nil then
     begin
-      self.o := o;
-      if o=nil then exit;
-      own_locked := Monitor.TryEnter(o);
+      {$ifdef ExecDebug}
+      ExecDebug.RegisterExecCacheTry(command, false, $'For {k} returned {cache.ntv}');
+      {$endif ExecDebug}
+      cache.Release(k);
+    end;
+    procedure Replace(k: CLKernel; cache: CLKernelArgCache{$ifdef ExecDebug}; command: object{$endif});
+    begin
+      self.TryRelease({$ifdef ExecDebug}command{$endif});
+      self.k := k;
+      self.cache := cache;
+      self.Bump;
     end;
     
-    public static function operator implicit(l: ExecCommandOwnKLock): boolean := l.own_locked;
+  end;
+  ExecCommandCLKernelCache = record
+    private const cache_size = 16;
     
-    private procedure TryReleaseLock;
+    private data := new ExecCommandCLKernelCacheEntry[cache_size];
+    private data_ind := new Dictionary<CLKernel, integer>(cache_size);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function GetArgCache(k: CLKernel; make_new: CLKernel->CLKernelArgCache{$ifdef ExecDebug}; command: object{$endif}): CLKernelArgCache;
     begin
-      if not own_locked.TrySet(false) then exit;
-      Monitor.Exit(o);
+      lock data do
+      begin
+        
+        var ind := 0;
+        if data_ind.TryGetValue(k, ind) then
+        begin
+          data[ind].Bump;
+          Result := data[ind].cache;
+          {$ifdef ExecDebug}
+          ExecDebug.RegisterExecCacheTry(command, false, $'For {k} taken {Result.ntv}');
+          {$endif ExecDebug}
+        end else
+        
+        begin
+          for var i := 1 to cache_size-1 do
+            if data[i].last_use<data[ind].last_use then
+              ind := i;
+          Result := make_new(k);
+          data[ind].Replace(k, Result{$ifdef ExecDebug}, command{$endif});
+          data_ind[k] := ind;
+          {$ifdef ExecDebug}
+          ExecDebug.RegisterExecCacheTry(command, true, $'For {k} made {Result.ntv}');
+          {$endif ExecDebug}
+        end;
+        
+      end;
     end;
     
-    {$ifdef DEBUG}
-    protected procedure Finalize; override :=
-    if own_locked then raise new OpenCLABCInternalException($'Broken {TypeName(self)}');
-    {$endif DEBUG}
+    public procedure Release({$ifdef ExecDebug}command: object{$endif}) :=
+    for var i := 0 to cache_size-1 do
+      data[i].TryRelease({$ifdef ExecDebug}command{$endif});
     
   end;
   
   EnqueueableExecCommand = abstract class(CommonGPUCommand<CLKernel>)
     private args: array of CLKernelArg;
+    private const_args_setters: array of CLKernelArgSetter;
+    private args_c, args_non_const_c: integer;
     
-    protected constructor(args: array of CLKernelArg) := self.args := args;
+    protected constructor(args: array of CLKernelArg);
+    begin
+      args := args.ToArray;
+      self.args := args;
+      self.const_args_setters := new CLKernelArgSetter[args.Length];
+      self.args_c := args.Length;
+      self.args_non_const_c := args.Length;
+      for var i := 0 to args_c-1 do
+      begin
+        var setter := args[i].TryGetConstSetter;
+        if setter=nil then continue;
+        args_non_const_c -= 1;
+        const_args_setters[i] := setter;
+        args[i] := nil;
+      end;
+      if args_non_const_c=0 then
+        self.args := nil else
+      if args_non_const_c=args_c then
+        self.const_args_setters := nil;
+    end;
     private constructor := raise new OpenCLABCInternalException;
+    
+    private procedure ApplyConstArgsTo(arg_cache: CLKernelArgCache);
+    begin
+      if const_args_setters=nil then exit;
+      for var i := 0 to args_c-1 do
+      begin
+        if const_args_setters[i]=nil then continue;
+        const_args_setters[i].Apply(i, arg_cache);
+      end;
+    end;
+    
+    private k_cache := new ExecCommandCLKernelCache;
+    private function GetArgCache(k: CLKernel) :=
+    k_cache.GetArgCache(k, k->
+    begin
+      Result := new CLKernelArgCache(k, self.args_c);
+      ApplyConstArgsTo(Result);
+    end{$ifdef ExecDebug}, self{$endif});
     
     protected function ValidateForObj(k: CLKernel): boolean; override;
     begin
       Result := true;
-      var TODO := 0; // Попробовать пред-устанавливать аргументы
+      GetArgCache(k); // Auto calls ApplyConstArgsTo
     end;
     protected function ValidateForQueue(q: CommandQueue<CLKernel>): boolean; override := true;
     
     public function EnqEvCapacity: integer; abstract;
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; arg_cache: CLKernelArgCache; cache_lock: ExecCommandOwnKLock): EnqFunc<cl_kernel>; abstract;
+    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; abstract;
+    
+    {$region DerCommon}
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of CLKernelArgSetter;
     begin
-      Result := new CLKernelArgSetter[self.args.Length];
-      for var i := 0 to self.args.Length-1 do
+      if args=nil then exit;
+      Result := new CLKernelArgSetter[self.args_c];
+      for var i := 0 to self.args_c-1 do
       begin
+        if args[i]=nil then continue;
         var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
         Result[i] := arg_setter;
         if not arg_setter.IsConst then
@@ -8612,56 +8708,47 @@ type
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    procedure ApplySetters(cache: CLKernelArgCache; setters: array of CLKernelArgSetter);
+    begin
+      if setters=nil then exit;
+      for var i := 0 to self.args_c-1 do
+      begin
+        if setters[i]=nil then continue;
+        setters[i].Apply(i, cache);
+      end;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure KeepArgsGCAlive := GC.KeepAlive(self.args);
     
-    private own_k := default(CLKernel);
-    private own_k_ntv := cl_kernel.Zero;
-    private own_arg_cache := default(CLKernelArgCache);
+    {$endregion DerCommon}
     
     protected function Invoke(k_const: boolean; get_k: ()->CLKernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
-      var own_lock := new ExecCommandOwnKLock(if k_const then self else nil);
-      try
-        var arg_cache := default(CLKernelArgCache);
-        var get_k_ntv: ()->cl_kernel;
-        
-        // If CCQ is created from regular object or const/parameter queue
-        // Then try use own_arg_cache, to not set the same values
-        if own_lock then
+      var get_k_ntv: ()->cl_kernel;
+      var arg_cache := default(CLKernelArgCache);
+      if k_const then
+      begin
+        arg_cache := self.GetArgCache(get_k());
+        get_k_ntv := ()->arg_cache.ntv;
+      end else
+        get_k_ntv := ()->
         begin
-          var k := get_k();
-          
-          if own_k=k then
-            arg_cache := self.own_arg_cache else
-          begin
-            own_k := k;
-            own_k_ntv := k.ntv();
-            arg_cache := new CLKernelArgCacheEntry[self.args.Length];
-            self.own_arg_cache := arg_cache;
-          end;
-          
-          get_k_ntv := ()->self.own_k_ntv;
-        end else
-        if k_const then
-        begin
-          var k_ntv := get_k().ntv();
-          get_k_ntv := ()->k_ntv;
-        end else
-          get_k_ntv := ()->get_k().ntv();
-        
-        var (enq_ev, enq_act) := EnqueueableCore.Invoke(
-          self.args.Length+self.EnqEvCapacity, k_const, get_k_ntv, g, l,
-          (g, enq_evs)->InvokeParams(g, enq_evs, arg_cache, own_lock)
-          {$ifdef EventDebug},self{$endif}
-        );
-        
-        Result := new QueueResNil(new CLTaskLocalData(enq_ev));
-        if enq_act<>nil then Result.AddAction(enq_act);
-        
-      finally
-        own_lock.TryReleaseLock;
-      end;
+          arg_cache := self.GetArgCache(get_k());
+          Result := arg_cache.ntv;
+        end;
+      
+      var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+        self.args_non_const_c+self.EnqEvCapacity, k_const, get_k_ntv, g, l,
+        (g, enq_evs)->InvokeParams(g, enq_evs, ()->arg_cache)
+        {$ifdef EventDebug},self{$endif}
+      );
+      
+      Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+      if enq_act<>nil then Result.AddAction(enq_act);
     end;
+    
+    protected procedure Finalize; override := k_cache.Release({$ifdef ExecDebug}self{$endif});
     
   end;
   
@@ -9207,9 +9294,8 @@ begin
       var S_Prog := P_Prog.NewSetter(new CLProgramCode(test_prog, c));
       
       var thr := new Thread(()->
-      try
+      begin
         del := not c.SyncInvoke(Q_Test, S_Arr, S_Prog);
-      except
       end);
       thr.IsBackground := true;
       thr.Start;
@@ -9321,6 +9407,162 @@ end;
 
 {$endregion CLProgramCompOptions}
 
+{$region CLKernel}
+
+type
+  CLKernelNtvList = record
+    private const resize_limit_up = 1/sqrt(2);
+    private const resize_limit_down = resize_limit_up/2;
+    private const min_size_down = 16;
+    
+    private ntvs_lock := new object;
+    private ntvs: array of record
+      k: cl_kernel;
+      used: boolean;
+    end;
+    private ntvs_used := 0;
+    private unused_search_shift := 0;
+    
+    public constructor :=
+    SetLength(ntvs, 1);
+    
+    private function MakeMask: integer;
+    begin
+      Result := ntvs.Length-1;
+      {$ifdef DEBUG}
+      if (Result and ntvs.Length) <> 0 then raise new OpenCLABCInternalException($'ntvs.Length was {ntvs.Length}, which is not a power of 2');
+      {$endif DEBUG}
+    end;
+    
+    private procedure AddExisting(k: cl_kernel; used: boolean; mask: integer);
+    begin
+      var search_shift := k.val.ToInt32;
+      for var i := 0 to mask do
+      begin
+        var ind := (i+search_shift) and mask;
+        if ntvs[ind].k=cl_kernel.Zero then
+        begin
+          ntvs[ind].k := k;
+          ntvs[ind].used := used;
+          ntvs_used += Ord(used);
+          exit;
+        end;
+      end;
+      raise new OpenCLABCInternalException($'No space to add, {ntvs_used}/{ntvs.Length} filled');
+    end;
+    public procedure AddExisting(k: cl_kernel) :=
+    lock ntvs_lock do
+    begin
+      TryResizeUp;
+      AddExisting(k, false, MakeMask);
+    end;
+    
+    private static procedure SetSz<T>(var a: array of T; sz: integer) := a := new T[sz];
+    private procedure ResizeKeepingUsed(sz: integer);
+    begin
+      var prev_ntvs := ntvs;
+      SetSz(self.ntvs, sz);
+      self.ntvs_used := 0;
+      self.unused_search_shift := 0;
+      
+      var mask := MakeMask;
+      var added := 0;
+      
+      foreach var info in prev_ntvs do
+        if info.used then
+        begin
+          AddExisting(info.k, true, mask);
+          added += 1;
+        end else
+        if info.k<>cl_kernel.Zero then
+          OpenCLABCInternalException.RaiseIfError(
+            cl.ReleaseKernel(info.k)
+          );
+      
+    end;
+    private procedure TryResizeUp :=
+    if ntvs_used > ntvs.Length*resize_limit_up then
+      ResizeKeepingUsed(ntvs.Length shl 1);
+    private procedure TryResizeDown :=
+    if ntvs_used < ntvs.Length*resize_limit_down then
+      ResizeKeepingUsed(ntvs.Length shr 1);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function TakeOrMake(make_new: ()->cl_kernel): cl_kernel;
+    begin
+      lock ntvs_lock do
+      begin
+        TryResizeUp;
+        var mask := MakeMask;
+        var search_shift := self.unused_search_shift;
+        for var i := 0 to mask do
+        begin
+          var ind := (i+search_shift) and mask;
+          if ntvs[ind].k=cl_kernel.Zero then
+          begin
+            Result := make_new;
+            ntvs[ind].k := Result;
+          end else
+          if not ntvs[ind].used then
+            Result := ntvs[ind].k else
+            continue;
+          ntvs[ind].used := true;
+          ntvs_used += 1;
+          self.unused_search_shift := ind;
+          exit;
+        end;
+        raise new OpenCLABCInternalException($'No unused or empty found, {ntvs_used}/{ntvs.Length} filled');
+      end;
+    end;
+    
+    public procedure Return(k: cl_kernel) :=
+    lock ntvs_lock do
+    begin
+      var mask := MakeMask;
+      var search_shift := k.val.ToInt32;
+      for var i := 0 to mask do
+      begin
+        var ind := (i+search_shift) and mask;
+        if ntvs[ind].k=k then
+        begin
+          {$ifdef DEBUG}
+          if not ntvs[ind].used then raise new OpenCLABCInternalException($'Return of not taken ntv');
+          {$endif DEBUG}
+          ntvs[ind].used := false;
+          ntvs_used -= 1;
+          if ntvs.Length > min_size_down then
+            TryResizeDown;
+          exit;
+        end;
+      end;
+      raise new OpenCLABCInternalException($'Return of unknown ntv');
+    end;
+    
+  end;
+  
+  CLKernel = partial class
+    
+    private ntvs := new CLKernelNtvList;
+    
+    protected procedure Finalize; override :=
+    ntvs.ResizeKeepingUsed(ntvs.ntvs.Length);
+    
+  end;
+  
+function CLKernel.AllocNative :=
+ntvs.TakeOrMake(()->
+begin
+  var ec: ErrorCode;
+  Result := cl.CreateKernel(code.ntv, k_name, ec);
+  OpenCLABCInternalException.RaiseIfError(ec);
+end);
+
+procedure CLKernel.ReleaseNative(ntv: cl_kernel) := ntvs.Return(ntv);
+
+procedure CLKernel.AddExistingNative(ntv: cl_kernel) := ntvs.AddExisting(ntv);
+
+{$endregion CLKernel}
+
 {$region CLMemory}
 
 static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
@@ -9368,6 +9610,7 @@ procedure CLArray<T>.SetSliceProp(range: IntRange; value: array of T) :=
 {$ifdef ForceMaxDebug}
 initialization
 finalization
+  GC.Collect;
   
   {$ifdef EventDebug}
   EventDebug.FinallyReport;
@@ -9383,6 +9626,10 @@ finalization
       raise new OpenCLABCInternalException($'WaitHandler.reserved in finalization was <>0');
   WaitDebug.FinallyReport;
   {$endif WaitDebug}
+  
+  {$ifdef ExecDebug}
+  ExecDebug.FinallyReport;
+  {$endif ExecDebug}
   
   if QueueResNil.created_count<>0 then
     $'[QueueResNil]: {QueueResNil.created_count}'.Println;

@@ -1160,68 +1160,6 @@
   
   {$endregion CLCode}
   
-  {$region CLKernel}
-  
-  CLKernelProperties = partial class
-    
-    public constructor(ntv: cl_kernel);
-    private constructor := raise new System.InvalidOperationException($'%Err:NoParamCtor%');
-    
-    private function GetFunctionName: String;
-    private function GetNumArgs: UInt32;
-    private function GetReferenceCount: UInt32;
-    private function GetAttributes: String;
-    
-    public property FunctionName:   String read GetFunctionName;
-    public property NumArgs:        UInt32 read GetNumArgs;
-    public property ReferenceCount: UInt32 read GetReferenceCount;
-    public property Attributes:     String read GetAttributes;
-    
-    public procedure ToString(res: StringBuilder); virtual;
-    begin
-      res += 'FunctionName   = ';
-      try
-        res += _ObjectToString(FunctionName);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NumArgs        = ';
-      try
-        res += _ObjectToString(NumArgs);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ReferenceCount = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Attributes     = ';
-      try
-        res += _ObjectToString(Attributes);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-    end;
-    public function ToString: string; override;
-    begin
-      var res := new StringBuilder;
-      ToString(res);
-      Result := res.ToString;
-    end;
-    
-  end;
-  
-  {$endregion CLKernel}
-  
   {$region CLMemory}
   
   CLMemoryProperties = partial class

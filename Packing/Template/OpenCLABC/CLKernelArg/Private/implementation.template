@@ -22,6 +22,10 @@ type
     public constructor(a: CommandQueue<array of T>) :=
     data := new CLKernelArgPrivateCommon<array of T>(a);
     
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<array of T>(var c_q) then
+      new CLKernelArgPrivateSetterArray<T>(c_q.Value) else nil;
+    
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
@@ -56,6 +60,10 @@ type
     
     public constructor(a2: CommandQueue<array[,] of T>) :=
     data := new CLKernelArgPrivateCommon<array[,] of T>(a2);
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<array[,] of T>(var c_q) then
+      new CLKernelArgPrivateSetterArray2<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -92,6 +100,10 @@ type
     public constructor(a3: CommandQueue<array[,,] of T>) :=
     data := new CLKernelArgPrivateCommon<array[,,] of T>(a3);
     
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<array[,,] of T>(var c_q) then
+      new CLKernelArgPrivateSetterArray3<T>(c_q.Value) else nil;
+    
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
@@ -126,6 +138,10 @@ type
     
     public constructor(seg: CommandQueue<ArraySegment<T>>) :=
     data := new CLKernelArgPrivateCommon<ArraySegment<T>>(seg);
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<ArraySegment<T>>(var c_q) then
+      new CLKernelArgPrivateSetterArraySegment<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -162,6 +178,10 @@ type
     public constructor(ntv_mem_area: CommandQueue<NativeMemoryArea>) :=
     data := new CLKernelArgPrivateCommon<NativeMemoryArea>(ntv_mem_area);
     
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<NativeMemoryArea>(var c_q) then
+      new CLKernelArgPrivateSetterNativeMemoryArea(c_q.Value) else nil;
+    
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
@@ -196,6 +216,10 @@ type
     
     public constructor(ntv_val_area: CommandQueue<NativeValueArea<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeValueArea<T>>(ntv_val_area);
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<NativeValueArea<T>>(var c_q) then
+      new CLKernelArgPrivateSetterNativeValueArea<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -232,6 +256,10 @@ type
     public constructor(ntv_arr_area: CommandQueue<NativeArrayArea<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeArrayArea<T>>(ntv_arr_area);
     
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<NativeArrayArea<T>>(var c_q) then
+      new CLKernelArgPrivateSetterNativeArrayArea<T>(c_q.Value) else nil;
+    
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
@@ -266,6 +294,10 @@ type
     
     public constructor(ntv_mem: CommandQueue<NativeMemory>) :=
     data := new CLKernelArgPrivateCommon<NativeMemory>(ntv_mem);
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<NativeMemory>(var c_q) then
+      new CLKernelArgPrivateSetterNativeMemory(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -302,6 +334,10 @@ type
     public constructor(ntv_val: CommandQueue<NativeValue<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeValue<T>>(ntv_val);
     
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<NativeValue<T>>(var c_q) then
+      new CLKernelArgPrivateSetterNativeValue<T>(c_q.Value) else nil;
+    
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
@@ -336,6 +372,10 @@ type
     
     public constructor(ntv_arr: CommandQueue<NativeArray<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeArray<T>>(ntv_arr);
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<NativeArray<T>>(var c_q) then
+      new CLKernelArgPrivateSetterNativeArray<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
@@ -373,6 +413,10 @@ type
     
     public constructor(val: CommandQueue<T>) :=
     data := new CLKernelArgPrivateCommon<T>(val);
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    if data.q is ConstQueue<T>(var c_q) then
+      new CLKernelArgPrivateSetterValue<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);

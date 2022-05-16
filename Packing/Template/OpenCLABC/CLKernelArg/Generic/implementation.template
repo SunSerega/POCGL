@@ -5,29 +5,29 @@
 
 {$region Array}
 
-static function CLKernelArg.FromArray<T>(a: array of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromArray(a, c, kernel_use) end;
+static function CLKernelArg.FromArray<T>(a: CommandQueue<array of T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArray(a) end;
 
 {$endregion Array}
 
 {$region Array2}
 
-static function CLKernelArg.FromArray2<T>(a2: array[,] of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromArray2(a2, c, kernel_use) end;
+static function CLKernelArg.FromArray2<T>(a2: CommandQueue<array[,] of T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArray2(a2) end;
 
 {$endregion Array2}
 
 {$region Array3}
 
-static function CLKernelArg.FromArray3<T>(a3: array[,,] of T; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromArray3(a3, c, kernel_use) end;
+static function CLKernelArg.FromArray3<T>(a3: CommandQueue<array[,,] of T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArray3(a3) end;
 
 {$endregion Array3}
 
 {$region ArraySegment}
 
-static function CLKernelArg.FromArraySegment<T>(seg: ArraySegment<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromArraySegment(seg, c, kernel_use) end;
+static function CLKernelArg.FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArraySegment(seg) end;
 
 {$endregion ArraySegment}
 
@@ -37,22 +37,22 @@ begin Result := CLKernelArgGlobal.FromArraySegment(seg, c, kernel_use) end;
 
 {$region NativeMemoryArea}
 
-static function CLKernelArg.FromNativeMemoryArea(ntv_mem_area: NativeMemoryArea; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg;
-begin Result := CLKernelArgGlobal.FromNativeMemoryArea(ntv_mem_area, c, kernel_use) end;
+static function CLKernelArg.FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArg;
+begin Result := CLKernelArgPrivate.FromNativeMemoryArea(ntv_mem_area) end;
 
 {$endregion NativeMemoryArea}
 
 {$region NativeValueArea}
 
-static function CLKernelArg.FromNativeValueArea<T>(ntv_val_area: NativeValueArea<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromNativeValueArea(ntv_val_area, c, kernel_use) end;
+static function CLKernelArg.FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeValueArea(ntv_val_area) end;
 
 {$endregion NativeValueArea}
 
 {$region NativeArrayArea}
 
-static function CLKernelArg.FromNativeArrayArea<T>(ntv_arr_area: NativeArrayArea<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromNativeArrayArea(ntv_arr_area, c, kernel_use) end;
+static function CLKernelArg.FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeArrayArea(ntv_arr_area) end;
 
 {$endregion NativeArrayArea}
 
@@ -62,22 +62,22 @@ begin Result := CLKernelArgGlobal.FromNativeArrayArea(ntv_arr_area, c, kernel_us
 
 {$region NativeMemory}
 
-static function CLKernelArg.FromNativeMemory(ntv_mem: NativeMemory; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg;
-begin Result := CLKernelArgGlobal.FromNativeMemory(ntv_mem, c, kernel_use) end;
+static function CLKernelArg.FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): CLKernelArg;
+begin Result := CLKernelArgPrivate.FromNativeMemory(ntv_mem) end;
 
 {$endregion NativeMemory}
 
 {$region NativeValue}
 
-static function CLKernelArg.FromNativeValue<T>(ntv_val: NativeValue<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromNativeValue(ntv_val, c, kernel_use) end;
+static function CLKernelArg.FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeValue(ntv_val) end;
 
 {$endregion NativeValue}
 
 {$region NativeArray}
 
-static function CLKernelArg.FromNativeArray<T>(ntv_arr: NativeArray<T>; c: CLContext; kernel_use: CLMemoryUsage): CLKernelArg; where T: record;
-begin Result := CLKernelArgGlobal.FromNativeArray(ntv_arr, c, kernel_use) end;
+static function CLKernelArg.FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeArray(ntv_arr) end;
 
 {$endregion NativeArray}
 

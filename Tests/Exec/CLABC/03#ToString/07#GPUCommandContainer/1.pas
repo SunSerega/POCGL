@@ -1,6 +1,6 @@
 ﻿## uses OpenCLABC;
 
-var code := new CLProgramCode('kernel void k(int x) { }');
+var code := new CLProgramCode('kernel void k(global int* mem, int x) { }');
 var k := code['k'];
 
 k.NewQueue

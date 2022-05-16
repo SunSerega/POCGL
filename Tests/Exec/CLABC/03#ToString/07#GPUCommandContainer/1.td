@@ -23,6 +23,8 @@ CLKernelCCQ#0
 			CLKernelArgPrivateValue<integer>
 				ConstQueue<integer>#6: 5
 
+[ExecDebug]: 1 cache entries created 
+
 #ReqModules
 OpenCLABC
 

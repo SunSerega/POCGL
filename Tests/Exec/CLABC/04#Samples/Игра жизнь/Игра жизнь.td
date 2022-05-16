@@ -107,11 +107,12 @@
                         ██ ██      █        █        █   █          ██        █ █                   
 [EventDebug]: 102 event's created 
 [QueueDebug]: 1 queue's created 
+[ExecDebug]: 1 cache entries created 
 [QueueResNil]: 200 
-[QueueRes<T>]: 305 
+[QueueRes<T>]: 155 
 	QueueResValDirect<array [,] of byte>: 1 
-	QueueResValDirect<CLArray<byte>>: 151 
-	QueueResValDirect<integer>: 152 
+	QueueResValDirect<CLArray<byte>>: 51 
+	QueueResValDirect<integer>: 102 
 	QueueResValWrap<array [,] of byte>: 1 
 
 #ReqModules

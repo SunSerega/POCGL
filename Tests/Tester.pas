@@ -493,7 +493,7 @@ type
       
       var anon_names := |
         '<>local_variables_class_', '<>lambda',
-        'cl_command_queue[', 'cl_mem[',
+        'cl_command_queue[', 'cl_mem[', 'cl_kernel[',
         'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLProgramCode[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[',
         ':строка ', ':line '
       |;

@@ -31,12 +31,13 @@
 
 [EventDebug]: 13 event's created 
 [QueueDebug]: 3 queue's created 
+[ExecDebug]: 2 cache entries created 
 [QueueResNil]: 10 
-[QueueRes<T>]: 20 
+[QueueRes<T>]: 15 
 	QueueResValDirect<array [,] of real>: 3 
 	QueueResValDirect<array of real>: 2 
-	QueueResValDirect<CLArray<real>>: 8 
-	QueueResValDirect<integer>: 7 
+	QueueResValDirect<CLArray<real>>: 5 
+	QueueResValDirect<integer>: 5 
 
 #ReqModules
 OpenCLABC

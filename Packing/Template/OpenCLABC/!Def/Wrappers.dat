@@ -19,7 +19,7 @@ CLDevice
 # CLContext
 cl_context
 !ToString
-{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}
+{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}
 
 
 
@@ -29,10 +29,13 @@ cl_program
 
 # CLKernel
 cl_kernel
+!NoNative
 !operator=
 (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer)
+!GetHashCode
+Name.GetHashCode xor CodeContainer.GetHashCode
 !ToString
-{TypeName(self)}[{Name}] from {code}
+{TypeName(self)}[{Name}] from {CodeContainer}
 
 
 

@@ -1,55 +1,6 @@
 ﻿
 
 
-TestRange('Managed', ()->
-begin
-TestRange('Array', ()->
-begin
-Test(CLKernelArgGlobal.FromArray(a));
-end);
-TestRange('Array2', ()->
-begin
-Test(CLKernelArgGlobal.FromArray2(a2));
-end);
-TestRange('Array3', ()->
-begin
-Test(CLKernelArgGlobal.FromArray3(a3));
-end);
-TestRange('ArraySegment', ()->
-begin
-Test(CLKernelArgGlobal.FromArraySegment(seg));
-end);
-end);
-TestRange('NativeArea', ()->
-begin
-TestRange('NativeMemoryArea', ()->
-begin
-Test(CLKernelArgGlobal.FromNativeMemoryArea(ntv_mem_area));
-end);
-TestRange('NativeValueArea', ()->
-begin
-Test(CLKernelArgGlobal.FromNativeValueArea(ntv_val_area));
-end);
-TestRange('NativeArrayArea', ()->
-begin
-Test(CLKernelArgGlobal.FromNativeArrayArea(ntv_arr_area));
-end);
-end);
-TestRange('Native', ()->
-begin
-TestRange('NativeMemory', ()->
-begin
-Test(CLKernelArgGlobal.FromNativeMemory(ntv_mem));
-end);
-TestRange('NativeValue', ()->
-begin
-Test(CLKernelArgGlobal.FromNativeValue(ntv_val));
-end);
-TestRange('NativeArray', ()->
-begin
-Test(CLKernelArgGlobal.FromNativeArray(ntv_arr));
-end);
-end);
 TestRange('CL', ()->
 begin
 TestRange('CLMemory', ()->

@@ -217,32 +217,6 @@ function CLCodeProperties.GetScopeGlobalDtorsPresent := GetVal&<Bool>(ProgramInf
 
 {$endregion CLCode}
 
-{$region CLKernel}
-
-type
-  CLKernelProperties = partial class(NtvPropertiesBase<cl_kernel, KernelInfo>)
-    
-    private static function clGetSize(ntv: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetKernelInfo';
-    private static function clGetVal(ntv: cl_kernel; param_name: KernelInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetKernelInfo';
-    
-    protected procedure GetSizeImpl(id: KernelInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: KernelInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLKernelProperties.Create(ntv: cl_kernel) := inherited Create(ntv);
-
-function CLKernelProperties.GetFunctionName   := GetString(KernelInfo.KERNEL_FUNCTION_NAME);
-function CLKernelProperties.GetNumArgs        := GetVal&<UInt32>(KernelInfo.KERNEL_NUM_ARGS);
-function CLKernelProperties.GetReferenceCount := GetVal&<UInt32>(KernelInfo.KERNEL_REFERENCE_COUNT);
-function CLKernelProperties.GetAttributes     := GetString(KernelInfo.KERNEL_ATTRIBUTES);
-
-{$endregion CLKernel}
-
 {$region CLMemory}
 
 type
