@@ -1,45 +1,51 @@
 
 
 
-# Platform
+# CLPlatform
 cl_platform_id
 
 
 
-# Device
+# CLDevice
 cl_device_id
 
-# SubDevice
-Device
+# CLSubDevice
+CLDevice
 !ToString
 {inherited ToString} of {Parent}
 
 
 
-# Context
+# CLContext
 cl_context
 !ToString
-{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}
+{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}
 
 
 
-# ProgramCode
+# CLCode
 cl_program
+!Abstract
 
-# Kernel
+# CLKernel
 cl_kernel
+!NoNative
+!operator=
+(wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer)
+!GetHashCode
+Name.GetHashCode xor CodeContainer.GetHashCode
 !ToString
-{TypeName(self)}[{Name}:{ntv.val}] from {code}
+{TypeName(self)}[{Name}] from {CodeContainer}
 
 
 
-# CLMemorySegment
+# CLMemory
 cl_mem
 !ToString
 {TypeName(self)}[{ntv.val}] of size {Size}
 
 # CLMemorySubSegment
-CLMemorySegment
+CLMemory
 !ToString
 {inherited ToString} inside {Parent}
 

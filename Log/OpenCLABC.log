@@ -3,19 +3,23 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapperProperties.pas
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerMethods.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerExecMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLMemorySegment]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLValue]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [Kernel]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerOtherMethods.pas"
+Template[OpenCLABC]: Compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLMemory]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemory]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\Wrappers.pas"
@@ -26,14 +30,18 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CLKernelArg.pas"
+Template[OpenCLABC]: Compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ConvQueueStaticArray.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\QueueStaticArrayWithWork.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\QueueStaticArrayWithWork.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\QueueStaticArrayWithWork.exe]
 Finished runing Template[OpenCLABC]
 Runing Descriptions[OpenCLABC]
 Finished runing Descriptions[OpenCLABC]

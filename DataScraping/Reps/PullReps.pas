@@ -2,6 +2,7 @@
 uses POCGL_Utils in '..\..\POCGL_Utils';
 uses AOtp         in '..\..\Utils\AOtp';
 uses ATask        in '..\..\Utils\ATask';
+uses AQueue       in '..\..\Utils\AQueue';
 
 procedure PullRep(name, nick: string);
 begin
@@ -14,15 +15,15 @@ begin
   var p := new Process;
   p.StartInfo := psi;
   
-  var p_otp := new AsyncProcOtp(AsyncProcOtp.curr);
-  p.OutputDataReceived += (o,e)->if e.Data=nil then p_otp.Finish else p_otp.Enq( $'{nick} : {e.Data.Trim(#32)}' );
-  p.ErrorDataReceived += (o,e)->if e.Data<>nil then                   p_otp.Enq( $'{nick} : [Info] {e.Data.Trim(''= ''.ToCharArray())}' );
+  var p_otp := new AsyncQueue<string>;
+  p.OutputDataReceived += (o,e)->if e.Data=nil then p_otp.Finish else p_otp.Enq( $'{nick} : {e.Data.Trim(#32)}'                );
+  p.ErrorDataReceived  += (o,e)->if e.Data=nil then              else p_otp.Enq( $'{nick} : [Info] {e.Data.Trim(|''='',#32|)}' );
   
   p.Start;
   p.BeginOutputReadLine;
   p.BeginErrorReadLine;
   
-  foreach var l in p_otp do Otp(l);
+  foreach var l in p_otp do Otp(new OtpLine(l,true));
   Otp($'Done pulling {nick}');
 end;
 

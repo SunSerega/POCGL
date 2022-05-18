@@ -9,19 +9,23 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapperProperties.pas
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerMethods.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerExecMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLMemorySegment]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [CLValue]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerMethods.exe]: Packed methods for [Kernel]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerMethods.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerExecMethods.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerOtherMethods.pas"
+Template[OpenCLABC]: Compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLMemory]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerOtherMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemorySegment]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemory]
 Template[OpenCLABC]: TemplateCommand[OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerGetMethods.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\Wrappers.pas"
@@ -32,14 +36,18 @@ Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ContainerCommon.exe]
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CLKernelArg.pas"
+Template[OpenCLABC]: Compiling: OK
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\ConvQueueStaticArray.pas"
+Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\QueueStaticArrayWithWork.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\ConvQueueStaticArray.exe]
+Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\QueueStaticArrayWithWork.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\QueueStaticArrayWithWork.exe]
 Finished runing Template[OpenCLABC]
 Compiling "Packing\Descriptions\PackDescriptions.pas"
 Compiling: OK
@@ -56,29 +64,17 @@ Tester: Testing selected modules:
 Tester: OpenCLABC
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Compiling "Tests\Exec\CLABC\gen def context.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#CLPlatform\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#CLDevice\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#CLContext\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#Platform\1.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#Device\1.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#Context\1.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\1.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\SubSegment1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1.pas"
 Tester: Compiling: OK
@@ -86,15 +82,15 @@ Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#Kernel\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#CLKernel\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#CLCode\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#CLCode\deserialize.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\ConstSwap.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1.pas"
 Tester: Compiling: OK
@@ -118,9 +114,9 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~01#Const\0.pas"
-Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\marker.mu.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
 Tester: Compiling: OK
@@ -129,6 +125,8 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ExecCache.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\OldClone.Add.pas"
 Tester: Compiling: OK
@@ -152,7 +150,9 @@ Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1T.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait.pas"
 Tester: Compiling: OK
@@ -216,45 +216,51 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Finally+Handle\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\12#KernelArg\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\12#CLKernelArg\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\01#CLPlatform\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#CLDevice\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\03#CLContext\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\SubSegment1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\SubSegment1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\05#CLKernel\1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1.pas"
+Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
+Tester: Compiling: OK
+Tester: Executing Test[Tests\Exec\CLABC\gen def context]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#CLPlatform\1]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#CLDevice\1]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#CLContext\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#Platform\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#Device\1]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#Context\1]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\1]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemorySegment\SubSegment1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1]
 Tester: Done executing
@@ -262,15 +268,15 @@ Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#Kernel\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#CLKernel\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#ProgramCode\1]
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#CLCode\1]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#CLCode\deserialize]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\ConstSwap]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1]
 Tester: Done executing
@@ -294,9 +300,9 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~01#Const\0]
-Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\marker.mu]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
 Tester: Done executing
@@ -305,6 +311,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ExecCache]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\OldClone.Add]
 Tester: Done executing
@@ -328,7 +336,9 @@ Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1]
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1T]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait]
 Tester: Done executing
@@ -392,27 +402,35 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Finally+Handle\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\12#KernelArg\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\12#CLKernelArg\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\01#Platform\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\01#CLPlatform\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#Device\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#CLDevice\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\03#Context\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\03#CLContext\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemorySegment\SubSegment1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\SubSegment1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\05#Kernel\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\05#CLKernel\1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#ProgramCode\1]
+Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing
@@ -440,9 +458,8 @@ Packing sample file "Samples\OpenCLABC\Wait очереди\2.pas"
 Packing sample file "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
 Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.cl"
 Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
-Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\0.cl"
-Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
-Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
+Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\0.cl"
+Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
 Packing sample file "Samples\OpenGLABC\Common.pas"
 Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
 Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.vert"
@@ -454,10 +471,5 @@ Packing sample file "Samples\OpenGLABC\Точки на поле\Минимум �
 Packing sample file "Samples\OpenGLABC\Точки на поле\Спирали.frag"
 Packing sample file "Samples\OpenGLABC\Точки на поле\Сумма расстояний.frag"
 Packing sample file "Samples\OpenGLABC\Точки на поле\Точки.pas"
-Packed 27 sample files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing reference [Гайд по использованию OpenGL и OpenCL.html]
-Packing reference [Справка OpenCLABC.html]
-Packing reference [Справка OpenGLABC.html]
-Packed 3 reference files
+Packed 26 sample files
 Done packing

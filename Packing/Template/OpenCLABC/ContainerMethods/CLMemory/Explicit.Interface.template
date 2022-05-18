@@ -1,0 +1,289 @@
+﻿    
+    
+    
+    {$region 1#Write&Read}
+    
+    public function ThenWriteValue<TRecord>(val: TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteValue<TRecord>(val: TRecord; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteValue<TRecord>(val: CommandQueue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray1<TRecord>(a: array of TRecord; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, el_count, mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>): CLMemoryCCQ;
+    
+    public function ThenWriteData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenReadData(ptr: CommandQueue<IntPtr>): CLMemoryCCQ;
+    
+    public function ThenReadData(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenWriteData(ptr: pointer): CLMemoryCCQ;
+    
+    public function ThenWriteData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenReadData(ptr: pointer): CLMemoryCCQ;
+    
+    public function ThenReadData(ptr: pointer; mem_offset, len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
+    
+    public function ThenWriteNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
+    
+    public function ThenReadNativeMemoryArea(native_data: NativeMemoryArea; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenReadNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
+    
+    public function ThenReadNativeMemory(native_data: NativeMemory; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenWriteNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenWriteNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenReadNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenReadNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    {$endregion 1#Write&Read}
+    
+    {$region 2#Fill}
+    
+    public function ThenFillValue<TRecord>(val: TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillValue<TRecord>(val: TRecord; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillValue<TRecord>(val: CommandQueue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray1<TRecord>(a: array of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray2<TRecord>(a: array[,] of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray3<TRecord>(a: array[,,] of TRecord): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray1<TRecord>(a: array of TRecord; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray2<TRecord>(a: array[,] of TRecord; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray3<TRecord>(a: array[,,] of TRecord; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillData(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillData(ptr: pointer; pattern_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillData(ptr: pointer; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemory(native_data: NativeMemory): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemory(native_data: NativeMemory; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: NativeValueArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValue<TRecord>(native_data: NativeValue<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: NativeArrayArea<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArray<TRecord>(native_data: NativeArray<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLMemoryCCQ;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValueArea<TRecord>(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeValue<TRecord>(native_data: CommandQueue<NativeValue<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArrayArea<TRecord>(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillNativeArray<TRecord>(native_data: CommandQueue<NativeArray<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    {$endregion 2#Fill}
+    
+    {$region 3#Copy}
+    
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLMemoryCCQ;
+    
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLMemoryCCQ;
+    
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>): CLMemoryCCQ;
+    
+    {$endregion 3#Copy}
+    
+    
+    

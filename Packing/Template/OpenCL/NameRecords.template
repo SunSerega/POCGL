@@ -95,3 +95,14 @@
   end;
   
   
+  
+  // cl_loader_layers 
+  cl_layer_api_version = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    public static property Zero: cl_layer_api_version read default(cl_layer_api_version);
+    public static property Size: integer read Marshal.SizeOf&<UInt32>;
+    public function ToString: string; override := $'cl_layer_api_version[{val}]';
+  end;
+  
+  

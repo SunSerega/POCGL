@@ -1,10 +1,10 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
+#DelegateCount
+7
 
-#ExpOtp
+#ExpExecOtp
                          █          ██████ █         █                █    █   █                    
             ██            █          █                              ██    █   █       █             
            █  █            ██                                       █                ███     ██   ██
@@ -107,9 +107,15 @@ OpenCLABC
                         ██ ██      █        █        █   █          ██        █ █                   
 [EventDebug]: 102 event's created 
 [QueueDebug]: 1 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[ExecDebug]: 1 cache entries created 
+[QueueResNil]: 200 
+[QueueRes<T>]: 155 
+	QueueResValDirect<array [,] of byte>: 1 
+	QueueResValDirect<CLArray<byte>>: 51 
+	QueueResValDirect<integer>: 102 
+	QueueResValWrap<array [,] of byte>: 1 
 
-#DelegateCount
-7
+#ReqModules
+OpenCLABC
 
 

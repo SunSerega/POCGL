@@ -1,29 +1,31 @@
+﻿
 
-
-
-#ReqModules
-OpenCLABC
-
-#ExpOtp
-KernelCCQ#0
-	CCCObj: Kernel[p1:*] from ProgramCode[*]
-	KernelCommandExec2
-		sz1: ConstQueue<integer>#1: 1
-		sz2: ConstQueue<integer>#2: 1
-		args[0]: KernelArgCLMemorySegmentCQ
-			CLMemorySegmentCCQ#3
-				CCCQueue
-					CommandQueueHostBackgoundFunc<CLMemorySegment>#4: function lambda: CLMemorySegment
-				QueueCommand
-					CommandQueueHostBackgoundFunc<integer>#5: function lambda: integer
-				BackgroundProcCommand: procedure lambda(ms: CLMemorySegment)
-		args[1]: KernelArgValue<integer>: 5
-
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
 
 #DelegateCount
 5
+
+#ExpExecOtp
+CLKernelCCQ#0
+	CCCObj<CLKernel>: CLKernel[k] from CLProgramCode[*]
+	CLKernelCommandExec2
+		sz1: ConstQueue<integer>#1: 1
+		sz2: ConstQueue<integer>#2: 1
+		args:
+			CLKernelArgGlobalCLMemory
+				CLMemoryCCQ#3
+					CCCQueue<CLMemory>
+						CommandQueueHostThreadedFunc<CLMemory,SimpleFunc0Container<CLMemory>>#4: function lambda: CLMemory
+					QueueCommand<CLMemory>
+						CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#5: function lambda: integer
+					QuickProcCommand<CLMemory,SimpleProcContainer<CLMemory>,TBooleanTrueFlag>: procedure lambda(m: CLMemory)
+					QuickProcCommand<CLMemory,SimpleProcContainer<CLMemory>,TBooleanFalseFlag>: procedure lambda(m: CLMemory)
+					ThreadedProcCommand<CLMemory,SimpleProcContainer<CLMemory>>: procedure lambda(m: CLMemory)
+			CLKernelArgPrivateValue<integer>
+				ConstQueue<integer>#6: 5
+
+[ExecDebug]: 1 cache entries created 
+
+#ReqModules
+OpenCLABC
 
 

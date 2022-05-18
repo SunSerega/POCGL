@@ -1,13 +1,10 @@
 ﻿
 
 
-#TestMode
-Comp+Exec
+#DelegateCount
+7
 
-#ReqModules
-OpenCLABC
-
-#ExpOtp
+#ExpExecOtp
 Матрица A: 
    0.73   0.82   0.77   0.56
    0.21   0.56   0.91   0.44
@@ -34,9 +31,18 @@ OpenCLABC
 
 [EventDebug]: 13 event's created 
 [QueueDebug]: 3 queue's created 
-[WaitDebug]: 0 wait handler's created 
+[ExecDebug]: 2 cache entries created 
+[QueueResNil]: 10 
+[QueueRes<T>]: 15 
+	QueueResValDirect<array [,] of real>: 3 
+	QueueResValDirect<array of real>: 2 
+	QueueResValDirect<CLArray<real>>: 5 
+	QueueResValDirect<integer>: 5 
 
-#DelegateCount
-7
+#ReqModules
+OpenCLABC
+
+#TestMode
+Comp+Exec
 
 

@@ -19,8 +19,8 @@ function GetRelativePathRTA(fname: string)                                      
 
 function is_separate_execution := Logger.main is ConsoleLogger;
 
-function nfi := AOtp.nfi;
-function enc := AOtp.enc;
+function nfi := FileLogger.nfi;
+function enc := FileLogger.enc;
 
 begin
   try

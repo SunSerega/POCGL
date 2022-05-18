@@ -1,13 +1,9 @@
 ## uses OpenCLABC;
 
-var A := HPQ(()->raise new Exception('TestOK'));
-var B := HPQ(()->raise new Exception('TestError1'));
-var C := HPQ(()->raise new Exception('TestError2'));
+var A := HTPQ(()->raise new Exception('TestOK'));
+var B := HTPQ(()->begin end);
+var C := HTPQ(()->raise new Exception('TestError'));
 
-Context.Default.SyncInvoke(
-  A + B*C.HandleWithoutRes(e->
-  begin
-    e.Message.Println;
-    Result := true;
-  end)
+CLContext.Default.SyncInvoke(
+  A + B*C.HandleWithoutRes(e->true)
 );

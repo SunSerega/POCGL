@@ -1,0 +1,103 @@
+
+
+
+# WriteValue![%Q:,Q%]
+val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
+!Enqueue
+var ec := cl.EnqueueWriteBuffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!ind! * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
+  !val:ptr!,
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+# [%mode:Write,Read%]Array[%rank:,2,3%]!AutoSize
+a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>
+!Enqueue
+//TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  UIntPtr.Zero, new UIntPtr(!a:pinn!.Length * Marshal.SizeOf(default(T))),
+  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}],
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+# [%mode:Write,Read%]Array[%rank:,2,3%]
+a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>; {%rank? a_ind : a_ind1,a_ind2 : a_ind1,a_ind2,a_ind3 %}, len, ind: CommandQueue<integer>
+!Enqueue
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!ind! * Marshal.SizeOf(default(T))), new UIntPtr(!len! * Marshal.SizeOf(default(T))),
+  !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}],
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+# [%mode:Write,Read%]ArraySegment
+a: CommandQueue<ArraySegment<&T>>
+!ShortDef
+{%mode%}ArraySegment(a, 0);
+
+# [%mode:Write,Read%]ArraySegment
+a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>
+!Enqueue
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!ind!*Marshal.SizeOf(default(T))),
+  new UIntPtr(!a:pinn!.Count * Marshal.SizeOf(default(T))),
+  !a:pinn!.Array[!a:pinn!.Offset],
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+
+
+
+
+
+
+
+
+
+# [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
+ptr: CommandQueue<IntPtr>{%AutoSize?:; ind, len\: CommandQueue<integer>%}
+!Enqueue
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr({%AutoSize? 0 : !ind! * Marshal.SizeOf(default(T)) %}),
+  new UIntPtr({%AutoSize? o.ByteSize : !len!*Marshal.SizeOf(default(T)) %}),
+  !ptr!,
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+# [%mode:Write,Read%]Data![%AutoSize:AutoSize,%]
+ptr: pointer{%AutoSize?:; ind, len\: CommandQueue<integer>%}
+!ShortDef
+{%mode%}Data(IntPtr(ptr){%AutoSize?:, ind, len%});
+
+
+
+# [%mode:Write,Read%]Native[%MemT:Memory,Value,Array%][%Area:Area,%]
+native_data: CommandQueue<Native{%MemT%}{%Area%}{%MemT?:<&T>:<&T>%}>
+!ShortDef
+{%mode%}Native{%MemT%}{%Area%}(native_data, 0);
+
+# [%mode:Write,Read%]Native[%MemT:Memory,Value,Array%][%Area:Area,%]
+native_data: CommandQueue<Native{%MemT%}{%Area%}{%MemT?:<&T>:<&T>%}>; mem_offset: CommandQueue<integer>
+!Enqueue
+var ec := cl.Enqueue{%mode%}Buffer(
+  cq, o.Native, Bool.NON_BLOCKING,
+  new UIntPtr(!mem_offset!), !native_data!{%Area?:.Area%}.{%MemT?sz:ByteSize:ByteSize%},
+  !native_data!{%Area?:.Area%}.{%MemT?ptr:ptr:first_ptr%},
+  !evs!
+);
+OpenCLABCInternalException.RaiseIfError(ec);
+
+

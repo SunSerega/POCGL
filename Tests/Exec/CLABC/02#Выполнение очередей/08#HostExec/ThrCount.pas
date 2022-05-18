@@ -1,20 +1,20 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-procedure Test(Q: Action0->CommandQueueBase);
+procedure Test(min_thrs: integer; Q: Action0->CommandQueueBase);
 begin
   var thr_ids := new System.Collections.Concurrent.ConcurrentBag<integer>;
-  var add_thr_id: Action0 := ()->
+  var add_thr_id := procedure->
   begin
     Sleep(10);
     thr_ids.Add(System.Threading.Thread.CurrentThread.ManagedThreadId);
   end;
   
-  Context.Default.SyncInvoke(
-    Q(add_thr_id) + CombineAsyncQueueNil(SeqFill(16, HPQQ(add_thr_id)))
+  CLContext.Default.SyncInvoke(
+    Q(add_thr_id) + CombineAsyncQueueNil(ArrFill(16, HQPQ(add_thr_id)))
   );
   
-  thr_ids.Distinct.Count.Println;
+  (thr_ids.Distinct.Count>=min_thrs).Println;
 end;
 
-Test( ati->HPQ(ati) );
-Test( ati->CLMemorySegment.Create(1).NewQueue.ThenWriteValue&<byte>(2) );
+Test(2, ati->HTPQ(ati) );
+Test(1, ati->CLMemory.Create(4).NewQueue.ThenWriteValue(5) );

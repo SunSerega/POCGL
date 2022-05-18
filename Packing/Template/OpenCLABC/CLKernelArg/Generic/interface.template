@@ -1,0 +1,220 @@
+﻿    
+    
+    
+    {$region Managed}
+    
+    {$region Array}
+    
+    public static function FromArray<T>(a: CommandQueue<array of T>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(a: array of T): CLKernelArg; where T: record;
+    begin Result := FromArray&<T>(a) end;
+    public static function operator implicit<T>(a: CommandQueue<array of T>): CLKernelArg; where T: record;
+    begin Result := FromArray&<T>(a) end;
+    public static function operator implicit<T>(a: ConstQueue<array of T>): CLKernelArg; where T: record;
+    begin Result := FromArray&<T>(a) end;
+    public static function operator implicit<T>(a: ParameterQueue<array of T>): CLKernelArg; where T: record;
+    begin Result := FromArray&<T>(a) end;
+    
+    {$endregion Array}
+    
+    {$region Array2}
+    
+    public static function FromArray2<T>(a2: CommandQueue<array[,] of T>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(a2: array[,] of T): CLKernelArg; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: CommandQueue<array[,] of T>): CLKernelArg; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: ConstQueue<array[,] of T>): CLKernelArg; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    public static function operator implicit<T>(a2: ParameterQueue<array[,] of T>): CLKernelArg; where T: record;
+    begin Result := FromArray2&<T>(a2) end;
+    
+    {$endregion Array2}
+    
+    {$region Array3}
+    
+    public static function FromArray3<T>(a3: CommandQueue<array[,,] of T>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(a3: array[,,] of T): CLKernelArg; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: CommandQueue<array[,,] of T>): CLKernelArg; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: ConstQueue<array[,,] of T>): CLKernelArg; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    public static function operator implicit<T>(a3: ParameterQueue<array[,,] of T>): CLKernelArg; where T: record;
+    begin Result := FromArray3&<T>(a3) end;
+    
+    {$endregion Array3}
+    
+    {$region ArraySegment}
+    
+    public static function FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(seg: ArraySegment<T>): CLKernelArg; where T: record;
+    begin Result := FromArraySegment&<T>(seg) end;
+    public static function operator implicit<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArg; where T: record;
+    begin Result := FromArraySegment&<T>(seg) end;
+    public static function operator implicit<T>(seg: ConstQueue<ArraySegment<T>>): CLKernelArg; where T: record;
+    begin Result := FromArraySegment&<T>(seg) end;
+    public static function operator implicit<T>(seg: ParameterQueue<ArraySegment<T>>): CLKernelArg; where T: record;
+    begin Result := FromArraySegment&<T>(seg) end;
+    
+    {$endregion ArraySegment}
+    
+    {$endregion Managed}
+    
+    {$region NativeArea}
+    
+    {$region NativeMemoryArea}
+    
+    public static function FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArg;
+    public static function operator implicit(ntv_mem_area: NativeMemoryArea): CLKernelArg;
+    begin Result := FromNativeMemoryArea(ntv_mem_area) end;
+    public static function operator implicit(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArg;
+    begin Result := FromNativeMemoryArea(ntv_mem_area) end;
+    public static function operator implicit(ntv_mem_area: ConstQueue<NativeMemoryArea>): CLKernelArg;
+    begin Result := FromNativeMemoryArea(ntv_mem_area) end;
+    public static function operator implicit(ntv_mem_area: ParameterQueue<NativeMemoryArea>): CLKernelArg;
+    begin Result := FromNativeMemoryArea(ntv_mem_area) end;
+    
+    {$endregion NativeMemoryArea}
+    
+    {$region NativeValueArea}
+    
+    public static function FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(ntv_val_area: NativeValueArea<T>): CLKernelArg; where T: record;
+    begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
+    public static function operator implicit<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
+    public static function operator implicit<T>(ntv_val_area: ConstQueue<NativeValueArea<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
+    public static function operator implicit<T>(ntv_val_area: ParameterQueue<NativeValueArea<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeValueArea&<T>(ntv_val_area) end;
+    
+    {$endregion NativeValueArea}
+    
+    {$region NativeArrayArea}
+    
+    public static function FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(ntv_arr_area: NativeArrayArea<T>): CLKernelArg; where T: record;
+    begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
+    public static function operator implicit<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
+    public static function operator implicit<T>(ntv_arr_area: ConstQueue<NativeArrayArea<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
+    public static function operator implicit<T>(ntv_arr_area: ParameterQueue<NativeArrayArea<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeArrayArea&<T>(ntv_arr_area) end;
+    
+    {$endregion NativeArrayArea}
+    
+    {$endregion NativeArea}
+    
+    {$region Native}
+    
+    {$region NativeMemory}
+    
+    public static function FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): CLKernelArg;
+    public static function operator implicit(ntv_mem: NativeMemory): CLKernelArg;
+    begin Result := FromNativeMemory(ntv_mem) end;
+    public static function operator implicit(ntv_mem: CommandQueue<NativeMemory>): CLKernelArg;
+    begin Result := FromNativeMemory(ntv_mem) end;
+    public static function operator implicit(ntv_mem: ConstQueue<NativeMemory>): CLKernelArg;
+    begin Result := FromNativeMemory(ntv_mem) end;
+    public static function operator implicit(ntv_mem: ParameterQueue<NativeMemory>): CLKernelArg;
+    begin Result := FromNativeMemory(ntv_mem) end;
+    
+    {$endregion NativeMemory}
+    
+    {$region NativeValue}
+    
+    public static function FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(ntv_val: NativeValue<T>): CLKernelArg; where T: record;
+    begin Result := FromNativeValue&<T>(ntv_val) end;
+    public static function operator implicit<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeValue&<T>(ntv_val) end;
+    public static function operator implicit<T>(ntv_val: ConstQueue<NativeValue<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeValue&<T>(ntv_val) end;
+    public static function operator implicit<T>(ntv_val: ParameterQueue<NativeValue<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeValue&<T>(ntv_val) end;
+    
+    {$endregion NativeValue}
+    
+    {$region NativeArray}
+    
+    public static function FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(ntv_arr: NativeArray<T>): CLKernelArg; where T: record;
+    begin Result := FromNativeArray&<T>(ntv_arr) end;
+    public static function operator implicit<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeArray&<T>(ntv_arr) end;
+    public static function operator implicit<T>(ntv_arr: ConstQueue<NativeArray<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeArray&<T>(ntv_arr) end;
+    public static function operator implicit<T>(ntv_arr: ParameterQueue<NativeArray<T>>): CLKernelArg; where T: record;
+    begin Result := FromNativeArray&<T>(ntv_arr) end;
+    
+    {$endregion NativeArray}
+    
+    {$endregion Native}
+    
+    {$region CL}
+    
+    {$region CLMemory}
+    
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
+    public static function operator implicit(cl_mem: CLMemory): CLKernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): CLKernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): CLKernelArg;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): CLKernelArg;
+    
+    {$endregion CLMemory}
+    
+    {$region CLValue}
+    
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): CLKernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): CLKernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): CLKernelArg; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArg; where T: record;
+    
+    {$endregion CLValue}
+    
+    {$region CLArray}
+    
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): CLKernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): CLKernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): CLKernelArg; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArg; where T: record;
+    
+    {$endregion CLArray}
+    
+    {$endregion CL}
+    
+    {$region Value}
+    
+    public static function FromValue<T>(val: CommandQueue<T>): CLKernelArg; where T: record;
+    public static function operator implicit<T>(val: T): CLKernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: CommandQueue<T>): CLKernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ConstQueue<T>): CLKernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    public static function operator implicit<T>(val: ParameterQueue<T>): CLKernelArg; where T: record;
+    begin Result := FromValue&<T>(val) end;
+    
+    {$endregion Value}
+    
+    
+    

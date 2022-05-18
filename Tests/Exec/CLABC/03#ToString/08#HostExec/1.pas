@@ -1,7 +1,19 @@
 ﻿## uses OpenCLABC;
 
-HFQ(()->1).Println;
-HPQ(()->begin end).Println;
 
-HFQ(с->1).Println;
-HPQ(с->begin end).Println;
+
+HQFQ(()->1).Println;
+HQPQ(()->begin end).Println;
+
+HQFQ(с->1).Println;
+HQPQ(с->begin end).Println;
+
+
+
+HTFQ(()->1).Println;
+HTPQ(()->begin end).Println;
+
+HTFQ(с->1).Println;
+HTPQ(с->begin end).Println;
+
+

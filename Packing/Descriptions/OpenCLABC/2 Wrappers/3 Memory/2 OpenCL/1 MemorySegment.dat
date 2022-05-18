@@ -1,29 +1,29 @@
 
 
 
-# CLMemorySegment
+# CLMemory
 Представляет область памяти устройства OpenCL (обычно GPU)
 
 
 
-# CLMemorySegment.Size
-# CLMemorySegment.Size32
-# CLMemorySegment.Size64
+# CLMemory.Size
+# CLMemory.Size32
+# CLMemory.Size64
 Возвращает размер области памяти в байтах
 
-# CLMemorySegment:ctor
+# CLMemory:ctor
 Выделяет область памяти устройства OpenCL указанного в байтах размера
 
-# CLMemorySegment.(UIntPtr)
-# CLMemorySegment.(integer)
-# CLMemorySegment.(int64)
-%CLMemorySegment:ctor%
+# CLMemory.(UIntPtr)
+# CLMemory.(integer)
+# CLMemory.(int64)
+%CLMemory:ctor%
 Память выделяется в контексте Context.Default
 
-# CLMemorySegment.(UIntPtr, Context)
-# CLMemorySegment.(integer, Context)
-# CLMemorySegment.(int64, Context)
-%CLMemorySegment:ctor%
+# CLMemory.(UIntPtr, Context)
+# CLMemory.(integer, Context)
+# CLMemory.(int64, Context)
+%CLMemory:ctor%
 Память выделяется в указанном контексте
 
 

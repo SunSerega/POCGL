@@ -1,8 +1,12 @@
 *.pcu
 *.pdb
 *.exe
-*.backup
-*.compile_lock
-/Release
-/LastPack (Timed).log
 0.pas
+*.compile_lock
+
+*.bkp
+*.backup
+
+*(Timed).log
+/TestContext.dat
+/Release

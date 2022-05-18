@@ -9,7 +9,11 @@ type
     private name: string;
     private base := default(string);
     private generics := new List<string>;
+    private need_native := true;
+    private operator_equ := default(string);
     private to_string_def := default(string);
+    private get_hash_code_def := default(string);
+    private is_abstract := false;
     
     public constructor(name: string) := self.name := name;
     private constructor := raise new System.InvalidOperationException;
@@ -42,10 +46,26 @@ begin
           'Generic':
           t.generics.AddRange(setting_lines);
           
+          'NoNative':
+          t.need_native := false;
+          
+          'operator=':
+          if t.operator_equ<>nil then
+            raise new System.InvalidOperationException else
+            t.operator_equ := setting_lines.Single;
+          
           'ToString':
           if t.to_string_def<>nil then
             raise new System.InvalidOperationException else
             t.to_string_def := setting_lines.Single;
+          
+          'GetHashCode':
+          if t.get_hash_code_def<>nil then
+            raise new System.InvalidOperationException else
+            t.get_hash_code_def := setting_lines.Single;
+          
+          'Abstract':
+          t.is_abstract := true;
           
           else raise new System.InvalidOperationException($'#{tname}!{setting_name}');
         end;
@@ -75,7 +95,10 @@ begin
       res += '  ';
       res += t.name;
       WriteGenerics;
-      res += ' = partial class';
+      res += ' = ';
+      if t.is_abstract then
+        res += 'abstract ';
+      res += 'partial class';
       if not is_direct_wrap then
       begin
         res += '(';
@@ -90,7 +113,7 @@ begin
       
       {$region Native}
       
-      if is_direct_wrap then
+      if is_direct_wrap and t.need_native then
       begin
         
         res += '    public property Native: ';
@@ -104,29 +127,32 @@ begin
       
       {$region Properties}
       
-      res += '    private prop: ';
-      res += t.name;
-      res += 'Properties;'#10;
-      
-      res += '    private function GetProperties: ';
-      res += t.name;
-      res += 'Properties;'#10;
-      
-      res += '    begin'#10;
-      
-      res += '      if prop=nil then prop := new ';
-      res += t.name;
-      res += 'Properties(ntv);'#10;
-      
-      res += '      Result := prop;'#10;
-      
-      res += '    end;'#10;
-      
-      res += '    public property Properties: ';
-      res += t.name;
-      res += 'Properties read GetProperties;'#10;
-      
-      res += '    '#10;
+      if t.need_native then
+      begin
+        res += '    private prop: ';
+        res += t.name;
+        res += 'Properties;'#10;
+        
+        res += '    private function GetProperties: ';
+        res += t.name;
+        res += 'Properties;'#10;
+        
+        res += '    begin'#10;
+        
+        res += '      if prop=nil then prop := new ';
+        res += t.name;
+        res += 'Properties(ntv);'#10;
+        
+        res += '      Result := prop;'#10;
+        
+        res += '    end;'#10;
+        
+        res += '    public property Properties: ';
+        res += t.name;
+        res += 'Properties read GetProperties;'#10;
+        
+        res += '    '#10;
+      end;
       
       {$endregion Properties}
       
@@ -139,14 +165,18 @@ begin
         res += t.name;
         WriteGenerics;
         res += '): boolean :='#10;
-        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
+        res += '    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and ';
+        res += t.operator_equ ?? '(wr1.ntv = wr2.ntv)';
+        res += ';'#10;
         
         res += '    public static function operator<>(wr1, wr2: ';
         res += t.name;
         WriteGenerics;
         //TODO #????: not (wr1=wr2)
         res += '): boolean := false='#10;
-        res += '    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);'#10;
+        res += '    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and ';
+        res += t.operator_equ ?? '(wr1.ntv = wr2.ntv)';
+        res += ';'#10;
         
         res += '    '#10;
         
@@ -162,14 +192,31 @@ begin
       
       {$endregion operator=}
       
+      {$region GetHashCode}
+      
+      if is_direct_wrap or (t.get_hash_code_def<>nil) then
+      begin
+        res += '    public function GetHashCode: integer; override :='#10;
+        res += '    ';
+        res += t.get_hash_code_def ?? 'ntv.val.ToInt32';
+        res += ';'#10;
+        
+        res += '    '#10;
+      end;
+      
+      {$endregion GetHashCode}
+      
       {$region ToString}
       
-      res += '    public function ToString: string; override :='#10;
-      res += '    $''';
-      res += t.to_string_def ?? '{TypeName(self)}[{ntv.val}]';
-      res += ''';'#10;
-      
-      res += '    '#10;
+      if is_direct_wrap or (t.to_string_def<>nil) then
+      begin
+        res += '    public function ToString: string; override :='#10;
+        res += '    $''';
+        res += t.to_string_def ?? '{TypeName(self)}[{ntv.val}]';
+        res += ''';'#10;
+        
+        res += '    '#10;
+      end;
       
       {$endregion ToString}
       

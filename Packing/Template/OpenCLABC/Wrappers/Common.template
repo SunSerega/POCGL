@@ -1,172 +1,180 @@
 ﻿  
   
   
-  Platform = partial class
+  CLPlatform = partial class
     
     public property Native: cl_platform_id read ntv;
     
-    private prop: PlatformProperties;
-    private function GetProperties: PlatformProperties;
+    private prop: CLPlatformProperties;
+    private function GetProperties: CLPlatformProperties;
     begin
-      if prop=nil then prop := new PlatformProperties(ntv);
+      if prop=nil then prop := new CLPlatformProperties(ntv);
       Result := prop;
     end;
-    public property Properties: PlatformProperties read GetProperties;
+    public property Properties: CLPlatformProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Platform): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Platform): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator=(wr1, wr2: CLPlatform): boolean :=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLPlatform): boolean := false=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Platform(var wr)) and (self = wr);
+    (obj is CLPlatform(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  Device = partial class
+  CLDevice = partial class
     
     public property Native: cl_device_id read ntv;
     
-    private prop: DeviceProperties;
-    private function GetProperties: DeviceProperties;
+    private prop: CLDeviceProperties;
+    private function GetProperties: CLDeviceProperties;
     begin
-      if prop=nil then prop := new DeviceProperties(ntv);
+      if prop=nil then prop := new CLDeviceProperties(ntv);
       Result := prop;
     end;
-    public property Properties: DeviceProperties read GetProperties;
+    public property Properties: CLDeviceProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Device): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Device): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator=(wr1, wr2: CLDevice): boolean :=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLDevice): boolean := false=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Device(var wr)) and (self = wr);
+    (obj is CLDevice(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  SubDevice = partial class(Device)
+  CLSubDevice = partial class(CLDevice)
     
-    private prop: SubDeviceProperties;
-    private function GetProperties: SubDeviceProperties;
+    private prop: CLSubDeviceProperties;
+    private function GetProperties: CLSubDeviceProperties;
     begin
-      if prop=nil then prop := new SubDeviceProperties(ntv);
+      if prop=nil then prop := new CLSubDeviceProperties(ntv);
       Result := prop;
     end;
-    public property Properties: SubDeviceProperties read GetProperties;
+    public property Properties: CLSubDeviceProperties read GetProperties;
     
     public function ToString: string; override :=
     $'{inherited ToString} of {Parent}';
     
   end;
   
-  Context = partial class
+  CLContext = partial class
     
     public property Native: cl_context read ntv;
     
-    private prop: ContextProperties;
-    private function GetProperties: ContextProperties;
+    private prop: CLContextProperties;
+    private function GetProperties: CLContextProperties;
     begin
-      if prop=nil then prop := new ContextProperties(ntv);
+      if prop=nil then prop := new CLContextProperties(ntv);
       Result := prop;
     end;
-    public property Properties: ContextProperties read GetProperties;
+    public property Properties: CLContextProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: Context): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Context): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator=(wr1, wr2: CLContext): boolean :=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLContext): boolean := false=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Context(var wr)) and (self = wr);
+    (obj is CLContext(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] on devices: [{AllDevices.JoinToString('', '')}]; Main device: {MainDevice}';
+    $'{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
     
   end;
   
-  ProgramCode = partial class
+  CLCode = abstract partial class
     
     public property Native: cl_program read ntv;
     
-    private prop: ProgramCodeProperties;
-    private function GetProperties: ProgramCodeProperties;
+    private prop: CLCodeProperties;
+    private function GetProperties: CLCodeProperties;
     begin
-      if prop=nil then prop := new ProgramCodeProperties(ntv);
+      if prop=nil then prop := new CLCodeProperties(ntv);
       Result := prop;
     end;
-    public property Properties: ProgramCodeProperties read GetProperties;
+    public property Properties: CLCodeProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: ProgramCode): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: ProgramCode): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator=(wr1, wr2: CLCode): boolean :=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLCode): boolean := false=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is ProgramCode(var wr)) and (self = wr);
+    (obj is CLCode(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  Kernel = partial class
+  CLKernel = partial class
     
-    public property Native: cl_kernel read ntv;
-    
-    private prop: KernelProperties;
-    private function GetProperties: KernelProperties;
-    begin
-      if prop=nil then prop := new KernelProperties(ntv);
-      Result := prop;
-    end;
-    public property Properties: KernelProperties read GetProperties;
-    
-    public static function operator=(wr1, wr2: Kernel): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: Kernel): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator=(wr1, wr2: CLKernel): boolean :=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
+    public static function operator<>(wr1, wr2: CLKernel): boolean := false=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is Kernel(var wr)) and (self = wr);
+    (obj is CLKernel(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    Name.GetHashCode xor CodeContainer.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{Name}:{ntv.val}] from {code}';
+    $'{TypeName(self)}[{Name}] from {CodeContainer}';
     
   end;
   
-  CLMemorySegment = partial class
+  CLMemory = partial class
     
     public property Native: cl_mem read ntv;
     
-    private prop: CLMemorySegmentProperties;
-    private function GetProperties: CLMemorySegmentProperties;
+    private prop: CLMemoryProperties;
+    private function GetProperties: CLMemoryProperties;
     begin
-      if prop=nil then prop := new CLMemorySegmentProperties(ntv);
+      if prop=nil then prop := new CLMemoryProperties(ntv);
       Result := prop;
     end;
-    public property Properties: CLMemorySegmentProperties read GetProperties;
+    public property Properties: CLMemoryProperties read GetProperties;
     
-    public static function operator=(wr1, wr2: CLMemorySegment): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLMemorySegment): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator=(wr1, wr2: CLMemory): boolean :=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLMemory): boolean := false=
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLMemorySegment(var wr)) and (self = wr);
+    (obj is CLMemory(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] of size {Size}';
     
   end;
   
-  CLMemorySubSegment = partial class(CLMemorySegment)
+  CLMemorySubSegment = partial class(CLMemory)
     
     private prop: CLMemorySubSegmentProperties;
     private function GetProperties: CLMemorySubSegmentProperties;
@@ -194,12 +202,15 @@
     public property Properties: CLValueProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLValue<T>): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLValue<T>): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLValue<T>(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
@@ -219,12 +230,15 @@
     public property Properties: CLArrayProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLArray<T>): boolean :=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLArray<T>): boolean := false=
-    if ReferenceEquals(wr1,nil) then ReferenceEquals(wr2,nil) else not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLArray<T>(var wr)) and (self = wr);
+    
+    public function GetHashCode: integer; override :=
+    ntv.val.ToInt32;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] of length {Length}';

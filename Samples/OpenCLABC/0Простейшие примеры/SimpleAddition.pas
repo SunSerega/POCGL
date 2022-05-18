@@ -2,7 +2,7 @@
 
 // Чтение и компиляция .cl файла
 
-var prog := new ProgramCode(Context.Default, ReadAllText('SimpleAddition.cl'));
+var prog := new CLProgramCode(ReadAllText('SimpleAddition.cl'));
 
 // Подготовка параметров
 

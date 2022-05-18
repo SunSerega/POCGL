@@ -1,16 +1,13 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 procedure p1(q: CommandQueueBase);
 begin
-  Writeln(q);
-  Writeln('-'*30);
-  Writeln;
+  q.Println;
+  ('-'*30+#10).Println;
 end;
 
-begin
-  var Q := HFQ(()->5);
-  var Qs := Q.Multiusable;
-  p1( Q + Qs() * Qs() );
-  p1( Qs() * Qs() +  Q);
-  p1( Qs() * Qs() );
-end.
+var Q := HTFQ(()->5);
+var Qs := Q.Multiusable;
+p1( Q + Qs() * Qs() );
+p1( Qs() * Qs() +  Q);
+p1( Qs() * Qs() );

@@ -1,4 +1,4 @@
 ## uses OpenCLABC;
 
-var Qs := HFQQ(()->(1).Println+1).Multiusable;
-Context.Default.SyncInvoke(CombineQuickConvAsyncQueue(a->a, Qs(), Qs())).Println;
+var Qs := HQFQ(()->(1).Println+1).Multiusable;
+CLContext.Default.SyncInvoke(CombineConstConvAsyncQueue(a->a, Qs(), Qs())).Println;

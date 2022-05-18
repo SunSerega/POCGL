@@ -8,13 +8,13 @@ type
     
     // Эта очередь ничего полезного не делает, но это только пример
     public constructor := self.Q :=
-    MemorySegment.Create(sizeof(integer)).NewQueue
+    CLMemory.Create(sizeof(integer)).NewQueue
     .ThenWriteValue( self.par1 )
-    .ThenQueue( self.par2.ThenQuickUse(x->Writeln(x)) )
+    .ThenQueue( self.par2.ThenQuickUse(x->Println(x)) )
     .ThenGetValue&<integer>;
     
     public function Invoke(par1: integer; par2: string) :=
-    Context.Default.SyncInvoke(self.Q,
+    CLContext.Default.SyncInvoke(self.Q,
       self.par1.NewSetter(par1),
       self.par2.NewSetter(par2)
     );

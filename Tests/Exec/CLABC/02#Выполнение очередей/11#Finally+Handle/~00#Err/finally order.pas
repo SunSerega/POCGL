@@ -1,15 +1,15 @@
 ﻿## uses OpenCLABC;
 
-Context.Default.SyncInvoke(
-  HPQ(()->Writeln(1)) >= HPQ(()->Writeln(2))
+CLContext.Default.SyncInvoke(
+  HTPQ(()->Println(1)) >= HTPQ(()->Println(2))
 );
 
 try
-  Context.Default.SyncInvoke(
-    HPQ(()->raise new Exception('ErrorOK')) + HPQ(()->Writeln(3))
-    >= HPQ(()->Writeln(4)) + HPQ(()->Writeln(5))
+  CLContext.Default.SyncInvoke(
+    HTPQ(()->raise new Exception('ErrorOK')) + HTPQ(()->Println(3))
+    >= HTPQ(()->Println(4)) + HTPQ(()->Println(5))
   );
 except
   on e: System.AggregateException do
-    Writeln(e.InnerExceptions.Single.Message);
+    e.InnerExceptions.PrintLines(e->e.Message);
 end;

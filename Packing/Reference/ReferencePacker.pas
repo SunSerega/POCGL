@@ -1,4 +1,4 @@
-﻿{$reference '0MarkDig\Markdig.dll'}
+﻿{$reference '!MarkDig\Markdig.dll'}
 uses System.IO;
 
 uses POCGL_Utils  in '..\..\POCGL_Utils';
@@ -78,8 +78,11 @@ type
       POCGL_Utils.Otp($'Packing reference "{nick}"');
       last_page_id := 0;
       
+      var ReleaseDir := GetFullPathRTA('0Release');
+      System.IO.Directory.CreateDirectory(ReleaseDir);
+      
       path := GetFullPathRTA(path);
-      otp  := GetFullPathRTA(otp);
+      otp  := GetFullPath(otp, ReleaseDir);
       
       var sw := new StreamWriter(otp, false, enc);
       sw.WriteLine('<!DOCTYPE html>');
@@ -87,21 +90,17 @@ type
       sw.WriteLine('<head>');
       sw.WriteLine('<meta charset="utf-8">');
       
-      sw.WriteLine('<style>');
-      sw.WriteLine(ReadAllText(GetFullPathRTA('0ReferenceContainer\.css')).Trim);
-      sw.WriteLine('</style>');
+      sw.WriteLine('<link rel="stylesheet" href="Common/0.css" />');
       
       sw.WriteLine('</head>');
       sw.WriteLine('<body>');
       
       sw.WriteLine(Markdig.Markdown.ToHtml(
-        ReadAllText(GetFullPathRTA('0ReferenceContainer\.md')),
+        ReadAllText(GetFullPathRTA('Common.md')),
         md_pipeline
       ).Trim);
       
-      sw.WriteLine('<script>');
-      sw.WriteLine(ReadAllText(GetFullPathRTA('0ReferenceContainer\.js')).Trim);
-      sw.WriteLine('</script>');
+      sw.WriteLine('<script src="Common/0.js" ></script>');
       
       if System.IO.Directory.Exists(path) then AddFolder(sw, path);
       

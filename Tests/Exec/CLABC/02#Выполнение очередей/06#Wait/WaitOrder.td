@@ -1,17 +1,17 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
-
-#ExpOtp
-1
-2
-[EventDebug]: 4 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 4 wait handler's created 
-
 #DelegateCount
 3
+
+#ExpExecOtp
+1 
+2 
+[EventDebug]: 4 event's created 
+[WaitDebug]: 4 wait handler's created 
+[QueueResNil]: 6 
+
+#ReqModules
+OpenCLABC
 
 

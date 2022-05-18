@@ -1,0 +1,124 @@
+﻿
+
+
+{$region Managed}
+
+{$region Array}
+
+static function CLKernelArg.FromArray<T>(a: CommandQueue<array of T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArray(a) end;
+
+{$endregion Array}
+
+{$region Array2}
+
+static function CLKernelArg.FromArray2<T>(a2: CommandQueue<array[,] of T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArray2(a2) end;
+
+{$endregion Array2}
+
+{$region Array3}
+
+static function CLKernelArg.FromArray3<T>(a3: CommandQueue<array[,,] of T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArray3(a3) end;
+
+{$endregion Array3}
+
+{$region ArraySegment}
+
+static function CLKernelArg.FromArraySegment<T>(seg: CommandQueue<ArraySegment<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromArraySegment(seg) end;
+
+{$endregion ArraySegment}
+
+{$endregion Managed}
+
+{$region NativeArea}
+
+{$region NativeMemoryArea}
+
+static function CLKernelArg.FromNativeMemoryArea(ntv_mem_area: CommandQueue<NativeMemoryArea>): CLKernelArg;
+begin Result := CLKernelArgPrivate.FromNativeMemoryArea(ntv_mem_area) end;
+
+{$endregion NativeMemoryArea}
+
+{$region NativeValueArea}
+
+static function CLKernelArg.FromNativeValueArea<T>(ntv_val_area: CommandQueue<NativeValueArea<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeValueArea(ntv_val_area) end;
+
+{$endregion NativeValueArea}
+
+{$region NativeArrayArea}
+
+static function CLKernelArg.FromNativeArrayArea<T>(ntv_arr_area: CommandQueue<NativeArrayArea<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeArrayArea(ntv_arr_area) end;
+
+{$endregion NativeArrayArea}
+
+{$endregion NativeArea}
+
+{$region Native}
+
+{$region NativeMemory}
+
+static function CLKernelArg.FromNativeMemory(ntv_mem: CommandQueue<NativeMemory>): CLKernelArg;
+begin Result := CLKernelArgPrivate.FromNativeMemory(ntv_mem) end;
+
+{$endregion NativeMemory}
+
+{$region NativeValue}
+
+static function CLKernelArg.FromNativeValue<T>(ntv_val: CommandQueue<NativeValue<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeValue(ntv_val) end;
+
+{$endregion NativeValue}
+
+{$region NativeArray}
+
+static function CLKernelArg.FromNativeArray<T>(ntv_arr: CommandQueue<NativeArray<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromNativeArray(ntv_arr) end;
+
+{$endregion NativeArray}
+
+{$endregion Native}
+
+{$region CL}
+
+{$region CLMemory}
+
+static function CLKernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
+begin Result := CLKernelArgGlobal.FromCLMemory(cl_mem) end;
+static function CLKernelArg.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArg;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+
+{$endregion CLMemory}
+
+{$region CLValue}
+
+static function CLKernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromCLValue(cl_val) end;
+static function CLKernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArg; where T: record;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+
+{$endregion CLValue}
+
+{$region CLArray}
+
+static function CLKernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
+begin Result := CLKernelArgGlobal.FromCLArray(cl_arr) end;
+static function CLKernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArg; where T: record;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+
+{$endregion CLArray}
+
+{$endregion CL}
+
+{$region Value}
+
+static function CLKernelArg.FromValue<T>(val: CommandQueue<T>): CLKernelArg; where T: record;
+begin Result := CLKernelArgPrivate.FromValue(val) end;
+
+{$endregion Value}
+
+

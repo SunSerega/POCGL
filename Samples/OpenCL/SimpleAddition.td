@@ -1,16 +1,16 @@
 ﻿
 
 
-#TestMode
-Comp+Exec
+#DelegateCount
+5
+
+#ExpExecOtp
+1 2 3 4 5 6 7 8 9 10
 
 #ReqModules
 OpenCL
 
-#ExpOtp
-1 2 3 4 5 6 7 8 9 10
-
-#DelegateCount
-5
+#TestMode
+Comp+Exec
 
 

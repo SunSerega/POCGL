@@ -1,17 +1,19 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
-
-#ExpOtp
-25 
-(625, True) 
-[EventDebug]: 4 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
-
 #DelegateCount
 3
+
+#ExpExecOtp
+25 
+(625, True) 
+[EventDebug]: 2 event's created 
+[QueueRes<T>]: 8 
+	QueueResValDirect<(integer,boolean)>: 1 
+	QueueResValDirect<integer>: 3 
+	QueueResValDirect<Object>: 4 
+
+#ReqModules
+OpenCLABC
 
 

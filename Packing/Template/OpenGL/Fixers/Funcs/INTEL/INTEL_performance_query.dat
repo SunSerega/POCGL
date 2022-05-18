@@ -2,52 +2,49 @@
 
 
 # glGetFirstPerfQueryIdINTEL
-!repl_ovrs
- var gl_perf_query_id_INTEL	|
- IntPtr					    |
-
-# glGetNextPerfQueryIdINTEL
-!repl_ovrs
- gl_perf_query_id_INTEL	| gl_perf_query_id_INTEL	|
- gl_perf_query_id_INTEL	| IntPtr			        |
-
-# glGetPerfQueryIdByNameINTEL
-!possible_par_types
- -IntPtr +string +IntPtr	| -array of UInt32	|
 !repl_par_t
 var UInt32 = var gl_perf_query_id_INTEL
 
+# glGetNextPerfQueryIdINTEL
+!repl_par_t
+UInt32 = gl_perf_query_id_INTEL
+var UInt32 = var gl_perf_query_id_INTEL
+
+# glGetPerfQueryIdByNameINTEL
+!repl_par_t
+var UInt32 = var gl_perf_query_id_INTEL
+!possible_par_types
+ +string	| *	|
+
 # glGetPerfQueryInfoINTEL
-!repl_ovrs
- gl_perf_query_id_INTEL	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var PerfQueryCapFlagsINTEL	|
- gl_perf_query_id_INTEL	| UInt32	| IntPtr	| IntPtr		| IntPtr		| IntPtr		| IntPtr						|
+!possible_par_types
+ -UInt32 +gl_perf_query_id_INTEL	| *	| *	| -array of UInt32	| -array of UInt32	| -array of UInt32	| -array of UInt32 -var UInt32 +var PerfQueryCapFlagsINTEL	|
+!limit_ovrs
+ *									| *	| *	| var UInt32		| var UInt32		| var UInt32		| var PerfQueryCapFlagsINTEL								|
+ *									| *	| *	| IntPtr			| IntPtr			| IntPtr			| IntPtr													|
 
 # glGetPerfCounterInfoINTEL
-!repl_ovrs
- gl_perf_query_id_INTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| var UInt64	|
- gl_perf_query_id_INTEL	| UInt32	| UInt32	| IntPtr	| UInt32	| IntPtr	| IntPtr		| IntPtr		| IntPtr		| IntPtr		| IntPtr		|
+!possible_par_types
+ -UInt32 +gl_perf_query_id_INTEL	| *	| *	| *	| *	| *	| -array of UInt32	| -array of UInt32	| -array of UInt32	| -array of UInt32	| -array of UInt64	|
+!limit_ovrs
+ *									| *	| *	| *	| *	| *	| var UInt32		| var UInt32		| var UInt32		| var UInt32		| var UInt64		|
+ *									| *	| *	| *	| *	| *	| IntPtr			| IntPtr			| IntPtr			| IntPtr			| IntPtr			|
 
 # glCreatePerfQueryINTEL
-!repl_ovrs
- gl_perf_query_id_INTEL	| var gl_perf_query_handle_INTEL	|
- gl_perf_query_id_INTEL	| IntPtr					|
-
-# glDeletePerfQueryINTEL
 !repl_par_t
-UInt32=gl_perf_query_handle_INTEL
-
-# glBeginPerfQueryINTEL
-!repl_par_t
-UInt32=gl_perf_query_handle_INTEL
-
-# glEndPerfQueryINTEL
-!repl_par_t
-UInt32=gl_perf_query_handle_INTEL
+UInt32 = gl_perf_query_id_INTEL
+var UInt32 = var gl_perf_query_handle_INTEL
+!possible_par_types
+ *	| -array of UInt32	|
 
 # glGetPerfQueryDataINTEL
 !repl_par_t
 UInt32= gl_perf_query_handle_INTEL | PerfQueryDataFlagsINTEL
-!possible_par_types
- *	| *	| *	| *	| -array of UInt32	|
+
+# glBeginPerfQueryINTEL
+# glEndPerfQueryINTEL
+# glDeletePerfQueryINTEL
+!repl_par_t
+UInt32=gl_perf_query_handle_INTEL
 
 

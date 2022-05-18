@@ -1,25 +1,25 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
+#DelegateCount
+3
 
 #ExpExecErr
 System.AggregateException: При выполнении очереди было вызвано 1 исключений. Используйте try чтоб получить больше информации ---> System.Exception: TestOK
-   в 0.Program.<>lambda*() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas:строка *
-   в OpenCLABC_implementation______.CommandQueueHostBackgoundProc.ExecProc(Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   --- Конец трассировки внутреннего стека исключений ---
-   в OpenCLABC.CLTaskBase.Wait() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC.Context.SyncInvoke(CommandQueueNil q, ParameterQueueSetter[] parameters) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в 0.Program.$Main() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas:строка *
-   в 0.Program.Main()
----> (Внутреннее исключение #0) System.Exception: TestOK
-   в 0.Program.<>lambda*() в *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas:строка *
-   в OpenCLABC_implementation______.CommandQueueHostBackgoundProc.ExecProc(Context c) в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *
-   в OpenCLABC_implementation______.<>local_variables_class_*`1.<>lambda*() в *\POCGL\Tests\LibSource\OpenCLABC.pas:строка *<---
+   at 0.Program.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas:line *
+   at OpenCLABC_implementation______.SimpleProc0Container.Invoke(CLContext c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProcBase`1.InvokeProc(CLTaskErrHandler err_handler, CLContext c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   --- End of inner exception stack trace ---
+   at OpenCLABC.CLTaskBase.Wait() in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC.CLContext.SyncInvoke(CommandQueueNil q, ParameterQueueSetter[] parameters) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at 0.Program.$Main() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas:line *
+   at 0.Program.Main()
+---> (Inner Exception #0) System.Exception: TestOK
+   at 0.Program.<>lambda*() in *\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas:line *
+   at OpenCLABC_implementation______.SimpleProc0Container.Invoke(CLContext c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *
+   at OpenCLABC_implementation______.CommandQueueHostProcBase`1.InvokeProc(CLTaskErrHandler err_handler, CLContext c) in *\POCGL\Tests\LibSource\OpenCLABC.pas:line *<---
 
-#DelegateCount
-3
+#ReqModules
+OpenCLABC
 
 

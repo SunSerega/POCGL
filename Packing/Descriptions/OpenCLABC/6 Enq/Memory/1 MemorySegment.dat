@@ -1,15 +1,15 @@
 
 
 
-# CLMemorySegment:OffsetDef
+# CLMemory:OffsetDef
 mem_offset указывает отступ от начала области памяти, в байтах
 
-# CLMemorySegment:OffsetLenDef
-%CLMemorySegment:OffsetDef%
+# CLMemory:OffsetLenDef
+%CLMemory:OffsetDef%
 len указывает кол-во задействованных в операции байт
 
-# CLMemorySegment:OffsetFillLenDef
-%CLMemorySegment:OffsetDef%
+# CLMemory:OffsetFillLenDef
+%CLMemory:OffsetDef%
 fill_byte_len указывает кол-во заливаемых байт
 
 
@@ -21,51 +21,49 @@ fill_byte_len указывает кол-во заливаемых байт
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]WriteData(CommandQueue<IntPtr>)
-# CLMemorySegment[%.,CCQ.Then%]WriteData(pointer)
+# CLMemory[%.,CCQ.Then%]WriteData(CommandQueue<IntPtr>)
+# CLMemory[%.,CCQ.Then%]WriteData(pointer)
 Заполняет всю область памяти данными, находящимися по указанному адресу в RAM
-# CLMemorySegment[%.,CCQ.Then%]ReadData(CommandQueue<IntPtr>)
-# CLMemorySegment[%.,CCQ.Then%]ReadData(pointer)
+# CLMemory[%.,CCQ.Then%]ReadData(CommandQueue<IntPtr>)
+# CLMemory[%.,CCQ.Then%]ReadData(pointer)
 Читает всё содержимое области памяти в RAM, по указанному адресу
 
-# CLMemorySegment[%.,CCQ.Then%]WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 Заполняет часть области памяти данными, находящимися по указанному адресу в RAM
-%CLMemorySegment:OffsetLenDef%
-# CLMemorySegment[%.,CCQ.Then%]ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:OffsetLenDef%
+# CLMemory[%.,CCQ.Then%]ReadData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]ReadData(pointer, CommandQueue<integer>, CommandQueue<integer>)
 Читает часть содержимого области памяти в RAM, по указанному адресу
-%CLMemorySegment:OffsetLenDef%
+%CLMemory:OffsetLenDef%
 
-# CLMemorySegment[%.,CCQ.Then%]WriteData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
 Записывает данные указанной области памяти RAM в данную область памяти OpenCL
-%CLMemorySegment:OffsetDef%
-# CLMemorySegment[%.,CCQ.Then%]ReadData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+%CLMemory:OffsetDef%
+# CLMemory[%.,CCQ.Then%]ReadData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
 Читает достаточно данных данной области памяти OpenCL чтобы заполнить всю указанную область памяти RAM
-%CLMemorySegment:OffsetDef%
+%CLMemory:OffsetDef%
 
 
 
-# CLMemorySegment:FillData:PatternLen
+# CLMemory:FillData:PatternLen
 Берёт последовательность из pattern_len байт из RAM по указанному адресу и заполняет её копиями
-# CLMemorySegment:FillData:Area
+# CLMemory:FillData:Area
 Берёт последовательность байт указанной области памяти RAM и заполняет её копиями
 
-# CLMemorySegment[%.,CCQ.Then%]FillData(CommandQueue<IntPtr>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillData(pointer, CommandQueue<integer>)
-%CLMemorySegment:FillData:PatternLen% всю область памяти
-# CLMemorySegment[%.,CCQ.Then%]FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:FillData:PatternLen% часть области памяти
-%CLMemorySegment:OffsetFillLenDef%
+# CLMemory[%.,CCQ.Then%]FillData(CommandQueue<IntPtr>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillData(pointer, CommandQueue<integer>)
+%CLMemory:FillData:PatternLen% всю область памяти
+# CLMemory[%.,CCQ.Then%]FillData(CommandQueue<IntPtr>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillData(pointer, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:FillData:PatternLen% часть области памяти
+%CLMemory:OffsetFillLenDef%
 
-# CLMemorySegment[%.,CCQ.Then%]FillData(CommandQueue<NativeMemoryArea>)
-%CLMemorySegment:FillData:Area% всю данную область памяти OpenCL
-# CLMemorySegment[%.,CCQ.Then%]FillData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:FillData:Area% часть данной области памяти OpenCL
-%CLMemorySegment:OffsetFillLenDef%
-
-
+# CLMemory[%.,CCQ.Then%]FillData(CommandQueue<NativeMemoryArea>)
+%CLMemory:FillData:Area% всю данную область памяти OpenCL
+# CLMemory[%.,CCQ.Then%]FillData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:FillData:Area% часть данной области памяти OpenCL
+%CLMemory:OffsetFillLenDef%
 
 
 
@@ -74,51 +72,53 @@ fill_byte_len указывает кол-во заливаемых байт
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]WriteValue<TRecord>(TRecord)
-# CLMemorySegment[%.,CCQ.Then%]WriteValue<TRecord>(CommandQueue<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeValue<TRecord>(NativeValue<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
+
+
+# CLMemory[%.,CCQ.Then%]WriteValue<TRecord>(TRecord)
+# CLMemory[%.,CCQ.Then%]WriteValue<TRecord>(CommandQueue<TRecord>)
+# CLMemory[%.,CCQ.Then%]WriteNativeValue<TRecord>(NativeValue<TRecord>)
+# CLMemory[%.,CCQ.Then%]WriteNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
 Записывает указанное значение размерного типа в начало области памяти
 
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeValue<TRecord>(NativeValue<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
+# CLMemory[%.,CCQ.Then%]ReadNativeValue<TRecord>(NativeValue<TRecord>)
+# CLMemory[%.,CCQ.Then%]ReadNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
 Читает значение размерного типа из начала области памяти в указанное значение
 
-# CLMemorySegment[%.,CCQ.Then%]WriteValue<TRecord>(TRecord, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteValue<TRecord>(TRecord, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteNativeValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
 Записывает указанное значение размерного типа в область памяти
-%CLMemorySegment:OffsetDef%
+%CLMemory:OffsetDef%
 
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]ReadNativeValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]ReadNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>)
 Читает значение размерного типа из области памяти в указанное значение
-%CLMemorySegment:OffsetDef%
+%CLMemory:OffsetDef%
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]FillValue<TRecord>(TRecord)
-# CLMemorySegment[%.,CCQ.Then%]FillValue<TRecord>(CommandQueue<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeValue<TRecord>(NativeValue<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
+# CLMemory[%.,CCQ.Then%]FillValue<TRecord>(TRecord)
+# CLMemory[%.,CCQ.Then%]FillValue<TRecord>(CommandQueue<TRecord>)
+# CLMemory[%.,CCQ.Then%]FillNativeValue<TRecord>(NativeValue<TRecord>)
+# CLMemory[%.,CCQ.Then%]FillNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>)
 Заполняет всю область памяти копиями указанного значения размерного типа
 
-# CLMemorySegment[%.,CCQ.Then%]FillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillValue<TRecord>(TRecord, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillValue<TRecord>(CommandQueue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillNativeValue<TRecord>(NativeValue<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillNativeValue<TRecord>(CommandQueue<NativeValue<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
 Заполняет часть области памяти копиями указанного значения размерного типа
-%CLMemorySegment:OffsetFillLenDef%
+%CLMemory:OffsetFillLenDef%
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]GetValue<TRecord>
+# CLMemory[%.,CCQ.Then%]GetValue<TRecord>
 Читает значение указанного размерного типа из начала области памяти
 
-# CLMemorySegment[%.,CCQ.Then%]GetValue<TRecord>(CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]GetValue<TRecord>(CommandQueue<integer>)
 Читает значение указанного размерного типа из области памяти
-%CLMemorySegment:OffsetDef%
+%CLMemory:OffsetDef%
 
 
 
@@ -129,11 +129,11 @@ fill_byte_len указывает кол-во заливаемых байт
 
 
 
-# CLMemorySegment:ArrIndCountDef
+# CLMemory:ArrIndCountDef
 a_ind(-ы) указывают индекс первого задействованного элемента массива
 el_count указывает кол-во задействованных элементов массива
 
-# CLMemorySegment:ArrMultiIndWarning
+# CLMemory:ArrMultiIndWarning
 ==================================================
 ВНИМАНИЕ! У многомерных массивов элементы распологаются так же как у одномерных, разделение на строки виртуально
 Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
@@ -141,94 +141,94 @@ el_count указывает кол-во задействованных элем�
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]WriteArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %])
-# CLMemorySegment[%.,CCQ.Then%]WriteArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %])
-# CLMemorySegment[%.,CCQ.Then%]WriteArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %])
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeArray<TRecord>(NativeArray<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>)
+# CLMemory[%.,CCQ.Then%]WriteArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %])
+# CLMemory[%.,CCQ.Then%]WriteArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %])
+# CLMemory[%.,CCQ.Then%]WriteArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %])
+# CLMemory[%.,CCQ.Then%]WriteNativeArray<TRecord>(NativeArray<TRecord>)
+# CLMemory[%.,CCQ.Then%]WriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>)
 Записывает весь массив в начало области памяти
 
-# CLMemorySegment[%.,CCQ.Then%]ReadArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %])
-# CLMemorySegment[%.,CCQ.Then%]ReadArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %])
-# CLMemorySegment[%.,CCQ.Then%]ReadArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %])
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeArray<TRecord>(NativeArray<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>)
+# CLMemory[%.,CCQ.Then%]ReadArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %])
+# CLMemory[%.,CCQ.Then%]ReadArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %])
+# CLMemory[%.,CCQ.Then%]ReadArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %])
+# CLMemory[%.,CCQ.Then%]ReadNativeArray<TRecord>(NativeArray<TRecord>)
+# CLMemory[%.,CCQ.Then%]ReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>)
 Заполняет весь массив байбами из начала области памяти
 
-# CLMemorySegment:WriteArraySegment
-# CLMemorySegment[%.,CCQ.Then%]WriteArraySegment<TRecord>(ArraySegment<TRecord>, CommandQueue<integer>)
+# CLMemory:WriteArraySegment
+# CLMemory[%.,CCQ.Then%]WriteArraySegment<TRecord>(ArraySegment<TRecord>, CommandQueue<integer>)
 Записывает указанный участок массива в область памяти
-%CLMemorySegment:OffsetDef%
-# CLMemorySegment:ReadArraySegment
-# CLMemorySegment[%.,CCQ.Then%]ReadArraySegment<TRecord>(ArraySegment<TRecord>, CommandQueue<integer>)
+%CLMemory:OffsetDef%
+# CLMemory:ReadArraySegment
+# CLMemory[%.,CCQ.Then%]ReadArraySegment<TRecord>(ArraySegment<TRecord>, CommandQueue<integer>)
 Читает данные из области памяти в указанный участок массива
-%CLMemorySegment:OffsetDef%
+%CLMemory:OffsetDef%
 
-# CLMemorySegment:WriteArrayInds
-# CLMemorySegment[%.,CCQ.Then%]WriteArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:WriteArraySegment%
-%CLMemorySegment:ArrIndCountDef%
-# CLMemorySegment:ReadArrayInds
-# CLMemorySegment[%.,CCQ.Then%]ReadArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]ReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:ReadArraySegment%
-%CLMemorySegment:ArrIndCountDef%
+# CLMemory:WriteArrayInds
+# CLMemory[%.,CCQ.Then%]WriteArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:WriteArraySegment%
+%CLMemory:ArrIndCountDef%
+# CLMemory:ReadArrayInds
+# CLMemory[%.,CCQ.Then%]ReadArray1<TRecord>([% array of TRecord , CommandQueue<array of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]ReadNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]ReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:ReadArraySegment%
+%CLMemory:ArrIndCountDef%
 
-# CLMemorySegment[%.,CCQ.Then%]WriteArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]WriteArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:WriteArrayInds%
-%CLMemorySegment:ArrMultiIndWarning%
-# CLMemorySegment[%.,CCQ.Then%]ReadArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]ReadArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:ReadArrayInds%
-%CLMemorySegment:ArrMultiIndWarning%
+# CLMemory[%.,CCQ.Then%]WriteArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]WriteArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:WriteArrayInds%
+%CLMemory:ArrMultiIndWarning%
+# CLMemory[%.,CCQ.Then%]ReadArray2<TRecord>([% array[\,] of TRecord , CommandQueue<array[\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]ReadArray3<TRecord>([% array[\,\,] of TRecord , CommandQueue<array[\,\,] of TRecord> %], CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:ReadArrayInds%
+%CLMemory:ArrMultiIndWarning%
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]FillArray1<TRecord>(array of TRecord)
-# CLMemorySegment[%.,CCQ.Then%]FillArray2<TRecord>(array[,] of TRecord)
-# CLMemorySegment[%.,CCQ.Then%]FillArray3<TRecord>(array[,,] of TRecord)
-# CLMemorySegment[%.,CCQ.Then%]FillArray1<TRecord>(CommandQueue<array of TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]FillArray2<TRecord>(CommandQueue<array[,] of TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]FillArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeArray<TRecord>(NativeArray<TRecord>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>)
+# CLMemory[%.,CCQ.Then%]FillArray1<TRecord>(array of TRecord)
+# CLMemory[%.,CCQ.Then%]FillArray2<TRecord>(array[,] of TRecord)
+# CLMemory[%.,CCQ.Then%]FillArray3<TRecord>(array[,,] of TRecord)
+# CLMemory[%.,CCQ.Then%]FillArray1<TRecord>(CommandQueue<array of TRecord>)
+# CLMemory[%.,CCQ.Then%]FillArray2<TRecord>(CommandQueue<array[,] of TRecord>)
+# CLMemory[%.,CCQ.Then%]FillArray3<TRecord>(CommandQueue<array[,,] of TRecord>)
+# CLMemory[%.,CCQ.Then%]FillNativeArray<TRecord>(NativeArray<TRecord>)
+# CLMemory[%.,CCQ.Then%]FillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>)
 Заполняет область памяти копиями указанного массива
 
-# CLMemorySegment:FillArraySegment
-# CLMemorySegment[%.,CCQ.Then%]FillArraySegment<TRecord>(ArraySegment<TRecord>)
+# CLMemory:FillArraySegment
+# CLMemory[%.,CCQ.Then%]FillArraySegment<TRecord>(ArraySegment<TRecord>)
 Заполняет область памяти копиями указанного участка массива
-# CLMemorySegment[%.,CCQ.Then%]FillArraySegment<TRecord>(ArraySegment<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:FillArraySegment%
-%CLMemorySegment:OffsetFillLenDef%
+# CLMemory[%.,CCQ.Then%]FillArraySegment<TRecord>(ArraySegment<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:FillArraySegment%
+%CLMemory:OffsetFillLenDef%
 
-# CLMemorySegment:FillArrayInds
-# CLMemorySegment[%.,CCQ.Then%]FillArray1<TRecord>(array of TRecord, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:FillArraySegment%
-%CLMemorySegment:ArrIndCountDef%
-%CLMemorySegment:OffsetFillLenDef%
+# CLMemory:FillArrayInds
+# CLMemory[%.,CCQ.Then%]FillArray1<TRecord>(array of TRecord, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillArray1<TRecord>(CommandQueue<array of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:FillArraySegment%
+%CLMemory:ArrIndCountDef%
+%CLMemory:OffsetFillLenDef%
 
-# CLMemorySegment[%.,CCQ.Then%]FillArray2<TRecord>(array[,] of TRecord, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillArray3<TRecord>(array[,,] of TRecord, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]FillArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:FillArrayInds%
-%CLMemorySegment:ArrMultiIndWarning%
+# CLMemory[%.,CCQ.Then%]FillArray2<TRecord>(array[,] of TRecord, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillArray3<TRecord>(array[,,] of TRecord, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillArray2<TRecord>(CommandQueue<array[,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]FillArray3<TRecord>(CommandQueue<array[,,] of TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:FillArrayInds%
+%CLMemory:ArrMultiIndWarning%
 
 
 
-# CLMemorySegment[%.,CCQ.Then%]GetArray<TRecord>
+# CLMemory[%.,CCQ.Then%]GetArray<TRecord>
 Создаёт массив с максимальным возможным кол-вом элементов и заполняет его содержимым области памяти
 
-# CLMemorySegment[%.,CCQ.Then%]GetArray<TRecord>(CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
-# CLMemorySegment[%.,CCQ.Then%]GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]GetArray<TRecord>(CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]GetArray2<TRecord>(CommandQueue<integer>, CommandQueue<integer>)
+# CLMemory[%.,CCQ.Then%]GetArray3<TRecord>(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
 Создаёт массив с указанным кол-вом элементов и копирует в него содержимое из начала области памяти
 
 
@@ -240,17 +240,17 @@ el_count указывает кол-во задействованных элем�
 
 
 
-# CLMemorySegment:Copy:To
+# CLMemory:Copy:To
 Копирует данные из данной области памяти в mem
-# CLMemorySegment:Copy:From
+# CLMemory:Copy:From
 Копирует данные из mem в данную область памяти
 
-# CLMemorySegment[%.,CCQ.Then%]Copy[%dir:From,To%](CommandQueue<CLMemorySegment>)
-%CLMemorySegment:Copy:{%dir%}%
+# CLMemory[%.,CCQ.Then%]Copy[%dir:From,To%](CommandQueue<CLMemory>)
+%CLMemory:Copy:{%dir%}%
 Если области памяти имеют разный размер - в качестве объёма данных берётся размер меньшей области
 
-# CLMemorySegment[%.,CCQ.Then%]Copy[%dir:From,To%](CommandQueue<CLMemorySegment>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
-%CLMemorySegment:Copy:{%dir%}%
+# CLMemory[%.,CCQ.Then%]Copy[%dir:From,To%](CommandQueue<CLMemory>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+%CLMemory:Copy:{%dir%}%
 from_offset указывает отступ в байтах от начала области памяти, из которой копируют
 to_offset указывает отступ в байтах от начала области памяти, в которую копируют
 len указывает кол-во копируемых байт

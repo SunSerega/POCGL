@@ -1,0 +1,54 @@
+﻿    
+    
+    
+    {$region CL}
+    
+    {$region CLMemory}
+    
+    public static function FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
+    public static function operator implicit(cl_mem: CLMemory): CLKernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ConstQueue<CLMemory>): CLKernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: ParameterQueue<CLMemory>): CLKernelArgConstant;
+    begin Result := FromCLMemory(cl_mem) end;
+    public static function operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgConstant;
+    
+    {$endregion CLMemory}
+    
+    {$region CLValue}
+    
+    public static function FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_val: CLValue<T>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ConstQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: ParameterQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLValue&<T>(cl_val) end;
+    public static function operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgConstant; where T: record;
+    
+    {$endregion CLValue}
+    
+    {$region CLArray}
+    
+    public static function FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
+    public static function operator implicit<T>(cl_arr: CLArray<T>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ConstQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: ParameterQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
+    begin Result := FromCLArray&<T>(cl_arr) end;
+    public static function operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgConstant; where T: record;
+    
+    {$endregion CLArray}
+    
+    {$endregion CL}
+    
+    
+    

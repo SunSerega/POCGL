@@ -1,28 +1,23 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
-
-#ExpOtp
-CastQueue<byte, Object>#0
-	ConstQueue<byte>#1: 5
-
-SimpleAsyncQueueArray<Object>#0
-	CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
-	CastQueue<integer, Object>#2
-		CommandQueueHostBackgoundFunc<integer>#3: function lambda: integer
-
-CLMemorySegmentCCQ#0
-	CCCObj: CLMemorySegment[*] of size 1
-	QueueCommand
-		CommandQueueHostBackgoundFunc<integer>#1: function lambda: integer
-
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
-
 #DelegateCount
 3
+
+#ExpExecOtp
+ConstQueue<Object>#0: byte{ 5 }
+ 
+SimpleAsyncQueueArray<Object>#0
+	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
+	CastQueue<integer,Object>#2
+		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#3: function lambda: integer
+ 
+CLMemoryCCQ#0
+	CCCObj<CLMemory>: CLMemory[*] of size 1
+	QueueCommand<CLMemory>
+		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
+
+#ReqModules
+OpenCLABC
 
 

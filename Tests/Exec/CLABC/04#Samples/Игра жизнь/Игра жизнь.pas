@@ -37,7 +37,7 @@ try
   var B := new CLArray<byte>(ArrGen(W*W, i->byte(Random(2))));
   var B_temp := new CLArray<byte>(B.Length);
   
-  var code := new ProgramCode(ReadAllText('Игра жизнь.cl'));
+  var code := new CLProgramCode(ReadAllText('Игра жизнь.cl'));
   
   var Q_1Step :=
     code['CalcStep']
@@ -53,21 +53,21 @@ try
     .ThenUse(field->
     begin
       // Если уже слишком далеко вперёд насчитали - можно немного отдохнуть
-      while field_states_q.Count=16 do Sleep(1000 div fps);
+//      while field_states_q.Count=16 do Sleep(1000 div fps);
       field_states_q.Enqueue(field);
     end)
   ;
   
 //  while true do
 //  begin
-//    Context.Default.SyncInvoke(
+//    CLContext.Default.SyncInvoke(
 //      Q_1Step +
 //      Q_Otp
 //    );
 //  end;
   
-  Context.Default.SyncInvoke(CombineSyncQueueBase(SeqFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
-  field_states_q.Last.ConvertAll(b->b<>0?#9608:' ').Println(0);
+  CLContext.Default.SyncInvoke(CombineSyncQueueBase(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
+  field_states_q.Single.ConvertAll(b->b<>0?#9608:' ').Println(0);
   
 except
   on ae: System.AggregateException do

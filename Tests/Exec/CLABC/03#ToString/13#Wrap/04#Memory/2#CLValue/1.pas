@@ -1,3 +1,3 @@
 ﻿## uses OpenCLABC;
 
-Writeln(new CLValue<word>);
+Println(new CLValue<byte>);

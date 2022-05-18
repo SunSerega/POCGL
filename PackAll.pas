@@ -95,6 +95,7 @@ var AllStages := HSet(
     begin
       if (id<>nil) and not CurrentStages.Contains(id) then exit;
       Result := MakeCoreTask;
+      if Result=nil then exit;
       
       if self.log_name<>nil then
       begin
@@ -177,6 +178,28 @@ var AllStages := HSet(
   
   {$endregion Reference}
   
+  {$region FVT}
+  
+  FVTStage = sealed class(PackingStage)
+    
+    constructor;
+    begin
+      inherited Create(nil);
+      self.description := 'FuncVirtualTest';
+      self.log_name := 'FVT';
+    end;
+    
+    function MakeCoreTask: AsyncTask; override;
+    begin
+      Result := nil;
+      if not AllLLModules.All(CurrentStages.Contains) then exit;
+      Result := ExecTask('Packing\Template\FuncVirtualTest.pas', 'FVT');
+    end;
+    
+  end;
+  
+  {$endregion FVT}
+  
   {$region Modules}
   
   ModulePackingStage = abstract class(PackingStage)
@@ -204,12 +227,9 @@ var AllStages := HSet(
   LLModuleStage = sealed class(ModulePackingStage)
     
     function MakeModuleTask: AsyncTask; override :=
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\Template\{id}.pas"', $'"otp_fname=Modules\{id}.pas"') +
-      ProcTask(()->
-      begin
-        Directory.CreateDirectory('Modules.Packed');
-        System.IO.File.Copy($'Modules\{id}.pas', $'Modules.Packed\{id}.pas', true);
-      end)
+      ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
+      +
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
     ;
     
   end;
@@ -218,7 +238,7 @@ var AllStages := HSet(
     function MakeModuleTask: AsyncTask; override :=
       ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
       +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]',     $'nick={id}', $'"inp_fname=Modules\{id}.pas"',              $'"otp_fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
       +
       ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
     ;
@@ -244,10 +264,7 @@ var AllStages := HSet(
       if CurrentStages.Contains(mn+'ABC') then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
       
       if CurrentStages.Contains(mn+'ABC') then
-      begin
-        if not CurrentStages.Contains(mn) then System.IO.File.Copy($'Modules\{mn}.pas', $'Modules.Packed\{mn}.pas', true);
-        Result += CompTask($'Modules.Packed\{mn}ABC.pas');
-      end else
+        Result += CompTask($'Modules.Packed\{mn}ABC.pas') else
       if CurrentStages.Contains(mn) then
         Result += CompTask($'Modules.Packed\{mn}.pas');
       
@@ -381,7 +398,7 @@ var AllStages := HSet(
           );
           var DisallowedExtensions := HSet(
             '.gitignore', '.td',
-            '.temp_bin',
+            '.cache',
             '.exe', '.pdb', '.pcu'
           );
           
@@ -394,7 +411,7 @@ var AllStages := HSet(
             if ext not in AllowedExtensions then
               Otp('WARNING: Sample file with unknown extension:');
             Otp($'Packing sample file "{fname}"');
-            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\OpenGL и OpenCL');
+            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\StandardUnits');
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_fname));
             System.IO.File.Copy(fname, res_fname);
             c += 1;
@@ -406,36 +423,12 @@ var AllStages := HSet(
       
       {$endregion CopySamples}
       
-      {$region CopyReference}
-      
-      var T_CopyReferences :=
-        TitleTask('Copying references', '~') +
-        ProcTask(()->
-        begin
-          var c := 0;
-          
-          foreach var fname in System.IO.Directory.EnumerateFiles('Packing\Reference', '*.html') do
-          begin
-            var reference_name := System.IO.Path.GetFileName(fname);
-            Otp($'Packing reference [{reference_name}]');
-            System.IO.Directory.CreateDirectory('Release\InstallerSamples\OpenGL и OpenCL');
-            System.IO.File.Copy( fname, $'Release\InstallerSamples\OpenGL и OpenCL\{reference_name}' );
-            c += 1;
-          end;
-          
-          Otp($'Packed {c} reference files');
-        end)
-      ;
-      
-      {$endregion CopyReference}
-      
       Result :=
         T_Clear
         +
         
         T_CopyModules *
-        T_CopySamples *
-        T_CopyReferences
+        T_CopySamples
         
         +
         EmptyTask
@@ -504,6 +497,7 @@ begin
     
     var T_FirstPack := FirstPackStage .Create               .MakeTask;
     var T_Reference := ReferenceStage .Create               .MakeTask;
+    var T_FVT       := FVTStage       .Create               .MakeTask;
     var T_OpenCL    := LLModuleStage  .Create(OpenCLStr)    .MakeTask;
     var T_OpenCLABC := HLModuleStage  .Create(OpenCLABCStr) .MakeTask;
     var T_OpenGL    := LLModuleStage  .Create(OpenGLStr)    .MakeTask;
@@ -518,6 +512,7 @@ begin
       T_FirstPack +
       
       T_Reference *
+      T_FVT *
       T_OpenCL * T_OpenCLABC *
       T_OpenGL * T_OpenGLABC
       

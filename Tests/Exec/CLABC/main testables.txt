@@ -2,15 +2,15 @@
 
 
 - 01#Wrap
-	- 01#Platform
-	- 02#Device
-	- 03#Context
+	- 01#CLPlatform
+	- 02#CLDevice
+	- 03#CLContext
 	- 04#Memory
-		- 1#CLMemorySegment
+		- 1#CLMemory
 		- 2#CLValue
 		- 3#CLArray
-	- 05#Kernel
-	- 06#ProgramCode
+	- 05#CLKernel
+	- 06#CLCode
 
 - 02#Выполнение очередей
 	- 00#Err					: expect crash
@@ -48,17 +48,17 @@
 	- 09#CombineQueues
 	- 10#WaitMarker
 	- 11#Finally+Handle
-	- 12#KernelArg
+	- 12#CLKernelArg
 	- 13#Wrap
-		- 01#Platform
-		- 02#Device
-		- 03#Context
-		- 04#Memory
-			- 1#CLMemorySegment
+		- 01#CLPlatform
+		- 02#CLDevice
+		- 03#CLContext
+		- 04#CLMemory
+			- 1#CLMemory
 			- 2#CLValue
 			- 3#CLArray
-		- 05#Kernel
-		- 06#ProgramCode
+		- 05#CLKernel
+		- 06#CLCode
 
 - 04#Samples
 

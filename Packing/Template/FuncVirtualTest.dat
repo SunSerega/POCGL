@@ -1,0 +1,53 @@
+
+
+
+# 1NoParam
+!add
+void
+
+# 2InpString[%RO:,ReadOnly%]
+!add
+void
+ntv_char* s | {%RO%}
+
+# 3ResString[%RO:,ReadOnly%]
+!add
+ntv_char* | {%RO%}
+
+# 4Arrrrrray
+!add
+void
+T***** a
+
+# 5Generic
+!add
+void
+T* a
+
+# 6Generic
+!add
+void
+T* a
+# v[%,Dyn%]6Generic
+!possible_par_types
+ -var T	|
+
+# 7Mix
+!add
+ntv_char*
+ntv_char*	s1
+ntv_char*	s2	| ReadOnly
+T1*			gen
+T2****		a
+
+# 8BoolPtr
+!add
+void
+boolean* b
+
+# 9StringArray
+!add
+void
+ntv_char*** a
+
+

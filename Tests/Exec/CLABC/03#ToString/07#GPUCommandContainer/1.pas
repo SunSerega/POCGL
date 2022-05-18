@@ -1,17 +1,16 @@
-﻿uses OpenCLABC;
+﻿## uses OpenCLABC;
 
-begin
-  var code := new ProgramCode(Context.Default, '__kernel void p1() { }');
-  var k := code['p1'];
+var code := new CLProgramCode('kernel void k(global int* mem, int x) { }');
+var k := code['k'];
+
+k.NewQueue
+.ThenExec2(1,1,
   
-  k.NewQueue
-  .ThenExec2(1,1,
-    
-    CLMemorySegmentCCQ.Create(HFQ(()->new CLMemorySegment(1)))
-    .ThenQueue(HFQ(()->5))
-    .ThenProc(ms->begin exit() end),
-    
-    5
-  ).Println;
+  CLMemoryCCQ.Create(HTFQ(()->new CLMemory(1)))
+  .ThenQueue(HTFQ(()->5))
+  .ThenConstProc(m->begin end)
+  .ThenQuickProc(m->begin end)
+  .ThenThreadedProc(m->begin end),
   
-end.
+  5
+).Println;

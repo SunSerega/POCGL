@@ -11,7 +11,7 @@ try
   // (загружать в переменную типа ProgramCode)
   // И сохранять с помощью метода ProgramCode.SerializeTo
   // А полученный бинарник уже подключать через $resource
-  var code := new ProgramCode(Context.Default,
+  var code := new CLProgramCode(
     System.IO.StreamReader.Create(
       System.Reflection.Assembly.GetExecutingAssembly.GetManifestResourceStream('MatrMlt.cl')
     ).ReadToEnd
@@ -85,7 +85,7 @@ try
   
   // Выполнение всего и сразу асинхронный вывод
   
-  Context.Default.SyncInvoke(
+  CLContext.Default.SyncInvoke(
     
     Calc_C_Q +
     Calc_V2_Q * Otp_C_Q + // Считать V2 и выводить C можно одновременно, поэтому тут *, т.е. параллельное выполнение

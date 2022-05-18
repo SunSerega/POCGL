@@ -1,0 +1,34 @@
+﻿
+
+
+TestRange('CL', ()->
+begin
+TestRange('CLMemory', ()->
+begin
+Test(CLKernelArgConstant.FromCLMemory(CQ(cl_mem)));
+TestT&<CLKernelArgConstant>(cl_mem);
+TestT&<CLKernelArgConstant>(CQ(cl_mem));
+TestT&<CLKernelArgConstant>(new ConstQueue<CLMemory>(cl_mem));
+TestT&<CLKernelArgConstant>(new ParameterQueue<CLMemory>('cl_mem', cl_mem));
+TestT&<CLKernelArgConstant>(cl_mem.NewQueue);
+end);
+TestRange('CLValue', ()->
+begin
+Test(CLKernelArgConstant.FromCLValue(CQ(cl_val)));
+TestT&<CLKernelArgConstant>(cl_val);
+TestT&<CLKernelArgConstant>(CQ(cl_val));
+TestT&<CLKernelArgConstant>(new ConstQueue<CLValue<T>>(cl_val));
+TestT&<CLKernelArgConstant>(new ParameterQueue<CLValue<T>>('cl_val', cl_val));
+TestT&<CLKernelArgConstant>(cl_val.NewQueue);
+end);
+TestRange('CLArray', ()->
+begin
+Test(CLKernelArgConstant.FromCLArray(CQ(cl_arr)));
+TestT&<CLKernelArgConstant>(cl_arr);
+TestT&<CLKernelArgConstant>(CQ(cl_arr));
+TestT&<CLKernelArgConstant>(new ConstQueue<CLArray<T>>(cl_arr));
+TestT&<CLKernelArgConstant>(new ParameterQueue<CLArray<T>>('cl_arr', cl_arr));
+TestT&<CLKernelArgConstant>(cl_arr.NewQueue);
+end);
+end);
+

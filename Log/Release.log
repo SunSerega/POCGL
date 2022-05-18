@@ -18,9 +18,8 @@ Packing sample file "Samples\OpenCLABC\Wait очереди\2.pas"
 Packing sample file "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
 Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.cl"
 Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
-Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\0.cl"
-Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\Использовать.pas"
-Packing sample file "Samples\OpenCLABC\Прекомпиляция ProgramCode\Прекомпилировать.pas"
+Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\0.cl"
+Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
 Packing sample file "Samples\OpenGLABC\Common.pas"
 Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
 Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.vert"
@@ -32,9 +31,4 @@ Packing sample file "Samples\OpenGLABC\Точки на поле\Минимум �
 Packing sample file "Samples\OpenGLABC\Точки на поле\Спирали.frag"
 Packing sample file "Samples\OpenGLABC\Точки на поле\Сумма расстояний.frag"
 Packing sample file "Samples\OpenGLABC\Точки на поле\Точки.pas"
-Packed 27 sample files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying references ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing reference [Гайд по использованию OpenGL и OpenCL.html]
-Packing reference [Справка OpenCLABC.html]
-Packing reference [Справка OpenGLABC.html]
-Packed 3 reference files
+Packed 26 sample files

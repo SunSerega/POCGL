@@ -6,7 +6,7 @@
 # Context.Native
 # ProgramCode.Native
 # Kernel.Native
-# CLMemorySegment.Native
+# CLMemory.Native
 # CLValue<T>.Native
 # CLArray<T>.Native
 Возвращает имя (дескриптор) неуправляемого объекта
@@ -22,7 +22,7 @@
 # Context.(cl_context)
 # ProgramCode.(cl_program)
 # Kernel.(cl_kernel, boolean)
-# CLMemorySegment.FromNative(cl_mem)
+# CLMemory.FromNative(cl_mem)
 # CLValue<T>.(cl_mem)
 # CLArray<T>.(cl_mem)
 %Wrap:NtvCtor%
@@ -32,7 +32,7 @@
 
 
 # Kernel.NewQueue
-# CLMemorySegment.NewQueue
+# CLMemory.NewQueue
 # CLValue<T>.NewQueue
 # CLArray<T>.NewQueue
 Создаёт новую очередь-контейнер для команд GPU, применяемых к данному объекту
@@ -45,7 +45,7 @@
 # Context.Dispose
 # ProgramCode.Dispose
 # Kernel.Dispose
-# CLMemorySegment.Dispose
+# CLMemory.Dispose
 # CLValue<T>.Dispose
 # CLArray<T>.Dispose
 Позволяет OpenCL удалить неуправляемый объект
@@ -59,7 +59,7 @@
 # Context.Properties
 # ProgramCode.Properties
 # Kernel.Properties
-# CLMemorySegment.Properties
+# CLMemory.Properties
 # CLMemorySubSegment.Properties
 # CLValue<T>.Properties
 # CLArray<T>.Properties
@@ -73,7 +73,7 @@
 # Kernel.Finalize
 # NativeValue<T>.Finalize
 # NativeArray<T>.Finalize
-# CLMemorySegment.Finalize
+# CLMemory.Finalize
 # CLValue<T>.Finalize
 # CLArray<T>.Finalize
 Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
@@ -90,7 +90,7 @@
 # NativeMemoryArea.ToString
 # NativeValue<T>.ToString
 # NativeArray<T>.ToString
-# CLMemorySegment.ToString
+# CLMemory.ToString
 # CLMemorySubSegment.ToString
 # CLValue<T>.ToString
 # CLArray<T>.ToString
@@ -103,7 +103,7 @@
 # Context.Equals(object)
 # ProgramCode.Equals(object)
 # Kernel.Equals(object)
-# CLMemorySegment.Equals(object)
+# CLMemory.Equals(object)
 # CLValue<T>.Equals(object)
 # CLArray<T>.Equals(object)
 --

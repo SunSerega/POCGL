@@ -110,7 +110,7 @@ type
     missing := new AsyncQueue<string>;
     
     static procedure WriteAll(s: sequence of string; wr: Writer) :=
-    foreach var c in s do
+    foreach var c in s.Distinct do
     begin
       wr += '# ';
       wr += c;

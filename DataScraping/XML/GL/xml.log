@@ -40,7 +40,6 @@ Skipped group attrib for type [GLsizeiptrARB]
 Skipped group attrib for type [GLintptrARB]
 Skipped group attrib for type [GLclampd]
 Skipped group attrib for type [GLclampf]
-Skipped group attrib for type [int]
 Invalid api: [disabled]
 Group [SampleMaskNV] isn't defined
 Skipped group attrib for type [GLhalfNV]

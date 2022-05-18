@@ -5,6 +5,11 @@ uses CodeGen      in '..\..\..\Utils\CodeGen';
 
 uses PackingUtils in '..\PackingUtils';
 
+const exec_speed_const = 'Const';
+const exec_speed_quick = 'Quick';
+const exec_speed_threaded = 'Threaded';
+const exec_speeds: array of string = (exec_speed_const, exec_speed_quick, exec_speed_threaded);
+
 begin
   try
     
@@ -106,10 +111,10 @@ begin
       WriteCCQ(res);
       res += ';'#10;
       res_Im += 'begin'#10;
-      res_Im += '  var comm := BasicGPUCommand&<';
+      res_Im += '  var comm := QueueCommandFactory&<';
       res_Im += t;
       WriteGenerics(res_Im);
-      res_Im += '>.MakeQueue(q);'#10;
+      res_Im += '>.Make(q);'#10;
       res_Im += '  Result := if comm=nil then self else AddCommand(self, comm);'#10;
       
       res_Im += 'end;'#10;
@@ -121,29 +126,33 @@ begin
       
       {$region ThenProc}
       
-      for var is_quick := false to true do
+      foreach var exec_speed in exec_speeds do
       begin
-        var quick_word := if is_quick then 'Quick' else 'Background';
         
-        for var need_c := false to true do
+        foreach var need_c in |false,true| do
         begin
           WriteHeader('function', 'public');
           res += 'Then';
-          if is_quick then res += quick_word;
+          res += exec_speed;
           res += 'Proc(p: ';
           if need_c then res += '(';
           res += t;
           WriteGenerics(res);
-          if need_c then res += ', Context)';
+          if need_c then res += ', CLContext)';
           res += '->())';
           res_In += ': ';
           WriteCCQ(res_In);
-          res_Im += ' := AddCommand(self, BasicGPUCommand&<';
+          res_Im += ' := AddCommand(self, ProcCommandFactory&<';
           res_Im += t;
           WriteGenerics(res_Im);
           res_Im += '>.Make';
-          res_Im += quick_word;
-          res_Im += 'Proc(p))';
+          res_Im += exec_speed;
+          res_Im += '&<SimpleProcContainer';
+          if need_c then res_Im += 'C';
+          res_Im += '<';
+          res_Im += t;
+          WriteGenerics(res_Im);
+          res_Im += '>>(p))';
           res += ';'#10;
         end;
         
@@ -160,10 +169,10 @@ begin
       res += 'ThenWait(marker: WaitMarker)';
       res_In += ': ';
       WriteCCQ(res_In);
-      res_Im += ' := AddCommand(self, BasicGPUCommand&<';
+      res_Im += ' := AddCommand(self, WaitCommandFactory&<';
       res_Im += t;
       WriteGenerics(res_Im);
-      res_Im += '>.MakeWait(marker))';
+      res_Im += '>.Make(marker))';
       res += ';'#10;
       
       res_In += '    ';

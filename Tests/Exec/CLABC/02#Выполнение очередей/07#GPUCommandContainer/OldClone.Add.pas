@@ -1,13 +1,13 @@
 ## uses OpenCLABC;
 
-var q: CLMemorySegmentCCQ := CLMemorySegment.Create(1).NewQueue.ThenQuickProc(mem->Writeln(1));
+var q: CLMemoryCCQ := CLMemory.Create(1).NewQueue.ThenQuickProc(mem->Println(1));
 
-Context.Default.SyncInvoke(q.ThenQuickProc(mem->Writeln(2)));
-Writeln('-'*10);
-Context.Default.SyncInvoke(q.ThenQuickProc(mem->Writeln(3)));
-Writeln('-'*10);
+CLContext.Default.SyncInvoke(q.ThenQuickProc(mem->Println(2)));
+('-'*30).Println;
+CLContext.Default.SyncInvoke(q.ThenQuickProc(mem->Println(3)));
+('-'*30).Println;
 
-Context.Default.SyncInvoke(q.ThenQuickProc(mem->Writeln(4)).ThenQuickProc(mem->Writeln(5)));
-Writeln('-'*10);
-Context.Default.SyncInvoke(q);
-Writeln('-'*10);
+CLContext.Default.SyncInvoke(q.ThenQuickProc(mem->Println(4)).ThenQuickProc(mem->Println(5)));
+('-'*30).Println;
+CLContext.Default.SyncInvoke(q);
+('-'*30).Println;

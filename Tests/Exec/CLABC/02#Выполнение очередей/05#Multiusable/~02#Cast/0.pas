@@ -1,14 +1,15 @@
 ﻿## uses OpenCLABC;
 
-var qs := HFQ(()->
+var qs := HQFQ(()->
 begin
-  Writeln('q выполнилась');
+  'q выполнилась'.Println;
   Result := 5;
 end).Cast&<object>.Multiusable;
-Context.Default.SyncInvoke(
-  CombineConvAsyncQueue(res->res,
-    qs().ThenConvert(o->integer(o).Sqr),
-    qs().ThenConvert(o->integer(o).Sqr.Sqr)
+CLContext.Default.SyncInvoke(
+  CombineConstConvAsyncQueue(res->res,
+    qs().Cast&<integer>,
+    qs().ThenConstConvert(o->integer(o).Sqr),
+    qs().ThenConstConvert(o->integer(o).Sqr.Sqr)
   )
 ).Println;
-Context.Default.SyncInvoke(qs().Cast&<integer>.ThenConvert(i->i**i)).Println;
+CLContext.Default.SyncInvoke(qs().Cast&<integer>.ThenConvert(i->i**i)).Println;

@@ -1,0 +1,106 @@
+﻿
+
+
+{$region CL}
+
+{$region CLMemory}
+
+type
+  CLKernelArgGlobalCLMemory = sealed class(CLKernelArgGlobal)
+    private data: CLKernelArgGlobalCommon<CLMemory>;
+    
+    public constructor(cl_mem: CommandQueue<CLMemory>) :=
+    data := new CLKernelArgGlobalCommon<CLMemory>(cl_mem);
+    
+    private static function WrapToNative(o: CLMemory) := o.Native;
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    data.TryGetConstSetter(WrapToNative);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, WrapToNative);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function CLKernelArgGlobal.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
+begin Result := new CLKernelArgGlobalCLMemory(cl_mem) end;
+static function CLKernelArgGlobal.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgGlobal;
+begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+
+{$endregion CLMemory}
+
+{$region CLValue}
+
+type
+  CLKernelArgGlobalCLValue<T> = sealed class(CLKernelArgGlobal)
+  where T: record;
+    private data: CLKernelArgGlobalCommon<CLValue<T>>;
+    
+    public constructor(cl_val: CommandQueue<CLValue<T>>) :=
+    data := new CLKernelArgGlobalCommon<CLValue<T>>(cl_val);
+    
+    private static function WrapToNative(o: CLValue<T>) := o.Native;
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    data.TryGetConstSetter(WrapToNative);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, WrapToNative);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function CLKernelArgGlobal.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalCLValue<T>(cl_val) end;
+static function CLKernelArgGlobal.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgGlobal; where T: record;
+begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+
+{$endregion CLValue}
+
+{$region CLArray}
+
+type
+  CLKernelArgGlobalCLArray<T> = sealed class(CLKernelArgGlobal)
+  where T: record;
+    private data: CLKernelArgGlobalCommon<CLArray<T>>;
+    
+    public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
+    data := new CLKernelArgGlobalCommon<CLArray<T>>(cl_arr);
+    
+    private static function WrapToNative(o: CLArray<T>) := o.Native;
+    
+    protected function TryGetConstSetter: CLKernelArgSetter; override :=
+    data.TryGetConstSetter(WrapToNative);
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    data.q.InitBeforeInvoke(g, inited_hubs);
+    
+    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, WrapToNative);
+    
+    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
+    data.ToString(sb, tabs, index, delayed);
+    
+  end;
+  
+static function CLKernelArgGlobal.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
+begin Result := new CLKernelArgGlobalCLArray<T>(cl_arr) end;
+static function CLKernelArgGlobal.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgGlobal; where T: record;
+begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+
+{$endregion CLArray}
+
+{$endregion CL}
+
+

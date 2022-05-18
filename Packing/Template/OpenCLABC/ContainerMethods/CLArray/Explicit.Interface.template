@@ -55,21 +55,53 @@
     
     public function ThenReadData(ptr: pointer; ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function ThenWriteData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
     
-    public function ThenReadData(data: CommandQueue<NativeMemoryArea>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
     
-    public function ThenWriteNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
     
-    public function ThenReadNativeValue(val: CommandQueue<NativeValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
     
-    public function ThenWriteNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    public function ThenWriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
     
-    public function ThenWriteNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenWriteNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
     
-    public function ThenReadNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
     
-    public function ThenReadNativeArray(a: CommandQueue<NativeArray<&T>>;ind,len,a_ind:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenWriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 1#Write&Read}
     
@@ -107,29 +139,65 @@
     
     public function ThenFillData(ptr: pointer; pattern_len, ind, fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function ThenFillData(data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea): CLArrayCCQ<T>;
     
-    public function ThenFillData(data: CommandQueue<NativeMemoryArea>;ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillNativeMemoryArea(native_data: NativeMemoryArea; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function ThenFillNativeValue(val: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+    public function ThenFillNativeMemory(native_data: NativeMemory): CLArrayCCQ<T>;
     
-    public function ThenFillNativeValue(val: CommandQueue<NativeValue<&T>>;ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillNativeMemory(native_data: NativeMemory; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function ThenFillNativeArray(a: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    public function ThenFillNativeValueArea(native_data: NativeValueArea<&T>): CLArrayCCQ<T>;
     
-    public function ThenFillNativeArray(a: CommandQueue<NativeArray<&T>>; a_ind,pattern_len, ind,fill_len:CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenFillNativeValueArea(native_data: NativeValueArea<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValue(native_data: NativeValue<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValue(native_data: NativeValue<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: NativeArrayArea<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: NativeArrayArea<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArray(native_data: NativeArray<&T>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArray(native_data: NativeArray<&T>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArrayCCQ<T>;
+    
+    public function ThenFillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     {$endregion 2#Fill}
     
     {$region 3#Copy}
     
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
     
-    public function ThenCopyTo(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>): CLArrayCCQ<T>;
     
-    public function ThenCopyFrom(mem: CommandQueue<CLMemorySegment>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
+    public function ThenCopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArrayCCQ<T>;
     
     public function ThenCopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArrayCCQ<T>;
     

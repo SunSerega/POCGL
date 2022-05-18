@@ -3,8 +3,8 @@
 uses AOtp         in '..\Utils\AOtp';
 uses ATask        in '..\Utils\ATask';
 uses CLArgs       in '..\Utils\CLArgs';
-uses Testing      in '..\Utils\Testing';
 uses SubExecuters in '..\Utils\SubExecuters';
+uses Testing      in '..\Utils\Testing\Testing';
 
 {$string_nullbased+}
 
@@ -130,12 +130,16 @@ type
     
     {$region typed settings}
     
-    test_mode: HashSet<string>;
+    test_comp: boolean;
+    test_exec: integer;
+    
     req_modules: IList<string>;
-    expected_comp_err: ExpectedText;
-    expected_otp: ExpectedText;
-    expected_exec_err: ExpectedText;
-    wait_for_tests: array of string;
+    comp_expected: ExpectedText;
+    exec_expected: array of record
+      otp: ExpectedText;
+      err: ExpectedText;
+    end;
+    delete_before_exec: array of string;
     
     {$endregion typed settings}
     
@@ -238,7 +242,7 @@ type
         Result := def;
     end;
     
-    static procedure LoadAll(path: string; exp_mode: HashSet<string>);
+    static procedure LoadAll(path: string; params exp_mode: array of string);
     begin
       if not System.IO.Directory.Exists(path) then exit;
       path := GetFullPath(path);
@@ -286,22 +290,40 @@ type
         
         all_loaded += t;
         
-        t.test_mode := t.ExtractSettingStr('#TestMode', nil)?.ToWords('+').ToHashSet ?? exp_mode;
+        foreach var tm in t.ExtractSettingStr('#TestMode', nil)?.ToWords('+') ?? exp_mode index i do
+        case tm of
+          
+          'Comp':
+          begin
+            if i<>0 then raise new System.InvalidOperationException;
+            t.test_comp := true;
+          end;
+          
+          'Exec': t.test_exec += 1;
+          
+          else raise new System.InvalidOperationException(tm);
+        end;
         
-        if t.test_mode.Contains('Comp') then
+        if t.test_comp then
         begin
           
-          t.expected_comp_err := new ExpectedText( t.ExtractSettingStr('#ExpErr') );
+          t.comp_expected := new ExpectedText( t.ExtractSettingStr('#ExpErr') );
           
         end;
         
-        if t.test_mode.Contains('Exec') then
+        if t.test_exec<>0 then
         begin
+          SetLength(t.exec_expected, t.test_exec);
           
-          t.expected_otp      := new ExpectedText( t.ExtractSettingStr('#ExpOtp') );
-          t.expected_exec_err := new ExpectedText( t.ExtractSettingStr('#ExpExecErr') );
-          t.wait_for_tests    := t.ExtractSettingStr('#WaitForTests')?.Split(#10).ConvertAll(fname->GetFullPath(fname, t.test_dir));
+          for var i := 0 to t.test_exec-1 do
+          begin
+            var sn := '';
+            if t.test_exec<>1 then sn += i;
+            t.exec_expected[i].otp := new ExpectedText( t.ExtractSettingStr('#ExpExecOtp'+sn) );
+            t.exec_expected[i].err := new ExpectedText( t.ExtractSettingStr('#ExpExecErr'+sn) );
+          end;
           
+          t.delete_before_exec := t.ExtractSettingStr('#DeleteBeforeExec', '').ToWords(#10).ConvertAll(fname->GetFullPath(fname, t.test_dir));
         end;
         
         {$endregion Settings}
@@ -320,7 +342,7 @@ type
     begin
       
       // req_modules становится nil если не подошло
-      all_loaded.Where(t->(t.req_modules<>nil) and t.test_mode.Contains('Comp'))
+      all_loaded.Where(t->(t.req_modules<>nil) and t.test_comp)
       .Select(t->ProcTask(()->
       try
         var fwoe := System.IO.Path.ChangeExtension(t.pas_fname, nil).Replace('error','errоr');
@@ -335,7 +357,7 @@ type
         if comp_err<>nil then
         begin
           
-          if t.expected_comp_err.parts=nil then
+          if t.comp_expected.parts=nil then
             case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
@@ -351,8 +373,8 @@ type
               DialogResult.Cancel: Halt(-1);
             end else
             
-          if not t.expected_comp_err.Matches(comp_err) then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
+          if not t.comp_expected.Matches(comp_err) then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -371,8 +393,8 @@ type
         end else
         begin
           
-          if t.expected_comp_err.parts<>nil then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.expected_comp_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
+          if t.comp_expected.parts<>nil then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -391,6 +413,8 @@ type
             var dom := System.AppDomain.CreateDomain($'Getting delegate count of {fwoe}');
             dom.SetData('fname', System.IO.Path.ChangeExtension(t.pas_fname, '.exe'));
             dom.DoCallBack(CheckDelegateCount);
+            if dom.GetData('e') is string(var e) then
+              raise new Exception(e);
             var delegate_count := dom.GetData('c').ToString;
             System.AppDomain.Unload(dom);
             
@@ -403,7 +427,7 @@ type
             t.used_settings += '#DelegateCount';
           end;
           
-          if t.test_mode.Contains('Exec') then
+          if t.test_exec<>0 then
             t.loaded_test := new ExecutingTest(System.IO.Path.ChangeExtension(t.pas_fname, '.exe'), MaxExecTime, true);
         end;
         
@@ -414,50 +438,50 @@ type
       .SyncExec;
       
     end;
-    private static procedure CheckDelegateCount;
-    begin
+    private static procedure CheckDelegateCount :=
+    try
       var dom := System.AppDomain.CurrentDomain;
       var fname := string(dom.GetData('fname'));
       
-      var a := System.Reflection.Assembly.LoadFrom(fname);
-      var c := a.GetTypes.Count(t->t.IsSubclassOf(typeof(System.Delegate)));
+      if not FileExists(fname) then
+        raise new System.IO.FileNotFoundException(
+          GetCurrentDir+#10+fname
+        );
+      var dir := System.IO.Path.GetDirectoryName(fname);
       
-      dom.SetData('c', c);
+      var loaded := new Dictionary<string,System.Reflection.Assembly>;
+      var load: (string,string)->System.Reflection.Assembly;
+      load := (full_name, name)->
+      begin
+        if loaded.TryGetValue(name, Result) then exit;
+        if full_name<>nil then
+        try
+          Result := System.Reflection.Assembly.ReflectionOnlyLoad(full_name);
+        except
+        end;
+        if Result=nil then
+          Result := System.Reflection.Assembly.ReflectionOnlyLoadFrom(System.IO.Path.Combine(dir,name));
+        loaded.Add(name, Result);
+        foreach var a in Result.GetReferencedAssemblies do
+          load(a.FullName, a.Name+'.dll');
+      end;
+      
+      var a := load(nil,fname);
+      try
+        var c := a.GetTypes.Count(t->t.IsSubclassOf(typeof(System.Delegate)));
+        dom.SetData('c', c);
+      except
+        on e: System.Reflection.ReflectionTypeLoadException do
+          dom.SetData('e', e.LoaderExceptions.Select(e->#10+e.ToString).JoinToString(''));
+      end;
+      
+    except
+      on e: Exception do System.AppDomain.CurrentDomain.SetData('e', e.ToString);
     end;
     
     {$endregion Comp}
     
     {$region Exec}
-    
-    static function TryExecWaitTest(td_fname: string; all_executed: HashSet<TestInfo>): boolean;
-    begin
-      var tests := all_loaded.ToList;
-      tests.RemoveAll(t->t.td_fname<>td_fname);
-      
-      if tests.Count=0 then exit;
-      if tests.Count<>1 then Otp($'WARNING: Multiple test with id [{GetRelativePath(td_fname)}]');
-      
-      foreach var t in tests do
-        t.Execute(all_executed);
-      
-      Result := true;
-    end;
-    static function TryExecWaitExeFile(exe_fname: string): boolean;
-    begin
-      if not FileExists(exe_fname) then exit;
-      
-      RunFile(exe_fname, $'Test waited exe[{GetRelativePath(exe_fname)}]');
-      
-      Result := true;
-    end;
-    static function TryExecWaitPasFile(pas_fname: string): boolean;
-    begin
-      if not FileExists(pas_fname) then exit;
-      
-      CompilePasFile(pas_fname, false);
-      
-      Result := true;
-    end;
     
     procedure RaiseWaitNotFound(wait_test, file_type: string) :=
     raise new MessageException($'ERROR: Wait {file_type} [{GetRelativePath(wait_test)}] of test [{GetRelativePath(self.td_fname)}] wasn''t found');
@@ -469,8 +493,8 @@ type
       
       var anon_names := |
         '<>local_variables_class_', '<>lambda',
-        'cl_command_queue[',
-        'Platform[', 'Device[', 'Context[', 'CLMemorySegment[', 'CLMemorySubSegment[', 'ProgramCode[',
+        'cl_command_queue[', 'cl_mem[', 'cl_kernel[',
+        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLProgramCode[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[',
         ':строка ', ':line '
       |;
       var inds := new integer[anon_names.Length];
@@ -479,7 +503,7 @@ type
       begin
         if in_anon_name then
         begin
-          if ch.IsDigit then continue;
+          if (ch in '0'..'9') or (ch in 'A'..'F') then continue;
           in_anon_name := false;
           res += '*';
         end;
@@ -507,26 +531,8 @@ type
       Result := res.ToString.Replace(pocgl_base_dir, '*').Replace(pocgl_base_dir.ToLower, '*');
     end;
     
-    procedure Execute(all_executed: HashSet<TestInfo>) :=
+    procedure Execute :=
     try
-      if not all_executed.Add(self) then exit;
-      if wait_for_tests<>nil then
-        foreach var wait_test in wait_for_tests do
-          case System.IO.Path.GetExtension(wait_test) of
-            
-            '.td':  if not TryExecWaitTest(wait_test, all_executed) then  RaiseWaitNotFound(wait_test, 'test');
-            '.exe': if not TryExecWaitExeFile(wait_test) then             RaiseWaitNotFound(wait_test, '.exe');
-            '.pas': if not TryExecWaitPasFile(wait_test) then             RaiseWaitNotFound(wait_test, '.pas');
-            
-            '':
-            if TryExecWaitTest    (wait_test+'.td', all_executed) then else
-            if TryExecWaitExeFile (wait_test+'.exe') then else
-            if TryExecWaitPasFile (wait_test+'.pas') then else
-              RaiseWaitNotFound(wait_test, 'file');
-            
-            else raise new MessageException($'ERROR: Invalid wait test extension [{System.IO.Path.GetExtension(wait_test)}]');
-          end;
-      
       var fwoe := System.IO.Path.ChangeExtension(pas_fname, nil).Replace('error','errоr');
       
       if stop_test then
@@ -535,95 +541,109 @@ type
         exit;
       end;
       
-      Otp($'Executing Test[{GetRelativePath(fwoe)}]');
-      var (res, err) := loaded_test.FinishExecution;
-      Otp($'Done executing');
+      foreach var fname in delete_before_exec do
+        if FileExists(fname) then
+          System.IO.File.Delete(fname) else
+          Otp($'WARNING: [{GetRelativePath(fname)}] did not exist, but Test[{GetRelativePath(fwoe)}] asked to delete it');
       
-      fwoe := fwoe;
-      if not string.IsNullOrWhiteSpace(err) then
+      for var test_i := 0 to self.test_exec-1 do
       begin
         
-        if expected_exec_err.parts=nil then
-          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
-            
-            DialogResult.Yes:
-            begin
-              all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
-              used_settings += '#ExpExecErr';
-              resave_settings := true;
-              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
-            end;
-            
-            DialogResult.No: ;
-            
-            DialogResult.Cancel: Halt(-1);
-          end else
+        Otp($'Executing Test[{GetRelativePath(fwoe)}]');
+        var (res, err) := loaded_test.FinishExecution;
+        if test_i<>self.test_exec-1 then loaded_test := new ExecutingTest(loaded_test);
+        Otp($'Done executing');
+        
+        var sn := '';
+        if self.test_exec<>1 then sn += test_i;
+        
+        fwoe := fwoe;
+        if not string.IsNullOrWhiteSpace(err) then
+        begin
           
-        if not expected_exec_err.Matches(err) then
-          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
+          if exec_expected[test_i].err.parts=nil then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
+              
+              DialogResult.Yes:
+              begin
+                all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
+                used_settings += '#ExpExecErr'+sn;
+                resave_settings := true;
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+              end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt(-1);
+            end else
             
-            DialogResult.Yes:
-            begin
-              all_settings['#ExpExecErr'] := InsertAnyTextParts(err);
-              used_settings += '#ExpExecErr';
-              resave_settings := true;
-              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+          if not exec_expected[test_i].err.Matches(err) then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
+              
+              DialogResult.Yes:
+              begin
+                all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
+                used_settings += '#ExpExecErr'+sn;
+                resave_settings := true;
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+              end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt(-1);
             end;
-            
-            DialogResult.No: ;
-            
-            DialogResult.Cancel: Halt(-1);
+          
+          if exec_expected[test_i].otp.parts<>nil then
+          begin
+            if not all_settings.Remove('#ExpExecOtp'+sn) then raise new System.InvalidOperationException;
+            resave_settings := true;
           end;
-        
-        if expected_otp.parts<>nil then
-        begin
-          if not all_settings.Remove('#ExpOtp') then raise new System.InvalidOperationException;
-          resave_settings := true;
-        end;
-        
-      end else
-      begin
-        
-        if expected_exec_err.parts<>nil then
-          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_exec_err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
-            
-            DialogResult.Yes:
-            begin
-              if not all_settings.Remove('#ExpExecErr') then raise new System.InvalidOperationException;
-              resave_settings := true;
-              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
-            end;
-            
-            DialogResult.No: ;
-            
-            DialogResult.Cancel: Halt(-1);
-          end;
-        
-        if expected_otp.parts=nil then
-        begin
-          all_settings['#ExpOtp'] := InsertAnyTextParts(res);
-          used_settings += '#ExpOtp';
-          resave_settings := true;
-          Otp(new OtpLine($'WARNING: Settings updated for "{fwoe}.td"', true));
+          
         end else
-        if not expected_otp.Matches(res) then
         begin
           
-          case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{expected_otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
-            
-            DialogResult.Yes:
-            begin
-              all_settings['#ExpOtp'] := InsertAnyTextParts(res);
-              used_settings += '#ExpOtp';
-              resave_settings := true;
-              Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+          if exec_expected[test_i].err.parts<>nil then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
+              
+              DialogResult.Yes:
+              begin
+                if not all_settings.Remove('#ExpExecErr'+sn) then raise new System.InvalidOperationException;
+                resave_settings := true;
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+              end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt(-1);
             end;
+          
+          if exec_expected[test_i].otp.parts=nil then
+          begin
+            all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
+            used_settings += '#ExpExecOtp'+sn;
+            resave_settings := true;
+            Otp(new OtpLine($'WARNING: Settings updated for "{fwoe}.td"', true));
+          end else
+          if not exec_expected[test_i].otp.Matches(res) then
+          begin
             
-            DialogResult.No: ;
-            
-            DialogResult.Cancel: Halt(-1);
-            
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
+              
+              DialogResult.Yes:
+              begin
+                all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
+                used_settings += '#ExpExecOtp'+sn;
+                resave_settings := true;
+                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+              end;
+              
+              DialogResult.No: ;
+              
+              DialogResult.Cancel: Halt(-1);
+              
+            end;
           end;
+          
         end;
         
       end;
@@ -633,15 +653,10 @@ type
         Otp(e.ToString);
     end;
     
-    static procedure ExecAll;
-    begin
-      var all_executed := new HashSet<TestInfo>(all_loaded.Count);
-      
-      foreach var t in all_loaded do
-        if (t.req_modules<>nil) and t.test_mode.Contains('Exec') then
-          t.Execute(all_executed);
-      
-    end;
+    static procedure ExecAll :=
+    foreach var t in all_loaded do
+      if (t.req_modules<>nil) and (t.test_exec<>0) then
+        t.Execute;
     
     {$endregion Exec}
     
@@ -661,7 +676,7 @@ type
           sw.WriteLine;
           
           var used_settings := t.used_settings.ToHashSet;
-          foreach var key in t.all_settings.Keys do
+          foreach var key in t.all_settings.Keys.Order do
             if not used_settings.Contains(key) then
               Otp(new OtpLine($'WARNING: Setting {key} was deleted from "{t.td_fname}"', true)) else
             begin
@@ -701,13 +716,13 @@ begin
     TestInfo.LoadCLA;
     TestInfo.MakeDebugPCU;
     
-    TestInfo.LoadAll('Tests\Comp',  HSet('Comp'));
-    TestInfo.LoadAll('Samples',     HSet('Comp'));
-    TestInfo.LoadAll('Tests\Exec',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('Tests\Comp',  'Comp');
+    TestInfo.LoadAll('Tests\Exec',  'Comp','Exec');
+    TestInfo.LoadAll('Samples',     'Comp');
     (*)
     TestInfo.allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('C:\0Prog\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\12#Finally+Handle',  HSet('Comp','Exec'));
+    TestInfo.LoadAll('Samples', 'Comp');
     (**)
     
     try

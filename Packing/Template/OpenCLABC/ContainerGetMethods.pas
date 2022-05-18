@@ -49,13 +49,13 @@ type
       begin
         sb += '(own_qr as QueueResPtr<';
         sb += result_type.org_text;
-        sb += '>).res';
+        sb += '>).GetResPtr';
       end;
       
       'res_pinn_adr':
       begin
         if not need_pinn then raise new System.InvalidOperationException;
-        sb += 'res_hnd.AddrOfPinnedObject';
+        sb += 'res_hnd.AddrOfPinnedObject.ToPointer';
       end;
       
       else inherited;
@@ -103,7 +103,9 @@ type
     
     protected procedure WriteInvokeHeader(settings: GetMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParamsImpl(g: CLTaskGlobalData; enq_evs: EnqEvLst): (';
+      res_EIm += '    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<';
+      res_EIm += settings.result_type.org_text;
+      res_EIm += '>): EnqFunc<';
       res_EIm += t;
       if generics.Count <> 0 then
       begin
@@ -111,20 +113,14 @@ type
         res_EIm += generics.Select(g->g[0]).JoinToString(', ');
         res_EIm += '>';
       end;
-      res_EIm += ', cl_command_queue, EventList, QueueRes<';
-      res_EIm += settings.result_type.org_text;
-      res_EIm += '>)->DirectEnqRes; override;'#10;
-    end;
-    protected procedure WriteInvokeFHeader; override;
-    begin
-      res_EIm += '(o, cq, evs, own_qr)->'#10;
+      res_EIm += '>; override;'#10;
     end;
     protected procedure AddGCHandleArgs(args_keep_alive: List<string>; args_with_pinn: List<(string,string)>; settings: GetMethodSettings); override :=
     if settings.force_ptr_qr then
       args_keep_alive += 'own_qr' else
     if settings.need_pinn then
       args_with_pinn += ('res','res');
-    protected procedure WriteResInit(wr: Writer; settings: GetMethodSettings); override :=
+    protected procedure WriteSpecialPreEnq(wr: Writer; settings: GetMethodSettings); override :=
     if settings.result_init<>nil then
     begin
       wr += '        var res := ';
@@ -174,13 +170,12 @@ type
 begin
   try
     
-    EnumerateFiles(GetFullPathRTA('!Def\ContainerGetMethods'), '*.dat')
+    EnumerateFiles(GetFullPathRTA('!Def\ContainerMethods\Get'), '*.dat')
     .TaskForEach(fname->
     begin
       var t := System.IO.Path.GetFileNameWithoutExtension(fname);
-      var g := new GetMethodGenerator(t);
-      g.Open;
       
+      var g := new GetMethodGenerator(t);
       g.WriteMethodGroup(fname, 'Get');
       
       g.Close;

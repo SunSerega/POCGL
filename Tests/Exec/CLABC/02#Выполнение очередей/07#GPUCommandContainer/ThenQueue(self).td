@@ -1,19 +1,19 @@
 ﻿
 
 
-#ReqModules
-OpenCLABC
-
-#ExpOtp
-1
-2
-1
-2
-[EventDebug]: 0 event's created 
-[QueueDebug]: 0 queue's created 
-[WaitDebug]: 0 wait handler's created 
-
 #DelegateCount
 3
+
+#ExpExecOtp
+1 
+2 
+1 
+2 
+[QueueResNil]: 5 
+[QueueRes<T>]: 1 
+	QueueResValDirect<CLMemory>: 1 
+
+#ReqModules
+OpenCLABC
 
 

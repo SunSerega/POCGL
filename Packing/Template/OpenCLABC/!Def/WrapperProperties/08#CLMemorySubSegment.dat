@@ -3,7 +3,7 @@ MemInfo
 clGetMemObjectInfo
 
 !Base
-CLMemorySegment
+CLMemory
 
 
 

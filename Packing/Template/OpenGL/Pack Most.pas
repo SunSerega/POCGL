@@ -5,14 +5,16 @@ uses FuncData     in '..\FuncData';
 
 begin
   try
-    InitAll;
+    LoadMiscInput;
     api_name := 'gl';
     
     Otp($'Reading .bin');
     LoadBin('DataScraping\XML\GL\funcs.bin');
     
     Otp($'Fixing all');
+    LoadFixers;
     ApplyFixers;
+    Func.FixAllGet;
     Feature.FixGL_GDI;
     MarkUsed;
     

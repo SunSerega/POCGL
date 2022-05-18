@@ -2,13 +2,13 @@
 
 procedure Test<T>(o: T);
 begin
-  Writeln(o);
-  Writeln('-'*30,#10);
+  Println(o);
+  ('-'*30+#10).Println;
 end;
 
 Test(WaitMarker.Create);
 
-var Q := HFQ(()->5).ThenMarkerSignal;
+var Q := HTFQ(()->5).ThenMarkerSignal;
 Test(Q);
 Test(WaitMarker(Q));
 Test(CommandQueueBase(WaitMarker(Q)));
