@@ -1,4 +1,4 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 
 uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses Fixers       in '..\..\..\Utils\Fixers';
@@ -97,7 +97,7 @@ begin
         
         for var need_context := false to true do
         begin
-          var reg_name := need_context ? 'CLContext' : 'NonContext';
+          var reg_name := need_context ? 'Context' : 'NonContext';
           var context_par := need_context ? ', CLContext' : nil;
           
           wr += '{$region ';
@@ -206,8 +206,10 @@ begin
               wr += 'QueueN';
               wr += c;
               wr += '<';
-              WriteNumbered(wr, 'TInp%, ');
-              wr += 'TRes>(';
+              WriteNumbered(wr, 'TInp%!, ');
+              if work_t=work_t_conv then
+                wr += ', TRes';
+              wr += '>(';
               wr += work_t.ToLower;
               wr += ': ';
               case work_t of

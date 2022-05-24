@@ -15,9 +15,8 @@ uses Common in '..\Common';
 
 {$apptype windows} // Убираем консоль
 
-const dy = -Sin(Pi / 6) / 2;
-
 procedure RedrawProc(pl: PlatformLoader; EndFrame: ()->());
+const dy = -Sin(Pi / 6) / 2;
 begin
   
   {$region Настройка глобальных параметров OpenGL}

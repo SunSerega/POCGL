@@ -43,11 +43,68 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Тесты и справка:
-// - (HTPQ+Par).ThenQuickUse.ThenConstConvert
+//TODO Каким, всё же, считает generic KernelArg: Global или Constant?
+
+//TODO .NewQueue => .MakeCCQ
+// - +extensionmethod для CQ<>
+// --- В "ContainerCommon.pas"
+// --- Не забыть генерировать "///%...%", чтобы были описания
+
+//TODO Properties должны генерироваться с описанием "///--"
+// - А кодогенератор описаний должен игнорировать содержимое этих классов
+// - Таким образом будет меньше мусора в .skipped
+//TODO И тогда совместить skipped и missing, потому что у всего из skipped вообще должны быть описания
+
+//TODO IEnumerable<T>.Lazy[Sync,Async]ForeachQueue(CQ<T> -> CQBase)
+// - Без этого нельзя реализовать вызов очереди для каждого элемента списка с изменяющейся длиной
+// - Нет, лучше сделать CombineQueue, но принимающий "sequence of T" и "CQ<T> -> CQBase"
+//TODO Может тогда и extensionmethod, которому копируется описание?
+//
+//TODO .Cycle(integer)
+//TODO .Cycle // бесконечность циклов
+//TODO .CycleWhile(***->boolean)
+// - Однако всё ещё остаётся вопрос - как сделать ветвление?
+//TODO И если уже делать ветвление - то сразу и:
+// - .ThenIf   (CQ<bool>, CQBase, CQBase): CQNil
+// - .ThenIfRes(CQ<bool>, CQ<T> , CQ<T> ): CQ<T>
+//TODO А может Cycle(CycleInfo: record Q_continue, Q_break: CQNil; end -> CQ)
+// - Но для них всё равно нужен .ThenIf
+// - И адекватную диагностику для недостижимого кода будет сложно вывести
+//TODO .DelayInit, чтобы ветки .ThenIf можно было НЕ инициализировать заранее
+// - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
+//TODO CCQ.ThenIf(cond, command, nil)
+// - Подумать как можно сделать это красивее, чем через MU
+
+//TODO CLList: Как массив, но с изменяемой длиной
+//TODO Очень часто в OpenCL нужны двойные буферы: Предыдущее и новое состояние
+// - Я сейчас использую HQFQ(()->state1) и HQFQ(()->state2), но это очень криво
+
+//TODO Если уже реализовывать поддержку "CQ<T> -> CQBase"... Это сразу и альтернатива .MU?
+// - Доп переменные не нужны. Т.е. очередь можно в 1 строчку расписать:
+// --- "q.ThenMultiuse(q->q+q)"
+// - Это будет интуитивнее:
+// --- НЕ работать между CLContext.BeginInvoke
+// --- В случае нескольких вызовов .ThenMultiuse - каждый отдельный, а не "создаёт новую функцию"
+// --- Порядок выполнения: q выполняет уже не при запуске очереди
+//TODO А вообще, возвращать надо не CQBase, а шаблон TQ
 
 //TODO NativeMemoryArea в отдельный модуль
 // - При этом сделать его кросс-платформенным
+
+//TODO .GetArray(0) даёт ошибку
+// - Надо сделать параметр-условие, который кодогенерируется в:
+// --- if (len is ConstQueue) and (c_len.Value=0) then
+// --- if len=0 then
+// - И при этом настроить логику отмены cl.Enqueue, если второе условие не пройдёт
+
+//TODO Вернуть HPQ/HFQ и добавить аргументы-флаги:
+// - Quick: Можно ли без потока
+// - Const: Можно ли заранее (доступно и без Quick)
+// - ??? (что-то есть было пока засыпал, уже забыл)
+//TODO Или может сразу переименовать в Host[Proc/Func]Queue
+
+//TODO ConstQueueNil.Instance, чтобы не создавать лишние экземпляры
+//TODO CQNil возвращающая "ConstQueueNil.Instance as CommandQueueNil"
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQBase)
@@ -82,25 +139,15 @@ unit OpenCLABC;
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
 // --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
 
-//TODO .Cycle(integer)
-//TODO .Cycle // бесконечность циклов
-//TODO .CycleWhile(***->boolean)
-// - Однако всё ещё остаётся вопрос - как сделать ветвление?
-//TODO И если уже делать ветвление - то сразу и .ThenIf:
-// - .ThenIf   (CQ<bool>, CQBase, CQBase): CQNil
-// - .ThenIfRes(CQ<bool>, CQ<T> , CQ<T> ): CQ<T>
-//TODO А может Cycle(CycleInfo: record Q_continue, Q_break: CQNil; end -> CQ)
-// - Но для них всё равно нужен .ThenIf
-// - И адекватную диагностику для недостижимого кода будет сложно вывести
-//TODO .DelayInit, чтобы ветки .ThenIf можно было НЕ инициализировать заранее
-// - Тогда .ThenIf на много проще реализовать - через особый err_handler, который говорит что ошибки были, без собственно ошибок
-//TODO CCQ.ThenIf(cond, command, nil)
-// - Подумать как можно сделать это красивее, чем через MU
-
 //TODO Разделить .html справку и гайд по OpenCLABC
 //TODO github.io
 // - Разобраться почему .css не работало до 0.css, но только на github.io
 // - Добавить index.html в справки, состоящий из всего 1 страницы
+//TODO Описание модуля в .dat
+// + Исправить что сказано про справку
+
+//TODO Тесты и справка:
+// - (HTPQ+Par).ThenQuickUse.ThenConstConvert
 
 //TODO Справка:
 // - CLKernelArg
@@ -158,6 +205,7 @@ unit OpenCLABC;
 // - Нет, это медленно
 // - Лучше хранить кэш константного результата
 // - И список зависимых очередей-параметров
+//TODO ParameterQueue.MU может возвращать себя
 
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
@@ -226,9 +274,8 @@ unit OpenCLABC;
 // - #2607
 // - #2610
 
-//TODO Баги NVidia
-//TODO https://developer.nvidia.com/nvidia_bug/{id}
-// - NV#3035203
+//TODO Баги Intel
+// - https://community.intel.com/t5/Graphics/OpenCL-clSetEventCallback-with-callback-calling-clReleaseEvent/m-p/1385934
 
 {$endregion}
 
@@ -4016,10 +4063,7 @@ type
     begin
       Result := done.TrySet(true);
       if not Result then exit;
-      //TODO INTEL#????
-      // - Иначе, если один из колбеков освобождает ивент
-      // - cl.SetUserEventStatus возвращает INVALID_EVENT
-      // - И остальные колбеки не выполняются
+      //TODO INTEL#1385934
       OpenCLABCInternalException.RaiseIfError(cl.RetainEvent(uev));
       try
         OpenCLABCInternalException.RaiseIfError(
