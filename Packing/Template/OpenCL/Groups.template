@@ -1824,6 +1824,32 @@
     
   end;
   
+  ImageRequirementsInfoExt = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT_EXT:    ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1290);
+    public static property IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT_EXT: ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1292);
+    public static property IMAGE_REQUIREMENTS_SIZE_EXT:                   ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B2);
+    public static property IMAGE_REQUIREMENTS_MAX_WIDTH_EXT:              ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B3);
+    public static property IMAGE_REQUIREMENTS_MAX_HEIGHT_EXT:             ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B4);
+    public static property IMAGE_REQUIREMENTS_MAX_DEPTH_EXT:              ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B5);
+    public static property IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE_EXT:         ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B6);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($1290) then Result := 'IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT_EXT' else
+      if self.val = UInt32($1292) then Result := 'IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT_EXT' else
+      if self.val = UInt32($12B2) then Result := 'IMAGE_REQUIREMENTS_SIZE_EXT' else
+      if self.val = UInt32($12B3) then Result := 'IMAGE_REQUIREMENTS_MAX_WIDTH_EXT' else
+      if self.val = UInt32($12B4) then Result := 'IMAGE_REQUIREMENTS_MAX_HEIGHT_EXT' else
+      if self.val = UInt32($12B5) then Result := 'IMAGE_REQUIREMENTS_MAX_DEPTH_EXT' else
+      if self.val = UInt32($12B6) then Result := 'IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE_EXT' else
+        Result := $'ImageRequirementsInfoExt[{self.val}]';
+    end;
+    
+  end;
+  
   ImportPropertiesArm = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;

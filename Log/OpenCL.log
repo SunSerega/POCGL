@@ -35,5 +35,6 @@ Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads o
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireExternalMemObjectsKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseExternalMemObjectsKHR]
 Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueCommandBufferKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clGetImageRequirementsInfoEXT]
 Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
 Finished runing Template[OpenCL]

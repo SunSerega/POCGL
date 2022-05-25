@@ -1964,6 +1964,32 @@ type
     
   end;
   
+  ImageRequirementsInfoExt = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT_EXT:    ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1290);
+    public static property IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT_EXT: ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1292);
+    public static property IMAGE_REQUIREMENTS_SIZE_EXT:                   ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B2);
+    public static property IMAGE_REQUIREMENTS_MAX_WIDTH_EXT:              ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B3);
+    public static property IMAGE_REQUIREMENTS_MAX_HEIGHT_EXT:             ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B4);
+    public static property IMAGE_REQUIREMENTS_MAX_DEPTH_EXT:              ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B5);
+    public static property IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE_EXT:         ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B6);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($1290) then Result := 'IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT_EXT' else
+      if self.val = UInt32($1292) then Result := 'IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT_EXT' else
+      if self.val = UInt32($12B2) then Result := 'IMAGE_REQUIREMENTS_SIZE_EXT' else
+      if self.val = UInt32($12B3) then Result := 'IMAGE_REQUIREMENTS_MAX_WIDTH_EXT' else
+      if self.val = UInt32($12B4) then Result := 'IMAGE_REQUIREMENTS_MAX_HEIGHT_EXT' else
+      if self.val = UInt32($12B5) then Result := 'IMAGE_REQUIREMENTS_MAX_DEPTH_EXT' else
+      if self.val = UInt32($12B6) then Result := 'IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE_EXT' else
+        Result := $'ImageRequirementsInfoExt[{self.val}]';
+    end;
+    
+  end;
+  
   ImportPropertiesArm = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -12799,6 +12825,120 @@ type
     z_EnqueueWriteHostPipeINTEL_2(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; &program: cl_program; pipe_symbol: IntPtr; blocking_write: Bool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; &event: IntPtr): ErrorCode :=
     z_EnqueueWriteHostPipeINTEL_1(command_queue, &program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, &event);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  clImageRequirementsInfoEXT = static class
+    public const _ExtStr = 'cl_ext_image_requirements_info';
+    
+    private static function z_GetImageRequirementsInfoEXT_1(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_2(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_3(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_4(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_5(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_6(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_7(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_8(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_9(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_10(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_11(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_12(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_13(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_14(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_15(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    private static function z_GetImageRequirementsInfoEXT_16(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetImageRequirementsInfoEXT';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    type PMemProperties=^MemProperties;
+    type Pcl_image_format=^cl_image_format;
+    type Pcl_image_desc=^cl_image_desc;
+    begin
+      Result := if (image_desc<>nil) and (image_desc.Length<>0) then
+        if (image_format<>nil) and (image_format.Length<>0) then
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_16(context, properties[0], flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_16(context, PMemProperties(nil)^, flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_16(context, properties[0], flags, Pcl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_16(context, PMemProperties(nil)^, flags, Pcl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+        if (image_format<>nil) and (image_format.Length<>0) then
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_16(context, properties[0], flags, image_format[0], Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_16(context, PMemProperties(nil)^, flags, image_format[0], Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_16(context, properties[0], flags, Pcl_image_format(nil)^, Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_16(context, PMemProperties(nil)^, flags, Pcl_image_format(nil)^, Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of MemProperties; flags: MemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    type PMemProperties=^MemProperties;
+    type Pcl_image_format=^cl_image_format;
+    type Pcl_image_desc=^cl_image_desc;
+    begin
+      Result := if (image_desc<>nil) and (image_desc.Length<>0) then
+        if (image_format<>nil) and (image_format.Length<>0) then
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_15(context, properties[0], flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_15(context, PMemProperties(nil)^, flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_15(context, properties[0], flags, Pcl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_15(context, PMemProperties(nil)^, flags, Pcl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+        if (image_format<>nil) and (image_format.Length<>0) then
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_15(context, properties[0], flags, image_format[0], Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_15(context, PMemProperties(nil)^, flags, image_format[0], Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+          if (properties<>nil) and (properties.Length<>0) then
+            z_GetImageRequirementsInfoEXT_15(context, properties[0], flags, Pcl_image_format(nil)^, Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+            z_GetImageRequirementsInfoEXT_15(context, PMemProperties(nil)^, flags, Pcl_image_format(nil)^, Pcl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_16(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_15(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_14(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_13(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_12(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_11(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_10(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: MemProperties; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_9(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_8(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_7(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_6(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_5(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_4(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_3(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_2(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetImageRequirementsInfoEXT_1(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   

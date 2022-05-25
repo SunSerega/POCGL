@@ -2454,4 +2454,26 @@
 	--------- | ---------------- | ---------- | ----------- | -------------- | ------ | ------- | ----------------------- | ----------------- | ------------ |
 	          | command_queue    | program    | pipe_symbol | blocking_write | ptr    | size    | num_events_in_wait_list | event_wait_list   | event        |
 
+# clGetImageRequirementsInfoEXT[18]:
+	ErrorCode | cl_context | array of MemProperties | MemFlags | array of cl_image_format | array of cl_image_desc | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | array of MemProperties | MemFlags | array of cl_image_format | array of cl_image_desc | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | var cl_image_format      | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | var cl_image_format      | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | var cl_image_format      | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | var cl_image_format      | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | IntPtr                   | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | IntPtr                   | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | IntPtr                   | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | var MemProperties      | MemFlags | IntPtr                   | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | var cl_image_format      | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | var cl_image_format      | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | var cl_image_format      | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | var cl_image_format      | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | IntPtr                   | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | IntPtr                   | var cl_image_desc      | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | IntPtr                   | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_context | IntPtr                 | MemFlags | IntPtr                   | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
+	--------- | ---------- | ---------------------- | -------- | ------------------------ | ---------------------- | ------------------------ | ---------------- | ----------- | -------------------- |
+	          | context    | properties             | flags    | image_format             | image_desc             | param_name               | param_value_size | param_value | param_value_size_ret |
+
 
