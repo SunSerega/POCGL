@@ -43,8 +43,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO WaitMarker+WaitMarker
-
 //TODO Ошибки в очередях из ev_l1 должны отменять вызов enq_f
 // - При чём даже если ev_l1 пустой (к примеру .ThenQuick(raise) без prev_ev)
 // - Иначе .GetResDirect вызывается на очередях, которые не закончили выполняться
@@ -3111,6 +3109,10 @@ type
     
     private function ConvertToQBase: CommandQueueBase; abstract;
     public static function operator implicit(m: WaitMarker): CommandQueueBase := m.ConvertToQBase;
+    
+    public static function operator+(m1, m2: WaitMarker) := CommandQueueBase(m1)+m2;
+    public static function operator*(m1, m2: WaitMarker) := CommandQueueBase(m1)*m2;
+    public static function operator>=(m1, m2: WaitMarker) := CommandQueueBase(m1)>=m2;
     
     {$region ToString}
     
