@@ -841,7 +841,7 @@ type
         res_EIm += '    '#10;
       end;
       
-      res_EIm += '    public function EnqEvCapacity: integer; override := ';
+      res_EIm += '    protected function EnqEvCapacity: integer; override := ';
       begin
         var param_count := new List<MethodArgEvCount>;
         if settings.args<>nil then

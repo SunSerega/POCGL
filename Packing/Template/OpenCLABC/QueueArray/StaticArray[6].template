@@ -207,7 +207,7 @@
   IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
     
   end;
   
@@ -215,14 +215,17 @@
   where TFunc: ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
     begin
-      if err_handler.HadError then exit;
+      if not err_handler.HadError then
       try
         Result := f.Invoke(inp1,inp2,inp3,inp4,inp5,inp6, c);
       except
-        on e: Exception do err_handler.AddErr(e)
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
       end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
     end;
     
   end;
@@ -231,15 +234,18 @@
   where TProc: ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
     begin
-      if err_handler.HadError then exit;
+      if not err_handler.HadError then
       try
         p.Invoke(inp1,inp2,inp3,inp4,inp5,inp6, c);
         Result := ValueTuple.Create(inp1,inp2,inp3,inp4,inp5,inp6);
       except
-        on e: Exception do err_handler.AddErr(e)
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
       end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
     end;
     
   end;
@@ -265,6 +271,10 @@
         l.ShouldInstaCallAction;
       
       var err_handler := g.curr_err_handler;
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
@@ -273,10 +283,10 @@
       var qr6 := inv_data.qr6;
       Result := if should_make_const then
         factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect, g.c
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect, g.c
         )) else
         factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect, c
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect, c
         )));
       
     end;
@@ -294,29 +304,29 @@
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;
+  DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
   CommandQueueThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>)
   where TInv: IQueueArray6Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
     begin
       Result := ()->
       begin
         acts.Invoke(c);
-        TWork.Create.Invoke(d, err_handler, qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, c);
+        TWork.Create.Invoke(d, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, c);
       end;
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
         acts.Invoke(c);
-        own_qr.SetRes(TWork.Create.Invoke(d, err_handler, qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, c));
+        own_qr.SetRes(TWork.Create.Invoke(d, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, c));
       end;
     end;
     
@@ -328,6 +338,10 @@
       
       var prev_ev := l.prev_ev;
       var acts := l.prev_delegate;
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      g.curr_err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
@@ -335,7 +349,7 @@
       var qr5 := inv_data.qr5;
       var qr6 := inv_data.qr6;
       Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5,qr6, g.curr_err_handler, g.c, qr), g.cl_c
+        prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5,qr6, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
         {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
       )));
       

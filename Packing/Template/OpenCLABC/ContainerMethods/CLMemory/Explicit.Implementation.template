@@ -34,7 +34,7 @@ type
       val.Release;
     end;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -111,7 +111,7 @@ type
     private        val: CommandQueue<TRecord>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -302,7 +302,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -378,7 +378,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -454,7 +454,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -530,7 +530,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -606,7 +606,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -682,7 +682,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -761,7 +761,7 @@ type
     private   el_count: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    protected function EnqEvCapacity: integer; override := 4;
     
     static constructor;
     begin
@@ -870,7 +870,7 @@ type
     private   el_count: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 5;
+    protected function EnqEvCapacity: integer; override := 5;
     
     static constructor;
     begin
@@ -990,7 +990,7 @@ type
     private   el_count: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 6;
+    protected function EnqEvCapacity: integer; override := 6;
     
     static constructor;
     begin
@@ -1118,7 +1118,7 @@ type
     private   el_count: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    protected function EnqEvCapacity: integer; override := 4;
     
     static constructor;
     begin
@@ -1227,7 +1227,7 @@ type
     private   el_count: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 5;
+    protected function EnqEvCapacity: integer; override := 5;
     
     static constructor;
     begin
@@ -1347,7 +1347,7 @@ type
     private   el_count: CommandQueue<integer>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 6;
+    protected function EnqEvCapacity: integer; override := 6;
     
     static constructor;
     begin
@@ -1489,7 +1489,7 @@ type
   CLMemoryCommandWriteDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private ptr: CommandQueue<IntPtr>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -1556,7 +1556,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>);
     begin
@@ -1641,7 +1641,7 @@ type
   CLMemoryCommandReadDataAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private ptr: CommandQueue<IntPtr>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(ptr: CommandQueue<IntPtr>);
     begin
@@ -1708,7 +1708,7 @@ type
     private mem_offset: CommandQueue<integer>;
     private        len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(ptr: CommandQueue<IntPtr>; mem_offset, len: CommandQueue<integer>);
     begin
@@ -2154,7 +2154,7 @@ type
     private native_data: CommandQueue<NativeMemoryArea>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
     begin
@@ -2230,7 +2230,7 @@ type
     private native_data: CommandQueue<NativeMemory>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>);
     begin
@@ -2307,7 +2307,7 @@ type
     private native_data: CommandQueue<NativeValueArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -2388,7 +2388,7 @@ type
     private native_data: CommandQueue<NativeValue<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -2469,7 +2469,7 @@ type
     private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -2550,7 +2550,7 @@ type
     private native_data: CommandQueue<NativeArray<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -2630,7 +2630,7 @@ type
     private native_data: CommandQueue<NativeMemoryArea>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>);
     begin
@@ -2706,7 +2706,7 @@ type
     private native_data: CommandQueue<NativeMemory>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>);
     begin
@@ -2783,7 +2783,7 @@ type
     private native_data: CommandQueue<NativeValueArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -2864,7 +2864,7 @@ type
     private native_data: CommandQueue<NativeValue<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -2945,7 +2945,7 @@ type
     private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -3026,7 +3026,7 @@ type
     private native_data: CommandQueue<NativeArray<TRecord>>;
     private  mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -3115,7 +3115,7 @@ type
       val.Release;
     end;
     
-    public function EnqEvCapacity: integer; override := 0;
+    protected function EnqEvCapacity: integer; override := 0;
     
     static constructor;
     begin
@@ -3178,7 +3178,7 @@ type
   where TRecord: record;
     private val: CommandQueue<TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -3258,7 +3258,7 @@ type
       val.Release;
     end;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -3346,7 +3346,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -3493,7 +3493,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -3569,7 +3569,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,] of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -3645,7 +3645,7 @@ type
   where TRecord: record;
     private a: CommandQueue<array[,,] of TRecord>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -3725,7 +3725,7 @@ type
     private       mem_offset: CommandQueue<integer>;
     private    fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 5;
+    protected function EnqEvCapacity: integer; override := 5;
     
     static constructor;
     begin
@@ -3845,7 +3845,7 @@ type
     private       mem_offset: CommandQueue<integer>;
     private    fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 6;
+    protected function EnqEvCapacity: integer; override := 6;
     
     static constructor;
     begin
@@ -3976,7 +3976,7 @@ type
     private       mem_offset: CommandQueue<integer>;
     private    fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 7;
+    protected function EnqEvCapacity: integer; override := 7;
     
     static constructor;
     begin
@@ -4111,7 +4111,7 @@ type
   where TRecord: record;
     private a: ArraySegment<TRecord>;
     
-    public function EnqEvCapacity: integer; override := 0;
+    protected function EnqEvCapacity: integer; override := 0;
     
     static constructor;
     begin
@@ -4176,7 +4176,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     static constructor;
     begin
@@ -4262,7 +4262,7 @@ type
     private              ptr: CommandQueue<IntPtr>;
     private pattern_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>);
     begin
@@ -4340,7 +4340,7 @@ type
     private       mem_offset: CommandQueue<integer>;
     private    fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    protected function EnqEvCapacity: integer; override := 4;
     
     public constructor(ptr: CommandQueue<IntPtr>; pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
@@ -4561,7 +4561,7 @@ type
   CLMemoryCommandFillNativeMemoryAreaAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemoryArea>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(native_data: CommandQueue<NativeMemoryArea>);
     begin
@@ -4629,7 +4629,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(native_data: CommandQueue<NativeMemoryArea>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
@@ -4715,7 +4715,7 @@ type
   CLMemoryCommandFillNativeMemoryAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private native_data: CommandQueue<NativeMemory>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(native_data: CommandQueue<NativeMemory>);
     begin
@@ -4783,7 +4783,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(native_data: CommandQueue<NativeMemory>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
@@ -4870,7 +4870,7 @@ type
   where TRecord: record;
     private native_data: CommandQueue<NativeValueArea<TRecord>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -4943,7 +4943,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -5034,7 +5034,7 @@ type
   where TRecord: record;
     private native_data: CommandQueue<NativeValue<TRecord>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -5107,7 +5107,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -5198,7 +5198,7 @@ type
   where TRecord: record;
     private native_data: CommandQueue<NativeArrayArea<TRecord>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -5271,7 +5271,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -5362,7 +5362,7 @@ type
   where TRecord: record;
     private native_data: CommandQueue<NativeArray<TRecord>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     static constructor;
     begin
@@ -5435,7 +5435,7 @@ type
     private    mem_offset: CommandQueue<integer>;
     private fill_byte_len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     static constructor;
     begin
@@ -5529,7 +5529,7 @@ type
   CLMemoryCommandCopyToAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private mem: CommandQueue<CLMemory>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(mem: CommandQueue<CLMemory>);
     begin
@@ -5597,7 +5597,7 @@ type
     private   to_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    protected function EnqEvCapacity: integer; override := 4;
     
     public constructor(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>);
     begin
@@ -5692,7 +5692,7 @@ type
   CLMemoryCommandCopyFromAutoSize = sealed class(EnqueueableGPUCommand<CLMemory>)
     private mem: CommandQueue<CLMemory>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(mem: CommandQueue<CLMemory>);
     begin
@@ -5760,7 +5760,7 @@ type
     private   to_offset: CommandQueue<integer>;
     private         len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 4;
+    protected function EnqEvCapacity: integer; override := 4;
     
     public constructor(mem: CommandQueue<CLMemory>; from_offset, to_offset, len: CommandQueue<integer>);
     begin

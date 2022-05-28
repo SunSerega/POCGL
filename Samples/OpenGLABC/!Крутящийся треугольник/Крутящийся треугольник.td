@@ -2,7 +2,7 @@
 
 
 #DelegateCount
-38
+31
 
 #ReqModules
 OpenGL+OpenGLABC

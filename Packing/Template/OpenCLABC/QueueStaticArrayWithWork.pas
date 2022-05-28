@@ -330,7 +330,7 @@ type
       wr += 'TRes, TDelegate> = interface'#10;
       wr += '  where TDelegate: ISimpleDelegateContainer;'#10;
       wr += '    '#10;
-      wr += '    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler; ';
+      wr += '    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; ';
       WriteNumbered('inp%: TInp%; ');
       wr += 'c: CLContext): TRes;'#10;
       wr += '    '#10;
@@ -377,7 +377,7 @@ type
         wr += d_word.First.ToLower;
         wr += ': T';
         wr += d_word;
-        wr += '; err_handler: CLTaskErrHandler; ';
+        wr += '; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; ';
         WriteNumbered('inp%: TInp%; ');
         wr += 'c: CLContext): ';
         if is_conv then
@@ -385,7 +385,7 @@ type
           WriteVT;
         wr += ';'#10;
         wr += '    begin'#10;
-        wr += '      if err_handler.HadError then exit;'#10;
+        wr += '      if not err_handler.HadError then'#10;
         wr += '      try'#10;
         wr += '        ';
         if is_conv then
@@ -401,8 +401,11 @@ type
           wr += ');'#10;
         end;
         wr += '      except'#10;
-        wr += '        on e: Exception do err_handler.AddErr(e)'#10;
+        wr += '        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})'#10;
         wr += '      end;'#10;
+        wr += '      {$ifdef DEBUG}'#10;
+        wr += '      err_handler.EndMaybeError(err_test_reason);'#10;
+        wr += '      {$endif DEBUG}'#10;
         wr += '    end;'#10;
         wr += '    '#10;
         wr += '  end;'#10;
@@ -443,7 +446,7 @@ type
         WriteDMakeBody;
         wr += ' = function(acts: QueueResComplDelegateData; ';
         WriteNumbered('qr%: QueueRes<TInp%>; ');
-        wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR): Action;'#10;
+        wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;'#10;
       end;
       
       wr += '  CommandQueue';
@@ -490,7 +493,7 @@ type
           WriteNumbered('qr%: QueueRes<TInp%>; ');
           wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: ';
           wr += if need_res then 'TR' else 'QueueResNil';
-          wr += '): Action;';
+          wr += '{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;';
           if need_res then
             wr += ' where TR: QueueRes<TRes>;';
           wr += #10;
@@ -502,7 +505,7 @@ type
           wr += '        ';
           if need_res then
             wr += 'own_qr.SetRes(';
-          wr += 'TWork.Create.Invoke(d, err_handler, ';
+          wr += 'TWork.Create.Invoke(d, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, ';
           WriteNumbered('qr%.GetResDirect, ');
           wr += 'c)';
           if need_res then
@@ -549,6 +552,13 @@ type
         end;
         else raise new System.NotImplementedException;
       end;
+      wr += '      {$ifdef DEBUG}'#10;
+      wr += '      var err_test_reason := $''[{self.GetHashCode}]:{TypeName(self)}.d.Invoke'';'#10;
+      wr += '      ';
+      if exec_speed=exec_speed_threaded then
+        wr += 'g.curr_';
+      wr += 'err_handler.AddMaybeError(err_test_reason);'#10;
+      wr += '      {$endif DEBUG}'#10;
       WriteNumbered('      var qr% := inv_data.qr%;'#10);
       wr += '      Result := ';
       case exec_speed of
@@ -565,7 +575,7 @@ type
               wr += 'qr->c->qr.SetRes(';
             wr += 'TWork.Create.Invoke(d,'#10;
             
-            wr += '          err_handler, ';
+            wr += '          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, ';
             WriteNumbered('qr%.GetResDirect,');
             wr += ' ';
             if not delayed then wr += 'g.';
@@ -582,7 +592,7 @@ type
           wr += 'make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread('#10;
           wr += '        prev_ev, make_body(acts, ';
           WriteNumbered('qr%,');
-          wr += ' g.curr_err_handler, g.c, qr), g.cl_c'#10;
+          wr += ' g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g'#10;
           wr += '        {$ifdef EventDebug}, $''body of {TypeName(self)}''{$endif}'#10;
           wr += '      )));'#10;
         end;

@@ -9,7 +9,7 @@ type
   CLValueCommandGetValue<T> = sealed class(EnqueueableGetPtrCommand<CLValue<T>, &T>)
   where T: record;
     
-    public function EnqEvCapacity: integer; override := 0;
+    protected function EnqEvCapacity: integer; override := 0;
     
     public constructor(ccq: CLValueCCQ<T>);
     begin

@@ -15,7 +15,7 @@ type
       val.Release;
     end;
     
-    public function EnqEvCapacity: integer; override := 0;
+    protected function EnqEvCapacity: integer; override := 0;
     
     public constructor(val: &T);
     begin
@@ -74,7 +74,7 @@ type
   where T: record;
     private val: CommandQueue<&T>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(val: CommandQueue<&T>);
     begin
@@ -143,7 +143,7 @@ type
   where T: record;
     private native_data: CommandQueue<NativeValueArea<&T>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(native_data: CommandQueue<NativeValueArea<&T>>);
     begin
@@ -209,7 +209,7 @@ type
   where T: record;
     private native_data: CommandQueue<NativeValue<&T>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(native_data: CommandQueue<NativeValue<&T>>);
     begin
@@ -275,7 +275,7 @@ type
   where T: record;
     private native_data: CommandQueue<NativeValueArea<&T>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(native_data: CommandQueue<NativeValueArea<&T>>);
     begin
@@ -341,7 +341,7 @@ type
   where T: record;
     private native_data: CommandQueue<NativeValue<&T>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(native_data: CommandQueue<NativeValue<&T>>);
     begin
@@ -430,7 +430,7 @@ type
     private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>);
     begin
@@ -507,7 +507,7 @@ type
     private        mem: CommandQueue<CLMemory>;
     private mem_offset: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(mem: CommandQueue<CLMemory>; mem_offset: CommandQueue<integer>);
     begin
@@ -583,7 +583,7 @@ type
   where T: record;
     private val: CommandQueue<CLValue<&T>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(val: CommandQueue<CLValue<&T>>);
     begin
@@ -649,7 +649,7 @@ type
   where T: record;
     private val: CommandQueue<CLValue<&T>>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(val: CommandQueue<CLValue<&T>>);
     begin

@@ -10,7 +10,7 @@ type
     private  sz1: CommandQueue<integer>;
     private args: array of CLKernelArg;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(sz1: CommandQueue<integer>; params args: array of CLKernelArg);
     begin
@@ -92,7 +92,7 @@ type
     private  sz2: CommandQueue<integer>;
     private args: array of CLKernelArg;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg);
     begin
@@ -185,7 +185,7 @@ type
     private  sz3: CommandQueue<integer>;
     private args: array of CLKernelArg;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg);
     begin
@@ -288,7 +288,7 @@ type
     private    local_work_size: CommandQueue<array of UIntPtr>;
     private               args: array of CLKernelArg;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg);
     begin

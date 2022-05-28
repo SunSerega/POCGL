@@ -10,7 +10,7 @@ type
   where T: record;
     private ind: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(ccq: CLArrayCCQ<T>; ind: CommandQueue<integer>);
     begin
@@ -80,7 +80,7 @@ type
   CLArrayCommandGetArrayAutoSize<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
   where T: record;
     
-    public function EnqEvCapacity: integer; override := 0;
+    protected function EnqEvCapacity: integer; override := 0;
     
     public constructor(ccq: CLArrayCCQ<T>);
     begin
@@ -135,7 +135,7 @@ type
   where T: record;
     private len: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 1;
+    protected function EnqEvCapacity: integer; override := 1;
     
     public constructor(ccq: CLArrayCCQ<T>; len: CommandQueue<integer>);
     begin
@@ -211,7 +211,7 @@ type
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 2;
+    protected function EnqEvCapacity: integer; override := 2;
     
     public constructor(ccq: CLArrayCCQ<T>; len1,len2: CommandQueue<integer>);
     begin
@@ -298,7 +298,7 @@ type
     private len2: CommandQueue<integer>;
     private len3: CommandQueue<integer>;
     
-    public function EnqEvCapacity: integer; override := 3;
+    protected function EnqEvCapacity: integer; override := 3;
     
     public constructor(ccq: CLArrayCCQ<T>; len1,len2,len3: CommandQueue<integer>);
     begin
