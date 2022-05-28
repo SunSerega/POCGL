@@ -1,11 +1,9 @@
 ﻿## uses OpenCLABC;
 
-var Q := HTFQ(()->5);
 var M := WaitMarker.Create;
-
 var t := CLContext.Default.BeginInvoke(
-Q.ThenWaitFor(M)
+  HTFQ(()->5).ThenWaitFor(M)
 );
-M.SendSignal;
 
+M.SendSignal;
 t.WaitRes.Println;

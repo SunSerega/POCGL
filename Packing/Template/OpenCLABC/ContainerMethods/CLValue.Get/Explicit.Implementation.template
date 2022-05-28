@@ -29,7 +29,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
-          (own_qr as QueueResPtr<&T>).GetResPtr,
+          (own_qr as QueueResPtr<&T>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);

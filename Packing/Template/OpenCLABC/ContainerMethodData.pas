@@ -631,7 +631,7 @@ type
               
               'ptr':
               begin
-                res_EIm += '.GetResPtrDirect';
+                res_EIm += '.GetResPtrForRead';
                 args_keep_alive += arg.name+'_qr';
               end;
               

@@ -97,7 +97,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(

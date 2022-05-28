@@ -116,7 +116,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
@@ -2945,7 +2945,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -3113,7 +3113,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var ind := ind_qr.GetResDirect;
         var len := len_qr.GetResDirect;
         var res_ev: cl_event;

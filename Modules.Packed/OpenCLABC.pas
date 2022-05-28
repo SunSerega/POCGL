@@ -53,12 +53,18 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO WaitMarker+WaitMarker
+
 //TODO Ошибки в очередях из ev_l1 должны отменять вызов enq_f
 // - При чём даже если ev_l1 пустой (к примеру .ThenQuick(raise) без prev_ev)
 // - Иначе .GetResDirect вызывается на очередях, которые не закончили выполняться
-// --- Можно ли это как-то ловить при дебаге?
+// --- Проявляется на "CLABC\02\07\~08\QuickParOrder"
 // - Но использовать общий .HadError нельзя, потому что ev_l2 может ещё добавить свои ошибки
 // - Наверное придётся разделить хэндлеры ошибок...
+
+//TODO Тесты:
+// - "V.WriteValue(HQFQ(raise))"
+// - "V.WriteValue(HTFQ(raise))"
 
 //TODO После cl.Enqueue нужно в любом случае UserEvent
 // - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
@@ -8997,6 +9003,41 @@ type
     
     {$endregion Retain/Release}
     
+    {$region Event status}
+    
+    {$ifdef DEBUG}
+    public static function GetStatus(ev: cl_event): CommandExecutionStatus;
+    begin
+      {$ifdef EventDebug}
+      EventDebug.VerifyExists(ev, $'checking event status');
+      {$endif EventDebug}
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetEventInfo(ev, EventInfo.EVENT_COMMAND_EXECUTION_STATUS, new UIntPtr(sizeof(CommandExecutionStatus)), Result, IntPtr.Zero)
+      );
+    end;
+    {$endif DEBUG}
+    
+    {$ifdef DEBUG}
+    public static function HasCompleted(ev: cl_event): boolean;
+    begin
+      var st := GetStatus(ev);
+      Result := (st=CommandExecutionStatus.COMPLETE) or (st.val<0);
+    end;
+    {$endif DEBUG}
+    
+    {$ifdef DEBUG}
+    public function HasCompleted: boolean;
+    begin
+      Result := false;
+      for var i := 0 to count-1 do
+        if not HasCompleted(evs[i]) then
+          exit;
+      Result := true;
+    end;
+    {$endif DEBUG}
+    
+    {$endregion Event status}
+    
   end;
   
 {$endregion EventList}
@@ -9089,13 +9130,13 @@ type
     
     protected procedure AddErr(e: Exception{$ifdef DEBUG}; test_reason: string{$endif});
     begin
+      if e is OpenCLABCInternalException then
+        // Inner exceptions should not get handled
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e).Throw;
       {$ifdef DEBUG}
       VerifyDoneInPrev(new HashSet<CLTaskErrHandler>);
       if test_reason not in tests_exp then raise new OpenCLABCInternalException($'AddMaybeError was not called');
       {$endif DEBUG}
-      if e is OpenCLABCInternalException then
-        // Inner exceptions should not get handled
-        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e).Throw;
       
       // One ErrHandler object can be reused:
       // HPQ + HPQ(raise)
@@ -9870,7 +9911,13 @@ type
     public function TakeBaseOut: QueueResData;
     begin
       Result := self.base;
+      {$ifdef DEBUG}
+      ResEv.Release({$ifdef EventDebug}$'cancel status check of {TypeName(self)}[{self.GetHashCode}], because base was taken out'{$endif});
+      {$endif DEBUG}
       self.base := default(QueueResData);
+      {$ifdef DEBUG}
+      base.complition_delegate.count := QueueResComplDelegateData._taken_out_acts_c;
+      {$endif DEBUG}
     end;
     
     public procedure SetRes<TRes>(res: TRes); abstract;
@@ -9881,22 +9928,23 @@ type
     
     protected procedure InitConst(l: CLTaskLocalData; res: T);
     begin
-      {$ifdef DEBUG}
-      MarkResSet;
-      {$endif DEBUG}
       base.ev := l.prev_ev;
       base.complition_delegate := l.prev_delegate;
-      SetResDirect(res);
+      SetRes(res);
       res_const := true;
+      {$ifdef DEBUG}
+      ExpectCheckStatus;
+      {$endif DEBUG}
     end;
     
     protected procedure InitDelayed(l: CLTaskLocalData);
     begin
-      {$ifdef DEBUG}
-      if l.prev_ev.count=0 then raise new OpenCLABCInternalException($'Delayed QueueRes, but it is not delayed');
-      {$endif DEBUG}
       base.ev := l.prev_ev;
       base.complition_delegate := l.prev_delegate;
+      {$ifdef DEBUG}
+      if ResEv.count=0 then raise new OpenCLABCInternalException($'Delayed QueueRes, but it is not delayed');
+      ExpectCheckStatus;
+      {$endif DEBUG}
     end;
     protected procedure InitDelayed(l: CLTaskLocalData; act: QueueResAction);
     begin
@@ -9906,10 +9954,11 @@ type
     
     protected procedure InitWrap(prev_qr: QueueRes<T>; new_ev: EventList);
     begin
+      base.ev := new_ev;
       {$ifdef DEBUG}
+      ExpectCheckStatus;
       MarkResSet;
       {$endif DEBUG}
-      base.ev := new_ev;
       self.res_const := prev_qr.res_const;
     end;
     
@@ -9922,21 +9971,50 @@ type
       res_last_set := Environment.StackTrace;
     end;
     {$endif DEBUG}
+    
+    {$ifdef DEBUG}
+    private status_checked := new InterlockedBoolean;
+    protected procedure ExpectCheckStatus :=
+    ResEv.Retain({$ifdef EventDebug}$'for status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
+    protected procedure CheckStatus :=
+    if status_checked.TrySet(true) then
+    begin
+      if not IsConst and not ResEv.HasCompleted then
+      begin
+        var err := new StringBuilder($'Result read before {ResEv.count} events completed:');
+        for var i := 0 to ResEv.count-1 do
+        begin
+          err += #10#9;
+          err += EventList.GetStatus(ResEv[i]).ToString;
+        end;
+        raise new OpenCLABCInternalException(err.ToString);
+      end;
+      ResEv.Release({$ifdef EventDebug}$'after status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
+    end;
+    {$endif DEBUG}
+    
     public procedure SetRes<TRes>(res: TRes); override := SetRes(T(res as object));
     public procedure SetRes(res: T);
     begin
       {$ifdef DEBUG}
       MarkResSet;
       {$endif DEBUG}
-      SetResDirect(res);
+      SetResImpl(res);
     end;
-    protected procedure SetResDirect(res: T); abstract;
+    protected procedure SetResImpl(res: T); abstract;
     public function GetRes(c: CLContext): T;
     begin
       base.complition_delegate.Invoke(c);
       Result := GetResDirect;
     end;
-    public function GetResDirect: T; abstract;
+    public function GetResDirect: T;
+    begin
+      {$ifdef DEBUG}
+      CheckStatus;
+      {$endif DEBUG}
+      Result := GetResImpl;
+    end;
+    protected function GetResImpl: T; abstract;
     
     {$ifdef DEBUG}
     protected procedure Finalize; override;
@@ -9969,8 +10047,8 @@ type
     
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure SetResDirect(res: T); override := self.res := res;
-    public function GetResDirect: T; override := self.res;
+    protected procedure SetResImpl(res: T); override := self.res := res;
+    protected function GetResImpl: T; override := self.res;
     
   end;
   QueueResDirectValFactory<T> = sealed class(IQueueResDirectFactory<T, QueueResValDirect<T>>)
@@ -9990,14 +10068,19 @@ type
     
     public constructor(prev_qr: QueueRes<T>; new_ev: EventList);
     begin
+      {$ifdef DEBUG}
+      // While debuging .GetResDirect should be called on all wraps
+      // Otherwise some status checks would be skipped
+      {$else DEBUG}
       if prev_qr is QueueResValWrap<T>(var qrw) then prev_qr := qrw.prev_qr;
+      {$endif DEBUG}
       InitWrap(prev_qr, new_ev);
       self.prev_qr := prev_qr;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure SetResDirect(res: T); override := raise new OpenCLABCInternalException($'QueueResValWrap is made for indirect read of QueueRes, it should not be written to');
-    public function GetResDirect: T; override := prev_qr.GetResDirect;
+    protected procedure SetResImpl(res: T); override := raise new OpenCLABCInternalException($'QueueResValWrap is made for indirect read of QueueRes, it should not be written to');
+    protected function GetResImpl: T; override := prev_qr.GetResDirect;
     
   end;
   QueueResWrapValFactory<T> = sealed class(IQueueResWrapFactory<T, QueueResValWrap<T>>)
@@ -10063,17 +10146,24 @@ type
     
     private constructor := raise new OpenCLABCInternalException;
     
-    private function GetResPtrDirect := @(data.Pointer^.val);
-    public function GetResPtr: ^T;
+    private function GetResPtrImpl := @(data.Pointer^.val);
+    public function GetResPtrForRead: ^T;
+    begin
+      {$ifdef DEBUG}
+      CheckStatus;
+      {$endif DEBUG}
+      Result := GetResPtrImpl;
+    end;
+    public function GetResPtrForWrite: ^T;
     begin
       {$ifdef DEBUG}
       MarkResSet;
       {$endif DEBUG}
-      Result := GetResPtrDirect;
+      Result := GetResPtrImpl;
     end;
     
-    protected procedure SetResDirect(res: T); override := GetResPtrDirect^ := res;
-    public function GetResDirect: T; override := GetResPtrDirect^;
+    protected procedure SetResImpl(res: T); override := GetResPtrImpl^ := res;
+    protected function GetResImpl: T; override := GetResPtrImpl^;
     
     protected procedure Finalize; override;
     begin
@@ -10942,6 +11032,7 @@ type
       //TODO На самом деле создавать новый объект, даже если обёртку - ни к чему
       // - Новый объект нужен только при обёртывании mu результата
       // - А тут должно быть достаточно подменить ивент
+      // --- status check ожидает что ивент не будет меняться
       // - Это касается только .Then и только Use, потому что в остальных случаях нельзя использовать существующий QR
       Result := qrw_factory.MakeWrap(prev_qr, work_ev);
     end;
@@ -13767,7 +13858,7 @@ type
           {$endif WaitDebug}
           self.IncState;
         end;
-      end{$ifdef EventDebug}, $'KeepAlive(handler[{self.GetHashCode}])'{$endif});
+      end{$ifdef EventDebug}, $'prev_ev boost for wait handler[{self.GetHashCode}]'{$endif});
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -18423,7 +18514,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var        val :=        val_qr.GetResPtrDirect;
+        var        val :=        val_qr.GetResPtrForRead;
         var mem_offset := mem_offset_qr.GetResDirect;
         var res_ev: cl_event;
         
@@ -21486,7 +21577,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -21662,7 +21753,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var           val :=           val_qr.GetResPtrDirect;
+        var           val :=           val_qr.GetResPtrForRead;
         var    mem_offset :=    mem_offset_qr.GetResDirect;
         var fill_byte_len := fill_byte_len_qr.GetResDirect;
         var res_ev: cl_event;
@@ -24185,7 +24276,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
-          (own_qr as QueueResPtr<TRecord>).GetResPtr,
+          (own_qr as QueueResPtr<TRecord>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -24733,7 +24824,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
@@ -25374,7 +25465,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
-          (own_qr as QueueResPtr<&T>).GetResPtr,
+          (own_qr as QueueResPtr<&T>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
@@ -26068,7 +26159,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
         
@@ -28897,7 +28988,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var res_ev: cl_event;
         
         var ec := cl.EnqueueFillBuffer(
@@ -29065,7 +29156,7 @@ type
       
       Result := (o, cq, evs)->
       begin
-        var val := val_qr.GetResPtrDirect;
+        var val := val_qr.GetResPtrForRead;
         var ind := ind_qr.GetResDirect;
         var len := len_qr.GetResDirect;
         var res_ev: cl_event;
@@ -31977,7 +32068,7 @@ type
         var ec := cl.EnqueueReadBuffer(
           cq, o.Native, Bool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
-          (own_qr as QueueResPtr<&T>).GetResPtr,
+          (own_qr as QueueResPtr<&T>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
         );
         OpenCLABCInternalException.RaiseIfError(ec);
