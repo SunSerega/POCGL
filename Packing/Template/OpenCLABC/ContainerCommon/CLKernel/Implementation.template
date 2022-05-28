@@ -5,6 +5,11 @@ constructor CLKernelCCQ.Create(o: CLKernel) := inherited;
 constructor CLKernelCCQ.Create(q: CommandQueue<CLKernel>) := inherited;
 constructor CLKernelCCQ.Create := inherited;
 
+function MakeCCQ(self: CommandQueue<CLKernel>): CLKernelCCQ; extensionmethod;
+begin
+  Result := new CLKernelCCQ(self);
+end;
+
 {$region Special .Add's}
 
 function CLKernelCCQ.ThenQueue(q: CommandQueueBase): CLKernelCCQ;

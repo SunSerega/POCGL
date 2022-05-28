@@ -98,6 +98,36 @@ begin
       
       {$endregion constructor's}
       
+      {$region MakeCCQ}
+      
+      res_Im += 'function MakeCCQ';
+      WriteGenerics(res_Im);
+      res_Im += '(self: CommandQueue<';
+      res_Im += t;
+      WriteGenerics(res_Im);
+      res_Im += '>): ';
+      res_Im += t;
+      res_Im += 'CCQ';
+      WriteGenerics(res_Im);
+      res_Im += '; extensionmethod;';
+      if generics.Count<>0 then
+      begin
+        res_Im += ' where ';
+        res_Im += generics.JoinToString(',');
+        res_Im += ': record;';
+      end;
+      res_Im += #10;
+      res_Im += 'begin'#10;
+      res_Im += '  Result := new ';
+      res_Im += t;
+      res_Im += 'CCQ';
+      WriteGenerics(res_Im);
+      res_Im += '(self);'#10;
+      res_Im += 'end;'#10;
+      res_Im += #10;
+      
+      {$endregion MakeCCQ}
+      
       res_In += '    ';
       res += '{$region Special .Add''s}'#10;
       

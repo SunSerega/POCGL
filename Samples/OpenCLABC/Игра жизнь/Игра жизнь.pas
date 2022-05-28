@@ -40,7 +40,7 @@ try
   
   var Q_1Step :=
     code['CalcStep']
-    .NewQueue
+    .MakeCCQ
     .ThenExec2(W,W,
       HQFQ(()->B),
       HQFQ(()->B_temp),
@@ -49,7 +49,7 @@ try
     HQPQ(()->Swap(B,B_temp))
  ;
  var Q_Otp :=
-    B.NewQueue
+    B.MakeCCQ
     .ThenGetArray2(W,W)
     .ThenUse(field->
     begin

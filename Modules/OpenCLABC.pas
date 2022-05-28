@@ -49,11 +49,17 @@ unit OpenCLABC;
 // --- Проявляется на "CLABC\02\07\~08\QuickParOrder"
 // - Но использовать общий .HadError нельзя, потому что ev_l2 может ещё добавить свои ошибки
 // - Наверное придётся разделить хэндлеры ошибок...
-
+//TODO То есть надо разделить g.ParallelInvoke на 2 половины:
+// - При этом нужен общий invoker, потому что очереди с константным QR попадают в ev_l2
+// --- А это можно узнать только после вызова .InvokeTo*
+// --- Или нет, стоп, я всё равно хотел сделать такую оптимизацию
+// --- Тогда можно создавать 2 версии каждой очереди (общим шаблоном):
+// --- 1. Всегда константный вход
+// --- 2. Всегда вычисляемый на лету вход
 //TODO Тесты:
 // - "V.WriteValue(HQFQ(raise))"
 // - "V.WriteValue(HTFQ(raise))"
-
+// - (отмена enq до и после cl.Enqueue)
 //TODO После cl.Enqueue нужно в любом случае UserEvent
 // - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
 // - А в колбеке ивента команды надо сначала проверять ошибки prev_ev, потому что их может скопировать в ивент команды
@@ -70,11 +76,6 @@ unit OpenCLABC;
 //TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
 
 //TODO Каким, всё же, считает generic KernelArg: Global или Constant?
-
-//TODO .NewQueue => .MakeCCQ
-// - +extensionmethod для CQ<>
-// --- В "ContainerCommon.pas"
-// --- Не забыть генерировать "///%...%", чтобы были описания
 
 //TODO Properties должны генерироваться с описанием "///--"
 // - А кодогенератор описаний должен игнорировать содержимое этих классов
@@ -181,7 +182,7 @@ unit OpenCLABC;
 //TODO При чём это в обе стороны (не-)работает
 //  var v1 := new NativeValue<integer>(1);
 //  var v2 := new CLValue<integer>(1);
-//  var Q_Copy := k.NewQueue.ThenExec1(1,CLKernelArg.FromNativeValue(v1),v2)+v2.NewQueue.ThenGetValue;
+//  var Q_Copy := k.MakeCCQ.ThenExec1(1,CLKernelArg.FromNativeValue(v1),v2)+v2.MakeCCQ.ThenGetValue;
 //  
 //  v1.Value := 3;
 //  CLContext.Default.SyncInvoke(Q_Copy).Println; // тут происходит копирование из v1 в кеш
@@ -229,6 +230,12 @@ unit OpenCLABC;
 
 //===================================
 // Запланированное:
+
+//TODO Константные очереди с функцией-инициализатором
+// - Как параметры, которым каждый рад дают новое значение
+// - Полезно, к примеру, чтобы выделять новый массив-буфер на каждое выполнение
+// - Или лучше какую-то кешированную очередь, выделяющий новые объекты только при накладывающихся выполнениях CLTask?
+// - Если делать .ThenMap - использования получаются довольно ограничены...
 
 //TODO [In] и [Out] в кодогенераторах
 // - [Out] строки без [In] заменять на StringBuilder
@@ -3294,7 +3301,7 @@ type
   end;
   
   CLKernel = partial class
-    public function NewQueue := new CLKernelCCQ({%>self%});
+    public function MakeCCQ := new CLKernelCCQ({%>self%});
   end;
   
   {$endregion CLKernelCCQ}
@@ -3312,7 +3319,7 @@ type
   end;
   
   CLMemory = partial class
-    public function NewQueue := new CLMemoryCCQ({%>self%});
+    public function MakeCCQ := new CLMemoryCCQ({%>self%});
   end;
   
   {$endregion CLMemorySegmentCCQ}
@@ -3331,7 +3338,7 @@ type
   end;
   
   CLValue<T> = partial class
-    public function NewQueue := new CLValueCCQ<T>({%>self%});
+    public function MakeCCQ := new CLValueCCQ<T>({%>self%});
   end;
   
   {$endregion CLValueCCQ}
@@ -3350,7 +3357,7 @@ type
   end;
   
   CLArray<T> = partial class
-    public function NewQueue := new CLArrayCCQ<T>({%>self%});
+    public function MakeCCQ := new CLArrayCCQ<T>({%>self%});
   end;
   
   {$endregion CLArrayCCQ}

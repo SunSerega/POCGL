@@ -5,27 +5,27 @@
 
 function CLArray<T>.GetValue(ind: CommandQueue<integer>): &T;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetValue(ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetValue(ind));
 end;
 
 function CLArray<T>.GetArray: array of &T;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray);
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray);
 end;
 
 function CLArray<T>.GetArray(len: CommandQueue<integer>): array of &T;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray(len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray(len));
 end;
 
 function CLArray<T>.GetArray2(len1,len2: CommandQueue<integer>): array[,] of &T;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray2(len1, len2));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray2(len1, len2));
 end;
 
 function CLArray<T>.GetArray3(len1,len2,len3: CommandQueue<integer>): array[,,] of &T;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray3(len1, len2, len3));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray3(len1, len2, len3));
 end;
 
 {$endregion Get}

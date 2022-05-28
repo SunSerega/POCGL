@@ -45,9 +45,9 @@ try
   
   var Calc_C_Q :=
     // Выделяем ядра в форме квадрата, всего W*W ядер
-    code['MatrMltMatr'].NewQueue.ThenExec2(W, W,
-      A.NewQueue.ThenWriteArray2(A_Matr),
-      B.NewQueue.ThenWriteArray2(B_Mart),
+    code['MatrMltMatr'].MakeCCQ.ThenExec2(W, W,
+      A.MakeCCQ.ThenWriteArray2(A_Matr),
+      B.MakeCCQ.ThenWriteArray2(B_Mart),
       C,
       W
     // DiscardResult не обязательно, но желательно
@@ -55,7 +55,7 @@ try
     ).DiscardResult;
   
   var Otp_C_Q :=
-    C.NewQueue.ThenGetArray2(W, W)
+    C.MakeCCQ.ThenGetArray2(W, W)
     .ThenQuickUse(C_Matr->
     begin
       'Матрица С = A*B:'.Println;
@@ -64,15 +64,15 @@ try
     end).DiscardResult;
   
   var Calc_V2_Q :=
-    code['MatrMltVec'].NewQueue.ThenExec1(W,
+    code['MatrMltVec'].MakeCCQ.ThenExec1(W,
       C,
-      V1.NewQueue.ThenWriteArray(V1_Arr),
+      V1.MakeCCQ.ThenWriteArray(V1_Arr),
       V2,
       W
     ).DiscardResult;
   
   var Otp_V2_Q :=
-    V2.NewQueue.ThenGetArray
+    V2.MakeCCQ.ThenGetArray
     .ThenQuickUse(V2_Arr->
     begin
       'Вектор V2 = C*V1:'.Println;

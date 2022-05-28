@@ -2,6 +2,6 @@
 
 var mem := new CLMemory(1);
 CLContext.Default.SyncInvoke(
-  mem.NewQueue
+  mem.MakeCCQ
   .ThenQueue(HQPQ(()->raise new Exception($'{mem}, TestOK')))
 );

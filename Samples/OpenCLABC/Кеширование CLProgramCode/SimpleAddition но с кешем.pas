@@ -40,7 +40,7 @@ var len := 10;
 var A := new CLArray<integer>(10);
 
 code['TEST'].Exec1(len,
-  A.NewQueue.ThenFillValue(1)
+  A.MakeCCQ.ThenFillValue(1)
 );
 
 A.GetArray.Println;

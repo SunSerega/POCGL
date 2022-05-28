@@ -8,7 +8,7 @@ type
     
     // Эта очередь ничего полезного не делает, но это только пример
     public constructor := self.Q :=
-    CLMemory.Create(sizeof(integer)).NewQueue
+    CLMemory.Create(sizeof(integer)).MakeCCQ
     .ThenWriteValue( self.par1 )
     .ThenQueue( self.par2.ThenQuickUse(x->Println(x)) )
     .ThenGetValue&<integer>;

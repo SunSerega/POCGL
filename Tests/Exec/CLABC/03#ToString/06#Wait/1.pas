@@ -24,6 +24,6 @@ Test( WaitFor(M1)+M1 );
 ('='*30+#10).Println;
 
 var mem := new CLMemory(1);
-Test( mem.NewQueue.ThenWait(M1) );
-Test( M1+mem.NewQueue.ThenWait(M1) );
-Test( mem.NewQueue.ThenWait(M1)+M1 );
+Test( mem.MakeCCQ.ThenWait(M1) );
+Test( M1+mem.MakeCCQ.ThenWait(M1) );
+Test( mem.MakeCCQ.ThenWait(M1)+M1 );

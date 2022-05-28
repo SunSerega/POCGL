@@ -28,6 +28,6 @@ end);
 
 var a := new CLArray<integer>(1);
 CLContext.Default.SyncInvoke(
-  a.NewQueue.ThenWriteValue(Q_slow, Q_fast) +
+  a.MakeCCQ.ThenWriteValue(Q_slow, Q_fast) +
   CLArrayCCQ&<integer>.Create(Q_slow+CQ(a)).ThenWriteValue(Q_fast, 0)
 );

@@ -5,22 +5,22 @@
 
 function CLKernel.Exec1(sz1: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec1(sz1, args));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenExec1(sz1, args));
 end;
 
 function CLKernel.Exec2(sz1,sz2: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec2(sz1, sz2, args));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenExec2(sz1, sz2, args));
 end;
 
 function CLKernel.Exec3(sz1,sz2,sz3: CommandQueue<integer>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec3(sz1, sz2, sz3, args));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenExec3(sz1, sz2, sz3, args));
 end;
 
 function CLKernel.Exec(global_work_offset, global_work_size, local_work_size: CommandQueue<array of UIntPtr>; params args: array of CLKernelArg): CLKernel;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenExec(global_work_offset, global_work_size, local_work_size, args));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenExec(global_work_offset, global_work_size, local_work_size, args));
 end;
 
 {$endregion Exec}

@@ -41,14 +41,14 @@ try
   
   var Q_1Step :=
     code['CalcStep']
-    .NewQueue
+    .MakeCCQ
     .ThenExec2(W,W,
       B, B_temp, W
     ) +
-    B.NewQueue.ThenCopyFrom(B_temp)
+    B.MakeCCQ.ThenCopyFrom(B_temp)
  ;
  var Q_Otp :=
-    B.NewQueue
+    B.MakeCCQ
     .ThenGetArray2(W,W)
     .ThenUse(field->
     begin

@@ -10,27 +10,27 @@ end;
 
 function CLMemory.GetValue<TRecord>(mem_offset: CommandQueue<integer>): TRecord; where TRecord: record;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetValue&<TRecord>(mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetValue&<TRecord>(mem_offset));
 end;
 
 function CLMemory.GetArray<TRecord>: array of TRecord; where TRecord: record;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>);
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray&<TRecord>);
 end;
 
 function CLMemory.GetArray<TRecord>(len: CommandQueue<integer>): array of TRecord; where TRecord: record;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray&<TRecord>(len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray&<TRecord>(len));
 end;
 
 function CLMemory.GetArray2<TRecord>(len1,len2: CommandQueue<integer>): array[,] of TRecord; where TRecord: record;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray2&<TRecord>(len1, len2));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray2&<TRecord>(len1, len2));
 end;
 
 function CLMemory.GetArray3<TRecord>(len1,len2,len3: CommandQueue<integer>): array[,,] of TRecord; where TRecord: record;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetArray3&<TRecord>(len1, len2, len3));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetArray3&<TRecord>(len1, len2, len3));
 end;
 
 {$endregion Get}

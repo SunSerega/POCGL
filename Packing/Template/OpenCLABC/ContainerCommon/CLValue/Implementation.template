@@ -5,6 +5,11 @@ constructor CLValueCCQ<T>.Create(o: CLValue<T>) := inherited;
 constructor CLValueCCQ<T>.Create(q: CommandQueue<CLValue<T>>) := inherited;
 constructor CLValueCCQ<T>.Create := inherited;
 
+function MakeCCQ<T>(self: CommandQueue<CLValue<T>>): CLValueCCQ<T>; extensionmethod; where T: record;
+begin
+  Result := new CLValueCCQ<T>(self);
+end;
+
 {$region Special .Add's}
 
 function CLValueCCQ<T>.ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;

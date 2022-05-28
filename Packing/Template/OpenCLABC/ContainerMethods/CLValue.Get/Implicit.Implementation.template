@@ -5,7 +5,7 @@
 
 function CLValue<T>.GetValue: &T;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenGetValue);
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenGetValue);
 end;
 
 {$endregion Get}

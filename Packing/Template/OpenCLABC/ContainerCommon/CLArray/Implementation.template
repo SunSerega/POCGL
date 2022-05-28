@@ -5,6 +5,11 @@ constructor CLArrayCCQ<T>.Create(o: CLArray<T>) := inherited;
 constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
 constructor CLArrayCCQ<T>.Create := inherited;
 
+function MakeCCQ<T>(self: CommandQueue<CLArray<T>>): CLArrayCCQ<T>; extensionmethod; where T: record;
+begin
+  Result := new CLArrayCCQ<T>(self);
+end;
+
 {$region Special .Add's}
 
 function CLArrayCCQ<T>.ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;

@@ -3,7 +3,7 @@
 var code := new CLProgramCode('kernel void k(global int* mem, int x) { }');
 var k := code['k'];
 
-k.NewQueue
+k.MakeCCQ
 .ThenExec2(1,1,
   
   CLMemoryCCQ.Create(HTFQ(()->new CLMemory(1)))

@@ -483,7 +483,7 @@ type
           t += class_name;
           t += '>(';
           t += s.par_name;
-          t += '.NewQueue);'#10;
+          t += '.MakeCCQ);'#10;
           
         end;
         

@@ -17,4 +17,4 @@ begin
 end;
 
 Test(2, ati->HTPQ(ati) );
-Test(1, ati->CLMemory.Create(4).NewQueue.ThenWriteValue(5) );
+Test(1, ati->CLMemory.Create(4).MakeCCQ.ThenWriteValue(5) );

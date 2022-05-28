@@ -99,7 +99,7 @@ TestT&<CLKernelArg>(cl_mem);
 TestT&<CLKernelArg>(CQ(cl_mem));
 TestT&<CLKernelArg>(new ConstQueue<CLMemory>(cl_mem));
 TestT&<CLKernelArg>(new ParameterQueue<CLMemory>('cl_mem', cl_mem));
-TestT&<CLKernelArg>(cl_mem.NewQueue);
+TestT&<CLKernelArg>(cl_mem.MakeCCQ);
 end);
 TestRange('CLValue', ()->
 begin
@@ -108,7 +108,7 @@ TestT&<CLKernelArg>(cl_val);
 TestT&<CLKernelArg>(CQ(cl_val));
 TestT&<CLKernelArg>(new ConstQueue<CLValue<T>>(cl_val));
 TestT&<CLKernelArg>(new ParameterQueue<CLValue<T>>('cl_val', cl_val));
-TestT&<CLKernelArg>(cl_val.NewQueue);
+TestT&<CLKernelArg>(cl_val.MakeCCQ);
 end);
 TestRange('CLArray', ()->
 begin
@@ -117,7 +117,7 @@ TestT&<CLKernelArg>(cl_arr);
 TestT&<CLKernelArg>(CQ(cl_arr));
 TestT&<CLKernelArg>(new ConstQueue<CLArray<T>>(cl_arr));
 TestT&<CLKernelArg>(new ParameterQueue<CLArray<T>>('cl_arr', cl_arr));
-TestT&<CLKernelArg>(cl_arr.NewQueue);
+TestT&<CLKernelArg>(cl_arr.MakeCCQ);
 end);
 end);
 TestRange('Value', ()->

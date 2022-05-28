@@ -5,72 +5,72 @@
 
 function CLArray<T>.WriteValue(val: &T; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteValue(val: CommandQueue<&T>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteValue(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteValue(val, ind));
 end;
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArray(a));
 end;
 
 function CLArray<T>.WriteArray2(a: CommandQueue<array[,] of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray2(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArray2(a));
 end;
 
 function CLArray<T>.WriteArray3(a: CommandQueue<array[,,] of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray3(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArray3(a));
 end;
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArray(a));
 end;
 
 function CLArray<T>.ReadArray2(a: CommandQueue<array[,] of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray2(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArray2(a));
 end;
 
 function CLArray<T>.ReadArray3(a: CommandQueue<array[,,] of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray3(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArray3(a));
 end;
 
 function CLArray<T>.WriteArray(a: CommandQueue<array of &T>; a_ind, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray(a, a_ind, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArray(a, a_ind, len, ind));
 end;
 
 function CLArray<T>.WriteArray2(a: CommandQueue<array[,] of &T>; a_ind1,a_ind2, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray2(a, a_ind1, a_ind2, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArray2(a, a_ind1, a_ind2, len, ind));
 end;
 
 function CLArray<T>.WriteArray3(a: CommandQueue<array[,,] of &T>; a_ind1,a_ind2,a_ind3, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
 end;
 
 function CLArray<T>.ReadArray(a: CommandQueue<array of &T>; a_ind, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray(a, a_ind, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArray(a, a_ind, len, ind));
 end;
 
 function CLArray<T>.ReadArray2(a: CommandQueue<array[,] of &T>; a_ind1,a_ind2, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray2(a, a_ind1, a_ind2, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArray2(a, a_ind1, a_ind2, len, ind));
 end;
 
 function CLArray<T>.ReadArray3(a: CommandQueue<array[,,] of &T>; a_ind1,a_ind2,a_ind3, len, ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArray3(a, a_ind1, a_ind2, a_ind3, len, ind));
 end;
 
 function CLArray<T>.WriteArraySegment(a: CommandQueue<ArraySegment<&T>>): CLArray<T>;
@@ -85,32 +85,32 @@ end;
 
 function CLArray<T>.WriteArraySegment(a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteArraySegment(a, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteArraySegment(a, ind));
 end;
 
 function CLArray<T>.ReadArraySegment(a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadArraySegment(a, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadArraySegment(a, ind));
 end;
 
 function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteData(ptr));
 end;
 
 function CLArray<T>.WriteData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteData(ptr, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteData(ptr, ind, len));
 end;
 
 function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadData(ptr));
 end;
 
 function CLArray<T>.ReadData(ptr: CommandQueue<IntPtr>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadData(ptr, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadData(ptr, ind, len));
 end;
 
 function CLArray<T>.WriteData(ptr: pointer): CLArray<T>;
@@ -195,62 +195,62 @@ end;
 
 function CLArray<T>.WriteNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemoryArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteNativeMemoryArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeMemory(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteNativeMemory(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValueArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteNativeValueArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeValue(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteNativeValue(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArrayArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteNativeArrayArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.WriteNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenWriteNativeArray(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenWriteNativeArray(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemoryArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadNativeMemoryArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeMemory(native_data: CommandQueue<NativeMemory>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeMemory(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadNativeMemory(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValueArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadNativeValueArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeValue(native_data: CommandQueue<NativeValue<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeValue(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadNativeValue(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeArrayArea(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadNativeArrayArea(native_data, mem_offset));
 end;
 
 function CLArray<T>.ReadNativeArray(native_data: CommandQueue<NativeArray<&T>>; mem_offset: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenReadNativeArray(native_data, mem_offset));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenReadNativeArray(native_data, mem_offset));
 end;
 
 {$endregion 1#Write&Read}
@@ -259,72 +259,72 @@ end;
 
 function CLArray<T>.FillValue(val: &T): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillValue(val));
 end;
 
 function CLArray<T>.FillValue(val: CommandQueue<&T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillValue(val));
 end;
 
 function CLArray<T>.FillValue(val: &T; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillValue(val, ind, len));
 end;
 
 function CLArray<T>.FillValue(val: CommandQueue<&T>; ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillValue(val, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillValue(val, ind, len));
 end;
 
 function CLArray<T>.FillArray(a: CommandQueue<array of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray(a));
 end;
 
 function CLArray<T>.FillArray2(a: CommandQueue<array[,] of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray2(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray2(a));
 end;
 
 function CLArray<T>.FillArray3(a: CommandQueue<array[,,] of &T>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray3(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray3(a));
 end;
 
 function CLArray<T>.FillArray(a: CommandQueue<array of &T>; a_ind, pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray(a, a_ind, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray(a, a_ind, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillArray2(a: CommandQueue<array[,] of &T>; a_ind1,a_ind2, pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray2(a, a_ind1, a_ind2, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray2(a, a_ind1, a_ind2, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillArray3(a: CommandQueue<array[,,] of &T>; a_ind1,a_ind2,a_ind3, pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArray3(a, a_ind1, a_ind2, a_ind3, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray3(a, a_ind1, a_ind2, a_ind3, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillArraySegment(a: CommandQueue<ArraySegment<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArraySegment(a));
 end;
 
 function CLArray<T>.FillArraySegment(a: CommandQueue<ArraySegment<&T>>; ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillArraySegment(a, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArraySegment(a, ind, fill_len));
 end;
 
 function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillData(ptr, pattern_len));
 end;
 
 function CLArray<T>.FillData(ptr: CommandQueue<IntPtr>; pattern_len, ind, fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillData(ptr, pattern_len, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillData(ptr, pattern_len, ind, fill_len));
 end;
 
 function CLArray<T>.FillData(ptr: pointer; pattern_len: CommandQueue<integer>): CLArray<T>;
@@ -399,62 +399,62 @@ end;
 
 function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeMemoryArea(native_data));
 end;
 
 function CLArray<T>.FillNativeMemoryArea(native_data: CommandQueue<NativeMemoryArea>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemoryArea(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeMemoryArea(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeMemory(native_data));
 end;
 
 function CLArray<T>.FillNativeMemory(native_data: CommandQueue<NativeMemory>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeMemory(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeMemory(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeValueArea(native_data));
 end;
 
 function CLArray<T>.FillNativeValueArea(native_data: CommandQueue<NativeValueArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValueArea(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeValueArea(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeValue(native_data));
 end;
 
 function CLArray<T>.FillNativeValue(native_data: CommandQueue<NativeValue<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeValue(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeValue(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeArrayArea(native_data));
 end;
 
 function CLArray<T>.FillNativeArrayArea(native_data: CommandQueue<NativeArrayArea<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArrayArea(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeArrayArea(native_data, ind, fill_len));
 end;
 
 function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeArray(native_data));
 end;
 
 function CLArray<T>.FillNativeArray(native_data: CommandQueue<NativeArray<&T>>; ind,fill_len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenFillNativeArray(native_data, ind, fill_len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillNativeArray(native_data, ind, fill_len));
 end;
 
 {$endregion 2#Fill}
@@ -463,52 +463,52 @@ end;
 
 function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyTo(mem));
 end;
 
 function CLArray<T>.CopyTo(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(mem, mem_offset, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyTo(mem, mem_offset, ind, len));
 end;
 
 function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyFrom(mem));
 end;
 
 function CLArray<T>.CopyFrom(mem: CommandQueue<CLMemory>; mem_offset, ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(mem, mem_offset, ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyFrom(mem, mem_offset, ind, len));
 end;
 
 function CLArray<T>.CopyTo(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyTo(val, ind));
 end;
 
 function CLArray<T>.CopyFrom(val: CommandQueue<CLValue<&T>>; ind: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(val, ind));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyFrom(val, ind));
 end;
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyTo(a));
 end;
 
 function CLArray<T>.CopyTo(a: CommandQueue<CLArray<&T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyTo(a, from_ind, to_ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyTo(a, from_ind, to_ind, len));
 end;
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<&T>>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyFrom(a));
 end;
 
 function CLArray<T>.CopyFrom(a: CommandQueue<CLArray<&T>>; from_ind, to_ind, len: CommandQueue<integer>): CLArray<T>;
 begin
-  Result := CLContext.Default.SyncInvoke(self.NewQueue.ThenCopyFrom(a, from_ind, to_ind, len));
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenCopyFrom(a, from_ind, to_ind, len));
 end;
 
 {$endregion 3#Copy}
