@@ -412,19 +412,34 @@ type
             
             var dom := System.AppDomain.CreateDomain($'Getting delegate count of {fwoe}');
             dom.SetData('fname', System.IO.Path.ChangeExtension(t.pas_fname, '.exe'));
-            dom.DoCallBack(CheckDelegateCount);
-            if dom.GetData('e') is string(var e) then
+            dom.DoCallBack(FindDelegatesInBin);
+            if dom.GetData('err') is string(var e) then
               raise new Exception(e);
-            var delegate_count := dom.GetData('c').ToString;
+            var delegates := string( dom.GetData('delegates') );
             System.AppDomain.Unload(dom);
             
-            if t.all_settings.Get('#DelegateCount') <> delegate_count then
+            var settings_key := '#Delegates';
+            if delegates='' then
             begin
-              t.all_settings['#DelegateCount'] := delegate_count;
-              t.resave_settings := true;
+              
+              if t.all_settings.ContainsKey(settings_key) then
+              begin
+                t.all_settings.Remove(settings_key);
+                t.resave_settings := true;
+              end;
+              
+            end else
+            begin
+              
+              if t.all_settings.Get(settings_key) <> delegates then
+              begin
+                t.all_settings[settings_key] := delegates;
+                t.resave_settings := true;
+              end;
+              
+              t.used_settings += settings_key;
             end;
             
-            t.used_settings += '#DelegateCount';
           end;
           
           if t.test_exec<>0 then
@@ -438,10 +453,10 @@ type
       .SyncExec;
       
     end;
-    private static procedure CheckDelegateCount :=
+    private static procedure FindDelegatesInBin :=
     try
       var dom := System.AppDomain.CurrentDomain;
-      var fname := string(dom.GetData('fname'));
+      var fname := string( dom.GetData('fname') );
       
       if not FileExists(fname) then
         raise new System.IO.FileNotFoundException(
@@ -468,15 +483,62 @@ type
       
       var a := load(nil,fname);
       try
-        var c := a.GetTypes.Count(t->t.IsSubclassOf(typeof(System.Delegate)));
-        dom.SetData('c', c);
+        var res := new StringBuilder;
+        foreach var t: System.Type in a.GetTypes do
+        begin
+          if t.Namespace in |'PABCSystem','PABCExtensions'| then continue;
+          if not t.IsSubclassOf(typeof(System.Delegate)) then continue;
+          res += t.Namespace;
+          res += '.';
+          if t.DeclaringType<>nil then
+          begin
+            res += TypeToTypeName(t.DeclaringType);
+            res += '+';
+          end;
+          begin
+            var name := t.Name;
+            begin
+              var ind := name.IndexOf('`');
+              if ind<>-1 then name := name.Remove(ind);
+            end;
+            var anon_name := '$delegate';
+            if name.StartsWith(anon_name) and name.Substring(anon_name.Length).All(char.IsDigit) then
+              name := anon_name+'?';
+            res += name;
+          end;
+          if t.IsGenericType then
+          begin
+            res += '<';
+            res += t.GetGenericArguments.Select(TypeToTypeName).JoinToString(', ');
+            res += '>';
+          end;
+          res += ' = ';
+          var mi := t.GetMethod('Invoke');
+          var is_func := mi.ReturnType<>typeof(System.Void);
+          res += if is_func then 'function' else 'procedure';
+          var pars := mi.GetParameters;
+          if pars.Length<>0 then
+          begin
+            res += '(';
+            res += pars.Select(par->$'{par.Name}: {TypeToTypeName(par.ParameterType)}').JoinToString('; ');
+            res += ')';
+          end;
+          if is_func then
+          begin
+            res += ': ';
+            res += TypeToTypeName(mi.ReturnType);
+          end;
+          res += #10;
+        end;
+        if res.Length<>0 then res.Length -= 1;
+        dom.SetData('delegates', res.ToString);
       except
         on e: System.Reflection.ReflectionTypeLoadException do
-          dom.SetData('e', e.LoaderExceptions.Select(e->#10+e.ToString).JoinToString(''));
+          dom.SetData('err', e.LoaderExceptions.Select(e->#10+e.ToString).JoinToString(''));
       end;
       
     except
-      on e: Exception do System.AppDomain.CurrentDomain.SetData('e', e.ToString);
+      on e: Exception do System.AppDomain.CurrentDomain.SetData('err', e.ToString);
     end;
     
     {$endregion Comp}

@@ -1,9 +1,6 @@
 ﻿
 
 
-#DelegateCount
-3
-
 #ExpExecOtp
 ┌                     ┐
 │ +0.00, +1.00, -0.00 │

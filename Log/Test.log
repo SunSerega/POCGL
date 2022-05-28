@@ -1,4 +1,4 @@
-﻿Runing Tester
+Runing Tester
 Tester: Testing selected modules:
 Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
@@ -30,6 +30,8 @@ Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#CLCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#CLCode\deserialize.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\CCQ-Cancel.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
 Tester: Compiling: OK
@@ -236,6 +238,8 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#CLCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#CLCode\deserialize]
+Tester: Done executing
+Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\CCQ-Cancel]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
 Tester: Done executing
