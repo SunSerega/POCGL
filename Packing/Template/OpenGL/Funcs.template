@@ -5140,15 +5140,15 @@
     
     // added in gl1.0
     private z_TexImage1D_adr := GetProcAddress('glTexImage1D');
-    private z_TexImage1D_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage1D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage1D(target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_TexImage1D_1(target, level, internalformat, width, border, format, &type, pixels);
+    private z_TexImage1D_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage1D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage1D(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_TexImage1D_1(target, level, _internalformat, width, border, format, &type, pixels);
     
     // added in gl1.0
     private z_TexImage2D_adr := GetProcAddress('glTexImage2D');
-    private z_TexImage2D_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage2D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2D(target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_TexImage2D_1(target, level, internalformat, width, height, border, format, &type, pixels);
+    private z_TexImage2D_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage2D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2D(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_TexImage2D_1(target, level, _internalformat, width, height, border, format, &type, pixels);
     
     // added in gl3.2
     private z_TexImage2DMultisample_adr := GetProcAddress('glTexImage2DMultisample');
@@ -5158,9 +5158,9 @@
     
     // added in gl1.2
     private z_TexImage3D_adr := GetProcAddress('glTexImage3D');
-    private z_TexImage3D_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage3D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3D(target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_TexImage3D_1(target, level, internalformat, width, height, depth, border, format, &type, pixels);
+    private z_TexImage3D_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TexImage3D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3D(target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_TexImage3D_1(target, level, _internalformat, width, height, depth, border, format, &type, pixels);
     
     // added in gl3.2
     private z_TexImage3DMultisample_adr := GetProcAddress('glTexImage3DMultisample');
@@ -23748,14 +23748,14 @@
     z_TextureParameterivEXT_1(texture, target, pname, &params);
     
     private z_TextureImage1DEXT_adr := GetProcAddress('glTextureImage1DEXT');
-    private z_TextureImage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureImage1DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage1DEXT(texture: gl_texture; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_TextureImage1DEXT_1(texture, target, level, internalformat, width, border, format, &type, pixels);
+    private z_TextureImage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureImage1DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage1DEXT(texture: gl_texture; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_TextureImage1DEXT_1(texture, target, level, _internalformat, width, border, format, &type, pixels);
     
     private z_TextureImage2DEXT_adr := GetProcAddress('glTextureImage2DEXT');
-    private z_TextureImage2DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureImage2DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage2DEXT(texture: gl_texture; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_TextureImage2DEXT_1(texture, target, level, internalformat, width, height, border, format, &type, pixels);
+    private z_TextureImage2DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureImage2DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage2DEXT(texture: gl_texture; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_TextureImage2DEXT_1(texture, target, level, _internalformat, width, height, border, format, &type, pixels);
     
     private z_TextureSubImage1DEXT_adr := GetProcAddress('glTextureSubImage1DEXT');
     private z_TextureSubImage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; xoffset: Int32; width: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureSubImage1DEXT_adr);
@@ -23825,9 +23825,9 @@
     z_GetTextureLevelParameterivEXT_1(texture, target, level, pname, &params);
     
     private z_TextureImage3DEXT_adr := GetProcAddress('glTextureImage3DEXT');
-    private z_TextureImage3DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureImage3DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage3DEXT(texture: gl_texture; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_TextureImage3DEXT_1(texture, target, level, internalformat, width, height, depth, border, format, &type, pixels);
+    private z_TextureImage3DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureImage3DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage3DEXT(texture: gl_texture; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_TextureImage3DEXT_1(texture, target, level, _internalformat, width, height, depth, border, format, &type, pixels);
     
     private z_TextureSubImage3DEXT_adr := GetProcAddress('glTextureSubImage3DEXT');
     private z_TextureSubImage3DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_TextureSubImage3DEXT_adr);
@@ -24030,14 +24030,14 @@
     z_MultiTexParameterfvEXT_1(texunit, target, pname, &params);
     
     private z_MultiTexImage1DEXT_adr := GetProcAddress('glMultiTexImage1DEXT');
-    private z_MultiTexImage1DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexImage1DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexImage1DEXT(texunit: TextureUnit; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_MultiTexImage1DEXT_1(texunit, target, level, internalformat, width, border, format, &type, pixels);
+    private z_MultiTexImage1DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexImage1DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexImage1DEXT(texunit: TextureUnit; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_MultiTexImage1DEXT_1(texunit, target, level, _internalformat, width, border, format, &type, pixels);
     
     private z_MultiTexImage2DEXT_adr := GetProcAddress('glMultiTexImage2DEXT');
-    private z_MultiTexImage2DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexImage2DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexImage2DEXT(texunit: TextureUnit; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_MultiTexImage2DEXT_1(texunit, target, level, internalformat, width, height, border, format, &type, pixels);
+    private z_MultiTexImage2DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexImage2DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexImage2DEXT(texunit: TextureUnit; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_MultiTexImage2DEXT_1(texunit, target, level, _internalformat, width, height, border, format, &type, pixels);
     
     private z_MultiTexSubImage1DEXT_adr := GetProcAddress('glMultiTexSubImage1DEXT');
     private z_MultiTexSubImage1DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; xoffset: Int32; width: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexSubImage1DEXT_adr);
@@ -24107,9 +24107,9 @@
     z_GetMultiTexLevelParameterivEXT_1(texunit, target, level, pname, &params);
     
     private z_MultiTexImage3DEXT_adr := GetProcAddress('glMultiTexImage3DEXT');
-    private z_MultiTexImage3DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexImage3DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexImage3DEXT(texunit: TextureUnit; target: TextureTarget; level: Int32; internalformat: Int32; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
-    z_MultiTexImage3DEXT_1(texunit, target, level, internalformat, width, height, depth, border, format, &type, pixels);
+    private z_MultiTexImage3DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexImage3DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexImage3DEXT(texunit: TextureUnit; target: TextureTarget; level: Int32; _internalformat: InternalFormat; width: Int32; height: Int32; depth: Int32; border: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr) :=
+    z_MultiTexImage3DEXT_1(texunit, target, level, _internalformat, width, height, depth, border, format, &type, pixels);
     
     private z_MultiTexSubImage3DEXT_adr := GetProcAddress('glMultiTexSubImage3DEXT');
     private z_MultiTexSubImage3DEXT_1 := GetProcOrNil&<procedure(texunit: TextureUnit; target: TextureTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; format: PixelFormat; &type: PixelType; pixels: IntPtr)>(z_MultiTexSubImage3DEXT_adr);
@@ -34418,34 +34418,34 @@
     public const _ExtStr = 'gl_nv_texture_multisample';
     
     private z_TexImage2DMultisampleCoverageNV_adr := GetProcAddress('glTexImage2DMultisampleCoverageNV');
-    private z_TexImage2DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TexImage2DMultisampleCoverageNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2DMultisampleCoverageNV(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean) :=
-    z_TexImage2DMultisampleCoverageNV_1(target, coverageSamples, colorSamples, internalFormat, width, height, fixedSampleLocations);
+    private z_TexImage2DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TexImage2DMultisampleCoverageNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage2DMultisampleCoverageNV(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; fixedSampleLocations: boolean) :=
+    z_TexImage2DMultisampleCoverageNV_1(target, coverageSamples, colorSamples, _internalFormat, width, height, fixedSampleLocations);
     
     private z_TexImage3DMultisampleCoverageNV_adr := GetProcAddress('glTexImage3DMultisampleCoverageNV');
-    private z_TexImage3DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean)>(z_TexImage3DMultisampleCoverageNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3DMultisampleCoverageNV(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean) :=
-    z_TexImage3DMultisampleCoverageNV_1(target, coverageSamples, colorSamples, internalFormat, width, height, depth, fixedSampleLocations);
+    private z_TexImage3DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean)>(z_TexImage3DMultisampleCoverageNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexImage3DMultisampleCoverageNV(target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean) :=
+    z_TexImage3DMultisampleCoverageNV_1(target, coverageSamples, colorSamples, _internalFormat, width, height, depth, fixedSampleLocations);
     
     private z_TextureImage2DMultisampleNV_adr := GetProcAddress('glTextureImage2DMultisampleNV');
-    private z_TextureImage2DMultisampleNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; samples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TextureImage2DMultisampleNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage2DMultisampleNV(texture: gl_texture; target: TextureTarget; samples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean) :=
-    z_TextureImage2DMultisampleNV_1(texture, target, samples, internalFormat, width, height, fixedSampleLocations);
+    private z_TextureImage2DMultisampleNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; samples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TextureImage2DMultisampleNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage2DMultisampleNV(texture: gl_texture; target: TextureTarget; samples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; fixedSampleLocations: boolean) :=
+    z_TextureImage2DMultisampleNV_1(texture, target, samples, _internalFormat, width, height, fixedSampleLocations);
     
     private z_TextureImage3DMultisampleNV_adr := GetProcAddress('glTextureImage3DMultisampleNV');
-    private z_TextureImage3DMultisampleNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; samples: Int32; internalFormat: Int32; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean)>(z_TextureImage3DMultisampleNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage3DMultisampleNV(texture: gl_texture; target: TextureTarget; samples: Int32; internalFormat: Int32; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean) :=
-    z_TextureImage3DMultisampleNV_1(texture, target, samples, internalFormat, width, height, depth, fixedSampleLocations);
+    private z_TextureImage3DMultisampleNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; samples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean)>(z_TextureImage3DMultisampleNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage3DMultisampleNV(texture: gl_texture; target: TextureTarget; samples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean) :=
+    z_TextureImage3DMultisampleNV_1(texture, target, samples, _internalFormat, width, height, depth, fixedSampleLocations);
     
     private z_TextureImage2DMultisampleCoverageNV_adr := GetProcAddress('glTextureImage2DMultisampleCoverageNV');
-    private z_TextureImage2DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TextureImage2DMultisampleCoverageNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage2DMultisampleCoverageNV(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; fixedSampleLocations: boolean) :=
-    z_TextureImage2DMultisampleCoverageNV_1(texture, target, coverageSamples, colorSamples, internalFormat, width, height, fixedSampleLocations);
+    private z_TextureImage2DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; fixedSampleLocations: boolean)>(z_TextureImage2DMultisampleCoverageNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage2DMultisampleCoverageNV(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; fixedSampleLocations: boolean) :=
+    z_TextureImage2DMultisampleCoverageNV_1(texture, target, coverageSamples, colorSamples, _internalFormat, width, height, fixedSampleLocations);
     
     private z_TextureImage3DMultisampleCoverageNV_adr := GetProcAddress('glTextureImage3DMultisampleCoverageNV');
-    private z_TextureImage3DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean)>(z_TextureImage3DMultisampleCoverageNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage3DMultisampleCoverageNV(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; internalFormat: Int32; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean) :=
-    z_TextureImage3DMultisampleCoverageNV_1(texture, target, coverageSamples, colorSamples, internalFormat, width, height, depth, fixedSampleLocations);
+    private z_TextureImage3DMultisampleCoverageNV_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean)>(z_TextureImage3DMultisampleCoverageNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureImage3DMultisampleCoverageNV(texture: gl_texture; target: TextureTarget; coverageSamples: Int32; colorSamples: Int32; _internalFormat: InternalFormat; width: Int32; height: Int32; depth: Int32; fixedSampleLocations: boolean) :=
+    z_TextureImage3DMultisampleCoverageNV_1(texture, target, coverageSamples, colorSamples, _internalFormat, width, height, depth, fixedSampleLocations);
     
   end;
   

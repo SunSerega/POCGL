@@ -83,6 +83,5 @@ Group [ContainerType] was not referenced
 Group [CheckFramebufferStatusTarget] was not referenced
 Group [DrawBufferModeATI] was not referenced
 Group [FramebufferFetchNoncoherent] was not referenced
-Group [TexStorageAttribs] was not referenced
 Group [TexStorageAttribss] was not referenced
 done

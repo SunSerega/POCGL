@@ -2913,12 +2913,12 @@
 	type                | coords          |
 
 # glTexImage1D[1]:
-	TextureTarget | Int32 | Int32          | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	TextureTarget | Int32 | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
 	------------- | ----- | -------------- | ----- | ------ | ----------- | --------- | ------ |
 	target        | level | internalformat | width | border | format      | type      | pixels |
 
 # glTexImage2D[1]:
-	TextureTarget | Int32 | Int32          | Int32 | Int32  | Int32  | PixelFormat | PixelType | IntPtr |
+	TextureTarget | Int32 | InternalFormat | Int32 | Int32  | Int32  | PixelFormat | PixelType | IntPtr |
 	------------- | ----- | -------------- | ----- | ------ | ------ | ----------- | --------- | ------ |
 	target        | level | internalformat | width | height | border | format      | type      | pixels |
 
@@ -2928,7 +2928,7 @@
 	target        | samples | internalformat | width | height | fixedsamplelocations |
 
 # glTexImage3D[1]:
-	TextureTarget | Int32 | Int32          | Int32 | Int32  | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	TextureTarget | Int32 | InternalFormat | Int32 | Int32  | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
 	------------- | ----- | -------------- | ----- | ------ | ----- | ------ | ----------- | --------- | ------ |
 	target        | level | internalformat | width | height | depth | border | format      | type      | pixels |
 
@@ -10143,12 +10143,12 @@
 	texture    | target        | pname                | params         |
 
 # glTextureImage1DEXT[1]:
-	gl_texture | TextureTarget | Int32 | Int32          | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	gl_texture | TextureTarget | Int32 | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
 	---------- | ------------- | ----- | -------------- | ----- | ------ | ----------- | --------- | ------ |
 	texture    | target        | level | internalformat | width | border | format      | type      | pixels |
 
 # glTextureImage2DEXT[1]:
-	gl_texture | TextureTarget | Int32 | Int32          | Int32 | Int32  | Int32  | PixelFormat | PixelType | IntPtr |
+	gl_texture | TextureTarget | Int32 | InternalFormat | Int32 | Int32  | Int32  | PixelFormat | PixelType | IntPtr |
 	---------- | ------------- | ----- | -------------- | ----- | ------ | ------ | ----------- | --------- | ------ |
 	texture    | target        | level | internalformat | width | height | border | format      | type      | pixels |
 
@@ -10212,7 +10212,7 @@
 	texture    | target        | level | pname               | params    |
 
 # glTextureImage3DEXT[1]:
-	gl_texture | TextureTarget | Int32 | Int32          | Int32 | Int32  | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	gl_texture | TextureTarget | Int32 | InternalFormat | Int32 | Int32  | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
 	---------- | ------------- | ----- | -------------- | ----- | ------ | ----- | ------ | ----------- | --------- | ------ |
 	texture    | target        | level | internalformat | width | height | depth | border | format      | type      | pixels |
 
@@ -10351,12 +10351,12 @@
 	texunit     | target        | pname                | params          |
 
 # glMultiTexImage1DEXT[1]:
-	TextureUnit | TextureTarget | Int32 | Int32          | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	TextureUnit | TextureTarget | Int32 | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
 	----------- | ------------- | ----- | -------------- | ----- | ------ | ----------- | --------- | ------ |
 	texunit     | target        | level | internalformat | width | border | format      | type      | pixels |
 
 # glMultiTexImage2DEXT[1]:
-	TextureUnit | TextureTarget | Int32 | Int32          | Int32 | Int32  | Int32  | PixelFormat | PixelType | IntPtr |
+	TextureUnit | TextureTarget | Int32 | InternalFormat | Int32 | Int32  | Int32  | PixelFormat | PixelType | IntPtr |
 	----------- | ------------- | ----- | -------------- | ----- | ------ | ------ | ----------- | --------- | ------ |
 	texunit     | target        | level | internalformat | width | height | border | format      | type      | pixels |
 
@@ -10420,7 +10420,7 @@
 	texunit     | target        | level | pname               | params    |
 
 # glMultiTexImage3DEXT[1]:
-	TextureUnit | TextureTarget | Int32 | Int32          | Int32 | Int32  | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	TextureUnit | TextureTarget | Int32 | InternalFormat | Int32 | Int32  | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
 	----------- | ------------- | ----- | -------------- | ----- | ------ | ----- | ------ | ----------- | --------- | ------ |
 	texunit     | target        | level | internalformat | width | height | depth | border | format      | type      | pixels |
 
@@ -15337,32 +15337,32 @@
 # glTextureBarrierNV[1]:
 
 # glTexImage2DMultisampleCoverageNV[1]:
-	TextureTarget | Int32           | Int32        | Int32          | Int32 | Int32  | boolean              |
+	TextureTarget | Int32           | Int32        | InternalFormat | Int32 | Int32  | boolean              |
 	------------- | --------------- | ------------ | -------------- | ----- | ------ | -------------------- |
 	target        | coverageSamples | colorSamples | internalFormat | width | height | fixedSampleLocations |
 
 # glTexImage3DMultisampleCoverageNV[1]:
-	TextureTarget | Int32           | Int32        | Int32          | Int32 | Int32  | Int32 | boolean              |
+	TextureTarget | Int32           | Int32        | InternalFormat | Int32 | Int32  | Int32 | boolean              |
 	------------- | --------------- | ------------ | -------------- | ----- | ------ | ----- | -------------------- |
 	target        | coverageSamples | colorSamples | internalFormat | width | height | depth | fixedSampleLocations |
 
 # glTextureImage2DMultisampleNV[1]:
-	gl_texture | TextureTarget | Int32   | Int32          | Int32 | Int32  | boolean              |
+	gl_texture | TextureTarget | Int32   | InternalFormat | Int32 | Int32  | boolean              |
 	---------- | ------------- | ------- | -------------- | ----- | ------ | -------------------- |
 	texture    | target        | samples | internalFormat | width | height | fixedSampleLocations |
 
 # glTextureImage3DMultisampleNV[1]:
-	gl_texture | TextureTarget | Int32   | Int32          | Int32 | Int32  | Int32 | boolean              |
+	gl_texture | TextureTarget | Int32   | InternalFormat | Int32 | Int32  | Int32 | boolean              |
 	---------- | ------------- | ------- | -------------- | ----- | ------ | ----- | -------------------- |
 	texture    | target        | samples | internalFormat | width | height | depth | fixedSampleLocations |
 
 # glTextureImage2DMultisampleCoverageNV[1]:
-	gl_texture | TextureTarget | Int32           | Int32        | Int32          | Int32 | Int32  | boolean              |
+	gl_texture | TextureTarget | Int32           | Int32        | InternalFormat | Int32 | Int32  | boolean              |
 	---------- | ------------- | --------------- | ------------ | -------------- | ----- | ------ | -------------------- |
 	texture    | target        | coverageSamples | colorSamples | internalFormat | width | height | fixedSampleLocations |
 
 # glTextureImage3DMultisampleCoverageNV[1]:
-	gl_texture | TextureTarget | Int32           | Int32        | Int32          | Int32 | Int32  | Int32 | boolean              |
+	gl_texture | TextureTarget | Int32           | Int32        | InternalFormat | Int32 | Int32  | Int32 | boolean              |
 	---------- | ------------- | --------------- | ------------ | -------------- | ----- | ------ | ----- | -------------------- |
 	texture    | target        | coverageSamples | colorSamples | internalFormat | width | height | depth | fixedSampleLocations |
 

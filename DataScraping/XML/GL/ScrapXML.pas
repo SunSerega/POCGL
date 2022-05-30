@@ -121,6 +121,8 @@ type
     
     public on_used: ()->();
     
+    private enum_types := |'GLenum', 'GLbitfield'|;
+    private maybe_enum_types := |'GLint'|;
     public constructor(func_name: string; n: XmlNode);
     begin
       
@@ -153,14 +155,12 @@ type
           self.rep_c := StrToInt64(len_str);
       end;
       
-      var is_enum := self.t in |'GLenum', 'GLbitfield'|;
-      
       var gname := n['group'];
       if gname<>nil then
       begin
         Group.Used += gname;
         
-        if not is_enum then
+        if self.t not in enum_types+maybe_enum_types then
         begin
           if gname='String' then
           begin
@@ -180,7 +180,7 @@ type
         end;
         
       end else
-      if is_enum then
+      if self.t in enum_types then
         on_used += ()->
           if LogCache.func_with_enum_without_group.Add(func_name) then
             //TODO func_name, похоже, используется только для этого
@@ -429,10 +429,6 @@ procedure SaveBin;
 begin
   Otp($'Saving as binary');
   var bw := new System.IO.BinaryWriter(System.IO.File.Create(GetFullPath($'..\funcs.bin', GetEXEFileName)));
-  
-  foreach var gr in Group.All.Keys do
-    if not Group.Used.Contains(gr) then
-      log.WriteLine($'Group [{gr}] wasn''t used in any function');
   
   var grs := Group.All.Values.ToArray;
   var funcs := (
