@@ -8,7 +8,9 @@ procedure PullRep(name, nick: string);
 begin
   Otp($'Pulling {nick}');
   
-  var psi := new ProcessStartInfo('git', $'submodule update --progress --remote --init -- "{GetFullPathRTA(name)}"');
+  var path := GetFullPathRTA(name);
+  var psi := new ProcessStartInfo('cmd', '/c "git pull 0_official main && git push SunSerega"');
+  psi.WorkingDirectory := path;
   psi.UseShellExecute := false;
   psi.RedirectStandardError := true;
   psi.RedirectStandardOutput := true;

@@ -6294,7 +6294,10 @@
     public static property CMYK_EXT:        PixelFormat read new PixelFormat($800C);
     public static property CMYKA_EXT:       PixelFormat read new PixelFormat($800D);
     public static property BGR:             PixelFormat read new PixelFormat($80E0);
+    public static property BGR_EXT:         PixelFormat read new PixelFormat($80E0);
     public static property BGRA:            PixelFormat read new PixelFormat($80E1);
+    public static property BGRA_EXT:        PixelFormat read new PixelFormat($80E1);
+    public static property BGRA_IMG:        PixelFormat read new PixelFormat($80E1);
     public static property YCRCB_422_SGIX:  PixelFormat read new PixelFormat($81BB);
     public static property YCRCB_444_SGIX:  PixelFormat read new PixelFormat($81BC);
     public static property RG:              PixelFormat read new PixelFormat($8227);
@@ -6328,7 +6331,10 @@
       if self.val = UInt32($800C) then Result := 'CMYK_EXT' else
       if self.val = UInt32($800D) then Result := 'CMYKA_EXT' else
       if self.val = UInt32($80E0) then Result := 'BGR' else
+      if self.val = UInt32($80E0) then Result := 'BGR_EXT' else
       if self.val = UInt32($80E1) then Result := 'BGRA' else
+      if self.val = UInt32($80E1) then Result := 'BGRA_EXT' else
+      if self.val = UInt32($80E1) then Result := 'BGRA_IMG' else
       if self.val = UInt32($81BB) then Result := 'YCRCB_422_SGIX' else
       if self.val = UInt32($81BC) then Result := 'YCRCB_444_SGIX' else
       if self.val = UInt32($8227) then Result := 'RG' else
@@ -6576,24 +6582,39 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property BYTE:                        PixelType read new PixelType($1400);
-    public static property UNSIGNED_BYTE:               PixelType read new PixelType($1401);
-    public static property SHORT:                       PixelType read new PixelType($1402);
-    public static property UNSIGNED_SHORT:              PixelType read new PixelType($1403);
-    public static property INT:                         PixelType read new PixelType($1404);
-    public static property UNSIGNED_INT:                PixelType read new PixelType($1405);
-    public static property FLOAT:                       PixelType read new PixelType($1406);
-    public static property BITMAP:                      PixelType read new PixelType($1A00);
-    public static property UNSIGNED_BYTE_3_3_2:         PixelType read new PixelType($8032);
-    public static property UNSIGNED_BYTE_3_3_2_EXT:     PixelType read new PixelType($8032);
-    public static property UNSIGNED_SHORT_4_4_4_4:      PixelType read new PixelType($8033);
-    public static property UNSIGNED_SHORT_4_4_4_4_EXT:  PixelType read new PixelType($8033);
-    public static property UNSIGNED_SHORT_5_5_5_1:      PixelType read new PixelType($8034);
-    public static property UNSIGNED_SHORT_5_5_5_1_EXT:  PixelType read new PixelType($8034);
-    public static property UNSIGNED_INT_8_8_8_8:        PixelType read new PixelType($8035);
-    public static property UNSIGNED_INT_8_8_8_8_EXT:    PixelType read new PixelType($8035);
-    public static property UNSIGNED_INT_10_10_10_2:     PixelType read new PixelType($8036);
-    public static property UNSIGNED_INT_10_10_10_2_EXT: PixelType read new PixelType($8036);
+    public static property BYTE:                            PixelType read new PixelType($1400);
+    public static property UNSIGNED_BYTE:                   PixelType read new PixelType($1401);
+    public static property SHORT:                           PixelType read new PixelType($1402);
+    public static property UNSIGNED_SHORT:                  PixelType read new PixelType($1403);
+    public static property INT:                             PixelType read new PixelType($1404);
+    public static property UNSIGNED_INT:                    PixelType read new PixelType($1405);
+    public static property FLOAT:                           PixelType read new PixelType($1406);
+    public static property BITMAP:                          PixelType read new PixelType($1A00);
+    public static property UNSIGNED_BYTE_3_3_2:             PixelType read new PixelType($8032);
+    public static property UNSIGNED_BYTE_3_3_2_EXT:         PixelType read new PixelType($8032);
+    public static property UNSIGNED_SHORT_4_4_4_4:          PixelType read new PixelType($8033);
+    public static property UNSIGNED_SHORT_4_4_4_4_EXT:      PixelType read new PixelType($8033);
+    public static property UNSIGNED_SHORT_5_5_5_1:          PixelType read new PixelType($8034);
+    public static property UNSIGNED_SHORT_5_5_5_1_EXT:      PixelType read new PixelType($8034);
+    public static property UNSIGNED_INT_8_8_8_8:            PixelType read new PixelType($8035);
+    public static property UNSIGNED_INT_8_8_8_8_EXT:        PixelType read new PixelType($8035);
+    public static property UNSIGNED_INT_10_10_10_2:         PixelType read new PixelType($8036);
+    public static property UNSIGNED_INT_10_10_10_2_EXT:     PixelType read new PixelType($8036);
+    public static property UNSIGNED_BYTE_2_3_3_REV:         PixelType read new PixelType($8362);
+    public static property UNSIGNED_BYTE_2_3_3_REV_EXT:     PixelType read new PixelType($8362);
+    public static property UNSIGNED_SHORT_5_6_5:            PixelType read new PixelType($8363);
+    public static property UNSIGNED_SHORT_5_6_5_EXT:        PixelType read new PixelType($8363);
+    public static property UNSIGNED_SHORT_5_6_5_REV:        PixelType read new PixelType($8364);
+    public static property UNSIGNED_SHORT_5_6_5_REV_EXT:    PixelType read new PixelType($8364);
+    public static property UNSIGNED_SHORT_4_4_4_4_REV:      PixelType read new PixelType($8365);
+    public static property UNSIGNED_SHORT_4_4_4_4_REV_EXT:  PixelType read new PixelType($8365);
+    public static property UNSIGNED_SHORT_4_4_4_4_REV_IMG:  PixelType read new PixelType($8365);
+    public static property UNSIGNED_SHORT_1_5_5_5_REV:      PixelType read new PixelType($8366);
+    public static property UNSIGNED_SHORT_1_5_5_5_REV_EXT:  PixelType read new PixelType($8366);
+    public static property UNSIGNED_INT_8_8_8_8_REV:        PixelType read new PixelType($8367);
+    public static property UNSIGNED_INT_8_8_8_8_REV_EXT:    PixelType read new PixelType($8367);
+    public static property UNSIGNED_INT_2_10_10_10_REV:     PixelType read new PixelType($8368);
+    public static property UNSIGNED_INT_2_10_10_10_REV_EXT: PixelType read new PixelType($8368);
     
     public function ToString: string; override;
     begin
@@ -6615,6 +6636,21 @@
       if self.val = UInt32($8035) then Result := 'UNSIGNED_INT_8_8_8_8_EXT' else
       if self.val = UInt32($8036) then Result := 'UNSIGNED_INT_10_10_10_2' else
       if self.val = UInt32($8036) then Result := 'UNSIGNED_INT_10_10_10_2_EXT' else
+      if self.val = UInt32($8362) then Result := 'UNSIGNED_BYTE_2_3_3_REV' else
+      if self.val = UInt32($8362) then Result := 'UNSIGNED_BYTE_2_3_3_REV_EXT' else
+      if self.val = UInt32($8363) then Result := 'UNSIGNED_SHORT_5_6_5' else
+      if self.val = UInt32($8363) then Result := 'UNSIGNED_SHORT_5_6_5_EXT' else
+      if self.val = UInt32($8364) then Result := 'UNSIGNED_SHORT_5_6_5_REV' else
+      if self.val = UInt32($8364) then Result := 'UNSIGNED_SHORT_5_6_5_REV_EXT' else
+      if self.val = UInt32($8365) then Result := 'UNSIGNED_SHORT_4_4_4_4_REV' else
+      if self.val = UInt32($8365) then Result := 'UNSIGNED_SHORT_4_4_4_4_REV_EXT' else
+      if self.val = UInt32($8365) then Result := 'UNSIGNED_SHORT_4_4_4_4_REV_IMG' else
+      if self.val = UInt32($8366) then Result := 'UNSIGNED_SHORT_1_5_5_5_REV' else
+      if self.val = UInt32($8366) then Result := 'UNSIGNED_SHORT_1_5_5_5_REV_EXT' else
+      if self.val = UInt32($8367) then Result := 'UNSIGNED_INT_8_8_8_8_REV' else
+      if self.val = UInt32($8367) then Result := 'UNSIGNED_INT_8_8_8_8_REV_EXT' else
+      if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
+      if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV_EXT' else
         Result := $'PixelType[{self.val}]';
     end;
     
@@ -9266,23 +9302,24 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property BYTE:                         VertexAttribPointerType read new VertexAttribPointerType($1400);
-    public static property UNSIGNED_BYTE:                VertexAttribPointerType read new VertexAttribPointerType($1401);
-    public static property SHORT:                        VertexAttribPointerType read new VertexAttribPointerType($1402);
-    public static property UNSIGNED_SHORT:               VertexAttribPointerType read new VertexAttribPointerType($1403);
-    public static property INT:                          VertexAttribPointerType read new VertexAttribPointerType($1404);
-    public static property UNSIGNED_INT:                 VertexAttribPointerType read new VertexAttribPointerType($1405);
-    public static property FLOAT:                        VertexAttribPointerType read new VertexAttribPointerType($1406);
-    public static property DOUBLE:                       VertexAttribPointerType read new VertexAttribPointerType($140A);
-    public static property HALF_FLOAT:                   VertexAttribPointerType read new VertexAttribPointerType($140B);
-    public static property FIXED:                        VertexAttribPointerType read new VertexAttribPointerType($140C);
-    public static property INT64_ARB:                    VertexAttribPointerType read new VertexAttribPointerType($140E);
-    public static property INT64_NV:                     VertexAttribPointerType read new VertexAttribPointerType($140E);
-    public static property UNSIGNED_INT64_ARB:           VertexAttribPointerType read new VertexAttribPointerType($140F);
-    public static property UNSIGNED_INT64_NV:            VertexAttribPointerType read new VertexAttribPointerType($140F);
-    public static property UNSIGNED_INT_2_10_10_10_REV:  VertexAttribPointerType read new VertexAttribPointerType($8368);
-    public static property UNSIGNED_INT_10F_11F_11F_REV: VertexAttribPointerType read new VertexAttribPointerType($8C3B);
-    public static property INT_2_10_10_10_REV:           VertexAttribPointerType read new VertexAttribPointerType($8D9F);
+    public static property BYTE:                            VertexAttribPointerType read new VertexAttribPointerType($1400);
+    public static property UNSIGNED_BYTE:                   VertexAttribPointerType read new VertexAttribPointerType($1401);
+    public static property SHORT:                           VertexAttribPointerType read new VertexAttribPointerType($1402);
+    public static property UNSIGNED_SHORT:                  VertexAttribPointerType read new VertexAttribPointerType($1403);
+    public static property INT:                             VertexAttribPointerType read new VertexAttribPointerType($1404);
+    public static property UNSIGNED_INT:                    VertexAttribPointerType read new VertexAttribPointerType($1405);
+    public static property FLOAT:                           VertexAttribPointerType read new VertexAttribPointerType($1406);
+    public static property DOUBLE:                          VertexAttribPointerType read new VertexAttribPointerType($140A);
+    public static property HALF_FLOAT:                      VertexAttribPointerType read new VertexAttribPointerType($140B);
+    public static property FIXED:                           VertexAttribPointerType read new VertexAttribPointerType($140C);
+    public static property INT64_ARB:                       VertexAttribPointerType read new VertexAttribPointerType($140E);
+    public static property INT64_NV:                        VertexAttribPointerType read new VertexAttribPointerType($140E);
+    public static property UNSIGNED_INT64_ARB:              VertexAttribPointerType read new VertexAttribPointerType($140F);
+    public static property UNSIGNED_INT64_NV:               VertexAttribPointerType read new VertexAttribPointerType($140F);
+    public static property UNSIGNED_INT_2_10_10_10_REV:     VertexAttribPointerType read new VertexAttribPointerType($8368);
+    public static property UNSIGNED_INT_2_10_10_10_REV_EXT: VertexAttribPointerType read new VertexAttribPointerType($8368);
+    public static property UNSIGNED_INT_10F_11F_11F_REV:    VertexAttribPointerType read new VertexAttribPointerType($8C3B);
+    public static property INT_2_10_10_10_REV:              VertexAttribPointerType read new VertexAttribPointerType($8D9F);
     
     public function ToString: string; override;
     begin
@@ -9301,6 +9338,7 @@
       if self.val = UInt32($140F) then Result := 'UNSIGNED_INT64_ARB' else
       if self.val = UInt32($140F) then Result := 'UNSIGNED_INT64_NV' else
       if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
+      if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV_EXT' else
       if self.val = UInt32($8C3B) then Result := 'UNSIGNED_INT_10F_11F_11F_REV' else
       if self.val = UInt32($8D9F) then Result := 'INT_2_10_10_10_REV' else
         Result := $'VertexAttribPointerType[{self.val}]';
@@ -9312,19 +9350,20 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property BYTE:                         VertexAttribType read new VertexAttribType($1400);
-    public static property UNSIGNED_BYTE:                VertexAttribType read new VertexAttribType($1401);
-    public static property SHORT:                        VertexAttribType read new VertexAttribType($1402);
-    public static property UNSIGNED_SHORT:               VertexAttribType read new VertexAttribType($1403);
-    public static property INT:                          VertexAttribType read new VertexAttribType($1404);
-    public static property UNSIGNED_INT:                 VertexAttribType read new VertexAttribType($1405);
-    public static property FLOAT:                        VertexAttribType read new VertexAttribType($1406);
-    public static property DOUBLE:                       VertexAttribType read new VertexAttribType($140A);
-    public static property HALF_FLOAT:                   VertexAttribType read new VertexAttribType($140B);
-    public static property FIXED:                        VertexAttribType read new VertexAttribType($140C);
-    public static property UNSIGNED_INT_2_10_10_10_REV:  VertexAttribType read new VertexAttribType($8368);
-    public static property UNSIGNED_INT_10F_11F_11F_REV: VertexAttribType read new VertexAttribType($8C3B);
-    public static property INT_2_10_10_10_REV:           VertexAttribType read new VertexAttribType($8D9F);
+    public static property BYTE:                            VertexAttribType read new VertexAttribType($1400);
+    public static property UNSIGNED_BYTE:                   VertexAttribType read new VertexAttribType($1401);
+    public static property SHORT:                           VertexAttribType read new VertexAttribType($1402);
+    public static property UNSIGNED_SHORT:                  VertexAttribType read new VertexAttribType($1403);
+    public static property INT:                             VertexAttribType read new VertexAttribType($1404);
+    public static property UNSIGNED_INT:                    VertexAttribType read new VertexAttribType($1405);
+    public static property FLOAT:                           VertexAttribType read new VertexAttribType($1406);
+    public static property DOUBLE:                          VertexAttribType read new VertexAttribType($140A);
+    public static property HALF_FLOAT:                      VertexAttribType read new VertexAttribType($140B);
+    public static property FIXED:                           VertexAttribType read new VertexAttribType($140C);
+    public static property UNSIGNED_INT_2_10_10_10_REV:     VertexAttribType read new VertexAttribType($8368);
+    public static property UNSIGNED_INT_2_10_10_10_REV_EXT: VertexAttribType read new VertexAttribType($8368);
+    public static property UNSIGNED_INT_10F_11F_11F_REV:    VertexAttribType read new VertexAttribType($8C3B);
+    public static property INT_2_10_10_10_REV:              VertexAttribType read new VertexAttribType($8D9F);
     
     public function ToString: string; override;
     begin
@@ -9339,6 +9378,7 @@
       if self.val = UInt32($140B) then Result := 'HALF_FLOAT' else
       if self.val = UInt32($140C) then Result := 'FIXED' else
       if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
+      if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV_EXT' else
       if self.val = UInt32($8C3B) then Result := 'UNSIGNED_INT_10F_11F_11F_REV' else
       if self.val = UInt32($8D9F) then Result := 'INT_2_10_10_10_REV' else
         Result := $'VertexAttribType[{self.val}]';
