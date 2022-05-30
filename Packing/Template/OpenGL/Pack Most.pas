@@ -16,7 +16,21 @@ begin
     ApplyFixers;
     Func.FixAllGet;
     Feature.FixGL_GDI;
-    MarkUsed;
+    MarkReferenced;
+    
+    begin
+      Otp($'Constructing funcs code');
+      var funcs_wr := new FileWriter(GetFullPathRTA('Funcs.template'));
+      var funcs_impl_wr := new FileWriter(GetFullPathRTA(GetFullPathRTA('Funcs.Implementation.template')));
+      loop 3 do funcs_wr += '  '#10;
+      loop 3 do funcs_impl_wr += #10;
+      Feature.WriteAll(funcs_wr, funcs_impl_wr);
+      Extension.WriteAll(funcs_wr, funcs_impl_wr);
+      funcs_wr += '  '#10'  ';
+      funcs_impl_wr += #10;
+      funcs_wr.Close;
+      funcs_impl_wr.Close;
+    end;
     
     begin
       Otp($'Constructing structs code');
@@ -34,20 +48,6 @@ begin
       Group.WriteAll(group_wr);
       group_wr += '  '#10'  ';
       group_wr.Close;
-    end;
-    
-    begin
-      Otp($'Constructing funcs code');
-      var funcs_wr := new FileWriter(GetFullPathRTA('Funcs.template'));
-      var funcs_impl_wr := new FileWriter(GetFullPathRTA(GetFullPathRTA('Funcs.Implementation.template')));
-      loop 3 do funcs_wr += '  '#10;
-      loop 3 do funcs_impl_wr += #10;
-      Feature.WriteAll(funcs_wr, funcs_impl_wr);
-      Extension.WriteAll(funcs_wr, funcs_impl_wr);
-      funcs_wr += '  '#10'  ';
-      funcs_impl_wr += #10;
-      funcs_wr.Close;
-      funcs_impl_wr.Close;
     end;
     
     FinishAll;

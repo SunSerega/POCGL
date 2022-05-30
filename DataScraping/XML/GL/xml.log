@@ -14,7 +14,6 @@ Enum "GL_VERSION_ES_CM_1_1" was in SpecialNumbers
 Enum "GL_VERSION_ES_CL_1_1" was in SpecialNumbers
 Enum "GL_UUID_SIZE_EXT" was in SpecialNumbers
 Enum "GL_LUID_SIZE_EXT" was in SpecialNumbers
-Enum "GL_ACTIVE_PROGRAM_EXT" had api "gles2"
 Empty group [SyncBehaviorFlags] in api [gl]
 Skipped group attrib for type [GLfloat]
 Skipped group attrib for type [GLint]
@@ -30,9 +29,6 @@ Skipped group attrib for type [void]
 Skipped group attrib for type [GLsizeiptr]
 Skipped group attrib for type [GLintptr]
 Group [SyncBehaviorFlags] isn't defined
-Invalid api: [gles1]
-Invalid api: [gles2]
-Invalid api: [glsc2]
 Skipped group attrib for type [struct _cl_context]
 Skipped group attrib for type [struct _cl_event]
 Skipped group attrib for type [GLhandleARB]
@@ -40,7 +36,6 @@ Skipped group attrib for type [GLsizeiptrARB]
 Skipped group attrib for type [GLintptrARB]
 Skipped group attrib for type [GLclampd]
 Skipped group attrib for type [GLclampf]
-Invalid api: [disabled]
 Group [SampleMaskNV] isn't defined
 Skipped group attrib for type [GLhalfNV]
 Skipped group attrib for type [GLvdpauSurfaceNV]

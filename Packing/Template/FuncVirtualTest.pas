@@ -10,7 +10,7 @@ begin
     Otp($'Creating funcs');
     FuncFixer.LoadFile(GetFullPathRTA('FuncVirtualTest.dat'));
     ApplyFixers;
-    MarkUsed;
+    MarkReferenced;
     
     begin
       Otp($'Constructing funcs code');

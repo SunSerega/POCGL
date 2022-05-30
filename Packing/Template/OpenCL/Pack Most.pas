@@ -17,7 +17,17 @@ begin
     Func.FixAllGet;
     Func.FixCL;
     ApplyFixers;
-    MarkUsed;
+    MarkReferenced;
+    
+    begin
+      Otp($'Constructing funcs code');
+      var funcs_wr := new FileWriter(GetFullPathRTA('Funcs.template'));
+      loop 3 do funcs_wr += '  '#10;
+      Feature.WriteAll(funcs_wr, nil);
+      Extension.WriteAll(funcs_wr, nil);
+      funcs_wr += '  '#10'  ';
+      funcs_wr.Close;
+    end;
     
     begin
       Otp($'Constructing structs code');
@@ -35,16 +45,6 @@ begin
       Group.WriteAll(group_wr);
       group_wr += '  '#10'  ';
       group_wr.Close;
-    end;
-    
-    begin
-      Otp($'Constructing funcs code');
-      var funcs_wr := new FileWriter(GetFullPathRTA('Funcs.template'));
-      loop 3 do funcs_wr += '  '#10;
-      Feature.WriteAll(funcs_wr, nil);
-      Extension.WriteAll(funcs_wr, nil);
-      funcs_wr += '  '#10'  ';
-      funcs_wr.Close;
     end;
     
     FinishAll;

@@ -1,83 +1,88 @@
-﻿Invalid ext name [1D], replaced with []
-Invalid ext name [2D], replaced with []
-Invalid ext name [3D], replaced with []
-Invalid ext name [DC], replaced with []
-Invalid ext name [GL], replaced with []
-Invalid ext name [64NV], replaced with [NV]
-Invalid ext name [64ARB], replaced with [ARB]
-Invalid ext name [3DARB], replaced with [ARB]
-Invalid ext name [2DARB], replaced with [ARB]
-Invalid ext name [1DARB], replaced with [ARB]
-Invalid ext name [1ATI], replaced with [ATI]
-Invalid ext name [2ATI], replaced with [ATI]
-Invalid ext name [3ATI], replaced with [ATI]
-Invalid ext name [1DEXT], replaced with [EXT]
-Invalid ext name [2DEXT], replaced with [EXT]
-Invalid ext name [3DEXT], replaced with [EXT]
-Invalid ext name [1EXT], replaced with [EXT]
-Invalid ext name [2EXT], replaced with [EXT]
-Invalid ext name [3EXT], replaced with [EXT]
-Invalid ext name [32EXT], replaced with [EXT]
-Invalid ext name [CMAAINTEL], replaced with [INTEL]
-Invalid ext name [2DINTEL], replaced with [INTEL]
-Invalid ext name [64NVX], replaced with [NVX]
-Invalid ext name [4DSGIS], replaced with [SGIS]
-Invalid ext name [GPUIDAMD], replaced with [AMD]
-Invalid ext name [DCARB], replaced with [ARB]
-Invalid ext name [DCEXT], replaced with [EXT]
-Invalid ext name [DCNV], replaced with [NV]
-Invalid ext name [IDEXT], replaced with [EXT]
+﻿Invalid ext name [1D] of [glTexImage1D], replaced with []
+Invalid ext name [2D] of [glTexImage2D], replaced with []
+Invalid ext name [3D] of [glTexImage3D], replaced with []
+Invalid ext name [DC] of [wglGetCurrentDC], replaced with []
+Invalid ext name [GL] of [glXWaitGL], replaced with []
+Invalid ext name [64NV] of [glUniform1i64NV], replaced with [NV]
+Invalid ext name [64ARB] of [glUniformHandleui64ARB], replaced with [ARB]
+Invalid ext name [3DARB] of [glCompressedTexImage3DARB], replaced with [ARB]
+Invalid ext name [2DARB] of [glCompressedTexImage2DARB], replaced with [ARB]
+Invalid ext name [1DARB] of [glCompressedTexImage1DARB], replaced with [ARB]
+Invalid ext name [1ATI] of [glColorFragmentOp1ATI], replaced with [ATI]
+Invalid ext name [2ATI] of [glColorFragmentOp2ATI], replaced with [ATI]
+Invalid ext name [3ATI] of [glColorFragmentOp3ATI], replaced with [ATI]
+Invalid ext name [1DEXT] of [glConvolutionFilter1DEXT], replaced with [EXT]
+Invalid ext name [2DEXT] of [glConvolutionFilter2DEXT], replaced with [EXT]
+Invalid ext name [3DEXT] of [glCopyTexSubImage3DEXT], replaced with [EXT]
+Invalid ext name [1EXT] of [glShaderOp1EXT], replaced with [EXT]
+Invalid ext name [2EXT] of [glShaderOp2EXT], replaced with [EXT]
+Invalid ext name [3EXT] of [glShaderOp3EXT], replaced with [EXT]
+Invalid ext name [32EXT] of [glAcquireKeyedMutexWin32EXT], replaced with [EXT]
+Invalid ext name [64IMG] of [glUniformHandleui64IMG], replaced with [IMG]
+Invalid ext name [CMAAINTEL] of [glApplyFramebufferAttachmentCMAAINTEL], replaced with [INTEL]
+Invalid ext name [2DINTEL] of [glUnmapTexture2DINTEL], replaced with [INTEL]
+Invalid ext name [64NVX] of [glSignalSemaphoreui64NVX], replaced with [NVX]
+Invalid ext name [2DOES] of [glEGLImageTargetTexture2DOES], replaced with [OES]
+Invalid ext name [3DOES] of [glTexImage3DOES], replaced with [OES]
+Invalid ext name [2DQCOM] of [glExtrapolateTex2DQCOM], replaced with [QCOM]
+Invalid ext name [4DSGIS] of [glTexImage4DSGIS], replaced with [SGIS]
+Invalid ext name [GPUIDAMD] of [wglGetContextGPUIDAMD], replaced with [AMD]
+Invalid ext name [DCARB] of [wglGetCurrentReadDCARB], replaced with [ARB]
+Invalid ext name [DCEXT] of [wglGetCurrentReadDCEXT], replaced with [EXT]
+Invalid ext name [DCNV] of [wglCreateAffinityDCNV], replaced with [NV]
+Invalid ext name [IDEXT] of [glXGetContextIDEXT], replaced with [EXT]
 Func [glBindBufferRange] was added in versions [3.0] and [3.1]
 Func [glBindBufferBase] was added in versions [3.0] and [3.1]
 Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
 Func [glProgramParameteri] was added in versions [4.1] and [4.1]
-Group [ContextFlagMask] was skipped
-Group [ContextProfileMask] was skipped
-Group [OcclusionQueryEventMaskAMD] was skipped
-Group [SubgroupSupportedFeatures] was skipped
-Group [FragmentShaderDestMaskATI] was skipped
-Group [FragmentShaderDestModMaskATI] was skipped
-Group [FragmentShaderColorModMaskATI] was skipped
-Group [TraceMaskMESA] was skipped
-Group [PerformanceQueryCapsMaskINTEL] was skipped
-Group [VertexHintsMaskPGI] was skipped
-Group [BufferBitQCOM] was skipped
-Group [FoveationConfigBitQCOM] was skipped
-Group [CommandOpcodesNV] was skipped
-Group [MapTextureFormatINTEL] was skipped
-Group [TransformFeedbackTokenNV] was skipped
-Group [TriangleListSUN] was skipped
-Group [TextureSwizzle] was skipped
-Group [TextureCompareMode] was skipped
-Group [PixelTexGenMode] was skipped
-Group [TextureEnvMode] was skipped
-Group [LightEnvModeSGIX] was skipped
-Group [ColorMaterialFace] was skipped
-Group [FeedBackToken] was skipped
-Group [FogMode] was skipped
-Group [GetPixelMap] was skipped
-Group [GlslTypeToken] was skipped
-Group [DepthStencilTextureMode] was skipped
-Group [TextureGenMode] was skipped
-Group [TextureMagFilter] was skipped
-Group [TextureMinFilter] was skipped
-Group [TextureWrapMode] was skipped
-Group [GetConvolutionParameter] was skipped
-Group [ConvolutionBorderModeEXT] was skipped
-Group [GetColorTableParameterPName] was skipped
-Group [ColorTableParameterPName] was skipped
-Group [PointParameterNameSGIS] was skipped
-Group [TextureFilterFuncSGIS] was skipped
-Group [LightModelColorControl] was skipped
-Group [VertexBufferObjectParameter] was skipped
-Group [PixelStoreResampleMode] was skipped
-Group [RegisterCombinerPname] was skipped
-Group [PixelStoreSubsampleRate] was skipped
-Group [ContainerType] was skipped
-Group [CheckFramebufferStatusTarget] was skipped
-Group [DrawBufferModeATI] was skipped
-Group [FramebufferFetchNoncoherent] was skipped
-Group [ShadingRateQCOM] was skipped
-Group [TexStorageAttribs] was skipped
-Group [TexStorageAttribss] was skipped
+Invalid API: [gles1]
+Invalid API: [gles2]
+Invalid API: [glsc2]
+Group [ContextFlagMask] was not referenced
+Group [ContextProfileMask] was not referenced
+Group [OcclusionQueryEventMaskAMD] was not referenced
+Group [SubgroupSupportedFeatures] was not referenced
+Group [FragmentShaderDestMaskATI] was not referenced
+Group [FragmentShaderDestModMaskATI] was not referenced
+Group [FragmentShaderColorModMaskATI] was not referenced
+Group [TraceMaskMESA] was not referenced
+Group [PerformanceQueryCapsMaskINTEL] was not referenced
+Group [VertexHintsMaskPGI] was not referenced
+Group [FoveationConfigBitQCOM] was not referenced
+Group [CommandOpcodesNV] was not referenced
+Group [MapTextureFormatINTEL] was not referenced
+Group [TransformFeedbackTokenNV] was not referenced
+Group [TriangleListSUN] was not referenced
+Group [TextureSwizzle] was not referenced
+Group [TextureCompareMode] was not referenced
+Group [PixelTexGenMode] was not referenced
+Group [TextureEnvMode] was not referenced
+Group [LightEnvModeSGIX] was not referenced
+Group [ColorMaterialFace] was not referenced
+Group [FeedBackToken] was not referenced
+Group [FogMode] was not referenced
+Group [GetPixelMap] was not referenced
+Group [GlslTypeToken] was not referenced
+Group [DepthStencilTextureMode] was not referenced
+Group [TextureGenMode] was not referenced
+Group [TextureMagFilter] was not referenced
+Group [TextureMinFilter] was not referenced
+Group [TextureWrapMode] was not referenced
+Group [GetConvolutionParameter] was not referenced
+Group [ConvolutionBorderModeEXT] was not referenced
+Group [GetColorTableParameterPName] was not referenced
+Group [ColorTableParameterPName] was not referenced
+Group [PointParameterNameSGIS] was not referenced
+Group [TextureFilterFuncSGIS] was not referenced
+Group [LightModelColorControl] was not referenced
+Group [VertexBufferObjectParameter] was not referenced
+Group [PixelStoreResampleMode] was not referenced
+Group [RegisterCombinerPname] was not referenced
+Group [PixelStoreSubsampleRate] was not referenced
+Group [ContainerType] was not referenced
+Group [CheckFramebufferStatusTarget] was not referenced
+Group [DrawBufferModeATI] was not referenced
+Group [FramebufferFetchNoncoherent] was not referenced
+Group [TexStorageAttribs] was not referenced
+Group [TexStorageAttribss] was not referenced
 done

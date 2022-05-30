@@ -1,21 +1,14 @@
 ﻿uses POCGL_Utils in '..\..\..\POCGL_Utils';
 uses XMLUtils    in '..\XMLUtils';
 
-var allowed_api := HSet(
-  'gl','glcore', // gl есть всюду где glcore, glcore только чтоб не выводить лишнее сообщение в лог
-  'wgl',
-  'glx'
-);
-
 var enum_without_group := new List<string>;
 
 type
   LogCache = static class
     
-    static invalid_type_for_group := new HashSet<string>;
-    static missing_group := new HashSet<string>;
+    static invalid_type_for_group       := new HashSet<string>;
+    static missing_group                := new HashSet<string>;
     static func_with_enum_without_group := new HashSet<string>;
-    static invalid_api := new HashSet<string>;
     
   end;
   
@@ -301,31 +294,20 @@ type
     
   end;
   Extension = sealed class
-    private name: string;
-    private api: string;
+    private name, api: string;
     private add := new HashSet<FuncData>;
     
-    public constructor(n: XmlNode);
+    public constructor(name, api: string);
     begin
-      name := n['name'];
-      
-      var apis := n['supported'].ToWords('|').Where(api->
-      begin
-        Result := api in allowed_api;
-        if not Result and LogCache.invalid_api.Add(api) then
-          log.WriteLine($'Invalid api: [{api}]');
-      end).ToList;
-      apis.Remove('glcore');
-      self.api := apis.DefaultIfEmpty('').SingleOrDefault;
-      if self.api=nil then raise new System.NotSupportedException($'Extension can''t have multiple API''s');
-      
-      add := new HashSet<FuncData>;
-      foreach var rn in n.Nodes['require'] do
-        if (rn['api']=nil) or (rn['api'] in allowed_api) then
-          foreach var c in rn.Nodes['command'] do
-            if not add.Add(FuncData[c['name']]) then
-              Otp($'WARNING: Func [{c[''name'']}] found 2 times in ext [{name}]');
-      if n.Nodes['remove'].Any then Otp('WARNING: ext [{name}] had "remove" tag');
+      self.name := name;
+      self.api  := api;
+    end;
+    
+    public procedure AddReq(req_n: XmlNode);
+    begin
+      foreach var c in req_n.Nodes['command'] do
+        if not add.Add(FuncData[c['name']]) then
+          Otp($'WARNING: Func [{c[''name'']}] found twice in ext [{name}]');
     end;
     
     public procedure Save(bw: System.IO.BinaryWriter; fncs: array of FuncData);
@@ -364,39 +346,40 @@ begin
       end;
     
     foreach var enum in enums.Nodes['enum'] do
-      if (enum['api']<>nil) and not allowed_api.Contains(enum['api']) then
-        log.WriteLine($'Enum "{enum[''name'']}" had api "{enum[''api'']}"') else
-      if enum['group']<>nil then
-      begin
-        var val_str := enum['value'];
-        var val: int64;
-        
-        var groups := enum['group'].ToWords(',').ToList;
-        if groups.Remove('SpecialNumbers') then log.WriteLine($'Enum "{enum[''name'']}" was in SpecialNumbers');
-        if groups.Count=0 then continue;
-        
-        // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
-        if enum['type']<>nil then raise new System.NotImplementedException(enum['name']);
-        
+    begin
+      if enum['group']=nil then continue;
+      if (enum['api']<>nil) then
+        raise new System.InvalidOperationException($'Enum "{enum[''name'']}" had api "{enum[''api'']}"');
+      
+      var val_str := enum['value'];
+      var val: int64;
+      
+      var groups := enum['group'].ToWords(',').ToList;
+      if groups.Remove('SpecialNumbers') then log.WriteLine($'Enum "{enum[''name'']}" was in SpecialNumbers');
+      if groups.Count=0 then continue;
+      
+      // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
+      if enum['type']<>nil then raise new System.NotImplementedException(enum['name']);
+      
 //        var enum_t := enum['type'];
 //        if enum_t=nil then enum_t := 'u' else
 //        Writeln(enum_t);
-        
-        try
-          if val_str.StartsWith('0x') then
-            val := System.Convert.ToInt64(val_str, 16) else
-            val := System.Convert.ToInt64(val_str);
-        except
-          on e: Exception do log.WriteLine($'Error registering value [{val}] of token [{enum[''name'']}] in api [{api_name}]: {e}');
-        end;
-        
-        foreach var gname in groups do
-        begin
-          var gb := GroupBuilder[gname];
-          gb += (enum['name'], val, bitmask);
-        end;
-        
+      
+      try
+        if val_str.StartsWith('0x') then
+          val := System.Convert.ToInt64(val_str, 16) else
+          val := System.Convert.ToInt64(val_str);
+      except
+        on e: Exception do log.WriteLine($'Error registering value [{val}] of token [{enum[''name'']}] in api [{api_name}]: {e}');
       end;
+      
+      foreach var gname in groups do
+      begin
+        var gb := GroupBuilder[gname];
+        gb += (enum['name'], val, bitmask);
+      end;
+      
+    end;
     
   end;
   
@@ -407,17 +390,37 @@ begin
   foreach var n in root.Nodes['feature'] do
   begin
     var f := new Feature(n);
-    if f.api in allowed_api then
-      features += f else
-    if LogCache.invalid_api.Add(f.api) then
-      log.WriteLine($'Invalid api: [{f.api}]');
+    features += f;
   end;
   
-  foreach var n in root.Nodes['extensions'].Single.Nodes['extension'] do
+  foreach var ext_n in root.Nodes['extensions'].Single.Nodes['extension'] do
   begin
-    var ext := new Extension(n);
-    if ext.api='' then continue;
-    extensions += ext;
+    var name := ext_n['name'];
+    
+    var exts := ext_n['supported'].ToWords('|').ToDictionary(k->k,k->default(Extension));
+    if exts.Remove('glcore') and not exts.ContainsKey('gl') then
+      raise new System.InvalidOperationException(name);
+    if exts.Count=0 then raise new System.InvalidOperationException(name);
+    
+    foreach var req_n in ext_n.Nodes['require'] do
+    begin
+      
+      var def_api := req_n['api'];
+      foreach var api in
+        if def_api=nil then exts.Keys.ToArray else |def_api|
+      do
+      begin
+        if exts[api]=nil then exts[api] := new Extension(name, api);
+        exts[api].AddReq(req_n);
+      end;
+      
+    end;
+    
+    foreach var ext in exts.Values do
+    begin
+      if ext=nil then continue;
+      extensions += ext;
+    end;
   end;
   
 end;

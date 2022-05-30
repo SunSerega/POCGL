@@ -171,4 +171,11 @@ GLeglImageOES			=egl_image_OES
 // GL_EXT_external_buffer
 GLeglClientBufferEXT	=egl_chient_buffer_EXT
 
+//--------------------------------------------------
+//                    disabled
+//--------------------------------------------------
+
+GLclampx				=DISABLED_TYPE
+GLDEBUGPROCKHR			=DISABLED_TYPE
+
 

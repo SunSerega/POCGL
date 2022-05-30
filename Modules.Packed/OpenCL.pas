@@ -8799,7 +8799,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSetMemObjectDestructorAPPLE = static class
-    public const _ExtStr = 'cl_APPLE_SetMemObjectDestructor';
+    public const _ExtStr = 'cl_apple_setmemobjectdestructor';
     
     private static function z_SetMemObjectDestructorAPPLE_1(memobj: cl_mem; pfn_notify: MemObjectDestructorCallback; user_data: IntPtr): ErrorCode;
     external 'opencl' name 'clSetMemObjectDestructorAPPLE';
@@ -8811,7 +8811,7 @@ type
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clContextLoggingFunctionsAPPLE = static class
-    public const _ExtStr = 'cl_APPLE_ContextLoggingFunctions';
+    public const _ExtStr = 'cl_apple_contextloggingfunctions';
     
     private static procedure z_LogMessagesToSystemLogAPPLE_1(errstr: IntPtr; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
     external 'opencl' name 'clLogMessagesToSystemLogAPPLE';

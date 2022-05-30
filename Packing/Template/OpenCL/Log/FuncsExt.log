@@ -1,0 +1,205 @@
+﻿
+
+
+# clD3d10SharingKHR (cl_khr_d3d10_sharing)
+	clGetDeviceIDsFromD3D10KHR
+	clCreateFromD3D10BufferKHR
+	clCreateFromD3D10Texture2DKHR
+	clCreateFromD3D10Texture3DKHR
+	clEnqueueAcquireD3D10ObjectsKHR
+	clEnqueueReleaseD3D10ObjectsKHR
+
+# clD3d11SharingKHR (cl_khr_d3d11_sharing)
+	clGetDeviceIDsFromD3D11KHR
+	clCreateFromD3D11BufferKHR
+	clCreateFromD3D11Texture2DKHR
+	clCreateFromD3D11Texture3DKHR
+	clEnqueueAcquireD3D11ObjectsKHR
+	clEnqueueReleaseD3D11ObjectsKHR
+
+# clDx9MediaSharingKHR (cl_khr_dx9_media_sharing)
+	clGetDeviceIDsFromDX9MediaAdapterKHR
+	clCreateFromDX9MediaSurfaceKHR
+	clEnqueueAcquireDX9MediaSurfacesKHR
+	clEnqueueReleaseDX9MediaSurfacesKHR
+
+# clEglImageKHR (cl_khr_egl_image)
+	clCreateFromEGLImageKHR
+	clEnqueueAcquireEGLObjectsKHR
+	clEnqueueReleaseEGLObjectsKHR
+
+# clEglEventKHR (cl_khr_egl_event)
+	clCreateEventFromEGLSyncKHR
+
+# clSetMemObjectDestructorAPPLE (cl_APPLE_SetMemObjectDestructor)
+	clSetMemObjectDestructorAPPLE
+
+# clContextLoggingFunctionsAPPLE (cl_APPLE_ContextLoggingFunctions)
+	clLogMessagesToSystemLogAPPLE
+	clLogMessagesToStdoutAPPLE
+	clLogMessagesToStderrAPPLE
+
+# clIcdKHR (cl_khr_icd)
+	clIcdGetPlatformIDsKHR
+
+# clLoaderLayers (cl_loader_layers)
+	clGetLayerInfo
+	clInitLayer
+
+# clIlProgramKHR (cl_khr_il_program)
+	clCreateProgramWithILKHR
+
+# clTerminateContextKHR (cl_khr_terminate_context)
+	clTerminateContextKHR
+
+# clCreateCommandQueueKHR (cl_khr_create_command_queue)
+	clCreateCommandQueueWithPropertiesKHR
+
+# clDeviceFissionEXT (cl_ext_device_fission)
+	clReleaseDeviceEXT
+	clRetainDeviceEXT
+	clCreateSubDevicesEXT
+
+# clMigrateMemobjectEXT (cl_ext_migrate_memobject)
+	clEnqueueMigrateMemObjectEXT
+
+# clExtHostPtrQCOM (cl_qcom_ext_host_ptr)
+	clGetDeviceImageInfoQCOM
+
+# clUseGrallocPtrIMG (cl_img_use_gralloc_ptr)
+	clEnqueueAcquireGrallocObjectsIMG
+	clEnqueueReleaseGrallocObjectsIMG
+
+# clSubgroupsKHR (cl_khr_subgroups)
+	clGetKernelSubGroupInfoKHR
+
+# clImportMemoryARM (cl_arm_import_memory)
+	clImportMemoryARM
+
+# clSharedVirtualMemoryARM (cl_arm_shared_virtual_memory)
+	clSVMAllocARM
+	clSVMFreeARM
+	clEnqueueSVMFreeARM
+	clEnqueueSVMMemcpyARM
+	clEnqueueSVMMemFillARM
+	clEnqueueSVMMapARM
+	clEnqueueSVMUnmapARM
+	clSetKernelArgSVMPointerARM
+	clSetKernelExecInfoARM
+
+# clAcceleratorINTEL (cl_intel_accelerator)
+	clCreateAcceleratorINTEL
+	clGetAcceleratorInfoINTEL
+	clRetainAcceleratorINTEL
+	clReleaseAcceleratorINTEL
+
+# clGlEventKHR (cl_khr_gl_event)
+	clCreateEventFromGLsyncKHR
+
+# clVaApiMediaSharingINTEL (cl_intel_va_api_media_sharing)
+	clGetDeviceIDsFromVA_APIMediaAdapterINTEL
+	clCreateFromVA_APIMediaSurfaceINTEL
+	clEnqueueAcquireVA_APIMediaSurfacesINTEL
+	clEnqueueReleaseVA_APIMediaSurfacesINTEL
+
+# clDx9MediaSharingINTEL (cl_intel_dx9_media_sharing)
+	clGetDeviceIDsFromDX9INTEL
+	clCreateFromDX9MediaSurfaceINTEL
+	clEnqueueAcquireDX9ObjectsINTEL
+	clEnqueueReleaseDX9ObjectsINTEL
+
+# clGlSharingKHR (cl_khr_gl_sharing)
+	clGetGLContextInfoKHR
+	clCreateFromGLBuffer
+	clCreateFromGLTexture
+	clCreateFromGLRenderbuffer
+	clGetGLObjectInfo
+	clGetGLTextureInfo
+	clEnqueueAcquireGLObjects
+	clEnqueueReleaseGLObjects
+	clCreateFromGLTexture2D
+	clCreateFromGLTexture3D
+
+# clUnifiedSharedMemoryINTEL (cl_intel_unified_shared_memory)
+	clHostMemAllocINTEL
+	clDeviceMemAllocINTEL
+	clSharedMemAllocINTEL
+	clMemFreeINTEL
+	clMemBlockingFreeINTEL
+	clGetMemAllocInfoINTEL
+	clSetKernelArgMemPointerINTEL
+	clEnqueueMemFillINTEL
+	clEnqueueMemcpyINTEL
+	clEnqueueMemAdviseINTEL
+	clEnqueueMigrateMemINTEL
+	clEnqueueMemsetINTEL
+
+# clCreateBufferWithPropertiesINTEL (cl_intel_create_buffer_with_properties)
+	clCreateBufferWithPropertiesINTEL
+
+# clGenerateMipmapIMG (cl_img_generate_mipmap)
+	clEnqueueGenerateMipmapIMG
+
+# clSuggestedLocalWorkSizeKHR (cl_khr_suggested_local_work_size)
+	clGetKernelSuggestedLocalWorkSizeKHR
+
+# clSemaphoreKHR (cl_khr_semaphore)
+	clCreateSemaphoreWithPropertiesKHR
+	clEnqueueWaitSemaphoresKHR
+	clEnqueueSignalSemaphoresKHR
+	clGetSemaphoreInfoKHR
+	clReleaseSemaphoreKHR
+	clRetainSemaphoreKHR
+
+# clExternalSemaphoreKHR (cl_khr_external_semaphore)
+	clGetSemaphoreHandleForTypeKHR
+
+# clExternalMemoryKHR (cl_khr_external_memory)
+	clEnqueueAcquireExternalMemObjectsKHR
+	clEnqueueReleaseExternalMemObjectsKHR
+
+# clSharingFormatQueryGlINTEL (cl_intel_sharing_format_query_gl)
+	clGetSupportedGLTextureFormatsINTEL
+
+# clSharingFormatQueryDx9INTEL (cl_intel_sharing_format_query_dx9)
+	clGetSupportedDX9MediaSurfaceFormatsINTEL
+
+# clSharingFormatQueryD3d10INTEL (cl_intel_sharing_format_query_d3d10)
+	clGetSupportedD3D10TextureFormatsINTEL
+
+# clSharingFormatQueryD3d11INTEL (cl_intel_sharing_format_query_d3d11)
+	clGetSupportedD3D11TextureFormatsINTEL
+
+# clSharingFormatQueryVaApiINTEL (cl_intel_sharing_format_query_va_api)
+	clGetSupportedVA_APIMediaSurfaceFormatsINTEL
+
+# clContentSizePOCL (cl_pocl_content_size)
+	clSetContentSizeBufferPoCL
+
+# clCommandBufferKHR (cl_khr_command_buffer)
+	clCreateCommandBufferKHR
+	clFinalizeCommandBufferKHR
+	clRetainCommandBufferKHR
+	clReleaseCommandBufferKHR
+	clEnqueueCommandBufferKHR
+	clCommandBarrierWithWaitListKHR
+	clCommandCopyBufferKHR
+	clCommandCopyBufferRectKHR
+	clCommandCopyBufferToImageKHR
+	clCommandCopyImageKHR
+	clCommandCopyImageToBufferKHR
+	clCommandFillBufferKHR
+	clCommandFillImageKHR
+	clCommandNDRangeKernelKHR
+	clGetCommandBufferInfoKHR
+
+# clProgramScopeHostPipeINTEL (cl_intel_program_scope_host_pipe)
+	clEnqueueReadHostPipeINTEL
+	clEnqueueWriteHostPipeINTEL
+
+# clImageRequirementsInfoEXT (cl_ext_image_requirements_info)
+	clGetImageRequirementsInfoEXT
+
+
+
+

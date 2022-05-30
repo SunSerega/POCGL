@@ -8,8 +8,6 @@ Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesNV]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesAddressNV]
@@ -20,6 +18,8 @@ Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads o
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [wglChoosePixelFormatEXT]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glXQueryChannelRectSGIX]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glXQueryChannelDeltasSGIX]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
 Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
 Template[OpenGL]: Compiling: OK

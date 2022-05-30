@@ -58,6 +58,8 @@ glWindowRectanglesEXT
 glImportSyncEXT
 glFlushStaticDataIBM
 glMapTexture2DINTEL
+glGetObjectLabelKHR
+glGetPointervKHR
 glLGPUNamedBufferSubDataNVX
 glLGPUCopyImageSubDataNVX
 glAlphaToCoverageDitherControlNV

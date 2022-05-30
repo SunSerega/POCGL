@@ -2,62 +2,62 @@
 Type conversion for [cl_version] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_version_khr] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_int] not found, so base type [int32_t] converted to [Int32]
-Invalid ext name [2D], replaced with []
-Invalid ext name [3D], replaced with []
+Invalid ext name [2D] of [clCreateImage2D], replaced with []
+Invalid ext name [3D] of [clCreateImage3D], replaced with []
 Type conversion for [cl_pipe_properties] not found, so base type [intptr_t] converted to [IntPtr]
 Type conversion for [cl_ulong] not found, so base type [uint64_t] converted to [UInt64]
-Invalid ext name [IL], replaced with []
-Invalid ext name [D3D10KHR], replaced with [KHR]
-Invalid ext name [2DKHR], replaced with [KHR]
-Invalid ext name [3DKHR], replaced with [KHR]
-Invalid ext name [D3D11KHR], replaced with [KHR]
+Invalid ext name [IL] of [clCreateProgramWithIL], replaced with []
+Invalid ext name [D3D10KHR] of [clGetDeviceIDsFromD3D10KHR], replaced with [KHR]
+Invalid ext name [2DKHR] of [clCreateFromD3D10Texture2DKHR], replaced with [KHR]
+Invalid ext name [3DKHR] of [clCreateFromD3D10Texture3DKHR], replaced with [KHR]
+Invalid ext name [D3D11KHR] of [clGetDeviceIDsFromD3D11KHR], replaced with [KHR]
 Type conversion for [cl_dx9_media_adapter_type_khr] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_dx9_media_adapter_set_khr] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [CLeglDisplayKHR] not found, so base type [void] converted to [IntPtr -]
 Type conversion for [CLeglImageKHR] not found, so base type [void] converted to [IntPtr -]
 Type conversion for [CLeglSyncKHR] not found, so base type [void] converted to [IntPtr -]
-Invalid ext name [ILKHR], replaced with [KHR]
+Invalid ext name [ILKHR] of [clCreateProgramWithILKHR], replaced with [KHR]
 Type conversion for [cl_queue_properties_khr] not found, so base type [uint64_t] converted to [UInt64]
-Invalid ext name [DX9INTEL], replaced with [INTEL]
+Invalid ext name [DX9INTEL] of [clGetDeviceIDsFromDX9INTEL], replaced with [INTEL]
 Type conversion for [cl_GLuint] not found, so base type [unsigned int] converted to [UInt32]
 Type conversion for [cl_GLenum] not found, so base type [unsigned int] converted to [UInt32]
 Type conversion for [cl_GLint] not found, so base type [int] converted to [Int32]
 Type conversion for [cl_mem_info_intel] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_mem_advice_intel] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_semaphore_payload_khr] not found, so base type [uint64_t] converted to [UInt64]
-Invalid ext name [CL], replaced with []
+Invalid ext name [CL] of [clSetContentSizeBufferPoCL], replaced with []
 Type conversion for [cl_sync_point_khr] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_ndrange_kernel_command_properties_khr] not found, so base type [uint64_t] converted to [UInt64]
-Ext group [LOADER] of ext [loader_layers] is not supported
-Struct [cl_dx9_surface_info_khr] was skipped
-Struct [cl_motion_estimation_desc_intel] was skipped
-Struct [cl_mem_ext_host_ptr] was skipped
-Struct [cl_mem_ion_host_ptr] was skipped
-Struct [cl_mem_android_native_buffer_host_ptr] was skipped
-Struct [cl_name_version] was skipped
-Struct [cl_name_version_khr] was skipped
-Struct [cl_device_pci_bus_info_khr] was skipped
-Struct [cl_queue_family_properties_intel] was skipped
-Struct [cl_device_integer_dot_product_acceleration_properties_khr] was skipped
-Group [DeviceAtomicCapabilities] was skipped
-Group [DeviceEnqueueCapabilities] was skipped
-Group [QueuePriorityKhr] was skipped
-Group [QueueThrottleKhr] was skipped
-Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was skipped
-Group [MemAllocFlagsIntel] was skipped
-Group [MemAllocFlagsImg] was skipped
-Group [DeviceSchedulingControlsCapabilitiesArm] was skipped
-Group [DeviceControlledTerminationCapabilitiesArm] was skipped
-Group [CommandQueueCapabilitiesIntel] was skipped
-Group [DeviceFeatureCapabilitiesIntel] was skipped
-Group [DeviceIntegerDotProductCapabilitiesKhr] was skipped
-Group [SemaphoreTypeKhr] was skipped
-Group [CommandBufferFlagsKhr] was skipped
-Group [CommandBufferStateKhr] was skipped
-Group [DeviceFpAtomicCapabilitiesExt] was skipped
-Group [KhronosVendorId] was skipped
-Group [DeviceSvmCapabilitiesArm] was skipped
-Group [UnifiedSharedMemoryTypeIntel] was skipped
-Group [ExternalMemoryHandleTypeKhr] was skipped
-Group [DeviceCommandBufferCapabilitiesKhr] was skipped
+Ext group [LOADER] of ext [cl_loader_layers] is not supported
+Struct [cl_dx9_surface_info_khr] was not referenced
+Struct [cl_motion_estimation_desc_intel] was not referenced
+Struct [cl_mem_ext_host_ptr] was not referenced
+Struct [cl_mem_ion_host_ptr] was not referenced
+Struct [cl_mem_android_native_buffer_host_ptr] was not referenced
+Struct [cl_name_version] was not referenced
+Struct [cl_name_version_khr] was not referenced
+Struct [cl_device_pci_bus_info_khr] was not referenced
+Struct [cl_queue_family_properties_intel] was not referenced
+Struct [cl_device_integer_dot_product_acceleration_properties_khr] was not referenced
+Group [DeviceAtomicCapabilities] was not referenced
+Group [DeviceEnqueueCapabilities] was not referenced
+Group [QueuePriorityKhr] was not referenced
+Group [QueueThrottleKhr] was not referenced
+Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was not referenced
+Group [MemAllocFlagsIntel] was not referenced
+Group [MemAllocFlagsImg] was not referenced
+Group [DeviceSchedulingControlsCapabilitiesArm] was not referenced
+Group [DeviceControlledTerminationCapabilitiesArm] was not referenced
+Group [CommandQueueCapabilitiesIntel] was not referenced
+Group [DeviceFeatureCapabilitiesIntel] was not referenced
+Group [DeviceIntegerDotProductCapabilitiesKhr] was not referenced
+Group [SemaphoreTypeKhr] was not referenced
+Group [CommandBufferFlagsKhr] was not referenced
+Group [CommandBufferStateKhr] was not referenced
+Group [DeviceFpAtomicCapabilitiesExt] was not referenced
+Group [KhronosVendorId] was not referenced
+Group [DeviceSvmCapabilitiesArm] was not referenced
+Group [UnifiedSharedMemoryTypeIntel] was not referenced
+Group [ExternalMemoryHandleTypeKhr] was not referenced
+Group [DeviceCommandBufferCapabilitiesKhr] was not referenced
 done

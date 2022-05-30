@@ -22,6 +22,7 @@ var log_func_ovrs := new FileLogger(GetFullPathRTA('Log\FinalFuncOverloads.log')
 
 type
   LogCache = static class
+    static invalid_api        := new HashSet<string>;
     static invalid_ext_names  := new HashSet<string>;
     static invalid_ntv_types  := new HashSet<string>;
     static base_t_used        := new HashSet<string>;
@@ -75,20 +76,90 @@ type
   
   {$endregion TypeTable}
   
+  {$region WriteableNode}
+  
+  WriteableNode<TSelf> = abstract class
+  where TSelf: WriteableNode<TSelf>;
+    protected static All := new List<TSelf>;
+    protected name: string;
+    
+    private static name_cache: Dictionary<string, TSelf> := nil;
+    private static function ByName(name: string): TSelf;
+    begin
+      if name_cache=nil then
+      begin
+        name_cache := new Dictionary<string, TSelf>(All.Count);
+        foreach var n in All do
+        begin
+          if name_cache.ContainsKey(n.name) then
+            raise new System.InvalidOperationException($'{TypeName(n)} [{_ObjectToString(n.name)}] was defined twice');
+          name_cache[n.name] := n;
+        end;
+      end else
+      if name_cache.Count<>All.Count then
+        raise new System.InvalidOperationException;
+      name_cache.TryGetValue(name, Result);
+    end;
+    
+    protected referenced := false;
+    protected procedure OnMarkReferenced; virtual := exit;
+    public procedure MarkReferenced;
+    begin
+      if referenced then exit;
+      referenced := true;
+      OnMarkReferenced;
+    end;
+    public static function MarkReferenced(name: string): boolean;
+    begin
+      var n := ByName(name);
+      Result := n<>nil;
+      if not Result then exit;
+      n.MarkReferenced;
+    end;
+    
+    public static procedure WarnAllUnreferenced :=
+    foreach var n in All do
+      if not n.referenced then
+        if n.explicit_existence then
+          Otp($'WARNING: {TypeName(n)} [{n.name}] was explicitly added, but was not referenced') else
+          log.Otp($'{TypeName(n)} [{n.name}] was not referenced');
+    
+    protected writeable := false;
+    protected procedure OnMarkWriteable; virtual := exit;
+    public procedure MarkWriteable;
+    begin
+      if writeable then exit;
+      writeable := true;
+      OnMarkWriteable;
+    end;
+    public static function MarkWriteable(name: string): boolean;
+    begin
+      var n := ByName(name);
+      Result := n<>nil;
+      if not Result then exit;
+      n.MarkWriteable;
+    end;
+    
+    protected explicit_existence := false;
+    
+  end;
+  
+  {$endregion WriteableNode}
+  
   {$region Group}
   
   //TODO #2264
   // - сделать конструктор, принемающий фиксер
 //  GroupFixer = class;
-  Group = sealed class
-    public name, t: string;
-    public bitmask: boolean;
-    public enums: Dictionary<string, int64>;
+  Group = sealed class(WriteableNode<Group>)
+    private t: string;
+    private bitmask: boolean;
+    private enums: Dictionary<string, int64>;
     
-    public ext_name: string;
-    public screened_enums: Dictionary<string,string>;
+    private ext_name: string;
+    private screened_enums: Dictionary<string,string>;
     
-    public custom_members := new List<array of string>;
+    private custom_members := new List<array of string>;
     
     public procedure FinishInit;
     begin
@@ -127,8 +198,6 @@ type
       FinishInit;
     end;
     
-    private static All := new List<Group>;
-    private static ByName: Dictionary<string, Group> := nil;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
@@ -144,43 +213,21 @@ type
           Result := w;
         end).JoinToString('');
     
-    public used := false;
-    public explicit_existence := false;
-    public procedure MarkUsed;
-    begin
-      if used then exit;
-      used := true;
-    end;
-    public static procedure MarkUsed(name: string);
-    begin
-      if ByName=nil then ByName := All.ToDictionary(gr->gr.name);
-      var res: Group;
-      if ByName.TryGetValue(name, res) then
-        res.MarkUsed;
-    end;
-    
     private function EnumrKeys := enums.Keys.OrderBy(ename->Abs(enums[ename]));//.ThenBy(ename->ename);
     private property ValueStr[ename: string]: string read
     if not bitmask and (enums[ename]<0) then
       enums[ename].ToString else
       '$'+enums[ename].ToString('X4');
     
-    public static procedure WarnAllUnused :=
-    foreach var gr in All do
-      if not gr.used then
-        if gr.explicit_existence then
-          Otp($'WARNING: Group [{gr.name}] was explicitly added, but wasn''t used') else
-          log.Otp($'Group [{gr.name}] was skipped');
-    
     public procedure Write(wr: Writer);
     begin
+      if not referenced then exit;
       log_groups.Otp($'# {name}[{t}]');
       foreach var ename in enums.Keys do
         log_groups.Otp($'{#9}{ename} = {enums[ename]:X}');
       log_groups.Otp('');
       
-      if not used then exit;
-      
+      if not writeable then exit;
       if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
       var max_scr_w := screened_enums.Values.DefaultIfEmpty('').Max(ename->ename.Length);
       wr +=       $'  {name} = record' + #10;
@@ -266,16 +313,22 @@ type
     begin
       var gn := g.Key;
       if gn='' then gn := 'Core';
-      if not g.Any(gr->gr.used) then continue;
       
-      wr += $'  {{$region {gn}}}'+#10;
-      wr += $'  '+#10;
+      var any_writeable := g.Any(gr->gr.writeable);
+      if any_writeable then
+      begin
+        wr += $'  {{$region {gn}}}'+#10;
+        wr += $'  '+#10;
+      end;
       
       foreach var gr in g.OrderBy(gr->gr.name) do
         gr.Write(wr);
       
-      wr += $'  {{$endregion {gn}}}'+#10;
-      wr += $'  '+#10;
+      if any_writeable then
+      begin
+        wr += $'  {{$endregion {gn}}}'+#10;
+        wr += $'  '+#10;
+      end;
     end;
     
   end;
@@ -382,8 +435,7 @@ type
     end;
     
   end;
-  Struct = sealed class
-    private name: string;
+  Struct = sealed class(WriteableNode<Struct>)
     // (name, ptr, type)
     private flds := new List<StructField>;
     
@@ -398,44 +450,27 @@ type
       TypeTable.Used += self.name;
     end;
     
-    private static All := new List<Struct>;
-    private static ByName: Dictionary<string, Struct> := nil;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
       loop All.Capacity do All += new Struct(br);
     end;
     
-    public used := false;
-    public explicit_existence := false;
-    public procedure MarkUsed;
+    protected procedure OnMarkReferenced; override :=
+    foreach var fld in flds do
     begin
-      if used then exit;
-      used := true;
-      foreach var fld in flds do
-      begin
-        fld.FixT;
-        Group.MarkUsed(fld.t);
-        Struct.MarkUsed(fld.t);
-      end;
+      fld.FixT;
+      if Group.MarkReferenced(fld.t) or Struct.MarkReferenced(fld.t) then else;
     end;
-    public static procedure MarkUsed(name: string);
+    protected procedure OnMarkWriteable; override :=
+    foreach var fld in flds do
     begin
-      if ByName=nil then ByName := All.ToDictionary(s->s.name);
-      var res: Struct;
-      if ByName.TryGetValue(name, res) then
-        res.MarkUsed;
+      fld.FixT;
+      if Group.MarkWriteable(fld.t) or Struct.MarkWriteable(fld.t) then else;
     end;
-    
-    public static procedure WarnAllUnused :=
-    foreach var s in All do
-      if not s.used then
-        if s.explicit_existence then
-          Otp($'WARNING: Struct [{s.name}] was explicitly added, but wasn''t used') else
-          log.Otp($'Struct [{s.name}] was skipped');
     
     private static ValueStringNamesCache := new HashSet<string>;
-    private function MakeValueString(wr: Writer; len: integer): string;
+    private static function MakeValueString(wr: Writer; len: integer): string;
     begin
       Result := $'_ValueString_{len}';
       if not ValueStringNamesCache.Add(Result) then exit;
@@ -443,8 +478,6 @@ type
       log_structs.Otp($'# {Result}');
       log_structs.Otp($'{#9}body: ntv_char[{len}]');
       log_structs.Otp('');
-      
-      if not used then exit;
       
       wr += '  [StructLayout(LayoutKind.Explicit, Size = ';
       wr += len.ToString;
@@ -487,6 +520,7 @@ type
     
     public procedure Write(wr: Writer);
     begin
+      if not referenced then exit;
       foreach var fld in flds do
         if fld.rep_c<>1 then
         begin
@@ -500,8 +534,7 @@ type
         log_structs.Otp($'{#9}{fld.MakeDef}' + (fld.rep_c<>1 ? $'[{fld.rep_c}]' : '') );
       log_structs.Otp('');
       
-      if not used then exit;
-      
+      if not writeable then exit;
       wr += $'  {name} = record' + #10;
       
       foreach var fld in flds do
@@ -839,13 +872,12 @@ type
   
   {$endregion Help types}
   
-  Func = sealed class
+  Func = sealed class(WriteableNode<Func>)
     
     {$region Basic}
     
     public org_par: array of FuncOrgParam;
     
-    public name: string;
     public ext_name: string;
     public is_proc: boolean;
     public procedure BasicInit;
@@ -869,7 +901,6 @@ type
       BasicInit;
     end;
     
-    private static All := new List<Func>;
     public static procedure LoadAll(br: System.IO.BinaryReader);
     begin
       All.Capacity := br.ReadInt32;
@@ -1116,28 +1147,28 @@ type
     
     {$region MarkUsed}
     
-    public used := false;
-    public explicit_existence := false;
-    public procedure MarkUsed;
+    protected procedure OnMarkReferenced; override;
     begin
-      if used then exit;
-      used := true;
       InitOverloads;
       foreach var ovr in all_overloads do
         foreach var par in is_proc ? ovr.pars.Skip(1) : ovr.pars do
         begin
           var tname := par.tname.TrimStart('^');
-          Group.MarkUsed(tname);
-          Struct.MarkUsed(tname);
+          Group.MarkReferenced(tname);
+          Struct.MarkReferenced(tname);
         end;
     end;
-    
-    public static procedure WarnAllUnused :=
-    foreach var f in All do
-      if not f.used then
-        if f.explicit_existence then
-          Otp($'ERROR: Func [{f.name}] was explicitly added, but wasn''t used') else
-          Otp($'ERROR: Func [{f.name}] wasn''t used');
+    protected procedure OnMarkWriteable; override;
+    begin
+      InitOverloads;
+      foreach var ovr in all_overloads do
+        foreach var par in is_proc ? ovr.pars.Skip(1) : ovr.pars do
+        begin
+          var tname := par.tname.TrimStart('^');
+          Group.MarkWriteable(tname);
+          Struct.MarkWriteable(tname);
+        end;
+    end;
     
     {$endregion MarkUsed}
     
@@ -1147,6 +1178,8 @@ type
     const gen_t_sub = 'Byte';
     public procedure Write(wr: Writer; api, version: string; static_container: boolean);
     begin
+      if not self.writeable then
+        raise new System.InvalidOperationException($'MarkWriteable was not called');
       InitOverloads;
       
       {$region Log and Warn}
@@ -2014,17 +2047,29 @@ type
       
     end;
     
-    private procedure MarkUsed;
+    private procedure MarkReferenced;
     begin
-      foreach var fnc in add do fnc.MarkUsed;
-      foreach var fnc in rem do fnc.MarkUsed;
+      foreach var fnc in add do fnc.MarkReferenced;
+      foreach var fnc in rem do fnc.MarkReferenced;
     end;
-    public static procedure MarkAllUsed :=
+    public static procedure MarkAllReferenced :=
     foreach var lst in Feature.ByApi.Values do
       foreach var f in lst do
-        f.MarkUsed;
+        f.MarkReferenced;
     
-    public static function IsAPIDynamic(api: string): boolean;
+    private static valid_api := HSet(
+      $'v','vDyn',
+      'gl','wgl','glx','gdi',
+      'cl'
+    );
+    private static function IsValidAPI(api: string): boolean;
+    begin
+      Result := api in valid_api;
+      if not Result and LogCache.invalid_api.Add(api) then
+        log.Otp($'Invalid API: [{api}]');
+    end;
+    
+    private static function IsAPIDynamic(api: string): boolean;
     begin
       case api of
         
@@ -2045,6 +2090,7 @@ type
     public static procedure WriteAll(wr, impl_wr: Writer) :=
     foreach var api in Feature.ByApi.Keys do
     begin
+      if not IsValidAPI(api) then continue;
       
       // func - addition version
       var all_funcs := new Dictionary<Func, string>;
@@ -2138,6 +2184,7 @@ type
               end;
               wr += #10;
             end;
+            f.MarkWriteable;
             f.Write(wr, api,all_funcs[f], not is_dynamic);
           end;
         
@@ -2154,9 +2201,7 @@ type
     
   end;
   Extension = sealed class
-    public name, display_name: string;
-    public api: string;
-    public ext_group: string;
+    public name, api: string;
     public add: List<Func>;
     
     public constructor(br: System.IO.BinaryReader);
@@ -2164,28 +2209,6 @@ type
       name := br.ReadString;
       api := br.ReadString;
       add := ArrGen(br.ReadInt32, i->Func.All[br.ReadInt32]).ToList;
-      
-      if not name.ToLower.StartsWith(api+'_') then
-        raise new System.NotSupportedException($'Extension name [{name}] must start from api [{api}]');
-      name := name.Substring(api.Length+1);
-      
-      var ind := name.IndexOf('_');
-      ext_group := name.Remove(ind).ToUpper;
-      if ext_group in allowed_ext_names then
-        display_name := name.Substring(ind+1) else
-      begin
-        display_name := name;
-        if LogCache.invalid_ext_names.Add(ext_group) then
-          log.Otp($'Ext group [{ext_group}] of ext [{name}] is not supported');
-        ext_group := '';
-      end;
-      
-      display_name := api+display_name.Split('_').Select(w->
-      begin
-        if w.Length<>0 then w[0] := w[0].ToUpper;
-        Result := w;
-      end).JoinToString('') + ext_group;
-      
     end;
     
     public static All := new List<Extension>;
@@ -2196,21 +2219,20 @@ type
       loop All.Capacity do
       begin
         var ext := new Extension(br);
-        
         All += ext;
       end;
       
     end;
     
-    private procedure MarkUsed;
+    private procedure MarkReferenced;
     begin
-      foreach var fnc in add do fnc.MarkUsed;
+      foreach var fnc in add do fnc.MarkReferenced;
     end;
-    public static procedure MarkAllUsed :=
+    public static procedure MarkAllReferenced :=
     foreach var ext in All do
-      ext.MarkUsed;
+      ext.MarkReferenced;
     
-    public static function IsAPIDynamic(api: string): boolean;
+    private static function IsAPIDynamic(api: string): boolean;
     begin
       case api of
         
@@ -2228,13 +2250,42 @@ type
       end;
     end;
     
-    public procedure Write(wr, impl_wr: Writer);
+    public procedure Write(wr, impl_wr: Writer; log_func_ext: FileLogger);
     begin
       if add.Count=0 then exit;
+      if not Feature.IsValidAPI(self.api) then exit;
       
       var is_dynamic := Extension.IsAPIDynamic(api);
       var need_loader := Feature.IsAPIDynamic(api);
       var class_type := is_dynamic ? 'sealed partial' : 'static';
+      
+      {$region name}
+      
+      var display_name := name;
+      if not display_name.ToLower.StartsWith(api+'_') then
+        raise new System.NotSupportedException($'Extension name [{name}] must start from api [{api}]');
+      display_name := display_name.Substring(api.Length+1);
+      
+      var ind := display_name.IndexOf('_');
+      var ext_group := display_name.Remove(ind).ToUpper;
+      if ext_group in allowed_ext_names then
+        display_name := display_name.Substring(ind+1) else
+      begin
+        if LogCache.invalid_ext_names.Add(ext_group) then
+          log.Otp($'Ext group [{ext_group}] of ext [{name}] is not supported');
+        ext_group := '';
+      end;
+      
+      display_name := api+display_name.Split('_').Select(w->
+      begin
+        if w.Length<>0 then w[0] := w[0].ToUpper else
+          raise new System.InvalidOperationException(display_name);
+        Result := w;
+      end).JoinToString('') + ext_group;
+      
+      {$endregion name}
+      
+      log_func_ext.Otp($'# {display_name} ({name})');
       
       wr += '  [PCUNotRestore]'#10;
       wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
@@ -2283,36 +2334,37 @@ type
       end;
       
       wr += '    public const _ExtStr = ''';
-      case api of
-        
-        'gl':   wr += 'GL';
-        'wgl':  wr += 'WGL';
-        'glx':  wr += 'GLX';
-        
-        'cl':   wr += 'cl';
-        
-        else raise new System.NotSupportedException((api,name).ToString);
-      end;
-      wr += '_';
-      wr += name;
+      wr += name.ToLower;
       wr += ''';'+#10;
       wr += '    '+#10;
       
       foreach var f in add do
+      begin
+        f.MarkWriteable;
         f.Write(wr, api,nil, not is_dynamic);
+        log_func_ext.Otp($'{#9}{f.name}');
+      end;
       Func.prev_func_names.Clear;
       wr += $'  end;'+#10;
       wr += $'  '+#10;
       
+      log_func_ext.Otp($'');
     end;
     public static procedure WriteAll(wr, impl_wr: Writer);
     begin
       if All.Count=0 then exit;
+      
+      var log_func_ext := new FileLogger(GetFullPathRTA($'Log\FuncsExt.log'));
+      loop 3 do log_func_ext.Otp('');
+      
       wr += '  {$region Extensions}'#10;
       wr += '  '#10;
-      foreach var ext in All do ext.Write(wr, impl_wr);
+      foreach var ext in All do ext.Write(wr, impl_wr, log_func_ext);
       wr += '  {$endregion Extensions}'#10;
       wr += '  '#10;
+      
+      loop 3 do log_func_ext.Otp('');
+      log_func_ext.Close;
     end;
     
   end;
@@ -2323,7 +2375,7 @@ procedure LoadMiscInput;
 procedure LoadFixers;
 procedure LoadBin(fname: string);
 procedure ApplyFixers;
-procedure MarkUsed;
+procedure MarkReferenced;
 procedure FinishAll;
 
 implementation
@@ -2367,7 +2419,8 @@ begin
   Func.LoadAll(br);
   Feature.LoadAll(br);
   Extension.LoadAll(br);
-  if br.BaseStream.Position<>br.BaseStream.Length then raise new System.FormatException;
+  if br.BaseStream.Position<>br.BaseStream.Length then
+    raise new System.FormatException($'{br.BaseStream.Position} <> {br.BaseStream.Length}');
 end;
 
 procedure ApplyFixers;
@@ -2377,10 +2430,10 @@ begin
   FuncFixer.ApplyAll(Func.All);
 end;
 
-procedure MarkUsed;
+procedure MarkReferenced;
 begin
-  Feature.MarkAllUsed;
-  Extension.MarkAllUsed;
+  Feature.MarkAllReferenced;
+  Extension.MarkAllReferenced;
 end;
 
 procedure FinishAll;
@@ -2391,9 +2444,9 @@ begin
   GroupFixer.WarnAllUnused;
   FuncFixer.WarnAllUnused;
   
-  Struct.WarnAllUnused;
-  Group.WarnAllUnused;
-  Func.WarnAllUnused;
+  Struct.WarnAllUnreferenced;
+  Group.WarnAllUnreferenced;
+  Func.WarnAllUnreferenced;
   
   log.Otp('done');
   
@@ -2423,7 +2476,7 @@ begin
     .First(prev_res.EndsWith)
   ;
   if LogCache.invalid_ext_names.Add(prev_res) and (prev_res.Length>1) then
-    log.Otp($'Invalid ext name [{prev_res}], replaced with [{Result}]');
+    log.Otp($'Invalid ext name [{prev_res}] of [{s}], replaced with [{Result}]');
   
 end;
 
