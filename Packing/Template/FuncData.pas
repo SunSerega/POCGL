@@ -156,21 +156,7 @@ type
     private bitmask: boolean;
     private enums: Dictionary<string, int64>;
     
-    private ext_name: string;
-    private screened_enums: Dictionary<string,string>;
-    
     private custom_members := new List<array of string>;
-    
-    public procedure FinishInit;
-    begin
-      
-      ext_name := GetExt(name);
-      
-      screened_enums := new Dictionary<string, string>;
-      foreach var key in enums.Keys do
-        screened_enums.Add(key, key.ToLower in pas_keywords ? '&'+key : key);
-      
-    end;
     
     public constructor := exit;
     public constructor(br: System.IO.BinaryReader);
@@ -195,7 +181,6 @@ type
         enums.Add(key, val);
       end;
       
-      FinishInit;
     end;
     
     public static procedure LoadAll(br: System.IO.BinaryReader);
@@ -222,10 +207,34 @@ type
     public procedure Write(wr: Writer);
     begin
       if not referenced then exit;
+      
+      foreach var ename in enums.Keys.ToArray do
+        if allowed_ext_names.Any(ext->
+        begin
+          Result := false;
+          ext := '_'+ext;
+          if not ename.EndsWith(ext) then exit;
+          var v: int64;
+          if not enums.TryGetValue(ename.Remove(ename.Length-ext.Length), v) then exit;
+          if v<>enums[ename] then
+          begin
+            log.Otp($'Group {name}: Enum {ename}=${enums[ename]:X}, but without [{ext}]=${v:X}');
+            exit;
+          end;
+          Result := true;
+        end) then enums.Remove(ename);
+      
       log_groups.Otp($'# {name}[{t}]');
       foreach var ename in enums.Keys do
         log_groups.Otp($'{#9}{ename} = {enums[ename]:X}');
       log_groups.Otp('');
+      
+      var screened_enums := enums.ToDictionary(kvp->kvp.Key, kvp->
+      begin
+        Result := kvp.Key;
+        if Result.ToLower in pas_keywords then
+          Result := '&'+Result;
+      end);
       
       if not writeable then exit;
       if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
@@ -301,7 +310,7 @@ type
       wr +=       $'  ' + #10;
     end;
     public static procedure WriteAll(wr: Writer) :=
-    foreach var g in All.GroupBy(gr->gr.ext_name).OrderBy(g->
+    foreach var g in All.GroupBy(gr->GetExt(gr.name)).OrderBy(g->
     begin
       case g.Key of
         '':     Result := 0;
@@ -2537,7 +2546,6 @@ type
       gr.t        := self.t;
       gr.bitmask  := self.bitmask;
       gr.enums    := self.enums;
-      gr.FinishInit;
       gr.explicit_existence := true;
       Result := false;
     end;
@@ -2571,7 +2579,6 @@ type
     public function Apply(gr: Group): boolean; override;
     begin
       gr.name := new_name;
-      gr.FinishInit;
       self.used := true;
       Result := false;
     end;
@@ -2604,7 +2611,6 @@ type
         gr.enums.Remove(t[0]);
         gr.enums.Add(t[0],t[1]);
       end;
-      gr.FinishInit;
       self.used := true;
       Result := false;
     end;
