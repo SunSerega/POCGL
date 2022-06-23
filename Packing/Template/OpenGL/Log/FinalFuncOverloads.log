@@ -2271,13 +2271,15 @@
 
 # glPauseTransformFeedback[1]:
 
-# glPixelStoref[2]:
+# glPixelStoref[3]:
+	PixelStoreParameter | PixelStoreResampleMode  |
 	PixelStoreParameter | PixelStoreSubsampleRate |
 	PixelStoreParameter | single                  |
 	------------------- | ----------------------- |
 	pname               | param                   |
 
-# glPixelStorei[2]:
+# glPixelStorei[3]:
+	PixelStoreParameter | PixelStoreResampleMode  |
 	PixelStoreParameter | PixelStoreSubsampleRate |
 	PixelStoreParameter | Int32                   |
 	------------------- | ----------------------- |

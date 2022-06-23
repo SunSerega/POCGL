@@ -1,0 +1,8 @@
+
+
+
+# glPixelStore[%i,f%]
+!possible_par_types
+ *	| +PixelStoreResampleMode	|
+
+

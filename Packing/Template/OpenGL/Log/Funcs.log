@@ -76,7 +76,6 @@ Group [PointParameterNameSGIS] was not referenced
 Group [TextureFilterFuncSGIS] was not referenced
 Group [LightModelColorControl] was not referenced
 Group [VertexBufferObjectParameter] was not referenced
-Group [PixelStoreResampleMode] was not referenced
 Group [RegisterCombinerPname] was not referenced
 Group [PixelStoreSubsampleRate] was not referenced
 done
