@@ -49,5 +49,13 @@
  *	| *	| var UInt32		| *	| var Int32			|
  *	| *	| IntPtr			| *	| IntPtr			|
 
+# glTextureParameteri
+!possible_par_types
+ *	| *	| +TextureMinFilter +TextureMagFilter	|
+
+# glTextureParameteriEXT
+!possible_par_types
+ *	| *	| *	| +TextureMinFilter +TextureMagFilter	|
+
 
 

@@ -1,4 +1,4 @@
-﻿Invalid ext name [1D] of [glTexImage1D], replaced with []
+Invalid ext name [1D] of [glTexImage1D], replaced with []
 Invalid ext name [2D] of [glTexImage2D], replaced with []
 Invalid ext name [3D] of [glTexImage3D], replaced with []
 Invalid ext name [DC] of [wglGetCurrentDC], replaced with []
@@ -65,8 +65,6 @@ Group [GetPixelMap] was not referenced
 Group [GlslTypeToken] was not referenced
 Group [DepthStencilTextureMode] was not referenced
 Group [TextureGenMode] was not referenced
-Group [TextureMagFilter] was not referenced
-Group [TextureMinFilter] was not referenced
 Group [TextureWrapMode] was not referenced
 Group [GetConvolutionParameter] was not referenced
 Group [ConvolutionBorderModeEXT] was not referenced
