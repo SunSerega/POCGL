@@ -695,14 +695,14 @@
 	          | command_queue    |
 
 # clGetCommandQueueInfo[12]:
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var CommandQueueProperties | var UIntPtr          |
+	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var CommandQueueProperties | IntPtr               |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var cl_command_queue       | var UIntPtr          |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var cl_command_queue       | IntPtr               |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var cl_context             | var UIntPtr          |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var cl_context             | IntPtr               |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var cl_device_id           | var UIntPtr          |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var cl_device_id           | IntPtr               |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var CommandQueueProperties | var UIntPtr          |
-	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var CommandQueueProperties | IntPtr               |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var UInt32                 | var UIntPtr          |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | var UInt32                 | IntPtr               |
 	ErrorCode | cl_command_queue | CommandQueueInfo | UIntPtr          | IntPtr                     | var UIntPtr          |
@@ -711,10 +711,10 @@
 	          | command_queue    | param_name       | param_value_size | param_value                | param_value_size_ret |
 
 # clGetContextInfo[8]:
-	ErrorCode | cl_context | ContextInfo | UIntPtr          | var cl_device_id      | var UIntPtr          |
-	ErrorCode | cl_context | ContextInfo | UIntPtr          | var cl_device_id      | IntPtr               |
 	ErrorCode | cl_context | ContextInfo | UIntPtr          | var ContextProperties | var UIntPtr          |
 	ErrorCode | cl_context | ContextInfo | UIntPtr          | var ContextProperties | IntPtr               |
+	ErrorCode | cl_context | ContextInfo | UIntPtr          | var cl_device_id      | var UIntPtr          |
+	ErrorCode | cl_context | ContextInfo | UIntPtr          | var cl_device_id      | IntPtr               |
 	ErrorCode | cl_context | ContextInfo | UIntPtr          | var UInt32            | var UIntPtr          |
 	ErrorCode | cl_context | ContextInfo | UIntPtr          | var UInt32            | IntPtr               |
 	ErrorCode | cl_context | ContextInfo | UIntPtr          | IntPtr                | var UIntPtr          |
@@ -741,10 +741,6 @@
 # clGetDeviceInfo[32]:
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var Bool                    | var UIntPtr          |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var Bool                    | IntPtr               |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_device_id            | var UIntPtr          |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_device_id            | IntPtr               |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_platform_id          | var UIntPtr          |
-	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_platform_id          | IntPtr               |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var CommandQueueProperties  | var UIntPtr          |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var CommandQueueProperties  | IntPtr               |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var DeviceAffinityDomain    | var UIntPtr          |
@@ -763,6 +759,10 @@
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var DeviceSVMCapabilities   | IntPtr               |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var DeviceType              | var UIntPtr          |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var DeviceType              | IntPtr               |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_device_id            | var UIntPtr          |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_device_id            | IntPtr               |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_platform_id          | var UIntPtr          |
+	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var cl_platform_id          | IntPtr               |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var UInt32                  | var UIntPtr          |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var UInt32                  | IntPtr               |
 	ErrorCode | cl_device_id | DeviceInfo | UIntPtr          | var UInt64                  | var UIntPtr          |
@@ -775,14 +775,14 @@
 	          | device       | param_name | param_value_size | param_value                 | param_value_size_ret |
 
 # clGetEventInfo[12]:
-	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_command_queue       | var UIntPtr          |
-	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_command_queue       | IntPtr               |
-	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_context             | var UIntPtr          |
-	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_context             | IntPtr               |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | var CommandExecutionStatus | var UIntPtr          |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | var CommandExecutionStatus | IntPtr               |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | var CommandType            | var UIntPtr          |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | var CommandType            | IntPtr               |
+	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_command_queue       | var UIntPtr          |
+	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_command_queue       | IntPtr               |
+	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_context             | var UIntPtr          |
+	ErrorCode | cl_event | EventInfo  | UIntPtr          | var cl_context             | IntPtr               |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | var UInt32                 | var UIntPtr          |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | var UInt32                 | IntPtr               |
 	ErrorCode | cl_event | EventInfo  | UIntPtr          | IntPtr                     | var UIntPtr          |
@@ -875,16 +875,16 @@
 # clGetMemObjectInfo[18]:
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var Bool          | var UIntPtr          |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var Bool          | IntPtr               |
+	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemFlags      | var UIntPtr          |
+	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemFlags      | IntPtr               |
+	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemObjectType | var UIntPtr          |
+	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemObjectType | IntPtr               |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var cl_context    | var UIntPtr          |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var cl_context    | IntPtr               |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var cl_mem        | var UIntPtr          |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var cl_mem        | IntPtr               |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var IntPtr        | var UIntPtr          |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var IntPtr        | IntPtr               |
-	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemFlags      | var UIntPtr          |
-	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemFlags      | IntPtr               |
-	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemObjectType | var UIntPtr          |
-	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var MemObjectType | IntPtr               |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var UInt32        | var UIntPtr          |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var UInt32        | IntPtr               |
 	ErrorCode | cl_mem | MemInfo    | UIntPtr          | var UIntPtr       | var UIntPtr          |
@@ -955,10 +955,10 @@
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var AddressingMode | IntPtr               |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var Bool           | var UIntPtr          |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var Bool           | IntPtr               |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var cl_context     | var UIntPtr          |
-	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var cl_context     | IntPtr               |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var FilterMode     | var UIntPtr          |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var FilterMode     | IntPtr               |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var cl_context     | var UIntPtr          |
+	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var cl_context     | IntPtr               |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var UInt32         | var UIntPtr          |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | var UInt32         | IntPtr               |
 	ErrorCode | cl_sampler | SamplerInfo | UIntPtr          | IntPtr             | var UIntPtr          |

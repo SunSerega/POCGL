@@ -1126,6 +1126,7 @@ type
           // 6. Group vs naked
           Result += Ord(p1.IsNakedType);
           Result -= Ord(p2.IsNakedType);
+          if Result<>0 then exit;
           
           // 7. Different reference target or enum group
           if p1.var_arg or (p1.arr_lvl<>0) or not p1.IsNakedType then
