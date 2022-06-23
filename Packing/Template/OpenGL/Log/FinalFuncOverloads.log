@@ -2271,12 +2271,10 @@
 
 # glPauseTransformFeedback[1]:
 
-# glPixelStoref[3]:
-	PixelStoreParameter | PixelStoreResampleMode  |
-	PixelStoreParameter | PixelStoreSubsampleRate |
-	PixelStoreParameter | single                  |
-	------------------- | ----------------------- |
-	pname               | param                   |
+# glPixelStoref[1]:
+	PixelStoreParameter | single |
+	------------------- | ------ |
+	pname               | param  |
 
 # glPixelStorei[3]:
 	PixelStoreParameter | PixelStoreResampleMode  |
@@ -4761,10 +4759,11 @@
 	--------- | -------------- | --------------- |
 	light     | pname          | params          |
 
-# glLighti[1]:
-	LightName | LightParameter | Int32 |
-	--------- | -------------- | ----- |
-	light     | pname          | param |
+# glLighti[2]:
+	LightName | LightParameter | LightModelColorControl |
+	LightName | LightParameter | Int32                  |
+	--------- | -------------- | ---------------------- |
+	light     | pname          | param                  |
 
 # glLightiv[3]:
 	LightName | LightParameter | array of Int32 |
@@ -4785,10 +4784,11 @@
 	------------------- | --------------- |
 	pname               | params          |
 
-# glLightModeli[1]:
-	LightModelParameter | Int32 |
-	------------------- | ----- |
-	pname               | param |
+# glLightModeli[2]:
+	LightModelParameter | LightModelColorControl |
+	LightModelParameter | Int32                  |
+	------------------- | ---------------------- |
+	pname               | param                  |
 
 # glLightModeliv[3]:
 	LightModelParameter | array of Int32 |
@@ -4902,10 +4902,11 @@
 	------------ | ----------------- | --------------- |
 	face         | pname             | params          |
 
-# glMateriali[1]:
-	MaterialFace | MaterialParameter | Int32 |
-	------------ | ----------------- | ----- |
-	face         | pname             | param |
+# glMateriali[2]:
+	MaterialFace | MaterialParameter | LightModelColorControl |
+	MaterialFace | MaterialParameter | Int32                  |
+	------------ | ----------------- | ---------------------- |
+	face         | pname             | param                  |
 
 # glMaterialiv[3]:
 	MaterialFace | MaterialParameter | array of Int32 |
