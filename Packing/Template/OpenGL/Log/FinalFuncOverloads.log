@@ -3041,12 +3041,13 @@
 	---------- | -------------------- | --------------- |
 	texture    | pname                | param           |
 
-# glTextureParameteri[3]:
-	gl_texture | TextureParameterName | TextureMagFilter |
-	gl_texture | TextureParameterName | TextureMinFilter |
-	gl_texture | TextureParameterName | Int32            |
-	---------- | -------------------- | ---------------- |
-	texture    | pname                | param            |
+# glTextureParameteri[4]:
+	gl_texture | TextureParameterName | ConvolutionBorderModeEXT |
+	gl_texture | TextureParameterName | TextureMagFilter         |
+	gl_texture | TextureParameterName | TextureMinFilter         |
+	gl_texture | TextureParameterName | Int32                    |
+	---------- | -------------------- | ------------------------ |
+	texture    | pname                | param                    |
 
 # glTextureParameterIiv[3]:
 	gl_texture | TextureParameterName | array of Int32 |
