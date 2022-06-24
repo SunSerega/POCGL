@@ -49,12 +49,12 @@
  *	| *	| var UInt32		| *	| var Int32			|
  *	| *	| IntPtr			| *	| IntPtr			|
 
-# glTextureParameteri
+# glTex[%,ture%]Parameteri
 !possible_par_types
- *	| *	| +TextureMinFilter +TextureMagFilter	|
+ *	| *	| +TextureMinFilter +TextureMagFilter +TextureWrapMode	|
 
 # glTextureParameteriEXT
 !possible_par_types
- *	| *	| *	| +TextureMinFilter +TextureMagFilter	|
+ *	| *	| *	| +TextureMinFilter +TextureMagFilter +TextureWrapMode	|
 
 

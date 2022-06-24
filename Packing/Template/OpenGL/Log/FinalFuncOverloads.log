@@ -2951,10 +2951,13 @@
 	------------- | -------------------- | --------------- |
 	target        | pname                | params          |
 
-# glTexParameteri[1]:
-	TextureTarget | TextureParameterName | Int32 |
-	------------- | -------------------- | ----- |
-	target        | pname                | param |
+# glTexParameteri[4]:
+	TextureTarget | TextureParameterName | TextureMagFilter |
+	TextureTarget | TextureParameterName | TextureMinFilter |
+	TextureTarget | TextureParameterName | TextureWrapMode  |
+	TextureTarget | TextureParameterName | Int32            |
+	------------- | -------------------- | ---------------- |
+	target        | pname                | param            |
 
 # glTexParameterIiv[3]:
 	TextureTarget | TextureParameterName | array of Int32 |
@@ -3041,10 +3044,11 @@
 	---------- | -------------------- | --------------- |
 	texture    | pname                | param           |
 
-# glTextureParameteri[4]:
+# glTextureParameteri[5]:
 	gl_texture | TextureParameterName | ConvolutionBorderModeEXT |
 	gl_texture | TextureParameterName | TextureMagFilter         |
 	gl_texture | TextureParameterName | TextureMinFilter         |
+	gl_texture | TextureParameterName | TextureWrapMode          |
 	gl_texture | TextureParameterName | Int32                    |
 	---------- | -------------------- | ------------------------ |
 	texture    | pname                | param                    |
@@ -10138,9 +10142,10 @@
 	---------- | ------------- | -------------------- | --------------- |
 	texture    | target        | pname                | params          |
 
-# glTextureParameteriEXT[3]:
+# glTextureParameteriEXT[4]:
 	gl_texture | TextureTarget | TextureParameterName | TextureMagFilter |
 	gl_texture | TextureTarget | TextureParameterName | TextureMinFilter |
+	gl_texture | TextureTarget | TextureParameterName | TextureWrapMode  |
 	gl_texture | TextureTarget | TextureParameterName | Int32            |
 	---------- | ------------- | -------------------- | ---------------- |
 	texture    | target        | pname                | param            |

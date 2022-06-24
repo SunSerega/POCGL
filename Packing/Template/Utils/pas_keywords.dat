@@ -11,6 +11,7 @@ unit
 array
 begin
 end
+repeat
 params
 label
 event
