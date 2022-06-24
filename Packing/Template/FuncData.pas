@@ -2598,6 +2598,8 @@ type
     
     public function Apply(gr: Group): boolean; override;
     begin
+      if gr.t=new_base then
+        log.Otp($'Group [{gr.name}] fixer did not change base type, it was already [{gr.t}]');
       gr.t := new_base;
       self.used := true;
       Result := false;

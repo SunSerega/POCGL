@@ -18,8 +18,4 @@ BufferTarget
 !base
 single
 
-# TransformFeedbackTokenNV
-!base
-Int32
-
 

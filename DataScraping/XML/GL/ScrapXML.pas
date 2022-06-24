@@ -1,7 +1,6 @@
 ﻿uses POCGL_Utils in '..\..\..\POCGL_Utils';
 uses XMLUtils    in '..\XMLUtils';
 
-var enum_without_group := new List<string>;
 
 type
   LogCache = static class
@@ -9,11 +8,13 @@ type
     static invalid_type_for_group       := new HashSet<string>;
     static missing_group                := new HashSet<string>;
     static func_with_enum_without_group := new HashSet<string>;
+    static group_multi_base             := new Dictionary<string, HashSet<string>>;
     
   end;
   
   Group = sealed class
-    private name, t: string;
+    private name: string;
+    private t := default(string);
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
     
@@ -23,7 +24,7 @@ type
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
       bw.Write(name);
-      bw.Write(t);
+      bw.Write(t ?? 'GLuint');
       bw.Write(bitmask);
       bw.Write(enums.Count);
       foreach var key in enums.Keys do
@@ -58,7 +59,6 @@ type
       begin
         var res := new Group;
         res.name := gname;
-        res.t := 'GLuint';
         
         var group_t: (gt_any, gt_enum, gt_bitmask, gt_error) := gt_any;
         foreach var (ename, eval, is_bitmask) in all[gname].enums do
@@ -122,7 +122,7 @@ type
     public on_used: ()->();
     
     private enum_types := |'GLenum', 'GLbitfield'|;
-    private maybe_enum_types := |'GLint'|;
+    private maybe_enum_types := |'GLint', 'GLuint'|;
     public constructor(func_name: string; n: XmlNode);
     begin
       
@@ -177,14 +177,31 @@ type
           on_used += ()->
           if LogCache.missing_group.Add(gname) then
             log.WriteLine($'Group [{gname}] isn''t defined');
+        end else
+        begin
+          if self.t in enum_types then
+            self.t := 'GLuint';
+          if gr.t=nil then
+            gr.t := self.t else
+          if gr.t<>self.t then
+          begin
+            var base_l: HashSet<string>;
+            if not LogCache.group_multi_base.TryGetValue(gname, base_l) then
+            begin
+              base_l := new HashSet<string>;
+              LogCache.group_multi_base.Add(gname, base_l);
+            end;
+            base_l += gr.t;
+            base_l += self.t;
+          end;
         end;
         
       end else
       if self.t in enum_types then
         on_used += ()->
+          //TODO func_name, похоже, используется только для этого
           if LogCache.func_with_enum_without_group.Add(func_name) then
-            //TODO func_name, похоже, используется только для этого
-            enum_without_group += func_name;
+            ;
 //            Otp(func_name);
 //            log.WriteLine($'Command [{func_name}] has enum parameter without group');
       var TODO := 0;
@@ -470,7 +487,10 @@ begin
     ScrapFile('wgl');
     ScrapFile('glx');
     //TODO Убрать
-    enum_without_group.WriteLines(GetFullPathRTA('enum_without_group.txt'));
+    LogCache.func_with_enum_without_group.WriteLines(GetFullPathRTA('enum_without_group.txt'));
+    
+    foreach var kvp in LogCache.group_multi_base do
+      log.WriteLine($'Group {kvp.Key} had multiple different base types: {kvp.Value.JoinToString}');
     
     foreach var fname in xmls do
       log.WriteLine($'File [{fname}] wasn''t used');

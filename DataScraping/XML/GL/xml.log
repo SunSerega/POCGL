@@ -19,22 +19,27 @@ Skipped group attrib for type [GLfloat]
 Group [WinCoord] isn't defined
 Group [CheckedInt32] isn't defined
 Group [StencilValue] isn't defined
-Skipped group attrib for type [GLuint]
+Group [MaskedStencilValue] isn't defined
 Skipped group attrib for type [GLboolean]
+Group [List] isn't defined
 Skipped group attrib for type [GLbyte]
 Skipped group attrib for type [GLdouble]
 Group [ColorI] isn't defined
 Skipped group attrib for type [GLshort]
 Skipped group attrib for type [GLubyte]
+Group [ColorUI] isn't defined
 Skipped group attrib for type [GLushort]
 Group [ColorIndexValueI] isn't defined
 Group [CoordI] isn't defined
+Group [SelectName] isn't defined
+Group [MaskedColorIndexValueI] isn't defined
 Skipped group attrib for type [GLsizei]
 Skipped group attrib for type [void]
 Skipped group attrib for type [GLsizeiptr]
 Skipped group attrib for type [GLintptr]
 Group [DrawBufferName] isn't defined
 Group [SyncBehaviorFlags] isn't defined
+Group [FenceNV] isn't defined
 Skipped group attrib for type [struct _cl_context]
 Skipped group attrib for type [struct _cl_event]
 Skipped group attrib for type [GLhandleARB]
@@ -45,5 +50,7 @@ Skipped group attrib for type [GLclampd]
 Skipped group attrib for type [GLclampf]
 Group [SampleMaskNV] isn't defined
 Skipped group attrib for type [GLhalfNV]
+Group [Path] isn't defined
 Skipped group attrib for type [GLvdpauSurfaceNV]
 Skipped group attrib for type [GLfixed]
+Group InternalFormat had multiple different base types: GLuint GLint

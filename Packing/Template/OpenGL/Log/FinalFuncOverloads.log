@@ -6545,10 +6545,10 @@
 	callback      | userParam |
 
 # glGetDebugMessageLogAMD[2]:
-	UInt32 | UInt32 | Int32   | var DummyEnum | var UInt32 | var UInt32 | var Int32 | IntPtr  |
-	UInt32 | UInt32 | Int32   | IntPtr        | IntPtr     | IntPtr     | IntPtr    | IntPtr  |
-	------ | ------ | ------- | ------------- | ---------- | ---------- | --------- | ------- |
-	       | count  | bufSize | categories    | severities | ids        | lengths   | message |
+	UInt32 | UInt32 | Int32   | var DummyEnum | var DebugSeverity | var UInt32 | var Int32 | IntPtr  |
+	UInt32 | UInt32 | Int32   | IntPtr        | IntPtr            | IntPtr     | IntPtr    | IntPtr  |
+	------ | ------ | ------- | ------------- | ----------------- | ---------- | --------- | ------- |
+	       | count  | bufSize | categories    | severities        | ids        | lengths   | message |
 
 # glBlendFuncIndexedAMD[1]:
 	UInt32 | DummyEnum | DummyEnum |
@@ -6845,9 +6845,9 @@
 	        | identifier | name   |
 
 # glQueryObjectParameteruiAMD[1]:
-	QueryTarget | gl_query | DummyEnum | UInt32 |
-	----------- | -------- | --------- | ------ |
-	target      | id       | pname     | param  |
+	QueryTarget | gl_query | DummyEnum | OcclusionQueryEventMaskAMD |
+	----------- | -------- | --------- | -------------------------- |
+	target      | id       | pname     | param                      |
 
 # glGetPerfMonitorGroupsAMD[4]:
 	var Int32 | Int32      | var UInt32 |
@@ -17517,9 +17517,9 @@
 	mode          | first | count | width |
 
 # glReplacementCodeuiSUN[1]:
-	UInt32 |
-	------ |
-	code   |
+	TriangleListSUN |
+	--------------- |
+	code            |
 
 # glReplacementCodeusSUN[1]:
 	UInt16 |
@@ -17532,11 +17532,11 @@
 	code |
 
 # glReplacementCodeuivSUN[3]:
-	array of UInt32 |
-	var UInt32      |
-	IntPtr          |
-	--------------- |
-	code            |
+	array of TriangleListSUN |
+	var TriangleListSUN      |
+	IntPtr                   |
+	------------------------ |
+	code                     |
 
 # glReplacementCodeusvSUN[3]:
 	array of UInt16 |
@@ -17716,108 +17716,108 @@
 	tc              | c               | n               | v               |
 
 # glReplacementCodeuiVertex3fSUN[1]:
-	UInt32 | single | single | single |
-	------ | ------ | ------ | ------ |
-	rc     | x      | y      | z      |
+	TriangleListSUN | single | single | single |
+	--------------- | ------ | ------ | ------ |
+	rc              | x      | y      | z      |
 
 # glReplacementCodeuiVertex3fvSUN[4]:
-	var UInt32 | array of single |
-	var UInt32 | var Vec3f       |
-	var UInt32 | var single      |
-	IntPtr     | IntPtr          |
-	---------- | --------------- |
-	rc         | v               |
+	var TriangleListSUN | array of single |
+	var TriangleListSUN | var Vec3f       |
+	var TriangleListSUN | var single      |
+	IntPtr              | IntPtr          |
+	------------------- | --------------- |
+	rc                  | v               |
 
 # glReplacementCodeuiColor4ubVertex3fSUN[1]:
-	UInt32 | Byte | Byte | Byte | Byte | single | single | single |
-	------ | ---- | ---- | ---- | ---- | ------ | ------ | ------ |
-	rc     | r    | g    | b    | a    | x      | y      | z      |
+	TriangleListSUN | Byte | Byte | Byte | Byte | single | single | single |
+	--------------- | ---- | ---- | ---- | ---- | ------ | ------ | ------ |
+	rc              | r    | g    | b    | a    | x      | y      | z      |
 
 # glReplacementCodeuiColor4ubVertex3fvSUN[4]:
-	var UInt32 | array of Byte | array of single |
-	var UInt32 | var Vec4ub    | var Vec3f       |
-	var UInt32 | var Byte      | var single      |
-	IntPtr     | IntPtr        | IntPtr          |
-	---------- | ------------- | --------------- |
-	rc         | c             | v               |
+	var TriangleListSUN | array of Byte | array of single |
+	var TriangleListSUN | var Vec4ub    | var Vec3f       |
+	var TriangleListSUN | var Byte      | var single      |
+	IntPtr              | IntPtr        | IntPtr          |
+	------------------- | ------------- | --------------- |
+	rc                  | c             | v               |
 
 # glReplacementCodeuiColor3fVertex3fSUN[1]:
-	UInt32 | single | single | single | single | single | single |
-	------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc     | r      | g      | b      | x      | y      | z      |
+	TriangleListSUN | single | single | single | single | single | single |
+	--------------- | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc              | r      | g      | b      | x      | y      | z      |
 
 # glReplacementCodeuiColor3fVertex3fvSUN[4]:
-	var UInt32 | array of single | array of single |
-	var UInt32 | var Vec3f       | var Vec3f       |
-	var UInt32 | var single      | var single      |
-	IntPtr     | IntPtr          | IntPtr          |
-	---------- | --------------- | --------------- |
-	rc         | c               | v               |
+	var TriangleListSUN | array of single | array of single |
+	var TriangleListSUN | var Vec3f       | var Vec3f       |
+	var TriangleListSUN | var single      | var single      |
+	IntPtr              | IntPtr          | IntPtr          |
+	------------------- | --------------- | --------------- |
+	rc                  | c               | v               |
 
 # glReplacementCodeuiNormal3fVertex3fSUN[1]:
-	UInt32 | single | single | single | single | single | single |
-	------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc     | nx     | ny     | nz     | x      | y      | z      |
+	TriangleListSUN | single | single | single | single | single | single |
+	--------------- | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc              | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiNormal3fVertex3fvSUN[4]:
-	var UInt32 | array of single | array of single |
-	var UInt32 | var Vec3f       | var Vec3f       |
-	var UInt32 | var single      | var single      |
-	IntPtr     | IntPtr          | IntPtr          |
-	---------- | --------------- | --------------- |
-	rc         | n               | v               |
+	var TriangleListSUN | array of single | array of single |
+	var TriangleListSUN | var Vec3f       | var Vec3f       |
+	var TriangleListSUN | var single      | var single      |
+	IntPtr              | IntPtr          | IntPtr          |
+	------------------- | --------------- | --------------- |
+	rc                  | n               | v               |
 
 # glReplacementCodeuiColor4fNormal3fVertex3fSUN[1]:
-	UInt32 | single | single | single | single | single | single | single | single | single | single |
-	------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc     | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
+	TriangleListSUN | single | single | single | single | single | single | single | single | single | single |
+	--------------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc              | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiColor4fNormal3fVertex3fvSUN[4]:
-	var UInt32 | array of single | array of single | array of single |
-	var UInt32 | var Vec4f       | var Vec3f       | var Vec3f       |
-	var UInt32 | var single      | var single      | var single      |
-	IntPtr     | IntPtr          | IntPtr          | IntPtr          |
-	---------- | --------------- | --------------- | --------------- |
-	rc         | c               | n               | v               |
+	var TriangleListSUN | array of single | array of single | array of single |
+	var TriangleListSUN | var Vec4f       | var Vec3f       | var Vec3f       |
+	var TriangleListSUN | var single      | var single      | var single      |
+	IntPtr              | IntPtr          | IntPtr          | IntPtr          |
+	------------------- | --------------- | --------------- | --------------- |
+	rc                  | c               | n               | v               |
 
 # glReplacementCodeuiTexCoord2fVertex3fSUN[1]:
-	UInt32 | single | single | single | single | single |
-	------ | ------ | ------ | ------ | ------ | ------ |
-	rc     | s      | t      | x      | y      | z      |
+	TriangleListSUN | single | single | single | single | single |
+	--------------- | ------ | ------ | ------ | ------ | ------ |
+	rc              | s      | t      | x      | y      | z      |
 
 # glReplacementCodeuiTexCoord2fVertex3fvSUN[4]:
-	var UInt32 | array of single | array of single |
-	var UInt32 | var Vec2f       | var Vec3f       |
-	var UInt32 | var single      | var single      |
-	IntPtr     | IntPtr          | IntPtr          |
-	---------- | --------------- | --------------- |
-	rc         | tc              | v               |
+	var TriangleListSUN | array of single | array of single |
+	var TriangleListSUN | var Vec2f       | var Vec3f       |
+	var TriangleListSUN | var single      | var single      |
+	IntPtr              | IntPtr          | IntPtr          |
+	------------------- | --------------- | --------------- |
+	rc                  | tc              | v               |
 
 # glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN[1]:
-	UInt32 | single | single | single | single | single | single | single | single |
-	------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc     | s      | t      | nx     | ny     | nz     | x      | y      | z      |
+	TriangleListSUN | single | single | single | single | single | single | single | single |
+	--------------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc              | s      | t      | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN[4]:
-	var UInt32 | array of single | array of single | array of single |
-	var UInt32 | var Vec2f       | var Vec3f       | var Vec3f       |
-	var UInt32 | var single      | var single      | var single      |
-	IntPtr     | IntPtr          | IntPtr          | IntPtr          |
-	---------- | --------------- | --------------- | --------------- |
-	rc         | tc              | n               | v               |
+	var TriangleListSUN | array of single | array of single | array of single |
+	var TriangleListSUN | var Vec2f       | var Vec3f       | var Vec3f       |
+	var TriangleListSUN | var single      | var single      | var single      |
+	IntPtr              | IntPtr          | IntPtr          | IntPtr          |
+	------------------- | --------------- | --------------- | --------------- |
+	rc                  | tc              | n               | v               |
 
 # glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN[1]:
-	UInt32 | single | single | single | single | single | single | single | single | single | single | single | single |
-	------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc     | s      | t      | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
+	TriangleListSUN | single | single | single | single | single | single | single | single | single | single | single | single |
+	--------------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc              | s      | t      | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN[4]:
-	var UInt32 | array of single | array of single | array of single | array of single |
-	var UInt32 | var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
-	var UInt32 | var single      | var single      | var single      | var single      |
-	IntPtr     | IntPtr          | IntPtr          | IntPtr          | IntPtr          |
-	---------- | --------------- | --------------- | --------------- | --------------- |
-	rc         | tc              | c               | n               | v               |
+	var TriangleListSUN | array of single | array of single | array of single | array of single |
+	var TriangleListSUN | var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
+	var TriangleListSUN | var single      | var single      | var single      | var single      |
+	IntPtr              | IntPtr          | IntPtr          | IntPtr          | IntPtr          |
+	------------------- | --------------- | --------------- | --------------- | --------------- |
+	rc                  | tc              | c               | n               | v               |
 
 # wglSetStereoEmitterState3DL[1]:
 	Bool | gdi_device_context | UInt32 |
