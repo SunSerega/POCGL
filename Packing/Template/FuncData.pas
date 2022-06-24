@@ -214,8 +214,16 @@ type
           Result := false;
           ext := '_'+ext;
           if not ename.EndsWith(ext) then exit;
+          var base_ename := ename.Remove(ename.Length-ext.Length);
           var v: int64;
-          if not enums.TryGetValue(ename.Remove(ename.Length-ext.Length), v) then exit;
+          var found_v := false;
+          foreach var base_ext in |'', '_ARB', '_EXT'| do
+          begin
+            if ext=base_ext then break;
+            found_v := enums.TryGetValue(base_ename+base_ext, v);
+            if found_v then break;
+          end;
+          if not found_v then exit;
           if v<>enums[ename] then
           begin
             log.Otp($'Group {name}: Enum {ename}=${enums[ename]:X}, but without [{ext}]=${v:X}');
