@@ -357,6 +357,7 @@ begin
       var groups := enum['group'].ToWords(',').ToList;
       if groups.Remove('SpecialNumbers') then log.WriteLine($'Enum "{enum[''name'']}" was in SpecialNumbers');
       if groups.Count=0 then continue;
+      var ename := enum['name'];
       
       // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
       if enum['type']<>nil then raise new System.NotImplementedException(enum['name']);
@@ -376,7 +377,7 @@ begin
       foreach var gname in groups do
       begin
         var gb := GroupBuilder[gname];
-        gb += (enum['name'], val, bitmask);
+        gb += (ename, val, bitmask);
       end;
       
     end;
