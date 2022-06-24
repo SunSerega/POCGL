@@ -69,4 +69,8 @@
 !possible_par_types
  *	| +FogMode	|
 
+# glTexEnvi
+!possible_par_types
+ *	| *	| +TextureEnvMode	|
+
 

@@ -5859,10 +5859,11 @@
 	---------------- | ------------------- | --------------- |
 	target           | pname               | params          |
 
-# glTexEnvi[1]:
-	TextureEnvTarget | TextureEnvParameter | Int32 |
-	---------------- | ------------------- | ----- |
-	target           | pname               | param |
+# glTexEnvi[2]:
+	TextureEnvTarget | TextureEnvParameter | TextureEnvMode |
+	TextureEnvTarget | TextureEnvParameter | Int32          |
+	---------------- | ------------------- | -------------- |
+	target           | pname               | param          |
 
 # glTexEnviv[3]:
 	TextureEnvTarget | TextureEnvParameter | array of Int32 |
