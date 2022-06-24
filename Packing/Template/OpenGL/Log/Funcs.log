@@ -46,7 +46,6 @@ Group [FragmentShaderDestMaskATI] was not referenced
 Group [FragmentShaderDestModMaskATI] was not referenced
 Group [FragmentShaderColorModMaskATI] was not referenced
 Group [TraceMaskMESA] was not referenced
-Group [PerformanceQueryCapsMaskINTEL] was not referenced
 Group [VertexHintsMaskPGI] was not referenced
 Group [FoveationConfigBitQCOM] was not referenced
 Group [CommandOpcodesNV] was not referenced

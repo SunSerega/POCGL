@@ -18,10 +18,10 @@ var UInt32 = var gl_perf_query_id_INTEL
 
 # glGetPerfQueryInfoINTEL
 !possible_par_types
- -UInt32 +gl_perf_query_id_INTEL	| *	| *	| -array of UInt32	| -array of UInt32	| -array of UInt32	| -array of UInt32 -var UInt32 +var PerfQueryCapFlagsINTEL	|
+ -UInt32 +gl_perf_query_id_INTEL	| *	| *	| -array of UInt32	| -array of UInt32	| -array of UInt32	| -array of PerformanceQueryCapsMaskINTEL	|
 !limit_ovrs
- *									| *	| *	| var UInt32		| var UInt32		| var UInt32		| var PerfQueryCapFlagsINTEL								|
- *									| *	| *	| IntPtr			| IntPtr			| IntPtr			| IntPtr													|
+ *									| *	| *	| var UInt32		| var UInt32		| var UInt32		| var PerformanceQueryCapsMaskINTEL			|
+ *									| *	| *	| IntPtr			| IntPtr			| IntPtr			| IntPtr									|
 
 # glGetPerfCounterInfoINTEL
 !possible_par_types

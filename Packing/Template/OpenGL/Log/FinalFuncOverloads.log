@@ -13245,10 +13245,10 @@
 	queryName | queryId                    |
 
 # glGetPerfQueryInfoINTEL[2]:
-	gl_perf_query_id_INTEL | UInt32          | IntPtr    | var UInt32 | var UInt32 | var UInt32  | var PerfQueryCapFlagsINTEL |
-	gl_perf_query_id_INTEL | UInt32          | IntPtr    | IntPtr     | IntPtr     | IntPtr      | IntPtr                     |
-	---------------------- | --------------- | --------- | ---------- | ---------- | ----------- | -------------------------- |
-	queryId                | queryNameLength | queryName | dataSize   | noCounters | noInstances | capsMask                   |
+	gl_perf_query_id_INTEL | UInt32          | IntPtr    | var UInt32 | var UInt32 | var UInt32  | var PerformanceQueryCapsMaskINTEL |
+	gl_perf_query_id_INTEL | UInt32          | IntPtr    | IntPtr     | IntPtr     | IntPtr      | IntPtr                            |
+	---------------------- | --------------- | --------- | ---------- | ---------- | ----------- | --------------------------------- |
+	queryId                | queryNameLength | queryName | dataSize   | noCounters | noInstances | capsMask                          |
 
 # glBlendBarrierKHR[1]:
 
