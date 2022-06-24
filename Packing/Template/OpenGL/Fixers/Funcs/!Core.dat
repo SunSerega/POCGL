@@ -73,4 +73,9 @@
 !possible_par_types
  *	| *	| +TextureEnvMode	|
 
+# glGetIntegerv
+!possible_par_types
+ *	| +var ContextFlagMask +var ContextProfileMask +var SubgroupSupportedFeatures	|
+
+
 

@@ -1253,11 +1253,14 @@
 	-------- | ------ | --------- |
 	target   | index  | data      |
 
-# glGetIntegerv[2]:
-	GetPName | var Int32 |
-	GetPName | IntPtr    |
-	-------- | --------- |
-	pname    | data      |
+# glGetIntegerv[5]:
+	GetPName | var ContextFlagMask           |
+	GetPName | var ContextProfileMask        |
+	GetPName | var SubgroupSupportedFeatures |
+	GetPName | var Int32                     |
+	GetPName | IntPtr                        |
+	-------- | ----------------------------- |
+	pname    | data                          |
 
 # glGetInternalformati64v[2]:
 	TextureTarget | InternalFormat | InternalFormatPName | Int32 | var Int64 |
