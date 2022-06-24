@@ -1,8 +1,12 @@
 
 
 
-# glTextureParameteri
+# glTex[%,ture%]Parameteri
 !possible_par_types
  *	| *	| +ConvolutionBorderModeEXT	|
+ 
+# glTextureParameteriEXT
+!possible_par_types
+ *	| *	| *	| +ConvolutionBorderModeEXT	|
 
 

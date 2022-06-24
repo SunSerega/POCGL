@@ -2951,13 +2951,17 @@
 	------------- | -------------------- | --------------- |
 	target        | pname                | params          |
 
-# glTexParameteri[4]:
-	TextureTarget | TextureParameterName | TextureMagFilter |
-	TextureTarget | TextureParameterName | TextureMinFilter |
-	TextureTarget | TextureParameterName | TextureWrapMode  |
-	TextureTarget | TextureParameterName | Int32            |
-	------------- | -------------------- | ---------------- |
-	target        | pname                | param            |
+# glTexParameteri[8]:
+	TextureTarget | TextureParameterName | ConvolutionBorderModeEXT |
+	TextureTarget | TextureParameterName | DepthStencilTextureMode  |
+	TextureTarget | TextureParameterName | TextureCompareMode       |
+	TextureTarget | TextureParameterName | TextureMagFilter         |
+	TextureTarget | TextureParameterName | TextureMinFilter         |
+	TextureTarget | TextureParameterName | TextureSwizzle           |
+	TextureTarget | TextureParameterName | TextureWrapMode          |
+	TextureTarget | TextureParameterName | Int32                    |
+	------------- | -------------------- | ------------------------ |
+	target        | pname                | param                    |
 
 # glTexParameterIiv[3]:
 	TextureTarget | TextureParameterName | array of Int32 |
@@ -3044,10 +3048,13 @@
 	---------- | -------------------- | --------------- |
 	texture    | pname                | param           |
 
-# glTextureParameteri[5]:
+# glTextureParameteri[8]:
 	gl_texture | TextureParameterName | ConvolutionBorderModeEXT |
+	gl_texture | TextureParameterName | DepthStencilTextureMode  |
+	gl_texture | TextureParameterName | TextureCompareMode       |
 	gl_texture | TextureParameterName | TextureMagFilter         |
 	gl_texture | TextureParameterName | TextureMinFilter         |
+	gl_texture | TextureParameterName | TextureSwizzle           |
 	gl_texture | TextureParameterName | TextureWrapMode          |
 	gl_texture | TextureParameterName | Int32                    |
 	---------- | -------------------- | ------------------------ |
@@ -5887,10 +5894,11 @@
 	---------------- | ------------------- | --------------- |
 	coord            | pname               | params          |
 
-# glTexGeni[1]:
-	TextureCoordName | TextureGenParameter | Int32 |
-	---------------- | ------------------- | ----- |
-	coord            | pname               | param |
+# glTexGeni[2]:
+	TextureCoordName | TextureGenParameter | TextureGenMode |
+	TextureCoordName | TextureGenParameter | Int32          |
+	---------------- | ------------------- | -------------- |
+	coord            | pname               | param          |
 
 # glTexGeniv[3]:
 	TextureCoordName | TextureGenParameter | array of Int32 |
@@ -10142,13 +10150,17 @@
 	---------- | ------------- | -------------------- | --------------- |
 	texture    | target        | pname                | params          |
 
-# glTextureParameteriEXT[4]:
-	gl_texture | TextureTarget | TextureParameterName | TextureMagFilter |
-	gl_texture | TextureTarget | TextureParameterName | TextureMinFilter |
-	gl_texture | TextureTarget | TextureParameterName | TextureWrapMode  |
-	gl_texture | TextureTarget | TextureParameterName | Int32            |
-	---------- | ------------- | -------------------- | ---------------- |
-	texture    | target        | pname                | param            |
+# glTextureParameteriEXT[8]:
+	gl_texture | TextureTarget | TextureParameterName | ConvolutionBorderModeEXT |
+	gl_texture | TextureTarget | TextureParameterName | DepthStencilTextureMode  |
+	gl_texture | TextureTarget | TextureParameterName | TextureCompareMode       |
+	gl_texture | TextureTarget | TextureParameterName | TextureMagFilter         |
+	gl_texture | TextureTarget | TextureParameterName | TextureMinFilter         |
+	gl_texture | TextureTarget | TextureParameterName | TextureSwizzle           |
+	gl_texture | TextureTarget | TextureParameterName | TextureWrapMode          |
+	gl_texture | TextureTarget | TextureParameterName | Int32                    |
+	---------- | ------------- | -------------------- | ------------------------ |
+	texture    | target        | pname                | param                    |
 
 # glTextureParameterivEXT[3]:
 	gl_texture | TextureTarget | TextureParameterName | array of Int32 |
