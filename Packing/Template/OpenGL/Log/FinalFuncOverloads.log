@@ -2954,9 +2954,10 @@
 	------------- | -------------------- | --------------- |
 	target        | pname                | params          |
 
-# glTexParameteri[9]:
+# glTexParameteri[10]:
 	TextureTarget | TextureParameterName | ConvolutionBorderModeEXT |
 	TextureTarget | TextureParameterName | DepthStencilTextureMode  |
+	TextureTarget | TextureParameterName | FoveationConfigBitQCOM   |
 	TextureTarget | TextureParameterName | MapTextureFormatINTEL    |
 	TextureTarget | TextureParameterName | TextureCompareMode       |
 	TextureTarget | TextureParameterName | TextureMagFilter         |
@@ -3052,9 +3053,10 @@
 	---------- | -------------------- | --------------- |
 	texture    | pname                | param           |
 
-# glTextureParameteri[9]:
+# glTextureParameteri[10]:
 	gl_texture | TextureParameterName | ConvolutionBorderModeEXT |
 	gl_texture | TextureParameterName | DepthStencilTextureMode  |
+	gl_texture | TextureParameterName | FoveationConfigBitQCOM   |
 	gl_texture | TextureParameterName | MapTextureFormatINTEL    |
 	gl_texture | TextureParameterName | TextureCompareMode       |
 	gl_texture | TextureParameterName | TextureMagFilter         |
@@ -10157,9 +10159,10 @@
 	---------- | ------------- | -------------------- | --------------- |
 	texture    | target        | pname                | params          |
 
-# glTextureParameteriEXT[9]:
+# glTextureParameteriEXT[10]:
 	gl_texture | TextureTarget | TextureParameterName | ConvolutionBorderModeEXT |
 	gl_texture | TextureTarget | TextureParameterName | DepthStencilTextureMode  |
+	gl_texture | TextureTarget | TextureParameterName | FoveationConfigBitQCOM   |
 	gl_texture | TextureTarget | TextureParameterName | MapTextureFormatINTEL    |
 	gl_texture | TextureTarget | TextureParameterName | TextureCompareMode       |
 	gl_texture | TextureTarget | TextureParameterName | TextureMagFilter         |

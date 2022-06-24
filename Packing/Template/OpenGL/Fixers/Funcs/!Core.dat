@@ -51,11 +51,11 @@
 
 # glTex[%,ture%]Parameteri
 !possible_par_types
- *	| *	| +TextureMinFilter +TextureMagFilter +TextureWrapMode +DepthStencilTextureMode +TextureSwizzle +TextureCompareMode +MapTextureFormatINTEL	|
+ *	| *	| +TextureMinFilter +TextureMagFilter +TextureWrapMode +DepthStencilTextureMode +TextureSwizzle +TextureCompareMode +MapTextureFormatINTEL +FoveationConfigBitQCOM	|
 
 # glTextureParameteriEXT
 !possible_par_types
- *	| *	| *	| +TextureMinFilter +TextureMagFilter +TextureWrapMode +DepthStencilTextureMode +TextureSwizzle +TextureCompareMode +MapTextureFormatINTEL	|
+ *	| *	| *	| +TextureMinFilter +TextureMagFilter +TextureWrapMode +DepthStencilTextureMode +TextureSwizzle +TextureCompareMode +MapTextureFormatINTEL +FoveationConfigBitQCOM	|
 
 # glTexGeni
 !possible_par_types
