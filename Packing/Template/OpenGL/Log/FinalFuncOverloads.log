@@ -2271,15 +2271,17 @@
 
 # glPauseTransformFeedback[1]:
 
-# glPixelStoref[1]:
-	PixelStoreParameter | single |
-	------------------- | ------ |
-	pname               | param  |
+# glPixelStoref[2]:
+	PixelStoreParameter | PixelStoreSubsampleRate |
+	PixelStoreParameter | single                  |
+	------------------- | ----------------------- |
+	pname               | param                   |
 
-# glPixelStorei[1]:
-	PixelStoreParameter | Int32 |
-	------------------- | ----- |
-	pname               | param |
+# glPixelStorei[2]:
+	PixelStoreParameter | PixelStoreSubsampleRate |
+	PixelStoreParameter | Int32                   |
+	------------------- | ----------------------- |
+	pname               | param                   |
 
 # glPointParameterf[1]:
 	PointParameterNameARB | single |

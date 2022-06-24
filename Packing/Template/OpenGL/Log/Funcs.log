@@ -79,9 +79,4 @@ Group [VertexBufferObjectParameter] was not referenced
 Group [PixelStoreResampleMode] was not referenced
 Group [RegisterCombinerPname] was not referenced
 Group [PixelStoreSubsampleRate] was not referenced
-Group [ContainerType] was not referenced
-Group [CheckFramebufferStatusTarget] was not referenced
-Group [DrawBufferModeATI] was not referenced
-Group [FramebufferFetchNoncoherent] was not referenced
-Group [TexStorageAttribss] was not referenced
 done

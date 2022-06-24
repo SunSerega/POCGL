@@ -712,6 +712,8 @@ type
     
     public property IsGeneric: boolean read tname.StartsWith('T') and tname.Skip(1).All(char.IsDigit);
     
+    public property IsNakedType: boolean read (Group.ByName(tname)=nil) and (Struct.ByName(tname)=nil);
+    
     public function ToString(generate_code: boolean; with_var: boolean := false): string;
     begin
       if generate_code then
@@ -1092,6 +1094,10 @@ type
         possible_par_types[par_i].Sort((p1,p2)->
         begin
           Result := 0;
+          if object.ReferenceEquals(p1,p2) then exit; // Because List.Sort
+          if p1=p2 then raise new System.InvalidOperationException(
+            $'ERROR: Func [{self.name}] par#{par_i}: Type [{p1.ToString(true,true)}] is allowed twice'
+          );
           
           // 1. arr_lvl (descending)
           Result -= p1.arr_lvl;
@@ -1117,11 +1123,16 @@ type
           Result += Ord(p2.tname.StartsWith('Vec') and p2.tname.Skip('Vec'.Length).FirstOrDefault.InRange('1','4'));
           if Result<>0 then exit;
           
-          if p1.var_arg or (p1.arr_lvl<>0) then
-            Result := string.Compare(p1.tname, p2.tname) else
-          if p1<>p2 then
-            Otp($'ERROR: Func [{self.name}] par#{par_i}: Failed to sort [{p1.ToString(true,true)}] vs [{p2.ToString(true,true)}]');
+          // 6. Group vs naked
+          Result += Ord(p1.IsNakedType);
+          Result -= Ord(p2.IsNakedType);
           
+          // 7. Different reference target or enum group
+          if p1.var_arg or (p1.arr_lvl<>0) or not p1.IsNakedType then
+            Result := string.Compare(p1.tname, p2.tname);
+          if Result<>0 then exit;
+          
+          Otp($'ERROR: Func [{self.name}] par#{par_i}: Failed to sort [{p1.ToString(true,true)}] vs [{p2.ToString(true,true)}]');
         end);
         
       end;
