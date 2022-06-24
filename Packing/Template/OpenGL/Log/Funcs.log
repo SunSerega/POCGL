@@ -1,4 +1,4 @@
-Invalid ext name [1D] of [glTexImage1D], replaced with []
+﻿Invalid ext name [1D] of [glTexImage1D], replaced with []
 Invalid ext name [2D] of [glTexImage2D], replaced with []
 Invalid ext name [3D] of [glTexImage3D], replaced with []
 Invalid ext name [DC] of [wglGetCurrentDC], replaced with []
@@ -38,40 +38,16 @@ Func [glProgramParameteri] was added in versions [4.1] and [4.1]
 Invalid API: [gles1]
 Invalid API: [gles2]
 Invalid API: [glsc2]
-Group [ContextFlagMask] was not referenced
-Group [ContextProfileMask] was not referenced
-Group [OcclusionQueryEventMaskAMD] was not referenced
-Group [SubgroupSupportedFeatures] was not referenced
+Group EnableCap: Enum SAMPLE_MASK_SGIS=$80A0, but without [_SGIS]=$8E51
+Group GetPName: Enum SHADING_RATE_QCOM=$96A4, but without [_QCOM]=$96D0
+Group InternalFormat: Enum DEPTH_STENCIL_MESA=$8750, but without [_MESA]=$84F9
+Group InternalFormat: Enum DEPTH_COMPONENT32F_NV=$8DAB, but without [_NV]=$8CAC
+Group InternalFormat: Enum DEPTH32F_STENCIL8_NV=$8DAC, but without [_NV]=$8CAD
+Group PathColor: Enum PRIMARY_COLOR_NV=$852C, but without [_NV]=$8577
+Group RenderbufferParameterName: Enum RENDERBUFFER_SAMPLES_IMG=$9133, but without [_IMG]=$8CAB
+Group SizedInternalFormat: Enum DEPTH_COMPONENT32F_NV=$8DAB, but without [_NV]=$8CAC
+Group SizedInternalFormat: Enum DEPTH32F_STENCIL8_NV=$8DAC, but without [_NV]=$8CAD
 Group [FragmentShaderDestMaskATI] was not referenced
 Group [FragmentShaderDestModMaskATI] was not referenced
 Group [FragmentShaderColorModMaskATI] was not referenced
-Group [TraceMaskMESA] was not referenced
-Group [VertexHintsMaskPGI] was not referenced
-Group [FoveationConfigBitQCOM] was not referenced
-Group [CommandOpcodesNV] was not referenced
-Group [MapTextureFormatINTEL] was not referenced
-Group [TransformFeedbackTokenNV] was not referenced
-Group [TriangleListSUN] was not referenced
-Group [TextureSwizzle] was not referenced
-Group [TextureCompareMode] was not referenced
-Group [PixelTexGenMode] was not referenced
-Group [TextureEnvMode] was not referenced
-Group [LightEnvModeSGIX] was not referenced
-Group [ColorMaterialFace] was not referenced
-Group [FogMode] was not referenced
-Group [GetPixelMap] was not referenced
-Group [GlslTypeToken] was not referenced
-Group [DepthStencilTextureMode] was not referenced
-Group [TextureGenMode] was not referenced
-Group [TextureWrapMode] was not referenced
-Group [GetConvolutionParameter] was not referenced
-Group [ConvolutionBorderModeEXT] was not referenced
-Group [GetColorTableParameterPName] was not referenced
-Group [ColorTableParameterPName] was not referenced
-Group [PointParameterNameSGIS] was not referenced
-Group [TextureFilterFuncSGIS] was not referenced
-Group [LightModelColorControl] was not referenced
-Group [VertexBufferObjectParameter] was not referenced
-Group [RegisterCombinerPname] was not referenced
-Group [PixelStoreSubsampleRate] was not referenced
 done

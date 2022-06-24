@@ -27,7 +27,6 @@ glDisableVertexAttribAPPLE
 glIsVertexAttribEnabledAPPLE
 glMakeImageHandleResidentARB
 glCreateSyncFromCLeventARB
-glGetHandleARB
 glGetObjectParameterfvARB
 glGetObjectParameterivARB
 glNamedStringARB
@@ -53,7 +52,6 @@ glGetPixelTransformParameterivEXT
 glGetPixelTransformParameterfvEXT
 glUseShaderProgramEXT
 glTexPageCommitmentEXT
-glTransformFeedbackVaryingsEXT
 glWindowRectanglesEXT
 glImportSyncEXT
 glFlushStaticDataIBM
@@ -66,7 +64,6 @@ glAlphaToCoverageDitherControlNV
 glMakeImageHandleResidentNV
 glBlendParameteriNV
 glStateCaptureNV
-glGetCommandHeaderNV
 glDrawCommandsNV
 glDrawCommandsAddressNV
 glConservativeRasterParameterfNV
@@ -126,7 +123,6 @@ glShadingRateImagePaletteNV
 glShadingRateSampleOrderNV
 glShadingRateSampleOrderCustomNV
 glTransformFeedbackAttribsNV
-glTransformFeedbackVaryingsNV
 glGetActiveVaryingNV
 glTransformFeedbackStreamAttribsNV
 glVDPAURegisterVideoSurfaceNV

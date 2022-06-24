@@ -847,9 +847,7 @@
     public static property DEVICE_PREFERRED_INTEROP_USER_SYNC:                                   DeviceInfo read new DeviceInfo($1048);
     public static property DEVICE_PRINTF_BUFFER_SIZE:                                            DeviceInfo read new DeviceInfo($1049);
     public static property DEVICE_IMAGE_PITCH_ALIGNMENT:                                         DeviceInfo read new DeviceInfo($104A);
-    public static property DEVICE_IMAGE_PITCH_ALIGNMENT_KHR:                                     DeviceInfo read new DeviceInfo($104A);
     public static property DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT:                                  DeviceInfo read new DeviceInfo($104B);
-    public static property DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT_KHR:                              DeviceInfo read new DeviceInfo($104B);
     public static property DEVICE_MAX_READ_WRITE_IMAGE_ARGS:                                     DeviceInfo read new DeviceInfo($104C);
     public static property DEVICE_MAX_GLOBAL_VARIABLE_SIZE:                                      DeviceInfo read new DeviceInfo($104D);
     public static property DEVICE_QUEUE_ON_DEVICE_PROPERTIES:                                    DeviceInfo read new DeviceInfo($104E);
@@ -866,17 +864,12 @@
     public static property DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT:                             DeviceInfo read new DeviceInfo($1059);
     public static property DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT:                              DeviceInfo read new DeviceInfo($105A);
     public static property DEVICE_IL_VERSION:                                                    DeviceInfo read new DeviceInfo($105B);
-    public static property DEVICE_IL_VERSION_KHR:                                                DeviceInfo read new DeviceInfo($105B);
     public static property DEVICE_MAX_NUM_SUB_GROUPS:                                            DeviceInfo read new DeviceInfo($105C);
     public static property DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS:                        DeviceInfo read new DeviceInfo($105D);
-    public static property DEVICE_NUMERIC_VERSION_KHR:                                           DeviceInfo read new DeviceInfo($105E);
     public static property DEVICE_NUMERIC_VERSION:                                               DeviceInfo read new DeviceInfo($105E);
     public static property DEVICE_OPENCL_C_NUMERIC_VERSION_KHR:                                  DeviceInfo read new DeviceInfo($105F);
-    public static property DEVICE_EXTENSIONS_WITH_VERSION_KHR:                                   DeviceInfo read new DeviceInfo($1060);
     public static property DEVICE_EXTENSIONS_WITH_VERSION:                                       DeviceInfo read new DeviceInfo($1060);
-    public static property DEVICE_ILS_WITH_VERSION_KHR:                                          DeviceInfo read new DeviceInfo($1061);
     public static property DEVICE_ILS_WITH_VERSION:                                              DeviceInfo read new DeviceInfo($1061);
-    public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR:                             DeviceInfo read new DeviceInfo($1062);
     public static property DEVICE_BUILT_IN_KERNELS_WITH_VERSION:                                 DeviceInfo read new DeviceInfo($1062);
     public static property DEVICE_ATOMIC_MEMORY_CAPABILITIES:                                    DeviceInfo read new DeviceInfo($1063);
     public static property DEVICE_ATOMIC_FENCE_CAPABILITIES:                                     DeviceInfo read new DeviceInfo($1064);
@@ -1052,9 +1045,7 @@
       if self.val = UInt32($1048) then Result := 'DEVICE_PREFERRED_INTEROP_USER_SYNC' else
       if self.val = UInt32($1049) then Result := 'DEVICE_PRINTF_BUFFER_SIZE' else
       if self.val = UInt32($104A) then Result := 'DEVICE_IMAGE_PITCH_ALIGNMENT' else
-      if self.val = UInt32($104A) then Result := 'DEVICE_IMAGE_PITCH_ALIGNMENT_KHR' else
       if self.val = UInt32($104B) then Result := 'DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT' else
-      if self.val = UInt32($104B) then Result := 'DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT_KHR' else
       if self.val = UInt32($104C) then Result := 'DEVICE_MAX_READ_WRITE_IMAGE_ARGS' else
       if self.val = UInt32($104D) then Result := 'DEVICE_MAX_GLOBAL_VARIABLE_SIZE' else
       if self.val = UInt32($104E) then Result := 'DEVICE_QUEUE_ON_DEVICE_PROPERTIES' else
@@ -1071,17 +1062,12 @@
       if self.val = UInt32($1059) then Result := 'DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT' else
       if self.val = UInt32($105A) then Result := 'DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT' else
       if self.val = UInt32($105B) then Result := 'DEVICE_IL_VERSION' else
-      if self.val = UInt32($105B) then Result := 'DEVICE_IL_VERSION_KHR' else
       if self.val = UInt32($105C) then Result := 'DEVICE_MAX_NUM_SUB_GROUPS' else
       if self.val = UInt32($105D) then Result := 'DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS' else
-      if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION_KHR' else
       if self.val = UInt32($105E) then Result := 'DEVICE_NUMERIC_VERSION' else
       if self.val = UInt32($105F) then Result := 'DEVICE_OPENCL_C_NUMERIC_VERSION_KHR' else
-      if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION_KHR' else
       if self.val = UInt32($1060) then Result := 'DEVICE_EXTENSIONS_WITH_VERSION' else
-      if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION_KHR' else
       if self.val = UInt32($1061) then Result := 'DEVICE_ILS_WITH_VERSION' else
-      if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION_KHR' else
       if self.val = UInt32($1062) then Result := 'DEVICE_BUILT_IN_KERNELS_WITH_VERSION' else
       if self.val = UInt32($1063) then Result := 'DEVICE_ATOMIC_MEMORY_CAPABILITIES' else
       if self.val = UInt32($1064) then Result := 'DEVICE_ATOMIC_FENCE_CAPABILITIES' else
@@ -2055,14 +2041,12 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT:     KernelSubGroupInfo read new KernelSubGroupInfo($11B8);
-    public static property KERNEL_MAX_NUM_SUB_GROUPS:                 KernelSubGroupInfo read new KernelSubGroupInfo($11B9);
-    public static property KERNEL_COMPILE_NUM_SUB_GROUPS:             KernelSubGroupInfo read new KernelSubGroupInfo($11BA);
-    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE:     KernelSubGroupInfo read new KernelSubGroupInfo($2033);
-    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR: KernelSubGroupInfo read new KernelSubGroupInfo($2033);
-    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE:        KernelSubGroupInfo read new KernelSubGroupInfo($2034);
-    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR:    KernelSubGroupInfo read new KernelSubGroupInfo($2034);
-    public static property KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL:       KernelSubGroupInfo read new KernelSubGroupInfo($410A);
+    public static property KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT: KernelSubGroupInfo read new KernelSubGroupInfo($11B8);
+    public static property KERNEL_MAX_NUM_SUB_GROUPS:             KernelSubGroupInfo read new KernelSubGroupInfo($11B9);
+    public static property KERNEL_COMPILE_NUM_SUB_GROUPS:         KernelSubGroupInfo read new KernelSubGroupInfo($11BA);
+    public static property KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE: KernelSubGroupInfo read new KernelSubGroupInfo($2033);
+    public static property KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE:    KernelSubGroupInfo read new KernelSubGroupInfo($2034);
+    public static property KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL:   KernelSubGroupInfo read new KernelSubGroupInfo($410A);
     
     public function ToString: string; override;
     begin
@@ -2070,9 +2054,7 @@
       if self.val = UInt32($11B9) then Result := 'KERNEL_MAX_NUM_SUB_GROUPS' else
       if self.val = UInt32($11BA) then Result := 'KERNEL_COMPILE_NUM_SUB_GROUPS' else
       if self.val = UInt32($2033) then Result := 'KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE' else
-      if self.val = UInt32($2033) then Result := 'KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE_KHR' else
       if self.val = UInt32($2034) then Result := 'KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE' else
-      if self.val = UInt32($2034) then Result := 'KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE_KHR' else
       if self.val = UInt32($410A) then Result := 'KERNEL_COMPILE_SUB_GROUP_SIZE_INTEL' else
         Result := $'KernelSubGroupInfo[{self.val}]';
     end;
@@ -2468,9 +2450,7 @@
     public static property PLATFORM_VENDOR:                                  PlatformInfo read new PlatformInfo($0903);
     public static property PLATFORM_EXTENSIONS:                              PlatformInfo read new PlatformInfo($0904);
     public static property PLATFORM_HOST_TIMER_RESOLUTION:                   PlatformInfo read new PlatformInfo($0905);
-    public static property PLATFORM_NUMERIC_VERSION_KHR:                     PlatformInfo read new PlatformInfo($0906);
     public static property PLATFORM_NUMERIC_VERSION:                         PlatformInfo read new PlatformInfo($0906);
-    public static property PLATFORM_EXTENSIONS_WITH_VERSION_KHR:             PlatformInfo read new PlatformInfo($0907);
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:                 PlatformInfo read new PlatformInfo($0907);
     public static property PLATFORM_ICD_SUFFIX_KHR:                          PlatformInfo read new PlatformInfo($0920);
     public static property PLATFORM_SEMAPHORE_TYPES_KHR:                     PlatformInfo read new PlatformInfo($2036);
@@ -2486,9 +2466,7 @@
       if self.val = UInt32($0903) then Result := 'PLATFORM_VENDOR' else
       if self.val = UInt32($0904) then Result := 'PLATFORM_EXTENSIONS' else
       if self.val = UInt32($0905) then Result := 'PLATFORM_HOST_TIMER_RESOLUTION' else
-      if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION_KHR' else
       if self.val = UInt32($0906) then Result := 'PLATFORM_NUMERIC_VERSION' else
-      if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION_KHR' else
       if self.val = UInt32($0907) then Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if self.val = UInt32($0920) then Result := 'PLATFORM_ICD_SUFFIX_KHR' else
       if self.val = UInt32($2036) then Result := 'PLATFORM_SEMAPHORE_TYPES_KHR' else
@@ -2580,7 +2558,6 @@
     public static property PROGRAM_NUM_KERNELS:                ProgramInfo read new ProgramInfo($1167);
     public static property PROGRAM_KERNEL_NAMES:               ProgramInfo read new ProgramInfo($1168);
     public static property PROGRAM_IL:                         ProgramInfo read new ProgramInfo($1169);
-    public static property PROGRAM_IL_KHR:                     ProgramInfo read new ProgramInfo($1169);
     public static property PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT: ProgramInfo read new ProgramInfo($116A);
     public static property PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT: ProgramInfo read new ProgramInfo($116B);
     
@@ -2596,7 +2573,6 @@
       if self.val = UInt32($1167) then Result := 'PROGRAM_NUM_KERNELS' else
       if self.val = UInt32($1168) then Result := 'PROGRAM_KERNEL_NAMES' else
       if self.val = UInt32($1169) then Result := 'PROGRAM_IL' else
-      if self.val = UInt32($1169) then Result := 'PROGRAM_IL_KHR' else
       if self.val = UInt32($116A) then Result := 'PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT' else
       if self.val = UInt32($116B) then Result := 'PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT' else
         Result := $'ProgramInfo[{self.val}]';
