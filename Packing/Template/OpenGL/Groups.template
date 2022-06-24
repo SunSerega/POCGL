@@ -1809,6 +1809,34 @@
     
   end;
   
+  FeedBackToken = record
+    public val: single;
+    public constructor(val: single) := self.val := val;
+    
+    public static property PASS_THROUGH_TOKEN: FeedBackToken read new FeedBackToken($0700);
+    public static property POINT_TOKEN:        FeedBackToken read new FeedBackToken($0701);
+    public static property LINE_TOKEN:         FeedBackToken read new FeedBackToken($0702);
+    public static property POLYGON_TOKEN:      FeedBackToken read new FeedBackToken($0703);
+    public static property BITMAP_TOKEN:       FeedBackToken read new FeedBackToken($0704);
+    public static property DRAW_PIXEL_TOKEN:   FeedBackToken read new FeedBackToken($0705);
+    public static property COPY_PIXEL_TOKEN:   FeedBackToken read new FeedBackToken($0706);
+    public static property LINE_RESET_TOKEN:   FeedBackToken read new FeedBackToken($0707);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = single($0700) then Result := 'PASS_THROUGH_TOKEN' else
+      if self.val = single($0701) then Result := 'POINT_TOKEN' else
+      if self.val = single($0702) then Result := 'LINE_TOKEN' else
+      if self.val = single($0703) then Result := 'POLYGON_TOKEN' else
+      if self.val = single($0704) then Result := 'BITMAP_TOKEN' else
+      if self.val = single($0705) then Result := 'DRAW_PIXEL_TOKEN' else
+      if self.val = single($0706) then Result := 'COPY_PIXEL_TOKEN' else
+      if self.val = single($0707) then Result := 'LINE_RESET_TOKEN' else
+        Result := $'FeedBackToken[{self.val}]';
+    end;
+    
+  end;
+  
   FeedbackType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;

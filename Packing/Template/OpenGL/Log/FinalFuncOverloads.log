@@ -4508,11 +4508,11 @@
 	i     | j     |
 
 # glFeedbackBuffer[3]:
-	Int32 | FeedbackType | array of single |
-	Int32 | FeedbackType | var single      |
-	Int32 | FeedbackType | IntPtr          |
-	----- | ------------ | --------------- |
-	size  | type         | buffer          |
+	Int32 | FeedbackType | array of FeedBackToken |
+	Int32 | FeedbackType | var FeedBackToken      |
+	Int32 | FeedbackType | IntPtr                 |
+	----- | ------------ | ---------------------- |
+	size  | type         | buffer                 |
 
 # glFogCoordd[1]:
 	real  |

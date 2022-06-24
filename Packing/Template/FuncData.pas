@@ -2587,6 +2587,23 @@ type
     
   end;
   
+  GroupBaseFixer = sealed class(GroupFixer)
+    public new_base: string;
+    
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      self.new_base := data.Single(l->not string.IsNullOrWhiteSpace(l));
+    end;
+    
+    public function Apply(gr: Group): boolean; override;
+    begin
+      gr.t := new_base;
+      self.used := true;
+      Result := false;
+    end;
+    
+  end;
   GroupNameFixer = sealed class(GroupFixer)
     public new_name: string;
     
@@ -2679,6 +2696,7 @@ begin
       'add':        GroupAdder            .Create(gr[0], bl[1]);
       'remove':     GroupRemover          .Create(gr[0], bl[1]);
       
+      'base':       GroupBaseFixer        .Create(gr[0], bl[1]);
       'rename':     GroupNameFixer        .Create(gr[0], bl[1]);
       'add_enum':   GroupAddEnumFixer     .Create(gr[0], bl[1]);
       'cust_memb':  GroupCustopMemberFixer.Create(gr[0], bl[1]);

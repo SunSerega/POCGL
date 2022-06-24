@@ -59,7 +59,6 @@ Group [PixelTexGenMode] was not referenced
 Group [TextureEnvMode] was not referenced
 Group [LightEnvModeSGIX] was not referenced
 Group [ColorMaterialFace] was not referenced
-Group [FeedBackToken] was not referenced
 Group [FogMode] was not referenced
 Group [GetPixelMap] was not referenced
 Group [GlslTypeToken] was not referenced

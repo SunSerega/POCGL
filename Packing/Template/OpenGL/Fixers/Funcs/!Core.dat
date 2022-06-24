@@ -61,4 +61,8 @@
 !possible_par_types
  *	| *	| +TextureGenMode	|
 
+# glFeedbackBuffer
+!possible_par_types
+ *	| *	| -array of single -var single +array of FeedBackToken +var FeedBackToken	|
+
 
