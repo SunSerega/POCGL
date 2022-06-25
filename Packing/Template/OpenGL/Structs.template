@@ -170,35 +170,44 @@
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 80)]
-  ///--
-  _ValueString_80 = record
+  ValueAnsiString_80 = record
     
-    public property NtvChars[i: integer]: Byte
+    public property AnsiChars[i: integer]: Byte
     read Marshal.ReadByte(new IntPtr(@self), i)
-    write Marshal.WriteByte(new IntPtr(@self), i, value);    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;
+    write Marshal.WriteByte(new IntPtr(@self), i, value);
+    public property Chars[i: integer]: char read ChrAnsi(AnsiChars[i]) write AnsiChars[i] := OrdAnsi(value); default;
     
-    public constructor(s: string);
+    public constructor(s: string; can_trim: boolean := false);
     begin
-      if s.Length >= 80 then raise new System.OverflowException;
+      var len := s.Length;
+      if len>79 then
+        if can_trim then
+          len := 79 else
+          raise new System.OverflowException;
       
-      for var i := 0 to s.Length-1 do
+      self.AnsiChars[len] := 0;
+      for var i := 0 to len-1 do
         self[i] := s[i+1];
-      self.NtvChars[s.Length] := 0;
       
     end;
     
     public function ToString: string; override :=
     Marshal.PtrToStringAnsi(new IntPtr(@self));
     
+    public static function operator implicit(s: string): ValueAnsiString_80 := new ValueAnsiString_80(s);
+    public static function operator explicit(s: string): ValueAnsiString_80 := new ValueAnsiString_80(s, true);
+    
+    public static function operator implicit(s: ValueAnsiString_80): string := s.ToString;
+    
   end;
   
   glx_hyperpipe_config_SGIX = record
-    public pipeName: _ValueString_80;
+    public pipeName: ValueAnsiString_80;
     public channel: Int32;
     public participationType: PipeParticipationTypeFlags;
     public timeSlice: Int32;
     
-    public constructor(pipeName: _ValueString_80; channel: Int32; participationType: PipeParticipationTypeFlags; timeSlice: Int32);
+    public constructor(pipeName: ValueAnsiString_80; channel: Int32; participationType: PipeParticipationTypeFlags; timeSlice: Int32);
     begin
       self.pipeName := pipeName;
       self.channel := channel;
@@ -209,10 +218,10 @@
   end;
   
   glx_hyperpipe_network_SGIX = record
-    public pipeName: _ValueString_80;
+    public pipeName: ValueAnsiString_80;
     public networkId: Int32;
     
-    public constructor(pipeName: _ValueString_80; networkId: Int32);
+    public constructor(pipeName: ValueAnsiString_80; networkId: Int32);
     begin
       self.pipeName := pipeName;
       self.networkId := networkId;
@@ -221,13 +230,13 @@
   end;
   
   glx_pipe_rect_limits_SGIX = record
-    public pipeName: _ValueString_80;
+    public pipeName: ValueAnsiString_80;
     public XOrigin: Int32;
     public YOrigin: Int32;
     public maxHeight: Int32;
     public maxWidth: Int32;
     
-    public constructor(pipeName: _ValueString_80; XOrigin: Int32; YOrigin: Int32; maxHeight: Int32; maxWidth: Int32);
+    public constructor(pipeName: ValueAnsiString_80; XOrigin: Int32; YOrigin: Int32; maxHeight: Int32; maxWidth: Int32);
     begin
       self.pipeName := pipeName;
       self.XOrigin := XOrigin;
@@ -239,7 +248,7 @@
   end;
   
   glx_pipe_rect_SGIX = record
-    public pipeName: _ValueString_80;
+    public pipeName: ValueAnsiString_80;
     public srcXOrigin: Int32;
     public srcYOrigin: Int32;
     public srcWidth: Int32;
@@ -249,7 +258,7 @@
     public destWidth: Int32;
     public destHeight: Int32;
     
-    public constructor(pipeName: _ValueString_80; srcXOrigin: Int32; srcYOrigin: Int32; srcWidth: Int32; srcHeight: Int32; destXOrigin: Int32; destYOrigin: Int32; destWidth: Int32; destHeight: Int32);
+    public constructor(pipeName: ValueAnsiString_80; srcXOrigin: Int32; srcYOrigin: Int32; srcWidth: Int32; srcHeight: Int32; destXOrigin: Int32; destYOrigin: Int32; destWidth: Int32; destHeight: Int32);
     begin
       self.pipeName := pipeName;
       self.srcXOrigin := srcXOrigin;
@@ -275,59 +284,77 @@
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 32)]
-  ///--
-  _ValueString_32 = record
+  ValueAnsiString_32 = record
     
-    public property NtvChars[i: integer]: Byte
+    public property AnsiChars[i: integer]: Byte
     read Marshal.ReadByte(new IntPtr(@self), i)
-    write Marshal.WriteByte(new IntPtr(@self), i, value);    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;
+    write Marshal.WriteByte(new IntPtr(@self), i, value);
+    public property Chars[i: integer]: char read ChrAnsi(AnsiChars[i]) write AnsiChars[i] := OrdAnsi(value); default;
     
-    public constructor(s: string);
+    public constructor(s: string; can_trim: boolean := false);
     begin
-      if s.Length >= 32 then raise new System.OverflowException;
+      var len := s.Length;
+      if len>31 then
+        if can_trim then
+          len := 31 else
+          raise new System.OverflowException;
       
-      for var i := 0 to s.Length-1 do
+      self.AnsiChars[len] := 0;
+      for var i := 0 to len-1 do
         self[i] := s[i+1];
-      self.NtvChars[s.Length] := 0;
       
     end;
     
     public function ToString: string; override :=
     Marshal.PtrToStringAnsi(new IntPtr(@self));
+    
+    public static function operator implicit(s: string): ValueAnsiString_32 := new ValueAnsiString_32(s);
+    public static function operator explicit(s: string): ValueAnsiString_32 := new ValueAnsiString_32(s, true);
+    
+    public static function operator implicit(s: ValueAnsiString_32): string := s.ToString;
     
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 128)]
-  ///--
-  _ValueString_128 = record
+  ValueAnsiString_128 = record
     
-    public property NtvChars[i: integer]: Byte
+    public property AnsiChars[i: integer]: Byte
     read Marshal.ReadByte(new IntPtr(@self), i)
-    write Marshal.WriteByte(new IntPtr(@self), i, value);    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;
+    write Marshal.WriteByte(new IntPtr(@self), i, value);
+    public property Chars[i: integer]: char read ChrAnsi(AnsiChars[i]) write AnsiChars[i] := OrdAnsi(value); default;
     
-    public constructor(s: string);
+    public constructor(s: string; can_trim: boolean := false);
     begin
-      if s.Length >= 128 then raise new System.OverflowException;
+      var len := s.Length;
+      if len>127 then
+        if can_trim then
+          len := 127 else
+          raise new System.OverflowException;
       
-      for var i := 0 to s.Length-1 do
+      self.AnsiChars[len] := 0;
+      for var i := 0 to len-1 do
         self[i] := s[i+1];
-      self.NtvChars[s.Length] := 0;
       
     end;
     
     public function ToString: string; override :=
     Marshal.PtrToStringAnsi(new IntPtr(@self));
+    
+    public static function operator implicit(s: string): ValueAnsiString_128 := new ValueAnsiString_128(s);
+    public static function operator explicit(s: string): ValueAnsiString_128 := new ValueAnsiString_128(s, true);
+    
+    public static function operator implicit(s: ValueAnsiString_128): string := s.ToString;
     
   end;
   
   wgl_GPU_device_NV = record
     public cb: UInt32 := sizeof(wgl_GPU_device_NV);
-    public DeviceName: _ValueString_32;
-    public DeviceString: _ValueString_128;
+    public DeviceName: ValueAnsiString_32;
+    public DeviceString: ValueAnsiString_128;
     public Flags: GPUDisplayDeviceFlags;
     public rcVirtualScreen: record left, top, right, bottom: Int64; end := (left: 0; top: 0; right: 0; bottom: 0);
     
-    public constructor(DeviceName: _ValueString_32; DeviceString: _ValueString_128; Flags: GPUDisplayDeviceFlags);
+    public constructor(DeviceName: ValueAnsiString_32; DeviceString: ValueAnsiString_128; Flags: GPUDisplayDeviceFlags);
     begin
       self.DeviceName := DeviceName;
       self.DeviceString := DeviceString;

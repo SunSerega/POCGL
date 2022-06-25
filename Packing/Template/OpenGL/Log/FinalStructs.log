@@ -83,28 +83,28 @@
 	dwVisibleMask: UInt32
 	dwDamageMask: UInt32
 
-# _ValueString_80
+# ValueAnsiString_80
 	body: ntv_char[80]
 
 # glx_hyperpipe_config_SGIX
-	pipeName: _ValueString_80
+	pipeName: ValueAnsiString_80
 	channel: Int32
 	participationType: PipeParticipationTypeFlags
 	timeSlice: Int32
 
 # glx_hyperpipe_network_SGIX
-	pipeName: _ValueString_80
+	pipeName: ValueAnsiString_80
 	networkId: Int32
 
 # glx_pipe_rect_limits_SGIX
-	pipeName: _ValueString_80
+	pipeName: ValueAnsiString_80
 	XOrigin: Int32
 	YOrigin: Int32
 	maxHeight: Int32
 	maxWidth: Int32
 
 # glx_pipe_rect_SGIX
-	pipeName: _ValueString_80
+	pipeName: ValueAnsiString_80
 	srcXOrigin: Int32
 	srcYOrigin: Int32
 	srcWidth: Int32
@@ -117,16 +117,16 @@
 # Half
 	val: UInt16
 
-# _ValueString_32
+# ValueAnsiString_32
 	body: ntv_char[32]
 
-# _ValueString_128
+# ValueAnsiString_128
 	body: ntv_char[128]
 
 # wgl_GPU_device_NV
 	cb: UInt32
-	DeviceName: _ValueString_32
-	DeviceString: _ValueString_128
+	DeviceName: ValueAnsiString_32
+	DeviceString: ValueAnsiString_128
 	Flags: GPUDisplayDeviceFlags
 	rcVirtualScreen: record left, top, right, bottom: Int64; end
 

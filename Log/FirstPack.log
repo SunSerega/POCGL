@@ -1,8 +1,26 @@
 ﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runing SubReps Update
+SubReps Update: Init
+SubReps Update: Done init
 SubReps Update: Pulling OpenCL Docs
+SubReps Update: OpenCL Docs : checkout:
+SubReps Update: OpenCL Docs : Your branch is up to date with '0_official/main'.
+SubReps Update: OpenCL Docs : [Info] Already on 'main'
+SubReps Update: OpenCL Docs : pull:
+SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
+SubReps Update: OpenCL Docs : [Info] * branch            main       -> FETCH_HEAD
+SubReps Update: OpenCL Docs : Already up to date.
+SubReps Update: OpenCL Docs : push:
+SubReps Update: OpenCL Docs : [Info] Everything up-to-date
 SubReps Update: Done pulling OpenCL Docs
 SubReps Update: Pulling OpenGL Registry
+SubReps Update: OpenGL Registry : checkout:
+SubReps Update: OpenGL Registry : Your branch is up to date with 'SunSerega/unused-groups'.
+SubReps Update: OpenGL Registry : [Info] Already on 'unused-groups'
+SubReps Update: OpenGL Registry : pull:
+SubReps Update: OpenGL Registry : [Info] fatal: couldn't find remote ref unused-groups
+SubReps Update: OpenGL Registry : push:
+SubReps Update: OpenGL Registry : [Info] Everything up-to-date
 SubReps Update: Done pulling OpenGL Registry
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

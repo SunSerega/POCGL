@@ -508,7 +508,7 @@ type
     private static ValueStringNamesCache := new HashSet<string>;
     private static function MakeValueString(wr: Writer; len: integer): string;
     begin
-      Result := $'_ValueString_{len}';
+      Result := $'ValueAnsiString_{len}';
       if not ValueStringNamesCache.Add(Result) then exit;
       
       log_structs.Otp($'# {Result}');
@@ -519,34 +519,56 @@ type
       wr += len.ToString;
       wr += ')]'#10;
       
-      wr += '  ///--'#10;
       wr += '  ';
       wr += Result;
       wr += ' = record'#10;
       wr += '    '#10;
       
-      wr += '    public property NtvChars[i: integer]: Byte'#10;
+      wr += '    public property AnsiChars[i: integer]: Byte'#10;
       wr += '    read Marshal.ReadByte(new IntPtr(@self), i)'#10;
-      wr += '    write Marshal.WriteByte(new IntPtr(@self), i, value);';
+      wr += '    write Marshal.WriteByte(new IntPtr(@self), i, value);'#10;
       
-      wr += '    public property Chars[i: integer]: char read ChrAnsi(NtvChars[i]) write NtvChars[i] := OrdAnsi(value); default;'#10;
+      wr += '    public property Chars[i: integer]: char read ChrAnsi(AnsiChars[i]) write AnsiChars[i] := OrdAnsi(value); default;'#10;
       wr += '    '#10;
       
-      wr += '    public constructor(s: string);'#10;
+      wr += '    public constructor(s: string; can_trim: boolean := false);'#10;
       wr += '    begin'#10;
-      wr += '      if s.Length >= ';
-      wr += len.ToString;
-      wr += ' then raise new System.OverflowException;'#10;
+      wr += '      var len := s.Length;'#10;
+      wr += '      if len>';
+      wr += len-1;
+      wr += ' then'#10;
+      wr += '        if can_trim then'#10;
+      wr += '          len := ';
+      wr += len-1;
+      wr += ' else'#10;
+      wr += '          raise new System.OverflowException;'#10;
       wr += '      '#10;
-      wr += '      for var i := 0 to s.Length-1 do'#10;
+      wr += '      self.AnsiChars[len] := 0;'#10;
+      wr += '      for var i := 0 to len-1 do'#10;
       wr += '        self[i] := s[i+1];'#10;
-      wr += '      self.NtvChars[s.Length] := 0;'#10;
       wr += '      '#10;
       wr += '    end;'#10;
       wr += '    '#10;
       
       wr += '    public function ToString: string; override :='#10;
       wr += '    Marshal.PtrToStringAnsi(new IntPtr(@self));'#10;
+      wr += '    '#10;
+      
+      wr += '    public static function operator implicit(s: string): ';
+      wr += Result;
+      wr += ' := new ';
+      wr += Result;
+      wr += '(s);'#10;
+      wr += '    public static function operator explicit(s: string): ';
+      wr += Result;
+      wr += ' := new ';
+      wr += Result;
+      wr += '(s, true);'#10;
+      wr += '    '#10;
+      
+      wr += '    public static function operator implicit(s: ';
+      wr += Result;
+      wr += '): string := s.ToString;'#10;
       wr += '    '#10;
       
       wr += '  end;'#10;
