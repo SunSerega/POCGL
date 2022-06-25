@@ -520,7 +520,19 @@ type
           if pars.Length<>0 then
           begin
             res += '(';
-            res += pars.Select(par->$'{par.Name}: {TypeToTypeName(par.ParameterType)}').JoinToString('; ');
+            foreach var par in pars index i do
+            begin
+              if i<>0 then res += '; ';
+              var par_t := par.ParameterType;
+              if par_t.IsByRef then
+              begin
+                res += 'var ';
+                par_t := par_t.GetElementType;
+              end;
+              res += par.Name;
+              res += ': ';
+              res += TypeToTypeName(par_t);
+            end;
             res += ')';
           end;
           if is_func then
