@@ -1,4 +1,4 @@
-﻿Executing selected stages:
+Executing selected stages:
 FirstPack + Reference + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
 =================================== First Pack ===================================
@@ -163,6 +163,16 @@ Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [ConvolutionTargetEXT] had different enums from [ConvolutionTarget]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [SeparableTargetEXT] had different enums from [SeparableTarget]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [HistogramTargetEXT] had different enums from [HistogramTarget]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [MinmaxTargetEXT] had different enums from [MinmaxTarget]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [SamplePatternEXT] had different enums from [SamplePattern]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [ColorTableTargetSGI] had different enums from [ColorTableTarget]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [VertexArrayPNameAPPLE] had different enums from [VertexArrayPName]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [VertexAttribEnumNV] had different enums from [VertexAttribEnum]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [ShadingRateQCOM] had different enums from [ShadingRate]
+Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [HintTargetPGI] had different enums from [HintTarget]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesNV]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesAddressNV]

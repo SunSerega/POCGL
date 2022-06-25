@@ -127,7 +127,7 @@
 	cb: UInt32
 	DeviceName: _ValueString_32
 	DeviceString: _ValueString_128
-	Flags: GPUDisplayDeviceFlagsNV
+	Flags: GPUDisplayDeviceFlags
 	rcVirtualScreen: record left, top, right, bottom: Int64; end
 
 

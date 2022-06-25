@@ -21,6 +21,7 @@ GraphWPF.$delegate? = procedure(ch: char)
 GraphWPF.$delegate? = procedure
 GraphWPF.$delegate? = procedure
 GraphWPF.$delegate? = procedure(dt: real)
+GraphWPF.$delegate? = procedure(dc: DrawingContext)
 GraphWPF_implementation______.$delegate? = procedure(x: real; y: real; r1: real; r2: real; c: Color)
 GraphWPF_implementation______.$delegate? = procedure(c: Color)
 GraphWPF_implementation______.$delegate? = procedure

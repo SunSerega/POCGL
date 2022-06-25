@@ -141,8 +141,6 @@ type
   
   {$region Перечисления}
   
-  {$region Core}
-  
   AcceleratorInfoIntel = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2921,8 +2919,6 @@ type
     end;
     
   end;
-  
-  {$endregion Core}
   
   {$endregion Перечисления}
   

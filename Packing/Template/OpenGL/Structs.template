@@ -324,10 +324,10 @@
     public cb: UInt32 := sizeof(wgl_GPU_device_NV);
     public DeviceName: _ValueString_32;
     public DeviceString: _ValueString_128;
-    public Flags: GPUDisplayDeviceFlagsNV;
+    public Flags: GPUDisplayDeviceFlags;
     public rcVirtualScreen: record left, top, right, bottom: Int64; end := (left: 0; top: 0; right: 0; bottom: 0);
     
-    public constructor(DeviceName: _ValueString_32; DeviceString: _ValueString_128; Flags: GPUDisplayDeviceFlagsNV);
+    public constructor(DeviceName: _ValueString_32; DeviceString: _ValueString_128; Flags: GPUDisplayDeviceFlags);
     begin
       self.DeviceName := DeviceName;
       self.DeviceString := DeviceString;

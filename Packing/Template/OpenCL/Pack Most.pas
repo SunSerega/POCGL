@@ -13,6 +13,7 @@ begin
     
     Otp($'Fixing all');
     LoadFixers;
+    Group.FixAllEndExt;
     Group.FixCL_Names;
     Func.FixAllGet;
     Func.FixCL;

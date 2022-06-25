@@ -95,9 +95,9 @@
 	target            | framebuffer    |
 
 # glBindImageTexture[1]:
-	UInt32 | gl_texture | Int32 | boolean | Int32 | BufferAccessARB | InternalFormat |
-	------ | ---------- | ----- | ------- | ----- | --------------- | -------------- |
-	unit   | texture    | level | layered | layer | access          | format         |
+	UInt32 | gl_texture | Int32 | boolean | Int32 | BufferAccess | InternalFormat |
+	------ | ---------- | ----- | ------- | ----- | ------------ | -------------- |
+	unit   | texture    | level | layered | layer | access       | format         |
 
 # glBindImageTextures[3]:
 	UInt32 | Int32 | array of gl_texture |
@@ -179,24 +179,24 @@
 	red    | green  | blue   | alpha  |
 
 # glBlendEquation[1]:
-	BlendEquationModeEXT |
-	-------------------- |
-	mode                 |
+	BlendEquationMode |
+	----------------- |
+	mode              |
 
 # glBlendEquationi[1]:
-	UInt32 | BlendEquationModeEXT |
-	------ | -------------------- |
-	buf    | mode                 |
+	UInt32 | BlendEquationMode |
+	------ | ----------------- |
+	buf    | mode              |
 
 # glBlendEquationSeparate[1]:
-	BlendEquationModeEXT | BlendEquationModeEXT |
-	-------------------- | -------------------- |
-	modeRGB              | modeAlpha            |
+	BlendEquationMode | BlendEquationMode |
+	----------------- | ----------------- |
+	modeRGB           | modeAlpha         |
 
 # glBlendEquationSeparatei[1]:
-	UInt32 | BlendEquationModeEXT | BlendEquationModeEXT |
-	------ | -------------------- | -------------------- |
-	buf    | modeRGB              | modeAlpha            |
+	UInt32 | BlendEquationMode | BlendEquationMode |
+	------ | ----------------- | ----------------- |
+	buf    | modeRGB           | modeAlpha         |
 
 # glBlendFunc[1]:
 	BlendingFactor | BlendingFactor |
@@ -229,11 +229,11 @@
 	readFramebuffer | drawFramebuffer | srcX0 | srcY0 | srcX1 | srcY1 | dstX0 | dstY0 | dstX1 | dstY1 | mask            | filter                |
 
 # glBufferData[3]:
-	BufferTarget | UIntPtr | array of T | BufferUsageARB |
-	BufferTarget | UIntPtr | var T      | BufferUsageARB |
-	BufferTarget | UIntPtr | pointer    | BufferUsageARB |
-	------------ | ------- | ---------- | -------------- |
-	target       | size    | data       | usage          |
+	BufferTarget | UIntPtr | array of T | BufferUsage |
+	BufferTarget | UIntPtr | var T      | BufferUsage |
+	BufferTarget | UIntPtr | pointer    | BufferUsage |
+	------------ | ------- | ---------- | ----------- |
+	target       | size    | data       | usage       |
 
 # glBufferStorage[3]:
 	BufferStorageTarget | UIntPtr | array of T | BufferStorageMask |
@@ -260,9 +260,9 @@
 	                  | framebuffer    | target            |
 
 # glClampColor[1]:
-	ClampColorTargetARB | ClampColorModeARB |
-	------------------- | ----------------- |
-	target              | clamp             |
+	ClampColorTarget | ClampColorMode |
+	---------------- | -------------- |
+	target           | clamp          |
 
 # glClear[1]:
 	ClearBufferMask |
@@ -1137,22 +1137,22 @@
 	pname    | data        |
 
 # glGetBufferParameteri64v[2]:
-	BufferTarget | BufferPNameARB | var Int64 |
-	BufferTarget | BufferPNameARB | IntPtr    |
-	------------ | -------------- | --------- |
-	target       | pname          | params    |
+	BufferTarget | BufferPName | var Int64 |
+	BufferTarget | BufferPName | IntPtr    |
+	------------ | ----------- | --------- |
+	target       | pname       | params    |
 
 # glGetBufferParameteriv[2]:
-	BufferTarget | BufferPNameARB | var Int32 |
-	BufferTarget | BufferPNameARB | IntPtr    |
-	------------ | -------------- | --------- |
-	target       | pname          | params    |
+	BufferTarget | BufferPName | var Int32 |
+	BufferTarget | BufferPName | IntPtr    |
+	------------ | ----------- | --------- |
+	target       | pname       | params    |
 
 # glGetBufferPointerv[2]:
-	BufferTarget | BufferPointerNameARB | var IntPtr |
-	BufferTarget | BufferPointerNameARB | pointer    |
-	------------ | -------------------- | ---------- |
-	target       | pname                | params     |
+	BufferTarget | BufferPointerName | var IntPtr |
+	BufferTarget | BufferPointerName | pointer    |
+	------------ | ----------------- | ---------- |
+	target       | pname             | params     |
 
 # glGetBufferSubData[2]:
 	BufferTarget | IntPtr | UIntPtr | var T   |
@@ -1275,28 +1275,28 @@
 	target        | internalformat | pname               | count | params    |
 
 # glGetMultisamplefv[2]:
-	GetMultisamplePNameNV | UInt32 | var single |
-	GetMultisamplePNameNV | UInt32 | IntPtr     |
-	--------------------- | ------ | ---------- |
-	pname                 | index  | val        |
+	GetMultisamplePName | UInt32 | var single |
+	GetMultisamplePName | UInt32 | IntPtr     |
+	------------------- | ------ | ---------- |
+	pname               | index  | val        |
 
 # glGetNamedBufferParameteri64v[2]:
-	gl_buffer | BufferPNameARB | var Int64 |
-	gl_buffer | BufferPNameARB | IntPtr    |
-	--------- | -------------- | --------- |
-	buffer    | pname          | params    |
+	gl_buffer | BufferPName | var Int64 |
+	gl_buffer | BufferPName | IntPtr    |
+	--------- | ----------- | --------- |
+	buffer    | pname       | params    |
 
 # glGetNamedBufferParameteriv[2]:
-	gl_buffer | BufferPNameARB | var Int32 |
-	gl_buffer | BufferPNameARB | IntPtr    |
-	--------- | -------------- | --------- |
-	buffer    | pname          | params    |
+	gl_buffer | BufferPName | var Int32 |
+	gl_buffer | BufferPName | IntPtr    |
+	--------- | ----------- | --------- |
+	buffer    | pname       | params    |
 
 # glGetNamedBufferPointerv[2]:
-	gl_buffer | BufferPointerNameARB | var IntPtr |
-	gl_buffer | BufferPointerNameARB | pointer    |
-	--------- | -------------------- | ---------- |
-	buffer    | pname                | params     |
+	gl_buffer | BufferPointerName | var IntPtr |
+	gl_buffer | BufferPointerName | pointer    |
+	--------- | ----------------- | ---------- |
+	buffer    | pname             | params     |
 
 # glGetNamedBufferSubData[2]:
 	gl_buffer | IntPtr | UIntPtr | var T   |
@@ -1462,10 +1462,10 @@
 	program    | programInterface | pname                 | params    |
 
 # glGetProgramiv[2]:
-	gl_program | ProgramPropertyARB | var Int32 |
-	gl_program | ProgramPropertyARB | IntPtr    |
-	---------- | ------------------ | --------- |
-	program    | pname              | params    |
+	gl_program | ProgramProperty | var Int32 |
+	gl_program | ProgramProperty | IntPtr    |
+	---------- | --------------- | --------- |
+	program    | pname           | params    |
 
 # glGetProgramPipelineInfoLog[2]:
 	gl_program_pipeline | Int32   | var Int32 | IntPtr  |
@@ -1855,16 +1855,16 @@
 	vaobj           | pname            | param     |
 
 # glGetVertexAttribdv[2]:
-	UInt32 | VertexAttribPropertyARB | var real |
-	UInt32 | VertexAttribPropertyARB | IntPtr   |
-	------ | ----------------------- | -------- |
-	index  | pname                   | params   |
+	UInt32 | VertexAttribProperty | var real |
+	UInt32 | VertexAttribProperty | IntPtr   |
+	------ | -------------------- | -------- |
+	index  | pname                | params   |
 
 # glGetVertexAttribfv[2]:
-	UInt32 | VertexAttribPropertyARB | var single |
-	UInt32 | VertexAttribPropertyARB | IntPtr     |
-	------ | ----------------------- | ---------- |
-	index  | pname                   | params     |
+	UInt32 | VertexAttribProperty | var single |
+	UInt32 | VertexAttribProperty | IntPtr     |
+	------ | -------------------- | ---------- |
+	index  | pname                | params     |
 
 # glGetVertexAttribIiv[2]:
 	UInt32 | VertexAttribEnum | var Int32 |
@@ -1879,10 +1879,10 @@
 	index  | pname            | params     |
 
 # glGetVertexAttribiv[2]:
-	UInt32 | VertexAttribPropertyARB | var Int32 |
-	UInt32 | VertexAttribPropertyARB | IntPtr    |
-	------ | ----------------------- | --------- |
-	index  | pname                   | params    |
+	UInt32 | VertexAttribProperty | var Int32 |
+	UInt32 | VertexAttribProperty | IntPtr    |
+	------ | -------------------- | --------- |
+	index  | pname                | params    |
 
 # glGetVertexAttribLdv[2]:
 	UInt32 | VertexAttribEnum | var real |
@@ -1891,10 +1891,10 @@
 	index  | pname            | params   |
 
 # glGetVertexAttribPointerv[2]:
-	UInt32 | VertexAttribPointerPropertyARB | var IntPtr |
-	UInt32 | VertexAttribPointerPropertyARB | pointer    |
-	------ | ------------------------------ | ---------- |
-	index  | pname                          | pointer    |
+	UInt32 | VertexAttribPointerProperty | var IntPtr |
+	UInt32 | VertexAttribPointerProperty | pointer    |
+	------ | --------------------------- | ---------- |
+	index  | pname                       | pointer    |
 
 # glHint[1]:
 	HintTarget | HintMode |
@@ -2035,9 +2035,9 @@
 	opcode  |
 
 # glMapBuffer[1]:
-	IntPtr | BufferTarget | BufferAccessARB |
-	------ | ------------ | --------------- |
-	       | target       | access          |
+	IntPtr | BufferTarget | BufferAccess |
+	------ | ------------ | ------------ |
+	       | target       | access       |
 
 # glMapBufferRange[1]:
 	IntPtr | BufferTarget | IntPtr | UIntPtr | MapBufferAccessMask |
@@ -2045,9 +2045,9 @@
 	       | target       | offset | length  | access              |
 
 # glMapNamedBuffer[1]:
-	IntPtr | gl_buffer | BufferAccessARB |
-	------ | --------- | --------------- |
-	       | buffer    | access          |
+	IntPtr | gl_buffer | BufferAccess |
+	------ | --------- | ------------ |
+	       | buffer    | access       |
 
 # glMapNamedBufferRange[1]:
 	IntPtr | gl_buffer | IntPtr | UIntPtr | MapBufferAccessMask |
@@ -2287,28 +2287,28 @@
 	pname               | param                   |
 
 # glPointParameterf[1]:
-	PointParameterNameARB | single |
-	--------------------- | ------ |
-	pname                 | param  |
+	PointParameterName | single |
+	------------------ | ------ |
+	pname              | param  |
 
 # glPointParameterfv[3]:
-	PointParameterNameARB | array of single |
-	PointParameterNameARB | var single      |
-	PointParameterNameARB | IntPtr          |
-	--------------------- | --------------- |
-	pname                 | params          |
+	PointParameterName | array of single |
+	PointParameterName | var single      |
+	PointParameterName | IntPtr          |
+	------------------ | --------------- |
+	pname              | params          |
 
 # glPointParameteri[1]:
-	PointParameterNameARB | Int32 |
-	--------------------- | ----- |
-	pname                 | param |
+	PointParameterName | Int32 |
+	------------------ | ----- |
+	pname              | param |
 
 # glPointParameteriv[3]:
-	PointParameterNameARB | array of Int32 |
-	PointParameterNameARB | var Int32      |
-	PointParameterNameARB | IntPtr         |
-	--------------------- | -------------- |
-	pname                 | params         |
+	PointParameterName | array of Int32 |
+	PointParameterName | var Int32      |
+	PointParameterName | IntPtr         |
+	------------------ | -------------- |
+	pname              | params         |
 
 # glPointSize[1]:
 	single |
@@ -2955,18 +2955,18 @@
 	target        | pname                | params          |
 
 # glTexParameteri[10]:
-	TextureTarget | TextureParameterName | ConvolutionBorderModeEXT |
-	TextureTarget | TextureParameterName | DepthStencilTextureMode  |
-	TextureTarget | TextureParameterName | FoveationConfigBitQCOM   |
-	TextureTarget | TextureParameterName | MapTextureFormatINTEL    |
-	TextureTarget | TextureParameterName | TextureCompareMode       |
-	TextureTarget | TextureParameterName | TextureMagFilter         |
-	TextureTarget | TextureParameterName | TextureMinFilter         |
-	TextureTarget | TextureParameterName | TextureSwizzle           |
-	TextureTarget | TextureParameterName | TextureWrapMode          |
-	TextureTarget | TextureParameterName | Int32                    |
-	------------- | -------------------- | ------------------------ |
-	target        | pname                | param                    |
+	TextureTarget | TextureParameterName | ConvolutionBorderMode   |
+	TextureTarget | TextureParameterName | DepthStencilTextureMode |
+	TextureTarget | TextureParameterName | FoveationConfigBit      |
+	TextureTarget | TextureParameterName | MapTextureFormat        |
+	TextureTarget | TextureParameterName | TextureCompareMode      |
+	TextureTarget | TextureParameterName | TextureMagFilter        |
+	TextureTarget | TextureParameterName | TextureMinFilter        |
+	TextureTarget | TextureParameterName | TextureSwizzle          |
+	TextureTarget | TextureParameterName | TextureWrapMode         |
+	TextureTarget | TextureParameterName | Int32                   |
+	------------- | -------------------- | ----------------------- |
+	target        | pname                | param                   |
 
 # glTexParameterIiv[3]:
 	TextureTarget | TextureParameterName | array of Int32 |
@@ -3054,18 +3054,18 @@
 	texture    | pname                | param           |
 
 # glTextureParameteri[10]:
-	gl_texture | TextureParameterName | ConvolutionBorderModeEXT |
-	gl_texture | TextureParameterName | DepthStencilTextureMode  |
-	gl_texture | TextureParameterName | FoveationConfigBitQCOM   |
-	gl_texture | TextureParameterName | MapTextureFormatINTEL    |
-	gl_texture | TextureParameterName | TextureCompareMode       |
-	gl_texture | TextureParameterName | TextureMagFilter         |
-	gl_texture | TextureParameterName | TextureMinFilter         |
-	gl_texture | TextureParameterName | TextureSwizzle           |
-	gl_texture | TextureParameterName | TextureWrapMode          |
-	gl_texture | TextureParameterName | Int32                    |
-	---------- | -------------------- | ------------------------ |
-	texture    | pname                | param                    |
+	gl_texture | TextureParameterName | ConvolutionBorderMode   |
+	gl_texture | TextureParameterName | DepthStencilTextureMode |
+	gl_texture | TextureParameterName | FoveationConfigBit      |
+	gl_texture | TextureParameterName | MapTextureFormat        |
+	gl_texture | TextureParameterName | TextureCompareMode      |
+	gl_texture | TextureParameterName | TextureMagFilter        |
+	gl_texture | TextureParameterName | TextureMinFilter        |
+	gl_texture | TextureParameterName | TextureSwizzle          |
+	gl_texture | TextureParameterName | TextureWrapMode         |
+	gl_texture | TextureParameterName | Int32                   |
+	---------- | -------------------- | ----------------------- |
+	texture    | pname                | param                   |
 
 # glTextureParameterIiv[3]:
 	gl_texture | TextureParameterName | array of Int32 |
@@ -4546,9 +4546,9 @@
 	coord           |
 
 # glFogCoordPointer[1]:
-	FogPointerTypeEXT | Int32  | IntPtr  |
-	----------------- | ------ | ------- |
-	type              | stride | pointer |
+	FogPointerType | Int32  | IntPtr  |
+	-------------- | ------ | ------- |
+	type           | stride | pointer |
 
 # glFogf[1]:
 	FogParameter | single |
@@ -6568,14 +6568,14 @@
 	buf    | srcRGB         | dstRGB         | srcAlpha       | dstAlpha       |
 
 # glBlendEquationIndexedAMD[1]:
-	UInt32 | BlendEquationModeEXT |
-	------ | -------------------- |
-	buf    | mode                 |
+	UInt32 | BlendEquationMode |
+	------ | ----------------- |
+	buf    | mode              |
 
 # glBlendEquationSeparateIndexedAMD[1]:
-	UInt32 | BlendEquationModeEXT | BlendEquationModeEXT |
-	------ | -------------------- | -------------------- |
-	buf    | modeRGB              | modeAlpha            |
+	UInt32 | BlendEquationMode | BlendEquationMode |
+	------ | ----------------- | ----------------- |
+	buf    | modeRGB           | modeAlpha         |
 
 # glRenderbufferStorageMultisampleAdvancedAMD[1]:
 	RenderbufferTarget | Int32   | Int32          | InternalFormat | Int32 | Int32  |
@@ -6852,9 +6852,9 @@
 	        | identifier | name   |
 
 # glQueryObjectParameteruiAMD[1]:
-	QueryTarget | gl_query | DummyEnum | OcclusionQueryEventMaskAMD |
-	----------- | -------- | --------- | -------------------------- |
-	target      | id       | pname     | param                      |
+	QueryTarget | gl_query | DummyEnum | OcclusionQueryEventMask |
+	----------- | -------- | --------- | ----------------------- |
+	target      | id       | pname     | param                   |
 
 # glGetPerfMonitorGroupsAMD[4]:
 	var Int32 | Int32      | var UInt32 |
@@ -6940,14 +6940,14 @@
 	pname     | index  | val             |
 
 # glTexStorageSparseAMD[1]:
-	TextureTarget | SizedInternalFormat | Int32 | Int32  | Int32 | Int32  | TextureStorageMaskAMD |
-	------------- | ------------------- | ----- | ------ | ----- | ------ | --------------------- |
-	target        | internalFormat      | width | height | depth | layers | flags                 |
+	TextureTarget | SizedInternalFormat | Int32 | Int32  | Int32 | Int32  | TextureStorageMask |
+	------------- | ------------------- | ----- | ------ | ----- | ------ | ------------------ |
+	target        | internalFormat      | width | height | depth | layers | flags              |
 
 # glTextureStorageSparseAMD[1]:
-	gl_texture | DummyEnum | SizedInternalFormat | Int32 | Int32  | Int32 | Int32  | TextureStorageMaskAMD |
-	---------- | --------- | ------------------- | ----- | ------ | ----- | ------ | --------------------- |
-	texture    | target    | internalFormat      | width | height | depth | layers | flags                 |
+	gl_texture | DummyEnum | SizedInternalFormat | Int32 | Int32  | Int32 | Int32  | TextureStorageMask |
+	---------- | --------- | ------------------- | ----- | ------ | ----- | ------ | ------------------ |
+	texture    | target    | internalFormat      | width | height | depth | layers | flags              |
 
 # glStencilOpValueAMD[1]:
 	MaterialFace | UInt32 |
@@ -6965,9 +6965,9 @@
 	mode      |
 
 # glElementPointerAPPLE[1]:
-	ElementPointerTypeATI | IntPtr  |
-	--------------------- | ------- |
-	type                  | pointer |
+	ElementPointerType | IntPtr  |
+	------------------ | ------- |
+	type               | pointer |
 
 # glDrawElementArrayAPPLE[1]:
 	PrimitiveType | Int32 | Int32 |
@@ -7032,14 +7032,14 @@
 	fence  |
 
 # glTestObjectAPPLE[1]:
-	boolean | ObjectTypeAPPLE | UInt32 |
-	------- | --------------- | ------ |
-	        | object          | name   |
+	boolean | ObjectType | UInt32 |
+	------- | ---------- | ------ |
+	        | object     | name   |
 
 # glFinishObjectAPPLE[1]:
-	ObjectTypeAPPLE | Int32 |
-	--------------- | ----- |
-	object          | name  |
+	ObjectType | Int32 |
+	---------- | ----- |
+	object     | name  |
 
 # glBufferParameteriAPPLE[1]:
 	DummyEnum | DummyEnum | Int32 |
@@ -7262,9 +7262,9 @@
 	        | context                | event                | flags      |
 
 # glClampColorARB[1]:
-	ClampColorTargetARB | ClampColorModeARB |
-	------------------- | ----------------- |
-	target              | clamp             |
+	ClampColorTarget | ClampColorMode |
+	---------------- | -------------- |
+	target           | clamp          |
 
 # glDispatchComputeGroupSizeARB[1]:
 	UInt32       | UInt32       | UInt32       | UInt32       | UInt32       | UInt32       |
@@ -7303,14 +7303,14 @@
 	n     | bufs                    |
 
 # glBlendEquationiARB[1]:
-	UInt32 | BlendEquationModeEXT |
-	------ | -------------------- |
-	buf    | mode                 |
+	UInt32 | BlendEquationMode |
+	------ | ----------------- |
+	buf    | mode              |
 
 # glBlendEquationSeparateiARB[1]:
-	UInt32 | BlendEquationModeEXT | BlendEquationModeEXT |
-	------ | -------------------- | -------------------- |
-	buf    | modeRGB              | modeAlpha            |
+	UInt32 | BlendEquationMode | BlendEquationMode |
+	------ | ----------------- | ----------------- |
+	buf    | modeRGB           | modeAlpha         |
 
 # glBlendFunciARB[1]:
 	UInt32 | BlendingFactor | BlendingFactor |
@@ -7429,10 +7429,10 @@
 	target        | index  | params     |
 
 # glGetProgramivARB[2]:
-	ProgramTarget | ProgramPropertyARB | var Int32 |
-	ProgramTarget | ProgramPropertyARB | IntPtr    |
-	------------- | ------------------ | --------- |
-	target        | pname              | params    |
+	ProgramTarget | ProgramProperty | var Int32 |
+	ProgramTarget | ProgramProperty | IntPtr    |
+	------------- | --------------- | --------- |
+	target        | pname           | params    |
 
 # glGetProgramStringARB[1]:
 	ProgramTarget | ProgramStringProperty | IntPtr |
@@ -7822,16 +7822,16 @@
 	target             | reset   | format      | type      | values |
 
 # glGetHistogramParameterfv[2]:
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | var single |
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | IntPtr     |
-	------------------ | ----------------------------- | ---------- |
-	target             | pname                         | params     |
+	HistogramTargetEXT | GetHistogramParameterPName | var single |
+	HistogramTargetEXT | GetHistogramParameterPName | IntPtr     |
+	------------------ | -------------------------- | ---------- |
+	target             | pname                      | params     |
 
 # glGetHistogramParameteriv[2]:
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | var Int32 |
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | IntPtr    |
-	------------------ | ----------------------------- | --------- |
-	target             | pname                         | params    |
+	HistogramTargetEXT | GetHistogramParameterPName | var Int32 |
+	HistogramTargetEXT | GetHistogramParameterPName | IntPtr    |
+	------------------ | -------------------------- | --------- |
+	target             | pname                      | params    |
 
 # glGetMinmax[1]:
 	MinmaxTargetEXT | boolean | PixelFormat | PixelType | IntPtr |
@@ -7839,16 +7839,16 @@
 	target          | reset   | format      | type      | values |
 
 # glGetMinmaxParameterfv[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | var single |
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | IntPtr     |
-	--------------- | -------------------------- | ---------- |
-	target          | pname                      | params     |
+	MinmaxTargetEXT | GetMinmaxParameterPName | var single |
+	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr     |
+	--------------- | ----------------------- | ---------- |
+	target          | pname                   | params     |
 
 # glGetMinmaxParameteriv[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | var Int32 |
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | IntPtr    |
-	--------------- | -------------------------- | --------- |
-	target          | pname                      | params    |
+	MinmaxTargetEXT | GetMinmaxParameterPName | var Int32 |
+	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr    |
+	--------------- | ----------------------- | --------- |
+	target          | pname                   | params    |
 
 # glHistogram[1]:
 	HistogramTargetEXT | Int32 | InternalFormat | boolean |
@@ -7912,9 +7912,9 @@
 	size  | indices         |
 
 # glMatrixIndexPointerARB[1]:
-	Int32 | MatrixIndexPointerTypeARB | Int32  | IntPtr  |
-	----- | ------------------------- | ------ | ------- |
-	size  | type                      | stride | pointer |
+	Int32 | MatrixIndexPointerType | Int32  | IntPtr  |
+	----- | ---------------------- | ------ | ------- |
+	size  | type                   | stride | pointer |
 
 # glSampleCoverageARB[1]:
 	single | boolean |
@@ -8176,16 +8176,16 @@
 	count  |
 
 # glPointParameterfARB[1]:
-	PointParameterNameARB | single |
-	--------------------- | ------ |
-	pname                 | param  |
+	PointParameterName | single |
+	------------------ | ------ |
+	pname              | param  |
 
 # glPointParameterfvARB[3]:
-	PointParameterNameARB | array of single |
-	PointParameterNameARB | var single      |
-	PointParameterNameARB | IntPtr          |
-	--------------------- | --------------- |
-	pname                 | params          |
+	PointParameterName | array of single |
+	PointParameterName | var single      |
+	PointParameterName | IntPtr          |
+	------------------ | --------------- |
+	pname              | params          |
 
 # glGetGraphicsResetStatusARB[1]:
 	GraphicsResetStatus |
@@ -8751,9 +8751,9 @@
 	size  | weights         |
 
 # glWeightPointerARB[1]:
-	Int32 | WeightPointerTypeARB | Int32  | IntPtr  |
-	----- | -------------------- | ------ | ------- |
-	size  | type                 | stride | pointer |
+	Int32 | WeightPointerType | Int32  | IntPtr  |
+	----- | ----------------- | ------ | ------- |
+	size  | type              | stride | pointer |
 
 # glVertexBlendARB[1]:
 	Int32 |
@@ -8785,11 +8785,11 @@
 	        | buffer    |
 
 # glBufferDataARB[3]:
-	BufferTarget | UIntPtr | array of T | BufferUsageARB |
-	BufferTarget | UIntPtr | var T      | BufferUsageARB |
-	BufferTarget | UIntPtr | pointer    | BufferUsageARB |
-	------------ | ------- | ---------- | -------------- |
-	target       | size    | data       | usage          |
+	BufferTarget | UIntPtr | array of T | BufferUsage |
+	BufferTarget | UIntPtr | var T      | BufferUsage |
+	BufferTarget | UIntPtr | pointer    | BufferUsage |
+	------------ | ------- | ---------- | ----------- |
+	target       | size    | data       | usage       |
 
 # glBufferSubDataARB[3]:
 	BufferTarget | IntPtr | UIntPtr | array of T |
@@ -8805,9 +8805,9 @@
 	target       | offset | size    | data    |
 
 # glMapBufferARB[1]:
-	IntPtr | BufferTarget | BufferAccessARB |
-	------ | ------------ | --------------- |
-	       | target       | access          |
+	IntPtr | BufferTarget | BufferAccess |
+	------ | ------------ | ------------ |
+	       | target       | access       |
 
 # glUnmapBufferARB[1]:
 	boolean | BufferTarget |
@@ -8815,16 +8815,16 @@
 	        | target       |
 
 # glGetBufferParameterivARB[2]:
-	BufferTarget | BufferPNameARB | var Int32 |
-	BufferTarget | BufferPNameARB | IntPtr    |
-	------------ | -------------- | --------- |
-	target       | pname          | params    |
+	BufferTarget | BufferPName | var Int32 |
+	BufferTarget | BufferPName | IntPtr    |
+	------------ | ----------- | --------- |
+	target       | pname       | params    |
 
 # glGetBufferPointervARB[2]:
-	BufferTarget | BufferPointerNameARB | var IntPtr |
-	BufferTarget | BufferPointerNameARB | pointer    |
-	------------ | -------------------- | ---------- |
-	target       | pname                | params     |
+	BufferTarget | BufferPointerName | var IntPtr |
+	BufferTarget | BufferPointerName | pointer    |
+	------------ | ----------------- | ---------- |
+	target       | pname             | params     |
 
 # glVertexAttrib1dARB[1]:
 	UInt32 | real |
@@ -9068,28 +9068,28 @@
 	index  |
 
 # glGetVertexAttribdvARB[2]:
-	UInt32 | VertexAttribPropertyARB | var real |
-	UInt32 | VertexAttribPropertyARB | IntPtr   |
-	------ | ----------------------- | -------- |
-	index  | pname                   | params   |
+	UInt32 | VertexAttribProperty | var real |
+	UInt32 | VertexAttribProperty | IntPtr   |
+	------ | -------------------- | -------- |
+	index  | pname                | params   |
 
 # glGetVertexAttribfvARB[2]:
-	UInt32 | VertexAttribPropertyARB | var single |
-	UInt32 | VertexAttribPropertyARB | IntPtr     |
-	------ | ----------------------- | ---------- |
-	index  | pname                   | params     |
+	UInt32 | VertexAttribProperty | var single |
+	UInt32 | VertexAttribProperty | IntPtr     |
+	------ | -------------------- | ---------- |
+	index  | pname                | params     |
 
 # glGetVertexAttribivARB[2]:
-	UInt32 | VertexAttribPropertyARB | var Int32 |
-	UInt32 | VertexAttribPropertyARB | IntPtr    |
-	------ | ----------------------- | --------- |
-	index  | pname                   | params    |
+	UInt32 | VertexAttribProperty | var Int32 |
+	UInt32 | VertexAttribProperty | IntPtr    |
+	------ | -------------------- | --------- |
+	index  | pname                | params    |
 
 # glGetVertexAttribPointervARB[2]:
-	UInt32 | VertexAttribPointerPropertyARB | var IntPtr |
-	UInt32 | VertexAttribPointerPropertyARB | pointer    |
-	------ | ------------------------------ | ---------- |
-	index  | pname                          | pointer    |
+	UInt32 | VertexAttribPointerProperty | var IntPtr |
+	UInt32 | VertexAttribPointerProperty | pointer    |
+	------ | --------------------------- | ---------- |
+	index  | pname                       | pointer    |
 
 # glBindAttribLocationARB[2]:
 	gl_handle_ARB | UInt32 | string |
@@ -9231,9 +9231,9 @@
 	n     | bufs                    |
 
 # glElementPointerATI[1]:
-	ElementPointerTypeATI | IntPtr  |
-	--------------------- | ------- |
-	type                  | pointer |
+	ElementPointerType | IntPtr  |
+	------------------ | ------- |
+	type               | pointer |
 
 # glDrawElementArrayATI[1]:
 	PrimitiveType | Int32 |
@@ -9246,30 +9246,30 @@
 	mode          | start  | end    | count |
 
 # glTexBumpParameterivATI[3]:
-	TexBumpParameterATI | array of Int32 |
-	TexBumpParameterATI | var Int32      |
-	TexBumpParameterATI | IntPtr         |
-	------------------- | -------------- |
-	pname               | param          |
+	TexBumpParameter | array of Int32 |
+	TexBumpParameter | var Int32      |
+	TexBumpParameter | IntPtr         |
+	---------------- | -------------- |
+	pname            | param          |
 
 # glTexBumpParameterfvATI[3]:
-	TexBumpParameterATI | array of single |
-	TexBumpParameterATI | var single      |
-	TexBumpParameterATI | IntPtr          |
-	------------------- | --------------- |
-	pname               | param           |
+	TexBumpParameter | array of single |
+	TexBumpParameter | var single      |
+	TexBumpParameter | IntPtr          |
+	---------------- | --------------- |
+	pname            | param           |
 
 # glGetTexBumpParameterivATI[2]:
-	GetTexBumpParameterATI | var Int32 |
-	GetTexBumpParameterATI | IntPtr    |
-	---------------------- | --------- |
-	pname                  | param     |
+	GetTexBumpParameter | var Int32 |
+	GetTexBumpParameter | IntPtr    |
+	------------------- | --------- |
+	pname               | param     |
 
 # glGetTexBumpParameterfvATI[2]:
-	GetTexBumpParameterATI | var single |
-	GetTexBumpParameterATI | IntPtr     |
-	---------------------- | ---------- |
-	pname                  | param      |
+	GetTexBumpParameter | var single |
+	GetTexBumpParameter | IntPtr     |
+	------------------- | ---------- |
+	pname               | param      |
 
 # glGenFragmentShadersATI[1]:
 	UInt32 | UInt32 |
@@ -9291,44 +9291,44 @@
 # glEndFragmentShaderATI[1]:
 
 # glPassTexCoordATI[1]:
-	UInt32 | UInt32 | SwizzleOpATI |
-	------ | ------ | ------------ |
-	dst    | coord  | swizzle      |
+	UInt32 | UInt32 | SwizzleOp |
+	------ | ------ | --------- |
+	dst    | coord  | swizzle   |
 
 # glSampleMapATI[1]:
-	UInt32 | UInt32 | SwizzleOpATI |
-	------ | ------ | ------------ |
-	dst    | interp | swizzle      |
+	UInt32 | UInt32 | SwizzleOp |
+	------ | ------ | --------- |
+	dst    | interp | swizzle   |
 
 # glColorFragmentOp1ATI[1]:
-	FragmentOpATI | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  |
-	------------- | ------ | ------- | ------ | ------ | ------- | ------- |
-	op            | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod |
+	FragmentOp | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  |
+	---------- | ------ | ------- | ------ | ------ | ------- | ------- |
+	op         | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod |
 
 # glColorFragmentOp2ATI[1]:
-	FragmentOpATI | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	------------- | ------ | ------- | ------ | ------ | ------- | ------- | ------ | ------- | ------- |
-	op            | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod |
+	FragmentOp | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
+	---------- | ------ | ------- | ------ | ------ | ------- | ------- | ------ | ------- | ------- |
+	op         | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod |
 
 # glColorFragmentOp3ATI[1]:
-	FragmentOpATI | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	------------- | ------ | ------- | ------ | ------ | ------- | ------- | ------ | ------- | ------- | ------ | ------- | ------- |
-	op            | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod | arg3   | arg3Rep | arg3Mod |
+	FragmentOp | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
+	---------- | ------ | ------- | ------ | ------ | ------- | ------- | ------ | ------- | ------- | ------ | ------- | ------- |
+	op         | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod | arg3   | arg3Rep | arg3Mod |
 
 # glAlphaFragmentOp1ATI[1]:
-	FragmentOpATI | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  |
-	------------- | ------ | ------ | ------ | ------- | ------- |
-	op            | dst    | dstMod | arg1   | arg1Rep | arg1Mod |
+	FragmentOp | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  |
+	---------- | ------ | ------ | ------ | ------- | ------- |
+	op         | dst    | dstMod | arg1   | arg1Rep | arg1Mod |
 
 # glAlphaFragmentOp2ATI[1]:
-	FragmentOpATI | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	------------- | ------ | ------ | ------ | ------- | ------- | ------ | ------- | ------- |
-	op            | dst    | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod |
+	FragmentOp | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
+	---------- | ------ | ------ | ------ | ------- | ------- | ------ | ------- | ------- |
+	op         | dst    | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod |
 
 # glAlphaFragmentOp3ATI[1]:
-	FragmentOpATI | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	------------- | ------ | ------ | ------ | ------- | ------- | ------ | ------- | ------- | ------ | ------- | ------- |
-	op            | dst    | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod | arg3   | arg3Rep | arg3Mod |
+	FragmentOp | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
+	---------- | ------ | ------ | ------ | ------- | ------- | ------ | ------- | ------- | ------ | ------- | ------- |
+	op         | dst    | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod | arg3   | arg3Rep | arg3Mod |
 
 # glSetFragmentShaderConstantATI[3]:
 	UInt32 | array of single |
@@ -9348,14 +9348,14 @@
 	buffer    |
 
 # glPNTrianglesiATI[1]:
-	PNTrianglesPNameATI | Int32 |
-	------------------- | ----- |
-	pname               | param |
+	PNTrianglesPName | Int32 |
+	---------------- | ----- |
+	pname            | param |
 
 # glPNTrianglesfATI[1]:
-	PNTrianglesPNameATI | single |
-	------------------- | ------ |
-	pname               | param  |
+	PNTrianglesPName | single |
+	---------------- | ------ |
+	pname            | param  |
 
 # glStencilOpSeparateATI[1]:
 	MaterialFace | StencilOp | StencilOp | StencilOp |
@@ -9368,9 +9368,9 @@
 	frontfunc       | backfunc        | ref   | mask   |
 
 # glNewObjectBufferATI[1]:
-	UInt32 | Int32 | IntPtr  | ArrayObjectUsageATI |
-	------ | ----- | ------- | ------------------- |
-	       | size  | pointer | usage               |
+	UInt32 | Int32 | IntPtr  | ArrayObjectUsage |
+	------ | ----- | ------- | ---------------- |
+	       | size  | pointer | usage            |
 
 # glIsObjectBufferATI[1]:
 	boolean | gl_buffer |
@@ -9378,21 +9378,21 @@
 	        | buffer    |
 
 # glUpdateObjectBufferATI[1]:
-	gl_buffer | UInt32 | Int32 | IntPtr  | PreserveModeATI |
-	--------- | ------ | ----- | ------- | --------------- |
-	buffer    | offset | size  | pointer | preserve        |
+	gl_buffer | UInt32 | Int32 | IntPtr  | PreserveMode |
+	--------- | ------ | ----- | ------- | ------------ |
+	buffer    | offset | size  | pointer | preserve     |
 
 # glGetObjectBufferfvATI[2]:
-	gl_buffer | ArrayObjectPNameATI | var single |
-	gl_buffer | ArrayObjectPNameATI | IntPtr     |
-	--------- | ------------------- | ---------- |
-	buffer    | pname               | params     |
+	gl_buffer | ArrayObjectPName | var single |
+	gl_buffer | ArrayObjectPName | IntPtr     |
+	--------- | ---------------- | ---------- |
+	buffer    | pname            | params     |
 
 # glGetObjectBufferivATI[2]:
-	gl_buffer | ArrayObjectPNameATI | var Int32 |
-	gl_buffer | ArrayObjectPNameATI | IntPtr    |
-	--------- | ------------------- | --------- |
-	buffer    | pname               | params    |
+	gl_buffer | ArrayObjectPName | var Int32 |
+	gl_buffer | ArrayObjectPName | IntPtr    |
+	--------- | ---------------- | --------- |
+	buffer    | pname            | params    |
 
 # glFreeObjectBufferATI[1]:
 	gl_buffer |
@@ -9405,16 +9405,16 @@
 	array     | size  | type       | stride | buffer    | offset |
 
 # glGetArrayObjectfvATI[2]:
-	EnableCap | ArrayObjectPNameATI | var single |
-	EnableCap | ArrayObjectPNameATI | IntPtr     |
-	--------- | ------------------- | ---------- |
-	array     | pname               | params     |
+	EnableCap | ArrayObjectPName | var single |
+	EnableCap | ArrayObjectPName | IntPtr     |
+	--------- | ---------------- | ---------- |
+	array     | pname            | params     |
 
 # glGetArrayObjectivATI[2]:
-	EnableCap | ArrayObjectPNameATI | var Int32 |
-	EnableCap | ArrayObjectPNameATI | IntPtr    |
-	--------- | ------------------- | --------- |
-	array     | pname               | params    |
+	EnableCap | ArrayObjectPName | var Int32 |
+	EnableCap | ArrayObjectPName | IntPtr    |
+	--------- | ---------------- | --------- |
+	array     | pname            | params    |
 
 # glVariantArrayObjectATI[1]:
 	UInt32 | ScalarType | Int32  | gl_buffer | UInt32 |
@@ -9422,16 +9422,16 @@
 	id     | type       | stride | buffer    | offset |
 
 # glGetVariantArrayObjectfvATI[2]:
-	UInt32 | ArrayObjectPNameATI | var single |
-	UInt32 | ArrayObjectPNameATI | IntPtr     |
-	------ | ------------------- | ---------- |
-	id     | pname               | params     |
+	UInt32 | ArrayObjectPName | var single |
+	UInt32 | ArrayObjectPName | IntPtr     |
+	------ | ---------------- | ---------- |
+	id     | pname            | params     |
 
 # glGetVariantArrayObjectivATI[2]:
-	UInt32 | ArrayObjectPNameATI | var Int32 |
-	UInt32 | ArrayObjectPNameATI | IntPtr    |
-	------ | ------------------- | --------- |
-	id     | pname               | params    |
+	UInt32 | ArrayObjectPName | var Int32 |
+	UInt32 | ArrayObjectPName | IntPtr    |
+	------ | ---------------- | --------- |
+	id     | pname            | params    |
 
 # glVertexAttribArrayObjectATI[1]:
 	UInt32 | Int32 | VertexAttribPointerType | boolean    | Int32  | gl_buffer | UInt32 |
@@ -9439,283 +9439,283 @@
 	index  | size  | type                    | normalized | stride | buffer    | offset |
 
 # glGetVertexAttribArrayObjectfvATI[2]:
-	UInt32 | ArrayObjectPNameATI | var single |
-	UInt32 | ArrayObjectPNameATI | IntPtr     |
-	------ | ------------------- | ---------- |
-	index  | pname               | params     |
+	UInt32 | ArrayObjectPName | var single |
+	UInt32 | ArrayObjectPName | IntPtr     |
+	------ | ---------------- | ---------- |
+	index  | pname            | params     |
 
 # glGetVertexAttribArrayObjectivATI[2]:
-	UInt32 | ArrayObjectPNameATI | var Int32 |
-	UInt32 | ArrayObjectPNameATI | IntPtr    |
-	------ | ------------------- | --------- |
-	index  | pname               | params    |
+	UInt32 | ArrayObjectPName | var Int32 |
+	UInt32 | ArrayObjectPName | IntPtr    |
+	------ | ---------------- | --------- |
+	index  | pname            | params    |
 
 # glVertexStream1sATI[1]:
-	VertexStreamATI | Int16 |
-	--------------- | ----- |
-	stream          | x     |
+	VertexStream | Int16 |
+	------------ | ----- |
+	stream       | x     |
 
 # glVertexStream1svATI[3]:
-	VertexStreamATI | array of Int16 |
-	VertexStreamATI | var Int16      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int16 |
+	VertexStream | var Int16      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream1iATI[1]:
-	VertexStreamATI | Int32 |
-	--------------- | ----- |
-	stream          | x     |
+	VertexStream | Int32 |
+	------------ | ----- |
+	stream       | x     |
 
 # glVertexStream1ivATI[3]:
-	VertexStreamATI | array of Int32 |
-	VertexStreamATI | var Int32      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int32 |
+	VertexStream | var Int32      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream1fATI[1]:
-	VertexStreamATI | single |
-	--------------- | ------ |
-	stream          | x      |
+	VertexStream | single |
+	------------ | ------ |
+	stream       | x      |
 
 # glVertexStream1fvATI[3]:
-	VertexStreamATI | array of single |
-	VertexStreamATI | var single      |
-	VertexStreamATI | IntPtr          |
-	--------------- | --------------- |
-	stream          | coords          |
+	VertexStream | array of single |
+	VertexStream | var single      |
+	VertexStream | IntPtr          |
+	------------ | --------------- |
+	stream       | coords          |
 
 # glVertexStream1dATI[1]:
-	VertexStreamATI | real |
-	--------------- | ---- |
-	stream          | x    |
+	VertexStream | real |
+	------------ | ---- |
+	stream       | x    |
 
 # glVertexStream1dvATI[3]:
-	VertexStreamATI | array of real |
-	VertexStreamATI | var real      |
-	VertexStreamATI | IntPtr        |
-	--------------- | ------------- |
-	stream          | coords        |
+	VertexStream | array of real |
+	VertexStream | var real      |
+	VertexStream | IntPtr        |
+	------------ | ------------- |
+	stream       | coords        |
 
 # glVertexStream2sATI[1]:
-	VertexStreamATI | Int16 | Int16 |
-	--------------- | ----- | ----- |
-	stream          | x     | y     |
+	VertexStream | Int16 | Int16 |
+	------------ | ----- | ----- |
+	stream       | x     | y     |
 
 # glVertexStream2svATI[3]:
-	VertexStreamATI | array of Int16 |
-	VertexStreamATI | var Int16      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int16 |
+	VertexStream | var Int16      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream2iATI[1]:
-	VertexStreamATI | Int32 | Int32 |
-	--------------- | ----- | ----- |
-	stream          | x     | y     |
+	VertexStream | Int32 | Int32 |
+	------------ | ----- | ----- |
+	stream       | x     | y     |
 
 # glVertexStream2ivATI[3]:
-	VertexStreamATI | array of Int32 |
-	VertexStreamATI | var Int32      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int32 |
+	VertexStream | var Int32      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream2fATI[1]:
-	VertexStreamATI | single | single |
-	--------------- | ------ | ------ |
-	stream          | x      | y      |
+	VertexStream | single | single |
+	------------ | ------ | ------ |
+	stream       | x      | y      |
 
 # glVertexStream2fvATI[3]:
-	VertexStreamATI | array of single |
-	VertexStreamATI | var single      |
-	VertexStreamATI | IntPtr          |
-	--------------- | --------------- |
-	stream          | coords          |
+	VertexStream | array of single |
+	VertexStream | var single      |
+	VertexStream | IntPtr          |
+	------------ | --------------- |
+	stream       | coords          |
 
 # glVertexStream2dATI[1]:
-	VertexStreamATI | real | real |
-	--------------- | ---- | ---- |
-	stream          | x    | y    |
+	VertexStream | real | real |
+	------------ | ---- | ---- |
+	stream       | x    | y    |
 
 # glVertexStream2dvATI[3]:
-	VertexStreamATI | array of real |
-	VertexStreamATI | var real      |
-	VertexStreamATI | IntPtr        |
-	--------------- | ------------- |
-	stream          | coords        |
+	VertexStream | array of real |
+	VertexStream | var real      |
+	VertexStream | IntPtr        |
+	------------ | ------------- |
+	stream       | coords        |
 
 # glVertexStream3sATI[1]:
-	VertexStreamATI | Int16 | Int16 | Int16 |
-	--------------- | ----- | ----- | ----- |
-	stream          | x     | y     | z     |
+	VertexStream | Int16 | Int16 | Int16 |
+	------------ | ----- | ----- | ----- |
+	stream       | x     | y     | z     |
 
 # glVertexStream3svATI[3]:
-	VertexStreamATI | array of Int16 |
-	VertexStreamATI | var Int16      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int16 |
+	VertexStream | var Int16      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream3iATI[1]:
-	VertexStreamATI | Int32 | Int32 | Int32 |
-	--------------- | ----- | ----- | ----- |
-	stream          | x     | y     | z     |
+	VertexStream | Int32 | Int32 | Int32 |
+	------------ | ----- | ----- | ----- |
+	stream       | x     | y     | z     |
 
 # glVertexStream3ivATI[3]:
-	VertexStreamATI | array of Int32 |
-	VertexStreamATI | var Int32      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int32 |
+	VertexStream | var Int32      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream3fATI[1]:
-	VertexStreamATI | single | single | single |
-	--------------- | ------ | ------ | ------ |
-	stream          | x      | y      | z      |
+	VertexStream | single | single | single |
+	------------ | ------ | ------ | ------ |
+	stream       | x      | y      | z      |
 
 # glVertexStream3fvATI[3]:
-	VertexStreamATI | array of single |
-	VertexStreamATI | var single      |
-	VertexStreamATI | IntPtr          |
-	--------------- | --------------- |
-	stream          | coords          |
+	VertexStream | array of single |
+	VertexStream | var single      |
+	VertexStream | IntPtr          |
+	------------ | --------------- |
+	stream       | coords          |
 
 # glVertexStream3dATI[1]:
-	VertexStreamATI | real | real | real |
-	--------------- | ---- | ---- | ---- |
-	stream          | x    | y    | z    |
+	VertexStream | real | real | real |
+	------------ | ---- | ---- | ---- |
+	stream       | x    | y    | z    |
 
 # glVertexStream3dvATI[3]:
-	VertexStreamATI | array of real |
-	VertexStreamATI | var real      |
-	VertexStreamATI | IntPtr        |
-	--------------- | ------------- |
-	stream          | coords        |
+	VertexStream | array of real |
+	VertexStream | var real      |
+	VertexStream | IntPtr        |
+	------------ | ------------- |
+	stream       | coords        |
 
 # glVertexStream4sATI[1]:
-	VertexStreamATI | Int16 | Int16 | Int16 | Int16 |
-	--------------- | ----- | ----- | ----- | ----- |
-	stream          | x     | y     | z     | w     |
+	VertexStream | Int16 | Int16 | Int16 | Int16 |
+	------------ | ----- | ----- | ----- | ----- |
+	stream       | x     | y     | z     | w     |
 
 # glVertexStream4svATI[3]:
-	VertexStreamATI | array of Int16 |
-	VertexStreamATI | var Int16      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int16 |
+	VertexStream | var Int16      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream4iATI[1]:
-	VertexStreamATI | Int32 | Int32 | Int32 | Int32 |
-	--------------- | ----- | ----- | ----- | ----- |
-	stream          | x     | y     | z     | w     |
+	VertexStream | Int32 | Int32 | Int32 | Int32 |
+	------------ | ----- | ----- | ----- | ----- |
+	stream       | x     | y     | z     | w     |
 
 # glVertexStream4ivATI[3]:
-	VertexStreamATI | array of Int32 |
-	VertexStreamATI | var Int32      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int32 |
+	VertexStream | var Int32      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glVertexStream4fATI[1]:
-	VertexStreamATI | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ |
-	stream          | x      | y      | z      | w      |
+	VertexStream | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ |
+	stream       | x      | y      | z      | w      |
 
 # glVertexStream4fvATI[3]:
-	VertexStreamATI | array of single |
-	VertexStreamATI | var single      |
-	VertexStreamATI | IntPtr          |
-	--------------- | --------------- |
-	stream          | coords          |
+	VertexStream | array of single |
+	VertexStream | var single      |
+	VertexStream | IntPtr          |
+	------------ | --------------- |
+	stream       | coords          |
 
 # glVertexStream4dATI[1]:
-	VertexStreamATI | real | real | real | real |
-	--------------- | ---- | ---- | ---- | ---- |
-	stream          | x    | y    | z    | w    |
+	VertexStream | real | real | real | real |
+	------------ | ---- | ---- | ---- | ---- |
+	stream       | x    | y    | z    | w    |
 
 # glVertexStream4dvATI[3]:
-	VertexStreamATI | array of real |
-	VertexStreamATI | var real      |
-	VertexStreamATI | IntPtr        |
-	--------------- | ------------- |
-	stream          | coords        |
+	VertexStream | array of real |
+	VertexStream | var real      |
+	VertexStream | IntPtr        |
+	------------ | ------------- |
+	stream       | coords        |
 
 # glNormalStream3bATI[1]:
-	VertexStreamATI | SByte | SByte | SByte |
-	--------------- | ----- | ----- | ----- |
-	stream          | nx    | ny    | nz    |
+	VertexStream | SByte | SByte | SByte |
+	------------ | ----- | ----- | ----- |
+	stream       | nx    | ny    | nz    |
 
 # glNormalStream3bvATI[3]:
-	VertexStreamATI | array of SByte |
-	VertexStreamATI | var SByte      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of SByte |
+	VertexStream | var SByte      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glNormalStream3sATI[1]:
-	VertexStreamATI | Int16 | Int16 | Int16 |
-	--------------- | ----- | ----- | ----- |
-	stream          | nx    | ny    | nz    |
+	VertexStream | Int16 | Int16 | Int16 |
+	------------ | ----- | ----- | ----- |
+	stream       | nx    | ny    | nz    |
 
 # glNormalStream3svATI[3]:
-	VertexStreamATI | array of Int16 |
-	VertexStreamATI | var Int16      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int16 |
+	VertexStream | var Int16      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glNormalStream3iATI[1]:
-	VertexStreamATI | Int32 | Int32 | Int32 |
-	--------------- | ----- | ----- | ----- |
-	stream          | nx    | ny    | nz    |
+	VertexStream | Int32 | Int32 | Int32 |
+	------------ | ----- | ----- | ----- |
+	stream       | nx    | ny    | nz    |
 
 # glNormalStream3ivATI[3]:
-	VertexStreamATI | array of Int32 |
-	VertexStreamATI | var Int32      |
-	VertexStreamATI | IntPtr         |
-	--------------- | -------------- |
-	stream          | coords         |
+	VertexStream | array of Int32 |
+	VertexStream | var Int32      |
+	VertexStream | IntPtr         |
+	------------ | -------------- |
+	stream       | coords         |
 
 # glNormalStream3fATI[1]:
-	VertexStreamATI | single | single | single |
-	--------------- | ------ | ------ | ------ |
-	stream          | nx     | ny     | nz     |
+	VertexStream | single | single | single |
+	------------ | ------ | ------ | ------ |
+	stream       | nx     | ny     | nz     |
 
 # glNormalStream3fvATI[3]:
-	VertexStreamATI | array of single |
-	VertexStreamATI | var single      |
-	VertexStreamATI | IntPtr          |
-	--------------- | --------------- |
-	stream          | coords          |
+	VertexStream | array of single |
+	VertexStream | var single      |
+	VertexStream | IntPtr          |
+	------------ | --------------- |
+	stream       | coords          |
 
 # glNormalStream3dATI[1]:
-	VertexStreamATI | real | real | real |
-	--------------- | ---- | ---- | ---- |
-	stream          | nx   | ny   | nz   |
+	VertexStream | real | real | real |
+	------------ | ---- | ---- | ---- |
+	stream       | nx   | ny   | nz   |
 
 # glNormalStream3dvATI[3]:
-	VertexStreamATI | array of real |
-	VertexStreamATI | var real      |
-	VertexStreamATI | IntPtr        |
-	--------------- | ------------- |
-	stream          | coords        |
+	VertexStream | array of real |
+	VertexStream | var real      |
+	VertexStream | IntPtr        |
+	------------ | ------------- |
+	stream       | coords        |
 
 # glClientActiveVertexStreamATI[1]:
-	VertexStreamATI |
-	--------------- |
-	stream          |
+	VertexStream |
+	------------ |
+	stream       |
 
 # glVertexBlendEnviATI[1]:
-	VertexStreamATI | Int32 |
-	--------------- | ----- |
-	pname           | param |
+	VertexStream | Int32 |
+	------------ | ----- |
+	pname        | param |
 
 # glVertexBlendEnvfATI[1]:
-	VertexStreamATI | single |
-	--------------- | ------ |
-	pname           | param  |
+	VertexStream | single |
+	------------ | ------ |
+	pname        | param  |
 
 # glEGLImageTargetTexStorageEXT[3]:
 	DummyEnum | egl_image_OES | array of Int32 |
@@ -9752,9 +9752,9 @@
 	red    | green  | blue   | alpha  |
 
 # glBlendEquationSeparateEXT[1]:
-	BlendEquationModeEXT | BlendEquationModeEXT |
-	-------------------- | -------------------- |
-	modeRGB              | modeAlpha            |
+	BlendEquationMode | BlendEquationMode |
+	----------------- | ----------------- |
+	modeRGB           | modeAlpha         |
 
 # glBlendFuncSeparateEXT[1]:
 	BlendingFactor | BlendingFactor | BlendingFactor | BlendingFactor |
@@ -9762,9 +9762,9 @@
 	sfactorRGB     | dfactorRGB     | sfactorAlpha   | dfactorAlpha   |
 
 # glBlendEquationEXT[1]:
-	BlendEquationModeEXT |
-	-------------------- |
-	mode                 |
+	BlendEquationMode |
+	----------------- |
+	mode              |
 
 # glColorSubTableEXT[1]:
 	ColorTableTarget | Int32 | Int32 | PixelFormat | PixelType | IntPtr |
@@ -9975,14 +9975,14 @@
 	v              |
 
 # glTangentPointerEXT[1]:
-	TangentPointerTypeEXT | Int32  | IntPtr  |
-	--------------------- | ------ | ------- |
-	type                  | stride | pointer |
+	TangentPointerType | Int32  | IntPtr  |
+	------------------ | ------ | ------- |
+	type               | stride | pointer |
 
 # glBinormalPointerEXT[1]:
-	BinormalPointerTypeEXT | Int32  | IntPtr  |
-	---------------------- | ------ | ------- |
-	type                   | stride | pointer |
+	BinormalPointerType | Int32  | IntPtr  |
+	------------------- | ------ | ------- |
+	type                | stride | pointer |
 
 # glCopyTexImage1DEXT[1]:
 	TextureTarget | Int32 | InternalFormat | Int32 | Int32 | Int32 | Int32  |
@@ -10010,18 +10010,18 @@
 	target        | level | xoffset | yoffset | zoffset | x     | y     | width | height |
 
 # glCullParameterdvEXT[3]:
-	CullParameterEXT | array of real |
-	CullParameterEXT | var real      |
-	CullParameterEXT | IntPtr        |
-	---------------- | ------------- |
-	pname            | params        |
+	CullParameter | array of real |
+	CullParameter | var real      |
+	CullParameter | IntPtr        |
+	------------- | ------------- |
+	pname         | params        |
 
 # glCullParameterfvEXT[3]:
-	CullParameterEXT | array of single |
-	CullParameterEXT | var single      |
-	CullParameterEXT | IntPtr          |
-	---------------- | --------------- |
-	pname            | params          |
+	CullParameter | array of single |
+	CullParameter | var single      |
+	CullParameter | IntPtr          |
+	------------- | --------------- |
+	pname         | params          |
 
 # glLabelObjectEXT[2]:
 	DummyEnum | UInt32 | Int32  | string |
@@ -10160,18 +10160,18 @@
 	texture    | target        | pname                | params          |
 
 # glTextureParameteriEXT[10]:
-	gl_texture | TextureTarget | TextureParameterName | ConvolutionBorderModeEXT |
-	gl_texture | TextureTarget | TextureParameterName | DepthStencilTextureMode  |
-	gl_texture | TextureTarget | TextureParameterName | FoveationConfigBitQCOM   |
-	gl_texture | TextureTarget | TextureParameterName | MapTextureFormatINTEL    |
-	gl_texture | TextureTarget | TextureParameterName | TextureCompareMode       |
-	gl_texture | TextureTarget | TextureParameterName | TextureMagFilter         |
-	gl_texture | TextureTarget | TextureParameterName | TextureMinFilter         |
-	gl_texture | TextureTarget | TextureParameterName | TextureSwizzle           |
-	gl_texture | TextureTarget | TextureParameterName | TextureWrapMode          |
-	gl_texture | TextureTarget | TextureParameterName | Int32                    |
-	---------- | ------------- | -------------------- | ------------------------ |
-	texture    | target        | pname                | param                    |
+	gl_texture | TextureTarget | TextureParameterName | ConvolutionBorderMode   |
+	gl_texture | TextureTarget | TextureParameterName | DepthStencilTextureMode |
+	gl_texture | TextureTarget | TextureParameterName | FoveationConfigBit      |
+	gl_texture | TextureTarget | TextureParameterName | MapTextureFormat        |
+	gl_texture | TextureTarget | TextureParameterName | TextureCompareMode      |
+	gl_texture | TextureTarget | TextureParameterName | TextureMagFilter        |
+	gl_texture | TextureTarget | TextureParameterName | TextureMinFilter        |
+	gl_texture | TextureTarget | TextureParameterName | TextureSwizzle          |
+	gl_texture | TextureTarget | TextureParameterName | TextureWrapMode         |
+	gl_texture | TextureTarget | TextureParameterName | Int32                   |
+	---------- | ------------- | -------------------- | ----------------------- |
+	texture    | target        | pname                | param                   |
 
 # glTextureParameterivEXT[3]:
 	gl_texture | TextureTarget | TextureParameterName | array of Int32 |
@@ -10640,9 +10640,9 @@
 	buffer    | offset | size    | data       |
 
 # glMapNamedBufferEXT[1]:
-	IntPtr | gl_buffer | BufferAccessARB |
-	------ | --------- | --------------- |
-	       | buffer    | access          |
+	IntPtr | gl_buffer | BufferAccess |
+	------ | --------- | ------------ |
+	       | buffer    | access       |
 
 # glUnmapNamedBufferEXT[1]:
 	boolean | gl_buffer |
@@ -10650,16 +10650,16 @@
 	        | buffer    |
 
 # glGetNamedBufferParameterivEXT[2]:
-	gl_buffer | BufferPNameARB | var Int32 |
-	gl_buffer | BufferPNameARB | IntPtr    |
-	--------- | -------------- | --------- |
-	buffer    | pname          | params    |
+	gl_buffer | BufferPName | var Int32 |
+	gl_buffer | BufferPName | IntPtr    |
+	--------- | ----------- | --------- |
+	buffer    | pname       | params    |
 
 # glGetNamedBufferPointervEXT[2]:
-	gl_buffer | BufferPointerNameARB | var IntPtr |
-	gl_buffer | BufferPointerNameARB | pointer    |
-	--------- | -------------------- | ---------- |
-	buffer    | pname                | params     |
+	gl_buffer | BufferPointerName | var IntPtr |
+	gl_buffer | BufferPointerName | pointer    |
+	--------- | ----------------- | ---------- |
+	buffer    | pname             | params     |
 
 # glGetNamedBufferSubDataEXT[2]:
 	gl_buffer | IntPtr | UIntPtr | var T   |
@@ -11063,10 +11063,10 @@
 	program    | target        | index  | params     |
 
 # glGetNamedProgramivEXT[2]:
-	gl_program | ProgramTarget | ProgramPropertyARB | var Int32 |
-	gl_program | ProgramTarget | ProgramPropertyARB | IntPtr    |
-	---------- | ------------- | ------------------ | --------- |
-	program    | target        | pname              | params    |
+	gl_program | ProgramTarget | ProgramProperty | var Int32 |
+	gl_program | ProgramTarget | ProgramProperty | IntPtr    |
+	---------- | ------------- | --------------- | --------- |
+	program    | target        | pname           | params    |
 
 # glGetNamedProgramStringEXT[1]:
 	gl_program | ProgramTarget | ProgramStringProperty | IntPtr |
@@ -11570,9 +11570,9 @@
 	coord         |
 
 # glFogCoordPointerEXT[1]:
-	FogPointerTypeEXT | Int32  | IntPtr  |
-	----------------- | ------ | ------- |
-	type              | stride | pointer |
+	FogPointerType | Int32  | IntPtr  |
+	-------------- | ------ | ------- |
+	type           | stride | pointer |
 
 # glBlitFramebufferEXT[1]:
 	Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | ClearBufferMask | BlitFramebufferFilter |
@@ -11915,16 +11915,16 @@
 	target             | reset   | format      | type      | values |
 
 # glGetHistogramParameterfvEXT[2]:
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | var single |
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | IntPtr     |
-	------------------ | ----------------------------- | ---------- |
-	target             | pname                         | params     |
+	HistogramTargetEXT | GetHistogramParameterPName | var single |
+	HistogramTargetEXT | GetHistogramParameterPName | IntPtr     |
+	------------------ | -------------------------- | ---------- |
+	target             | pname                      | params     |
 
 # glGetHistogramParameterivEXT[2]:
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | var Int32 |
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | IntPtr    |
-	------------------ | ----------------------------- | --------- |
-	target             | pname                         | params    |
+	HistogramTargetEXT | GetHistogramParameterPName | var Int32 |
+	HistogramTargetEXT | GetHistogramParameterPName | IntPtr    |
+	------------------ | -------------------------- | --------- |
+	target             | pname                      | params    |
 
 # glGetMinmaxEXT[1]:
 	MinmaxTargetEXT | boolean | PixelFormat | PixelType | IntPtr |
@@ -11932,16 +11932,16 @@
 	target          | reset   | format      | type      | values |
 
 # glGetMinmaxParameterfvEXT[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | var single |
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | IntPtr     |
-	--------------- | -------------------------- | ---------- |
-	target          | pname                      | params     |
+	MinmaxTargetEXT | GetMinmaxParameterPName | var single |
+	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr     |
+	--------------- | ----------------------- | ---------- |
+	target          | pname                   | params     |
 
 # glGetMinmaxParameterivEXT[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | var Int32 |
-	MinmaxTargetEXT | GetMinmaxParameterPNameEXT | IntPtr    |
-	--------------- | -------------------------- | --------- |
-	target          | pname                      | params    |
+	MinmaxTargetEXT | GetMinmaxParameterPName | var Int32 |
+	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr    |
+	--------------- | ----------------------- | --------- |
+	target          | pname                   | params    |
 
 # glHistogramEXT[1]:
 	HistogramTargetEXT | Int32 | InternalFormat | boolean |
@@ -11964,24 +11964,24 @@
 	target          |
 
 # glIndexFuncEXT[1]:
-	IndexFunctionEXT | single |
-	---------------- | ------ |
-	func             | ref    |
+	IndexFunction | single |
+	------------- | ------ |
+	func          | ref    |
 
 # glIndexMaterialEXT[1]:
-	MaterialFace | IndexMaterialParameterEXT |
-	------------ | ------------------------- |
-	face         | mode                      |
+	MaterialFace | IndexMaterialParameter |
+	------------ | ---------------------- |
+	face         | mode                   |
 
 # glApplyTextureEXT[1]:
-	LightTextureModeEXT |
-	------------------- |
-	mode                |
+	LightTextureMode |
+	---------------- |
+	mode             |
 
 # glTextureLightEXT[1]:
-	LightTexturePNameEXT |
-	-------------------- |
-	pname                |
+	LightTexturePName |
+	----------------- |
+	pname             |
 
 # glTextureMaterialEXT[1]:
 	MaterialFace | MaterialParameter |
@@ -12158,28 +12158,28 @@
 	target           | pname                    | params     |
 
 # glPixelTransformParameteriEXT[1]:
-	PixelTransformTargetEXT | PixelTransformPNameEXT | Int32 |
-	----------------------- | ---------------------- | ----- |
-	target                  | pname                  | param |
+	PixelTransformTarget | PixelTransformPName | Int32 |
+	-------------------- | ------------------- | ----- |
+	target               | pname               | param |
 
 # glPixelTransformParameterfEXT[1]:
-	PixelTransformTargetEXT | PixelTransformPNameEXT | single |
-	----------------------- | ---------------------- | ------ |
-	target                  | pname                  | param  |
+	PixelTransformTarget | PixelTransformPName | single |
+	-------------------- | ------------------- | ------ |
+	target               | pname               | param  |
 
 # glPixelTransformParameterivEXT[3]:
-	PixelTransformTargetEXT | PixelTransformPNameEXT | array of Int32 |
-	PixelTransformTargetEXT | PixelTransformPNameEXT | var Int32      |
-	PixelTransformTargetEXT | PixelTransformPNameEXT | IntPtr         |
-	----------------------- | ---------------------- | -------------- |
-	target                  | pname                  | params         |
+	PixelTransformTarget | PixelTransformPName | array of Int32 |
+	PixelTransformTarget | PixelTransformPName | var Int32      |
+	PixelTransformTarget | PixelTransformPName | IntPtr         |
+	-------------------- | ------------------- | -------------- |
+	target               | pname               | params         |
 
 # glPixelTransformParameterfvEXT[3]:
-	PixelTransformTargetEXT | PixelTransformPNameEXT | array of single |
-	PixelTransformTargetEXT | PixelTransformPNameEXT | var single      |
-	PixelTransformTargetEXT | PixelTransformPNameEXT | IntPtr          |
-	----------------------- | ---------------------- | --------------- |
-	target                  | pname                  | params          |
+	PixelTransformTarget | PixelTransformPName | array of single |
+	PixelTransformTarget | PixelTransformPName | var single      |
+	PixelTransformTarget | PixelTransformPName | IntPtr          |
+	-------------------- | ------------------- | --------------- |
+	target               | pname               | params          |
 
 # glGetPixelTransformParameterivEXT[2]:
 	DummyEnum | DummyEnum | var Int32 |
@@ -12194,16 +12194,16 @@
 	target    | pname     | params     |
 
 # glPointParameterfEXT[1]:
-	PointParameterNameARB | single |
-	--------------------- | ------ |
-	pname                 | param  |
+	PointParameterName | single |
+	------------------ | ------ |
+	pname              | param  |
 
 # glPointParameterfvEXT[3]:
-	PointParameterNameARB | array of single |
-	PointParameterNameARB | var single      |
-	PointParameterNameARB | IntPtr          |
-	--------------------- | --------------- |
-	pname                 | params          |
+	PointParameterName | array of single |
+	PointParameterName | var single      |
+	PointParameterName | IntPtr          |
+	------------------ | --------------- |
+	pname              | params          |
 
 # glPolygonOffsetEXT[1]:
 	single | single |
@@ -12418,9 +12418,9 @@
 # glFramebufferFetchBarrierEXT[1]:
 
 # glBindImageTextureEXT[1]:
-	UInt32 | gl_texture | Int32 | boolean | Int32 | BufferAccessARB | Int32  |
-	------ | ---------- | ----- | ------- | ----- | --------------- | ------ |
-	index  | texture    | level | layered | layer | access          | format |
+	UInt32 | gl_texture | Int32 | boolean | Int32 | BufferAccess | Int32  |
+	------ | ---------- | ----- | ------- | ----- | ------------ | ------ |
+	index  | texture    | level | layered | layer | access       | format |
 
 # glMemoryBarrierEXT[1]:
 	MemoryBarrierMask |
@@ -12547,9 +12547,9 @@
 	n     | textures            | priorities      |
 
 # glTextureNormalEXT[1]:
-	TextureNormalModeEXT |
-	-------------------- |
-	mode                 |
+	TextureNormalMode |
+	----------------- |
+	mode              |
 
 # glTexStorage1DEXT[1]:
 	TextureTarget | Int32  | SizedInternalFormat | Int32 |
@@ -12765,29 +12765,29 @@
 	id     |
 
 # glShaderOp1EXT[1]:
-	VertexShaderOpEXT | UInt32 | UInt32 |
-	----------------- | ------ | ------ |
-	op                | res    | arg1   |
+	VertexShaderOp | UInt32 | UInt32 |
+	-------------- | ------ | ------ |
+	op             | res    | arg1   |
 
 # glShaderOp2EXT[1]:
-	VertexShaderOpEXT | UInt32 | UInt32 | UInt32 |
-	----------------- | ------ | ------ | ------ |
-	op                | res    | arg1   | arg2   |
+	VertexShaderOp | UInt32 | UInt32 | UInt32 |
+	-------------- | ------ | ------ | ------ |
+	op             | res    | arg1   | arg2   |
 
 # glShaderOp3EXT[1]:
-	VertexShaderOpEXT | UInt32 | UInt32 | UInt32 | UInt32 |
-	----------------- | ------ | ------ | ------ | ------ |
-	op                | res    | arg1   | arg2   | arg3   |
+	VertexShaderOp | UInt32 | UInt32 | UInt32 | UInt32 |
+	-------------- | ------ | ------ | ------ | ------ |
+	op             | res    | arg1   | arg2   | arg3   |
 
 # glSwizzleEXT[1]:
-	UInt32 | UInt32 | VertexShaderCoordOutEXT | VertexShaderCoordOutEXT | VertexShaderCoordOutEXT | VertexShaderCoordOutEXT |
-	------ | ------ | ----------------------- | ----------------------- | ----------------------- | ----------------------- |
-	res    | in     | outX                    | outY                    | outZ                    | outW                    |
+	UInt32 | UInt32 | VertexShaderCoordOut | VertexShaderCoordOut | VertexShaderCoordOut | VertexShaderCoordOut |
+	------ | ------ | -------------------- | -------------------- | -------------------- | -------------------- |
+	res    | in     | outX                 | outY                 | outZ                 | outW                 |
 
 # glWriteMaskEXT[1]:
-	UInt32 | UInt32 | VertexShaderWriteMaskEXT | VertexShaderWriteMaskEXT | VertexShaderWriteMaskEXT | VertexShaderWriteMaskEXT |
-	------ | ------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ |
-	res    | in     | outX                     | outY                     | outZ                     | outW                     |
+	UInt32 | UInt32 | VertexShaderWriteMask | VertexShaderWriteMask | VertexShaderWriteMask | VertexShaderWriteMask |
+	------ | ------ | --------------------- | --------------------- | --------------------- | --------------------- |
+	res    | in     | outX                  | outY                  | outZ                  | outW                  |
 
 # glInsertComponentEXT[1]:
 	UInt32 | UInt32 | UInt32 |
@@ -12800,9 +12800,9 @@
 	res    | src    | num    |
 
 # glGenSymbolsEXT[1]:
-	UInt32 | DataTypeEXT | VertexShaderStorageTypeEXT | ParameterRangeEXT | UInt32     |
-	------ | ----------- | -------------------------- | ----------------- | ---------- |
-	       | datatype    | storagetype                | range             | components |
+	UInt32 | DataType | VertexShaderStorageType | ParameterRange | UInt32     |
+	------ | -------- | ----------------------- | -------------- | ---------- |
+	       | datatype | storagetype             | range          | components |
 
 # glSetInvariantEXT[1]:
 	UInt32 | ScalarType | IntPtr |
@@ -12906,74 +12906,74 @@
 	       | unit        | value                            |
 
 # glBindParameterEXT[1]:
-	UInt32 | VertexShaderParameterEXT |
-	------ | ------------------------ |
-	       | value                    |
+	UInt32 | VertexShaderParameter |
+	------ | --------------------- |
+	       | value                 |
 
 # glIsVariantEnabledEXT[1]:
-	boolean | UInt32 | VariantCapEXT |
-	------- | ------ | ------------- |
-	        | id     | cap           |
+	boolean | UInt32 | VariantCap |
+	------- | ------ | ---------- |
+	        | id     | cap        |
 
 # glGetVariantBooleanvEXT[2]:
-	UInt32 | GetVariantValueEXT | var boolean |
-	UInt32 | GetVariantValueEXT | IntPtr      |
-	------ | ------------------ | ----------- |
-	id     | value              | data        |
+	UInt32 | GetVariantValue | var boolean |
+	UInt32 | GetVariantValue | IntPtr      |
+	------ | --------------- | ----------- |
+	id     | value           | data        |
 
 # glGetVariantIntegervEXT[2]:
-	UInt32 | GetVariantValueEXT | var Int32 |
-	UInt32 | GetVariantValueEXT | IntPtr    |
-	------ | ------------------ | --------- |
-	id     | value              | data      |
+	UInt32 | GetVariantValue | var Int32 |
+	UInt32 | GetVariantValue | IntPtr    |
+	------ | --------------- | --------- |
+	id     | value           | data      |
 
 # glGetVariantFloatvEXT[2]:
-	UInt32 | GetVariantValueEXT | var single |
-	UInt32 | GetVariantValueEXT | IntPtr     |
-	------ | ------------------ | ---------- |
-	id     | value              | data       |
+	UInt32 | GetVariantValue | var single |
+	UInt32 | GetVariantValue | IntPtr     |
+	------ | --------------- | ---------- |
+	id     | value           | data       |
 
 # glGetVariantPointervEXT[2]:
-	UInt32 | GetVariantValueEXT | var IntPtr |
-	UInt32 | GetVariantValueEXT | pointer    |
-	------ | ------------------ | ---------- |
-	id     | value              | data       |
+	UInt32 | GetVariantValue | var IntPtr |
+	UInt32 | GetVariantValue | pointer    |
+	------ | --------------- | ---------- |
+	id     | value           | data       |
 
 # glGetInvariantBooleanvEXT[2]:
-	UInt32 | GetVariantValueEXT | var boolean |
-	UInt32 | GetVariantValueEXT | IntPtr      |
-	------ | ------------------ | ----------- |
-	id     | value              | data        |
+	UInt32 | GetVariantValue | var boolean |
+	UInt32 | GetVariantValue | IntPtr      |
+	------ | --------------- | ----------- |
+	id     | value           | data        |
 
 # glGetInvariantIntegervEXT[2]:
-	UInt32 | GetVariantValueEXT | var Int32 |
-	UInt32 | GetVariantValueEXT | IntPtr    |
-	------ | ------------------ | --------- |
-	id     | value              | data      |
+	UInt32 | GetVariantValue | var Int32 |
+	UInt32 | GetVariantValue | IntPtr    |
+	------ | --------------- | --------- |
+	id     | value           | data      |
 
 # glGetInvariantFloatvEXT[2]:
-	UInt32 | GetVariantValueEXT | var single |
-	UInt32 | GetVariantValueEXT | IntPtr     |
-	------ | ------------------ | ---------- |
-	id     | value              | data       |
+	UInt32 | GetVariantValue | var single |
+	UInt32 | GetVariantValue | IntPtr     |
+	------ | --------------- | ---------- |
+	id     | value           | data       |
 
 # glGetLocalConstantBooleanvEXT[2]:
-	UInt32 | GetVariantValueEXT | var boolean |
-	UInt32 | GetVariantValueEXT | IntPtr      |
-	------ | ------------------ | ----------- |
-	id     | value              | data        |
+	UInt32 | GetVariantValue | var boolean |
+	UInt32 | GetVariantValue | IntPtr      |
+	------ | --------------- | ----------- |
+	id     | value           | data        |
 
 # glGetLocalConstantIntegervEXT[2]:
-	UInt32 | GetVariantValueEXT | var Int32 |
-	UInt32 | GetVariantValueEXT | IntPtr    |
-	------ | ------------------ | --------- |
-	id     | value              | data      |
+	UInt32 | GetVariantValue | var Int32 |
+	UInt32 | GetVariantValue | IntPtr    |
+	------ | --------------- | --------- |
+	id     | value           | data      |
 
 # glGetLocalConstantFloatvEXT[2]:
-	UInt32 | GetVariantValueEXT | var single |
-	UInt32 | GetVariantValueEXT | IntPtr     |
-	------ | ------------------ | ---------- |
-	id     | value              | data       |
+	UInt32 | GetVariantValue | var single |
+	UInt32 | GetVariantValue | IntPtr     |
+	------ | --------------- | ---------- |
+	id     | value           | data       |
 
 # glVertexWeightfEXT[1]:
 	single |
@@ -12988,9 +12988,9 @@
 	weight          |
 
 # glVertexWeightPointerEXT[1]:
-	Int32 | VertexWeightPointerTypeEXT | Int32  | IntPtr  |
-	----- | -------------------------- | ------ | ------- |
-	size  | type                       | stride | pointer |
+	Int32 | VertexWeightPointerType | Int32  | IntPtr  |
+	----- | ----------------------- | ------ | ------- |
+	size  | type                    | stride | pointer |
 
 # glAcquireKeyedMutexWin32EXT[1]:
 	boolean | UInt32 | UInt64 | UInt32  |
@@ -13022,40 +13022,40 @@
 	len   | string |
 
 # glImageTransformParameteriHP[1]:
-	ImageTransformTargetHP | ImageTransformPNameHP | Int32 |
-	---------------------- | --------------------- | ----- |
-	target                 | pname                 | param |
+	ImageTransformTarget | ImageTransformPName | Int32 |
+	-------------------- | ------------------- | ----- |
+	target               | pname               | param |
 
 # glImageTransformParameterfHP[1]:
-	ImageTransformTargetHP | ImageTransformPNameHP | single |
-	---------------------- | --------------------- | ------ |
-	target                 | pname                 | param  |
+	ImageTransformTarget | ImageTransformPName | single |
+	-------------------- | ------------------- | ------ |
+	target               | pname               | param  |
 
 # glImageTransformParameterivHP[3]:
-	ImageTransformTargetHP | ImageTransformPNameHP | array of Int32 |
-	ImageTransformTargetHP | ImageTransformPNameHP | var Int32      |
-	ImageTransformTargetHP | ImageTransformPNameHP | IntPtr         |
-	---------------------- | --------------------- | -------------- |
-	target                 | pname                 | params         |
+	ImageTransformTarget | ImageTransformPName | array of Int32 |
+	ImageTransformTarget | ImageTransformPName | var Int32      |
+	ImageTransformTarget | ImageTransformPName | IntPtr         |
+	-------------------- | ------------------- | -------------- |
+	target               | pname               | params         |
 
 # glImageTransformParameterfvHP[3]:
-	ImageTransformTargetHP | ImageTransformPNameHP | array of single |
-	ImageTransformTargetHP | ImageTransformPNameHP | var single      |
-	ImageTransformTargetHP | ImageTransformPNameHP | IntPtr          |
-	---------------------- | --------------------- | --------------- |
-	target                 | pname                 | params          |
+	ImageTransformTarget | ImageTransformPName | array of single |
+	ImageTransformTarget | ImageTransformPName | var single      |
+	ImageTransformTarget | ImageTransformPName | IntPtr          |
+	-------------------- | ------------------- | --------------- |
+	target               | pname               | params          |
 
 # glGetImageTransformParameterivHP[2]:
-	ImageTransformTargetHP | ImageTransformPNameHP | var Int32 |
-	ImageTransformTargetHP | ImageTransformPNameHP | IntPtr    |
-	---------------------- | --------------------- | --------- |
-	target                 | pname                 | params    |
+	ImageTransformTarget | ImageTransformPName | var Int32 |
+	ImageTransformTarget | ImageTransformPName | IntPtr    |
+	-------------------- | ------------------- | --------- |
+	target               | pname               | params    |
 
 # glGetImageTransformParameterfvHP[2]:
-	ImageTransformTargetHP | ImageTransformPNameHP | var single |
-	ImageTransformTargetHP | ImageTransformPNameHP | IntPtr     |
-	---------------------- | --------------------- | ---------- |
-	target                 | pname                 | params     |
+	ImageTransformTarget | ImageTransformPName | var single |
+	ImageTransformTarget | ImageTransformPName | IntPtr     |
+	-------------------- | ------------------- | ---------- |
+	target               | pname               | params     |
 
 # glMultiModeDrawArraysIBM[9]:
 	array of PrimitiveType | array of Int32 | array of Int32 | Int32     | Int32      |
@@ -13096,11 +13096,11 @@
 	size  | type             | stride | pointer         | ptrstride |
 
 # glSecondaryColorPointerListIBM[3]:
-	Int32 | SecondaryColorPointerTypeIBM | Int32  | array of IntPtr | Int32     |
-	Int32 | SecondaryColorPointerTypeIBM | Int32  | var IntPtr      | Int32     |
-	Int32 | SecondaryColorPointerTypeIBM | Int32  | pointer         | Int32     |
-	----- | ---------------------------- | ------ | --------------- | --------- |
-	size  | type                         | stride | pointer         | ptrstride |
+	Int32 | SecondaryColorPointerType | Int32  | array of IntPtr | Int32     |
+	Int32 | SecondaryColorPointerType | Int32  | var IntPtr      | Int32     |
+	Int32 | SecondaryColorPointerType | Int32  | pointer         | Int32     |
+	----- | ------------------------- | ------ | --------------- | --------- |
+	size  | type                      | stride | pointer         | ptrstride |
 
 # glEdgeFlagPointerListIBM[2]:
 	Int32  | var boolean | Int32     |
@@ -13109,11 +13109,11 @@
 	stride | pointer     | ptrstride |
 
 # glFogCoordPointerListIBM[3]:
-	FogPointerTypeIBM | Int32  | array of IntPtr | Int32     |
-	FogPointerTypeIBM | Int32  | var IntPtr      | Int32     |
-	FogPointerTypeIBM | Int32  | pointer         | Int32     |
-	----------------- | ------ | --------------- | --------- |
-	type              | stride | pointer         | ptrstride |
+	FogPointerType | Int32  | array of IntPtr | Int32     |
+	FogPointerType | Int32  | var IntPtr      | Int32     |
+	FogPointerType | Int32  | pointer         | Int32     |
+	-------------- | ------ | --------------- | --------- |
+	type           | stride | pointer         | ptrstride |
 
 # glIndexPointerListIBM[3]:
 	IndexPointerType | Int32  | array of IntPtr | Int32     |
@@ -13237,10 +13237,10 @@
 	queryId                | counterId | counterNameLength | counterName | counterDescLength | counterDesc | counterOffset | counterDataSize | counterTypeEnum | counterDataTypeEnum | rawCounterMaxValue |
 
 # glGetPerfQueryDataINTEL[2]:
-	gl_perf_query_handle_INTEL | PerfQueryDataFlagsINTEL | Int32    | IntPtr | var UInt32   |
-	gl_perf_query_handle_INTEL | PerfQueryDataFlagsINTEL | Int32    | IntPtr | IntPtr       |
-	-------------------------- | ----------------------- | -------- | ------ | ------------ |
-	queryHandle                | flags                   | dataSize | data   | bytesWritten |
+	gl_perf_query_handle_INTEL | PerfQueryDataFlags | Int32    | IntPtr | var UInt32   |
+	gl_perf_query_handle_INTEL | PerfQueryDataFlags | Int32    | IntPtr | IntPtr       |
+	-------------------------- | ------------------ | -------- | ------ | ------------ |
+	queryHandle                | flags              | dataSize | data   | bytesWritten |
 
 # glGetPerfQueryIdByNameINTEL[4]:
 	string    | var gl_perf_query_id_INTEL |
@@ -13251,10 +13251,10 @@
 	queryName | queryId                    |
 
 # glGetPerfQueryInfoINTEL[2]:
-	gl_perf_query_id_INTEL | UInt32          | IntPtr    | var UInt32 | var UInt32 | var UInt32  | var PerformanceQueryCapsMaskINTEL |
-	gl_perf_query_id_INTEL | UInt32          | IntPtr    | IntPtr     | IntPtr     | IntPtr      | IntPtr                            |
-	---------------------- | --------------- | --------- | ---------- | ---------- | ----------- | --------------------------------- |
-	queryId                | queryNameLength | queryName | dataSize   | noCounters | noInstances | capsMask                          |
+	gl_perf_query_id_INTEL | UInt32          | IntPtr    | var UInt32 | var UInt32 | var UInt32  | var PerformanceQueryCapsMask |
+	gl_perf_query_id_INTEL | UInt32          | IntPtr    | IntPtr     | IntPtr     | IntPtr      | IntPtr                       |
+	---------------------- | --------------- | --------- | ---------- | ---------- | ----------- | ---------------------------- |
+	queryId                | queryNameLength | queryName | dataSize   | noCounters | noInstances | capsMask                     |
 
 # glBlendBarrierKHR[1]:
 
@@ -13570,9 +13570,9 @@
 	state  | mode      |
 
 # glGetCommandHeaderNV[1]:
-	UInt32 | CommandOpcodesNV | UInt32 |
-	------ | ---------------- | ------ |
-	       | tokenID          | size   |
+	UInt32 | CommandOpcodes | UInt32 |
+	------ | -------------- | ------ |
+	       | tokenID        | size   |
 
 # glGetStageIndexNV[1]:
 	UInt16 | ShaderType |
@@ -13768,63 +13768,63 @@
 	vkFence |
 
 # glMapControlPointsNV[1]:
-	EvalTargetNV | UInt32 | MapTypeNV | Int32   | Int32   | Int32  | Int32  | boolean | IntPtr |
-	------------ | ------ | --------- | ------- | ------- | ------ | ------ | ------- | ------ |
-	target       | index  | type      | ustride | vstride | uorder | vorder | packed  | points |
+	EvalTarget | UInt32 | MapType | Int32   | Int32   | Int32  | Int32  | boolean | IntPtr |
+	---------- | ------ | ------- | ------- | ------- | ------ | ------ | ------- | ------ |
+	target     | index  | type    | ustride | vstride | uorder | vorder | packed  | points |
 
 # glMapParameterivNV[3]:
-	EvalTargetNV | MapParameterNV | array of Int32 |
-	EvalTargetNV | MapParameterNV | var Int32      |
-	EvalTargetNV | MapParameterNV | IntPtr         |
-	------------ | -------------- | -------------- |
-	target       | pname          | params         |
+	EvalTarget | MapParameter | array of Int32 |
+	EvalTarget | MapParameter | var Int32      |
+	EvalTarget | MapParameter | IntPtr         |
+	---------- | ------------ | -------------- |
+	target     | pname        | params         |
 
 # glMapParameterfvNV[3]:
-	EvalTargetNV | MapParameterNV | array of single |
-	EvalTargetNV | MapParameterNV | var single      |
-	EvalTargetNV | MapParameterNV | IntPtr          |
-	------------ | -------------- | --------------- |
-	target       | pname          | params          |
+	EvalTarget | MapParameter | array of single |
+	EvalTarget | MapParameter | var single      |
+	EvalTarget | MapParameter | IntPtr          |
+	---------- | ------------ | --------------- |
+	target     | pname        | params          |
 
 # glGetMapControlPointsNV[1]:
-	EvalTargetNV | UInt32 | MapTypeNV | Int32   | Int32   | boolean | IntPtr |
-	------------ | ------ | --------- | ------- | ------- | ------- | ------ |
-	target       | index  | type      | ustride | vstride | packed  | points |
+	EvalTarget | UInt32 | MapType | Int32   | Int32   | boolean | IntPtr |
+	---------- | ------ | ------- | ------- | ------- | ------- | ------ |
+	target     | index  | type    | ustride | vstride | packed  | points |
 
 # glGetMapParameterivNV[2]:
-	EvalTargetNV | MapParameterNV | var Int32 |
-	EvalTargetNV | MapParameterNV | IntPtr    |
-	------------ | -------------- | --------- |
-	target       | pname          | params    |
+	EvalTarget | MapParameter | var Int32 |
+	EvalTarget | MapParameter | IntPtr    |
+	---------- | ------------ | --------- |
+	target     | pname        | params    |
 
 # glGetMapParameterfvNV[2]:
-	EvalTargetNV | MapParameterNV | var single |
-	EvalTargetNV | MapParameterNV | IntPtr     |
-	------------ | -------------- | ---------- |
-	target       | pname          | params     |
+	EvalTarget | MapParameter | var single |
+	EvalTarget | MapParameter | IntPtr     |
+	---------- | ------------ | ---------- |
+	target     | pname        | params     |
 
 # glGetMapAttribParameterivNV[2]:
-	EvalTargetNV | UInt32 | MapAttribParameterNV | var Int32 |
-	EvalTargetNV | UInt32 | MapAttribParameterNV | IntPtr    |
-	------------ | ------ | -------------------- | --------- |
-	target       | index  | pname                | params    |
+	EvalTarget | UInt32 | MapAttribParameter | var Int32 |
+	EvalTarget | UInt32 | MapAttribParameter | IntPtr    |
+	---------- | ------ | ------------------ | --------- |
+	target     | index  | pname              | params    |
 
 # glGetMapAttribParameterfvNV[2]:
-	EvalTargetNV | UInt32 | MapAttribParameterNV | var single |
-	EvalTargetNV | UInt32 | MapAttribParameterNV | IntPtr     |
-	------------ | ------ | -------------------- | ---------- |
-	target       | index  | pname                | params     |
+	EvalTarget | UInt32 | MapAttribParameter | var single |
+	EvalTarget | UInt32 | MapAttribParameter | IntPtr     |
+	---------- | ------ | ------------------ | ---------- |
+	target     | index  | pname              | params     |
 
 # glEvalMapsNV[1]:
-	EvalTargetNV | EvalMapsModeNV |
-	------------ | -------------- |
-	target       | mode           |
+	EvalTarget | EvalMapsMode |
+	---------- | ------------ |
+	target     | mode         |
 
 # glGetMultisamplefvNV[2]:
-	GetMultisamplePNameNV | UInt32 | var single |
-	GetMultisamplePNameNV | UInt32 | IntPtr     |
-	--------------------- | ------ | ---------- |
-	pname                 | index  | val        |
+	GetMultisamplePName | UInt32 | var single |
+	GetMultisamplePName | UInt32 | IntPtr     |
+	------------------- | ------ | ---------- |
+	pname               | index  | val        |
 
 # glSampleMaskIndexedNV[1]:
 	UInt32 | DummyFlags |
@@ -13861,10 +13861,10 @@
 	        | fence  |
 
 # glGetFenceivNV[2]:
-	UInt32 | FenceParameterNameNV | var Int32 |
-	UInt32 | FenceParameterNameNV | IntPtr    |
-	------ | -------------------- | --------- |
-	fence  | pname                | params    |
+	UInt32 | FenceParameterName | var Int32 |
+	UInt32 | FenceParameterName | IntPtr    |
+	------ | ------------------ | --------- |
+	fence  | pname              | params    |
 
 # glFinishFenceNV[1]:
 	UInt32 |
@@ -13872,9 +13872,9 @@
 	fence  |
 
 # glSetFenceNV[1]:
-	UInt32 | FenceConditionNV |
-	------ | ---------------- |
-	fence  | condition        |
+	UInt32 | FenceCondition |
+	------ | -------------- |
+	fence  | condition      |
 
 # glFragmentCoverageColorNV[1]:
 	UInt32 |
@@ -14627,16 +14627,16 @@
 # glEndOcclusionQueryNV[1]:
 
 # glGetOcclusionQueryivNV[2]:
-	UInt32 | OcclusionQueryParameterNameNV | var Int32 |
-	UInt32 | OcclusionQueryParameterNameNV | IntPtr    |
-	------ | ----------------------------- | --------- |
-	id     | pname                         | params    |
+	UInt32 | OcclusionQueryParameterName | var Int32 |
+	UInt32 | OcclusionQueryParameterName | IntPtr    |
+	------ | --------------------------- | --------- |
+	id     | pname                       | params    |
 
 # glGetOcclusionQueryuivNV[2]:
-	UInt32 | OcclusionQueryParameterNameNV | var UInt32 |
-	UInt32 | OcclusionQueryParameterNameNV | IntPtr     |
-	------ | ----------------------------- | ---------- |
-	id     | pname                         | params     |
+	UInt32 | OcclusionQueryParameterName | var UInt32 |
+	UInt32 | OcclusionQueryParameterName | IntPtr     |
+	------ | --------------------------- | ---------- |
+	id     | pname                       | params     |
 
 # glProgramBufferParametersfvNV[3]:
 	ProgramTarget | UInt32       | UInt32    | Int32 | array of single |
@@ -15054,26 +15054,26 @@
 	texCoordSet | pname       | value      |
 
 # glPixelDataRangeNV[1]:
-	PixelDataRangeTargetNV | Int32  | IntPtr  |
-	---------------------- | ------ | ------- |
-	target                 | length | pointer |
+	PixelDataRangeTarget | Int32  | IntPtr  |
+	-------------------- | ------ | ------- |
+	target               | length | pointer |
 
 # glFlushPixelDataRangeNV[1]:
-	PixelDataRangeTargetNV |
-	---------------------- |
-	target                 |
+	PixelDataRangeTarget |
+	-------------------- |
+	target               |
 
 # glPointParameteriNV[1]:
-	PointParameterNameARB | Int32 |
-	--------------------- | ----- |
-	pname                 | param |
+	PointParameterName | Int32 |
+	------------------ | ----- |
+	pname              | param |
 
 # glPointParameterivNV[3]:
-	PointParameterNameARB | array of Int32 |
-	PointParameterNameARB | var Int32      |
-	PointParameterNameARB | IntPtr         |
-	--------------------- | -------------- |
-	pname                 | params         |
+	PointParameterName | array of Int32 |
+	PointParameterName | var Int32      |
+	PointParameterName | IntPtr         |
+	------------------ | -------------- |
+	pname              | params         |
 
 # glPresentFrameKeyedNV[1]:
 	UInt32     | UInt64         | UInt32             | UInt32            | DummyEnum | DummyEnum | UInt32 | UInt32 | DummyEnum | UInt32 | UInt32 |
@@ -15144,92 +15144,92 @@
 	tagId | tagString |
 
 # glCombinerParameterfvNV[3]:
-	CombinerParameterNV | array of single |
-	CombinerParameterNV | var single      |
-	CombinerParameterNV | IntPtr          |
-	------------------- | --------------- |
-	pname               | params          |
+	CombinerParameter | array of single |
+	CombinerParameter | var single      |
+	CombinerParameter | IntPtr          |
+	----------------- | --------------- |
+	pname             | params          |
 
 # glCombinerParameterfNV[1]:
-	CombinerParameterNV | single |
-	------------------- | ------ |
-	pname               | param  |
+	CombinerParameter | single |
+	----------------- | ------ |
+	pname             | param  |
 
 # glCombinerParameterivNV[3]:
-	CombinerParameterNV | array of Int32 |
-	CombinerParameterNV | var Int32      |
-	CombinerParameterNV | IntPtr         |
-	------------------- | -------------- |
-	pname               | params         |
+	CombinerParameter | array of Int32 |
+	CombinerParameter | var Int32      |
+	CombinerParameter | IntPtr         |
+	----------------- | -------------- |
+	pname             | params         |
 
 # glCombinerParameteriNV[1]:
-	CombinerParameterNV | Int32 |
-	------------------- | ----- |
-	pname               | param |
+	CombinerParameter | Int32 |
+	----------------- | ----- |
+	pname             | param |
 
 # glCombinerInputNV[1]:
-	CombinerStageNV | CombinerPortionNV | CombinerVariableNV | CombinerRegisterNV | CombinerMappingNV | CombinerComponentUsageNV |
-	--------------- | ----------------- | ------------------ | ------------------ | ----------------- | ------------------------ |
-	stage           | portion           | variable           | input              | mapping           | componentUsage           |
+	CombinerStage | CombinerPortion | CombinerVariable | CombinerRegister | CombinerMapping | CombinerComponentUsage |
+	------------- | --------------- | ---------------- | ---------------- | --------------- | ---------------------- |
+	stage         | portion         | variable         | input            | mapping         | componentUsage         |
 
 # glCombinerOutputNV[1]:
-	CombinerStageNV | CombinerPortionNV | CombinerRegisterNV | CombinerRegisterNV | CombinerRegisterNV | CombinerScaleNV | CombinerBiasNV | boolean      | boolean      | boolean |
-	--------------- | ----------------- | ------------------ | ------------------ | ------------------ | --------------- | -------------- | ------------ | ------------ | ------- |
-	stage           | portion           | abOutput           | cdOutput           | sumOutput          | scale           | bias           | abDotProduct | cdDotProduct | muxSum  |
+	CombinerStage | CombinerPortion | CombinerRegister | CombinerRegister | CombinerRegister | CombinerScale | CombinerBias | boolean      | boolean      | boolean |
+	------------- | --------------- | ---------------- | ---------------- | ---------------- | ------------- | ------------ | ------------ | ------------ | ------- |
+	stage         | portion         | abOutput         | cdOutput         | sumOutput        | scale         | bias         | abDotProduct | cdDotProduct | muxSum  |
 
 # glFinalCombinerInputNV[1]:
-	CombinerVariableNV | CombinerRegisterNV | CombinerMappingNV | CombinerComponentUsageNV |
-	------------------ | ------------------ | ----------------- | ------------------------ |
-	variable           | input              | mapping           | componentUsage           |
+	CombinerVariable | CombinerRegister | CombinerMapping | CombinerComponentUsage |
+	---------------- | ---------------- | --------------- | ---------------------- |
+	variable         | input            | mapping         | componentUsage         |
 
 # glGetCombinerInputParameterfvNV[2]:
-	CombinerStageNV | CombinerPortionNV | CombinerVariableNV | CombinerParameterNV | var single |
-	CombinerStageNV | CombinerPortionNV | CombinerVariableNV | CombinerParameterNV | IntPtr     |
-	--------------- | ----------------- | ------------------ | ------------------- | ---------- |
-	stage           | portion           | variable           | pname               | params     |
+	CombinerStage | CombinerPortion | CombinerVariable | CombinerParameter | var single |
+	CombinerStage | CombinerPortion | CombinerVariable | CombinerParameter | IntPtr     |
+	------------- | --------------- | ---------------- | ----------------- | ---------- |
+	stage         | portion         | variable         | pname             | params     |
 
 # glGetCombinerInputParameterivNV[2]:
-	CombinerStageNV | CombinerPortionNV | CombinerVariableNV | CombinerParameterNV | var Int32 |
-	CombinerStageNV | CombinerPortionNV | CombinerVariableNV | CombinerParameterNV | IntPtr    |
-	--------------- | ----------------- | ------------------ | ------------------- | --------- |
-	stage           | portion           | variable           | pname               | params    |
+	CombinerStage | CombinerPortion | CombinerVariable | CombinerParameter | var Int32 |
+	CombinerStage | CombinerPortion | CombinerVariable | CombinerParameter | IntPtr    |
+	------------- | --------------- | ---------------- | ----------------- | --------- |
+	stage         | portion         | variable         | pname             | params    |
 
 # glGetCombinerOutputParameterfvNV[2]:
-	CombinerStageNV | CombinerPortionNV | CombinerParameterNV | var single |
-	CombinerStageNV | CombinerPortionNV | CombinerParameterNV | IntPtr     |
-	--------------- | ----------------- | ------------------- | ---------- |
-	stage           | portion           | pname               | params     |
+	CombinerStage | CombinerPortion | CombinerParameter | var single |
+	CombinerStage | CombinerPortion | CombinerParameter | IntPtr     |
+	------------- | --------------- | ----------------- | ---------- |
+	stage         | portion         | pname             | params     |
 
 # glGetCombinerOutputParameterivNV[2]:
-	CombinerStageNV | CombinerPortionNV | CombinerParameterNV | var Int32 |
-	CombinerStageNV | CombinerPortionNV | CombinerParameterNV | IntPtr    |
-	--------------- | ----------------- | ------------------- | --------- |
-	stage           | portion           | pname               | params    |
+	CombinerStage | CombinerPortion | CombinerParameter | var Int32 |
+	CombinerStage | CombinerPortion | CombinerParameter | IntPtr    |
+	------------- | --------------- | ----------------- | --------- |
+	stage         | portion         | pname             | params    |
 
 # glGetFinalCombinerInputParameterfvNV[2]:
-	CombinerVariableNV | CombinerParameterNV | var single |
-	CombinerVariableNV | CombinerParameterNV | IntPtr     |
-	------------------ | ------------------- | ---------- |
-	variable           | pname               | params     |
+	CombinerVariable | CombinerParameter | var single |
+	CombinerVariable | CombinerParameter | IntPtr     |
+	---------------- | ----------------- | ---------- |
+	variable         | pname             | params     |
 
 # glGetFinalCombinerInputParameterivNV[2]:
-	CombinerVariableNV | CombinerParameterNV | var Int32 |
-	CombinerVariableNV | CombinerParameterNV | IntPtr    |
-	------------------ | ------------------- | --------- |
-	variable           | pname               | params    |
+	CombinerVariable | CombinerParameter | var Int32 |
+	CombinerVariable | CombinerParameter | IntPtr    |
+	---------------- | ----------------- | --------- |
+	variable         | pname             | params    |
 
 # glCombinerStageParameterfvNV[3]:
-	CombinerStageNV | CombinerParameterNV | array of single |
-	CombinerStageNV | CombinerParameterNV | var single      |
-	CombinerStageNV | CombinerParameterNV | IntPtr          |
-	--------------- | ------------------- | --------------- |
-	stage           | pname               | params          |
+	CombinerStage | CombinerParameter | array of single |
+	CombinerStage | CombinerParameter | var single      |
+	CombinerStage | CombinerParameter | IntPtr          |
+	------------- | ----------------- | --------------- |
+	stage         | pname             | params          |
 
 # glGetCombinerStageParameterfvNV[2]:
-	CombinerStageNV | CombinerParameterNV | var single |
-	CombinerStageNV | CombinerParameterNV | IntPtr     |
-	--------------- | ------------------- | ---------- |
-	stage           | pname               | params     |
+	CombinerStage | CombinerParameter | var single |
+	CombinerStage | CombinerParameter | IntPtr     |
+	------------- | ----------------- | ---------- |
+	stage         | pname             | params     |
 
 # glFramebufferSampleLocationsfvNV[3]:
 	FramebufferTarget | UInt32 | Int32 | array of single |
@@ -15296,10 +15296,10 @@
 	target       | pname     | params     |
 
 # glGetNamedBufferParameterui64vNV[2]:
-	gl_buffer | BufferPNameARB | var UInt64 |
-	gl_buffer | BufferPNameARB | IntPtr     |
-	--------- | -------------- | ---------- |
-	buffer    | pname          | params     |
+	gl_buffer | BufferPName | var UInt64 |
+	gl_buffer | BufferPName | IntPtr     |
+	--------- | ----------- | ---------- |
+	buffer    | pname       | params     |
 
 # glGetIntegerui64vNV[2]:
 	DummyEnum | var UInt64 |
@@ -15434,11 +15434,11 @@
 	target       | index  | buffer    |
 
 # glTransformFeedbackVaryingsNV[3]:
-	gl_program | Int32 | array of TransformFeedbackTokenNV | TransformFeedbackBufferMode |
-	gl_program | Int32 | var TransformFeedbackTokenNV      | TransformFeedbackBufferMode |
-	gl_program | Int32 | IntPtr                            | TransformFeedbackBufferMode |
-	---------- | ----- | --------------------------------- | --------------------------- |
-	program    | count | locations                         | bufferMode                  |
+	gl_program | Int32 | array of TransformFeedbackToken | TransformFeedbackBufferMode |
+	gl_program | Int32 | var TransformFeedbackToken      | TransformFeedbackBufferMode |
+	gl_program | Int32 | IntPtr                          | TransformFeedbackBufferMode |
+	---------- | ----- | ------------------------------- | --------------------------- |
+	program    | count | locations                       | bufferMode                  |
 
 # glActiveVaryingNV[2]:
 	gl_program | string |
@@ -16517,11 +16517,11 @@
 	l     | r     | b     | t     | n     | f     |
 
 # glPointParameterxvOES[3]:
-	PointParameterNameARB | array of Fixed |
-	PointParameterNameARB | var Fixed      |
-	PointParameterNameARB | IntPtr         |
-	--------------------- | -------------- |
-	pname                 | params         |
+	PointParameterName | array of Fixed |
+	PointParameterName | var Fixed      |
+	PointParameterName | IntPtr         |
+	------------------ | -------------- |
+	pname              | params         |
 
 # glPointSizexOES[1]:
 	Fixed |
@@ -16663,10 +16663,10 @@
 	target    | pname     | params    |
 
 # glGetHistogramParameterxvOES[2]:
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | var Fixed |
-	HistogramTargetEXT | GetHistogramParameterPNameEXT | IntPtr    |
-	------------------ | ----------------------------- | --------- |
-	target             | pname                         | params    |
+	HistogramTargetEXT | GetHistogramParameterPName | var Fixed |
+	HistogramTargetEXT | GetHistogramParameterPName | IntPtr    |
+	------------------ | -------------------------- | --------- |
+	target             | pname                      | params    |
 
 # glGetLightxOES[2]:
 	LightName | LightParameter | var Fixed |
@@ -17029,9 +17029,9 @@
 	target            | attachment            | texture    | level | baseViewIndex | numViews |
 
 # glHintPGI[1]:
-	HintTargetPGI | VertexHintsMaskPGI |
-	------------- | ------------------ |
-	target        | mode               |
+	HintTargetPGI | VertexHintsMask |
+	------------- | --------------- |
+	target        | mode            |
 
 # glDetailTexFuncSGIS[3]:
 	TextureTarget | Int32 | array of single |
@@ -17065,57 +17065,57 @@
 	value  | invert  |
 
 # glSamplePatternSGIS[1]:
-	SamplePatternSGIS |
-	----------------- |
-	pattern           |
+	SamplePattern |
+	------------- |
+	pattern       |
 
 # glPixelTexGenParameteriSGIS[1]:
-	PixelTexGenParameterNameSGIS | Int32 |
-	---------------------------- | ----- |
-	pname                        | param |
+	PixelTexGenParameterName | Int32 |
+	------------------------ | ----- |
+	pname                    | param |
 
 # glPixelTexGenParameterivSGIS[3]:
-	PixelTexGenParameterNameSGIS | array of Int32 |
-	PixelTexGenParameterNameSGIS | var Int32      |
-	PixelTexGenParameterNameSGIS | IntPtr         |
-	---------------------------- | -------------- |
-	pname                        | params         |
+	PixelTexGenParameterName | array of Int32 |
+	PixelTexGenParameterName | var Int32      |
+	PixelTexGenParameterName | IntPtr         |
+	------------------------ | -------------- |
+	pname                    | params         |
 
 # glPixelTexGenParameterfSGIS[1]:
-	PixelTexGenParameterNameSGIS | single |
-	---------------------------- | ------ |
-	pname                        | param  |
+	PixelTexGenParameterName | single |
+	------------------------ | ------ |
+	pname                    | param  |
 
 # glPixelTexGenParameterfvSGIS[3]:
-	PixelTexGenParameterNameSGIS | array of single |
-	PixelTexGenParameterNameSGIS | var single      |
-	PixelTexGenParameterNameSGIS | IntPtr          |
-	---------------------------- | --------------- |
-	pname                        | params          |
+	PixelTexGenParameterName | array of single |
+	PixelTexGenParameterName | var single      |
+	PixelTexGenParameterName | IntPtr          |
+	------------------------ | --------------- |
+	pname                    | params          |
 
 # glGetPixelTexGenParameterivSGIS[2]:
-	PixelTexGenParameterNameSGIS | var Int32 |
-	PixelTexGenParameterNameSGIS | IntPtr    |
-	---------------------------- | --------- |
-	pname                        | params    |
+	PixelTexGenParameterName | var Int32 |
+	PixelTexGenParameterName | IntPtr    |
+	------------------------ | --------- |
+	pname                    | params    |
 
 # glGetPixelTexGenParameterfvSGIS[2]:
-	PixelTexGenParameterNameSGIS | var single |
-	PixelTexGenParameterNameSGIS | IntPtr     |
-	---------------------------- | ---------- |
-	pname                        | params     |
+	PixelTexGenParameterName | var single |
+	PixelTexGenParameterName | IntPtr     |
+	------------------------ | ---------- |
+	pname                    | params     |
 
 # glPointParameterfSGIS[1]:
-	PointParameterNameARB | single |
-	--------------------- | ------ |
-	pname                 | param  |
+	PointParameterName | single |
+	------------------ | ------ |
+	pname              | param  |
 
 # glPointParameterfvSGIS[3]:
-	PointParameterNameARB | array of single |
-	PointParameterNameARB | var single      |
-	PointParameterNameARB | IntPtr          |
-	--------------------- | --------------- |
-	pname                 | params          |
+	PointParameterName | array of single |
+	PointParameterName | var single      |
+	PointParameterName | IntPtr          |
+	------------------ | --------------- |
+	pname              | params          |
 
 # glSharpenTexFuncSGIS[3]:
 	TextureTarget | Int32 | array of single |
@@ -17146,17 +17146,17 @@
 	red     | green   | blue    | alpha   |
 
 # glGetTexFilterFuncSGIS[2]:
-	TextureTarget | TextureFilterSGIS | var single |
-	TextureTarget | TextureFilterSGIS | IntPtr     |
-	------------- | ----------------- | ---------- |
-	target        | filter            | weights    |
+	TextureTarget | TextureFilter | var single |
+	TextureTarget | TextureFilter | IntPtr     |
+	------------- | ------------- | ---------- |
+	target        | filter        | weights    |
 
 # glTexFilterFuncSGIS[3]:
-	TextureTarget | TextureFilterSGIS | Int32 | array of single |
-	TextureTarget | TextureFilterSGIS | Int32 | var single      |
-	TextureTarget | TextureFilterSGIS | Int32 | IntPtr          |
-	------------- | ----------------- | ----- | --------------- |
-	target        | filter            | n     | weights         |
+	TextureTarget | TextureFilter | Int32 | array of single |
+	TextureTarget | TextureFilter | Int32 | var single      |
+	TextureTarget | TextureFilter | Int32 | IntPtr          |
+	------------- | ------------- | ----- | --------------- |
+	target        | filter        | n     | weights         |
 
 # glAsyncMarkerSGIX[1]:
 	UInt32 |
@@ -17200,52 +17200,52 @@
 	face         | mode              |
 
 # glFragmentLightfSGIX[1]:
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | single |
-	--------------------- | -------------------------- | ------ |
-	light                 | pname                      | param  |
+	FragmentLightName | FragmentLightParameter | single |
+	----------------- | ---------------------- | ------ |
+	light             | pname                  | param  |
 
 # glFragmentLightfvSGIX[3]:
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | array of single |
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | var single      |
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | IntPtr          |
-	--------------------- | -------------------------- | --------------- |
-	light                 | pname                      | params          |
+	FragmentLightName | FragmentLightParameter | array of single |
+	FragmentLightName | FragmentLightParameter | var single      |
+	FragmentLightName | FragmentLightParameter | IntPtr          |
+	----------------- | ---------------------- | --------------- |
+	light             | pname                  | params          |
 
 # glFragmentLightiSGIX[1]:
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | Int32 |
-	--------------------- | -------------------------- | ----- |
-	light                 | pname                      | param |
+	FragmentLightName | FragmentLightParameter | Int32 |
+	----------------- | ---------------------- | ----- |
+	light             | pname                  | param |
 
 # glFragmentLightivSGIX[3]:
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | array of Int32 |
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | var Int32      |
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | IntPtr         |
-	--------------------- | -------------------------- | -------------- |
-	light                 | pname                      | params         |
+	FragmentLightName | FragmentLightParameter | array of Int32 |
+	FragmentLightName | FragmentLightParameter | var Int32      |
+	FragmentLightName | FragmentLightParameter | IntPtr         |
+	----------------- | ---------------------- | -------------- |
+	light             | pname                  | params         |
 
 # glFragmentLightModelfSGIX[1]:
-	FragmentLightModelParameterSGIX | single |
-	------------------------------- | ------ |
-	pname                           | param  |
+	FragmentLightModelParameter | single |
+	--------------------------- | ------ |
+	pname                       | param  |
 
 # glFragmentLightModelfvSGIX[3]:
-	FragmentLightModelParameterSGIX | array of single |
-	FragmentLightModelParameterSGIX | var single      |
-	FragmentLightModelParameterSGIX | IntPtr          |
-	------------------------------- | --------------- |
-	pname                           | params          |
+	FragmentLightModelParameter | array of single |
+	FragmentLightModelParameter | var single      |
+	FragmentLightModelParameter | IntPtr          |
+	--------------------------- | --------------- |
+	pname                       | params          |
 
 # glFragmentLightModeliSGIX[1]:
-	FragmentLightModelParameterSGIX | Int32 |
-	------------------------------- | ----- |
-	pname                           | param |
+	FragmentLightModelParameter | Int32 |
+	--------------------------- | ----- |
+	pname                       | param |
 
 # glFragmentLightModelivSGIX[3]:
-	FragmentLightModelParameterSGIX | array of Int32 |
-	FragmentLightModelParameterSGIX | var Int32      |
-	FragmentLightModelParameterSGIX | IntPtr         |
-	------------------------------- | -------------- |
-	pname                           | params         |
+	FragmentLightModelParameter | array of Int32 |
+	FragmentLightModelParameter | var Int32      |
+	FragmentLightModelParameter | IntPtr         |
+	--------------------------- | -------------- |
+	pname                       | params         |
 
 # glFragmentMaterialfSGIX[1]:
 	MaterialFace | MaterialParameter | single |
@@ -17272,16 +17272,16 @@
 	face         | pname             | params         |
 
 # glGetFragmentLightfvSGIX[2]:
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | var single |
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | IntPtr     |
-	--------------------- | -------------------------- | ---------- |
-	light                 | pname                      | params     |
+	FragmentLightName | FragmentLightParameter | var single |
+	FragmentLightName | FragmentLightParameter | IntPtr     |
+	----------------- | ---------------------- | ---------- |
+	light             | pname                  | params     |
 
 # glGetFragmentLightivSGIX[2]:
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | var Int32 |
-	FragmentLightNameSGIX | FragmentLightParameterSGIX | IntPtr    |
-	--------------------- | -------------------------- | --------- |
-	light                 | pname                      | params    |
+	FragmentLightName | FragmentLightParameter | var Int32 |
+	FragmentLightName | FragmentLightParameter | IntPtr    |
+	----------------- | ---------------------- | --------- |
+	light             | pname                  | params    |
 
 # glGetFragmentMaterialfvSGIX[2]:
 	MaterialFace | MaterialParameter | var single |
@@ -17296,9 +17296,9 @@
 	face         | pname             | params    |
 
 # glLightEnviSGIX[1]:
-	LightEnvParameterSGIX | LightEnvModeSGIX |
-	--------------------- | ---------------- |
-	pname                 | param            |
+	LightEnvParameter | LightEnvMode |
+	----------------- | ------------ |
+	pname             | param        |
 
 # glFrameZoomSGIX[1]:
 	Int32  |
@@ -17376,33 +17376,33 @@
 	list   | pname             | params         |
 
 # glPixelTexGenSGIX[1]:
-	PixelTexGenModeSGIX |
-	------------------- |
-	mode                |
+	PixelTexGenMode |
+	--------------- |
+	mode            |
 
 # glDeformationMap3dSGIX[3]:
-	FfdTargetSGIX | real | real | Int32   | Int32  | real | real | Int32   | Int32  | real | real | Int32   | Int32  | array of real |
-	FfdTargetSGIX | real | real | Int32   | Int32  | real | real | Int32   | Int32  | real | real | Int32   | Int32  | var real      |
-	FfdTargetSGIX | real | real | Int32   | Int32  | real | real | Int32   | Int32  | real | real | Int32   | Int32  | IntPtr        |
-	------------- | ---- | ---- | ------- | ------ | ---- | ---- | ------- | ------ | ---- | ---- | ------- | ------ | ------------- |
-	target        | u1   | u2   | ustride | uorder | v1   | v2   | vstride | vorder | w1   | w2   | wstride | worder | points        |
+	FfdTarget | real | real | Int32   | Int32  | real | real | Int32   | Int32  | real | real | Int32   | Int32  | array of real |
+	FfdTarget | real | real | Int32   | Int32  | real | real | Int32   | Int32  | real | real | Int32   | Int32  | var real      |
+	FfdTarget | real | real | Int32   | Int32  | real | real | Int32   | Int32  | real | real | Int32   | Int32  | IntPtr        |
+	--------- | ---- | ---- | ------- | ------ | ---- | ---- | ------- | ------ | ---- | ---- | ------- | ------ | ------------- |
+	target    | u1   | u2   | ustride | uorder | v1   | v2   | vstride | vorder | w1   | w2   | wstride | worder | points        |
 
 # glDeformationMap3fSGIX[3]:
-	FfdTargetSGIX | single | single | Int32   | Int32  | single | single | Int32   | Int32  | single | single | Int32   | Int32  | array of single |
-	FfdTargetSGIX | single | single | Int32   | Int32  | single | single | Int32   | Int32  | single | single | Int32   | Int32  | var single      |
-	FfdTargetSGIX | single | single | Int32   | Int32  | single | single | Int32   | Int32  | single | single | Int32   | Int32  | IntPtr          |
-	------------- | ------ | ------ | ------- | ------ | ------ | ------ | ------- | ------ | ------ | ------ | ------- | ------ | --------------- |
-	target        | u1     | u2     | ustride | uorder | v1     | v2     | vstride | vorder | w1     | w2     | wstride | worder | points          |
+	FfdTarget | single | single | Int32   | Int32  | single | single | Int32   | Int32  | single | single | Int32   | Int32  | array of single |
+	FfdTarget | single | single | Int32   | Int32  | single | single | Int32   | Int32  | single | single | Int32   | Int32  | var single      |
+	FfdTarget | single | single | Int32   | Int32  | single | single | Int32   | Int32  | single | single | Int32   | Int32  | IntPtr          |
+	--------- | ------ | ------ | ------- | ------ | ------ | ------ | ------- | ------ | ------ | ------ | ------- | ------ | --------------- |
+	target    | u1     | u2     | ustride | uorder | v1     | v2     | vstride | vorder | w1     | w2     | wstride | worder | points          |
 
 # glDeformSGIX[1]:
-	FfdMaskSGIX |
-	----------- |
-	mask        |
+	FfdMask |
+	------- |
+	mask    |
 
 # glLoadIdentityDeformationMapSGIX[1]:
-	FfdMaskSGIX |
-	----------- |
-	mask        |
+	FfdMask |
+	------- |
+	mask    |
 
 # glReferencePlaneSGIX[3]:
 	array of real |
@@ -17412,28 +17412,28 @@
 	equation      |
 
 # glSpriteParameterfSGIX[1]:
-	SpriteParameterNameSGIX | single |
-	----------------------- | ------ |
-	pname                   | param  |
+	SpriteParameterName | single |
+	------------------- | ------ |
+	pname               | param  |
 
 # glSpriteParameterfvSGIX[3]:
-	SpriteParameterNameSGIX | array of single |
-	SpriteParameterNameSGIX | var single      |
-	SpriteParameterNameSGIX | IntPtr          |
-	----------------------- | --------------- |
-	pname                   | params          |
+	SpriteParameterName | array of single |
+	SpriteParameterName | var single      |
+	SpriteParameterName | IntPtr          |
+	------------------- | --------------- |
+	pname               | params          |
 
 # glSpriteParameteriSGIX[1]:
-	SpriteParameterNameSGIX | Int32 |
-	----------------------- | ----- |
-	pname                   | param |
+	SpriteParameterName | Int32 |
+	------------------- | ----- |
+	pname               | param |
 
 # glSpriteParameterivSGIX[3]:
-	SpriteParameterNameSGIX | array of Int32 |
-	SpriteParameterNameSGIX | var Int32      |
-	SpriteParameterNameSGIX | IntPtr         |
-	----------------------- | -------------- |
-	pname                   | params         |
+	SpriteParameterName | array of Int32 |
+	SpriteParameterName | var Int32      |
+	SpriteParameterName | IntPtr         |
+	------------------- | -------------- |
+	pname               | params         |
 
 # glTagSampleBufferSGIX[1]:
 
@@ -17526,9 +17526,9 @@
 	mode          | first | count | width |
 
 # glReplacementCodeuiSUN[1]:
-	TriangleListSUN |
-	--------------- |
-	code            |
+	TriangleList |
+	------------ |
+	code         |
 
 # glReplacementCodeusSUN[1]:
 	UInt16 |
@@ -17541,11 +17541,11 @@
 	code |
 
 # glReplacementCodeuivSUN[3]:
-	array of TriangleListSUN |
-	var TriangleListSUN      |
-	IntPtr                   |
-	------------------------ |
-	code                     |
+	array of TriangleList |
+	var TriangleList      |
+	IntPtr                |
+	--------------------- |
+	code                  |
 
 # glReplacementCodeusvSUN[3]:
 	array of UInt16 |
@@ -17562,11 +17562,11 @@
 	code          |
 
 # glReplacementCodePointerSUN[3]:
-	ReplacementCodeTypeSUN | Int32  | array of IntPtr |
-	ReplacementCodeTypeSUN | Int32  | var IntPtr      |
-	ReplacementCodeTypeSUN | Int32  | pointer         |
-	---------------------- | ------ | --------------- |
-	type                   | stride | pointer         |
+	ReplacementCodeType | Int32  | array of IntPtr |
+	ReplacementCodeType | Int32  | var IntPtr      |
+	ReplacementCodeType | Int32  | pointer         |
+	------------------- | ------ | --------------- |
+	type                | stride | pointer         |
 
 # glColor4ubVertex2fSUN[1]:
 	Byte | Byte | Byte | Byte | single | single |
@@ -17725,108 +17725,108 @@
 	tc              | c               | n               | v               |
 
 # glReplacementCodeuiVertex3fSUN[1]:
-	TriangleListSUN | single | single | single |
-	--------------- | ------ | ------ | ------ |
-	rc              | x      | y      | z      |
+	TriangleList | single | single | single |
+	------------ | ------ | ------ | ------ |
+	rc           | x      | y      | z      |
 
 # glReplacementCodeuiVertex3fvSUN[4]:
-	var TriangleListSUN | array of single |
-	var TriangleListSUN | var Vec3f       |
-	var TriangleListSUN | var single      |
-	IntPtr              | IntPtr          |
-	------------------- | --------------- |
-	rc                  | v               |
+	var TriangleList | array of single |
+	var TriangleList | var Vec3f       |
+	var TriangleList | var single      |
+	IntPtr           | IntPtr          |
+	---------------- | --------------- |
+	rc               | v               |
 
 # glReplacementCodeuiColor4ubVertex3fSUN[1]:
-	TriangleListSUN | Byte | Byte | Byte | Byte | single | single | single |
-	--------------- | ---- | ---- | ---- | ---- | ------ | ------ | ------ |
-	rc              | r    | g    | b    | a    | x      | y      | z      |
+	TriangleList | Byte | Byte | Byte | Byte | single | single | single |
+	------------ | ---- | ---- | ---- | ---- | ------ | ------ | ------ |
+	rc           | r    | g    | b    | a    | x      | y      | z      |
 
 # glReplacementCodeuiColor4ubVertex3fvSUN[4]:
-	var TriangleListSUN | array of Byte | array of single |
-	var TriangleListSUN | var Vec4ub    | var Vec3f       |
-	var TriangleListSUN | var Byte      | var single      |
-	IntPtr              | IntPtr        | IntPtr          |
-	------------------- | ------------- | --------------- |
-	rc                  | c             | v               |
+	var TriangleList | array of Byte | array of single |
+	var TriangleList | var Vec4ub    | var Vec3f       |
+	var TriangleList | var Byte      | var single      |
+	IntPtr           | IntPtr        | IntPtr          |
+	---------------- | ------------- | --------------- |
+	rc               | c             | v               |
 
 # glReplacementCodeuiColor3fVertex3fSUN[1]:
-	TriangleListSUN | single | single | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc              | r      | g      | b      | x      | y      | z      |
+	TriangleList | single | single | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc           | r      | g      | b      | x      | y      | z      |
 
 # glReplacementCodeuiColor3fVertex3fvSUN[4]:
-	var TriangleListSUN | array of single | array of single |
-	var TriangleListSUN | var Vec3f       | var Vec3f       |
-	var TriangleListSUN | var single      | var single      |
-	IntPtr              | IntPtr          | IntPtr          |
-	------------------- | --------------- | --------------- |
-	rc                  | c               | v               |
+	var TriangleList | array of single | array of single |
+	var TriangleList | var Vec3f       | var Vec3f       |
+	var TriangleList | var single      | var single      |
+	IntPtr           | IntPtr          | IntPtr          |
+	---------------- | --------------- | --------------- |
+	rc               | c               | v               |
 
 # glReplacementCodeuiNormal3fVertex3fSUN[1]:
-	TriangleListSUN | single | single | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc              | nx     | ny     | nz     | x      | y      | z      |
+	TriangleList | single | single | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc           | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiNormal3fVertex3fvSUN[4]:
-	var TriangleListSUN | array of single | array of single |
-	var TriangleListSUN | var Vec3f       | var Vec3f       |
-	var TriangleListSUN | var single      | var single      |
-	IntPtr              | IntPtr          | IntPtr          |
-	------------------- | --------------- | --------------- |
-	rc                  | n               | v               |
+	var TriangleList | array of single | array of single |
+	var TriangleList | var Vec3f       | var Vec3f       |
+	var TriangleList | var single      | var single      |
+	IntPtr           | IntPtr          | IntPtr          |
+	---------------- | --------------- | --------------- |
+	rc               | n               | v               |
 
 # glReplacementCodeuiColor4fNormal3fVertex3fSUN[1]:
-	TriangleListSUN | single | single | single | single | single | single | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc              | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
+	TriangleList | single | single | single | single | single | single | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc           | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiColor4fNormal3fVertex3fvSUN[4]:
-	var TriangleListSUN | array of single | array of single | array of single |
-	var TriangleListSUN | var Vec4f       | var Vec3f       | var Vec3f       |
-	var TriangleListSUN | var single      | var single      | var single      |
-	IntPtr              | IntPtr          | IntPtr          | IntPtr          |
-	------------------- | --------------- | --------------- | --------------- |
-	rc                  | c               | n               | v               |
+	var TriangleList | array of single | array of single | array of single |
+	var TriangleList | var Vec4f       | var Vec3f       | var Vec3f       |
+	var TriangleList | var single      | var single      | var single      |
+	IntPtr           | IntPtr          | IntPtr          | IntPtr          |
+	---------------- | --------------- | --------------- | --------------- |
+	rc               | c               | n               | v               |
 
 # glReplacementCodeuiTexCoord2fVertex3fSUN[1]:
-	TriangleListSUN | single | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ | ------ |
-	rc              | s      | t      | x      | y      | z      |
+	TriangleList | single | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ | ------ |
+	rc           | s      | t      | x      | y      | z      |
 
 # glReplacementCodeuiTexCoord2fVertex3fvSUN[4]:
-	var TriangleListSUN | array of single | array of single |
-	var TriangleListSUN | var Vec2f       | var Vec3f       |
-	var TriangleListSUN | var single      | var single      |
-	IntPtr              | IntPtr          | IntPtr          |
-	------------------- | --------------- | --------------- |
-	rc                  | tc              | v               |
+	var TriangleList | array of single | array of single |
+	var TriangleList | var Vec2f       | var Vec3f       |
+	var TriangleList | var single      | var single      |
+	IntPtr           | IntPtr          | IntPtr          |
+	---------------- | --------------- | --------------- |
+	rc               | tc              | v               |
 
 # glReplacementCodeuiTexCoord2fNormal3fVertex3fSUN[1]:
-	TriangleListSUN | single | single | single | single | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc              | s      | t      | nx     | ny     | nz     | x      | y      | z      |
+	TriangleList | single | single | single | single | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc           | s      | t      | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiTexCoord2fNormal3fVertex3fvSUN[4]:
-	var TriangleListSUN | array of single | array of single | array of single |
-	var TriangleListSUN | var Vec2f       | var Vec3f       | var Vec3f       |
-	var TriangleListSUN | var single      | var single      | var single      |
-	IntPtr              | IntPtr          | IntPtr          | IntPtr          |
-	------------------- | --------------- | --------------- | --------------- |
-	rc                  | tc              | n               | v               |
+	var TriangleList | array of single | array of single | array of single |
+	var TriangleList | var Vec2f       | var Vec3f       | var Vec3f       |
+	var TriangleList | var single      | var single      | var single      |
+	IntPtr           | IntPtr          | IntPtr          | IntPtr          |
+	---------------- | --------------- | --------------- | --------------- |
+	rc               | tc              | n               | v               |
 
 # glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fSUN[1]:
-	TriangleListSUN | single | single | single | single | single | single | single | single | single | single | single | single |
-	--------------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-	rc              | s      | t      | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
+	TriangleList | single | single | single | single | single | single | single | single | single | single | single | single |
+	------------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+	rc           | s      | t      | r      | g      | b      | a      | nx     | ny     | nz     | x      | y      | z      |
 
 # glReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fvSUN[4]:
-	var TriangleListSUN | array of single | array of single | array of single | array of single |
-	var TriangleListSUN | var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
-	var TriangleListSUN | var single      | var single      | var single      | var single      |
-	IntPtr              | IntPtr          | IntPtr          | IntPtr          | IntPtr          |
-	------------------- | --------------- | --------------- | --------------- | --------------- |
-	rc                  | tc              | c               | n               | v               |
+	var TriangleList | array of single | array of single | array of single | array of single |
+	var TriangleList | var Vec2f       | var Vec4f       | var Vec3f       | var Vec3f       |
+	var TriangleList | var single      | var single      | var single      | var single      |
+	IntPtr           | IntPtr          | IntPtr          | IntPtr          | IntPtr          |
+	---------------- | --------------- | --------------- | --------------- | --------------- |
+	rc               | tc              | c               | n               | v               |
 
 # wglSetStereoEmitterState3DL[1]:
 	Bool | gdi_device_context | UInt32 |

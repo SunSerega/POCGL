@@ -28,17 +28,17 @@ Type conversion for [cl_semaphore_payload_khr] not found, so base type [uint64_t
 Invalid ext name [CL] of [clSetContentSizeBufferPoCL], replaced with []
 Type conversion for [cl_sync_point_khr] not found, so base type [uint32_t] converted to [UInt32]
 Type conversion for [cl_ndrange_kernel_command_properties_khr] not found, so base type [uint64_t] converted to [UInt64]
+Group [ErrorCode]: Enum DEVICE_PARTITION_FAILED_EXT=$FFFFFFFFFFFFFBDF, but without [_EXT]=$FFFFFFFFFFFFFFEE
+Group [cl_device_info]: Enum DEVICE_SVM_CAPABILITIES_ARM=$40B6, but without [_ARM]=$1053
+Group [cl_device_info]: Enum DEVICE_REFERENCE_COUNT_EXT=$4057, but without [_EXT]=$1047
+Group [cl_device_info]: Enum DEVICE_PARENT_DEVICE_EXT=$4054, but without [_EXT]=$1042
+Group [cl_mem_info]: Enum MEM_USES_SVM_POINTER_ARM=$40B7, but without [_ARM]=$1109
+Group [cl_command_type]: Enum COMMAND_SVM_FREE_ARM=$40BA, but without [_ARM]=$1209
+Group [cl_command_type]: Enum COMMAND_SVM_MEMCPY_ARM=$40BB, but without [_ARM]=$120A
+Group [cl_command_type]: Enum COMMAND_SVM_MEMFILL_ARM=$40BC, but without [_ARM]=$120B
+Group [cl_command_type]: Enum COMMAND_SVM_MAP_ARM=$40BD, but without [_ARM]=$120C
+Group [cl_command_type]: Enum COMMAND_SVM_UNMAP_ARM=$40BE, but without [_ARM]=$120D
 Ext group [LOADER] of ext [cl_loader_layers] is not supported
-Group CommandType: Enum COMMAND_SVM_FREE_ARM=$40BA, but without [_ARM]=$1209
-Group CommandType: Enum COMMAND_SVM_MEMCPY_ARM=$40BB, but without [_ARM]=$120A
-Group CommandType: Enum COMMAND_SVM_MEMFILL_ARM=$40BC, but without [_ARM]=$120B
-Group CommandType: Enum COMMAND_SVM_MAP_ARM=$40BD, but without [_ARM]=$120C
-Group CommandType: Enum COMMAND_SVM_UNMAP_ARM=$40BE, but without [_ARM]=$120D
-Group DeviceInfo: Enum DEVICE_SVM_CAPABILITIES_ARM=$40B6, but without [_ARM]=$1053
-Group DeviceInfo: Enum DEVICE_REFERENCE_COUNT_EXT=$4057, but without [_EXT]=$1047
-Group DeviceInfo: Enum DEVICE_PARENT_DEVICE_EXT=$4054, but without [_EXT]=$1042
-Group ErrorCode: Enum DEVICE_PARTITION_FAILED_EXT=$FFFFFFFFFFFFFBDF, but without [_EXT]=$FFFFFFFFFFFFFFEE
-Group MemInfo: Enum MEM_USES_SVM_POINTER_ARM=$40B7, but without [_ARM]=$1109
 Struct [cl_dx9_surface_info_khr] was not referenced
 Struct [cl_motion_estimation_desc_intel] was not referenced
 Struct [cl_mem_ext_host_ptr] was not referenced

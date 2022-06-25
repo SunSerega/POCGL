@@ -39,7 +39,7 @@ var UInt32 = var gl_perf_query_handle_INTEL
 
 # glGetPerfQueryDataINTEL
 !repl_par_t
-UInt32= gl_perf_query_handle_INTEL | PerfQueryDataFlagsINTEL
+UInt32= gl_perf_query_handle_INTEL | PerfQueryDataFlags
 
 # glBeginPerfQueryINTEL
 # glEndPerfQueryINTEL

@@ -83,22 +83,35 @@ type
     protected static All := new List<TSelf>;
     protected name: string;
     
-    private static name_cache: Dictionary<string, TSelf> := nil;
+    private static name_cache := default(Dictionary<string, TSelf>);
+    private static function GetNameCache: Dictionary<string, TSelf>;
+    begin
+      Result := name_cache;
+      if Result<>nil then exit;
+      Result := new Dictionary<string, TSelf>(All.Count);
+      foreach var n in All do
+      begin
+        if Result.ContainsKey(n.name) then
+          raise new System.InvalidOperationException($'{TypeName(n)} [{n.name}] was defined twice');
+        Result[n.name] := n;
+      end;
+      name_cache := Result;
+    end;
+    
+    private static name_remap := new Dictionary<string, string>;
     private static function ByName(name: string): TSelf;
     begin
-      if name_cache=nil then
-      begin
-        name_cache := new Dictionary<string, TSelf>(All.Count);
-        foreach var n in All do
-        begin
-          if name_cache.ContainsKey(n.name) then
-            raise new System.InvalidOperationException($'{TypeName(n)} [{_ObjectToString(n.name)}] was defined twice');
-          name_cache[n.name] := n;
-        end;
-      end else
-      if name_cache.Count<>All.Count then
-        raise new System.InvalidOperationException;
-      name_cache.TryGetValue(name, Result);
+      var new_name: string;
+      while name_remap.TryGetValue(name, new_name) do
+        name := new_name;
+      GetNameCache.TryGetValue(name, Result);
+    end;
+    protected procedure Rename(new_name: string);
+    begin
+      name_cache.Remove(name);
+      name_cache.Add(new_name, TSelf(self));
+      name_remap.Add(name, new_name);
+      self.name := new_name;
     end;
     
     protected referenced := false;
@@ -189,6 +202,64 @@ type
       loop All.Capacity do All += new Group(br);
     end;
     
+    public static procedure FixAllEndExt;
+    begin
+      All.RemoveAll(gr->
+      begin
+        Result := false;
+        var gname := gr.name;
+        var ext := GetExt(gname);
+        if ext='' then exit;
+        if gr.explicit_existence then
+        begin
+          Otp($'WARNING: Groups [{gname}] was explicitly added with [{ext}] at the end');
+          exit;
+        end;
+        var s_gname := gname.Remove(gname.Length-ext.Length);
+        
+        if ByName(s_gname) is Group(var gr2) then
+        begin
+          Result := gr2.enums.ToHashSet.SetEquals(gr.enums);
+          if Result then
+          begin
+            Group.name_cache.Remove(gname);
+            Group.name_remap.Add(gname, s_gname);
+          end else
+            Otp($'WARNING: Groups [{gname}] had different enums from [{s_gname}]');
+          exit;
+        end;
+        
+        gr.Rename(s_gname);
+        
+      end);
+      
+      foreach var gr in All do
+        foreach var ename in gr.enums.Keys.ToArray do
+          if allowed_ext_names.Any(ext->
+          begin
+            Result := false;
+            var _ext := '_'+ext;
+            if not ename.EndsWith(_ext) then exit;
+            var base_ename := ename.Remove(ename.Length-_ext.Length);
+            var v: int64;
+            var found_v := false;
+            foreach var base_ext in |'', '_ARB', '_EXT'| do
+            begin
+              if _ext=base_ext then break;
+              found_v := gr.enums.TryGetValue(base_ename+base_ext, v);
+              if found_v then break;
+            end;
+            if not found_v then exit;
+            if v<>gr.enums[ename] then
+            begin
+              log.Otp($'Group [{gr.name}]: Enum {ename}=${gr.enums[ename]:X}, but without [{_ext}]=${v:X}');
+              exit;
+            end;
+            Result := true;
+          end) then gr.enums.Remove(ename);
+      
+    end;
+    
     public static procedure FixCL_Names :=
     foreach var gr in All do
       if gr.name.StartsWith('cl_') then
@@ -207,30 +278,6 @@ type
     public procedure Write(wr: Writer);
     begin
       if not referenced then exit;
-      
-      foreach var ename in enums.Keys.ToArray do
-        if allowed_ext_names.Any(ext->
-        begin
-          Result := false;
-          ext := '_'+ext;
-          if not ename.EndsWith(ext) then exit;
-          var base_ename := ename.Remove(ename.Length-ext.Length);
-          var v: int64;
-          var found_v := false;
-          foreach var base_ext in |'', '_ARB', '_EXT'| do
-          begin
-            if ext=base_ext then break;
-            found_v := enums.TryGetValue(base_ename+base_ext, v);
-            if found_v then break;
-          end;
-          if not found_v then exit;
-          if v<>enums[ename] then
-          begin
-            log.Otp($'Group {name}: Enum {ename}=${enums[ename]:X}, but without [{ext}]=${v:X}');
-            exit;
-          end;
-          Result := true;
-        end) then enums.Remove(ename);
       
       log_groups.Otp($'# {name}[{t}]');
       foreach var ename in enums.Keys do
@@ -318,35 +365,7 @@ type
       wr +=       $'  ' + #10;
     end;
     public static procedure WriteAll(wr: Writer) :=
-    foreach var g in All.GroupBy(gr->GetExt(gr.name)).OrderBy(g->
-    begin
-      case g.Key of
-        '':     Result := 0;
-        'ARB':  Result := 1;
-        'EXT':  Result := 2;
-        else    Result := 3;
-      end;
-    end).ThenBy(g->g.Key) do
-    begin
-      var gn := g.Key;
-      if gn='' then gn := 'Core';
-      
-      var any_writeable := g.Any(gr->gr.writeable);
-      if any_writeable then
-      begin
-        wr += $'  {{$region {gn}}}'+#10;
-        wr += $'  '+#10;
-      end;
-      
-      foreach var gr in g.OrderBy(gr->gr.name) do
-        gr.Write(wr);
-      
-      if any_writeable then
-      begin
-        wr += $'  {{$endregion {gn}}}'+#10;
-        wr += $'  '+#10;
-      end;
-    end;
+    foreach var gr in All.OrderBy(gr->gr.name) do gr.Write(wr);
     
   end;
   GroupFixer = abstract class(Fixer<GroupFixer, Group>)
@@ -686,8 +705,13 @@ type
       
     end;
     
-    public function GetTName :=
-    if gr=nil then t else gr.name;
+    public function GetTName: string;
+    begin
+      Result := t;
+      if gr=nil then exit;
+      gr := Group.ByName(gr.name);
+      Result := gr.name;
+    end;
     
   end;
   
@@ -718,6 +742,13 @@ type
       self.tname   := tname;
     end;
     
+    public function GetTName: string;
+    begin
+      if Group.ByName(tname) is Group(var gr) then
+        tname := gr.name;
+      Result := tname;
+    end;
+    
     public property IsGeneric: boolean read tname.StartsWith('T') and tname.Skip(1).All(char.IsDigit);
     
     public property IsNakedType: boolean read (Group.ByName(tname)=nil) and (Struct.ByName(tname)=nil);
@@ -729,10 +760,10 @@ type
         var res := new StringBuilder;
         if with_var and var_arg then res += 'var ';
         loop arr_lvl do res += 'array of ';
-        res += tname;
+        res += GetTName;
         Result := res.ToString;
       end else
-        Result := $'({var_arg}, {arr_lvl}, {tname})';
+        Result := $'({var_arg}, {arr_lvl}, {GetTName})';
     end;
     public function ToString: string; override := ToString(false);
     
@@ -743,9 +774,9 @@ type
       Result :=
         if par1_nil then par2_nil else
         not par2_nil and
-        (par1.var_arg = par2.var_arg) and
-        (par1.arr_lvl = par2.arr_lvl) and
-        (par1.tname   = par2.tname  );
+        (par1.var_arg   = par2.var_arg) and
+        (par1.arr_lvl   = par2.arr_lvl) and
+        (par1.GetTName  = par2.GetTName);
     end;
     
     public function Equals(other: FuncParamT) := self=other;
@@ -765,7 +796,7 @@ type
     
     public function Equals(other: FuncOverload) := self=other;
     public function GetHashCode: integer; override :=
-    pars.Where(par->par<>nil).Aggregate(0, (res,par)->res xor par.tname.GetHashCode);
+    pars.Where(par->par<>nil).Aggregate(0, (res,par)->res xor par.GetTName.GetHashCode);
     
   end;
   
@@ -1333,7 +1364,7 @@ type
       {$region MiscInit}
       
       for var par_i := 1 to org_par.Length-1 do
-        if all_overloads.Any(ovr->ovr.pars.Skip(1).Any(ovr_par->ovr_par.tname.ToLower=org_par[par_i].name.ToLower)) then
+        if all_overloads.Any(ovr->ovr.pars.Skip(1).Any(ovr_par->ovr_par.GetTName.ToLower=org_par[par_i].name.ToLower)) then
           org_par[par_i].name := '_' + org_par[par_i].name;
       
       var l_name := name;
@@ -1383,8 +1414,9 @@ type
             wr += ': ';
             //TODO #2664
             for var todo2664 := 1 to par.arr_lvl do wr += 'array of ';
-            if par.tname.ToLower in prev_func_names then wr += 'OpenGL.';
-            wr += par.tname;
+            var tname := par.GetTName;
+            if tname.ToLower in prev_func_names then wr += 'OpenGL.';
+            wr += tname;
           end;
           wr += ')';
         end;
@@ -1558,7 +1590,7 @@ type
                 for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += 'if (managed_a=nil) or (managed_a.Length=0) then'#10;
                 for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  Result := IntPtr.Zero else'#10;
                 for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += 'begin'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  var l := managed_a.Length*Marshal.SizeOf&<'; init += par.tname; init += '>;'#10;
+                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  var l := managed_a.Length*Marshal.SizeOf&<'; init += par.GetTName; init += '>;'#10;
                 for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  Result := Marshal.AllocHGlobal(l);'#10;
                 for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  Marshal.Copy(managed_a,0,Result,l);'#10;
                 for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += 'end';
@@ -1606,7 +1638,7 @@ type
               relevant_m.par_str := relevant_m.par_str; // +'[0]'; - but it will be added in codegen stage
               Result.AddMarshaler(par_i, relevant_m);
               
-              par := new FuncParamT(true, 0, par.tname);
+              par := new FuncParamT(true, 0, par.GetTName);
               relevant_m := new FuncParamMarshaler(par, initial_par_str);
             end;
             
@@ -1835,7 +1867,7 @@ type
             
             arr_nil_pars[par_i] := need_conv[par_i] and (par.arr_lvl=1) and (par.tname<>'string');
             if arr_nil_pars[par_i] then
-              ptr_need_names += par.tname;
+              ptr_need_names += par.GetTName;
             
           end;
           
@@ -1952,7 +1984,7 @@ type
               if arr_nil.Flag[par_i] then
               begin
                 wr += 'P';
-                wr += par.par.tname;
+                wr += par.par.GetTName;
                 wr += '(nil)^';
               end else
               if need_conv[par_i] then
@@ -2567,6 +2599,7 @@ type
       gr.bitmask  := self.bitmask;
       gr.enums    := self.enums;
       gr.explicit_existence := true;
+      Group.name_cache := nil;
       Result := false;
     end;
     

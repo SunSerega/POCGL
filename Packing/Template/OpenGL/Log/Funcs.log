@@ -31,6 +31,15 @@ Invalid ext name [DCARB] of [wglGetCurrentReadDCARB], replaced with [ARB]
 Invalid ext name [DCEXT] of [wglGetCurrentReadDCEXT], replaced with [EXT]
 Invalid ext name [DCNV] of [wglCreateAffinityDCNV], replaced with [NV]
 Invalid ext name [IDEXT] of [glXGetContextIDEXT], replaced with [EXT]
+Group [GetPName]: Enum SHADING_RATE_QCOM=$96A4, but without [_QCOM]=$96D0
+Group [EnableCap]: Enum SAMPLE_MASK_SGIS=$80A0, but without [_SGIS]=$8E51
+Group [InternalFormat]: Enum DEPTH_STENCIL_MESA=$8750, but without [_MESA]=$84F9
+Group [InternalFormat]: Enum DEPTH_COMPONENT32F_NV=$8DAB, but without [_NV]=$8CAC
+Group [InternalFormat]: Enum DEPTH32F_STENCIL8_NV=$8DAC, but without [_NV]=$8CAD
+Group [SizedInternalFormat]: Enum DEPTH_COMPONENT32F_NV=$8DAB, but without [_NV]=$8CAC
+Group [SizedInternalFormat]: Enum DEPTH32F_STENCIL8_NV=$8DAC, but without [_NV]=$8CAD
+Group [PathColor]: Enum PRIMARY_COLOR_NV=$852C, but without [_NV]=$8577
+Group [RenderbufferParameterName]: Enum RENDERBUFFER_SAMPLES_IMG=$9133, but without [_IMG]=$8CAB
 Func [glBindBufferRange] was added in versions [3.0] and [3.1]
 Func [glBindBufferBase] was added in versions [3.0] and [3.1]
 Func [glGetIntegeri_v] was added in versions [3.0] and [3.1]
@@ -38,16 +47,7 @@ Func [glProgramParameteri] was added in versions [4.1] and [4.1]
 Invalid API: [gles1]
 Invalid API: [gles2]
 Invalid API: [glsc2]
-Group EnableCap: Enum SAMPLE_MASK_SGIS=$80A0, but without [_SGIS]=$8E51
-Group GetPName: Enum SHADING_RATE_QCOM=$96A4, but without [_QCOM]=$96D0
-Group InternalFormat: Enum DEPTH_STENCIL_MESA=$8750, but without [_MESA]=$84F9
-Group InternalFormat: Enum DEPTH_COMPONENT32F_NV=$8DAB, but without [_NV]=$8CAC
-Group InternalFormat: Enum DEPTH32F_STENCIL8_NV=$8DAC, but without [_NV]=$8CAD
-Group PathColor: Enum PRIMARY_COLOR_NV=$852C, but without [_NV]=$8577
-Group RenderbufferParameterName: Enum RENDERBUFFER_SAMPLES_IMG=$9133, but without [_IMG]=$8CAB
-Group SizedInternalFormat: Enum DEPTH_COMPONENT32F_NV=$8DAB, but without [_NV]=$8CAC
-Group SizedInternalFormat: Enum DEPTH32F_STENCIL8_NV=$8DAC, but without [_NV]=$8CAD
-Group [FragmentShaderDestMaskATI] was not referenced
-Group [FragmentShaderDestModMaskATI] was not referenced
-Group [FragmentShaderColorModMaskATI] was not referenced
+Group [FragmentShaderDestMask] was not referenced
+Group [FragmentShaderDestModMask] was not referenced
+Group [FragmentShaderColorModMask] was not referenced
 done

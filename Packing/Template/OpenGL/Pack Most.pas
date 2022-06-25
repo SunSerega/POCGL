@@ -14,6 +14,7 @@ begin
     Otp($'Fixing all');
     LoadFixers;
     ApplyFixers;
+    Group.FixAllEndExt;
     Func.FixAllGet;
     Feature.FixGL_GDI;
     MarkReferenced;

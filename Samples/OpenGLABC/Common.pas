@@ -63,12 +63,12 @@ begin
   gl.LinkProgram(Result);
   // Всё то же самое что и у шейдеров
   var link_ok: integer;
-  gl.GetProgramiv(Result, ProgramPropertyARB.LINK_STATUS, link_ok);
+  gl.GetProgramiv(Result, ProgramProperty.LINK_STATUS, link_ok);
   if link_ok = 0 then
   begin
     
     var l: integer;
-    gl.GetProgramiv(Result, ProgramPropertyARB.INFO_LOG_LENGTH, l);
+    gl.GetProgramiv(Result, ProgramProperty.INFO_LOG_LENGTH, l);
     var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(l);
     
     gl.GetProgramInfoLog(Result, l, IntPtr.Zero, ptr);
