@@ -607,7 +607,7 @@
 	n     | arrays                   |
 
 # glCullFace[1]:
-	MaterialFace |
+	TriangleFace |
 	------------ |
 	mode         |
 
@@ -2316,7 +2316,7 @@
 	size   |
 
 # glPolygonMode[1]:
-	MaterialFace | PolygonMode |
+	TriangleFace | PolygonMode |
 	------------ | ----------- |
 	face         | mode        |
 
@@ -2835,7 +2835,7 @@
 	func            | ref   | mask   |
 
 # glStencilFuncSeparate[1]:
-	MaterialFace | StencilFunction | Int32 | UInt32 |
+	TriangleFace | StencilFunction | Int32 | UInt32 |
 	------------ | --------------- | ----- | ------ |
 	face         | func            | ref   | mask   |
 
@@ -2845,7 +2845,7 @@
 	mask   |
 
 # glStencilMaskSeparate[1]:
-	MaterialFace | UInt32 |
+	TriangleFace | UInt32 |
 	------------ | ------ |
 	face         | mask   |
 
@@ -2855,7 +2855,7 @@
 	fail      | zfail     | zpass     |
 
 # glStencilOpSeparate[1]:
-	MaterialFace | StencilOp | StencilOp | StencilOp |
+	TriangleFace | StencilOp | StencilOp | StencilOp |
 	------------ | --------- | --------- | --------- |
 	face         | sfail     | dpfail    | dppass    |
 
@@ -4392,7 +4392,7 @@
 	v               |
 
 # glColorMaterial[1]:
-	MaterialFace | ColorMaterialParameter |
+	TriangleFace | ColorMaterialParameter |
 	------------ | ---------------------- |
 	face         | mode                   |
 
@@ -4622,14 +4622,14 @@
 	target    | query       | v         |
 
 # glGetMaterialfv[2]:
-	MaterialFace | MaterialParameter | var single |
-	MaterialFace | MaterialParameter | IntPtr     |
+	TriangleFace | MaterialParameter | var single |
+	TriangleFace | MaterialParameter | IntPtr     |
 	------------ | ----------------- | ---------- |
 	face         | pname             | params     |
 
 # glGetMaterialiv[2]:
-	MaterialFace | MaterialParameter | var Int32 |
-	MaterialFace | MaterialParameter | IntPtr    |
+	TriangleFace | MaterialParameter | var Int32 |
+	TriangleFace | MaterialParameter | IntPtr    |
 	------------ | ----------------- | --------- |
 	face         | pname             | params    |
 
@@ -4913,27 +4913,27 @@
 	un    | u1     | u2     | vn    | v1     | v2     |
 
 # glMaterialf[1]:
-	MaterialFace | MaterialParameter | single |
+	TriangleFace | MaterialParameter | single |
 	------------ | ----------------- | ------ |
 	face         | pname             | param  |
 
 # glMaterialfv[3]:
-	MaterialFace | MaterialParameter | array of single |
-	MaterialFace | MaterialParameter | var single      |
-	MaterialFace | MaterialParameter | IntPtr          |
+	TriangleFace | MaterialParameter | array of single |
+	TriangleFace | MaterialParameter | var single      |
+	TriangleFace | MaterialParameter | IntPtr          |
 	------------ | ----------------- | --------------- |
 	face         | pname             | params          |
 
 # glMateriali[2]:
-	MaterialFace | MaterialParameter | LightModelColorControl |
-	MaterialFace | MaterialParameter | Int32                  |
+	TriangleFace | MaterialParameter | LightModelColorControl |
+	TriangleFace | MaterialParameter | Int32                  |
 	------------ | ----------------- | ---------------------- |
 	face         | pname             | param                  |
 
 # glMaterialiv[3]:
-	MaterialFace | MaterialParameter | array of Int32 |
-	MaterialFace | MaterialParameter | var Int32      |
-	MaterialFace | MaterialParameter | IntPtr         |
+	TriangleFace | MaterialParameter | array of Int32 |
+	TriangleFace | MaterialParameter | var Int32      |
+	TriangleFace | MaterialParameter | IntPtr         |
 	------------ | ----------------- | -------------- |
 	face         | pname             | params         |
 
@@ -6950,7 +6950,7 @@
 	texture    | target    | internalFormat      | width | height | depth | layers | flags              |
 
 # glStencilOpValueAMD[1]:
-	MaterialFace | UInt32 |
+	TriangleFace | UInt32 |
 	------------ | ------ |
 	face         | value  |
 
@@ -9358,7 +9358,7 @@
 	pname            | param  |
 
 # glStencilOpSeparateATI[1]:
-	MaterialFace | StencilOp | StencilOp | StencilOp |
+	TriangleFace | StencilOp | StencilOp | StencilOp |
 	------------ | --------- | --------- | --------- |
 	face         | sfail     | dpfail    | dppass    |
 
@@ -11969,7 +11969,7 @@
 	func          | ref    |
 
 # glIndexMaterialEXT[1]:
-	MaterialFace | IndexMaterialParameter |
+	TriangleFace | IndexMaterialParameter |
 	------------ | ---------------------- |
 	face         | mode                   |
 
@@ -11984,7 +11984,7 @@
 	pname             |
 
 # glTextureMaterialEXT[1]:
-	MaterialFace | MaterialParameter |
+	TriangleFace | MaterialParameter |
 	------------ | ----------------- |
 	face         | mode              |
 
@@ -12433,7 +12433,7 @@
 	stencilTagBits | stencilClearTag |
 
 # glActiveStencilFaceEXT[1]:
-	MaterialFace |
+	TriangleFace |
 	------------ |
 	face         |
 
@@ -12891,7 +12891,7 @@
 	       | light     | value          |
 
 # glBindMaterialParameterEXT[1]:
-	UInt32 | MaterialFace | MaterialParameter |
+	UInt32 | TriangleFace | MaterialParameter |
 	------ | ------------ | ----------------- |
 	       | face         | value             |
 
@@ -16483,14 +16483,14 @@
 	m              |
 
 # glMaterialxOES[1]:
-	MaterialFace | MaterialParameter | Fixed |
+	TriangleFace | MaterialParameter | Fixed |
 	------------ | ----------------- | ----- |
 	face         | pname             | param |
 
 # glMaterialxvOES[3]:
-	MaterialFace | MaterialParameter | array of Fixed |
-	MaterialFace | MaterialParameter | var Fixed      |
-	MaterialFace | MaterialParameter | IntPtr         |
+	TriangleFace | MaterialParameter | array of Fixed |
+	TriangleFace | MaterialParameter | var Fixed      |
+	TriangleFace | MaterialParameter | IntPtr         |
 	------------ | ----------------- | -------------- |
 	face         | pname             | param          |
 
@@ -16681,7 +16681,7 @@
 	target    | query       | v         |
 
 # glGetMaterialxOES[1]:
-	MaterialFace | MaterialParameter | Fixed |
+	TriangleFace | MaterialParameter | Fixed |
 	------------ | ----------------- | ----- |
 	face         | pname             | param |
 
@@ -17195,7 +17195,7 @@
 # glFlushRasterSGIX[1]:
 
 # glFragmentColorMaterialSGIX[1]:
-	MaterialFace | MaterialParameter |
+	TriangleFace | MaterialParameter |
 	------------ | ----------------- |
 	face         | mode              |
 
@@ -17248,26 +17248,26 @@
 	pname                       | params         |
 
 # glFragmentMaterialfSGIX[1]:
-	MaterialFace | MaterialParameter | single |
+	TriangleFace | MaterialParameter | single |
 	------------ | ----------------- | ------ |
 	face         | pname             | param  |
 
 # glFragmentMaterialfvSGIX[3]:
-	MaterialFace | MaterialParameter | array of single |
-	MaterialFace | MaterialParameter | var single      |
-	MaterialFace | MaterialParameter | IntPtr          |
+	TriangleFace | MaterialParameter | array of single |
+	TriangleFace | MaterialParameter | var single      |
+	TriangleFace | MaterialParameter | IntPtr          |
 	------------ | ----------------- | --------------- |
 	face         | pname             | params          |
 
 # glFragmentMaterialiSGIX[1]:
-	MaterialFace | MaterialParameter | Int32 |
+	TriangleFace | MaterialParameter | Int32 |
 	------------ | ----------------- | ----- |
 	face         | pname             | param |
 
 # glFragmentMaterialivSGIX[3]:
-	MaterialFace | MaterialParameter | array of Int32 |
-	MaterialFace | MaterialParameter | var Int32      |
-	MaterialFace | MaterialParameter | IntPtr         |
+	TriangleFace | MaterialParameter | array of Int32 |
+	TriangleFace | MaterialParameter | var Int32      |
+	TriangleFace | MaterialParameter | IntPtr         |
 	------------ | ----------------- | -------------- |
 	face         | pname             | params         |
 
@@ -17284,14 +17284,14 @@
 	light             | pname                  | params    |
 
 # glGetFragmentMaterialfvSGIX[2]:
-	MaterialFace | MaterialParameter | var single |
-	MaterialFace | MaterialParameter | IntPtr     |
+	TriangleFace | MaterialParameter | var single |
+	TriangleFace | MaterialParameter | IntPtr     |
 	------------ | ----------------- | ---------- |
 	face         | pname             | params     |
 
 # glGetFragmentMaterialivSGIX[2]:
-	MaterialFace | MaterialParameter | var Int32 |
-	MaterialFace | MaterialParameter | IntPtr    |
+	TriangleFace | MaterialParameter | var Int32 |
+	TriangleFace | MaterialParameter | IntPtr    |
 	------------ | ----------------- | --------- |
 	face         | pname             | params    |
 

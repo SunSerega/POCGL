@@ -1080,8 +1080,8 @@
     
     // added in gl1.0
     private z_CullFace_adr := GetProcAddress('glCullFace');
-    private z_CullFace_1 := GetProcOrNil&<procedure(mode: MaterialFace)>(z_CullFace_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CullFace(mode: MaterialFace) :=
+    private z_CullFace_1 := GetProcOrNil&<procedure(mode: TriangleFace)>(z_CullFace_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CullFace(mode: TriangleFace) :=
     z_CullFace_1(mode);
     
     // added in gl4.3
@@ -3968,8 +3968,8 @@
     
     // added in gl1.0
     private z_PolygonMode_adr := GetProcAddress('glPolygonMode');
-    private z_PolygonMode_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: OpenGL.PolygonMode)>(z_PolygonMode_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PolygonMode(face: MaterialFace; mode: OpenGL.PolygonMode) :=
+    private z_PolygonMode_1 := GetProcOrNil&<procedure(face: TriangleFace; mode: OpenGL.PolygonMode)>(z_PolygonMode_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PolygonMode(face: TriangleFace; mode: OpenGL.PolygonMode) :=
     z_PolygonMode_1(face, mode);
     
     // added in gl1.1
@@ -5025,8 +5025,8 @@
     
     // added in gl2.0
     private z_StencilFuncSeparate_adr := GetProcAddress('glStencilFuncSeparate');
-    private z_StencilFuncSeparate_1 := GetProcOrNil&<procedure(face: MaterialFace; func: StencilFunction; ref: Int32; mask: UInt32)>(z_StencilFuncSeparate_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilFuncSeparate(face: MaterialFace; func: StencilFunction; ref: Int32; mask: UInt32) :=
+    private z_StencilFuncSeparate_1 := GetProcOrNil&<procedure(face: TriangleFace; func: StencilFunction; ref: Int32; mask: UInt32)>(z_StencilFuncSeparate_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilFuncSeparate(face: TriangleFace; func: StencilFunction; ref: Int32; mask: UInt32) :=
     z_StencilFuncSeparate_1(face, func, ref, mask);
     
     // added in gl1.0
@@ -5037,8 +5037,8 @@
     
     // added in gl2.0
     private z_StencilMaskSeparate_adr := GetProcAddress('glStencilMaskSeparate');
-    private z_StencilMaskSeparate_1 := GetProcOrNil&<procedure(face: MaterialFace; mask: UInt32)>(z_StencilMaskSeparate_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilMaskSeparate(face: MaterialFace; mask: UInt32) :=
+    private z_StencilMaskSeparate_1 := GetProcOrNil&<procedure(face: TriangleFace; mask: UInt32)>(z_StencilMaskSeparate_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilMaskSeparate(face: TriangleFace; mask: UInt32) :=
     z_StencilMaskSeparate_1(face, mask);
     
     // added in gl1.0
@@ -5049,8 +5049,8 @@
     
     // added in gl2.0
     private z_StencilOpSeparate_adr := GetProcAddress('glStencilOpSeparate');
-    private z_StencilOpSeparate_1 := GetProcOrNil&<procedure(face: MaterialFace; sfail: OpenGL.StencilOp; dpfail: OpenGL.StencilOp; dppass: OpenGL.StencilOp)>(z_StencilOpSeparate_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilOpSeparate(face: MaterialFace; sfail: OpenGL.StencilOp; dpfail: OpenGL.StencilOp; dppass: OpenGL.StencilOp) :=
+    private z_StencilOpSeparate_1 := GetProcOrNil&<procedure(face: TriangleFace; sfail: OpenGL.StencilOp; dpfail: OpenGL.StencilOp; dppass: OpenGL.StencilOp)>(z_StencilOpSeparate_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilOpSeparate(face: TriangleFace; sfail: OpenGL.StencilOp; dpfail: OpenGL.StencilOp; dppass: OpenGL.StencilOp) :=
     z_StencilOpSeparate_1(face, sfail, dpfail, dppass);
     
     // added in gl3.1
@@ -7899,8 +7899,8 @@
     
     // added in gl1.0, deprecated in gl3.2
     private z_ColorMaterial_adr := GetProcAddress('glColorMaterial');
-    private z_ColorMaterial_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: ColorMaterialParameter)>(z_ColorMaterial_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorMaterial(face: MaterialFace; mode: ColorMaterialParameter) :=
+    private z_ColorMaterial_1 := GetProcOrNil&<procedure(face: TriangleFace; mode: ColorMaterialParameter)>(z_ColorMaterial_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorMaterial(face: TriangleFace; mode: ColorMaterialParameter) :=
     z_ColorMaterial_1(face, mode);
     
     // added in gl1.1, deprecated in gl3.2
@@ -8265,20 +8265,20 @@
     
     // added in gl1.0, deprecated in gl3.2
     private z_GetMaterialfv_adr := GetProcAddress('glGetMaterialfv');
-    private z_GetMaterialfv_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_GetMaterialfv_adr);
-    private z_GetMaterialfv_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: single)>(z_GetMaterialfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialfv(face: MaterialFace; pname: MaterialParameter; var &params: single) :=
+    private z_GetMaterialfv_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_GetMaterialfv_adr);
+    private z_GetMaterialfv_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: single)>(z_GetMaterialfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialfv(face: TriangleFace; pname: MaterialParameter; var &params: single) :=
     z_GetMaterialfv_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialfv(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialfv(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_GetMaterialfv_1(face, pname, &params);
     
     // added in gl1.0, deprecated in gl3.2
     private z_GetMaterialiv_adr := GetProcAddress('glGetMaterialiv');
-    private z_GetMaterialiv_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_GetMaterialiv_adr);
-    private z_GetMaterialiv_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: Int32)>(z_GetMaterialiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialiv(face: MaterialFace; pname: MaterialParameter; var &params: Int32) :=
+    private z_GetMaterialiv_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_GetMaterialiv_adr);
+    private z_GetMaterialiv_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: Int32)>(z_GetMaterialiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialiv(face: TriangleFace; pname: MaterialParameter; var &params: Int32) :=
     z_GetMaterialiv_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialiv(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialiv(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_GetMaterialiv_1(face, pname, &params);
     
     // added in gl1.0, deprecated in gl3.2
@@ -8774,49 +8774,49 @@
     
     // added in gl1.0, deprecated in gl3.2
     private z_Materialf_adr := GetProcAddress('glMaterialf');
-    private z_Materialf_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: single)>(z_Materialf_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialf(face: MaterialFace; pname: MaterialParameter; param: single) :=
+    private z_Materialf_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: single)>(z_Materialf_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialf(face: TriangleFace; pname: MaterialParameter; param: single) :=
     z_Materialf_1(face, pname, param);
     
     // added in gl1.0, deprecated in gl3.2
     private z_Materialfv_adr := GetProcAddress('glMaterialfv');
-    private z_Materialfv_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_Materialfv_adr);
-    private z_Materialfv_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: single)>(z_Materialfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialfv(face: MaterialFace; pname: MaterialParameter; &params: array of single);
+    private z_Materialfv_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_Materialfv_adr);
+    private z_Materialfv_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: single)>(z_Materialfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialfv(face: TriangleFace; pname: MaterialParameter; &params: array of single);
     type Psingle=^single;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_Materialfv_2(face, pname, &params[0]) else
         z_Materialfv_2(face, pname, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialfv(face: MaterialFace; pname: MaterialParameter; var &params: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialfv(face: TriangleFace; pname: MaterialParameter; var &params: single) :=
     z_Materialfv_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialfv(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialfv(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_Materialfv_1(face, pname, &params);
     
     // added in gl1.0, deprecated in gl3.2
     private z_Materiali_adr := GetProcAddress('glMateriali');
-    private z_Materiali_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: Int32)>(z_Materiali_adr);
-    private z_Materiali_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: LightModelColorControl)>(z_Materiali_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materiali(face: MaterialFace; pname: MaterialParameter; param: LightModelColorControl) :=
+    private z_Materiali_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: Int32)>(z_Materiali_adr);
+    private z_Materiali_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: LightModelColorControl)>(z_Materiali_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materiali(face: TriangleFace; pname: MaterialParameter; param: LightModelColorControl) :=
     z_Materiali_2(face, pname, param);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materiali(face: MaterialFace; pname: MaterialParameter; param: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materiali(face: TriangleFace; pname: MaterialParameter; param: Int32) :=
     z_Materiali_1(face, pname, param);
     
     // added in gl1.0, deprecated in gl3.2
     private z_Materialiv_adr := GetProcAddress('glMaterialiv');
-    private z_Materialiv_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_Materialiv_adr);
-    private z_Materialiv_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: Int32)>(z_Materialiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: MaterialFace; pname: MaterialParameter; &params: array of Int32);
+    private z_Materialiv_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_Materialiv_adr);
+    private z_Materialiv_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: Int32)>(z_Materialiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: TriangleFace; pname: MaterialParameter; &params: array of Int32);
     type PInt32=^Int32;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_Materialiv_2(face, pname, &params[0]) else
         z_Materialiv_2(face, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: MaterialFace; pname: MaterialParameter; var &params: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: TriangleFace; pname: MaterialParameter; var &params: Int32) :=
     z_Materialiv_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Materialiv(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_Materialiv_1(face, pname, &params);
     
     // added in gl1.0, deprecated in gl3.2
@@ -12640,8 +12640,8 @@
     public const _ExtStr = 'gl_amd_stencil_operation_extended';
     
     private z_StencilOpValueAMD_adr := GetProcAddress('glStencilOpValueAMD');
-    private z_StencilOpValueAMD_1 := GetProcOrNil&<procedure(face: MaterialFace; value: UInt32)>(z_StencilOpValueAMD_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilOpValueAMD(face: MaterialFace; value: UInt32) :=
+    private z_StencilOpValueAMD_1 := GetProcOrNil&<procedure(face: TriangleFace; value: UInt32)>(z_StencilOpValueAMD_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilOpValueAMD(face: TriangleFace; value: UInt32) :=
     z_StencilOpValueAMD_1(face, value);
     
   end;
@@ -22402,8 +22402,8 @@
     public const _ExtStr = 'gl_ati_separate_stencil';
     
     private z_StencilOpSeparateATI_adr := GetProcAddress('glStencilOpSeparateATI');
-    private z_StencilOpSeparateATI_1 := GetProcOrNil&<procedure(face: MaterialFace; sfail: StencilOp; dpfail: StencilOp; dppass: StencilOp)>(z_StencilOpSeparateATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilOpSeparateATI(face: MaterialFace; sfail: StencilOp; dpfail: StencilOp; dppass: StencilOp) :=
+    private z_StencilOpSeparateATI_1 := GetProcOrNil&<procedure(face: TriangleFace; sfail: StencilOp; dpfail: StencilOp; dppass: StencilOp)>(z_StencilOpSeparateATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilOpSeparateATI(face: TriangleFace; sfail: StencilOp; dpfail: StencilOp; dppass: StencilOp) :=
     z_StencilOpSeparateATI_1(face, sfail, dpfail, dppass);
     
     private z_StencilFuncSeparateATI_adr := GetProcAddress('glStencilFuncSeparateATI');
@@ -26716,8 +26716,8 @@
     public const _ExtStr = 'gl_ext_index_material';
     
     private z_IndexMaterialEXT_adr := GetProcAddress('glIndexMaterialEXT');
-    private z_IndexMaterialEXT_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: IndexMaterialParameter)>(z_IndexMaterialEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexMaterialEXT(face: MaterialFace; mode: IndexMaterialParameter) :=
+    private z_IndexMaterialEXT_1 := GetProcOrNil&<procedure(face: TriangleFace; mode: IndexMaterialParameter)>(z_IndexMaterialEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure IndexMaterialEXT(face: TriangleFace; mode: IndexMaterialParameter) :=
     z_IndexMaterialEXT_1(face, mode);
     
   end;
@@ -26744,8 +26744,8 @@
     z_TextureLightEXT_1(pname);
     
     private z_TextureMaterialEXT_adr := GetProcAddress('glTextureMaterialEXT');
-    private z_TextureMaterialEXT_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: MaterialParameter)>(z_TextureMaterialEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureMaterialEXT(face: MaterialFace; mode: MaterialParameter) :=
+    private z_TextureMaterialEXT_1 := GetProcOrNil&<procedure(face: TriangleFace; mode: MaterialParameter)>(z_TextureMaterialEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureMaterialEXT(face: TriangleFace; mode: MaterialParameter) :=
     z_TextureMaterialEXT_1(face, mode);
     
   end;
@@ -27747,8 +27747,8 @@
     public const _ExtStr = 'gl_ext_stencil_two_side';
     
     private z_ActiveStencilFaceEXT_adr := GetProcAddress('glActiveStencilFaceEXT');
-    private z_ActiveStencilFaceEXT_1 := GetProcOrNil&<procedure(face: MaterialFace)>(z_ActiveStencilFaceEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ActiveStencilFaceEXT(face: MaterialFace) :=
+    private z_ActiveStencilFaceEXT_1 := GetProcOrNil&<procedure(face: TriangleFace)>(z_ActiveStencilFaceEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ActiveStencilFaceEXT(face: TriangleFace) :=
     z_ActiveStencilFaceEXT_1(face);
     
   end;
@@ -28641,8 +28641,8 @@
     z_BindLightParameterEXT_1(light, value);
     
     private z_BindMaterialParameterEXT_adr := GetProcAddress('glBindMaterialParameterEXT');
-    private z_BindMaterialParameterEXT_1 := GetProcOrNil&<function(face: MaterialFace; value: MaterialParameter): UInt32>(z_BindMaterialParameterEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function BindMaterialParameterEXT(face: MaterialFace; value: MaterialParameter): UInt32 :=
+    private z_BindMaterialParameterEXT_1 := GetProcOrNil&<function(face: TriangleFace; value: MaterialParameter): UInt32>(z_BindMaterialParameterEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function BindMaterialParameterEXT(face: TriangleFace; value: MaterialParameter): UInt32 :=
     z_BindMaterialParameterEXT_1(face, value);
     
     private z_BindTexGenParameterEXT_adr := GetProcAddress('glBindTexGenParameterEXT');
@@ -36791,23 +36791,23 @@
     z_LoadMatrixxOES_1(m);
     
     private z_MaterialxOES_adr := GetProcAddress('glMaterialxOES');
-    private z_MaterialxOES_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: Fixed)>(z_MaterialxOES_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxOES(face: MaterialFace; pname: MaterialParameter; param: Fixed) :=
+    private z_MaterialxOES_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: Fixed)>(z_MaterialxOES_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxOES(face: TriangleFace; pname: MaterialParameter; param: Fixed) :=
     z_MaterialxOES_1(face, pname, param);
     
     private z_MaterialxvOES_adr := GetProcAddress('glMaterialxvOES');
-    private z_MaterialxvOES_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: IntPtr)>(z_MaterialxvOES_adr);
-    private z_MaterialxvOES_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var param: Fixed)>(z_MaterialxvOES_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxvOES(face: MaterialFace; pname: MaterialParameter; param: array of Fixed);
+    private z_MaterialxvOES_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: IntPtr)>(z_MaterialxvOES_adr);
+    private z_MaterialxvOES_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var param: Fixed)>(z_MaterialxvOES_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxvOES(face: TriangleFace; pname: MaterialParameter; param: array of Fixed);
     type PFixed=^Fixed;
     begin
       if (param<>nil) and (param.Length<>0) then
         z_MaterialxvOES_2(face, pname, param[0]) else
         z_MaterialxvOES_2(face, pname, PFixed(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxvOES(face: MaterialFace; pname: MaterialParameter; var param: Fixed) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxvOES(face: TriangleFace; pname: MaterialParameter; var param: Fixed) :=
     z_MaterialxvOES_2(face, pname, param);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxvOES(face: MaterialFace; pname: MaterialParameter; param: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MaterialxvOES(face: TriangleFace; pname: MaterialParameter; param: IntPtr) :=
     z_MaterialxvOES_1(face, pname, param);
     
     private z_MultMatrixxOES_adr := GetProcAddress('glMultMatrixxOES');
@@ -37093,8 +37093,8 @@
     z_GetMapxvOES_1(target, query, v);
     
     private z_GetMaterialxOES_adr := GetProcAddress('glGetMaterialxOES');
-    private z_GetMaterialxOES_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: Fixed)>(z_GetMaterialxOES_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialxOES(face: MaterialFace; pname: MaterialParameter; param: Fixed) :=
+    private z_GetMaterialxOES_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: Fixed)>(z_GetMaterialxOES_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMaterialxOES(face: TriangleFace; pname: MaterialParameter; param: Fixed) :=
     z_GetMaterialxOES_1(face, pname, param);
     
     private z_GetPixelMapxv_adr := GetProcAddress('glGetPixelMapxv');
@@ -38128,8 +38128,8 @@
     public const _ExtStr = 'gl_sgix_fragment_lighting';
     
     private z_FragmentColorMaterialSGIX_adr := GetProcAddress('glFragmentColorMaterialSGIX');
-    private z_FragmentColorMaterialSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; mode: MaterialParameter)>(z_FragmentColorMaterialSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentColorMaterialSGIX(face: MaterialFace; mode: MaterialParameter) :=
+    private z_FragmentColorMaterialSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; mode: MaterialParameter)>(z_FragmentColorMaterialSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentColorMaterialSGIX(face: TriangleFace; mode: MaterialParameter) :=
     z_FragmentColorMaterialSGIX_1(face, mode);
     
     private z_FragmentLightfSGIX_adr := GetProcAddress('glFragmentLightfSGIX');
@@ -38213,43 +38213,43 @@
     z_FragmentLightModelivSGIX_1(pname, &params);
     
     private z_FragmentMaterialfSGIX_adr := GetProcAddress('glFragmentMaterialfSGIX');
-    private z_FragmentMaterialfSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: single)>(z_FragmentMaterialfSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfSGIX(face: MaterialFace; pname: MaterialParameter; param: single) :=
+    private z_FragmentMaterialfSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: single)>(z_FragmentMaterialfSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfSGIX(face: TriangleFace; pname: MaterialParameter; param: single) :=
     z_FragmentMaterialfSGIX_1(face, pname, param);
     
     private z_FragmentMaterialfvSGIX_adr := GetProcAddress('glFragmentMaterialfvSGIX');
-    private z_FragmentMaterialfvSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_FragmentMaterialfvSGIX_adr);
-    private z_FragmentMaterialfvSGIX_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: single)>(z_FragmentMaterialfvSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfvSGIX(face: MaterialFace; pname: MaterialParameter; &params: array of single);
+    private z_FragmentMaterialfvSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_FragmentMaterialfvSGIX_adr);
+    private z_FragmentMaterialfvSGIX_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: single)>(z_FragmentMaterialfvSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfvSGIX(face: TriangleFace; pname: MaterialParameter; &params: array of single);
     type Psingle=^single;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_FragmentMaterialfvSGIX_2(face, pname, &params[0]) else
         z_FragmentMaterialfvSGIX_2(face, pname, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfvSGIX(face: MaterialFace; pname: MaterialParameter; var &params: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfvSGIX(face: TriangleFace; pname: MaterialParameter; var &params: single) :=
     z_FragmentMaterialfvSGIX_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfvSGIX(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialfvSGIX(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_FragmentMaterialfvSGIX_1(face, pname, &params);
     
     private z_FragmentMaterialiSGIX_adr := GetProcAddress('glFragmentMaterialiSGIX');
-    private z_FragmentMaterialiSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; param: Int32)>(z_FragmentMaterialiSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialiSGIX(face: MaterialFace; pname: MaterialParameter; param: Int32) :=
+    private z_FragmentMaterialiSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; param: Int32)>(z_FragmentMaterialiSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialiSGIX(face: TriangleFace; pname: MaterialParameter; param: Int32) :=
     z_FragmentMaterialiSGIX_1(face, pname, param);
     
     private z_FragmentMaterialivSGIX_adr := GetProcAddress('glFragmentMaterialivSGIX');
-    private z_FragmentMaterialivSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_FragmentMaterialivSGIX_adr);
-    private z_FragmentMaterialivSGIX_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: Int32)>(z_FragmentMaterialivSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialivSGIX(face: MaterialFace; pname: MaterialParameter; &params: array of Int32);
+    private z_FragmentMaterialivSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_FragmentMaterialivSGIX_adr);
+    private z_FragmentMaterialivSGIX_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: Int32)>(z_FragmentMaterialivSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialivSGIX(face: TriangleFace; pname: MaterialParameter; &params: array of Int32);
     type PInt32=^Int32;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_FragmentMaterialivSGIX_2(face, pname, &params[0]) else
         z_FragmentMaterialivSGIX_2(face, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialivSGIX(face: MaterialFace; pname: MaterialParameter; var &params: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialivSGIX(face: TriangleFace; pname: MaterialParameter; var &params: Int32) :=
     z_FragmentMaterialivSGIX_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialivSGIX(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FragmentMaterialivSGIX(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_FragmentMaterialivSGIX_1(face, pname, &params);
     
     private z_GetFragmentLightfvSGIX_adr := GetProcAddress('glGetFragmentLightfvSGIX');
@@ -38269,19 +38269,19 @@
     z_GetFragmentLightivSGIX_1(light, pname, &params);
     
     private z_GetFragmentMaterialfvSGIX_adr := GetProcAddress('glGetFragmentMaterialfvSGIX');
-    private z_GetFragmentMaterialfvSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_GetFragmentMaterialfvSGIX_adr);
-    private z_GetFragmentMaterialfvSGIX_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: single)>(z_GetFragmentMaterialfvSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialfvSGIX(face: MaterialFace; pname: MaterialParameter; var &params: single) :=
+    private z_GetFragmentMaterialfvSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_GetFragmentMaterialfvSGIX_adr);
+    private z_GetFragmentMaterialfvSGIX_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: single)>(z_GetFragmentMaterialfvSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialfvSGIX(face: TriangleFace; pname: MaterialParameter; var &params: single) :=
     z_GetFragmentMaterialfvSGIX_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialfvSGIX(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialfvSGIX(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_GetFragmentMaterialfvSGIX_1(face, pname, &params);
     
     private z_GetFragmentMaterialivSGIX_adr := GetProcAddress('glGetFragmentMaterialivSGIX');
-    private z_GetFragmentMaterialivSGIX_1 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; &params: IntPtr)>(z_GetFragmentMaterialivSGIX_adr);
-    private z_GetFragmentMaterialivSGIX_2 := GetProcOrNil&<procedure(face: MaterialFace; pname: MaterialParameter; var &params: Int32)>(z_GetFragmentMaterialivSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialivSGIX(face: MaterialFace; pname: MaterialParameter; var &params: Int32) :=
+    private z_GetFragmentMaterialivSGIX_1 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; &params: IntPtr)>(z_GetFragmentMaterialivSGIX_adr);
+    private z_GetFragmentMaterialivSGIX_2 := GetProcOrNil&<procedure(face: TriangleFace; pname: MaterialParameter; var &params: Int32)>(z_GetFragmentMaterialivSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialivSGIX(face: TriangleFace; pname: MaterialParameter; var &params: Int32) :=
     z_GetFragmentMaterialivSGIX_2(face, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialivSGIX(face: MaterialFace; pname: MaterialParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetFragmentMaterialivSGIX(face: TriangleFace; pname: MaterialParameter; &params: IntPtr) :=
     z_GetFragmentMaterialivSGIX_1(face, pname, &params);
     
     private z_LightEnviSGIX_adr := GetProcAddress('glLightEnviSGIX');

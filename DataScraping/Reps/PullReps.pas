@@ -4,12 +4,12 @@ uses AOtp         in '..\..\Utils\AOtp';
 uses ATask        in '..\..\Utils\ATask';
 uses AQueue       in '..\..\Utils\AQueue';
 
-procedure PullRep(name, nick: string);
+procedure PullRep(name, branch, nick: string);
 begin
   Otp($'Pulling {nick}');
   
   var path := GetFullPathRTA(name);
-  var psi := new ProcessStartInfo('cmd', '/c "git pull 0_official main && git push SunSerega"');
+  var psi := new ProcessStartInfo('cmd', $'/c "echo checkout: && git checkout {branch} && echo pull: && git pull 0_official {branch} & echo push: && git push SunSerega {branch}"');
   psi.WorkingDirectory := path;
   psi.UseShellExecute := false;
   psi.RedirectStandardError := true;
@@ -32,9 +32,9 @@ end;
 begin
   try
     Arr(
-      new class( nick := 'OpenCL Docs',     name := 'OpenCL-Docs'     ),
-      new class( nick := 'OpenGL Registry', name := 'OpenGL-Registry' )
-    ).Select(r->ProcTask(()-> PullRep(r.name, r.nick) ))
+      new class( nick := 'OpenCL Docs',     name := 'OpenCL-Docs',     branch := 'main' ),
+      new class( nick := 'OpenGL Registry', name := 'OpenGL-Registry', branch := 'unused-groups' )
+    ).Select(r->ProcTask(()-> PullRep(r.name, r.branch, r.nick) ))
     .CombineAsyncTask
     .SyncExec;
   except

@@ -6195,24 +6195,6 @@
     
   end;
   
-  MaterialFace = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property FRONT:          MaterialFace read new MaterialFace($0404);
-    public static property BACK:           MaterialFace read new MaterialFace($0405);
-    public static property FRONT_AND_BACK: MaterialFace read new MaterialFace($0408);
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($0404) then Result := 'FRONT' else
-      if self.val = UInt32($0405) then Result := 'BACK' else
-      if self.val = UInt32($0408) then Result := 'FRONT_AND_BACK' else
-        Result := $'MaterialFace[{self.val}]';
-    end;
-    
-  end;
-  
   MaterialParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10110,6 +10092,24 @@
       if self.val = Int32(-5) then Result := 'SKIP_COMPONENTS2_NV' else
       if self.val = Int32(-6) then Result := 'SKIP_COMPONENTS1_NV' else
         Result := $'TransformFeedbackToken[{self.val}]';
+    end;
+    
+  end;
+  
+  TriangleFace = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FRONT:          TriangleFace read new TriangleFace($0404);
+    public static property BACK:           TriangleFace read new TriangleFace($0405);
+    public static property FRONT_AND_BACK: TriangleFace read new TriangleFace($0408);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0404) then Result := 'FRONT' else
+      if self.val = UInt32($0405) then Result := 'BACK' else
+      if self.val = UInt32($0408) then Result := 'FRONT_AND_BACK' else
+        Result := $'TriangleFace[{self.val}]';
     end;
     
   end;
