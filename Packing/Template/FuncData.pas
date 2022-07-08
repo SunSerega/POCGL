@@ -26,6 +26,7 @@ type
     static invalid_ext_names  := new HashSet<string>;
     static invalid_ntv_types  := new HashSet<string>;
     static base_t_used        := new HashSet<string>;
+    static enum_conflicts     := new HashSet<string>;
     static loged_ffo          := new HashSet<string>; // final func ovrs
   end;
   
@@ -168,8 +169,27 @@ type
     private t: string;
     private bitmask: boolean;
     private enums: Dictionary<string, int64>;
-    
     private custom_members := new List<array of string>;
+    
+    private static all_enums := new Dictionary<string, int64>;
+    
+    private function BoundToAllEnums :=
+    not bitmask and not name.StartsWith('GDI');
+    
+    private procedure AddKeyVal(key: string; val: int64);
+    begin
+      enums.Add(key, val);
+      
+      if not BoundToAllEnums then exit;
+      var old_val: int64;
+      if not all_enums.TryGetValue(key, old_val) then
+        all_enums.Add(key, val) else
+      if val <> old_val then
+        raise new System.InvalidOperationException(
+          $'Group [{self.name}]: Added val for [{key}] was [${val}], not [${old_val}] as in other groups'
+        );
+      
+    end;
     
     public constructor := exit;
     public constructor(br: System.IO.BinaryReader);
@@ -188,10 +208,18 @@ type
       loop enums_count do
       begin
         var key := br.ReadString;
-        if not key.ElementAt(3).IsDigit then key := key.Substring(3);
+        
+        // GL_/CL_
+        if not key.ToLower.StartsWith(api_name+'_') then
+          raise new System.InvalidOperationException(key);
+        key := key.Substring(api_name.Length+1);
+        
+        if key.First.IsDigit then key := '_'+key;
+        
+        // To not intersect with get_* methods of properties
         if key.ToLower.StartsWith('get_') then key := key.Insert(3,'_');
-        var val := br.ReadInt64;
-        enums.Add(key, val);
+        AddKeyVal(key, br.ReadInt64);
+        
       end;
       
     end;
@@ -219,9 +247,13 @@ type
         
         if ByName(s_gname) is Group(var gr2) then
         begin
-          Result := gr2.enums.ToHashSet.SetEquals(gr.enums);
+          Result := gr2.enums.Values.ToHashSet.SetEquals(gr.enums.Values);
           if Result then
           begin
+            Otp($'WARNING: Group [{gr.name}] was merged into [{gr2.name}]');
+            foreach var kvp in gr.enums do
+              if not gr2.enums.ContainsKey(kvp.Key) then
+                gr2.AddKeyVal(kvp.Key, kvp.Value);
             Group.name_cache.Remove(gname);
             Group.name_remap.Add(gname, s_gname);
           end else
@@ -235,6 +267,8 @@ type
       
       foreach var gr in All do
         foreach var ename in gr.enums.Keys.ToArray do
+        begin
+          var curr_v := gr.enums[ename];
           if allowed_ext_names.Any(ext->
           begin
             Result := false;
@@ -243,20 +277,52 @@ type
             var base_ename := ename.Remove(ename.Length-_ext.Length);
             var v: int64;
             var found_v := false;
+            
             foreach var base_ext in |'', '_ARB', '_EXT'| do
             begin
               if _ext=base_ext then break;
               found_v := gr.enums.TryGetValue(base_ename+base_ext, v);
               if found_v then break;
             end;
-            if not found_v then exit;
-            if v<>gr.enums[ename] then
+            
+            if not found_v then
             begin
-              log.Otp($'Group [{gr.name}]: Enum {ename}=${gr.enums[ename]:X}, but without [{_ext}]=${v:X}');
-              exit;
+              found_v := gr.BoundToAllEnums and all_enums.TryGetValue(base_ename, v);
+              if not found_v then
+              begin
+                var conflict := all_enums
+                  .Where(kvp->
+                    (kvp.Value<>curr_v) and
+                    kvp.Key.StartsWith(base_ename+'_') and (kvp.Key.SubString(base_ename.Length+1) in allowed_ext_names)
+                  )
+                  .Select(kvp->kvp.Key)
+                  .Prepend(ename).Order
+                  .JoinToString(',');
+                if conflict.Length>ename.Length then
+                begin
+                  if LogCache.enum_conflicts.Add(conflict) then
+                    log.Otp($'Enums [{conflict}] have different values');
+                  exit;
+                end else
+                begin
+                  found_v := true;
+                  v := curr_v;
+                end;
+              end;
+              if v=curr_v then
+                gr.AddKeyVal(base_ename, v);
             end;
-            Result := true;
+            
+            if found_v then
+            begin
+              Result := v=curr_v;
+              if not Result then
+                log.Otp($'Group [{gr.name}]: Enum [{ename}]=${curr_v:X}, but without [{_ext}]=${v:X}');
+            end else
+              log.Otp($'Group [{gr.name}]: Enum [{ename}] had name ending in vendor name');
+            
           end) then gr.enums.Remove(ename);
+        end;
       
     end;
     
@@ -280,7 +346,7 @@ type
       if not referenced then exit;
       
       log_groups.Otp($'# {name}[{t}]');
-      foreach var ename in enums.Keys do
+      foreach var ename in EnumrKeys do
         log_groups.Otp($'{#9}{ename} = {enums[ename]:X}');
       log_groups.Otp('');
       
@@ -2586,7 +2652,7 @@ type
   GroupAdder = sealed class(GroupFixer)
     private name, t: string;
     private bitmask: boolean;
-    private enums := new Dictionary<string, int64>;
+    private enums := new List<(string, int64)>;
     
     public constructor(name: string; data: sequence of string);
     begin
@@ -2605,10 +2671,10 @@ type
         var t := enmr.Current.Split('=');
         var key := t[0].Trim;
         var val := t[1].Trim;
-        enums.Add(key, val.StartsWith('0x') ?
+        enums.Add((key, val.StartsWith('0x') ?
           System.Convert.ToInt64(val, 16) :
           System.Convert.ToInt64(val)
-        );
+        ));
       end;
       
       self.RegisterAsAdder;
@@ -2619,7 +2685,9 @@ type
       gr.name     := self.name;
       gr.t        := self.t;
       gr.bitmask  := self.bitmask;
-      gr.enums    := self.enums;
+      gr.enums    := new Dictionary<string, int64>(self.enums.Count);
+      foreach var (key, val) in self.enums do
+        gr.AddKeyVal(key, val);
       gr.explicit_existence := true;
       Group.name_cache := nil;
       Result := false;
@@ -2700,11 +2768,8 @@ type
     
     public function Apply(gr: Group): boolean; override;
     begin
-      foreach var t in enums do
-      begin
-        gr.enums.Remove(t[0]);
-        gr.enums.Add(t[0],t[1]);
-      end;
+      foreach var (key, val) in enums do
+        gr.AddKeyVal(key, val);
       self.used := true;
       Result := false;
     end;

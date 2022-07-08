@@ -7808,68 +7808,68 @@
 	target            | pname                | params    |
 
 # glGetSeparableFilter[1]:
-	SeparableTargetEXT | PixelFormat | PixelType | IntPtr | IntPtr | IntPtr |
-	------------------ | ----------- | --------- | ------ | ------ | ------ |
-	target             | format      | type      | row    | column | span   |
+	SeparableTarget | PixelFormat | PixelType | IntPtr | IntPtr | IntPtr |
+	--------------- | ----------- | --------- | ------ | ------ | ------ |
+	target          | format      | type      | row    | column | span   |
 
 # glSeparableFilter2D[1]:
-	SeparableTargetEXT | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr | IntPtr |
-	------------------ | -------------- | ----- | ------ | ----------- | --------- | ------ | ------ |
-	target             | internalformat | width | height | format      | type      | row    | column |
+	SeparableTarget | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr | IntPtr |
+	--------------- | -------------- | ----- | ------ | ----------- | --------- | ------ | ------ |
+	target          | internalformat | width | height | format      | type      | row    | column |
 
 # glGetHistogram[1]:
-	HistogramTargetEXT | boolean | PixelFormat | PixelType | IntPtr |
-	------------------ | ------- | ----------- | --------- | ------ |
-	target             | reset   | format      | type      | values |
-
-# glGetHistogramParameterfv[2]:
-	HistogramTargetEXT | GetHistogramParameterPName | var single |
-	HistogramTargetEXT | GetHistogramParameterPName | IntPtr     |
-	------------------ | -------------------------- | ---------- |
-	target             | pname                      | params     |
-
-# glGetHistogramParameteriv[2]:
-	HistogramTargetEXT | GetHistogramParameterPName | var Int32 |
-	HistogramTargetEXT | GetHistogramParameterPName | IntPtr    |
-	------------------ | -------------------------- | --------- |
-	target             | pname                      | params    |
-
-# glGetMinmax[1]:
-	MinmaxTargetEXT | boolean | PixelFormat | PixelType | IntPtr |
+	HistogramTarget | boolean | PixelFormat | PixelType | IntPtr |
 	--------------- | ------- | ----------- | --------- | ------ |
 	target          | reset   | format      | type      | values |
 
+# glGetHistogramParameterfv[2]:
+	HistogramTarget | GetHistogramParameterPName | var single |
+	HistogramTarget | GetHistogramParameterPName | IntPtr     |
+	--------------- | -------------------------- | ---------- |
+	target          | pname                      | params     |
+
+# glGetHistogramParameteriv[2]:
+	HistogramTarget | GetHistogramParameterPName | var Int32 |
+	HistogramTarget | GetHistogramParameterPName | IntPtr    |
+	--------------- | -------------------------- | --------- |
+	target          | pname                      | params    |
+
+# glGetMinmax[1]:
+	MinmaxTarget | boolean | PixelFormat | PixelType | IntPtr |
+	------------ | ------- | ----------- | --------- | ------ |
+	target       | reset   | format      | type      | values |
+
 # glGetMinmaxParameterfv[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPName | var single |
-	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr     |
-	--------------- | ----------------------- | ---------- |
-	target          | pname                   | params     |
+	MinmaxTarget | GetMinmaxParameterPName | var single |
+	MinmaxTarget | GetMinmaxParameterPName | IntPtr     |
+	------------ | ----------------------- | ---------- |
+	target       | pname                   | params     |
 
 # glGetMinmaxParameteriv[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPName | var Int32 |
-	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr    |
-	--------------- | ----------------------- | --------- |
-	target          | pname                   | params    |
+	MinmaxTarget | GetMinmaxParameterPName | var Int32 |
+	MinmaxTarget | GetMinmaxParameterPName | IntPtr    |
+	------------ | ----------------------- | --------- |
+	target       | pname                   | params    |
 
 # glHistogram[1]:
-	HistogramTargetEXT | Int32 | InternalFormat | boolean |
-	------------------ | ----- | -------------- | ------- |
-	target             | width | internalformat | sink    |
+	HistogramTarget | Int32 | InternalFormat | boolean |
+	--------------- | ----- | -------------- | ------- |
+	target          | width | internalformat | sink    |
 
 # glMinmax[1]:
-	MinmaxTargetEXT | InternalFormat | boolean |
-	--------------- | -------------- | ------- |
-	target          | internalformat | sink    |
+	MinmaxTarget | InternalFormat | boolean |
+	------------ | -------------- | ------- |
+	target       | internalformat | sink    |
 
 # glResetHistogram[1]:
-	HistogramTargetEXT |
-	------------------ |
-	target             |
-
-# glResetMinmax[1]:
-	MinmaxTargetEXT |
+	HistogramTarget |
 	--------------- |
 	target          |
+
+# glResetMinmax[1]:
+	MinmaxTarget |
+	------------ |
+	target       |
 
 # glMultiDrawArraysIndirectCountARB[1]:
 	PrimitiveType | IntPtr   | IntPtr    | Int32        | Int32  |
@@ -8283,19 +8283,19 @@
 	target            | format      | type      | bufSize | image  |
 
 # glGetnSeparableFilterARB[1]:
-	SeparableTargetEXT | PixelFormat | PixelType | Int32      | IntPtr | Int32         | IntPtr | IntPtr |
-	------------------ | ----------- | --------- | ---------- | ------ | ------------- | ------ | ------ |
-	target             | format      | type      | rowBufSize | row    | columnBufSize | column | span   |
+	SeparableTarget | PixelFormat | PixelType | Int32      | IntPtr | Int32         | IntPtr | IntPtr |
+	--------------- | ----------- | --------- | ---------- | ------ | ------------- | ------ | ------ |
+	target          | format      | type      | rowBufSize | row    | columnBufSize | column | span   |
 
 # glGetnHistogramARB[1]:
-	HistogramTargetEXT | boolean | PixelFormat | PixelType | Int32   | IntPtr |
-	------------------ | ------- | ----------- | --------- | ------- | ------ |
-	target             | reset   | format      | type      | bufSize | values |
-
-# glGetnMinmaxARB[1]:
-	MinmaxTargetEXT | boolean | PixelFormat | PixelType | Int32   | IntPtr |
+	HistogramTarget | boolean | PixelFormat | PixelType | Int32   | IntPtr |
 	--------------- | ------- | ----------- | --------- | ------- | ------ |
 	target          | reset   | format      | type      | bufSize | values |
+
+# glGetnMinmaxARB[1]:
+	MinmaxTarget | boolean | PixelFormat | PixelType | Int32   | IntPtr |
+	------------ | ------- | ----------- | --------- | ------- | ------ |
+	target       | reset   | format      | type      | bufSize | values |
 
 # glFramebufferSampleLocationsfvARB[3]:
 	FramebufferTarget | UInt32 | Int32 | array of single |
@@ -9785,75 +9785,75 @@
 # glUnlockArraysEXT[1]:
 
 # glConvolutionFilter1DEXT[1]:
-	ConvolutionTargetEXT | InternalFormat | Int32 | PixelFormat | PixelType | IntPtr |
-	-------------------- | -------------- | ----- | ----------- | --------- | ------ |
-	target               | internalformat | width | format      | type      | image  |
+	ConvolutionTarget | InternalFormat | Int32 | PixelFormat | PixelType | IntPtr |
+	----------------- | -------------- | ----- | ----------- | --------- | ------ |
+	target            | internalformat | width | format      | type      | image  |
 
 # glConvolutionFilter2DEXT[1]:
-	ConvolutionTargetEXT | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
-	-------------------- | -------------- | ----- | ------ | ----------- | --------- | ------ |
-	target               | internalformat | width | height | format      | type      | image  |
+	ConvolutionTarget | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr |
+	----------------- | -------------- | ----- | ------ | ----------- | --------- | ------ |
+	target            | internalformat | width | height | format      | type      | image  |
 
 # glConvolutionParameterfEXT[1]:
-	ConvolutionTargetEXT | ConvolutionParameter | single |
-	-------------------- | -------------------- | ------ |
-	target               | pname                | params |
+	ConvolutionTarget | ConvolutionParameter | single |
+	----------------- | -------------------- | ------ |
+	target            | pname                | params |
 
 # glConvolutionParameterfvEXT[3]:
-	ConvolutionTargetEXT | ConvolutionParameter | array of single |
-	ConvolutionTargetEXT | ConvolutionParameter | var single      |
-	ConvolutionTargetEXT | ConvolutionParameter | IntPtr          |
-	-------------------- | -------------------- | --------------- |
-	target               | pname                | params          |
+	ConvolutionTarget | ConvolutionParameter | array of single |
+	ConvolutionTarget | ConvolutionParameter | var single      |
+	ConvolutionTarget | ConvolutionParameter | IntPtr          |
+	----------------- | -------------------- | --------------- |
+	target            | pname                | params          |
 
 # glConvolutionParameteriEXT[1]:
-	ConvolutionTargetEXT | ConvolutionParameter | Int32  |
-	-------------------- | -------------------- | ------ |
-	target               | pname                | params |
+	ConvolutionTarget | ConvolutionParameter | Int32  |
+	----------------- | -------------------- | ------ |
+	target            | pname                | params |
 
 # glConvolutionParameterivEXT[3]:
-	ConvolutionTargetEXT | ConvolutionParameter | array of Int32 |
-	ConvolutionTargetEXT | ConvolutionParameter | var Int32      |
-	ConvolutionTargetEXT | ConvolutionParameter | IntPtr         |
-	-------------------- | -------------------- | -------------- |
-	target               | pname                | params         |
+	ConvolutionTarget | ConvolutionParameter | array of Int32 |
+	ConvolutionTarget | ConvolutionParameter | var Int32      |
+	ConvolutionTarget | ConvolutionParameter | IntPtr         |
+	----------------- | -------------------- | -------------- |
+	target            | pname                | params         |
 
 # glCopyConvolutionFilter1DEXT[1]:
-	ConvolutionTargetEXT | InternalFormat | Int32 | Int32 | Int32 |
-	-------------------- | -------------- | ----- | ----- | ----- |
-	target               | internalformat | x     | y     | width |
+	ConvolutionTarget | InternalFormat | Int32 | Int32 | Int32 |
+	----------------- | -------------- | ----- | ----- | ----- |
+	target            | internalformat | x     | y     | width |
 
 # glCopyConvolutionFilter2DEXT[1]:
-	ConvolutionTargetEXT | InternalFormat | Int32 | Int32 | Int32 | Int32  |
-	-------------------- | -------------- | ----- | ----- | ----- | ------ |
-	target               | internalformat | x     | y     | width | height |
+	ConvolutionTarget | InternalFormat | Int32 | Int32 | Int32 | Int32  |
+	----------------- | -------------- | ----- | ----- | ----- | ------ |
+	target            | internalformat | x     | y     | width | height |
 
 # glGetConvolutionFilterEXT[1]:
-	ConvolutionTargetEXT | PixelFormat | PixelType | IntPtr |
-	-------------------- | ----------- | --------- | ------ |
-	target               | format      | type      | image  |
+	ConvolutionTarget | PixelFormat | PixelType | IntPtr |
+	----------------- | ----------- | --------- | ------ |
+	target            | format      | type      | image  |
 
 # glGetConvolutionParameterfvEXT[2]:
-	ConvolutionTargetEXT | ConvolutionParameter | var single |
-	ConvolutionTargetEXT | ConvolutionParameter | IntPtr     |
-	-------------------- | -------------------- | ---------- |
-	target               | pname                | params     |
+	ConvolutionTarget | ConvolutionParameter | var single |
+	ConvolutionTarget | ConvolutionParameter | IntPtr     |
+	----------------- | -------------------- | ---------- |
+	target            | pname                | params     |
 
 # glGetConvolutionParameterivEXT[2]:
-	ConvolutionTargetEXT | ConvolutionParameter | var Int32 |
-	ConvolutionTargetEXT | ConvolutionParameter | IntPtr    |
-	-------------------- | -------------------- | --------- |
-	target               | pname                | params    |
+	ConvolutionTarget | ConvolutionParameter | var Int32 |
+	ConvolutionTarget | ConvolutionParameter | IntPtr    |
+	----------------- | -------------------- | --------- |
+	target            | pname                | params    |
 
 # glGetSeparableFilterEXT[1]:
-	SeparableTargetEXT | PixelFormat | PixelType | IntPtr | IntPtr | IntPtr |
-	------------------ | ----------- | --------- | ------ | ------ | ------ |
-	target             | format      | type      | row    | column | span   |
+	SeparableTarget | PixelFormat | PixelType | IntPtr | IntPtr | IntPtr |
+	--------------- | ----------- | --------- | ------ | ------ | ------ |
+	target          | format      | type      | row    | column | span   |
 
 # glSeparableFilter2DEXT[1]:
-	SeparableTargetEXT | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr | IntPtr |
-	------------------ | -------------- | ----- | ------ | ----------- | --------- | ------ | ------ |
-	target             | internalformat | width | height | format      | type      | row    | column |
+	SeparableTarget | InternalFormat | Int32 | Int32  | PixelFormat | PixelType | IntPtr | IntPtr |
+	--------------- | -------------- | ----- | ------ | ----------- | --------- | ------ | ------ |
+	target          | internalformat | width | height | format      | type      | row    | column |
 
 # glTangent3bEXT[1]:
 	SByte | SByte | SByte |
@@ -11911,58 +11911,58 @@
 	index  | pname            | params     |
 
 # glGetHistogramEXT[1]:
-	HistogramTargetEXT | boolean | PixelFormat | PixelType | IntPtr |
-	------------------ | ------- | ----------- | --------- | ------ |
-	target             | reset   | format      | type      | values |
-
-# glGetHistogramParameterfvEXT[2]:
-	HistogramTargetEXT | GetHistogramParameterPName | var single |
-	HistogramTargetEXT | GetHistogramParameterPName | IntPtr     |
-	------------------ | -------------------------- | ---------- |
-	target             | pname                      | params     |
-
-# glGetHistogramParameterivEXT[2]:
-	HistogramTargetEXT | GetHistogramParameterPName | var Int32 |
-	HistogramTargetEXT | GetHistogramParameterPName | IntPtr    |
-	------------------ | -------------------------- | --------- |
-	target             | pname                      | params    |
-
-# glGetMinmaxEXT[1]:
-	MinmaxTargetEXT | boolean | PixelFormat | PixelType | IntPtr |
+	HistogramTarget | boolean | PixelFormat | PixelType | IntPtr |
 	--------------- | ------- | ----------- | --------- | ------ |
 	target          | reset   | format      | type      | values |
 
+# glGetHistogramParameterfvEXT[2]:
+	HistogramTarget | GetHistogramParameterPName | var single |
+	HistogramTarget | GetHistogramParameterPName | IntPtr     |
+	--------------- | -------------------------- | ---------- |
+	target          | pname                      | params     |
+
+# glGetHistogramParameterivEXT[2]:
+	HistogramTarget | GetHistogramParameterPName | var Int32 |
+	HistogramTarget | GetHistogramParameterPName | IntPtr    |
+	--------------- | -------------------------- | --------- |
+	target          | pname                      | params    |
+
+# glGetMinmaxEXT[1]:
+	MinmaxTarget | boolean | PixelFormat | PixelType | IntPtr |
+	------------ | ------- | ----------- | --------- | ------ |
+	target       | reset   | format      | type      | values |
+
 # glGetMinmaxParameterfvEXT[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPName | var single |
-	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr     |
-	--------------- | ----------------------- | ---------- |
-	target          | pname                   | params     |
+	MinmaxTarget | GetMinmaxParameterPName | var single |
+	MinmaxTarget | GetMinmaxParameterPName | IntPtr     |
+	------------ | ----------------------- | ---------- |
+	target       | pname                   | params     |
 
 # glGetMinmaxParameterivEXT[2]:
-	MinmaxTargetEXT | GetMinmaxParameterPName | var Int32 |
-	MinmaxTargetEXT | GetMinmaxParameterPName | IntPtr    |
-	--------------- | ----------------------- | --------- |
-	target          | pname                   | params    |
+	MinmaxTarget | GetMinmaxParameterPName | var Int32 |
+	MinmaxTarget | GetMinmaxParameterPName | IntPtr    |
+	------------ | ----------------------- | --------- |
+	target       | pname                   | params    |
 
 # glHistogramEXT[1]:
-	HistogramTargetEXT | Int32 | InternalFormat | boolean |
-	------------------ | ----- | -------------- | ------- |
-	target             | width | internalformat | sink    |
+	HistogramTarget | Int32 | InternalFormat | boolean |
+	--------------- | ----- | -------------- | ------- |
+	target          | width | internalformat | sink    |
 
 # glMinmaxEXT[1]:
-	MinmaxTargetEXT | InternalFormat | boolean |
-	--------------- | -------------- | ------- |
-	target          | internalformat | sink    |
+	MinmaxTarget | InternalFormat | boolean |
+	------------ | -------------- | ------- |
+	target       | internalformat | sink    |
 
 # glResetHistogramEXT[1]:
-	HistogramTargetEXT |
-	------------------ |
-	target             |
-
-# glResetMinmaxEXT[1]:
-	MinmaxTargetEXT |
+	HistogramTarget |
 	--------------- |
 	target          |
+
+# glResetMinmaxEXT[1]:
+	MinmaxTarget |
+	------------ |
+	target       |
 
 # glIndexFuncEXT[1]:
 	IndexFunction | single |
@@ -12132,9 +12132,9 @@
 	value  | invert  |
 
 # glSamplePatternEXT[1]:
-	SamplePatternEXT |
-	---------------- |
-	pattern          |
+	SamplePattern |
+	------------- |
+	pattern       |
 
 # glColorTableEXT[1]:
 	ColorTableTarget | InternalFormat | Int32 | PixelFormat | PixelType | IntPtr |
@@ -16615,16 +16615,16 @@
 	components     |
 
 # glConvolutionParameterxOES[1]:
-	ConvolutionTargetEXT | ConvolutionParameter | Fixed |
-	-------------------- | -------------------- | ----- |
-	target               | pname                | param |
+	ConvolutionTarget | ConvolutionParameter | Fixed |
+	----------------- | -------------------- | ----- |
+	target            | pname                | param |
 
 # glConvolutionParameterxvOES[3]:
-	ConvolutionTargetEXT | ConvolutionParameter | array of Fixed |
-	ConvolutionTargetEXT | ConvolutionParameter | var Fixed      |
-	ConvolutionTargetEXT | ConvolutionParameter | IntPtr         |
-	-------------------- | -------------------- | -------------- |
-	target               | pname                | params         |
+	ConvolutionTarget | ConvolutionParameter | array of Fixed |
+	ConvolutionTarget | ConvolutionParameter | var Fixed      |
+	ConvolutionTarget | ConvolutionParameter | IntPtr         |
+	----------------- | -------------------- | -------------- |
+	target            | pname                | params         |
 
 # glEvalCoord1xOES[1]:
 	Fixed |
@@ -16664,10 +16664,10 @@
 	target    | pname     | params    |
 
 # glGetHistogramParameterxvOES[2]:
-	HistogramTargetEXT | GetHistogramParameterPName | var Fixed |
-	HistogramTargetEXT | GetHistogramParameterPName | IntPtr    |
-	------------------ | -------------------------- | --------- |
-	target             | pname                      | params    |
+	HistogramTarget | GetHistogramParameterPName | var Fixed |
+	HistogramTarget | GetHistogramParameterPName | IntPtr    |
+	--------------- | -------------------------- | --------- |
+	target          | pname                      | params    |
 
 # glGetLightxOES[2]:
 	LightName | LightParameter | var Fixed |

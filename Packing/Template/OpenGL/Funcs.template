@@ -16070,75 +16070,75 @@
     z_GetConvolutionParameteriv_1(target, pname, &params);
     
     private z_GetSeparableFilter_adr := GetProcAddress('glGetSeparableFilter');
-    private z_GetSeparableFilter_1 := GetProcOrNil&<procedure(target: SeparableTargetEXT; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr)>(z_GetSeparableFilter_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSeparableFilter(target: SeparableTargetEXT; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr) :=
+    private z_GetSeparableFilter_1 := GetProcOrNil&<procedure(target: SeparableTarget; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr)>(z_GetSeparableFilter_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSeparableFilter(target: SeparableTarget; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr) :=
     z_GetSeparableFilter_1(target, format, &type, row, column, span);
     
     private z_SeparableFilter2D_adr := GetProcAddress('glSeparableFilter2D');
-    private z_SeparableFilter2D_1 := GetProcOrNil&<procedure(target: SeparableTargetEXT; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr)>(z_SeparableFilter2D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SeparableFilter2D(target: SeparableTargetEXT; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr) :=
+    private z_SeparableFilter2D_1 := GetProcOrNil&<procedure(target: SeparableTarget; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr)>(z_SeparableFilter2D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SeparableFilter2D(target: SeparableTarget; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr) :=
     z_SeparableFilter2D_1(target, _internalformat, width, height, format, &type, row, column);
     
     private z_GetHistogram_adr := GetProcAddress('glGetHistogram');
-    private z_GetHistogram_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetHistogram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogram(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
+    private z_GetHistogram_1 := GetProcOrNil&<procedure(target: HistogramTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetHistogram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogram(target: HistogramTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
     z_GetHistogram_1(target, reset, format, &type, values);
     
     private z_GetHistogramParameterfv_adr := GetProcAddress('glGetHistogramParameterfv');
-    private z_GetHistogramParameterfv_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterfv_adr);
-    private z_GetHistogramParameterfv_2 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: single)>(z_GetHistogramParameterfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfv(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: single) :=
+    private z_GetHistogramParameterfv_1 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterfv_adr);
+    private z_GetHistogramParameterfv_2 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: single)>(z_GetHistogramParameterfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfv(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: single) :=
     z_GetHistogramParameterfv_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfv(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfv(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr) :=
     z_GetHistogramParameterfv_1(target, pname, &params);
     
     private z_GetHistogramParameteriv_adr := GetProcAddress('glGetHistogramParameteriv');
-    private z_GetHistogramParameteriv_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameteriv_adr);
-    private z_GetHistogramParameteriv_2 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: Int32)>(z_GetHistogramParameteriv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameteriv(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: Int32) :=
+    private z_GetHistogramParameteriv_1 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameteriv_adr);
+    private z_GetHistogramParameteriv_2 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: Int32)>(z_GetHistogramParameteriv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameteriv(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: Int32) :=
     z_GetHistogramParameteriv_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameteriv(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameteriv(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr) :=
     z_GetHistogramParameteriv_1(target, pname, &params);
     
     private z_GetMinmax_adr := GetProcAddress('glGetMinmax');
-    private z_GetMinmax_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetMinmax_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmax(target: MinmaxTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
+    private z_GetMinmax_1 := GetProcOrNil&<procedure(target: MinmaxTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetMinmax_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmax(target: MinmaxTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
     z_GetMinmax_1(target, reset, format, &type, values);
     
     private z_GetMinmaxParameterfv_adr := GetProcAddress('glGetMinmaxParameterfv');
-    private z_GetMinmaxParameterfv_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameterfv_adr);
-    private z_GetMinmaxParameterfv_2 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: single)>(z_GetMinmaxParameterfv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfv(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: single) :=
+    private z_GetMinmaxParameterfv_1 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameterfv_adr);
+    private z_GetMinmaxParameterfv_2 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: single)>(z_GetMinmaxParameterfv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfv(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: single) :=
     z_GetMinmaxParameterfv_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfv(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfv(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr) :=
     z_GetMinmaxParameterfv_1(target, pname, &params);
     
     private z_GetMinmaxParameteriv_adr := GetProcAddress('glGetMinmaxParameteriv');
-    private z_GetMinmaxParameteriv_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameteriv_adr);
-    private z_GetMinmaxParameteriv_2 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: Int32)>(z_GetMinmaxParameteriv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameteriv(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: Int32) :=
+    private z_GetMinmaxParameteriv_1 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameteriv_adr);
+    private z_GetMinmaxParameteriv_2 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: Int32)>(z_GetMinmaxParameteriv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameteriv(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: Int32) :=
     z_GetMinmaxParameteriv_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameteriv(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameteriv(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr) :=
     z_GetMinmaxParameteriv_1(target, pname, &params);
     
     private z_Histogram_adr := GetProcAddress('glHistogram');
-    private z_Histogram_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; width: Int32; _internalformat: InternalFormat; sink: boolean)>(z_Histogram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Histogram(target: HistogramTargetEXT; width: Int32; _internalformat: InternalFormat; sink: boolean) :=
+    private z_Histogram_1 := GetProcOrNil&<procedure(target: HistogramTarget; width: Int32; _internalformat: InternalFormat; sink: boolean)>(z_Histogram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Histogram(target: HistogramTarget; width: Int32; _internalformat: InternalFormat; sink: boolean) :=
     z_Histogram_1(target, width, _internalformat, sink);
     
     private z_Minmax_adr := GetProcAddress('glMinmax');
-    private z_Minmax_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; _internalformat: InternalFormat; sink: boolean)>(z_Minmax_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Minmax(target: MinmaxTargetEXT; _internalformat: InternalFormat; sink: boolean) :=
+    private z_Minmax_1 := GetProcOrNil&<procedure(target: MinmaxTarget; _internalformat: InternalFormat; sink: boolean)>(z_Minmax_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Minmax(target: MinmaxTarget; _internalformat: InternalFormat; sink: boolean) :=
     z_Minmax_1(target, _internalformat, sink);
     
     private z_ResetHistogram_adr := GetProcAddress('glResetHistogram');
-    private z_ResetHistogram_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT)>(z_ResetHistogram_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetHistogram(target: HistogramTargetEXT) :=
+    private z_ResetHistogram_1 := GetProcOrNil&<procedure(target: HistogramTarget)>(z_ResetHistogram_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetHistogram(target: HistogramTarget) :=
     z_ResetHistogram_1(target);
     
     private z_ResetMinmax_adr := GetProcAddress('glResetMinmax');
-    private z_ResetMinmax_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT)>(z_ResetMinmax_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetMinmax(target: MinmaxTargetEXT) :=
+    private z_ResetMinmax_1 := GetProcOrNil&<procedure(target: MinmaxTarget)>(z_ResetMinmax_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetMinmax(target: MinmaxTarget) :=
     z_ResetMinmax_1(target);
     
   end;
@@ -17358,18 +17358,18 @@
     z_GetnConvolutionFilterARB_1(target, format, &type, bufSize, image);
     
     private z_GetnSeparableFilterARB_adr := GetProcAddress('glGetnSeparableFilterARB');
-    private z_GetnSeparableFilterARB_1 := GetProcOrNil&<procedure(target: SeparableTargetEXT; format: PixelFormat; &type: PixelType; rowBufSize: Int32; row: IntPtr; columnBufSize: Int32; column: IntPtr; span: IntPtr)>(z_GetnSeparableFilterARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnSeparableFilterARB(target: SeparableTargetEXT; format: PixelFormat; &type: PixelType; rowBufSize: Int32; row: IntPtr; columnBufSize: Int32; column: IntPtr; span: IntPtr) :=
+    private z_GetnSeparableFilterARB_1 := GetProcOrNil&<procedure(target: SeparableTarget; format: PixelFormat; &type: PixelType; rowBufSize: Int32; row: IntPtr; columnBufSize: Int32; column: IntPtr; span: IntPtr)>(z_GetnSeparableFilterARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnSeparableFilterARB(target: SeparableTarget; format: PixelFormat; &type: PixelType; rowBufSize: Int32; row: IntPtr; columnBufSize: Int32; column: IntPtr; span: IntPtr) :=
     z_GetnSeparableFilterARB_1(target, format, &type, rowBufSize, row, columnBufSize, column, span);
     
     private z_GetnHistogramARB_adr := GetProcAddress('glGetnHistogramARB');
-    private z_GetnHistogramARB_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr)>(z_GetnHistogramARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnHistogramARB(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr) :=
+    private z_GetnHistogramARB_1 := GetProcOrNil&<procedure(target: HistogramTarget; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr)>(z_GetnHistogramARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnHistogramARB(target: HistogramTarget; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr) :=
     z_GetnHistogramARB_1(target, reset, format, &type, bufSize, values);
     
     private z_GetnMinmaxARB_adr := GetProcAddress('glGetnMinmaxARB');
-    private z_GetnMinmaxARB_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr)>(z_GetnMinmaxARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnMinmaxARB(target: MinmaxTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr) :=
+    private z_GetnMinmaxARB_1 := GetProcOrNil&<procedure(target: MinmaxTarget; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr)>(z_GetnMinmaxARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnMinmaxARB(target: MinmaxTarget; reset: boolean; format: PixelFormat; &type: PixelType; bufSize: Int32; values: IntPtr) :=
     z_GetnMinmaxARB_1(target, reset, format, &type, bufSize, values);
     
   end;
@@ -23190,94 +23190,94 @@
     public const _ExtStr = 'gl_ext_convolution';
     
     private z_ConvolutionFilter1DEXT_adr := GetProcAddress('glConvolutionFilter1DEXT');
-    private z_ConvolutionFilter1DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_ConvolutionFilter1DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionFilter1DEXT(target: ConvolutionTargetEXT; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; image: IntPtr) :=
+    private z_ConvolutionFilter1DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_ConvolutionFilter1DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionFilter1DEXT(target: ConvolutionTarget; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; image: IntPtr) :=
     z_ConvolutionFilter1DEXT_1(target, _internalformat, width, format, &type, image);
     
     private z_ConvolutionFilter2DEXT_adr := GetProcAddress('glConvolutionFilter2DEXT');
-    private z_ConvolutionFilter2DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_ConvolutionFilter2DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionFilter2DEXT(target: ConvolutionTargetEXT; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; image: IntPtr) :=
+    private z_ConvolutionFilter2DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_ConvolutionFilter2DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionFilter2DEXT(target: ConvolutionTarget; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; image: IntPtr) :=
     z_ConvolutionFilter2DEXT_1(target, _internalformat, width, height, format, &type, image);
     
     private z_ConvolutionParameterfEXT_adr := GetProcAddress('glConvolutionParameterfEXT');
-    private z_ConvolutionParameterfEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: single)>(z_ConvolutionParameterfEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: single) :=
+    private z_ConvolutionParameterfEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: single)>(z_ConvolutionParameterfEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: single) :=
     z_ConvolutionParameterfEXT_1(target, pname, &params);
     
     private z_ConvolutionParameterfvEXT_adr := GetProcAddress('glConvolutionParameterfvEXT');
-    private z_ConvolutionParameterfvEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr)>(z_ConvolutionParameterfvEXT_adr);
-    private z_ConvolutionParameterfvEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: single)>(z_ConvolutionParameterfvEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfvEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: array of single);
+    private z_ConvolutionParameterfvEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr)>(z_ConvolutionParameterfvEXT_adr);
+    private z_ConvolutionParameterfvEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: single)>(z_ConvolutionParameterfvEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfvEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: array of single);
     type Psingle=^single;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ConvolutionParameterfvEXT_2(target, pname, &params[0]) else
         z_ConvolutionParameterfvEXT_2(target, pname, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfvEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfvEXT(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: single) :=
     z_ConvolutionParameterfvEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfvEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterfvEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr) :=
     z_ConvolutionParameterfvEXT_1(target, pname, &params);
     
     private z_ConvolutionParameteriEXT_adr := GetProcAddress('glConvolutionParameteriEXT');
-    private z_ConvolutionParameteriEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: Int32)>(z_ConvolutionParameteriEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameteriEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: Int32) :=
+    private z_ConvolutionParameteriEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: Int32)>(z_ConvolutionParameteriEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameteriEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: Int32) :=
     z_ConvolutionParameteriEXT_1(target, pname, &params);
     
     private z_ConvolutionParameterivEXT_adr := GetProcAddress('glConvolutionParameterivEXT');
-    private z_ConvolutionParameterivEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr)>(z_ConvolutionParameterivEXT_adr);
-    private z_ConvolutionParameterivEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: Int32)>(z_ConvolutionParameterivEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterivEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: array of Int32);
+    private z_ConvolutionParameterivEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr)>(z_ConvolutionParameterivEXT_adr);
+    private z_ConvolutionParameterivEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: Int32)>(z_ConvolutionParameterivEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterivEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: array of Int32);
     type PInt32=^Int32;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ConvolutionParameterivEXT_2(target, pname, &params[0]) else
         z_ConvolutionParameterivEXT_2(target, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterivEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterivEXT(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: Int32) :=
     z_ConvolutionParameterivEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterivEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterivEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr) :=
     z_ConvolutionParameterivEXT_1(target, pname, &params);
     
     private z_CopyConvolutionFilter1DEXT_adr := GetProcAddress('glCopyConvolutionFilter1DEXT');
-    private z_CopyConvolutionFilter1DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32)>(z_CopyConvolutionFilter1DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyConvolutionFilter1DEXT(target: ConvolutionTargetEXT; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32) :=
+    private z_CopyConvolutionFilter1DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32)>(z_CopyConvolutionFilter1DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyConvolutionFilter1DEXT(target: ConvolutionTarget; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32) :=
     z_CopyConvolutionFilter1DEXT_1(target, _internalformat, x, y, width);
     
     private z_CopyConvolutionFilter2DEXT_adr := GetProcAddress('glCopyConvolutionFilter2DEXT');
-    private z_CopyConvolutionFilter2DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopyConvolutionFilter2DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyConvolutionFilter2DEXT(target: ConvolutionTargetEXT; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32; height: Int32) :=
+    private z_CopyConvolutionFilter2DEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32; height: Int32)>(z_CopyConvolutionFilter2DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyConvolutionFilter2DEXT(target: ConvolutionTarget; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32; height: Int32) :=
     z_CopyConvolutionFilter2DEXT_1(target, _internalformat, x, y, width, height);
     
     private z_GetConvolutionFilterEXT_adr := GetProcAddress('glGetConvolutionFilterEXT');
-    private z_GetConvolutionFilterEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_GetConvolutionFilterEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionFilterEXT(target: ConvolutionTargetEXT; format: PixelFormat; &type: PixelType; image: IntPtr) :=
+    private z_GetConvolutionFilterEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; format: PixelFormat; &type: PixelType; image: IntPtr)>(z_GetConvolutionFilterEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionFilterEXT(target: ConvolutionTarget; format: PixelFormat; &type: PixelType; image: IntPtr) :=
     z_GetConvolutionFilterEXT_1(target, format, &type, image);
     
     private z_GetConvolutionParameterfvEXT_adr := GetProcAddress('glGetConvolutionParameterfvEXT');
-    private z_GetConvolutionParameterfvEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr)>(z_GetConvolutionParameterfvEXT_adr);
-    private z_GetConvolutionParameterfvEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: single)>(z_GetConvolutionParameterfvEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterfvEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: single) :=
+    private z_GetConvolutionParameterfvEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr)>(z_GetConvolutionParameterfvEXT_adr);
+    private z_GetConvolutionParameterfvEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: single)>(z_GetConvolutionParameterfvEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterfvEXT(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: single) :=
     z_GetConvolutionParameterfvEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterfvEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterfvEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr) :=
     z_GetConvolutionParameterfvEXT_1(target, pname, &params);
     
     private z_GetConvolutionParameterivEXT_adr := GetProcAddress('glGetConvolutionParameterivEXT');
-    private z_GetConvolutionParameterivEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr)>(z_GetConvolutionParameterivEXT_adr);
-    private z_GetConvolutionParameterivEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: Int32)>(z_GetConvolutionParameterivEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterivEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: Int32) :=
+    private z_GetConvolutionParameterivEXT_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr)>(z_GetConvolutionParameterivEXT_adr);
+    private z_GetConvolutionParameterivEXT_2 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: Int32)>(z_GetConvolutionParameterivEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterivEXT(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: Int32) :=
     z_GetConvolutionParameterivEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterivEXT(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetConvolutionParameterivEXT(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr) :=
     z_GetConvolutionParameterivEXT_1(target, pname, &params);
     
     private z_GetSeparableFilterEXT_adr := GetProcAddress('glGetSeparableFilterEXT');
-    private z_GetSeparableFilterEXT_1 := GetProcOrNil&<procedure(target: SeparableTargetEXT; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr)>(z_GetSeparableFilterEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSeparableFilterEXT(target: SeparableTargetEXT; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr) :=
+    private z_GetSeparableFilterEXT_1 := GetProcOrNil&<procedure(target: SeparableTarget; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr)>(z_GetSeparableFilterEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetSeparableFilterEXT(target: SeparableTarget; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr; span: IntPtr) :=
     z_GetSeparableFilterEXT_1(target, format, &type, row, column, span);
     
     private z_SeparableFilter2DEXT_adr := GetProcAddress('glSeparableFilter2DEXT');
-    private z_SeparableFilter2DEXT_1 := GetProcOrNil&<procedure(target: SeparableTargetEXT; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr)>(z_SeparableFilter2DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SeparableFilter2DEXT(target: SeparableTargetEXT; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr) :=
+    private z_SeparableFilter2DEXT_1 := GetProcOrNil&<procedure(target: SeparableTarget; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr)>(z_SeparableFilter2DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SeparableFilter2DEXT(target: SeparableTarget; _internalformat: InternalFormat; width: Int32; height: Int32; format: PixelFormat; &type: PixelType; row: IntPtr; column: IntPtr) :=
     z_SeparableFilter2DEXT_1(target, _internalformat, width, height, format, &type, row, column);
     
   end;
@@ -26626,65 +26626,65 @@
     public const _ExtStr = 'gl_ext_histogram';
     
     private z_GetHistogramEXT_adr := GetProcAddress('glGetHistogramEXT');
-    private z_GetHistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetHistogramEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramEXT(target: HistogramTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
+    private z_GetHistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetHistogramEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramEXT(target: HistogramTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
     z_GetHistogramEXT_1(target, reset, format, &type, values);
     
     private z_GetHistogramParameterfvEXT_adr := GetProcAddress('glGetHistogramParameterfvEXT');
-    private z_GetHistogramParameterfvEXT_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterfvEXT_adr);
-    private z_GetHistogramParameterfvEXT_2 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: single)>(z_GetHistogramParameterfvEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfvEXT(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: single) :=
+    private z_GetHistogramParameterfvEXT_1 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterfvEXT_adr);
+    private z_GetHistogramParameterfvEXT_2 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: single)>(z_GetHistogramParameterfvEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfvEXT(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: single) :=
     z_GetHistogramParameterfvEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfvEXT(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterfvEXT(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr) :=
     z_GetHistogramParameterfvEXT_1(target, pname, &params);
     
     private z_GetHistogramParameterivEXT_adr := GetProcAddress('glGetHistogramParameterivEXT');
-    private z_GetHistogramParameterivEXT_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterivEXT_adr);
-    private z_GetHistogramParameterivEXT_2 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: Int32)>(z_GetHistogramParameterivEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterivEXT(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: Int32) :=
+    private z_GetHistogramParameterivEXT_1 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterivEXT_adr);
+    private z_GetHistogramParameterivEXT_2 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: Int32)>(z_GetHistogramParameterivEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterivEXT(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: Int32) :=
     z_GetHistogramParameterivEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterivEXT(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterivEXT(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr) :=
     z_GetHistogramParameterivEXT_1(target, pname, &params);
     
     private z_GetMinmaxEXT_adr := GetProcAddress('glGetMinmaxEXT');
-    private z_GetMinmaxEXT_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetMinmaxEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxEXT(target: MinmaxTargetEXT; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
+    private z_GetMinmaxEXT_1 := GetProcOrNil&<procedure(target: MinmaxTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr)>(z_GetMinmaxEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxEXT(target: MinmaxTarget; reset: boolean; format: PixelFormat; &type: PixelType; values: IntPtr) :=
     z_GetMinmaxEXT_1(target, reset, format, &type, values);
     
     private z_GetMinmaxParameterfvEXT_adr := GetProcAddress('glGetMinmaxParameterfvEXT');
-    private z_GetMinmaxParameterfvEXT_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameterfvEXT_adr);
-    private z_GetMinmaxParameterfvEXT_2 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: single)>(z_GetMinmaxParameterfvEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfvEXT(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: single) :=
+    private z_GetMinmaxParameterfvEXT_1 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameterfvEXT_adr);
+    private z_GetMinmaxParameterfvEXT_2 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: single)>(z_GetMinmaxParameterfvEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfvEXT(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: single) :=
     z_GetMinmaxParameterfvEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfvEXT(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterfvEXT(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr) :=
     z_GetMinmaxParameterfvEXT_1(target, pname, &params);
     
     private z_GetMinmaxParameterivEXT_adr := GetProcAddress('glGetMinmaxParameterivEXT');
-    private z_GetMinmaxParameterivEXT_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameterivEXT_adr);
-    private z_GetMinmaxParameterivEXT_2 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: Int32)>(z_GetMinmaxParameterivEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterivEXT(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; var &params: Int32) :=
+    private z_GetMinmaxParameterivEXT_1 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr)>(z_GetMinmaxParameterivEXT_adr);
+    private z_GetMinmaxParameterivEXT_2 := GetProcOrNil&<procedure(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: Int32)>(z_GetMinmaxParameterivEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterivEXT(target: MinmaxTarget; pname: GetMinmaxParameterPName; var &params: Int32) :=
     z_GetMinmaxParameterivEXT_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterivEXT(target: MinmaxTargetEXT; pname: GetMinmaxParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetMinmaxParameterivEXT(target: MinmaxTarget; pname: GetMinmaxParameterPName; &params: IntPtr) :=
     z_GetMinmaxParameterivEXT_1(target, pname, &params);
     
     private z_HistogramEXT_adr := GetProcAddress('glHistogramEXT');
-    private z_HistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; width: Int32; _internalformat: InternalFormat; sink: boolean)>(z_HistogramEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure HistogramEXT(target: HistogramTargetEXT; width: Int32; _internalformat: InternalFormat; sink: boolean) :=
+    private z_HistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTarget; width: Int32; _internalformat: InternalFormat; sink: boolean)>(z_HistogramEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure HistogramEXT(target: HistogramTarget; width: Int32; _internalformat: InternalFormat; sink: boolean) :=
     z_HistogramEXT_1(target, width, _internalformat, sink);
     
     private z_MinmaxEXT_adr := GetProcAddress('glMinmaxEXT');
-    private z_MinmaxEXT_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT; _internalformat: InternalFormat; sink: boolean)>(z_MinmaxEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MinmaxEXT(target: MinmaxTargetEXT; _internalformat: InternalFormat; sink: boolean) :=
+    private z_MinmaxEXT_1 := GetProcOrNil&<procedure(target: MinmaxTarget; _internalformat: InternalFormat; sink: boolean)>(z_MinmaxEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MinmaxEXT(target: MinmaxTarget; _internalformat: InternalFormat; sink: boolean) :=
     z_MinmaxEXT_1(target, _internalformat, sink);
     
     private z_ResetHistogramEXT_adr := GetProcAddress('glResetHistogramEXT');
-    private z_ResetHistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT)>(z_ResetHistogramEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetHistogramEXT(target: HistogramTargetEXT) :=
+    private z_ResetHistogramEXT_1 := GetProcOrNil&<procedure(target: HistogramTarget)>(z_ResetHistogramEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetHistogramEXT(target: HistogramTarget) :=
     z_ResetHistogramEXT_1(target);
     
     private z_ResetMinmaxEXT_adr := GetProcAddress('glResetMinmaxEXT');
-    private z_ResetMinmaxEXT_1 := GetProcOrNil&<procedure(target: MinmaxTargetEXT)>(z_ResetMinmaxEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetMinmaxEXT(target: MinmaxTargetEXT) :=
+    private z_ResetMinmaxEXT_1 := GetProcOrNil&<procedure(target: MinmaxTarget)>(z_ResetMinmaxEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResetMinmaxEXT(target: MinmaxTarget) :=
     z_ResetMinmaxEXT_1(target);
     
   end;
@@ -27022,8 +27022,8 @@
     z_SampleMaskEXT_1(value, invert);
     
     private z_SamplePatternEXT_adr := GetProcAddress('glSamplePatternEXT');
-    private z_SamplePatternEXT_1 := GetProcOrNil&<procedure(pattern: OpenGL.SamplePatternEXT)>(z_SamplePatternEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplePatternEXT(pattern: OpenGL.SamplePatternEXT) :=
+    private z_SamplePatternEXT_1 := GetProcOrNil&<procedure(pattern: SamplePattern)>(z_SamplePatternEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplePatternEXT(pattern: SamplePattern) :=
     z_SamplePatternEXT_1(pattern);
     
   end;
@@ -36989,23 +36989,23 @@
     z_Color4xvOES_1(components);
     
     private z_ConvolutionParameterxOES_adr := GetProcAddress('glConvolutionParameterxOES');
-    private z_ConvolutionParameterxOES_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; param: Fixed)>(z_ConvolutionParameterxOES_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxOES(target: ConvolutionTargetEXT; pname: ConvolutionParameter; param: Fixed) :=
+    private z_ConvolutionParameterxOES_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; param: Fixed)>(z_ConvolutionParameterxOES_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxOES(target: ConvolutionTarget; pname: ConvolutionParameter; param: Fixed) :=
     z_ConvolutionParameterxOES_1(target, pname, param);
     
     private z_ConvolutionParameterxvOES_adr := GetProcAddress('glConvolutionParameterxvOES');
-    private z_ConvolutionParameterxvOES_1 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr)>(z_ConvolutionParameterxvOES_adr);
-    private z_ConvolutionParameterxvOES_2 := GetProcOrNil&<procedure(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: Fixed)>(z_ConvolutionParameterxvOES_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxvOES(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: array of Fixed);
+    private z_ConvolutionParameterxvOES_1 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr)>(z_ConvolutionParameterxvOES_adr);
+    private z_ConvolutionParameterxvOES_2 := GetProcOrNil&<procedure(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: Fixed)>(z_ConvolutionParameterxvOES_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxvOES(target: ConvolutionTarget; pname: ConvolutionParameter; &params: array of Fixed);
     type PFixed=^Fixed;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ConvolutionParameterxvOES_2(target, pname, &params[0]) else
         z_ConvolutionParameterxvOES_2(target, pname, PFixed(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxvOES(target: ConvolutionTargetEXT; pname: ConvolutionParameter; var &params: Fixed) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxvOES(target: ConvolutionTarget; pname: ConvolutionParameter; var &params: Fixed) :=
     z_ConvolutionParameterxvOES_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxvOES(target: ConvolutionTargetEXT; pname: ConvolutionParameter; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConvolutionParameterxvOES(target: ConvolutionTarget; pname: ConvolutionParameter; &params: IntPtr) :=
     z_ConvolutionParameterxvOES_1(target, pname, &params);
     
     private z_EvalCoord1xOES_adr := GetProcAddress('glEvalCoord1xOES');
@@ -37072,11 +37072,11 @@
     z_GetConvolutionParameterxvOES_1(target, pname, &params);
     
     private z_GetHistogramParameterxvOES_adr := GetProcAddress('glGetHistogramParameterxvOES');
-    private z_GetHistogramParameterxvOES_1 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterxvOES_adr);
-    private z_GetHistogramParameterxvOES_2 := GetProcOrNil&<procedure(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: Fixed)>(z_GetHistogramParameterxvOES_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterxvOES(target: HistogramTargetEXT; pname: GetHistogramParameterPName; var &params: Fixed) :=
+    private z_GetHistogramParameterxvOES_1 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr)>(z_GetHistogramParameterxvOES_adr);
+    private z_GetHistogramParameterxvOES_2 := GetProcOrNil&<procedure(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: Fixed)>(z_GetHistogramParameterxvOES_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterxvOES(target: HistogramTarget; pname: GetHistogramParameterPName; var &params: Fixed) :=
     z_GetHistogramParameterxvOES_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterxvOES(target: HistogramTargetEXT; pname: GetHistogramParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetHistogramParameterxvOES(target: HistogramTarget; pname: GetHistogramParameterPName; &params: IntPtr) :=
     z_GetHistogramParameterxvOES_1(target, pname, &params);
     
     private z_GetLightxOES_adr := GetProcAddress('glGetLightxOES');
