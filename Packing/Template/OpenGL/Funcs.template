@@ -8176,6 +8176,9 @@
     private z_Fogi_adr := GetProcAddress('glFogi');
     private z_Fogi_1 := GetProcOrNil&<procedure(pname: FogParameter; param: Int32)>(z_Fogi_adr);
     private z_Fogi_2 := GetProcOrNil&<procedure(pname: FogParameter; param: FogMode)>(z_Fogi_adr);
+    private z_Fogi_3 := GetProcOrNil&<procedure(pname: FogParameter; param: FogCoordSrc)>(z_Fogi_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Fogi(pname: FogParameter; param: FogCoordSrc) :=
+    z_Fogi_3(pname, param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Fogi(pname: FogParameter; param: FogMode) :=
     z_Fogi_2(pname, param);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Fogi(pname: FogParameter; param: Int32) :=

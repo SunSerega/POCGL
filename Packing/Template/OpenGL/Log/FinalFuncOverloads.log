@@ -4562,11 +4562,12 @@
 	------------ | --------------- |
 	pname        | params          |
 
-# glFogi[2]:
-	FogParameter | FogMode |
-	FogParameter | Int32   |
-	------------ | ------- |
-	pname        | param   |
+# glFogi[3]:
+	FogParameter | FogCoordSrc |
+	FogParameter | FogMode     |
+	FogParameter | Int32       |
+	------------ | ----------- |
+	pname        | param       |
 
 # glFogiv[3]:
 	FogParameter | array of Int32 |

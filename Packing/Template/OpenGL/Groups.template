@@ -2577,6 +2577,24 @@
     
   end;
   
+  FogCoordSrc = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FOG_COORDINATE: FogCoordSrc read new FogCoordSrc($8451);
+    public static property FOG_COORD:      FogCoordSrc read new FogCoordSrc($8451);
+    public static property FRAGMENT_DEPTH: FogCoordSrc read new FogCoordSrc($8452);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($8451) then Result := 'FOG_COORDINATE' else
+      if self.val = UInt32($8451) then Result := 'FOG_COORD' else
+      if self.val = UInt32($8452) then Result := 'FRAGMENT_DEPTH' else
+        Result := $'FogCoordSrc[{self.val}]';
+    end;
+    
+  end;
+  
   FogMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5876,14 +5894,14 @@
     public static property FRAGMENT_MATERIAL_EXT: LightTextureMode read new LightTextureMode($8349);
     public static property FRAGMENT_NORMAL_EXT:   LightTextureMode read new LightTextureMode($834A);
     public static property FRAGMENT_COLOR_EXT:    LightTextureMode read new LightTextureMode($834C);
-    public static property FRAGMENT_DEPTH_EXT:    LightTextureMode read new LightTextureMode($8452);
+    public static property FRAGMENT_DEPTH:        LightTextureMode read new LightTextureMode($8452);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($8349) then Result := 'FRAGMENT_MATERIAL_EXT' else
       if self.val = UInt32($834A) then Result := 'FRAGMENT_NORMAL_EXT' else
       if self.val = UInt32($834C) then Result := 'FRAGMENT_COLOR_EXT' else
-      if self.val = UInt32($8452) then Result := 'FRAGMENT_DEPTH_EXT' else
+      if self.val = UInt32($8452) then Result := 'FRAGMENT_DEPTH' else
         Result := $'LightTextureMode[{self.val}]';
     end;
     

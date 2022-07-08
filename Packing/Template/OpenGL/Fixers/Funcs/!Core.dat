@@ -67,7 +67,7 @@
 
 # glFogi
 !possible_par_types
- *	| +FogMode	|
+ *	| +FogMode +FogCoordSrc	|
 
 # glTexEnvi
 !possible_par_types
