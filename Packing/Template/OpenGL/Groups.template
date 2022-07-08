@@ -3038,46 +3038,46 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property DOUBLEBUFFER:   GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0001);
-    public static property STEREO:         GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0002);
-    public static property SUPPORT:        GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0010);
-    public static property SUPPORT_OPENGL: GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0020);
-    public static property SHARE_DEPTH:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0040);
-    public static property SHARE_STENCIL:  GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0080);
-    public static property SHARE_ACCUM:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0100);
-    public static property SWAP_EXCHANGE:  GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0200);
-    public static property SWAP_COPY:      GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0400);
-    public static property TRANSPARENT:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($1000);
+    public static property LPD_DOUBLEBUFFER:   GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0001);
+    public static property LPD_STEREO:         GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0002);
+    public static property LPD_SUPPORT:        GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0010);
+    public static property LPD_SUPPORT_OPENGL: GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0020);
+    public static property LPD_SHARE_DEPTH:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0040);
+    public static property LPD_SHARE_STENCIL:  GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0080);
+    public static property LPD_SHARE_ACCUM:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0100);
+    public static property LPD_SWAP_EXCHANGE:  GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0200);
+    public static property LPD_SWAP_COPY:      GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0400);
+    public static property LPD_TRANSPARENT:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($1000);
     
     public static function operator+(f1,f2: GDI_LayerPlaneFlags) := new GDI_LayerPlaneFlags(f1.val or f2.val);
     public static function operator or(f1,f2: GDI_LayerPlaneFlags) := f1+f2;
     
     public static procedure operator+=(var f1: GDI_LayerPlaneFlags; f2: GDI_LayerPlaneFlags) := f1 := f1+f2;
     
-    public property HAS_FLAG_DOUBLEBUFFER:   boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_STEREO:         boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_SUPPORT:        boolean read self.val and $0010 <> 0;
-    public property HAS_FLAG_SUPPORT_OPENGL: boolean read self.val and $0020 <> 0;
-    public property HAS_FLAG_SHARE_DEPTH:    boolean read self.val and $0040 <> 0;
-    public property HAS_FLAG_SHARE_STENCIL:  boolean read self.val and $0080 <> 0;
-    public property HAS_FLAG_SHARE_ACCUM:    boolean read self.val and $0100 <> 0;
-    public property HAS_FLAG_SWAP_EXCHANGE:  boolean read self.val and $0200 <> 0;
-    public property HAS_FLAG_SWAP_COPY:      boolean read self.val and $0400 <> 0;
-    public property HAS_FLAG_TRANSPARENT:    boolean read self.val and $1000 <> 0;
+    public property HAS_FLAG_LPD_DOUBLEBUFFER:   boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_LPD_STEREO:         boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_LPD_SUPPORT:        boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_LPD_SUPPORT_OPENGL: boolean read self.val and $0020 <> 0;
+    public property HAS_FLAG_LPD_SHARE_DEPTH:    boolean read self.val and $0040 <> 0;
+    public property HAS_FLAG_LPD_SHARE_STENCIL:  boolean read self.val and $0080 <> 0;
+    public property HAS_FLAG_LPD_SHARE_ACCUM:    boolean read self.val and $0100 <> 0;
+    public property HAS_FLAG_LPD_SWAP_EXCHANGE:  boolean read self.val and $0200 <> 0;
+    public property HAS_FLAG_LPD_SWAP_COPY:      boolean read self.val and $0400 <> 0;
+    public property HAS_FLAG_LPD_TRANSPARENT:    boolean read self.val and $1000 <> 0;
     
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
-      if self.val and UInt32($0001) = UInt32($0001) then res += 'DOUBLEBUFFER+';
-      if self.val and UInt32($0002) = UInt32($0002) then res += 'STEREO+';
-      if self.val and UInt32($0010) = UInt32($0010) then res += 'SUPPORT+';
-      if self.val and UInt32($0020) = UInt32($0020) then res += 'SUPPORT_OPENGL+';
-      if self.val and UInt32($0040) = UInt32($0040) then res += 'SHARE_DEPTH+';
-      if self.val and UInt32($0080) = UInt32($0080) then res += 'SHARE_STENCIL+';
-      if self.val and UInt32($0100) = UInt32($0100) then res += 'SHARE_ACCUM+';
-      if self.val and UInt32($0200) = UInt32($0200) then res += 'SWAP_EXCHANGE+';
-      if self.val and UInt32($0400) = UInt32($0400) then res += 'SWAP_COPY+';
-      if self.val and UInt32($1000) = UInt32($1000) then res += 'TRANSPARENT+';
+      if self.val and UInt32($0001) = UInt32($0001) then res += 'LPD_DOUBLEBUFFER+';
+      if self.val and UInt32($0002) = UInt32($0002) then res += 'LPD_STEREO+';
+      if self.val and UInt32($0010) = UInt32($0010) then res += 'LPD_SUPPORT+';
+      if self.val and UInt32($0020) = UInt32($0020) then res += 'LPD_SUPPORT_OPENGL+';
+      if self.val and UInt32($0040) = UInt32($0040) then res += 'LPD_SHARE_DEPTH+';
+      if self.val and UInt32($0080) = UInt32($0080) then res += 'LPD_SHARE_STENCIL+';
+      if self.val and UInt32($0100) = UInt32($0100) then res += 'LPD_SHARE_ACCUM+';
+      if self.val and UInt32($0200) = UInt32($0200) then res += 'LPD_SWAP_EXCHANGE+';
+      if self.val and UInt32($0400) = UInt32($0400) then res += 'LPD_SWAP_COPY+';
+      if self.val and UInt32($1000) = UInt32($1000) then res += 'LPD_TRANSPARENT+';
       if res.Length<>0 then
       begin
         res.Length -= 1;
@@ -3094,13 +3094,13 @@
     public val: Byte;
     public constructor(val: Byte) := self.val := val;
     
-    public static property RGBA:       GDI_PixelDataType read new GDI_PixelDataType($0000);
-    public static property COLORINDEX: GDI_PixelDataType read new GDI_PixelDataType($0001);
+    public static property LPD_TYPE_RGBA:       GDI_PixelDataType read new GDI_PixelDataType($0000);
+    public static property LPD_TYPE_COLORINDEX: GDI_PixelDataType read new GDI_PixelDataType($0001);
     
     public function ToString: string; override;
     begin
-      if self.val = Byte($0000) then Result := 'RGBA' else
-      if self.val = Byte($0001) then Result := 'COLORINDEX' else
+      if self.val = Byte($0000) then Result := 'LPD_TYPE_RGBA' else
+      if self.val = Byte($0001) then Result := 'LPD_TYPE_COLORINDEX' else
         Result := $'GDI_PixelDataType[{self.val}]';
     end;
     
@@ -3110,67 +3110,64 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property DOUBLEBUFFER:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0001);
-    public static property STEREO:                GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0002);
-    public static property DRAW_TO_WINDOW:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0004);
-    public static property DRAW_TO_BITMAP:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0008);
-    public static property SUPPORT:               GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0010);
-    public static property SUPPORT_OPENGL:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0020);
-    public static property GENERIC_FORMAT:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0040);
-    public static property NEED_PALETTE:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0080);
-    public static property NEED_SYSTEM_PALETTE:   GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0100);
-    public static property SWAP_EXCHANGE:         GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0200);
-    public static property SWAP_COPY:             GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0400);
-    public static property SWAP_LAYER_BUFFERS:    GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0800);
-    public static property GENERIC_ACCELERATED:   GDI_PixelFormatFlags read new GDI_PixelFormatFlags($1000);
-    public static property SUPPORT_DIRECTDRAW:    GDI_PixelFormatFlags read new GDI_PixelFormatFlags($2000);
-    public static property DEPTH_DONTCARE:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($20000000);
-    public static property DOUBLEBUFFER_DONTCARE: GDI_PixelFormatFlags read new GDI_PixelFormatFlags($40000000);
-    public static property STEREO_DONTCARE:       GDI_PixelFormatFlags read new GDI_PixelFormatFlags($80000000);
+    public static property PFD_DOUBLEBUFFER:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0001);
+    public static property PFD_STEREO:                GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0002);
+    public static property PFD_DRAW_TO_WINDOW:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0004);
+    public static property PFD_DRAW_TO_BITMAP:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0008);
+    public static property PFD_SUPPORT:               GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0010);
+    public static property PFD_SUPPORT_OPENGL:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0020);
+    public static property PFD_GENERIC_FORMAT:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0040);
+    public static property PFD_NEED_PALETTE:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0080);
+    public static property PFD_NEED_SYSTEM_PALETTE:   GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0100);
+    public static property PFD_SWAP_EXCHANGE:         GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0200);
+    public static property PFD_SWAP_COPY:             GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0400);
+    public static property PFD_SWAP_LAYER_BUFFERS:    GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0800);
+    public static property PFD_GENERIC_ACCELERATED:   GDI_PixelFormatFlags read new GDI_PixelFormatFlags($1000);
+    public static property PFD_DEPTH_DONTCARE:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($20000000);
+    public static property PFD_DOUBLEBUFFER_DONTCARE: GDI_PixelFormatFlags read new GDI_PixelFormatFlags($40000000);
+    public static property PFD_STEREO_DONTCARE:       GDI_PixelFormatFlags read new GDI_PixelFormatFlags($80000000);
     
     public static function operator+(f1,f2: GDI_PixelFormatFlags) := new GDI_PixelFormatFlags(f1.val or f2.val);
     public static function operator or(f1,f2: GDI_PixelFormatFlags) := f1+f2;
     
     public static procedure operator+=(var f1: GDI_PixelFormatFlags; f2: GDI_PixelFormatFlags) := f1 := f1+f2;
     
-    public property HAS_FLAG_DOUBLEBUFFER:          boolean read self.val and $0001 <> 0;
-    public property HAS_FLAG_STEREO:                boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_DRAW_TO_WINDOW:        boolean read self.val and $0004 <> 0;
-    public property HAS_FLAG_DRAW_TO_BITMAP:        boolean read self.val and $0008 <> 0;
-    public property HAS_FLAG_SUPPORT:               boolean read self.val and $0010 <> 0;
-    public property HAS_FLAG_SUPPORT_OPENGL:        boolean read self.val and $0020 <> 0;
-    public property HAS_FLAG_GENERIC_FORMAT:        boolean read self.val and $0040 <> 0;
-    public property HAS_FLAG_NEED_PALETTE:          boolean read self.val and $0080 <> 0;
-    public property HAS_FLAG_NEED_SYSTEM_PALETTE:   boolean read self.val and $0100 <> 0;
-    public property HAS_FLAG_SWAP_EXCHANGE:         boolean read self.val and $0200 <> 0;
-    public property HAS_FLAG_SWAP_COPY:             boolean read self.val and $0400 <> 0;
-    public property HAS_FLAG_SWAP_LAYER_BUFFERS:    boolean read self.val and $0800 <> 0;
-    public property HAS_FLAG_GENERIC_ACCELERATED:   boolean read self.val and $1000 <> 0;
-    public property HAS_FLAG_SUPPORT_DIRECTDRAW:    boolean read self.val and $2000 <> 0;
-    public property HAS_FLAG_DEPTH_DONTCARE:        boolean read self.val and $20000000 <> 0;
-    public property HAS_FLAG_DOUBLEBUFFER_DONTCARE: boolean read self.val and $40000000 <> 0;
-    public property HAS_FLAG_STEREO_DONTCARE:       boolean read self.val and $80000000 <> 0;
+    public property HAS_FLAG_PFD_DOUBLEBUFFER:          boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_PFD_STEREO:                boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_PFD_DRAW_TO_WINDOW:        boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_PFD_DRAW_TO_BITMAP:        boolean read self.val and $0008 <> 0;
+    public property HAS_FLAG_PFD_SUPPORT:               boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_PFD_SUPPORT_OPENGL:        boolean read self.val and $0020 <> 0;
+    public property HAS_FLAG_PFD_GENERIC_FORMAT:        boolean read self.val and $0040 <> 0;
+    public property HAS_FLAG_PFD_NEED_PALETTE:          boolean read self.val and $0080 <> 0;
+    public property HAS_FLAG_PFD_NEED_SYSTEM_PALETTE:   boolean read self.val and $0100 <> 0;
+    public property HAS_FLAG_PFD_SWAP_EXCHANGE:         boolean read self.val and $0200 <> 0;
+    public property HAS_FLAG_PFD_SWAP_COPY:             boolean read self.val and $0400 <> 0;
+    public property HAS_FLAG_PFD_SWAP_LAYER_BUFFERS:    boolean read self.val and $0800 <> 0;
+    public property HAS_FLAG_PFD_GENERIC_ACCELERATED:   boolean read self.val and $1000 <> 0;
+    public property HAS_FLAG_PFD_DEPTH_DONTCARE:        boolean read self.val and $20000000 <> 0;
+    public property HAS_FLAG_PFD_DOUBLEBUFFER_DONTCARE: boolean read self.val and $40000000 <> 0;
+    public property HAS_FLAG_PFD_STEREO_DONTCARE:       boolean read self.val and $80000000 <> 0;
     
     public function ToString: string; override;
     begin
       var res := new StringBuilder;
-      if self.val and UInt32($0001) = UInt32($0001) then res += 'DOUBLEBUFFER+';
-      if self.val and UInt32($0002) = UInt32($0002) then res += 'STEREO+';
-      if self.val and UInt32($0004) = UInt32($0004) then res += 'DRAW_TO_WINDOW+';
-      if self.val and UInt32($0008) = UInt32($0008) then res += 'DRAW_TO_BITMAP+';
-      if self.val and UInt32($0010) = UInt32($0010) then res += 'SUPPORT+';
-      if self.val and UInt32($0020) = UInt32($0020) then res += 'SUPPORT_OPENGL+';
-      if self.val and UInt32($0040) = UInt32($0040) then res += 'GENERIC_FORMAT+';
-      if self.val and UInt32($0080) = UInt32($0080) then res += 'NEED_PALETTE+';
-      if self.val and UInt32($0100) = UInt32($0100) then res += 'NEED_SYSTEM_PALETTE+';
-      if self.val and UInt32($0200) = UInt32($0200) then res += 'SWAP_EXCHANGE+';
-      if self.val and UInt32($0400) = UInt32($0400) then res += 'SWAP_COPY+';
-      if self.val and UInt32($0800) = UInt32($0800) then res += 'SWAP_LAYER_BUFFERS+';
-      if self.val and UInt32($1000) = UInt32($1000) then res += 'GENERIC_ACCELERATED+';
-      if self.val and UInt32($2000) = UInt32($2000) then res += 'SUPPORT_DIRECTDRAW+';
-      if self.val and UInt32($20000000) = UInt32($20000000) then res += 'DEPTH_DONTCARE+';
-      if self.val and UInt32($40000000) = UInt32($40000000) then res += 'DOUBLEBUFFER_DONTCARE+';
-      if self.val and UInt32($80000000) = UInt32($80000000) then res += 'STEREO_DONTCARE+';
+      if self.val and UInt32($0001) = UInt32($0001) then res += 'PFD_DOUBLEBUFFER+';
+      if self.val and UInt32($0002) = UInt32($0002) then res += 'PFD_STEREO+';
+      if self.val and UInt32($0004) = UInt32($0004) then res += 'PFD_DRAW_TO_WINDOW+';
+      if self.val and UInt32($0008) = UInt32($0008) then res += 'PFD_DRAW_TO_BITMAP+';
+      if self.val and UInt32($0010) = UInt32($0010) then res += 'PFD_SUPPORT+';
+      if self.val and UInt32($0020) = UInt32($0020) then res += 'PFD_SUPPORT_OPENGL+';
+      if self.val and UInt32($0040) = UInt32($0040) then res += 'PFD_GENERIC_FORMAT+';
+      if self.val and UInt32($0080) = UInt32($0080) then res += 'PFD_NEED_PALETTE+';
+      if self.val and UInt32($0100) = UInt32($0100) then res += 'PFD_NEED_SYSTEM_PALETTE+';
+      if self.val and UInt32($0200) = UInt32($0200) then res += 'PFD_SWAP_EXCHANGE+';
+      if self.val and UInt32($0400) = UInt32($0400) then res += 'PFD_SWAP_COPY+';
+      if self.val and UInt32($0800) = UInt32($0800) then res += 'PFD_SWAP_LAYER_BUFFERS+';
+      if self.val and UInt32($1000) = UInt32($1000) then res += 'PFD_GENERIC_ACCELERATED+';
+      if self.val and UInt32($20000000) = UInt32($20000000) then res += 'PFD_DEPTH_DONTCARE+';
+      if self.val and UInt32($40000000) = UInt32($40000000) then res += 'PFD_DOUBLEBUFFER_DONTCARE+';
+      if self.val and UInt32($80000000) = UInt32($80000000) then res += 'PFD_STEREO_DONTCARE+';
       if res.Length<>0 then
       begin
         res.Length -= 1;

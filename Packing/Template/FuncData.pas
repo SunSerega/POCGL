@@ -173,8 +173,7 @@ type
     
     private static all_enums := new Dictionary<string, int64>;
     
-    private function BoundToAllEnums :=
-    not bitmask and not name.StartsWith('GDI');
+    private function BoundToAllEnums := not bitmask;
     
     private procedure AddKeyVal(key: string; val: int64);
     begin
