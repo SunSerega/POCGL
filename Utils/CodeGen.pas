@@ -14,6 +14,7 @@ type
     
     public procedure WriteNumbered(c: integer; a: string);
     begin
+      if c<1 then raise new System.InvalidOperationException;
       var ind := a.IndexOf('!');
       var a_long := if ind=-1 then a else a.Remove(ind,1);
       var a_short := if ind=-1 then a else a.Remove(ind);
